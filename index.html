@@ -13,35 +13,20 @@
         <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
           <img class="brand-logo" src="logo.png" alt="Samtalestøtte" />
         </button>
-        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Skjul sidemeny" title="Skjul sidemeny">
-          <span class="sidebar-toggle-arrow" aria-hidden="true">‹</span>
-        </button>
+        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Skjul eller vis meny">☰</button>
       </div>
 
       <nav class="nav" aria-label="Hovedmeny">
-        <button class="nav-item active" data-view="home" type="button">
-          <span class="nav-glyph" id="nav-home-icon"></span>
-          <span class="nav-label">Hjem</span>
-        </button>
-        <button class="nav-item" data-view="prepare" type="button">
-          <span class="nav-glyph" id="nav-prepare-icon"></span>
-          <span class="nav-label">Forbered samtale</span>
-        </button>
-        <button class="nav-item" data-view="settings" type="button">
-          <span class="nav-glyph" id="nav-settings-icon"></span>
-          <span class="nav-label">Innstillinger</span>
-        </button>
-        <button class="nav-item" data-view="history" type="button" disabled>
-          <span class="nav-glyph" id="nav-history-icon"></span>
-          <span class="nav-label">Historikk</span>
-          <small>ved innlogging</small>
-        </button>
+        <button class="nav-item active" data-view="home" type="button"><span class="nav-glyph">⌂</span><span>Hjem</span></button>
+        <button class="nav-item" data-view="prepare" type="button"><span class="nav-glyph">💬</span><span>Forbered samtale</span></button>
+        <button class="nav-item" data-view="settings" type="button"><span class="nav-glyph">⚙</span><span>Innstillinger</span></button>
+        <button class="nav-item" disabled type="button"><span class="nav-glyph">🕘</span><span>Historikk</span><small>ved innlogging</small></button>
       </nav>
 
       <div class="sidebar-bottom">
-        <div class="sidebar-message">
-          <div class="sidebar-message-icon" id="sidebar-message-icon"></div>
-          <p>Sammen skaper<br>vi bedre arbeidsplasser</p>
+        <div class="privacy-mini">
+          <strong>Personvern først</strong>
+          <p>Beskriv roller og situasjoner – ikke personer.</p>
         </div>
       </div>
     </aside>
@@ -53,50 +38,59 @@
         </div>
         <div class="topbar-right">
           <div class="theme-switcher" role="group" aria-label="Velg fargetema">
-            <button data-theme="light" type="button"><span>☀</span>Lyst</button>
-            <button data-theme="dark" type="button"><span>☾</span>Mørkt</button>
-            <button data-theme="system" type="button"><span>◐</span>System</button>
+            <button data-theme="light" type="button">Lyst</button>
+            <button data-theme="dark" type="button">Mørkt</button>
+            <button data-theme="system" type="button">System</button>
           </div>
-          <button class="profile-chip" type="button" aria-label="Brukerprofil">
-            <span class="profile-avatar">KN</span>
+          <div class="profile-chip" aria-label="Eksempel på brukerprofil">
+            <span class="profile-avatar">K</span>
             <span class="profile-text">
               <strong>Kari Nilsen</strong>
               <small>Logg inn for historikk</small>
             </span>
-            <span class="profile-caret">⌄</span>
-          </button>
+          </div>
         </div>
       </header>
 
       <section id="home-view" class="view active-view">
-        <section class="hero-panel">
-          <div class="hero-copy">
-            <span class="eyebrow">BEDRE SAMTALER. ET STERKERE ARBEIDSLIV.</span>
+        <div class="page-intro compact-intro">
+          <div class="intro-copy">
+            <span class="eyebrow">BEDRE FORBEREDT. BEDRE SAMTALER.</span>
             <h1>Forbered vanskelige samtaler med trygghet og struktur</h1>
-            <p>Velg tema, beskriv situasjonen anonymt og få støtte til å planlegge en profesjonell og tydelig samtale.</p>
+            <p>Velg tema direkte, eller skriv kort hva samtalen gjelder for å få forslag til riktig kategori.</p>
           </div>
-          <div class="hero-visual">
-            <img src="hero-conversation-exact.png" alt="To personer i samtale på et møte" />
+          <div class="intro-visual">
+            <img src="hero-conversation.png" alt="Mennesker som snakker sammen i et møte" />
           </div>
-        </section>
+        </div>
 
-        <section class="topics-section" id="topics">
-          <div class="section-heading section-heading-split">
-            <div>
-              <h2>Velg tema</h2>
-            </div>
-            <p>Finn temaet som passer best for din situasjon.</p>
+        <section class="finder-panel">
+          <div class="finder-heading">
+            <h2>Finn riktig tema</h2>
+            <p>Skriv kort hva du ønsker samtale om, så foreslår prototypen hvilket tema som passer best.</p>
           </div>
 
-          <form id="topic-finder-form" class="topic-search-row">
-            <label class="search-field" for="topic-search">
-              <span class="search-icon">⌕</span>
-              <input id="topic-search" type="text" placeholder="Søk etter tema eller beskriv hva samtalen gjelder" aria-label="Søk etter tema eller beskriv hva samtalen gjelder" />
-            </label>
-            <button type="submit" class="primary-button search-button">Finn tema</button>
+          <form id="topic-finder-form" class="topic-finder-form">
+            <input
+              id="topic-search"
+              type="text"
+              placeholder="Eksempel: En medarbeider kommer ofte for sent og fraværet har økt"
+              aria-label="Beskriv hva samtalen gjelder"
+              required
+            />
+            <button type="submit" class="primary-button compact-button">Finn tema</button>
           </form>
 
           <div id="topic-suggestion" class="topic-suggestion" hidden></div>
+        </section>
+
+        <section class="topics-section" id="topics">
+          <div class="section-heading">
+            <div>
+              <h2>Velg tema</h2>
+              <p>Du kan gå direkte videre til undertema og samtaleforberedelse.</p>
+            </div>
+          </div>
           <div id="topic-grid" class="topic-grid"></div>
         </section>
 
@@ -145,6 +139,7 @@
             <p>Velg det undertemaet som passer best med situasjonen.</p>
           </div>
         </div>
+
         <div id="subtopic-grid" class="subtopic-grid"></div>
       </section>
 
@@ -213,9 +208,9 @@
         <div class="settings-card">
           <h2>Fargetema</h2>
           <div class="settings-theme-options">
-            <button data-theme="light" type="button"><span>☀</span>Lyst</button>
-            <button data-theme="dark" type="button"><span>☾</span>Mørkt</button>
-            <button data-theme="system" type="button"><span>◐</span>Følg systemet</button>
+            <button data-theme="light" type="button">Lyst</button>
+            <button data-theme="dark" type="button">Mørkt</button>
+            <button data-theme="system" type="button">Følg systemet</button>
           </div>
         </div>
       </section>
