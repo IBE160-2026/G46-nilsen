@@ -416,3 +416,86 @@ html[data-theme="dark"] .brand-logo{content:url('logo-light.png');filter:drop-sh
 .understanding-summary{padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--accent-soft) 20%,var(--surface));border:1px solid color-mix(in srgb,var(--accent) 12%,var(--border))}
 .understanding-summary p{margin:0;line-height:1.55}
 button:disabled{opacity:.62;cursor:wait}
+
+/* UX-runde: kompakte felt, personvernport og tydelig ventestatus */
+.main-situation-field textarea{
+  min-height:96px;
+  height:auto;
+  max-height:220px;
+  resize:none;
+  overflow-y:hidden;
+}
+#help-request{
+  min-height:64px;
+  height:auto;
+  max-height:150px;
+  resize:none;
+  overflow-y:hidden;
+}
+textarea[aria-invalid="true"]{
+  border-color:var(--warning-border);
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--warning-border) 18%, transparent);
+}
+.privacy-findings{
+  margin:7px 0 0 18px;
+  padding:0;
+  display:grid;
+  gap:5px;
+  color:var(--text);
+}
+.privacy-findings li{line-height:1.4}
+.privacy-check.blocking{box-shadow:0 0 0 1px color-mix(in srgb,var(--warning-border) 36%, transparent)}
+.form-action-bar{
+  position:sticky;
+  bottom:12px;
+  z-index:24;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:14px;
+  padding:9px 10px;
+  margin-top:2px;
+  border:1px solid color-mix(in srgb,var(--border) 78%, transparent);
+  border-radius:16px;
+  background:color-mix(in srgb,var(--surface) 94%, transparent);
+  backdrop-filter:blur(10px);
+  box-shadow:0 10px 28px rgba(12,46,57,.10);
+}
+.form-action-bar .primary-button{margin:0;justify-self:auto;white-space:nowrap}
+.privacy-submit-note{font-size:.82rem;color:var(--muted);margin-right:auto;line-height:1.3}
+.privacy-submit-note.ok{color:var(--accent-strong)}
+.primary-button:disabled{cursor:not-allowed;opacity:.52;transform:none!important}
+.ai-thinking{
+  max-width:980px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  margin-top:16px;
+  padding:14px 16px;
+  border:1px solid color-mix(in srgb,var(--accent) 24%,var(--border));
+  border-radius:16px;
+  background:color-mix(in srgb,var(--accent-soft) 32%,var(--surface));
+}
+.ai-thinking[hidden]{display:none}
+.ai-thinking strong,.ai-thinking span{display:block}
+.ai-thinking span{margin-top:2px;color:var(--muted);font-size:.88rem}
+.thinking-spinner{
+  width:23px;
+  height:23px;
+  flex:0 0 23px;
+  border-radius:50%;
+  border:3px solid color-mix(in srgb,var(--accent) 18%,transparent);
+  border-top-color:var(--accent);
+  animation:samtalestotte-spin .78s linear infinite;
+}
+@keyframes samtalestotte-spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.thinking-spinner{animation:none;border-top-color:currentColor}}
+.topic-card.search-match,.subtopic-card.search-match{
+  border-color:color-mix(in srgb,var(--accent) 46%,var(--border));
+  background:color-mix(in srgb,var(--accent-soft) 48%,var(--surface));
+}
+@media(max-width:650px){
+  .form-action-bar{align-items:stretch;flex-direction:column;gap:7px;bottom:8px}
+  .privacy-submit-note{margin-right:0}
+  .form-action-bar .primary-button{width:100%}
+}

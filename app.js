@@ -352,14 +352,36 @@ function openGuidance(title, help) {
 
 function detectSensitiveInfo(text) {
   const findings = [];
-  const email = /\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i;
-  const phone = /(?:\+47\s?)?(?:\d[\s-]?){8}\b/;
-  const gendered = /\b(han|hun|ham|henne|hans|hennes)\b/i;
-  const likelyName = /(?:^|[.!?]\s+|\n)\s*(?:Jeg|Vi|Det|En|Et|Når|Hvis|I|På|Som|Medarbeideren|Kollegaen|Lederen|Hen)?\s*([A-ZÆØÅ][a-zæøå]{2,}\s+[A-ZÆØÅ][a-zæøå]{2,})\b/m;
-  if (email.test(text)) findings.push('mulig e-postadresse');
-  if (phone.test(text)) findings.push('mulig telefonnummer');
-  if (gendered.test(text)) findings.push('kjønnet pronomen');
-  if (likelyName.test(text)) findings.push('mulig personnavn');
+  const source = text || '';
+  const add = (type, label, message) => {
+    if (!findings.some(item => item.type === type)) findings.push({ type, label, message });
+  };
+
+  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(source)) {
+    add('email', 'E-postadresse', 'Fjern e-postadresse og beskriv personen med rolle i stedet.');
+  }
+  if (/(?:\+47\s?)?(?:\d[\s-]?){8}\b/.test(source)) {
+    add('phone', 'Telefonnummer', 'Fjern telefonnummeret før du sender teksten.');
+  }
+  if (/\b(?:\d{1,2}[.\/-]\d{1,2}[.\/-](?:19|20)?\d{2})\b/.test(source) || /\b(?:født|fødselsdato)\s+(?:i\s+)?(?:19|20)\d{2}\b/i.test(source)) {
+    add('birthdate', 'Fødselsdato eller fødselsår', 'Fjern fødselsdato eller fødselsår.');
+  }
+  if (/\b(?:[1-9]|[1-9]\d|1[01]\d|120)\s*år(?:\s+gammel)?\b/i.test(source)) {
+    add('age', 'Alder', 'Fjern konkret alder. Skriv heller bare det som er relevant for arbeidssituasjonen.');
+  }
+  if (/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source) || /\b\d{11}\b/.test(source)) {
+    add('identifier', 'Person- eller ansattnummer', 'Fjern identifikasjonsnummer før teksten sendes.');
+  }
+  if (/\b(?:han|hun|ham|henne|hans|hennes)\b/i.test(source)) {
+    add('gender', 'Kjønnet pronomen', 'Bruk «hen» eller rollen, for eksempel «medarbeideren», når kjønn ikke er nødvendig.');
+  }
+  if (/\b[A-ZÆØÅ][a-zæøå]{2,}\s+[A-ZÆØÅ][a-zæøå]{2,}\b/.test(source) || /\b(?:heter|navn(?:et)?\s+er|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter)\s+[A-ZÆØÅ][a-zæøå]{2,}\b/i.test(source)) {
+    add('name', 'Mulig personnavn', 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».');
+  }
+  if (/\b[A-ZÆØÅ][a-zæøå]+(?:gate|gata|veien|vegen|allé|stien)\s+\d+[A-Za-z]?\b/.test(source)) {
+    add('address', 'Mulig gateadresse', 'Fjern konkret adresse eller stedsopplysning som kan identifisere personen.');
+  }
+
   return findings;
 }
 
@@ -368,21 +390,43 @@ function updatePrivacyCheck() {
   const text = document.querySelector('#situation').value;
   const help = document.querySelector('#help-request').value;
   const findings = detectSensitiveInfo(`${text}\n${help}`);
+  const submitButton = document.querySelector('#understand-submit');
+  const note = document.querySelector('#privacy-submit-note');
+  const hasText = Boolean(text.trim() || help.trim());
+  const blocked = findings.length > 0;
 
-  if (!text.trim() && !help.trim()) {
+  document.querySelector('#situation')?.setAttribute('aria-invalid', blocked ? 'true' : 'false');
+  document.querySelector('#help-request')?.setAttribute('aria-invalid', blocked ? 'true' : 'false');
+
+  if (submitButton && submitButton.dataset.loading !== 'true') {
+    submitButton.disabled = blocked || !text.trim();
+  }
+  if (note) {
+    note.textContent = blocked
+      ? 'Rett personopplysningene som er markert før teksten kan sendes.'
+      : (text.trim() ? 'Personvernkontrollen er klar.' : 'Beskriv situasjonen for å gå videre.');
+    note.classList.toggle('ok', Boolean(text.trim()) && !blocked);
+  }
+
+  if (!hasText) {
     box.hidden = true;
     box.innerHTML = '';
-    return;
+    return findings;
   }
 
   box.hidden = false;
-  if (findings.length) {
-    box.className = 'privacy-check warning';
-    box.innerHTML = `<strong>Sjekk anonymiseringen før du går videre.</strong><span>Jeg fant ${findings.join(', ')}. Bytt gjerne til roller som «medarbeideren» og bruk «hen» der kjønn ikke er relevant.</span>`;
+  if (blocked) {
+    box.className = 'privacy-check warning blocking';
+    box.innerHTML = `
+      <strong>Kan ikke sendes ennå</strong>
+      <span>Jeg fant opplysninger som bør fjernes eller anonymiseres:</span>
+      <ul class="privacy-findings">${findings.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
+    `;
   } else {
     box.className = 'privacy-check ok';
-    box.innerHTML = `<strong>Ingen åpenbare personopplysninger funnet.</strong><span>Automatisk kontroll kan likevel ikke garantere full anonymisering.</span>`;
+    box.innerHTML = `<strong>Klar til å sendes</strong><span>Ingen åpenbare identifiserende opplysninger ble funnet av den lokale kontrollen.</span>`;
   }
+  return findings;
 }
 
 
@@ -1058,18 +1102,33 @@ function appendConversationTurn(question) {
   assistant.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
+const searchAliases = {
+  'fravaer-oppfolging': ['sykemelding','sykmelding','sykemeldt','sykmeldt','sykemeld','sykmeld','sykefravær','fravær','langtidsfravær','langtidssyk','borte fra jobb','mye borte','korttidsfravær','oppmøte','for sent','tilbake etter sykmelding','tilrettelegging'],
+  'prestasjon-utvikling': ['prestasjon','leveranse','resultat','måloppnåelse','kvalitet','frister','kompetanse','mestring','arbeidsutførelse','gjør ikke jobben'],
+  'lonn-utvikling': ['lønn','lønnsøkning','opprykk','forfremmelse','ny stilling','karriere','utviklingsmulighet','ansvarstillegg'],
+  'samarbeid-kommunikasjon': ['konflikt','samarbeid','kommunikasjon','uenighet','tillit','tone','team','krangel','snakker ikke sammen'],
+  'alkohol-rus': ['alkohol','rus','beruset','påvirket','drikking','narkotika','stoff','promille'],
+  'avslutning-arbeidsforhold': ['oppsigelse','avslutte arbeidsforhold','prøvetid','nedbemanning','slutte','avskjed'],
+  'sikkerhet-ansvar': ['sikkerhet','avvik','hendelse','risiko','prosedyre','rutinebrudd','informasjonssikkerhet'],
+  'livssituasjoner': ['sorg','familie','samlivsbrudd','omsorg','privat belastning','stress','utmattelse','vanskelig hjemme']
+};
+
+function normalizeSearchText(value) {
+  return (value || '').toLowerCase().trim().replace(/\s+/g, ' ');
+}
+
 function scoreTopic(topic, query) {
-  const q = query.toLowerCase();
+  const q = normalizeSearchText(query);
+  if (!q) return 0;
   let score = 0;
-  topic.keywords.forEach(keyword => {
-    if (q.includes(keyword)) score += 5;
-  });
-  if (q.includes(topic.title.toLowerCase())) score += 6;
+  const aliases = searchAliases[topic.id] || [];
+  aliases.forEach(alias => { if (q.includes(alias)) score += alias.length > 8 ? 8 : 6; });
+  topic.keywords.forEach(keyword => { if (q.includes(keyword.toLowerCase())) score += 5; });
+  if (q.includes(topic.title.toLowerCase())) score += 8;
+  const words = q.split(/\s+/).filter(word => word.length > 3);
   topic.subtopics.forEach(([title, help]) => {
     const haystack = `${title} ${help}`.toLowerCase();
-    q.split(/\s+/).forEach(word => {
-      if (word.length > 3 && haystack.includes(word)) score += 1;
-    });
+    words.forEach(word => { if (haystack.includes(word)) score += 1; });
   });
   return score;
 }
@@ -1121,26 +1180,32 @@ function renderSuggestion(query) {
 }
 
 function filterTopicCards(query) {
-  const normalized = query.trim().toLowerCase();
-  const cards = [...document.querySelectorAll('.topic-card')];
-  if (!normalized) {
-    cards.forEach(card => card.hidden = false);
-    return;
-  }
-  cards.forEach(card => {
-    card.hidden = !card.dataset.searchText.includes(normalized);
+  const normalized = normalizeSearchText(query);
+  const scores = new Map(suggestTopics(normalized).map(item => [item.topic.id, item.score]));
+  document.querySelectorAll('.topic-card').forEach(card => {
+    card.hidden = false;
+    card.classList.toggle('search-match', normalized.length > 1 && (scores.get(card.dataset.topicId) || 0) > 0);
   });
 }
 
 
 function scoreSubtopic([title, help], query) {
-  const q = query.toLowerCase();
+  const q = normalizeSearchText(query);
   const haystack = `${title} ${help}`.toLowerCase();
   let score = 0;
-  q.split(/\s+/).forEach(word => {
-    if (word.length > 2 && haystack.includes(word)) score += 2;
-  });
-  if (q.includes(title.toLowerCase())) score += 5;
+  const t = title.toLowerCase();
+  const aliasMap = {
+    'korttidsfravær': ['ofte borte','mye borte','gjentatt fravær','korttidsfravær','enkeltdager'],
+    'langvarig fravær': ['sykemelding','sykmelding','sykemeldt','sykmeldt','langtidssyk','langtidsfravær','lenge borte','måneder','ett år','et år'],
+    'oppmøte og punktlighet': ['for sent','forsinket','oppmøte','punktlighet','kommer sent'],
+    'tilbakekomst til arbeid': ['tilbake etter sykmelding','kommer tilbake','tilbake i jobb','retur','tilbakekomst'],
+    'tilrettelegging': ['tilrettelegging','lettere oppgaver','redusert tid','arbeidstid','justere oppgaver'],
+    'arbeidsevne og kapasitet': ['arbeidsevne','kapasitet','orker ikke','funksjon','arbeidsmengde']
+  };
+  (aliasMap[t] || []).forEach(alias => { if (q.includes(alias)) score += 8; });
+  q.split(/\s+/).forEach(word => { if (word.length > 2 && haystack.includes(word)) score += 2; });
+  if (q.includes(t)) score += 6;
+  if (currentTopic?.id === 'fravaer-oppfolging' && /syk[e]?meld|sykefravær/i.test(q) && t === 'langvarig fravær') score += 5;
   return score;
 }
 
@@ -1178,9 +1243,12 @@ function renderSubtopicSuggestion(query) {
 }
 
 function filterSubtopicCards(query) {
-  const normalized = query.trim().toLowerCase();
+  const normalized = normalizeSearchText(query);
   document.querySelectorAll('.subtopic-card').forEach(card => {
-    card.hidden = normalized ? !card.dataset.searchText.includes(normalized) : false;
+    card.hidden = false;
+    const cardText = card.dataset.searchText || '';
+    const words = normalized.split(/\s+/).filter(Boolean);
+    card.classList.toggle('search-match', normalized.length > 1 && words.some(word => word.length > 2 && cardText.includes(word)));
   });
 }
 
@@ -1290,7 +1358,9 @@ document.querySelector('#topic-search').addEventListener('input', event => {
   if (!value.trim()) {
     box.hidden = true;
     box.innerHTML = '';
+    return;
   }
+  if (value.trim().length >= 2) renderSuggestion(value);
 });
 
 
@@ -1304,22 +1374,47 @@ document.querySelector('#topic-detail-search-form').addEventListener('submit', e
 document.querySelector('#topic-detail-search').addEventListener('input', event => {
   const value = event.target.value;
   filterSubtopicCards(value);
+  const box = document.querySelector('#subtopic-suggestion');
   if (!value.trim()) {
-    const box = document.querySelector('#subtopic-suggestion');
     box.hidden = true;
     box.innerHTML = '';
+    return;
   }
+  if (value.trim().length >= 2) renderSubtopicSuggestion(value);
 });
 
-document.querySelector('#situation').addEventListener('input', updatePrivacyCheck);
-document.querySelector('#help-request').addEventListener('input', updatePrivacyCheck);
+function autoGrowTextarea(textarea, maxHeight = 220) {
+  if (!textarea) return;
+  textarea.style.height = 'auto';
+  const next = Math.min(textarea.scrollHeight, maxHeight);
+  textarea.style.height = `${next}px`;
+  textarea.style.overflowY = textarea.scrollHeight > maxHeight ? 'auto' : 'hidden';
+}
+
+function handleSituationInput(event) {
+  autoGrowTextarea(event.target, event.target.id === 'situation' ? 220 : 150);
+  updatePrivacyCheck();
+}
+
+['situation','help-request'].forEach(id => {
+  const field = document.querySelector(`#${id}`);
+  field?.addEventListener('input', handleSituationInput);
+  autoGrowTextarea(field, id === 'situation' ? 220 : 150);
+});
+
 
 document.querySelector('#situation-form').addEventListener('submit', async event => {
   event.preventDefault();
-  updatePrivacyCheck();
+  const privacyFindings = updatePrivacyCheck() || [];
   const situationText = document.querySelector('#situation').value;
   const helpRequest = document.querySelector('#help-request').value;
   const submitButton = event.currentTarget.querySelector('button[type="submit"]');
+  const thinking = document.querySelector('#ai-thinking');
+
+  if (privacyFindings.length) {
+    document.querySelector('#privacy-check')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
 
   clearGuidanceSession({ clearInputs: false });
   document.querySelector('#situation').value = situationText;
@@ -1328,8 +1423,13 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
   const originalLabel = submitButton?.textContent || 'Forstå situasjonen';
   if (submitButton) {
+    submitButton.dataset.loading = 'true';
     submitButton.disabled = true;
     submitButton.textContent = 'Forstår situasjonen …';
+  }
+  if (thinking) {
+    thinking.hidden = false;
+    thinking.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   try {
@@ -1359,10 +1459,12 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale prototypen vises kun for å teste flyten.</span>`;
     document.querySelector('#situation-understanding').prepend(note);
   } finally {
+    if (thinking) thinking.hidden = true;
     if (submitButton) {
-      submitButton.disabled = false;
+      submitButton.dataset.loading = 'false';
       submitButton.textContent = originalLabel;
     }
+    updatePrivacyCheck();
   }
 
   document.querySelector('#situation-understanding').scrollIntoView({ behavior: 'smooth', block: 'start' });

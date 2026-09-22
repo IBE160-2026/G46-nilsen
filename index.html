@@ -189,7 +189,7 @@
           <label class="main-situation-field">
             <span>Beskriv situasjonen</span>
             <small>Skriv med egne ord. Samtalestøtte skal senere stille oppfølgingsspørsmål dersom noe viktig mangler.</small>
-            <textarea id="situation" rows="10" autocomplete="off" placeholder="Eksempel: Medarbeideren har den siste tiden kommet gjentatte ganger for sent ..." required></textarea>
+            <textarea id="situation" rows="3" autocomplete="off" placeholder="Eksempel: Medarbeideren har den siste tiden kommet gjentatte ganger for sent ..." required></textarea>
           </label>
 
           <div id="privacy-check" class="privacy-check" role="status" aria-live="polite" hidden></div>
@@ -197,11 +197,19 @@
           <label>
             <span>Hva ønsker du hjelp til? <em>(valgfritt)</em></span>
             <small>For eksempel åpning av samtalen, gode spørsmål eller håndtering av reaksjoner.</small>
-            <textarea id="help-request" rows="4" autocomplete="off" placeholder="Jeg ønsker særlig hjelp til ..."></textarea>
+            <textarea id="help-request" rows="2" autocomplete="off" placeholder="Jeg ønsker særlig hjelp til ..."></textarea>
           </label>
 
-          <button type="submit" class="primary-button">Forstå situasjonen</button>
+          <div class="form-action-bar">
+            <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
+            <button type="submit" class="primary-button" id="understand-submit">Forstå situasjonen</button>
+          </div>
         </form>
+
+        <div id="ai-thinking" class="ai-thinking" role="status" aria-live="polite" hidden>
+          <span class="thinking-spinner" aria-hidden="true"></span>
+          <div><strong>Samtalestøtte tenker …</strong><span>Prøver å forstå situasjonen før den foreslår neste steg.</span></div>
+        </div>
 
         <section id="situation-understanding" class="situation-understanding" hidden>
           <div class="understanding-heading">
