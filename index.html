@@ -8,127 +8,70 @@
 </head>
 <body>
   <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-top">
-        <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
-          <img class="brand-logo" src="logo.png" alt="Samtalestøtte" />
-        </button>
-        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Skjul sidemeny" title="Skjul sidemeny">
-          <span class="sidebar-toggle-arrow" aria-hidden="true">‹</span>
-        </button>
+    <aside class="sidebar">
+      <div class="brand">
+        <img class="brand-logo" src="logo.png" alt="Samtalestøtte" />
       </div>
 
       <nav class="nav" aria-label="Hovedmeny">
-        <button class="nav-item active" data-view="home" type="button">
-          <span class="nav-glyph" id="nav-home-icon"></span>
-          <span class="nav-label">Hjem</span>
-        </button>
-        <button class="nav-item" data-view="prepare" type="button">
-          <span class="nav-glyph" id="nav-prepare-icon"></span>
-          <span class="nav-label">Forbered samtale</span>
-        </button>
-        <button class="nav-item" data-view="settings" type="button">
-          <span class="nav-glyph" id="nav-settings-icon"></span>
-          <span class="nav-label">Innstillinger</span>
-        </button>
-        <button class="nav-item" data-view="history" type="button" disabled>
-          <span class="nav-glyph" id="nav-history-icon"></span>
-          <span class="nav-label">Historikk</span>
-          <small>ved innlogging</small>
-        </button>
+        <button class="nav-item active" data-view="home"><span class="nav-glyph">⌂</span><span>Hjem</span></button>
+        <button class="nav-item" data-view="prepare"><span class="nav-glyph">▣</span><span>Forbered samtale</span></button>
+        <button class="nav-item" disabled><span class="nav-glyph">◌</span><span>Øv på samtale</span><small>senere</small></button>
+        <button class="nav-item" disabled><span class="nav-glyph">✓</span><span>Reflekter etterpå</span><small>senere</small></button>
+        <button class="nav-item" disabled><span class="nav-glyph">↺</span><span>Historikk</span><small>senere</small></button>
       </nav>
 
       <div class="sidebar-bottom">
-        <div class="sidebar-message">
-          <div class="sidebar-message-icon" id="sidebar-message-icon"></div>
-          <p>Sammen skaper<br>vi bedre arbeidsplasser</p>
+        <button class="nav-item" data-view="settings"><span class="nav-glyph">⚙</span><span>Innstillinger</span></button>
+        <div class="privacy-mini">
+          <strong>Personvern først</strong>
+          <p>Beskriv roller og situasjoner – ikke personer.</p>
         </div>
       </div>
     </aside>
 
     <main class="main">
       <header class="topbar">
-        <div class="topbar-left">
-          <div class="crumb-home" id="crumb-home-icon"></div>
-          <div id="breadcrumb">Hjem</div>
-        </div>
-        <div class="topbar-right">
-          <div class="theme-switcher" role="group" aria-label="Velg fargetema">
-            <button data-theme="light" type="button"><span>☀</span>Lyst</button>
-            <button data-theme="dark" type="button"><span>☾</span>Mørkt</button>
-            <button data-theme="system" type="button"><span>◐</span>System</button>
-          </div>
-          <button class="profile-chip" type="button" aria-label="Brukerprofil">
-            <span class="profile-avatar">KN</span>
-            <span class="profile-text">
-              <strong>Kari Nilsen</strong>
-              <small>Logg inn for historikk</small>
-            </span>
-            <span class="profile-caret">⌄</span>
-          </button>
+        <div id="breadcrumb">Hjem</div>
+        <div class="theme-switcher" role="group" aria-label="Velg tema">
+          <button data-theme="light">☀ Lyst</button>
+          <button data-theme="dark">☾ Mørkt</button>
+          <button data-theme="system">◐ System</button>
         </div>
       </header>
 
       <section id="home-view" class="view active-view">
-        <section class="hero-panel">
+        <div class="hero compact-hero">
           <div class="hero-copy">
-            <span class="eyebrow">BEDRE SAMTALER. ET STERKERE ARBEIDSLIV.</span>
-            <h1>Forbered vanskelige samtaler med trygghet og struktur</h1>
-            <p>Velg tema, beskriv situasjonen anonymt og få støtte til å planlegge en profesjonell og tydelig samtale.</p>
+            <span class="eyebrow">BEDRE FORBEREDT. BEDRE SAMTALER.</span>
+            <h1>Hva gjelder samtalen?</h1>
+            <p>Velg tema og situasjon. Samtalestøtte hjelper deg videre med en trygg og strukturert forberedelse.</p>
+            <button class="primary-button" id="start-button">Velg tema →</button>
           </div>
-          <div class="hero-visual">
-            <img src="hero-conversation-exact.png" alt="To personer i samtale på et møte" />
+          <div class="hero-visual logo-hero" aria-label="Samtalestøtte">
+            <img src="logo.png" alt="Samtalestøtte – menneske og teknologi i dialog" />
           </div>
-        </section>
+        </div>
 
         <section class="topics-section" id="topics">
-          <div class="section-heading section-heading-split">
+          <div class="section-heading">
             <div>
+              <span class="eyebrow">HOVEDTEMA</span>
               <h2>Velg tema</h2>
             </div>
-            <p>Finn temaet som passer best for din situasjon.</p>
           </div>
-
-          <form id="topic-finder-form" class="topic-search-row">
-            <label class="search-field" for="topic-search">
-              <span class="search-icon">⌕</span>
-              <input id="topic-search" type="text" placeholder="Søk etter tema eller beskriv hva samtalen gjelder" aria-label="Søk etter tema eller beskriv hva samtalen gjelder" />
-            </label>
-            <button type="submit" class="primary-button search-button">Finn tema</button>
-          </form>
-
-          <div id="topic-suggestion" class="topic-suggestion" hidden></div>
           <div id="topic-grid" class="topic-grid"></div>
-        </section>
-
-        <section class="info-grid" aria-label="Viktig informasjon">
-          <article class="info-card info-card-blue">
-            <div class="info-icon">🔒</div>
-            <div>
-              <strong>Ikke skriv navn eller andre identifiserende opplysninger.</strong>
-              <p>Beskriv situasjonen anonymt.</p>
-            </div>
-          </article>
-          <article class="info-card info-card-warm">
-            <div class="info-icon">💡</div>
-            <div>
-              <strong>Når du velger et tema, får du støtte til:</strong>
-              <p>åpning, spørsmål, mulige reaksjoner og ting å være oppmerksom på.</p>
-            </div>
-          </article>
         </section>
       </section>
 
       <section id="topic-view" class="view">
-        <button class="back-link" id="back-to-home" type="button">← Tilbake til temaoversikt</button>
-        <div class="content-header">
-          <span class="eyebrow">HOVEDTEMA</span>
-          <div class="topic-summary">
-            <div class="topic-summary-icon" id="topic-page-icon" aria-hidden="true"></div>
-            <div>
-              <h1 id="topic-title"></h1>
-              <p id="topic-description"></p>
-            </div>
+        <button class="back-button" id="back-to-topics">← Tilbake til temaer</button>
+        <div class="topic-title-row">
+          <div class="large-topic-icon" id="topic-page-icon" aria-hidden="true"></div>
+          <div class="topic-header">
+            <span class="eyebrow">UNDERTEMA</span>
+            <h1 id="topic-title"></h1>
+            <p id="topic-description"></p>
           </div>
         </div>
 
@@ -136,22 +79,16 @@
           <div class="privacy-icon">🔒</div>
           <div>
             <strong>Beskriv situasjonen anonymt</strong>
-            <p>Bruk for eksempel «medarbeideren», «kollegaen» eller «hen». Unngå navn og kjønnede pronomen når det ikke er nødvendig.</p>
+            <p>Bruk for eksempel «medarbeideren», «kollegaen» eller «hen». Unngå navn og kjønnede pronomen som «han» og «hun» når det ikke er nødvendig.</p>
           </div>
         </div>
 
-        <div class="section-heading compact-heading">
-          <div>
-            <h2>Velg undertema</h2>
-            <p>Velg det undertemaet som passer best med situasjonen.</p>
-          </div>
-        </div>
         <div id="subtopic-grid" class="subtopic-grid"></div>
       </section>
 
       <section id="guidance-view" class="view">
-        <button class="back-link" id="back-to-topic" type="button">← Tilbake til undertemaer</button>
-        <div class="content-header">
+        <button class="back-button" id="back-to-subtopics">← Tilbake til undertemaer</button>
+        <div class="topic-header">
           <span class="eyebrow">FORBEREDELSE</span>
           <h1 id="guidance-title"></h1>
           <p id="guidance-help"></p>
@@ -168,7 +105,7 @@
         <form id="situation-form" class="situation-form">
           <label class="main-situation-field">
             <span>Beskriv situasjonen</span>
-            <small>Skriv med egne ord. Samtalestøtte skal senere stille oppfølgingsspørsmål dersom noe viktig mangler.</small>
+            <small>Skriv med egne ord. Du trenger ikke strukturere teksten – Samtalestøtte skal senere stille oppfølgingsspørsmål dersom noe viktig mangler.</small>
             <textarea id="situation" rows="10" placeholder="Eksempel: Medarbeideren har den siste tiden kommet gjentatte ganger for sent ..." required></textarea>
           </label>
 
@@ -180,7 +117,7 @@
             <textarea id="help-request" rows="4" placeholder="Jeg ønsker særlig hjelp til ..."></textarea>
           </label>
 
-          <button type="submit" class="primary-button">Få samtalestøtte</button>
+          <button type="submit" class="primary-button">Få samtalestøtte →</button>
         </form>
 
         <section id="followup-panel" class="followup-panel" hidden>
@@ -205,8 +142,7 @@
       </section>
 
       <section id="settings-view" class="view">
-        <button class="back-link" id="back-from-settings" type="button">← Tilbake til hjem</button>
-        <div class="content-header">
+        <div class="topic-header">
           <span class="eyebrow">INNSTILLINGER</span>
           <h1>Utseende</h1>
           <p>Velg det temaet som er mest behagelig å bruke.</p>
@@ -214,9 +150,9 @@
         <div class="settings-card">
           <h2>Fargetema</h2>
           <div class="settings-theme-options">
-            <button data-theme="light" type="button"><span>☀</span>Lyst</button>
-            <button data-theme="dark" type="button"><span>☾</span>Mørkt</button>
-            <button data-theme="system" type="button"><span>◐</span>Følg systemet</button>
+            <button data-theme="light">☀ Lyst</button>
+            <button data-theme="dark">☾ Mørkt</button>
+            <button data-theme="system">◐ Følg systemet</button>
           </div>
         </div>
       </section>
