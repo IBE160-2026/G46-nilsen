@@ -207,45 +207,6 @@ function showView(name) {
 }
 
 
-function clearGuidanceSession({ clearInputs = true } = {}) {
-  if (clearInputs) {
-    const form = document.querySelector('#situation-form');
-    if (form) {
-      form.reset();
-      form.querySelectorAll('textarea, input').forEach(field => {
-        if (field.type !== 'checkbox' && field.type !== 'radio') field.value = '';
-      });
-    }
-  }
-
-  const privacy = document.querySelector('#privacy-check');
-  if (privacy) {
-    privacy.hidden = true;
-    privacy.innerHTML = '';
-    privacy.className = 'privacy-check';
-  }
-
-  const understanding = document.querySelector('#situation-understanding');
-  if (understanding) understanding.hidden = true;
-  const understandingContent = document.querySelector('#understanding-content');
-  if (understandingContent) understandingContent.innerHTML = '';
-
-  const followup = document.querySelector('#followup-panel');
-  if (followup) followup.hidden = true;
-  const followupQuestions = document.querySelector('#followup-questions');
-  if (followupQuestions) followupQuestions.innerHTML = '';
-
-  const result = document.querySelector('#prototype-result');
-  if (result) result.hidden = true;
-  const guidance = document.querySelector('#structured-guidance');
-  if (guidance) guidance.innerHTML = '';
-
-  const thread = document.querySelector('#conversation-thread');
-  if (thread) thread.innerHTML = '';
-  const continueInput = document.querySelector('#continue-input');
-  if (continueInput) continueInput.value = '';
-}
-
 function resetConversationState() {
   currentTopic = null;
   currentSubtopic = null;
@@ -273,7 +234,39 @@ function resetConversationState() {
     suggestion.innerHTML = '';
   }
 
-  clearGuidanceSession({ clearInputs: true });
+  const form = document.querySelector('#situation-form');
+  if (form) form.reset();
+
+  const privacy = document.querySelector('#privacy-check');
+  if (privacy) {
+    privacy.hidden = true;
+    privacy.innerHTML = '';
+    privacy.className = 'privacy-check';
+  }
+
+  const understanding = document.querySelector('#situation-understanding');
+  if (understanding) {
+    understanding.hidden = true;
+    const understandingContent = document.querySelector('#understanding-content');
+    if (understandingContent) understandingContent.innerHTML = '';
+  }
+
+  const followup = document.querySelector('#followup-panel');
+  if (followup) followup.hidden = true;
+
+  const followupQuestions = document.querySelector('#followup-questions');
+  if (followupQuestions) followupQuestions.innerHTML = '';
+
+  const result = document.querySelector('#prototype-result');
+  if (result) result.hidden = true;
+
+  const guidance = document.querySelector('#structured-guidance');
+  if (guidance) guidance.innerHTML = '';
+
+  const thread = document.querySelector('#conversation-thread');
+  if (thread) thread.innerHTML = '';
+  const continueInput = document.querySelector('#continue-input');
+  if (continueInput) continueInput.value = '';
 }
 
 function createTopicCard(topic) {
@@ -345,7 +338,9 @@ function openGuidance(title, help) {
   document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
   document.querySelector('#guidance-help').textContent = help;
   setBreadcrumb(`Forbered samtale / ${currentTopic.title} / ${title}`);
-  clearGuidanceSession({ clearInputs: true });
+  document.querySelector('#prototype-result').hidden = true;
+  document.querySelector('#followup-panel').hidden = true;
+  document.querySelector('#situation-form').reset();
   updatePrivacyCheck();
   showView('guidance');
 }
@@ -936,7 +931,7 @@ function buildContinuationReply(question) {
   if (/rettferdig|diskrimin|lovlig|juss|juridisk/.test(q)) {
     return 'Det kan være en sensitiv vurdering. Jeg kan hjelpe deg med samtaleformen og med å skille fakta fra antakelser, men en konkret juridisk vurdering av beslutningen bør kvalitetssikres mot virksomhetens HR-/juridiske kompetanse og relevant regelverk før du kommuniserer en endelig konklusjon.';
   }
-  return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale prototypelogikken. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
+  return 'Jeg kan hjelpe videre med akkurat den delen. I denne lokale prototypen er fritekstoppfølgingen begrenset, så prøv gjerne å spørre mer konkret om en reaksjon, formulering, et vanskelig spørsmål fra medarbeideren eller hva du bør unngå å si. Når ekte KI kobles på, skal denne dialogen bruke hele situasjonen og alle tidligere svar som kontekst.';
 }
 
 function appendConversationTurn(question) {
@@ -1213,14 +1208,10 @@ document.querySelector('#situation-form').addEventListener('submit', event => {
   event.preventDefault();
   updatePrivacyCheck();
   const text = document.querySelector('#situation').value;
-  const helpRequest = document.querySelector('#help-request').value;
-  clearGuidanceSession({ clearInputs: false });
-  document.querySelector('#situation').value = text;
-  document.querySelector('#help-request').value = helpRequest;
-  updatePrivacyCheck();
-
   const analysis = analyzeSituation(text);
   const questions = buildFollowupQuestions(text);
+  document.querySelector('#prototype-result').hidden = true;
+  document.querySelector('#followup-panel').hidden = true;
 
   renderSituationUnderstanding(analysis);
 
