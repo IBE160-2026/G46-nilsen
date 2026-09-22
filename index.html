@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samtalestøtte</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <span></span><span></span>
+        </div>
+        <div>
+          <h1>Samtalestøtte</h1>
+          <p>Støtte til krevende samtaler</p>
+        </div>
+      </div>
+
+      <nav class="nav" aria-label="Hovedmeny">
+        <button class="nav-item active" data-view="home">⌂ <span>Hjem</span></button>
+        <button class="nav-item" data-view="prepare">▣ <span>Forbered samtale</span></button>
+        <button class="nav-item" disabled>◌ <span>Øv på samtale</span><small>senere</small></button>
+        <button class="nav-item" disabled>✓ <span>Reflekter etterpå</span><small>senere</small></button>
+        <button class="nav-item" disabled>↺ <span>Historikk</span><small>senere</small></button>
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button class="nav-item" data-view="settings">⚙ <span>Innstillinger</span></button>
+        <div class="privacy-mini">
+          <strong>Personvern først</strong>
+          <p>Ikke bruk navn eller andre identifiserende opplysninger.</p>
+        </div>
+      </div>
+    </aside>
+
+    <main class="main">
+      <header class="topbar">
+        <div id="breadcrumb">Hjem</div>
+        <div class="theme-switcher" role="group" aria-label="Velg tema">
+          <button data-theme="light">☀ Lyst</button>
+          <button data-theme="dark">☾ Mørkt</button>
+          <button data-theme="system">◐ System</button>
+        </div>
+      </header>
+
+      <section id="home-view" class="view active-view">
+        <div class="hero">
+          <div class="hero-copy">
+            <span class="eyebrow">BEDRE FORBEREDT. BEDRE SAMTALER.</span>
+            <h2>Forbered krevende samtaler med trygghet og struktur</h2>
+            <p>
+              Velg tema, finn situasjonen som passer best og få hjelp til å forberede
+              en tydelig, respektfull og faglig gjennomtenkt samtale.
+            </p>
+            <button class="primary-button" id="start-button">Velg tema →</button>
+          </div>
+
+          <div class="hero-visual" aria-label="Illustrasjon av en vanskelig samtale">
+            <div class="conversation-scene">
+              <div class="person person-a">
+                <div class="head"></div>
+                <div class="body"></div>
+              </div>
+              <div class="table"></div>
+              <div class="person person-b">
+                <div class="head"></div>
+                <div class="body"></div>
+              </div>
+              <div class="speech speech-a">…</div>
+              <div class="speech speech-b">…</div>
+            </div>
+            <p>En god samtale starter med god forberedelse.</p>
+          </div>
+        </div>
+
+        <section class="topics-section" id="topics">
+          <div class="section-heading">
+            <div>
+              <span class="eyebrow">HOVEDTEMA</span>
+              <h3>Hva gjelder samtalen?</h3>
+            </div>
+            <p>Velg det temaet som ligger nærmest situasjonen. Du kan alltid velge «Annet» senere.</p>
+          </div>
+          <div id="topic-grid" class="topic-grid"></div>
+        </section>
+      </section>
+
+      <section id="topic-view" class="view">
+        <button class="back-button" id="back-to-topics">← Tilbake til temaer</button>
+        <div class="topic-header">
+          <span class="eyebrow">UNDERTEMA</span>
+          <h2 id="topic-title"></h2>
+          <p id="topic-description"></p>
+        </div>
+
+        <div class="privacy-banner">
+          <div class="privacy-icon">🔒</div>
+          <div>
+            <strong>Husk personvern</strong>
+            <p>Ikke skriv navn, telefonnummer, e-post, fødselsdato eller andre opplysninger som kan identifisere en person.</p>
+          </div>
+        </div>
+
+        <div id="subtopic-grid" class="subtopic-grid"></div>
+      </section>
+
+      <section id="guidance-view" class="view">
+        <button class="back-button" id="back-to-subtopics">← Tilbake til undertemaer</button>
+        <div class="topic-header">
+          <span class="eyebrow">FORBEREDELSE</span>
+          <h2 id="guidance-title"></h2>
+          <p id="guidance-help"></p>
+        </div>
+
+        <div class="privacy-banner strong">
+          <div class="privacy-icon">⚠</div>
+          <div>
+            <strong>Beskriv situasjonen anonymt</strong>
+            <p>Bruk roller som «medarbeider», «kollega» eller «leder». Automatisk personvernkontroll kommer i en senere versjon.</p>
+          </div>
+        </div>
+
+        <form id="situation-form" class="situation-form">
+          <label>
+            <span>Hva har du observert?</span>
+            <small>Beskriv konkrete hendelser eller forhold, uten å tolke motiv eller årsak.</small>
+            <textarea id="observations" rows="5" placeholder="Eksempel: De siste fire ukene har ..."></textarea>
+          </label>
+
+          <label>
+            <span>Hva har skjedd så langt?</span>
+            <small>Har dere snakket om dette tidligere, eller er dette første samtale?</small>
+            <textarea id="history" rows="4" placeholder="Beskriv kort hva som allerede er gjort ..."></textarea>
+          </label>
+
+          <label>
+            <span>Hva ønsker du å oppnå med samtalen?</span>
+            <textarea id="goal" rows="4" placeholder="Eksempel: Jeg ønsker å forstå situasjonen bedre og ..."></textarea>
+          </label>
+
+          <label>
+            <span>Hva er du mest usikker på?</span>
+            <textarea id="uncertainty" rows="4" placeholder="Eksempel: Jeg er usikker på hvordan jeg skal ta opp ..."></textarea>
+          </label>
+
+          <button type="submit" class="primary-button">Lag forslag</button>
+        </form>
+
+        <div id="prototype-result" class="prototype-result" hidden>
+          <span class="eyebrow">PROTOTYPE</span>
+          <h3>Neste steg blir KI-generert veiledning</h3>
+          <p>
+            Her skal Samtalestøtte senere vise forslag til åpning, spørsmål, mulige reaksjoner,
+            ting å være oppmerksom på og faglig grunnlag. Foreløpig har vi bygget brukerreisen.
+          </p>
+        </div>
+      </section>
+
+      <section id="settings-view" class="view">
+        <div class="topic-header">
+          <span class="eyebrow">INNSTILLINGER</span>
+          <h2>Utseende</h2>
+          <p>Velg det temaet som er mest behagelig å bruke.</p>
+        </div>
+        <div class="settings-card">
+          <h3>Fargetema</h3>
+          <div class="settings-theme-options">
+            <button data-theme="light">☀ Lyst</button>
+            <button data-theme="dark">☾ Mørkt</button>
+            <button data-theme="system">◐ Følg systemet</button>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
