@@ -598,14 +598,43 @@ function filterTopicCards(query) {
 }
 
 
+const fravaerSubtopicHints = {
+  'Korttidsfravær': ['mye borte','ofte borte','hyppig fravær','mange fravær','enkeltdager','kort fravær','korttidsfravær','stadig borte','gjentatt fravær','mandag','fredag'],
+  'Langvarig fravær': ['lenge borte','langvarig','langtidssykmeldt','sykmeldt lenge','flere uker','flere måneder','langt fravær'],
+  'Oppmøte og punktlighet': ['for sent','kommer sent','forsinket','forsinkelser','ustabilt oppmøte','ikke møter','møter ikke','går tidlig','punktlighet','oppmøte'],
+  'Tilbakekomst til arbeid': ['tilbake på jobb','tilbake etter','kommer tilbake','tilbakekomst','etter sykmelding','gradvis tilbake','returnere til jobb'],
+  'Tilrettelegging': ['tilrettelegging','tilrettelegge','andre oppgaver','lettere oppgaver','endre arbeidstid','redusert arbeidstid','hjemmekontor','tilpasset arbeid','justere oppgaver'],
+  'Arbeidsevne og kapasitet': ['arbeidsevne','kapasitet','orker ikke','klarer ikke','redusert kapasitet','fungering','fungerer ikke','arbeidsbelastning','mestrer ikke']
+};
+
+function normalizeSearchText(value) {
+  return value.toLowerCase().replace(/[.,!?;:()]/g, ' ').replace(/\s+/g, ' ').trim();
+}
+
 function scoreSubtopic([title, help], query) {
-  const q = query.toLowerCase();
-  const haystack = `${title} ${help}`.toLowerCase();
+  const q = normalizeSearchText(query);
+  const haystack = normalizeSearchText(`${title} ${help}`);
   let score = 0;
-  q.split(/\s+/).forEach(word => {
+
+  q.split(' ').forEach(word => {
     if (word.length > 2 && haystack.includes(word)) score += 2;
   });
-  if (q.includes(title.toLowerCase())) score += 5;
+  if (q.includes(normalizeSearchText(title))) score += 6;
+
+  if (currentTopic?.id === 'fravaer-oppfolging') {
+    (fravaerSubtopicHints[title] || []).forEach(hint => {
+      if (q.includes(hint)) score += hint.includes(' ') ? 8 : 5;
+    });
+
+    // Litt mer tolerant språkforståelse i pilottemaet.
+    if (title === 'Korttidsfravær' && /\b(ofte|hyppig|stadig|gjentatt|mye)\b/.test(q) && /\b(borte|fravær|syk)\b/.test(q)) score += 7;
+    if (title === 'Langvarig fravær' && /\b(uke|uker|måned|måneder|lenge|langvarig)\b/.test(q)) score += 6;
+    if (title === 'Oppmøte og punktlighet' && /\b(sent|forsink|oppmøte|møter|tidlig)\b/.test(q)) score += 6;
+    if (title === 'Tilbakekomst til arbeid' && /\b(tilbake|return|gjenoppta)\b/.test(q)) score += 6;
+    if (title === 'Tilrettelegging' && /\b(tilrette|tilpass|arbeidstid|oppgaver|hjemmekontor)\b/.test(q)) score += 6;
+    if (title === 'Arbeidsevne og kapasitet' && /\b(kapasitet|arbeidsevne|orker|klarer|fungering|belastning)\b/.test(q)) score += 6;
+  }
+
   return score;
 }
 
@@ -767,13 +796,20 @@ document.querySelector('#topic-detail-search-form').addEventListener('submit', e
 });
 
 document.querySelector('#topic-detail-search').addEventListener('input', event => {
-  const value = event.target.value;
-  filterSubtopicCards(value);
-  if (!value.trim()) {
-    const box = document.querySelector('#subtopic-suggestion');
+  const value = event.target.value.trim();
+  const box = document.querySelector('#subtopic-suggestion');
+
+  // Fritekstfeltet skal oppleves som samtalestøtte, ikke som et strengt filter.
+  // Eksempelkortene beholdes synlige mens brukeren beskriver situasjonen.
+  filterSubtopicCards('');
+
+  if (value.length < 4) {
     box.hidden = true;
     box.innerHTML = '';
+    return;
   }
+
+  renderSubtopicSuggestion(value);
 });
 
 document.querySelector('#situation').addEventListener('input', updatePrivacyCheck);
