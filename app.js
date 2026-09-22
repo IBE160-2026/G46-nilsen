@@ -350,6 +350,51 @@ function openGuidance(title, help) {
   showView('guidance');
 }
 
+
+const COMMON_GIVEN_NAMES = new Set(`
+Kine Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild
+Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein
+Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam
+Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria
+Giulia Giorgia Francesca Alessandra Martina Chiara Federica Marco Luca Matteo Lorenzo Alessandro Andrea Giovanni Giuseppe Antonio Stefano Davide
+Chloe Chloé Emily Olivia Amelia Charlotte Sophie Jessica Rebecca Rachel Megan Lauren Hannah Grace Alice Lucy Eleanor George James William Harry Oliver Jack Charlie Thomas Edward Henry Samuel Alexander Daniel Michael Matthew Joshua
+Emma Sophie Anna Lena Laura Julia Sarah Lisa Katharina Hannah Marie Johanna Lea Leon Lukas Luca Finn Felix Paul Jonas Elias Noah Ben Benjamin Maximilian Alexander Niklas
+Élodie Camille Manon Juliette Claire Pauline Amélie Cécile Celine Céline Lucie Margaux Louise Marie Jean Pierre Julien Nicolas Antoine François Philippe Alexandre Thomas
+Agnieszka Katarzyna Anna Ewa Joanna Magdalena Natalia Aleksandra Marta Piotr Jakub Mateusz Michał Michal Tomasz Krzysztof Paweł Pawel Łukasz Lukasz
+Anastasia Ekaterina Elena Irina Natalia Olga Svetlana Tatiana Ivan Dmitri Dmitry Alexei Sergey Sergei Nikolai Mikhail
+Priya Pooja Anjali Neha Aditi Riya Kavya Aarav Arjun Rahul Rohit Vikram Raj Amit Anil Deepak Sanjay
+Wei Li Ming Jun Chen Ling Mei Xia Yu Yuki Haruka Sakura Aiko Mei Kenji Hiroshi Takashi Akira Satoshi Minjun Jihoon Jisoo Seojun Hyunwoo Minji Yuna
+Nguyen Minh Linh Lan Anh Trang Huy Phuong Phương Mai Tuan Tuấn
+Kwame Kofi Ama Akosua Chinedu Ngozi Adaeze Amina Nia Zuri Tendai Thabo Sipho Lerato
+`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase('nb-NO')));
+
+const NAME_FALSE_POSITIVES = new Set(`
+Jeg Vi Det Den Dette En Et Når Hvis På I Som Med Men Og Eller For Til Fra Av Etter Før Under Over Ikke Ja Nei Usikker
+Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT
+Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen Oppfølging Tilrettelegging Mandag Tirsdag Onsdag Torsdag Fredag Lørdag Søndag Januar Februar Mars April Mai Juni Juli August September Oktober November Desember
+`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase('nb-NO')));
+
+function findLikelyGivenName(source) {
+  const words = String(source || '').match(/\b[\p{Lu}][\p{L}'’-]{1,30}\b/gu) || [];
+  for (const word of words) {
+    const normalized = word.toLocaleLowerCase('nb-NO');
+    if (COMMON_GIVEN_NAMES.has(normalized)) return word;
+  }
+
+  // Strong contextual patterns also catch names not present in the dictionary.
+  const contextual = String(source || '').match(/\b(?:heter|navn(?:et)?\s+er|kalles|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter|leder(?:en)?\s+heter)\s+([\p{Lu}][\p{L}'’-]{1,30})\b/iu);
+  if (contextual && !NAME_FALSE_POSITIVES.has(contextual[1].toLocaleLowerCase('nb-NO'))) return contextual[1];
+
+  // Two adjacent capitalized words are highly likely to be a full name.
+  const fullName = String(source || '').match(/\b([\p{Lu}][\p{L}'’-]{1,30})\s+([\p{Lu}][\p{L}'’-]{1,30})\b/u);
+  if (fullName) {
+    const a = fullName[1].toLocaleLowerCase('nb-NO');
+    const b = fullName[2].toLocaleLowerCase('nb-NO');
+    if (!NAME_FALSE_POSITIVES.has(a) && !NAME_FALSE_POSITIVES.has(b)) return `${fullName[1]} ${fullName[2]}`;
+  }
+  return null;
+}
+
 function detectSensitiveInfo(text) {
   const findings = [];
   const source = text || '';
@@ -375,8 +420,9 @@ function detectSensitiveInfo(text) {
   if (/\b(?:han|hun|ham|henne|hans|hennes)\b/i.test(source)) {
     add('gender', 'Kjønnet pronomen', 'Bruk «hen» eller rollen, for eksempel «medarbeideren», når kjønn ikke er nødvendig.');
   }
-  if (/\b[A-ZÆØÅ][a-zæøå]{2,}\s+[A-ZÆØÅ][a-zæøå]{2,}\b/.test(source) || /\b(?:heter|navn(?:et)?\s+er|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter)\s+[A-ZÆØÅ][a-zæøå]{2,}\b/i.test(source)) {
-    add('name', 'Mulig personnavn', 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».');
+  const likelyName = findLikelyGivenName(source);
+  if (likelyName) {
+    add('name', `Mulig personnavn: «${likelyName}»`, 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».');
   }
   if (/\b[A-ZÆØÅ][a-zæøå]+(?:gate|gata|veien|vegen|allé|stien)\s+\d+[A-Za-z]?\b/.test(source)) {
     add('address', 'Mulig gateadresse', 'Fjern konkret adresse eller stedsopplysning som kan identifisere personen.');
@@ -717,32 +763,22 @@ function escapeHtml(value) {
 }
 
 function buildFollowupQuestions(text) {
-  const questions = [];
-  const normalized = text.toLowerCase();
-
+  const normalized = String(text || '').toLowerCase();
   const dilemma = buildDilemmaUnderstanding(text);
+
+  // A clearly identified multi-theme dilemma gets only questions that materially change the advice.
   if (dilemma.special) {
     return [
       {
         id: 'decision',
         question: 'Er beslutningen om å vente med opprykket allerede tatt?',
-        options: [
-          'Ja, beslutningen er tatt',
-          'Nei, jeg vurderer fortsatt',
-          'Jeg heller mot å vente, men har ikke bestemt meg',
-          'Usikker'
-        ],
+        options: ['Ja, beslutningen er tatt', 'Nei, jeg vurderer fortsatt', 'Jeg heller mot å vente, men har ikke bestemt meg', 'Usikker'],
         customLabel: 'Annet / skriv selv'
       },
       {
         id: 'criteria',
         question: 'Hva er hovedgrunnen til at du vurderer å vente?',
-        options: [
-          'Jeg vil se hvordan tilbakekomsten fungerer',
-          'Den nye stillingen har andre eller større krav',
-          'Jeg er usikker på kapasiteten i den nye rollen',
-          'Det handler om flere forhold'
-        ],
+        options: ['Jeg vil se hvordan tilbakekomsten fungerer', 'Den nye stillingen har andre eller større krav', 'Jeg er usikker på kapasiteten i den nye rollen', 'Det handler om flere forhold'],
         customLabel: 'Annen grunn / skriv selv'
       },
       {
@@ -754,67 +790,33 @@ function buildFollowupQuestions(text) {
     ];
   }
 
-  if (currentTopic?.id === 'fravaer-oppfolging') {
-    if (!/gang|uke|måned|dag|periode|siden|ofte|gjentatt|fravær|forsink/i.test(normalized)) {
-      questions.push({
-        id: 'pattern',
-        question: 'Hvordan vil du beskrive mønsteret?',
-        options: ['En enkelt hendelse', 'Et gjentatt mønster', 'Pågått over lengre tid', 'Usikker'],
-        customLabel: 'Beskriv selv'
-      });
-    }
-    if (!/påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(normalized)) {
-      questions.push({
-        id: 'impact',
-        question: 'Hva påvirkes mest av situasjonen?',
-        options: ['Arbeidsoppgaver eller leveranser', 'Kollegaer eller bemanning', 'Forutsigbarhet i driften', 'Ingen tydelig konsekvens ennå'],
-        customLabel: 'Noe annet'
-      });
-    }
-    if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(normalized)) {
-      questions.push({
-        id: 'previous',
-        question: 'Har temaet vært tatt opp tidligere?',
-        options: ['Ja, flere ganger', 'Ja, én gang', 'Nei, dette er første gang', 'Usikker'],
-        customLabel: 'Beskriv selv'
-      });
-    }
-    if (!/tilrette|juster|arbeidstid|oppgave|behov|støtte|tiltak/i.test(normalized) && questions.length < 3) {
-      questions.push({
-        id: 'support',
-        question: 'Er tilrettelegging eller støtte allerede en del av situasjonen?',
-        options: ['Ja', 'Nei', 'Ikke avklart ennå'],
-        customLabel: 'Beskriv selv'
-      });
-    }
-    return questions.slice(0, 3);
+  // Local fallback should not behave like an HR questionnaire. Ask only when the
+  // description is genuinely too thin to understand what the user wants help with.
+  const meaningfulWords = normalized.match(/[a-zæøåéèáàíìóòúùüöäçñ]{3,}/gi) || [];
+  const hasConcreteSituation = meaningfulWords.length >= 12;
+  const hasExplicitGoal = /ønsker|vil|trenger hjelp|hvordan|bør jeg|skal jeg|samtale|ta opp|si til|formulere/i.test(normalized);
+
+  if (!hasConcreteSituation) {
+    return [{
+      id: 'clarify-situation',
+      question: 'Hva er det viktigste du ønsker hjelp til i denne situasjonen?',
+      options: ['Forstå dilemmaet', 'Forberede hva jeg skal si', 'Håndtere en mulig reaksjon', 'Vurdere hva jeg bør gjøre først'],
+      customLabel: 'Noe annet / skriv selv'
+    }];
   }
 
-  if (text.trim().length < 120) questions.push({
-    id: 'observation',
-    question: 'Hva bygger bekymringen først og fremst på?',
-    options: ['Noe jeg selv har observert', 'Noe medarbeideren har fortalt', 'Tilbakemeldinger fra andre', 'Flere ting samlet'],
-    customLabel: 'Beskriv selv'
-  });
-  if (!/gang|uke|måned|dag|tid|siden|ofte|gjentatt|første/i.test(normalized)) questions.push({
-    id: 'duration',
-    question: 'Er dette en enkelt hendelse eller et mønster?',
-    options: ['En enkelt hendelse', 'Et gjentatt mønster', 'Pågått over lengre tid', 'Usikker'],
-    customLabel: 'Beskriv selv'
-  });
-  if (!/påvirk|konsekvens|arbeid|kollega|drift|sikker|oppgave|lever/i.test(normalized)) questions.push({
-    id: 'impact',
-    question: 'Hva påvirkes mest?',
-    options: ['Arbeidet eller leveransene', 'Samarbeidet', 'Sikkerheten', 'Ingen tydelig konsekvens ennå'],
-    customLabel: 'Noe annet'
-  });
-  if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart/i.test(normalized)) questions.push({
-    id: 'previous',
-    question: 'Har dette vært tatt opp tidligere?',
-    options: ['Ja', 'Nei', 'Usikker'],
-    customLabel: 'Beskriv selv'
-  });
-  return questions.slice(0, 3);
+  if (!hasExplicitGoal) {
+    return [{
+      id: 'goal',
+      question: 'Hva ønsker du mest hjelp til akkurat nå?',
+      options: ['Hvordan åpne samtalen', 'Hvilke spørsmål jeg bør stille', 'Hvordan håndtere reaksjoner', 'Hvordan vurdere veien videre'],
+      customLabel: 'Noe annet / skriv selv'
+    }];
+  }
+
+  // If the user has supplied a reasonably detailed situation and a goal, do not
+  // manufacture standard follow-up questions in local fallback mode.
+  return [];
 }
 
 function renderFollowupQuestions(questions) {
@@ -1451,8 +1453,14 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     const localAnalysis = analyzeSituation(situationText);
     const localQuestions = buildFollowupQuestions(situationText);
     renderSituationUnderstanding(localAnalysis);
-    if (localQuestions.length) renderFollowupQuestions(localQuestions);
-    document.querySelector('#followup-panel').hidden = false;
+    const followupContainer = document.querySelector('#followup-questions');
+    if (localQuestions.length) {
+      renderFollowupQuestions(localQuestions);
+      document.querySelector('#followup-panel').hidden = false;
+    } else {
+      followupContainer.innerHTML = '<p class="ai-ready-note">Den lokale reserveflyten har ingen nødvendig avklaring å stille. Når ekte KI er tilgjengelig, genereres spørsmål bare dersom svaret kan endre rådet.</p>';
+      document.querySelector('#followup-panel').hidden = false;
+    }
 
     const note = document.createElement('div');
     note.className = 'privacy-check warning ai-fallback-note';
