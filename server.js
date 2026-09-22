@@ -20,6 +20,28 @@ const model = process.env.OPENAI_MODEL || "gpt-5.6-terra";
 const client = apiKey ? new OpenAI({ apiKey }) : null;
 
 const systemPrompt = fs.readFileSync(path.join(__dirname, "AI-SYSTEMPROMPT.md"), "utf8");
+const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "SOURCEBANK.json"), "utf8"));
+const sourceIds = sourceBank.sources.map(source => source.id);
+
+function selectRelevantSources(analysis = {}, situation = "") {
+  const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
+  const q = String(situation || "").toLocaleLowerCase("nb-NO");
+  const scored = sourceBank.sources.map(source => {
+    let score = 0;
+    source.topics.forEach(topic => { if (topics.has(topic)) score += 5; });
+    (source.use_when || []).forEach(term => { if (q.includes(String(term).toLocaleLowerCase("nb-NO"))) score += 2; });
+    if (["fagfellevurdert forskning", "faglig rammeverk"].includes(source.type)) score += 0.5;
+    return { source, score };
+  }).filter(item => item.score > 0).sort((a,b) => b.score - a.score);
+  return scored.slice(0, 8).map(item => item.source);
+}
+
+function publicSources(ids = []) {
+  const wanted = new Set(ids);
+  return sourceBank.sources.filter(source => wanted.has(source.id)).map(source => ({
+    id: source.id, title: source.title, author: source.author, year: source.year, type: source.type, url: source.url, doi: source.doi || null
+  }));
+}
 
 const analysisSchema = {
   type: "object",
@@ -101,9 +123,10 @@ const guidanceSchema = {
     attention: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 5 },
     check_before_meeting: { type: "array", items: { type: "string" }, maxItems: 5 },
     legal_hr_note: { type: "string" },
+    source_ids: { type: "array", maxItems: 4, items: { type: "string", enum: sourceIds } },
     next_steps: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 4 }
   },
-  required: ["opening", "questions", "reactions", "attention", "check_before_meeting", "legal_hr_note", "next_steps"]
+  required: ["opening", "questions", "reactions", "attention", "check_before_meeting", "legal_hr_note", "source_ids", "next_steps"]
 };
 
 app.get("/api/status", (_req, res) => {
@@ -180,7 +203,8 @@ app.post("/api/generate-guidance", async (req, res) => {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
 
-  const guidanceTask = `\n\n## Oppgave: lag konkret samtalestøtte\nDu skal nå lage selve samtalestøtten til akkurat denne saken. Ikke bruk standardråd som kunne passet enhver leder.\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Åpningen skal kunne sies høyt i denne konkrete samtalen.\n- Spørsmålene skal være få og målrettede; hvert spørsmål må ha en tydelig funksjon i akkurat saken.\n- Foreslå 2–4 plausible reaksjoner som er SPESIFIKKE for det som står på spill. Ikke bruk «sint, trist, stille» som generiske kategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- Fang opp HR-/juridisk sensitivitet når beslutningen gjelder f.eks. sykefravær, forfremmelse, lønn, oppsigelse, rus, sikkerhet eller mulig diskriminering.\n- Ved sykefravær + forfremmelse/opprykk: minn om at diskrimineringsforbudet gjelder forfremmelse etter likestillings- og diskrimineringsloven § 29, at redusert arbeidsevne kan utløse tilretteleggingsplikt etter arbeidsmiljøloven § 4-6, og anbefal kvalitetssikring med HR/juridisk kompetanse før sykefravær får betydning for beslutningen. Ikke konkluder med at en konkret beslutning er lovlig eller ulovlig uten tilstrekkelig grunnlag.\n- Skill mellom hva lederen bør AVKLARE før møtet og hva lederen bør SI i møtet.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta eller tidligere hendelser.\n- Hvis et juridisk spørsmål er relevant, pek på relevant regelverk/HR-kontroll, men ikke gi bastante juridiske konklusjoner.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n`;
+  const relevantSources = selectRelevantSources(analysis, situation);
+  const guidanceTask = `\n\n## Oppgave: lag konkret samtalestøtte\nDu skal nå lage selve samtalestøtten til akkurat denne saken. Ikke bruk standardråd som kunne passet enhver leder.\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Åpningen skal kunne sies høyt i denne konkrete samtalen.\n- Spørsmålene skal være få og målrettede; hvert spørsmål må ha en tydelig funksjon i akkurat saken.\n- Foreslå 2–4 plausible reaksjoner som er SPESIFIKKE for det som står på spill. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- Skill mellom hva lederen bør AVKLARE før møtet og hva lederen bør SI i møtet.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk fagbanken selektivt. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør knyttes til 1–4 kilde-ID-er fra listen under.\n- source_ids må kun inneholde ID-er fra den oppgitte fagbanken. Bruk tom liste hvis ingen kilde er nødvendig.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal HR/juridisk kvalitetssikring når det er nødvendig, uten å konkludere definitivt.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n`;
 
   try {
     const response = await client.responses.create({
@@ -197,7 +221,7 @@ app.post("/api/generate-guidance", async (req, res) => {
       }
     });
     const parsed = JSON.parse(response.output_text);
-    return res.json({ ...parsed, ai: true, model });
+    return res.json({ ...parsed, evidence_sources: publicSources(parsed.source_ids), ai: true, model });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -219,7 +243,8 @@ app.post("/api/continue-conversation", async (req, res) => {
   if (typeof question !== "string" || !question.trim()) {
     return res.status(400).json({ error: "MISSING_QUESTION", message: "Oppfølgingsspørsmål mangler." });
   }
-  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal HR/juridisk kvalitetssikring, uten å konkludere definitivt.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Hold svaret kort og praktisk, helst 1–4 avsnitt.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\n`;
+  const relevantSources = selectRelevantSources(analysis, situation);
+  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal HR/juridisk kvalitetssikring, uten å konkludere definitivt.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Hold svaret kort og praktisk, helst 1–4 avsnitt.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nRelevante kilder i fagbanken: ${JSON.stringify(relevantSources)}\n`;
   try {
     const response = await client.responses.create({
       model,

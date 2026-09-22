@@ -509,18 +509,20 @@ textarea[aria-invalid="true"]{
   width:100%;
   min-height:104px;
   max-height:240px;
-  padding:14px 160px 54px 14px;
+  padding:14px 14px 58px 14px;
   resize:none;
   overflow-y:hidden;
 }
 .in-field-submit{
   position:absolute;
-  right:10px;
+  left:10px;
   bottom:10px;
   min-height:38px;
-  padding:9px 14px;
+  padding:10px 16px;
   margin:0 !important;
   border-radius:12px;
+  box-shadow:0 8px 18px color-mix(in srgb,var(--accent) 24%,transparent);
+  font-weight:800;
   white-space:nowrap;
   z-index:2;
 }
@@ -530,5 +532,16 @@ textarea[aria-invalid="true"]{
 .privacy-fix-actions small{color:var(--muted);line-height:1.35}
 @media(max-width:640px){
   .situation-input-shell textarea{padding-right:14px;padding-bottom:60px}
-  .in-field-submit{right:8px;bottom:8px}
+  .in-field-submit{left:8px;bottom:8px}
 }
+
+.send-arrow{font-size:1rem;line-height:1;font-weight:900}
+.understanding-summary.compact p{margin:0;font-size:1.02rem;line-height:1.55}
+.compact-topics{margin-top:10px}
+.compact-caution{margin-top:12px;padding:10px 12px}
+.evidence-details{width:100%}
+.evidence-details summary{cursor:pointer;font-weight:800;color:var(--accent-strong)}
+.evidence-list{display:grid;gap:8px;margin-top:10px}
+.evidence-list a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);background:color-mix(in srgb,var(--accent-soft) 26%,var(--surface))}
+.evidence-list a:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--border))}
+.evidence-list span{font-size:.82rem;color:var(--muted)}

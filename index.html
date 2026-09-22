@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=16" />
+  <link rel="stylesheet" href="styles.css?v=17" />
 </head>
 <body>
   <div class="app-shell">
@@ -188,10 +188,10 @@
         <form id="situation-form" class="situation-form" autocomplete="off">
           <label class="main-situation-field">
             <span>Beskriv situasjonen</span>
-            <small>Skriv med egne ord. Samtalestøtte spør bare videre dersom noe viktig mangler.</small>
+            <small>Beskriv situasjonen kort. Unngå navn og andre identifiserende opplysninger.</small>
             <div class="situation-input-shell">
-              <textarea id="situation" rows="3" autocomplete="off" placeholder="Beskriv situasjonen, hva som er vanskelig og hva du ønsker å få til ..." required></textarea>
-              <button type="submit" class="primary-button in-field-submit" id="understand-submit">Forstå situasjonen</button>
+              <textarea id="situation" rows="3" autocomplete="off" placeholder="Beskriv situasjonen kort – hva skjer, og hva er vanskelig?" required></textarea>
+              <button type="submit" class="primary-button in-field-submit" id="understand-submit"><span class="send-arrow" aria-hidden="true">↗</span> Få råd</button>
             </div>
           </label>
 
@@ -201,14 +201,14 @@
 
         <div id="ai-thinking" class="ai-thinking" role="status" aria-live="polite" hidden>
           <span class="thinking-spinner" aria-hidden="true"></span>
-          <div><strong>Samtalestøtte tenker …</strong><span>Prøver å forstå situasjonen før den foreslår neste steg.</span></div>
+          <div><strong>Samtalestøtte jobber …</strong><span>Leser situasjonen og finner relevante hensyn.</span></div>
         </div>
 
         <section id="situation-understanding" class="situation-understanding" hidden>
           <div class="understanding-heading">
             <div>
               <span class="eyebrow">SITUASJONSFORSTÅELSE</span>
-              <h2>Slik forstår jeg dilemmaet</h2>
+              <h2>Slik forstår jeg det</h2>
             </div>
             <span id="understanding-confidence" class="understanding-confidence"></span>
           </div>
@@ -279,6 +279,6 @@
     </main>
   </div>
 
-  <script src="app.js?v=16"></script>
+  <script src="app.js?v=17"></script>
 </body>
 </html>

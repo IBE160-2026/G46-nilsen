@@ -357,7 +357,7 @@ function openGuidance(title, help) {
 
 
 const COMMON_GIVEN_NAMES = new Set(`
-Kine Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild
+Kine Gro Reidun Cecilie Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild
 Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein
 Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam
 Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria
@@ -390,7 +390,11 @@ function findLikelyGivenName(source) {
   const contextual = String(source || '').match(/\b(?:heter|navn(?:et)?\s+er|kalles|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter|leder(?:en)?\s+heter)\s+([\p{Lu}][\p{L}'’-]{1,30})\b/iu);
   if (contextual && !NAME_FALSE_POSITIVES.has(contextual[1].toLocaleLowerCase('nb-NO'))) return contextual[1];
 
-  // Two adjacent capitalized words are highly likely to be a full name.
+  // Navn i typiske personkontekster. Dette fanger også navn som ikke finnes i ordlisten.
+  const personContext = String(source || '').match(/(?:^|[.!?]\s+|\b(?:med|til|fra|om|for|hos)\s+)([\p{Lu}][\p{L}'’-]{1,30})(?=\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\b)/u);
+  if (personContext && !NAME_FALSE_POSITIVES.has(personContext[1].toLocaleLowerCase('nb-NO'))) return personContext[1];
+
+  // To adjacent capitalized words are highly likely to be a full name.
   const fullName = String(source || '').match(/\b([\p{Lu}][\p{L}'’-]{1,30})\s+([\p{Lu}][\p{L}'’-]{1,30})\b/u);
   if (fullName) {
     const a = fullName[1].toLocaleLowerCase('nb-NO');
@@ -726,6 +730,10 @@ function renderAiGuidance(guidance) {
       <p><b>Slik kan du møte det:</b> ${escapeHtml(item.leader_response)}</p>
     </div>`).join('');
   const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
+  const evidence = (guidance.evidence_sources || []).length
+    ? `<details class="evidence-details"><summary>Faglig grunnlag</summary><div class="evidence-list">${guidance.evidence_sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong><span>${escapeHtml(source.author)}${source.year ? ` (${escapeHtml(String(source.year))})` : ''} · ${escapeHtml(source.type)}</span></a>`).join('')}</div></details>`
+    : '';
+
   const sections = [
     ['Forslag til åpning', escapeHtml(guidance.opening || '')],
     ['Spørsmål som passer denne saken', list(guidance.questions)],
@@ -733,7 +741,8 @@ function renderAiGuidance(guidance) {
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
     ['HR / regelverk', escapeHtml(guidance.legal_hr_note || '')],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
-    ['Videre oppfølging', list(guidance.next_steps)]
+    ['Videre oppfølging', list(guidance.next_steps)],
+    ['Dokumentert grunnlag', evidence]
   ].filter(([,content]) => content);
   grid.innerHTML = sections.map(([title, content], index) => `
     <article class="guidance-card">
@@ -750,39 +759,19 @@ function renderAiSituationUnderstanding(analysis) {
   const confidence = document.querySelector('#understanding-confidence');
   if (!panel || !content || !confidence) return;
 
-  const labels = { low: 'Foreløpig forståelse', medium: 'God forståelse', high: 'Tydelig forståelse' };
-  confidence.textContent = labels[analysis.confidence] || 'KI-forståelse';
+  const labels = { low: 'Foreløpig', medium: 'Forstått', high: 'Forstått' };
+  confidence.textContent = labels[analysis.confidence] || 'Forstått';
   confidence.dataset.level = analysis.confidence || 'medium';
 
   const topics = (analysis.relevant_topics || []).length
     ? analysis.relevant_topics.map(item => `<span class="representation-chip">${escapeHtml(item)}</span>`).join('')
-    : '<span class="representation-chip">Tema ikke låst ennå</span>';
-
-  const facts = (analysis.facts || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
-  const dilemma = (analysis.dilemma || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
-  const uncertainty = (analysis.uncertainties || []).length
-    ? `<div class="understanding-block"><strong>Det som fortsatt er uklart</strong><ul>${analysis.uncertainties.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`
     : '';
-  const cautions = (analysis.cautions || []).length
-    ? `<div class="understanding-caution"><strong>Vær oppmerksom på</strong><ul>${analysis.cautions.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`
-    : '';
+  const caution = (analysis.cautions || [])[0];
 
   content.innerHTML = `
-    <div class="understanding-summary"><p>${escapeHtml(analysis.summary || '')}</p></div>
-    <div class="understanding-block">
-      <strong>Dette ser ut til å berøre</strong>
-      <div class="topic-representations">${topics}</div>
-    </div>
-    <div class="understanding-block">
-      <strong>Dette har jeg forstått fra beskrivelsen din</strong>
-      <ul>${facts || '<li>Ingen sikre fakta utover beskrivelsen er lagt til.</li>'}</ul>
-    </div>
-    <div class="understanding-block">
-      <strong>Selve dilemmaet</strong>
-      <ul>${dilemma || '<li>Dilemmaet er ikke tydelig nok formulert ennå.</li>'}</ul>
-    </div>
-    ${uncertainty}
-    ${cautions}
+    <div class="understanding-summary compact"><p>${escapeHtml(analysis.summary || '')}</p></div>
+    ${topics ? `<div class="topic-representations compact-topics">${topics}</div>` : ''}
+    ${caution ? `<div class="understanding-caution compact-caution"><strong>Viktig:</strong> ${escapeHtml(caution)}</div>` : ''}
   `;
   panel.hidden = false;
 }
@@ -1555,11 +1544,11 @@ document.querySelector('#situation-form').addEventListener('submit', async event
   document.querySelector('#situation').value = situationText;
   updatePrivacyCheck();
 
-  const originalLabel = submitButton?.textContent || 'Forstå situasjonen';
+  const originalLabel = submitButton?.textContent || 'Få råd';
   if (submitButton) {
     submitButton.dataset.loading = 'true';
     submitButton.disabled = true;
-    submitButton.textContent = 'Forstår situasjonen …';
+    submitButton.textContent = 'Jobber …';
   }
   if (thinking) {
     thinking.hidden = false;
