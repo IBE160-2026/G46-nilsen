@@ -689,6 +689,7 @@ async function requestAiSituationAnalysis(situation, helpRequest) {
     try { payload = await response.json(); } catch (_) {}
     const error = new Error(payload.message || 'KI-analysen kunne ikke gjennomføres.');
     error.code = payload.error || 'AI_ERROR';
+    error.diagnostic = payload.diagnostic || null;
     throw error;
   }
   return response.json();
@@ -1510,7 +1511,13 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
     const note = document.createElement('div');
     note.className = 'privacy-check warning ai-fallback-note';
-    note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale prototypen vises kun for å teste flyten.</span>`;
+    const diagnostic = error.diagnostic;
+    const details = diagnostic
+      ? `<span><strong>Feilkode:</strong> ${escapeHtml(String(diagnostic.status || 'ukjent'))}${diagnostic.code ? ` / ${escapeHtml(String(diagnostic.code))}` : ''}</span>
+         <span>${escapeHtml(diagnostic.hint || '')}</span>
+         <details><summary>Teknisk detalj</summary><small>${escapeHtml(diagnostic.apiMessage || 'Ingen detalj tilgjengelig.')} · Modell: ${escapeHtml(diagnostic.model || 'ukjent')}</small></details>`
+      : '<span>Se PowerShell-vinduet for den konkrete API-feilen.</span>';
+    note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale prototypen vises kun for å teste flyten.</span>${details}`;
     document.querySelector('#situation-understanding').prepend(note);
   } finally {
     if (thinking) thinking.hidden = true;

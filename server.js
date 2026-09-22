@@ -16,7 +16,7 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
 
 const apiKey = process.env.OPENAI_API_KEY;
-const model = process.env.OPENAI_MODEL || "gpt-6-astra";
+const model = process.env.OPENAI_MODEL || "gpt-5.6-terra";
 const client = apiKey ? new OpenAI({ apiKey }) : null;
 
 const systemPrompt = fs.readFileSync(path.join(__dirname, "AI-SYSTEMPROMPT.md"), "utf8");
@@ -123,9 +123,21 @@ app.post("/api/analyze-situation", async (req, res) => {
     return res.json({ ...parsed, ai: true, model });
   } catch (error) {
     console.error("OpenAI analysis failed:", error);
-    return res.status(500).json({
+    const status = Number(error?.status) || 500;
+    const code = error?.code || error?.error?.code || null;
+    const type = error?.type || error?.error?.type || null;
+    const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
+
+    let hint = "Se PowerShell-vinduet for detaljer.";
+    if (status === 401) hint = "API-nøkkelen ble avvist. Kontroller OPENAI_API_KEY i .env.";
+    else if (status === 403) hint = "API-nøkkelen mangler nødvendig tilgang til Responses API eller modellen.";
+    else if (status === 404) hint = `Modellen ${model} er ikke tilgjengelig for dette prosjektet, eller modellnavnet er feil.`;
+    else if (status === 429) hint = "API-prosjektet har nådd en bruks-/betalingsgrense eller mangler tilgjengelig kreditt.";
+
+    return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_ANALYSIS_FAILED",
-      message: "KI-analysen feilet. Prøv igjen, eller bruk lokal prototype midlertidig."
+      message: "KI-analysen feilet.",
+      diagnostic: { status, code, type, apiMessage: rawMessage, model, hint }
     });
   }
 });
