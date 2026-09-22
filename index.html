@@ -10,13 +10,7 @@
   <div class="app-shell">
     <aside class="sidebar">
       <div class="brand">
-        <div class="brand-mark" aria-hidden="true">
-          <span></span><span></span>
-        </div>
-        <div>
-          <h1>Samtalestøtte</h1>
-          <p>Støtte til krevende samtaler</p>
-        </div>
+        <img class="brand-logo" src="logo.png" alt="Samtalestøtte" />
       </div>
 
       <nav class="nav" aria-label="Hovedmeny">
@@ -58,20 +52,8 @@
             <button class="primary-button" id="start-button">Velg tema →</button>
           </div>
 
-          <div class="hero-visual" aria-label="Illustrasjon av en vanskelig samtale">
-            <div class="conversation-scene">
-              <div class="person person-a">
-                <div class="head"></div>
-                <div class="body"></div>
-              </div>
-              <div class="table"></div>
-              <div class="person person-b">
-                <div class="head"></div>
-                <div class="body"></div>
-              </div>
-              <div class="speech speech-a">…</div>
-              <div class="speech speech-b">…</div>
-            </div>
+          <div class="hero-visual logo-hero" aria-label="Samtalestøtte">
+            <img src="logo.png" alt="Samtalestøtte – menneske og teknologi i dialog" />
             <p>En god samtale starter med god forberedelse.</p>
           </div>
         </div>
@@ -124,37 +106,26 @@
         </div>
 
         <form id="situation-form" class="situation-form">
-          <label>
-            <span>Hva har du observert?</span>
-            <small>Beskriv konkrete hendelser eller forhold, uten å tolke motiv eller årsak.</small>
-            <textarea id="observations" rows="5" placeholder="Eksempel: De siste fire ukene har ..."></textarea>
+          <label class="main-situation-field">
+            <span>Beskriv situasjonen</span>
+            <small>Skriv med egne ord hva som har skjedd, hva du har observert og det du mener er viktig. Du trenger ikke strukturere teksten – Samtalestøtte skal kunne hjelpe deg videre med oppfølgingsspørsmål.</small>
+            <textarea id="situation" rows="10" placeholder="Beskriv situasjonen her ..." required></textarea>
           </label>
 
           <label>
-            <span>Hva har skjedd så langt?</span>
-            <small>Har dere snakket om dette tidligere, eller er dette første samtale?</small>
-            <textarea id="history" rows="4" placeholder="Beskriv kort hva som allerede er gjort ..."></textarea>
+            <span>Hva ønsker du hjelp med? <em>(valgfritt)</em></span>
+            <small>For eksempel hvordan du kan åpne samtalen, hvilke spørsmål du bør stille eller hvordan du kan håndtere en vanskelig reaksjon.</small>
+            <textarea id="help-request" rows="4" placeholder="Jeg ønsker særlig hjelp med ..."></textarea>
           </label>
 
-          <label>
-            <span>Hva ønsker du å oppnå med samtalen?</span>
-            <textarea id="goal" rows="4" placeholder="Eksempel: Jeg ønsker å forstå situasjonen bedre og ..."></textarea>
-          </label>
-
-          <label>
-            <span>Hva er du mest usikker på?</span>
-            <textarea id="uncertainty" rows="4" placeholder="Eksempel: Jeg er usikker på hvordan jeg skal ta opp ..."></textarea>
-          </label>
-
-          <button type="submit" class="primary-button">Lag forslag</button>
+          <button type="submit" class="primary-button">Få samtalestøtte →</button>
         </form>
 
         <div id="prototype-result" class="prototype-result" hidden>
           <span class="eyebrow">PROTOTYPE</span>
-          <h3>Neste steg blir KI-generert veiledning</h3>
+          <h3>Situasjonen er klar for videre veiledning</h3>
           <p>
-            Her skal Samtalestøtte senere vise forslag til åpning, spørsmål, mulige reaksjoner,
-            ting å være oppmerksom på og faglig grunnlag. Foreløpig har vi bygget brukerreisen.
+            I neste steg skal Samtalestøtte vurdere om det mangler viktig informasjon, stille relevante oppfølgingsspørsmål og deretter foreslå en struktur for samtalen.
           </p>
         </div>
       </section>

@@ -1,28 +1,12 @@
-# Samtalestøtte – første prototype
+# Samtalestøtte – prototype v2
 
-Dette er første frontend-prototype av Samtalestøtte.
+Videreutviklet fra prototype v1.
 
-## Hva fungerer nå
+Endringer i v2:
+- valgt Samtalestøtte-logo integrert i appen
+- større og tydeligere temakort
+- forberedelsessiden forenklet fra fire tekstfelt til ett hovedfelt
+- ett valgfritt felt for hva brukeren ønsker hjelp med
+- videre flyt lagt opp til at KI senere kan stille oppfølgingsspørsmål før veiledning
 
-- fast venstremeny
-- lyst, mørkt og systembasert tema
-- åtte hovedtemaer
-- undertemaer med korte forklaringer
-- navigasjon fra hovedtema til undertema og videre til forberedelsesskjema
-- personvernpåminnelser
-- enkel responsiv layout
-
-## Slik åpner du prototypen
-
-Den enkleste måten er å dobbeltklikke `index.html`.
-
-Du kan også åpne prosjektmappen i Visual Studio Code og bruke en lokal webserver senere.
-
-## Neste utviklingstrinn
-
-1. forbedre design og tekst
-2. automatisk personvernkontroll
-3. koble skjemaet mot KI
-4. presentere KI-svar i egne kort
-5. faglig kunnskapsbase / kilder
-6. øvingsmodus og refleksjon
+Åpne `index.html` i nettleseren for å teste prototypen.
