@@ -19,3 +19,13 @@ Videreutviklet fra prototype v1 med endringene som ble avtalt for v2.
 Personvernkontrollen er bare en prototype og kan både overse opplysninger og gi falske treff. Den er ment å vise hvordan funksjonen kan fungere i en senere KI-versjon.
 
 Åpne `index.html` i nettleseren for å teste prototypen.
+
+## KI-kvalitetstesting
+
+Prosjektet inneholder nå også:
+- `AI-TESTCASES.json` – realistiske testscenarier for temaidentifikasjon og sikker adferd.
+- `AI-TESTPLAN.md` – kriterier for hvordan KI-responser skal vurderes.
+- `AI-RESPONSE-CONTRACT.md` – strukturert responsformat for fremtidig KI-integrasjon.
+
+Disse skal brukes som regresjonstester når systemprompt, modell eller faglogikk endres.
+
