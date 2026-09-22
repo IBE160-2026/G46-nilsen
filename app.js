@@ -378,16 +378,31 @@ function updatePrivacyCheck() {
 
 function detectConversationThemes(text) {
   const q = text.toLowerCase();
+  const hasSickLeave = /sykmeld|sykemeld|sykefravær|langtidssyk/i.test(q);
+  const hasPromotion = /opprykk|forfremm|karriere|utviklingsmulighet|ny stilling/i.test(q);
+
+  // Tydelig fler-tema-dilemma: unngå støy fra tilfeldige nøkkelord.
+  if (hasSickLeave && hasPromotion) {
+    return ['fravaer-oppfolging', 'lonn-utvikling']
+      .map(id => ({ topic: topics.find(topic => topic.id === id), score: 100 }))
+      .filter(item => item.topic);
+  }
+
   const scored = topics.map(topic => {
     let score = 0;
     topic.keywords.forEach(keyword => { if (q.includes(keyword)) score += 4; });
     topic.subtopics.forEach(([title, help]) => {
       const hay = `${title} ${help}`.toLowerCase();
-      q.split(/\s+/).forEach(word => { if (word.length > 4 && hay.includes(word)) score += 1; });
+      q.split(/\s+/).forEach(word => {
+        if (word.length > 5 && hay.includes(word)) score += 1;
+      });
     });
     return { topic, score };
   }).filter(item => item.score > 0).sort((a,b) => b.score-a.score);
-  return scored.slice(0, 3);
+
+  if (!scored.length) return [];
+  const best = scored[0].score;
+  return scored.filter(item => item.score >= Math.max(4, best * 0.6)).slice(0, 2);
 }
 
 function buildDilemmaUnderstanding(text) {
@@ -413,7 +428,7 @@ function buildDilemmaUnderstanding(text) {
     unknowns.push('Er beslutningen om å vente allerede tatt, eller vurderer du fortsatt hva som er riktig?');
     unknowns.push('Hvilke konkrete krav i den nye stillingen gjør at en periode tilbake i arbeid eventuelt er relevant?');
     unknowns.push('Vet medarbeideren at stillingen tidligere har vært aktuell for hen?');
-    cautions.push('Sykefraværet bør ikke automatisk behandles som bevis på manglende egnethet eller prestasjon. Vurderingen bør bygge på relevante, saklige forhold og kvalitetssikres dersom den kan få arbeidsrettslige konsekvenser.');
+    // Eventuelle juridiske eller prinsipielle varsler vises først når begrunnelsen er bedre avklart.
   }
 
   if (!facts.length) facts.push('Jeg har foreløpig bare den situasjonen du selv har beskrevet å bygge på.');
@@ -487,9 +502,6 @@ function renderSituationUnderstanding(analysis) {
 
   const facts = dilemma.facts.map(item => `<li>${item}</li>`).join('');
   const tensions = dilemma.tensions.map(item => `<li>${item}</li>`).join('');
-  const unknowns = dilemma.unknowns.length
-    ? dilemma.unknowns.map(item => `<li>${item}</li>`).join('')
-    : '<li>Jeg ser ingen åpenbar avklaring som må være på plass før vi kan jobbe videre med samtalen.</li>';
   const cautions = dilemma.cautions.length
     ? `<div class="understanding-caution"><strong>Viktig før du bestemmer hvordan samtalen skal tas</strong><ul>${dilemma.cautions.map(item => `<li>${item}</li>`).join('')}</ul></div>`
     : '';
@@ -500,16 +512,12 @@ function renderSituationUnderstanding(analysis) {
       <div class="topic-representations">${themeLabels}</div>
     </div>
     <div class="understanding-block">
-      <strong>Dette har jeg forstått som fakta fra beskrivelsen din</strong>
+      <strong>Dette har jeg forstått fra beskrivelsen din</strong>
       <ul>${facts}</ul>
     </div>
     <div class="understanding-block">
       <strong>Selve dilemmaet</strong>
       <ul>${tensions}</ul>
-    </div>
-    <div class="understanding-block">
-      <strong>Det jeg ville avklart før jeg gir et mer konkret råd</strong>
-      <ul>${unknowns}</ul>
     </div>
     ${cautions}
   `;
@@ -523,9 +531,34 @@ function buildFollowupQuestions(text) {
   const dilemma = buildDilemmaUnderstanding(text);
   if (dilemma.special) {
     return [
-      { id: 'decision', question: 'Er beslutningen om å vente med opprykket allerede tatt, eller vurderer du fortsatt hva som er riktig?', placeholder: 'Beskriv hvor avklart beslutningen er ...' },
-      { id: 'criteria', question: 'Hvilke konkrete krav eller forhold ved den nye stillingen gjør at du mener en periode tilbake i arbeid kan være relevant?', placeholder: 'Hold deg til krav i rollen og konkrete forhold ...' },
-      { id: 'expectation', question: 'Vet medarbeideren at stillingen tidligere har vært aktuell for hen, eller vil dette komme som ny informasjon?', placeholder: 'Beskriv hva medarbeideren kjenner til ...' }
+      {
+        id: 'decision',
+        question: 'Er beslutningen om å vente med opprykket allerede tatt?',
+        options: [
+          'Ja, beslutningen er tatt',
+          'Nei, jeg vurderer fortsatt',
+          'Jeg heller mot å vente, men har ikke bestemt meg',
+          'Usikker'
+        ],
+        customLabel: 'Annet / skriv selv'
+      },
+      {
+        id: 'criteria',
+        question: 'Hva er hovedgrunnen til at du vurderer å vente?',
+        options: [
+          'Jeg vil se hvordan tilbakekomsten fungerer',
+          'Den nye stillingen har andre eller større krav',
+          'Jeg er usikker på kapasiteten i den nye rollen',
+          'Det handler om flere forhold'
+        ],
+        customLabel: 'Annen grunn / skriv selv'
+      },
+      {
+        id: 'expectation',
+        question: 'Vet medarbeideren at stillingen har vært aktuell for hen?',
+        options: ['Ja', 'Nei', 'Usikker'],
+        customLabel: 'Det er mer nyansert'
+      }
     ];
   }
 
@@ -533,55 +566,121 @@ function buildFollowupQuestions(text) {
     if (!/gang|uke|måned|dag|periode|siden|ofte|gjentatt|fravær|forsink/i.test(normalized)) {
       questions.push({
         id: 'pattern',
-        question: 'Hva er mønsteret du ønsker å ta opp – for eksempel hvor ofte, hvor lenge eller i hvilke situasjoner dette skjer?',
-        placeholder: 'Eksempel: Fire korte fravær de siste to månedene ...'
+        question: 'Hvordan vil du beskrive mønsteret?',
+        options: ['En enkelt hendelse', 'Et gjentatt mønster', 'Pågått over lengre tid', 'Usikker'],
+        customLabel: 'Beskriv selv'
       });
     }
     if (!/påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(normalized)) {
       questions.push({
         id: 'impact',
-        question: 'Hvordan påvirker situasjonen arbeidet, oppgavene, kollegene eller driften?',
-        placeholder: 'Beskriv den konkrete virkningen på arbeidssituasjonen ...'
+        question: 'Hva påvirkes mest av situasjonen?',
+        options: ['Arbeidsoppgaver eller leveranser', 'Kollegaer eller bemanning', 'Forutsigbarhet i driften', 'Ingen tydelig konsekvens ennå'],
+        customLabel: 'Noe annet'
       });
     }
     if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(normalized)) {
       questions.push({
         id: 'previous',
-        question: 'Har dette vært tatt opp tidligere, eller er det allerede gjort noen avtaler eller tiltak?',
-        placeholder: 'Eksempel: Vi hadde en kort samtale for tre uker siden ...'
+        question: 'Har temaet vært tatt opp tidligere?',
+        options: ['Ja, flere ganger', 'Ja, én gang', 'Nei, dette er første gang', 'Usikker'],
+        customLabel: 'Beskriv selv'
       });
     }
     if (!/tilrette|juster|arbeidstid|oppgave|behov|støtte|tiltak/i.test(normalized) && questions.length < 3) {
       questions.push({
         id: 'support',
-        question: 'Er det noe ved arbeidssituasjonen eller organiseringen som allerede er kjent og som kan være relevant å følge opp?',
-        placeholder: 'Hold deg til det som er relevant for arbeidssituasjonen ...'
+        question: 'Er tilrettelegging eller støtte allerede en del av situasjonen?',
+        options: ['Ja', 'Nei', 'Ikke avklart ennå'],
+        customLabel: 'Beskriv selv'
       });
     }
     return questions.slice(0, 3);
   }
 
-  if (text.trim().length < 120) questions.push({ id: 'observation', question: 'Hva har du konkret observert eller fått informasjon om?', placeholder: 'Beskriv konkrete hendelser eller observasjoner ...' });
-  if (!/gang|uke|måned|dag|tid|siden|ofte|gjentatt|første/i.test(normalized)) questions.push({ id: 'duration', question: 'Hvor lenge har dette pågått, og er det en enkelt hendelse eller et mønster?', placeholder: 'Beskriv varighet eller mønster ...' });
-  if (!/påvirk|konsekvens|arbeid|kollega|drift|sikker|oppgave|lever/i.test(normalized)) questions.push({ id: 'impact', question: 'Hvordan påvirker situasjonen arbeidet, kolleger eller driften?', placeholder: 'Beskriv den konkrete virkningen ...' });
-  if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart/i.test(normalized)) questions.push({ id: 'previous', question: 'Har dette vært tatt opp tidligere, og i så fall hvordan?', placeholder: 'Beskriv eventuell tidligere oppfølging ...' });
+  if (text.trim().length < 120) questions.push({
+    id: 'observation',
+    question: 'Hva bygger bekymringen først og fremst på?',
+    options: ['Noe jeg selv har observert', 'Noe medarbeideren har fortalt', 'Tilbakemeldinger fra andre', 'Flere ting samlet'],
+    customLabel: 'Beskriv selv'
+  });
+  if (!/gang|uke|måned|dag|tid|siden|ofte|gjentatt|første/i.test(normalized)) questions.push({
+    id: 'duration',
+    question: 'Er dette en enkelt hendelse eller et mønster?',
+    options: ['En enkelt hendelse', 'Et gjentatt mønster', 'Pågått over lengre tid', 'Usikker'],
+    customLabel: 'Beskriv selv'
+  });
+  if (!/påvirk|konsekvens|arbeid|kollega|drift|sikker|oppgave|lever/i.test(normalized)) questions.push({
+    id: 'impact',
+    question: 'Hva påvirkes mest?',
+    options: ['Arbeidet eller leveransene', 'Samarbeidet', 'Sikkerheten', 'Ingen tydelig konsekvens ennå'],
+    customLabel: 'Noe annet'
+  });
+  if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart/i.test(normalized)) questions.push({
+    id: 'previous',
+    question: 'Har dette vært tatt opp tidligere?',
+    options: ['Ja', 'Nei', 'Usikker'],
+    customLabel: 'Beskriv selv'
+  });
   return questions.slice(0, 3);
 }
 
 function renderFollowupQuestions(questions) {
   const container = document.querySelector('#followup-questions');
   container.innerHTML = questions.map((item, index) => `
-    <label class="followup-question-field">
-      <span><strong>${index + 1}.</strong> ${item.question}</span>
-      <textarea rows="3" data-followup-id="${item.id}" autocomplete="off" placeholder="${item.placeholder || ''}"></textarea>
-    </label>
+    <div class="followup-question-field" data-followup-question="${item.id}">
+      <span class="followup-number">${index + 1}</span>
+      <span class="followup-question-copy">${item.question}</span>
+      <div class="followup-choice-row" role="group" aria-label="Svaralternativer">
+        ${(item.options || []).map(option => `<button type="button" class="followup-choice" data-followup-choice="${item.id}" data-value="${option}">${option}</button>`).join('')}
+        <button type="button" class="followup-choice followup-choice-custom" data-followup-custom="${item.id}">${item.customLabel || 'Annet / skriv selv'}</button>
+      </div>
+      <textarea class="followup-custom-input" rows="2" data-followup-custom-input="${item.id}" autocomplete="off" placeholder="Skriv kort med egne ord …" hidden></textarea>
+    </div>
   `).join('');
+
+  container.querySelectorAll('[data-followup-choice]').forEach(button => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.followupChoice;
+      const field = container.querySelector(`[data-followup-question="${id}"]`);
+      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
+      button.classList.add('selected');
+      field.dataset.answer = button.dataset.value;
+      const custom = field.querySelector(`[data-followup-custom-input="${id}"]`);
+      custom.hidden = true;
+      custom.value = '';
+    });
+  });
+
+  container.querySelectorAll('[data-followup-custom]').forEach(button => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.followupCustom;
+      const field = container.querySelector(`[data-followup-question="${id}"]`);
+      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
+      button.classList.add('selected');
+      field.dataset.answer = '';
+      const custom = field.querySelector(`[data-followup-custom-input="${id}"]`);
+      custom.hidden = false;
+      custom.focus();
+    });
+  });
+
+  container.querySelectorAll('[data-followup-custom-input]').forEach(input => {
+    input.addEventListener('input', () => {
+      const id = input.dataset.followupCustomInput;
+      const field = container.querySelector(`[data-followup-question="${id}"]`);
+      field.dataset.answer = input.value.trim();
+    });
+  });
 }
 
 function collectFollowupAnswers() {
   const answers = {};
-  document.querySelectorAll('[data-followup-id]').forEach(field => {
-    answers[field.dataset.followupId] = field.value.trim();
+  document.querySelectorAll('[data-followup-question]').forEach(field => {
+    const id = field.dataset.followupQuestion;
+    const custom = field.querySelector(`[data-followup-custom-input="${id}"]`);
+    const answer = (field.dataset.answer || (custom && !custom.hidden ? custom.value : '') || '').trim();
+    if (answer) answers[id] = answer;
   });
   return answers;
 }

@@ -307,3 +307,62 @@ html[data-theme="dark"] .brand-logo{content:url('logo-light.png');filter:drop-sh
 .understanding-block ul,.understanding-caution ul{margin:0;padding-left:18px;color:var(--muted);font-size:.88rem;line-height:1.5}
 .understanding-caution{grid-column:1/-1;background:color-mix(in srgb,#e5a72f 9%,var(--surface));border-color:color-mix(in srgb,#e5a72f 28%,var(--border))}
 @media(max-width:900px){.understanding-content{grid-template-columns:1fr}.understanding-heading{flex-direction:column}.understanding-caution{grid-column:auto}}
+
+
+/* Kompakt avklaringsdel */
+.followup-panel{max-width:900px;margin-top:20px;padding:18px 20px;border-radius:18px}
+.followup-panel h2{font-size:1.28rem!important;margin-top:2px}
+.followup-panel>p{margin:6px 0 0;font-size:.9rem;line-height:1.45}
+.followup-questions{gap:8px;margin:12px 0}
+.followup-question-field{display:grid;grid-template-columns:28px minmax(0,1fr);gap:6px 10px;padding:10px 12px;border-radius:12px;align-items:center}
+.followup-number{display:flex;align-items:center;justify-content:center;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent-strong);font-size:.78rem;font-weight:800}
+.followup-question-copy{font-size:.92rem;line-height:1.35;font-weight:650}
+.followup-question-field textarea{grid-column:2;min-height:48px;height:48px;padding:9px 10px;font-size:.9rem;resize:vertical}
+.followup-actions{margin-top:10px}
+.followup-actions .primary-button,.followup-actions .secondary-button{padding:9px 13px;font-size:.9rem}
+@media(max-width:650px){.followup-question-field{grid-template-columns:24px minmax(0,1fr)}.followup-question-field textarea{grid-column:1/-1}.followup-number{width:22px;height:22px}}
+
+/* Klikkbare avklaringssvar */
+.followup-choice-row{
+  grid-column:2;
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+  margin-top:2px;
+}
+.followup-choice{
+  min-height:34px;
+  padding:7px 11px;
+  border:1px solid color-mix(in srgb,var(--accent) 22%,var(--border));
+  border-radius:999px;
+  background:color-mix(in srgb,var(--accent-soft) 24%,var(--surface));
+  color:var(--text);
+  font:inherit;
+  font-size:.84rem;
+  font-weight:650;
+  cursor:pointer;
+  transition:.15s ease;
+}
+.followup-choice:hover{
+  border-color:color-mix(in srgb,var(--accent) 54%,var(--border));
+  background:color-mix(in srgb,var(--accent-soft) 55%,var(--surface));
+}
+.followup-choice.selected{
+  border-color:var(--accent);
+  background:color-mix(in srgb,var(--accent) 15%,var(--surface));
+  color:var(--accent-strong);
+  box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 18%,transparent);
+}
+.followup-choice-custom{font-weight:600;color:var(--muted)}
+.followup-custom-input{
+  grid-column:2;
+  min-height:48px!important;
+  height:48px;
+  margin-top:1px;
+  padding:9px 10px;
+  font-size:.9rem;
+}
+@media(max-width:650px){
+  .followup-choice-row,.followup-custom-input{grid-column:1/-1}
+  .followup-choice{min-height:38px}
+}
