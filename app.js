@@ -206,6 +206,7 @@ function createTopicCard(topic) {
   button.innerHTML = `
     <span class="topic-icon" aria-hidden="true">${svgIcons[topic.iconKey]}</span>
     <strong>${topic.title}</strong>
+    <span class="card-arrow" aria-hidden="true">→</span>
   `;
   button.addEventListener('click', () => openTopic(topic));
   return button;
@@ -236,7 +237,7 @@ function openTopic(topic) {
   topic.subtopics.forEach(([title, help]) => {
     const button = document.createElement('button');
     button.className = 'subtopic-card';
-    button.innerHTML = `<strong>${title}</strong><p>${help}</p>`;
+    button.innerHTML = `<strong>${title}</strong><p>${help}</p><span class="card-arrow">→</span>`;
     button.addEventListener('click', () => openGuidance(title, help));
     grid.appendChild(button);
   });
@@ -441,7 +442,7 @@ renderStaticIcons();
 renderTopics();
 initTheme();
 applySidebarState();
-setBreadcrumb('');
+setBreadcrumb('Hjem');
 updateNavState('home');
 
 document.querySelectorAll('[data-theme]').forEach(button => {
@@ -451,7 +452,7 @@ document.querySelectorAll('[data-theme]').forEach(button => {
 document.querySelectorAll('.nav-item[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     if (button.dataset.view === 'home') {
-      setBreadcrumb('');
+      setBreadcrumb('Hjem');
       showView('home');
     }
     if (button.dataset.view === 'prepare') {
@@ -467,14 +468,14 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
 });
 
 document.querySelector('#brand-home-button').addEventListener('click', () => {
-  setBreadcrumb('');
+  setBreadcrumb('Hjem');
   showView('home');
 });
 
 document.querySelector('#sidebar-toggle').addEventListener('click', toggleSidebar);
 
 document.querySelector('#back-to-home').addEventListener('click', () => {
-  setBreadcrumb('');
+  setBreadcrumb('Hjem');
   showView('home');
 });
 
@@ -483,7 +484,7 @@ document.querySelector('#back-to-topic').addEventListener('click', () => {
 });
 
 document.querySelector('#back-from-settings').addEventListener('click', () => {
-  setBreadcrumb('');
+  setBreadcrumb('Hjem');
   showView('home');
 });
 
