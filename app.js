@@ -21,6 +21,8 @@ const topics = [
     id: 'alkohol-rus',
     title: 'Alkohol og rus',
     iconKey: 'bottle',
+    image: 'topic-alkohol-rus.png',
+    imageAlt: 'Alvorlig, men rolig samtale mellom kvinnelig leder og kvinnelig medarbeider i et moderne møterom',
     description: 'Støtte til samtaler der observasjoner, bekymring, påvirkning eller sikkerhet gjør det nødvendig å ta opp alkohol eller rus på en tydelig og respektfull måte.',
     representations: ['Bekymring og endret fungering', 'Påvirkning eller sikkerhet', 'Oppfølging og tilbakekomst'],
     keywords: ['alkohol','rus','påvirket','beruset','stoff','narkotika','promille','drikking','bekymring'],
@@ -34,9 +36,11 @@ const topics = [
     ]
   },
   {
-    id: 'naervaer-oppfolging',
-    title: 'Nærvær og oppfølging',
+    id: 'fravaer-oppfolging',
+    title: 'Fravær og oppfølging',
     iconKey: 'bed',
+    image: 'topic-fravaer-oppfolging.png',
+    imageAlt: 'Oppfølgingssamtale mellom leder og medarbeider i et lyst kontormiljø',
     description: 'Støtte til gode samtaler om fravær, oppmøte, tilbakekomst, arbeidsevne og tilrettelegging – med fokus på både medarbeideren og arbeidssituasjonen.',
     representations: ['Fravær og oppmøte', 'Tilbakekomst til arbeid', 'Tilrettelegging og kapasitet'],
     keywords: ['sykefravær','fravær','sykmelding','oppmøte','for sent','punktlighet','tilrettelegging','tilbakekomst','arbeidsevne'],
@@ -53,6 +57,8 @@ const topics = [
     id: 'prestasjon-utvikling',
     title: 'Prestasjon og utvikling',
     iconKey: 'list',
+    image: 'topic-prestasjon-utvikling.png',
+    imageAlt: 'Utviklingssamtale med fokus på mål og fremgang ved et skrivebord',
     description: 'Støtte til samtaler om forventninger, kvalitet, mål, kompetanse og utvikling når arbeidshverdagen ikke fungerer helt som ønsket.',
     representations: ['Mål og leveranser', 'Kvalitet og ansvar', 'Kompetanse og utvikling'],
     keywords: ['prestasjon','leveranse','resultat','motivasjon','kvalitet','feil','frist','arbeidsutførelse','mestring','kompetanse','utvikling'],
@@ -69,6 +75,8 @@ const topics = [
     id: 'lonn-utvikling',
     title: 'Lønn og utvikling',
     iconKey: 'coins',
+    image: 'topic-lonn-utvikling.png',
+    imageAlt: 'Positiv samtale om lønn, utvikling og forventninger i et moderne kontor',
     description: 'Støtte til ryddige samtaler om lønn, forventninger, ansvar, utviklingsmuligheter og hvordan virksomhetens rammer kan forklares tydelig.',
     representations: ['Lønnsforventninger', 'Nye oppgaver og ansvar', 'Utvikling og muligheter'],
     keywords: ['lønn','lønnsøkning','lønnsutvikling','lønnssamtale','forfremmelse','kompensasjon','ansvarstillegg','utvikling'],
@@ -84,6 +92,8 @@ const topics = [
     id: 'samarbeid-kommunikasjon',
     title: 'Samarbeid og kommunikasjon',
     iconKey: 'people',
+    image: 'topic-samarbeid-kommunikasjon.png',
+    imageAlt: 'Flere kolleger samarbeider rundt en laptop i et moderne kontor',
     description: 'Støtte til samtaler som skal styrke kommunikasjon, tillit, rolleforståelse og samspill når samarbeidet har blitt krevende.',
     representations: ['Kommunikasjon og tone', 'Uenighet og tillit', 'Roller og samspill i team'],
     keywords: ['samarbeid','konflikt','uenighet','kommunikasjon','tone','kollega','tillit','respekt','team','samspill'],
@@ -100,6 +110,8 @@ const topics = [
     id: 'avslutning-arbeidsforhold',
     title: 'Avslutning av arbeidsforhold',
     iconKey: 'person',
+    image: 'topic-avslutning-arbeidsforhold.png',
+    imageAlt: 'Alvorlig og profesjonell samtale om avslutning av arbeidsforhold',
     description: 'Støtte til tydelige og respektfulle samtaler når arbeidsforholdet kan være på vei mot en avslutning eller saken krever en mer formell videre prosess.',
     representations: ['Prøvetid og tidligere oppfølging', 'Endrede behov eller rolle', 'Samtale før videre prosess'],
     keywords: ['oppsigelse','slutte','avslutte','prøvetid','arbeidsforhold','avskjed','bemanning','nedbemanning'],
@@ -116,6 +128,8 @@ const topics = [
     id: 'sikkerhet-ansvar',
     title: 'Sikkerhet og ansvar',
     iconKey: 'warning',
+    image: 'topic-sikkerhet-ansvar.png',
+    imageAlt: 'Sikkerhetsmøte med planer, sikkerhetsutstyr og tydelig dialog',
     description: 'Støtte til samtaler om sikker praksis, rutiner, risiko, avvik og ansvar – med mål om læring, tydelighet og tryggere arbeid.',
     representations: ['Rutiner og etterlevelse', 'Avvik og hendelser', 'Risiko, ansvar og læring'],
     keywords: ['sikkerhet','avvik','hendelse','rutiner','prosedyre','rapportering','risiko','informasjonssikkerhet','ansvar'],
@@ -132,6 +146,8 @@ const topics = [
     id: 'livssituasjoner',
     title: 'Livssituasjoner',
     iconKey: 'team',
+    image: 'topic-livssituasjoner.png',
+    imageAlt: 'Omsorgsfull samtale der en medarbeider sitter med hodet bøyd og blir lyttet til',
     description: 'Støtte til omsorgsfulle og profesjonelle samtaler når personlige belastninger, omsorgsansvar, sorg eller andre livssituasjoner påvirker arbeidshverdagen.',
     representations: ['Familie og omsorg', 'Sorg, stress og belastning', 'Støtte og hensiktsmessige grenser'],
     keywords: ['livssituasjon','familie','sorg','omsorg','stress','psykisk','økonomi','privat','utmattelse','belastning'],
@@ -274,6 +290,13 @@ function openTopic(topic) {
   document.querySelector('#topic-page-icon').innerHTML = svgIcons[topic.iconKey];
   document.querySelector('#topic-representations').innerHTML = topic.representations
     .map(item => `<span class="representation-chip">${item}</span>`).join('');
+
+  const topicHeroImage = document.querySelector('.topic-hero-visual img');
+  if (topicHeroImage) {
+    topicHeroImage.src = topic.image || 'hero-conversation-exact.png';
+    topicHeroImage.alt = topic.imageAlt || `Illustrasjon for temaet ${topic.title}`;
+  }
+
   setBreadcrumb(`Forbered samtale / ${topic.title}`);
 
   const detailSearch = document.querySelector('#topic-detail-search');
@@ -347,30 +370,150 @@ function updatePrivacyCheck() {
 
 function buildFollowupQuestions(text) {
   const questions = [];
-  if (text.trim().length < 120) questions.push('Hva har du konkret observert eller fått informasjon om?');
-  if (!/gang|uke|måned|dag|tid|siden|ofte|gjentatt|første/i.test(text)) questions.push('Hvor lenge har dette pågått, og er det en enkelt hendelse eller et mønster?');
-  if (!/påvirk|konsekvens|arbeid|kollega|drift|sikker|oppgave|lever/i.test(text)) questions.push('Hvordan påvirker situasjonen arbeidet, kolleger eller driften?');
-  if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart/i.test(text)) questions.push('Har dette vært tatt opp tidligere, og i så fall hvordan?');
+  const normalized = text.toLowerCase();
+
+  if (currentTopic?.id === 'fravaer-oppfolging') {
+    if (!/gang|uke|måned|dag|periode|siden|ofte|gjentatt|fravær|forsink/i.test(normalized)) {
+      questions.push({
+        id: 'pattern',
+        question: 'Hva er mønsteret du ønsker å ta opp – for eksempel hvor ofte, hvor lenge eller i hvilke situasjoner dette skjer?',
+        placeholder: 'Eksempel: Fire korte fravær de siste to månedene ...'
+      });
+    }
+    if (!/påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(normalized)) {
+      questions.push({
+        id: 'impact',
+        question: 'Hvordan påvirker situasjonen arbeidet, oppgavene, kollegene eller driften?',
+        placeholder: 'Beskriv den konkrete virkningen på arbeidssituasjonen ...'
+      });
+    }
+    if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(normalized)) {
+      questions.push({
+        id: 'previous',
+        question: 'Har dette vært tatt opp tidligere, eller er det allerede gjort noen avtaler eller tiltak?',
+        placeholder: 'Eksempel: Vi hadde en kort samtale for tre uker siden ...'
+      });
+    }
+    if (!/tilrette|juster|arbeidstid|oppgave|behov|støtte|tiltak/i.test(normalized) && questions.length < 3) {
+      questions.push({
+        id: 'support',
+        question: 'Er det noe ved arbeidssituasjonen eller organiseringen som allerede er kjent og som kan være relevant å følge opp?',
+        placeholder: 'Hold deg til det som er relevant for arbeidssituasjonen ...'
+      });
+    }
+    return questions.slice(0, 3);
+  }
+
+  if (text.trim().length < 120) questions.push({ id: 'observation', question: 'Hva har du konkret observert eller fått informasjon om?', placeholder: 'Beskriv konkrete hendelser eller observasjoner ...' });
+  if (!/gang|uke|måned|dag|tid|siden|ofte|gjentatt|første/i.test(normalized)) questions.push({ id: 'duration', question: 'Hvor lenge har dette pågått, og er det en enkelt hendelse eller et mønster?', placeholder: 'Beskriv varighet eller mønster ...' });
+  if (!/påvirk|konsekvens|arbeid|kollega|drift|sikker|oppgave|lever/i.test(normalized)) questions.push({ id: 'impact', question: 'Hvordan påvirker situasjonen arbeidet, kolleger eller driften?', placeholder: 'Beskriv den konkrete virkningen ...' });
+  if (!/snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart/i.test(normalized)) questions.push({ id: 'previous', question: 'Har dette vært tatt opp tidligere, og i så fall hvordan?', placeholder: 'Beskriv eventuell tidligere oppfølging ...' });
   return questions.slice(0, 3);
 }
 
-const guidanceSections = [
-  ['Åpning', 'Start rolig og konkret. Beskriv hva samtalen gjelder uten å legge til antakelser om årsak eller motiv.'],
-  ['Struktur', 'Forklar hensikten, legg frem konkrete observasjoner, lytt til medarbeiderens perspektiv og avklar hva dere skal gjøre videre.'],
-  ['Spørsmål', 'Bruk åpne spørsmål som «Hvordan opplever du situasjonen?» og «Hva tenker du kan være en god vei videre?»'],
-  ['Mulige reaksjoner', 'Vær forberedt på stillhet, overraskelse, uenighet eller sterke følelser. Gi rom for reaksjonen uten å miste retningen i samtalen.'],
-  ['Vær oppmerksom på', 'Skill mellom det du vet, det du har observert og det du antar. Unngå diagnostisering, merkelapper og unødvendige personopplysninger.'],
-  ['Oppfølging', 'Avslutt med tydelige avtaler: hva som skal skje, hvem som har ansvar og når dere følger opp igjen.']
-];
+function renderFollowupQuestions(questions) {
+  const container = document.querySelector('#followup-questions');
+  container.innerHTML = questions.map((item, index) => `
+    <label class="followup-question-field">
+      <span><strong>${index + 1}.</strong> ${item.question}</span>
+      <textarea rows="3" data-followup-id="${item.id}" autocomplete="off" placeholder="${item.placeholder || ''}"></textarea>
+    </label>
+  `).join('');
+}
+
+function collectFollowupAnswers() {
+  const answers = {};
+  document.querySelectorAll('[data-followup-id]').forEach(field => {
+    answers[field.dataset.followupId] = field.value.trim();
+  });
+  return answers;
+}
+
+function getFravaerSubject() {
+  const map = {
+    'Korttidsfravær': 'fraværet den siste tiden',
+    'Langvarig fravær': 'oppfølgingen under fraværet og veien tilbake',
+    'Oppmøte og punktlighet': 'oppmøtet og punktligheten den siste tiden',
+    'Tilbakekomst til arbeid': 'tilbakekomsten til arbeid',
+    'Tilrettelegging': 'arbeidssituasjonen og behovet for tilrettelegging',
+    'Arbeidsevne og kapasitet': 'hvordan arbeidssituasjonen og kapasiteten fungerer i praksis'
+  };
+  return map[currentSubtopic] || 'fraværet og arbeidssituasjonen';
+}
+
+function buildFravaerGuidance(context) {
+  const subject = getFravaerSubject();
+  const previousKnown = /snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(context.situation) || context.followups.previous;
+  const impactKnown = /påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(context.situation) || context.followups.impact;
+
+  const opening = `«Jeg ønsker å snakke med deg om ${subject}. Hensikten er å forstå hvordan arbeidssituasjonen fungerer og bli enige om en god vei videre. Jeg vil først beskrive det jeg har observert, og så vil jeg gjerne høre hvordan du opplever situasjonen.»`;
+
+  const questions = [
+    'Hvordan opplever du arbeidssituasjonen akkurat nå?',
+    currentSubtopic === 'Tilbakekomst til arbeid'
+      ? 'Hva vil være viktig for at tilbakekomsten skal fungere godt i praksis?'
+      : 'Er det noe ved arbeidet, organiseringen eller rammene vi bør se nærmere på?',
+    currentSubtopic === 'Oppmøte og punktlighet'
+      ? 'Hva tror du skal til for at oppmøtet blir mer forutsigbart fremover?'
+      : 'Hva mener du kan være et realistisk neste steg?',
+    'Er det noe du trenger fra meg som leder for å kunne følge opp det vi blir enige om?'
+  ];
+
+  const reactions = `Medarbeideren kan bli overrasket, bekymret, stille eller uenig i beskrivelsen. Hold deg rolig til konkrete observasjoner og gi rom for medarbeiderens perspektiv. Hvis samtalen blir følelsesladet, kan du anerkjenne reaksjonen uten å trekke konklusjoner om årsaken.`;
+
+  const attentionParts = [
+    'Skill tydelig mellom det du har observert, det du vet og det du antar.',
+    'Ikke diagnostiser eller be om mer helseinformasjon enn det som er nødvendig for å snakke om arbeidssituasjonen og eventuell tilrettelegging.',
+    'Vær tydelig på forventninger til oppmøte og samarbeid, samtidig som du utforsker hva som kan gjøre arbeidshverdagen mer forutsigbar.'
+  ];
+  if (!impactKnown) attentionParts.push('Få frem den konkrete betydningen for arbeidssituasjonen før dere avslutter samtalen.');
+  if (!previousKnown) attentionParts.push('Avklar om dette er første gang temaet tas opp, slik at forventningene til videre oppfølging blir tydelige.');
+
+  const followup = `Avslutt med en konkret oppsummering: hva dere er enige om, eventuelle tiltak eller tilrettelegging, hvem som gjør hva og når dere skal følge opp igjen. Dersom saken krever formell personalbehandling eller juridisk vurdering, bør virksomhetens rutiner og relevant HR-støtte brukes.`;
+
+  return [
+    ['Forslag til åpning', opening],
+    ['Forslag til spørsmål', questions.map(q => `• ${q}`).join('<br>')],
+    ['Mulige reaksjoner', reactions],
+    ['Vær oppmerksom på', attentionParts.map(item => `• ${item}`).join('<br>')],
+    ['Videre oppfølging', followup]
+  ];
+}
+
+function buildGenericGuidance() {
+  return [
+    ['Forslag til åpning', 'Start rolig og konkret. Beskriv hva samtalen gjelder uten å legge til antakelser om årsak eller motiv. Forklar hensikten og inviter medarbeideren inn i samtalen.'],
+    ['Forslag til spørsmål', '• Hvordan opplever du situasjonen? <br>• Hva mener du er viktig at jeg forstår? <br>• Hva tenker du kan være en god vei videre?'],
+    ['Mulige reaksjoner', 'Vær forberedt på stillhet, overraskelse, uenighet eller sterke følelser. Gi rom for reaksjonen uten å miste retningen i samtalen.'],
+    ['Vær oppmerksom på', 'Skill mellom det du vet, det du har observert og det du antar. Unngå diagnostisering, merkelapper og unødvendige personopplysninger.'],
+    ['Videre oppfølging', 'Avslutt med tydelige avtaler: hva som skal skje, hvem som har ansvar og når dere følger opp igjen.']
+  ];
+}
 
 function renderStructuredGuidance() {
+  const context = {
+    situation: document.querySelector('#situation').value.trim(),
+    helpRequest: document.querySelector('#help-request').value.trim(),
+    followups: collectFollowupAnswers()
+  };
+  const sections = currentTopic?.id === 'fravaer-oppfolging'
+    ? buildFravaerGuidance(context)
+    : buildGenericGuidance(context);
+
   const grid = document.querySelector('#structured-guidance');
-  grid.innerHTML = guidanceSections.map(([title, text], index) => `
+  grid.innerHTML = sections.map(([title, content], index) => `
     <article class="guidance-card">
       <span class="guidance-number">${String(index + 1).padStart(2, '0')}</span>
-      <div><h3>${title}</h3><p>${text}</p></div>
+      <div><h3>${title}</h3><p>${content}</p></div>
     </article>
   `).join('');
+
+  const intro = document.querySelector('#result-intro');
+  if (intro) {
+    intro.textContent = currentTopic?.id === 'fravaer-oppfolging'
+      ? 'Forslaget er tilpasset Fravær og oppfølging og det du har skrevet. Denne versjonen bruker foreløpig lokal regelbasert logikk; samme flyt skal senere kobles til KI.'
+      : 'Forslaget bygger foreløpig på en generell regelbasert prototype. Temaene skal få tilsvarende spesialisert logikk etter hvert.';
+  }
 }
 
 function showStructuredGuidance() {
@@ -643,9 +786,8 @@ document.querySelector('#situation-form').addEventListener('submit', event => {
   const questions = buildFollowupQuestions(text);
   document.querySelector('#prototype-result').hidden = true;
 
-  if (questions.length >= 2) {
-    const container = document.querySelector('#followup-questions');
-    container.innerHTML = questions.map(q => `<div class="followup-question">${q}</div>`).join('');
+  if (questions.length) {
+    renderFollowupQuestions(questions);
     document.querySelector('#followup-panel').hidden = false;
     document.querySelector('#followup-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } else {
@@ -653,6 +795,7 @@ document.querySelector('#situation-form').addEventListener('submit', event => {
   }
 });
 
+document.querySelector('#generate-guidance').addEventListener('click', showStructuredGuidance);
 document.querySelector('#show-guidance-anyway').addEventListener('click', showStructuredGuidance);
 
 

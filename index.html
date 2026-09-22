@@ -205,10 +205,13 @@
 
         <section id="followup-panel" class="followup-panel" hidden>
           <span class="eyebrow">OPPFØLGINGSSPØRSMÅL</span>
-          <h2>Det kan være nyttig å avklare litt mer</h2>
-          <p>Den ferdige KI-en skal stille målrettede spørsmål bare når opplysninger som er viktige for samtalen mangler.</p>
+          <h2>Det mangler noen opplysninger</h2>
+          <p>Svar kort på det du vet. Spørsmålene skal bare avklare det som er relevant for å forberede samtalen.</p>
           <div id="followup-questions" class="followup-questions"></div>
-          <button class="secondary-button" id="show-guidance-anyway" type="button">Vis strukturert støtte likevel</button>
+          <div class="followup-actions">
+            <button class="primary-button" id="generate-guidance" type="button">Lag samtalestøtte</button>
+            <button class="secondary-button" id="show-guidance-anyway" type="button">Fortsett uten å svare</button>
+          </div>
         </section>
 
         <section id="prototype-result" class="prototype-result" hidden>
@@ -219,7 +222,7 @@
             </div>
             <span class="prototype-chip">prototype</span>
           </div>
-          <p class="result-intro">Dette er en demonstrasjon av hvordan et strukturert KI-svar kan presenteres. Innholdet er foreløpig generell eksempeltekst og ikke en reell KI-vurdering.</p>
+          <p class="result-intro" id="result-intro">Forslaget er tilpasset det du har skrevet. Denne versjonen bruker foreløpig lokal regelbasert logikk; neste steg er å koble samme flyt til KI.</p>
           <div id="structured-guidance" class="guidance-grid"></div>
         </section>
       </section>
