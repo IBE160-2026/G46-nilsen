@@ -1,3 +1,33 @@
+# Hemmelige nøkler og miljøvariabler
 .env
+.env.*
+
+# Node-pakker
 node_modules/
+
+# Logger
+*.log
+
+# Midlertidige filer
+*.tmp
+*.temp
+
+# Windows
+Thumbs.db
+Desktop.ini
+
+# macOS
 .DS_Store
+
+# Editor-/IDE-filer
+.vscode/
+.idea/
+
+# Python-cache dersom Python brukes senere
+__pycache__/
+*.pyc
+
+# Lokale testfiler / genererte filer
+coverage/
+dist/
+build/
