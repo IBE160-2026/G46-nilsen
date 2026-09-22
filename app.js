@@ -244,6 +244,13 @@ function resetConversationState() {
     privacy.className = 'privacy-check';
   }
 
+  const understanding = document.querySelector('#situation-understanding');
+  if (understanding) {
+    understanding.hidden = true;
+    const understandingContent = document.querySelector('#understanding-content');
+    if (understandingContent) understandingContent.innerHTML = '';
+  }
+
   const followup = document.querySelector('#followup-panel');
   if (followup) followup.hidden = true;
 
@@ -366,6 +373,91 @@ function updatePrivacyCheck() {
     box.className = 'privacy-check ok';
     box.innerHTML = `<strong>Ingen åpenbare personopplysninger funnet.</strong><span>Automatisk kontroll kan likevel ikke garantere full anonymisering.</span>`;
   }
+}
+
+function analyzeSituation(text) {
+  const normalized = text.toLowerCase();
+  const signals = [];
+  const unknowns = [];
+  const cautions = [];
+
+  const hasRepeatedAbsence = /ofte borte|mye borte|gjentatt|flere fravær|korttidsfravær|stadig borte|fravær/i.test(normalized);
+  const hasLateness = /for sent|forsink|sen til jobb|punktlig|oppmøte/i.test(normalized);
+  const hasSickLeave = /sykmeld|sykemeld|langtidssyk|gradert|sykefravær/i.test(normalized);
+  const hasReturn = /tilbake etter|tilbakekomst|kommer tilbake|returnerer|begynner igjen/i.test(normalized);
+  const hasAccommodation = /tilrette|lettere oppgaver|redusert arbeidstid|juster.*oppgave|arbeidstid|kapasitet/i.test(normalized);
+  const hasImpact = /påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(normalized);
+  const hasPattern = /\b\d+\b|uke|måned|dag|periode|siden|ofte|gjentatt|hver/i.test(normalized);
+  const hasPrevious = /snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(normalized);
+
+  let classification = currentSubtopic || 'Uavklart';
+  if (currentTopic?.id === 'fravaer-oppfolging') {
+    if (hasLateness) classification = 'Oppmøte og punktlighet';
+    else if (hasReturn) classification = 'Tilbakekomst til arbeid';
+    else if (hasAccommodation) classification = 'Tilrettelegging';
+    else if (hasSickLeave && /lang|lenge|måned/i.test(normalized)) classification = 'Langvarig fravær';
+    else if (hasRepeatedAbsence) classification = 'Korttidsfravær';
+  }
+
+  if (hasLateness) signals.push('Du beskriver utfordringer knyttet til oppmøte eller punktlighet.');
+  if (hasSickLeave) signals.push('Du beskriver sykefravær eller sykmelding.');
+  if (hasRepeatedAbsence && !hasSickLeave) signals.push('Du beskriver et fraværsmønster, men årsaken er ikke fastslått.');
+  if (hasReturn) signals.push('Tilbakekomst til arbeid ser ut til å være en del av situasjonen.');
+  if (hasAccommodation) signals.push('Tilrettelegging eller kapasitet ser ut til å være relevant.');
+  if (hasImpact) signals.push('Du har beskrevet en konsekvens for arbeid, kolleger eller drift.');
+
+  if (!hasPattern) unknowns.push('Hvor ofte eller hvor lenge dette har pågått.');
+  if (!hasImpact) unknowns.push('Hvordan dette konkret påvirker arbeidssituasjonen.');
+  if (!hasPrevious) unknowns.push('Om temaet er tatt opp tidligere eller om noe allerede er avtalt.');
+
+  if (/lat|skulker|gidder ikke|uansvarlig|upålitelig|bryr seg ikke/i.test(normalized)) {
+    cautions.push('Beskrivelsen inneholder en tolkning eller merkelapp. Rådene bør i stedet bygge på konkrete observasjoner.');
+  }
+  if (/depres|angst|alkoholiker|misbruker|diagnose|psykisk syk/i.test(normalized)) {
+    cautions.push('Beskrivelsen kan inneholde en antakelse om helse eller årsak. Dette skal ikke behandles som et faktum uten dokumentert grunnlag.');
+  }
+
+  const evidenceCount = [hasRepeatedAbsence, hasLateness, hasSickLeave, hasReturn, hasAccommodation, hasImpact, hasPattern, hasPrevious].filter(Boolean).length;
+  const confidence = evidenceCount >= 5 ? 'Høy' : evidenceCount >= 2 ? 'Middels' : 'Lav';
+
+  return { classification, signals, unknowns, cautions, confidence };
+}
+
+function renderSituationUnderstanding(analysis) {
+  const panel = document.querySelector('#situation-understanding');
+  const content = document.querySelector('#understanding-content');
+  const confidence = document.querySelector('#understanding-confidence');
+  if (!panel || !content || !confidence) return;
+
+  confidence.textContent = `Treffsikkerhet: ${analysis.confidence.toLowerCase()}`;
+  confidence.dataset.level = analysis.confidence.toLowerCase();
+
+  const signals = analysis.signals.length
+    ? analysis.signals.map(item => `<li>${item}</li>`).join('')
+    : '<li>Det er foreløpig få konkrete holdepunkter i beskrivelsen.</li>';
+  const unknowns = analysis.unknowns.length
+    ? analysis.unknowns.map(item => `<li>${item}</li>`).join('')
+    : '<li>Ingen vesentlige mangler er identifisert i denne enkle prototypekontrollen.</li>';
+  const cautions = analysis.cautions.length
+    ? `<div class="understanding-caution"><strong>Viktig å skille fra fakta</strong><ul>${analysis.cautions.map(item => `<li>${item}</li>`).join('')}</ul></div>`
+    : '';
+
+  content.innerHTML = `
+    <div class="understanding-block">
+      <strong>Foreløpig retning</strong>
+      <p>${currentTopic?.title || 'Tema ikke valgt'} → <b>${analysis.classification}</b></p>
+    </div>
+    <div class="understanding-block">
+      <strong>Dette bygger forståelsen på</strong>
+      <ul>${signals}</ul>
+    </div>
+    <div class="understanding-block">
+      <strong>Dette er fortsatt uklart</strong>
+      <ul>${unknowns}</ul>
+    </div>
+    ${cautions}
+  `;
+  panel.hidden = false;
 }
 
 function buildFollowupQuestions(text) {
@@ -783,16 +875,21 @@ document.querySelector('#situation-form').addEventListener('submit', event => {
   event.preventDefault();
   updatePrivacyCheck();
   const text = document.querySelector('#situation').value;
+  const analysis = analyzeSituation(text);
   const questions = buildFollowupQuestions(text);
   document.querySelector('#prototype-result').hidden = true;
+  document.querySelector('#followup-panel').hidden = true;
+
+  renderSituationUnderstanding(analysis);
 
   if (questions.length) {
     renderFollowupQuestions(questions);
     document.querySelector('#followup-panel').hidden = false;
-    document.querySelector('#followup-panel').scrollIntoView({ behavior: 'smooth', block: 'start' });
   } else {
     showStructuredGuidance();
   }
+
+  document.querySelector('#situation-understanding').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 document.querySelector('#generate-guidance').addEventListener('click', showStructuredGuidance);

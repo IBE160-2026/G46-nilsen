@@ -285,3 +285,25 @@ html[data-theme="dark"] .brand-logo{content:url('logo-light.png');filter:drop-sh
   .topic-detail-search-form{grid-template-columns:1fr}
   .subtopic-grid{grid-template-columns:1fr}
 }
+
+
+/* Situasjonsforståelse før rådgivning */
+.situation-understanding{
+  margin:20px 0 16px;
+  padding:22px;
+  border:1px solid color-mix(in srgb,var(--accent) 22%,var(--border));
+  border-radius:20px;
+  background:color-mix(in srgb,var(--accent-soft) 18%,var(--surface));
+  box-shadow:0 8px 24px rgba(10,58,73,.05);
+}
+.understanding-heading{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:16px}
+.understanding-heading h2{margin:3px 0 0;font-size:1.35rem;letter-spacing:-.02em}
+.understanding-confidence{white-space:nowrap;padding:7px 10px;border-radius:999px;border:1px solid var(--border);background:var(--surface);font-size:.8rem;font-weight:700;color:var(--muted)}
+.understanding-confidence[data-level="høy"]{color:var(--accent-strong);border-color:color-mix(in srgb,var(--accent) 30%,var(--border))}
+.understanding-content{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.understanding-block,.understanding-caution{padding:14px 15px;border-radius:15px;background:var(--surface);border:1px solid var(--border)}
+.understanding-block strong,.understanding-caution strong{display:block;margin-bottom:7px;font-size:.9rem}
+.understanding-block p{margin:0;color:var(--text);line-height:1.45}
+.understanding-block ul,.understanding-caution ul{margin:0;padding-left:18px;color:var(--muted);font-size:.88rem;line-height:1.5}
+.understanding-caution{grid-column:1/-1;background:color-mix(in srgb,#e5a72f 9%,var(--surface));border-color:color-mix(in srgb,#e5a72f 28%,var(--border))}
+@media(max-width:900px){.understanding-content{grid-template-columns:1fr}.understanding-heading{flex-direction:column}.understanding-caution{grid-column:auto}}
