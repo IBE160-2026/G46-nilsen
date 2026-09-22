@@ -205,11 +205,9 @@ function createTopicCard(topic) {
   button.dataset.topicId = topic.id;
   button.dataset.searchText = `${topic.title} ${topic.description} ${topic.keywords.join(' ')}`.toLowerCase();
   button.innerHTML = `
-    <div class="topic-card-top">
-      <span class="topic-icon" aria-hidden="true">${svgIcons[topic.iconKey]}</span>
-      <span class="card-arrow" aria-hidden="true">→</span>
-    </div>
+    <span class="topic-icon" aria-hidden="true">${svgIcons[topic.iconKey]}</span>
     <strong>${topic.title}</strong>
+    <span class="card-arrow" aria-hidden="true">→</span>
   `;
   button.addEventListener('click', () => openTopic(topic));
   return button;
@@ -419,14 +417,25 @@ function initTheme() {
   applyTheme(localStorage.getItem('samtalestotte-theme') || 'system');
 }
 
+function setSidebarCollapsed(collapsed) {
+  const sidebar = document.querySelector('#sidebar');
+  const shell = document.querySelector('.app-shell');
+  const toggle = document.querySelector('#sidebar-toggle');
+  sidebar.classList.toggle('sidebar-collapsed', collapsed);
+  shell.classList.toggle('sidebar-collapsed-layout', collapsed);
+  toggle.setAttribute('aria-label', collapsed ? 'Vis sidemeny' : 'Skjul sidemeny');
+  toggle.setAttribute('title', collapsed ? 'Vis sidemeny' : 'Skjul sidemeny');
+}
+
 function applySidebarState() {
   const collapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
-  document.querySelector('#sidebar').classList.toggle('sidebar-collapsed', collapsed);
+  setSidebarCollapsed(collapsed);
 }
 
 function toggleSidebar() {
   const sidebar = document.querySelector('#sidebar');
-  const collapsed = sidebar.classList.toggle('sidebar-collapsed');
+  const collapsed = !sidebar.classList.contains('sidebar-collapsed');
+  setSidebarCollapsed(collapsed);
   localStorage.setItem('samtalestotte-sidebar', collapsed ? 'collapsed' : 'expanded');
 }
 
