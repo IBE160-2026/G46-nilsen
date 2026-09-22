@@ -16,6 +16,9 @@ const svgIcons = {
   more: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h.01"></path><path d="M12 12h.01"></path><path d="M18 12h.01"></path></svg>`
 };
 
+let lastAiAnalysis = null;
+let lastAiGuidance = null;
+
 const topics = [
   {
     id: 'alkohol-rus',
@@ -208,6 +211,8 @@ function showView(name) {
 
 
 function clearGuidanceSession({ clearInputs = true } = {}) {
+  lastAiAnalysis = null;
+  lastAiGuidance = null;
   if (clearInputs) {
     const form = document.querySelector('#situation-form');
     if (form) {
@@ -695,6 +700,50 @@ async function requestAiSituationAnalysis(situation, helpRequest) {
   return response.json();
 }
 
+async function requestAiGuidance(situation, analysis, followups) {
+  const response = await fetch('/api/generate-guidance', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ situation, analysis, followups })
+  });
+  if (!response.ok) {
+    let payload = {};
+    try { payload = await response.json(); } catch (_) {}
+    const error = new Error(payload.message || 'KI-samtalestøtten kunne ikke gjennomføres.');
+    error.code = payload.error || 'AI_ERROR';
+    error.diagnostic = payload.diagnostic || null;
+    throw error;
+  }
+  return response.json();
+}
+
+function renderAiGuidance(guidance) {
+  const grid = document.querySelector('#structured-guidance');
+  const reactionHtml = (guidance.reactions || []).map(item => `
+    <div class="reaction-pair">
+      <strong>${escapeHtml(item.reaction)}</strong>
+      <p>${escapeHtml(item.why_plausible)}</p>
+      <p><b>Slik kan du møte det:</b> ${escapeHtml(item.leader_response)}</p>
+    </div>`).join('');
+  const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
+  const sections = [
+    ['Forslag til åpning', escapeHtml(guidance.opening || '')],
+    ['Spørsmål som passer denne saken', list(guidance.questions)],
+    ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
+    ['Sjekk før samtalen', list(guidance.check_before_meeting)],
+    ['HR / regelverk', escapeHtml(guidance.legal_hr_note || '')],
+    ['Vær særlig oppmerksom på', list(guidance.attention)],
+    ['Videre oppfølging', list(guidance.next_steps)]
+  ].filter(([,content]) => content);
+  grid.innerHTML = sections.map(([title, content], index) => `
+    <article class="guidance-card">
+      <span class="guidance-number">${String(index + 1).padStart(2, '0')}</span>
+      <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
+    </article>`).join('');
+  const intro = document.querySelector('#result-intro');
+  if (intro) intro.textContent = 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Juridisk sensitive punkter bør kvalitetssikres med HR/juridisk kompetanse før en endelig beslutning tas.';
+}
+
 function renderAiSituationUnderstanding(analysis) {
   const panel = document.querySelector('#situation-understanding');
   const content = document.querySelector('#understanding-content');
@@ -1101,10 +1150,27 @@ function renderStructuredGuidance() {
   }
 }
 
-function showStructuredGuidance() {
+async function showStructuredGuidance() {
+  const button = document.querySelector('#generate-guidance');
+  const situation = document.querySelector('#situation')?.value.trim() || '';
+  const followups = collectFollowupAnswers();
+  const original = button?.textContent || 'Lag samtalestøtte';
+  if (button) { button.disabled = true; button.textContent = 'Lager samtalestøtte …'; }
   document.querySelector('#followup-panel').hidden = true;
   document.querySelector('#prototype-result').hidden = false;
-  renderStructuredGuidance();
+  const intro = document.querySelector('#result-intro');
+  if (intro) intro.textContent = 'Samtalestøtte tenker …';
+  try {
+    if (!lastAiAnalysis) throw new Error('Ingen aktiv KI-analyse finnes for denne saken.');
+    const guidance = await requestAiGuidance(situation, lastAiAnalysis, followups);
+    lastAiGuidance = guidance;
+    renderAiGuidance(guidance);
+  } catch (error) {
+    renderStructuredGuidance();
+    if (intro) intro.textContent = `KI-samtalestøtten feilet (${error.diagnostic?.status || error.code || 'ukjent'}). Lokal reserve vises bare for testing.`;
+  } finally {
+    if (button) { button.disabled = false; button.textContent = original; }
+  }
   document.querySelector('#prototype-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -1138,18 +1204,37 @@ function buildContinuationReply(question) {
   return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale prototypelogikken. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
 }
 
-function appendConversationTurn(question) {
+async function appendConversationTurn(question) {
   const thread = document.querySelector('#conversation-thread');
   if (!thread || !question.trim()) return;
-  const reply = buildContinuationReply(question);
   const user = document.createElement('div');
   user.className = 'conversation-turn conversation-user';
-  user.innerHTML = `<span>Du</span><p>${question.replace(/[<>&]/g, ch => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]))}</p>`;
+  user.innerHTML = `<span>Du</span><p>${escapeHtml(question)}</p>`;
   const assistant = document.createElement('div');
   assistant.className = 'conversation-turn conversation-assistant';
-  assistant.innerHTML = `<span>Samtalestøtte</span><p>${reply}</p>`;
+  assistant.innerHTML = `<span>Samtalestøtte</span><p>Samtalestøtte tenker …</p>`;
   thread.append(user, assistant);
   assistant.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  try {
+    if (!lastAiAnalysis) throw new Error('Ingen aktiv KI-kontekst.');
+    const response = await fetch('/api/continue-conversation', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        situation: document.querySelector('#situation')?.value.trim() || '',
+        analysis: lastAiAnalysis,
+        followups: collectFollowupAnswers(),
+        guidance: lastAiGuidance,
+        question
+      })
+    });
+    if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
+    const payload = await response.json();
+    assistant.innerHTML = `<span>Samtalestøtte</span><p>${escapeHtml(payload.reply || '')}</p>`;
+  } catch (_) {
+    const reply = buildContinuationReply(question);
+    assistant.innerHTML = `<span>Samtalestøtte</span><p>${escapeHtml(reply)}</p><small>Lokal reserve</small>`;
+  }
 }
 
 const searchAliases = {
@@ -1483,6 +1568,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
   try {
     const aiAnalysis = await requestAiSituationAnalysis(situationText, helpRequest);
+    lastAiAnalysis = aiAnalysis;
     renderAiSituationUnderstanding(aiAnalysis);
     const count = aiAnalysis.needs_clarification
       ? renderAiFollowupQuestions(aiAnalysis.clarifications)
@@ -1497,6 +1583,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
       document.querySelector('#followup-questions').innerHTML = '<p class="ai-ready-note">KI-en mener ingen nødvendig avklaring mangler. Du kan gå videre til samtalestøtten.</p>';
     }
   } catch (error) {
+    lastAiAnalysis = null;
     const localAnalysis = analyzeSituation(situationText);
     const localQuestions = buildFollowupQuestions(situationText);
     renderSituationUnderstanding(localAnalysis);
