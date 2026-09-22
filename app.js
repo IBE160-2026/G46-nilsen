@@ -431,18 +431,60 @@ function detectSensitiveInfo(text) {
   return findings;
 }
 
+
+function autoFixPrivacyText(text, findings) {
+  let fixed = text;
+
+  // E-post, telefon og tydelige identifikatorer fjernes helt.
+  fixed = fixed.replace(/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/gi, '[fjernet e-post]');
+  fixed = fixed.replace(/(?:\+47\s?)?(?:\d[\s-]?){8}\b/g, '[fjernet telefonnummer]');
+  fixed = fixed.replace(/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/gi, '[fjernet identifikator]');
+  fixed = fixed.replace(/\b\d{11}\b/g, '[fjernet identifikator]');
+
+  // Konkret alder/fødselsdata generaliseres uten å endre resten av setningen.
+  fixed = fixed.replace(/\b(?:[1-9]|[1-9]\d|1[01]\d|120)\s*år(?:\s+gammel)?\b/gi, '[alder fjernet]');
+  fixed = fixed.replace(/\b(?:\d{1,2}[.\/-]\d{1,2}[.\/-](?:19|20)?\d{2})\b/g, '[fødselsdato fjernet]');
+  fixed = fixed.replace(/\b(?:født|fødselsdato)\s+(?:i\s+)?(?:19|20)\d{2}\b/gi, '[fødselsopplysning fjernet]');
+
+  // Kjønnede pronomen erstattes med kjønnsnøytrale alternativer.
+  const pronouns = [
+    [/\bhan\b/gi, 'hen'], [/\bhun\b/gi, 'hen'], [/\bham\b/gi, 'hen'], [/\bhenne\b/gi, 'hen'],
+    [/\bhans\b/gi, 'hens'], [/\bhennes\b/gi, 'hens']
+  ];
+  pronouns.forEach(([pattern, replacement]) => { fixed = fixed.replace(pattern, replacement); });
+
+  // Navn som faktisk er flagget erstattes med et rolleord. Vi omskriver ikke andre ord.
+  (findings || []).filter(item => item.type === 'name').forEach(item => {
+    const match = item.label.match(/«([^»]+)»/);
+    if (!match) return;
+    const name = match[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    fixed = fixed.replace(new RegExp(`\\b${name}\\b`, 'gi'), 'medarbeideren');
+  });
+
+  return fixed.replace(/\s{2,}/g, ' ').trim();
+}
+
+function applyPrivacyFix() {
+  const field = document.querySelector('#situation');
+  if (!field) return;
+  const findings = detectSensitiveInfo(field.value);
+  if (!findings.length) return;
+  field.value = autoFixPrivacyText(field.value, findings);
+  autoGrowTextarea(field, 220);
+  updatePrivacyCheck();
+  field.focus();
+}
+
 function updatePrivacyCheck() {
   const box = document.querySelector('#privacy-check');
   const text = document.querySelector('#situation').value;
-  const help = document.querySelector('#help-request').value;
-  const findings = detectSensitiveInfo(`${text}\n${help}`);
+  const findings = detectSensitiveInfo(text);
   const submitButton = document.querySelector('#understand-submit');
   const note = document.querySelector('#privacy-submit-note');
-  const hasText = Boolean(text.trim() || help.trim());
+  const hasText = Boolean(text.trim());
   const blocked = findings.length > 0;
 
   document.querySelector('#situation')?.setAttribute('aria-invalid', blocked ? 'true' : 'false');
-  document.querySelector('#help-request')?.setAttribute('aria-invalid', blocked ? 'true' : 'false');
 
   if (submitButton && submitButton.dataset.loading !== 'true') {
     submitButton.disabled = blocked || !text.trim();
@@ -467,7 +509,12 @@ function updatePrivacyCheck() {
       <strong>Kan ikke sendes ennå</strong>
       <span>Jeg fant opplysninger som bør fjernes eller anonymiseres:</span>
       <ul class="privacy-findings">${findings.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
+      <div class="privacy-fix-actions">
+        <button type="button" class="secondary-button compact-fix-button" id="privacy-fix-button">Fiks personvern</button>
+        <small>Erstatter bare opplysninger kontrollen har flagget. Les gjennom teksten før du sender.</small>
+      </div>
     `;
+    box.querySelector('#privacy-fix-button')?.addEventListener('click', applyPrivacyFix);
   } else {
     box.className = 'privacy-check ok';
     box.innerHTML = `<strong>Klar til å sendes</strong><span>Ingen åpenbare identifiserende opplysninger ble funnet av den lokale kontrollen.</span>`;
@@ -1024,7 +1071,7 @@ function buildGenericGuidance() {
 function renderStructuredGuidance() {
   const context = {
     situation: document.querySelector('#situation').value.trim(),
-    helpRequest: document.querySelector('#help-request').value.trim(),
+    helpRequest: '',
     followups: collectFollowupAnswers()
   };
   const crossThemeSections = buildCrossThemeDilemmaGuidance(context);
@@ -1398,10 +1445,10 @@ function handleSituationInput(event) {
   updatePrivacyCheck();
 }
 
-['situation','help-request'].forEach(id => {
+['situation'].forEach(id => {
   const field = document.querySelector(`#${id}`);
   field?.addEventListener('input', handleSituationInput);
-  autoGrowTextarea(field, id === 'situation' ? 220 : 150);
+  autoGrowTextarea(field, 220);
 });
 
 
@@ -1409,7 +1456,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
   event.preventDefault();
   const privacyFindings = updatePrivacyCheck() || [];
   const situationText = document.querySelector('#situation').value;
-  const helpRequest = document.querySelector('#help-request').value;
+  const helpRequest = '';
   const submitButton = event.currentTarget.querySelector('button[type="submit"]');
   const thinking = document.querySelector('#ai-thinking');
 
@@ -1420,7 +1467,6 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
   clearGuidanceSession({ clearInputs: false });
   document.querySelector('#situation').value = situationText;
-  document.querySelector('#help-request').value = helpRequest;
   updatePrivacyCheck();
 
   const originalLabel = submitButton?.textContent || 'Forstå situasjonen';

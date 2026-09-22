@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=13" />
+  <link rel="stylesheet" href="styles.css?v=14" />
 </head>
 <body>
   <div class="app-shell">
@@ -188,22 +188,15 @@
         <form id="situation-form" class="situation-form" autocomplete="off">
           <label class="main-situation-field">
             <span>Beskriv situasjonen</span>
-            <small>Skriv med egne ord. Samtalestøtte skal senere stille oppfølgingsspørsmål dersom noe viktig mangler.</small>
-            <textarea id="situation" rows="3" autocomplete="off" placeholder="Eksempel: Medarbeideren har den siste tiden kommet gjentatte ganger for sent ..." required></textarea>
+            <small>Skriv med egne ord. Samtalestøtte spør bare videre dersom noe viktig mangler.</small>
+            <div class="situation-input-shell">
+              <textarea id="situation" rows="3" autocomplete="off" placeholder="Beskriv situasjonen, hva som er vanskelig og hva du ønsker å få til ..." required></textarea>
+              <button type="submit" class="primary-button in-field-submit" id="understand-submit">Forstå situasjonen</button>
+            </div>
           </label>
 
           <div id="privacy-check" class="privacy-check" role="status" aria-live="polite" hidden></div>
-
-          <label>
-            <span>Hva ønsker du hjelp til? <em>(valgfritt)</em></span>
-            <small>For eksempel åpning av samtalen, gode spørsmål eller håndtering av reaksjoner.</small>
-            <textarea id="help-request" rows="2" autocomplete="off" placeholder="Jeg ønsker særlig hjelp til ..."></textarea>
-          </label>
-
-          <div class="form-action-bar">
-            <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
-            <button type="submit" class="primary-button" id="understand-submit">Forstå situasjonen</button>
-          </div>
+          <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
         </form>
 
         <div id="ai-thinking" class="ai-thinking" role="status" aria-live="polite" hidden>
@@ -286,6 +279,6 @@
     </main>
   </div>
 
-  <script src="app.js?v=13"></script>
+  <script src="app.js?v=14"></script>
 </body>
 </html>
