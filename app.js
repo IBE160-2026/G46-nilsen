@@ -375,6 +375,53 @@ function updatePrivacyCheck() {
   }
 }
 
+
+function detectConversationThemes(text) {
+  const q = text.toLowerCase();
+  const scored = topics.map(topic => {
+    let score = 0;
+    topic.keywords.forEach(keyword => { if (q.includes(keyword)) score += 4; });
+    topic.subtopics.forEach(([title, help]) => {
+      const hay = `${title} ${help}`.toLowerCase();
+      q.split(/\s+/).forEach(word => { if (word.length > 4 && hay.includes(word)) score += 1; });
+    });
+    return { topic, score };
+  }).filter(item => item.score > 0).sort((a,b) => b.score-a.score);
+  return scored.slice(0, 3);
+}
+
+function buildDilemmaUnderstanding(text) {
+  const q = text.toLowerCase();
+  const themes = detectConversationThemes(text);
+  const hasSickLeave = /sykmeld|sykemeld|sykefravær|langtidssyk/i.test(q);
+  const hasLongAbsence = hasSickLeave && /(år|måned|lenge|langvar)/i.test(q);
+  const hasPromotion = /opprykk|forfremm|stilling|karriere|utviklingsmulighet/i.test(q);
+  const wantsDelay = /avvente|vente|utsette|ikke ennå|først.*tilbake|vært tilbake/i.test(q);
+  const facts = [];
+  const tensions = [];
+  const unknowns = [];
+  const cautions = [];
+
+  if (hasLongAbsence) facts.push('Medarbeideren har vært borte fra arbeid over en lengre periode.');
+  else if (hasSickLeave) facts.push('Du beskriver et sykefravær.');
+  if (hasPromotion) facts.push('Det finnes en utviklings- eller opprykksmulighet som er relevant for medarbeideren.');
+  if (wantsDelay) facts.push('Du vurderer å vente med opprykk eller videre utvikling til medarbeideren har vært tilbake i arbeid en periode.');
+
+  if (hasSickLeave && hasPromotion) {
+    tensions.push('Du forsøker å balansere hensynet til en reell utviklingsmulighet mot usikkerhet knyttet til tilbakekomst etter et langt fravær.');
+    tensions.push('Hvordan beslutningen begrunnes og kommuniseres kan være like viktig som selve samtaleformen.');
+    unknowns.push('Er beslutningen om å vente allerede tatt, eller vurderer du fortsatt hva som er riktig?');
+    unknowns.push('Hvilke konkrete krav i den nye stillingen gjør at en periode tilbake i arbeid eventuelt er relevant?');
+    unknowns.push('Vet medarbeideren at stillingen tidligere har vært aktuell for hen?');
+    cautions.push('Sykefraværet bør ikke automatisk behandles som bevis på manglende egnethet eller prestasjon. Vurderingen bør bygge på relevante, saklige forhold og kvalitetssikres dersom den kan få arbeidsrettslige konsekvenser.');
+  }
+
+  if (!facts.length) facts.push('Jeg har foreløpig bare den situasjonen du selv har beskrevet å bygge på.');
+  if (!tensions.length) tensions.push('Målet er å forstå hva som står på spill for deg og medarbeideren før vi går til konkrete formuleringer.');
+
+  return { themes, facts, tensions, unknowns: unknowns.slice(0,3), cautions, special: hasSickLeave && hasPromotion };
+}
+
 function analyzeSituation(text) {
   const normalized = text.toLowerCase();
   const signals = [];
@@ -429,30 +476,39 @@ function renderSituationUnderstanding(analysis) {
   const confidence = document.querySelector('#understanding-confidence');
   if (!panel || !content || !confidence) return;
 
-  confidence.textContent = `Treffsikkerhet: ${analysis.confidence.toLowerCase()}`;
-  confidence.dataset.level = analysis.confidence.toLowerCase();
+  const originalText = document.querySelector('#situation').value.trim();
+  const dilemma = buildDilemmaUnderstanding(originalText);
+  const themeLabels = dilemma.themes.length
+    ? dilemma.themes.map(item => `<span class="representation-chip">${item.topic.title}</span>`).join('')
+    : '<span class="representation-chip">Tema ikke låst ennå</span>';
 
-  const signals = analysis.signals.length
-    ? analysis.signals.map(item => `<li>${item}</li>`).join('')
-    : '<li>Det er foreløpig få konkrete holdepunkter i beskrivelsen.</li>';
-  const unknowns = analysis.unknowns.length
-    ? analysis.unknowns.map(item => `<li>${item}</li>`).join('')
-    : '<li>Ingen vesentlige mangler er identifisert i denne enkle prototypekontrollen.</li>';
-  const cautions = analysis.cautions.length
-    ? `<div class="understanding-caution"><strong>Viktig å skille fra fakta</strong><ul>${analysis.cautions.map(item => `<li>${item}</li>`).join('')}</ul></div>`
+  confidence.textContent = dilemma.special ? 'Flere hensyn' : 'Foreløpig forståelse';
+  confidence.dataset.level = dilemma.special ? 'middels' : 'lav';
+
+  const facts = dilemma.facts.map(item => `<li>${item}</li>`).join('');
+  const tensions = dilemma.tensions.map(item => `<li>${item}</li>`).join('');
+  const unknowns = dilemma.unknowns.length
+    ? dilemma.unknowns.map(item => `<li>${item}</li>`).join('')
+    : '<li>Jeg ser ingen åpenbar avklaring som må være på plass før vi kan jobbe videre med samtalen.</li>';
+  const cautions = dilemma.cautions.length
+    ? `<div class="understanding-caution"><strong>Viktig før du bestemmer hvordan samtalen skal tas</strong><ul>${dilemma.cautions.map(item => `<li>${item}</li>`).join('')}</ul></div>`
     : '';
 
   content.innerHTML = `
     <div class="understanding-block">
-      <strong>Foreløpig retning</strong>
-      <p>${currentTopic?.title || 'Tema ikke valgt'} → <b>${analysis.classification}</b></p>
+      <strong>Dette ser ut til å berøre</strong>
+      <div class="topic-representations">${themeLabels}</div>
     </div>
     <div class="understanding-block">
-      <strong>Dette bygger forståelsen på</strong>
-      <ul>${signals}</ul>
+      <strong>Dette har jeg forstått som fakta fra beskrivelsen din</strong>
+      <ul>${facts}</ul>
     </div>
     <div class="understanding-block">
-      <strong>Dette er fortsatt uklart</strong>
+      <strong>Selve dilemmaet</strong>
+      <ul>${tensions}</ul>
+    </div>
+    <div class="understanding-block">
+      <strong>Det jeg ville avklart før jeg gir et mer konkret råd</strong>
       <ul>${unknowns}</ul>
     </div>
     ${cautions}
@@ -463,6 +519,15 @@ function renderSituationUnderstanding(analysis) {
 function buildFollowupQuestions(text) {
   const questions = [];
   const normalized = text.toLowerCase();
+
+  const dilemma = buildDilemmaUnderstanding(text);
+  if (dilemma.special) {
+    return [
+      { id: 'decision', question: 'Er beslutningen om å vente med opprykket allerede tatt, eller vurderer du fortsatt hva som er riktig?', placeholder: 'Beskriv hvor avklart beslutningen er ...' },
+      { id: 'criteria', question: 'Hvilke konkrete krav eller forhold ved den nye stillingen gjør at du mener en periode tilbake i arbeid kan være relevant?', placeholder: 'Hold deg til krav i rollen og konkrete forhold ...' },
+      { id: 'expectation', question: 'Vet medarbeideren at stillingen tidligere har vært aktuell for hen, eller vil dette komme som ny informasjon?', placeholder: 'Beskriv hva medarbeideren kjenner til ...' }
+    ];
+  }
 
   if (currentTopic?.id === 'fravaer-oppfolging') {
     if (!/gang|uke|måned|dag|periode|siden|ofte|gjentatt|fravær|forsink/i.test(normalized)) {
@@ -521,47 +586,115 @@ function collectFollowupAnswers() {
   return answers;
 }
 
-function getFravaerSubject() {
+function getFravaerSubject(classification) {
   const map = {
     'Korttidsfravær': 'fraværet den siste tiden',
-    'Langvarig fravær': 'oppfølgingen under fraværet og veien tilbake',
+    'Langvarig fravær': 'oppfølgingen under det lengre fraværet og veien videre',
     'Oppmøte og punktlighet': 'oppmøtet og punktligheten den siste tiden',
     'Tilbakekomst til arbeid': 'tilbakekomsten til arbeid',
-    'Tilrettelegging': 'arbeidssituasjonen og behovet for tilrettelegging',
+    'Tilrettelegging': 'arbeidssituasjonen og mulig tilrettelegging',
     'Arbeidsevne og kapasitet': 'hvordan arbeidssituasjonen og kapasiteten fungerer i praksis'
   };
-  return map[currentSubtopic] || 'fraværet og arbeidssituasjonen';
+  return map[classification] || 'fraværet og arbeidssituasjonen';
 }
 
 function buildFravaerGuidance(context) {
-  const subject = getFravaerSubject();
-  const previousKnown = /snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(context.situation) || context.followups.previous;
-  const impactKnown = /påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(context.situation) || context.followups.impact;
+  const combined = [context.situation, ...Object.values(context.followups || {})].filter(Boolean).join(' ');
+  const analysis = analyzeSituation(combined);
+  const classification = analysis.classification || currentSubtopic || 'Uavklart';
+  const subject = getFravaerSubject(classification);
+  const normalized = combined.toLowerCase();
+  const previousKnown = /snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(normalized);
+  const impactKnown = /påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(normalized);
 
-  const opening = `«Jeg ønsker å snakke med deg om ${subject}. Hensikten er å forstå hvordan arbeidssituasjonen fungerer og bli enige om en god vei videre. Jeg vil først beskrive det jeg har observert, og så vil jeg gjerne høre hvordan du opplever situasjonen.»`;
-
-  const questions = [
-    'Hvordan opplever du arbeidssituasjonen akkurat nå?',
-    currentSubtopic === 'Tilbakekomst til arbeid'
-      ? 'Hva vil være viktig for at tilbakekomsten skal fungere godt i praksis?'
-      : 'Er det noe ved arbeidet, organiseringen eller rammene vi bør se nærmere på?',
-    currentSubtopic === 'Oppmøte og punktlighet'
-      ? 'Hva tror du skal til for at oppmøtet blir mer forutsigbart fremover?'
-      : 'Hva mener du kan være et realistisk neste steg?',
-    'Er det noe du trenger fra meg som leder for å kunne følge opp det vi blir enige om?'
+  let opening;
+  let questions;
+  let attentionParts = [
+    'Skill tydelig mellom det du har observert, det du vet og det du antar.'
   ];
+  let followup;
 
-  const reactions = `Medarbeideren kan bli overrasket, bekymret, stille eller uenig i beskrivelsen. Hold deg rolig til konkrete observasjoner og gi rom for medarbeiderens perspektiv. Hvis samtalen blir følelsesladet, kan du anerkjenne reaksjonen uten å trekke konklusjoner om årsaken.`;
+  if (classification === 'Oppmøte og punktlighet') {
+    opening = '«Jeg ønsker å snakke med deg om oppmøtet den siste tiden. Jeg vil være konkret på det jeg har observert og høre hvordan du opplever situasjonen, slik at vi kan avklare forventninger og hva som skal til for at oppmøtet blir mer forutsigbart.»';
+    questions = [
+      'Hvordan opplever du selv oppmøtet ditt den siste tiden?',
+      'Er det noe ved arbeidssituasjonen eller organiseringen som påvirker muligheten til å møte som avtalt?',
+      'Hva mener du er realistisk å gjøre for at oppmøtet blir mer forutsigbart fremover?'
+    ];
+    attentionParts.push('Hold deg til konkrete tidspunkter, hendelser eller mønstre – ikke antakelser om motiv eller holdning.');
+    attentionParts.push('Vær tydelig på hvilke forventninger som gjelder for oppmøte og hvordan avvik påvirker arbeidssituasjonen.');
+    followup = 'Oppsummer hva som forventes fremover, eventuelle tiltak dere er enige om, og når dere skal følge opp om oppmøtet har blitt mer stabilt.';
+  } else if (classification === 'Korttidsfravær') {
+    opening = '«Jeg ønsker å snakke med deg om fraværet den siste tiden. Jeg ser et mønster jeg ønsker å forstå bedre, og vil høre hvordan du opplever arbeidssituasjonen og om det er noe vi bør følge opp.»';
+    questions = [
+      'Hvordan opplever du selv fraværet den siste tiden?',
+      'Er det noe ved arbeidssituasjonen som er relevant for oss å se nærmere på?',
+      'Er det noe vi kan gjøre på jobb som kan bidra til en mer stabil arbeidshverdag?'
+    ];
+    attentionParts.push('Ikke anta at gjentatt fravær skyldes sykdom, motivasjon eller private forhold dersom dette ikke er kjent.');
+    attentionParts.push('Fokuser på fraværsmønsteret, arbeidssituasjonen og hva som kan følges opp på arbeidsplassen.');
+    followup = 'Avtal hva dere eventuelt skal prøve ut, hva som forventes fremover og et konkret tidspunkt for ny oppfølging dersom fraværsmønsteret fortsetter.';
+  } else if (classification === 'Langvarig fravær') {
+    opening = '«Jeg ønsker å snakke om hvordan vi best kan følge deg opp under fraværet og planlegge veien videre. Jeg vil gjerne høre hva som er relevant for arbeidssituasjonen, og hva vi eventuelt kan tilrettelegge for.»';
+    questions = [
+      'Hva er viktig for oss å vite om arbeidsevnen din i forhold til arbeidsoppgavene?',
+      'Er det oppgaver, arbeidstid eller andre forhold på jobben som kan tilpasses?',
+      'Hva vil være et realistisk neste steg i oppfølgingen?'
+    ];
+    attentionParts.push('Hold samtalen til arbeidsfunksjon, muligheter og tilrettelegging – ikke be om diagnose eller unødvendige medisinske opplysninger.');
+    attentionParts.push('Hvis dette er formell sykefraværsoppfølging, må virksomhetens rutiner og gjeldende krav til oppfølging følges.');
+    followup = 'Oppsummer aktuelle tiltak, ansvar og tidspunkt for ny vurdering. Dersom dette er formell sykefraværsoppfølging, må oppfølgingsplan og eventuelle dialogmøter håndteres etter gjeldende rutiner.';
+  } else if (classification === 'Tilbakekomst til arbeid') {
+    opening = '«Jeg ønsker å snakke om tilbakekomsten til arbeid og hva som skal til for at den fungerer best mulig i praksis. Målet er å avklare forventninger, arbeidsoppgaver og eventuell støtte underveis.»';
+    questions = [
+      'Hvordan oppleves det å være tilbake i arbeid nå?',
+      'Er det bestemte arbeidsoppgaver eller deler av arbeidshverdagen som fungerer godt eller mindre godt?',
+      'Hva bør vi avtale for den første tiden fremover?'
+    ];
+    attentionParts.push('Unngå å gjøre medisinske årsaker til tema hvis de ikke er nødvendige for å tilrettelegge arbeidssituasjonen.');
+    attentionParts.push('Vær konkret på hva som skal prøves ut og hvor lenge før dere vurderer løsningen på nytt.');
+    followup = 'Lag en konkret plan for den første perioden tilbake: oppgaver, eventuelle justeringer, ansvar og dato for ny samtale.';
+  } else if (classification === 'Tilrettelegging') {
+    opening = '«Jeg ønsker å se nærmere på arbeidssituasjonen og om det er justeringer som kan gjøre det lettere å fungere godt i jobben. Jeg vil gjerne høre hva som fungerer, hva som er krevende og hvilke løsninger som kan være realistiske.»';
+    questions = [
+      'Hvilke deler av arbeidet fungerer godt nå, og hvilke er mest krevende?',
+      'Er det konkrete oppgaver, arbeidstid eller organisering vi bør vurdere å justere?',
+      'Hvilke tiltak tror du selv vil være realistiske å prøve ut?'
+    ];
+    attentionParts.push('Tilrettelegging bør knyttes til arbeidsoppgaver og funksjon, ikke til antakelser om diagnose eller privatliv.');
+    attentionParts.push('Vær tydelig på at mulige tiltak må vurderes opp mot hva virksomheten faktisk kan gjennomføre.');
+    followup = 'Avtal ett eller noen få konkrete tiltak, hvem som følger dem opp, hvor lenge de skal prøves og når effekten skal vurderes.';
+  } else if (classification === 'Arbeidsevne og kapasitet') {
+    opening = '«Jeg ønsker å snakke om hvordan arbeidssituasjonen fungerer i praksis akkurat nå. Målet er å forstå hvilke deler av arbeidet som fungerer, hvor det oppstår utfordringer og hva vi eventuelt bør justere.»';
+    questions = [
+      'Hvilke arbeidsoppgaver opplever du at fungerer godt nå?',
+      'Hvor i arbeidshverdagen opplever du at kapasiteten ikke strekker til?',
+      'Hva kan være et realistisk tiltak eller neste steg?'
+    ];
+    attentionParts.push('Snakk om konkret funksjon i arbeidet fremfor medisinske forklaringer.');
+    followup = 'Oppsummer hvilke oppgaver eller rammer dere eventuelt skal justere, og sett en dato for å evaluere hvordan det fungerer.';
+  } else {
+    opening = `«Jeg ønsker å snakke med deg om ${subject}. Jeg vil være konkret på det jeg har observert og høre hvordan du opplever situasjonen før vi blir enige om veien videre.»`;
+    questions = [
+      'Hvordan opplever du situasjonen?',
+      'Hva mener du er viktig at jeg forstår om arbeidssituasjonen?',
+      'Hva kan være et realistisk neste steg?'
+    ];
+    attentionParts.push('Beskriv situasjonen mer konkret før du trekker konklusjoner eller foreslår omfattende tiltak.');
+    followup = 'Avslutt med en konkret oppsummering av hva dere vet, hva som eventuelt må avklares og når dere følger opp igjen.';
+  }
 
-  const attentionParts = [
-    'Skill tydelig mellom det du har observert, det du vet og det du antar.',
-    'Ikke diagnostiser eller be om mer helseinformasjon enn det som er nødvendig for å snakke om arbeidssituasjonen og eventuell tilrettelegging.',
-    'Vær tydelig på forventninger til oppmøte og samarbeid, samtidig som du utforsker hva som kan gjøre arbeidshverdagen mer forutsigbar.'
-  ];
-  if (!impactKnown) attentionParts.push('Få frem den konkrete betydningen for arbeidssituasjonen før dere avslutter samtalen.');
-  if (!previousKnown) attentionParts.push('Avklar om dette er første gang temaet tas opp, slik at forventningene til videre oppfølging blir tydelige.');
+  if (!impactKnown) attentionParts.push('Avklar hvilken konkret betydning situasjonen har for arbeid, oppgaver, kolleger eller drift dersom dette er relevant.');
+  if (!previousKnown) attentionParts.push('Avklar om temaet er tatt opp tidligere før du legger til grunn at medarbeideren kjenner forventningene.');
 
-  const followup = `Avslutt med en konkret oppsummering: hva dere er enige om, eventuelle tiltak eller tilrettelegging, hvem som gjør hva og når dere skal følge opp igjen. Dersom saken krever formell personalbehandling eller juridisk vurdering, bør virksomhetens rutiner og relevant HR-støtte brukes.`;
+  let reactions;
+  if (/uenig|konflikt|sint|irritert|forsvar/i.test(normalized)) {
+    reactions = 'Det kan være uenighet om selve beskrivelsen. Hold deg til konkrete observasjoner, la medarbeideren korrigere faktiske feil og skill mellom uenighet om fakta og uenighet om forventninger.';
+  } else if (/lei seg|gråt|trist|bekymr|stress|press/i.test(normalized)) {
+    reactions = 'Samtalen kan vekke sterke følelser. Gi rom for reaksjonen og vis forståelse, men unngå å tolke årsaken på medarbeiderens vegne. Gå tilbake til det konkrete temaet når det er naturlig.';
+  } else {
+    reactions = 'Medarbeideren kan bli overrasket, bekymret, stille eller uenig. Gi rom for perspektivet deres, og gå tilbake til konkrete observasjoner og formålet med samtalen dersom dialogen glir over i antakelser.';
+  }
 
   return [
     ['Forslag til åpning', opening],
@@ -569,6 +702,43 @@ function buildFravaerGuidance(context) {
     ['Mulige reaksjoner', reactions],
     ['Vær oppmerksom på', attentionParts.map(item => `• ${item}`).join('<br>')],
     ['Videre oppfølging', followup]
+  ];
+}
+
+function buildCrossThemeDilemmaGuidance(context) {
+  const situation = context.situation || '';
+  const dilemma = buildDilemmaUnderstanding(situation);
+  if (!dilemma.special) return null;
+
+  const answers = context.followups || {};
+  const decisionKnown = answers.decision || '';
+  const criteriaKnown = answers.criteria || '';
+  const expectationKnown = answers.expectation || '';
+
+  const opening = '«Jeg ønsker å snakke med deg om utviklingsmuligheten som har vært aktuell, og om hvordan vi skal vurdere veien videre nå som du er på vei tilbake. Jeg vil være åpen om hvilke vurderinger som ligger på bordet, og jeg vil gjerne høre hvordan du ser på situasjonen.»';
+
+  const questions = [
+    'Hvordan ser du selv på tidspunktet for et eventuelt opprykk eller nye oppgaver?',
+    'Hva tenker du er viktig for at en overgang til en ny rolle skal fungere godt?',
+    'Er det noe ved forventningene til den nye rollen du ønsker at vi avklarer nærmere?'
+  ];
+
+  const attention = [
+    'Ikke begrunn en beslutning med sykefraværet alene. Skill mellom fraværet som faktum og konkrete, relevante krav i den nye rollen.',
+    'Hvis beslutningen ikke er tatt, unngå å presentere den som avgjort i samtalen.',
+    'Hvis beslutningen kan få arbeidsrettslige eller diskrimineringsrettslige konsekvenser, bør vurderingsgrunnlaget kvalitetssikres før du kommuniserer en endelig beslutning.'
+  ];
+
+  if (!decisionKnown) attention.push('Det er fortsatt uklart om du ønsker hjelp til selve vurderingen eller bare til hvordan en allerede tatt beslutning skal kommuniseres.');
+  if (!criteriaKnown) attention.push('Gjør eventuelle krav til den nye rollen konkrete før du bruker dem som begrunnelse.');
+  if (!expectationKnown) attention.push('Avklar hva medarbeideren allerede har fått signaler om, fordi det påvirker hvordan samtalen bør åpnes.');
+
+  return [
+    ['Hva dilemmaet egentlig handler om', 'Dette er ikke bare en fraværssamtale. Det handler om hvordan du håndterer en mulig karrieremulighet samtidig som medarbeideren kommer tilbake etter et langt fravær.'],
+    ['Forslag til åpning', opening],
+    ['Spørsmål du kan bruke', questions.map(q => `• ${q}`).join('<br>')],
+    ['Vær særlig oppmerksom på', attention.map(item => `• ${item}`).join('<br>')],
+    ['Neste steg', 'Avklar først om du trenger hjelp til å vurdere selve beslutningen, eller til å kommunisere en beslutning som allerede er tatt. De to samtalene bør ikke blandes sammen.']
   ];
 }
 
@@ -588,9 +758,10 @@ function renderStructuredGuidance() {
     helpRequest: document.querySelector('#help-request').value.trim(),
     followups: collectFollowupAnswers()
   };
-  const sections = currentTopic?.id === 'fravaer-oppfolging'
+  const crossThemeSections = buildCrossThemeDilemmaGuidance(context);
+  const sections = crossThemeSections || (currentTopic?.id === 'fravaer-oppfolging'
     ? buildFravaerGuidance(context)
-    : buildGenericGuidance(context);
+    : buildGenericGuidance(context));
 
   const grid = document.querySelector('#structured-guidance');
   grid.innerHTML = sections.map(([title, content], index) => `
@@ -602,9 +773,14 @@ function renderStructuredGuidance() {
 
   const intro = document.querySelector('#result-intro');
   if (intro) {
-    intro.textContent = currentTopic?.id === 'fravaer-oppfolging'
-      ? 'Forslaget er tilpasset Fravær og oppfølging og det du har skrevet. Denne versjonen bruker foreløpig lokal regelbasert logikk; samme flyt skal senere kobles til KI.'
-      : 'Forslaget bygger foreløpig på en generell regelbasert prototype. Temaene skal få tilsvarende spesialisert logikk etter hvert.';
+    if (crossThemeSections) {
+      intro.textContent = 'Lokal prototype: denne saken er behandlet som et dilemma som berører flere tema. Ekte KI er ikke koblet til ennå; denne flyten viser hvordan Samtalestøtte skal arbeide som samtalepartner fremfor å tvinge saken inn i én kategori.';
+    } else if (currentTopic?.id === 'fravaer-oppfolging') {
+      const localAnalysis = analyzeSituation(context.situation + ' ' + Object.values(context.followups || {}).join(' '));
+      intro.textContent = `Lokal prototype: rådet er tilpasset mønstre som er gjenkjent som «${localAnalysis.classification}». Ekte KI er ikke koblet til ennå, så vurder om rådet faktisk passer situasjonen.`;
+    } else {
+      intro.textContent = 'Dette er foreløpig generell prototypelogikk. Ekte KI er ikke koblet til ennå, så vurder om rådet faktisk passer situasjonen.';
+    }
   }
 }
 
