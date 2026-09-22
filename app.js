@@ -206,7 +206,6 @@ function createTopicCard(topic) {
   button.innerHTML = `
     <span class="topic-icon" aria-hidden="true">${svgIcons[topic.iconKey]}</span>
     <strong>${topic.title}</strong>
-    <span class="card-arrow" aria-hidden="true">→</span>
   `;
   button.addEventListener('click', () => openTopic(topic));
   return button;
