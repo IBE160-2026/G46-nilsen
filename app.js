@@ -21,8 +21,6 @@ const topics = [
     id: 'alkohol-rus',
     title: 'Alkohol og rus',
     iconKey: 'bottle',
-    image: 'topic-alkohol-rus.png',
-    imageAlt: 'Alvorlig, men rolig samtale mellom kvinnelig leder og kvinnelig medarbeider i et moderne møterom',
     description: 'Støtte til samtaler der observasjoner, bekymring, påvirkning eller sikkerhet gjør det nødvendig å ta opp alkohol eller rus på en tydelig og respektfull måte.',
     representations: ['Bekymring og endret fungering', 'Påvirkning eller sikkerhet', 'Oppfølging og tilbakekomst'],
     keywords: ['alkohol','rus','påvirket','beruset','stoff','narkotika','promille','drikking','bekymring'],
@@ -39,8 +37,6 @@ const topics = [
     id: 'naervaer-oppfolging',
     title: 'Nærvær og oppfølging',
     iconKey: 'bed',
-    image: 'topic-naervaer-oppfolging.png',
-    imageAlt: 'Oppfølgingssamtale mellom leder og medarbeider i et lyst kontormiljø',
     description: 'Støtte til gode samtaler om fravær, oppmøte, tilbakekomst, arbeidsevne og tilrettelegging – med fokus på både medarbeideren og arbeidssituasjonen.',
     representations: ['Fravær og oppmøte', 'Tilbakekomst til arbeid', 'Tilrettelegging og kapasitet'],
     keywords: ['sykefravær','fravær','sykmelding','oppmøte','for sent','punktlighet','tilrettelegging','tilbakekomst','arbeidsevne'],
@@ -57,8 +53,6 @@ const topics = [
     id: 'prestasjon-utvikling',
     title: 'Prestasjon og utvikling',
     iconKey: 'list',
-    image: 'topic-prestasjon-utvikling.png',
-    imageAlt: 'Utviklingssamtale med fokus på mål og fremgang ved et skrivebord',
     description: 'Støtte til samtaler om forventninger, kvalitet, mål, kompetanse og utvikling når arbeidshverdagen ikke fungerer helt som ønsket.',
     representations: ['Mål og leveranser', 'Kvalitet og ansvar', 'Kompetanse og utvikling'],
     keywords: ['prestasjon','leveranse','resultat','motivasjon','kvalitet','feil','frist','arbeidsutførelse','mestring','kompetanse','utvikling'],
@@ -75,8 +69,6 @@ const topics = [
     id: 'lonn-utvikling',
     title: 'Lønn og utvikling',
     iconKey: 'coins',
-    image: 'topic-lonn-utvikling.png',
-    imageAlt: 'Positiv samtale om lønn, utvikling og forventninger i et moderne kontor',
     description: 'Støtte til ryddige samtaler om lønn, forventninger, ansvar, utviklingsmuligheter og hvordan virksomhetens rammer kan forklares tydelig.',
     representations: ['Lønnsforventninger', 'Nye oppgaver og ansvar', 'Utvikling og muligheter'],
     keywords: ['lønn','lønnsøkning','lønnsutvikling','lønnssamtale','forfremmelse','kompensasjon','ansvarstillegg','utvikling'],
@@ -92,8 +84,6 @@ const topics = [
     id: 'samarbeid-kommunikasjon',
     title: 'Samarbeid og kommunikasjon',
     iconKey: 'people',
-    image: 'topic-samarbeid-kommunikasjon.png',
-    imageAlt: 'Flere kolleger samarbeider rundt en laptop i et moderne kontor',
     description: 'Støtte til samtaler som skal styrke kommunikasjon, tillit, rolleforståelse og samspill når samarbeidet har blitt krevende.',
     representations: ['Kommunikasjon og tone', 'Uenighet og tillit', 'Roller og samspill i team'],
     keywords: ['samarbeid','konflikt','uenighet','kommunikasjon','tone','kollega','tillit','respekt','team','samspill'],
@@ -110,8 +100,6 @@ const topics = [
     id: 'avslutning-arbeidsforhold',
     title: 'Avslutning av arbeidsforhold',
     iconKey: 'person',
-    image: 'topic-avslutning-arbeidsforhold.png',
-    imageAlt: 'Alvorlig og profesjonell samtale om avslutning av arbeidsforhold',
     description: 'Støtte til tydelige og respektfulle samtaler når arbeidsforholdet kan være på vei mot en avslutning eller saken krever en mer formell videre prosess.',
     representations: ['Prøvetid og tidligere oppfølging', 'Endrede behov eller rolle', 'Samtale før videre prosess'],
     keywords: ['oppsigelse','slutte','avslutte','prøvetid','arbeidsforhold','avskjed','bemanning','nedbemanning'],
@@ -128,8 +116,6 @@ const topics = [
     id: 'sikkerhet-ansvar',
     title: 'Sikkerhet og ansvar',
     iconKey: 'warning',
-    image: 'topic-sikkerhet-ansvar.png',
-    imageAlt: 'Sikkerhetsmøte med planer, sikkerhetsutstyr og tydelig dialog',
     description: 'Støtte til samtaler om sikker praksis, rutiner, risiko, avvik og ansvar – med mål om læring, tydelighet og tryggere arbeid.',
     representations: ['Rutiner og etterlevelse', 'Avvik og hendelser', 'Risiko, ansvar og læring'],
     keywords: ['sikkerhet','avvik','hendelse','rutiner','prosedyre','rapportering','risiko','informasjonssikkerhet','ansvar'],
@@ -146,8 +132,6 @@ const topics = [
     id: 'livssituasjoner',
     title: 'Livssituasjoner',
     iconKey: 'team',
-    image: 'topic-livssituasjoner.png',
-    imageAlt: 'Omsorgsfull samtale der en medarbeider sitter med hodet bøyd og blir lyttet til',
     description: 'Støtte til omsorgsfulle og profesjonelle samtaler når personlige belastninger, omsorgsansvar, sorg eller andre livssituasjoner påvirker arbeidshverdagen.',
     representations: ['Familie og omsorg', 'Sorg, stress og belastning', 'Støtte og hensiktsmessige grenser'],
     keywords: ['livssituasjon','familie','sorg','omsorg','stress','psykisk','økonomi','privat','utmattelse','belastning'],
@@ -290,13 +274,6 @@ function openTopic(topic) {
   document.querySelector('#topic-page-icon').innerHTML = svgIcons[topic.iconKey];
   document.querySelector('#topic-representations').innerHTML = topic.representations
     .map(item => `<span class="representation-chip">${item}</span>`).join('');
-
-  const topicHeroImage = document.querySelector('.topic-hero-visual img');
-  if (topicHeroImage) {
-    topicHeroImage.src = topic.image || 'hero-conversation-exact.png';
-    topicHeroImage.alt = topic.imageAlt || `Illustrasjon for temaet ${topic.title}`;
-  }
-
   setBreadcrumb(`Forbered samtale / ${topic.title}`);
 
   const detailSearch = document.querySelector('#topic-detail-search');
