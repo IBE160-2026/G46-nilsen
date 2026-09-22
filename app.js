@@ -207,6 +207,45 @@ function showView(name) {
 }
 
 
+function clearGuidanceSession({ clearInputs = true } = {}) {
+  if (clearInputs) {
+    const form = document.querySelector('#situation-form');
+    if (form) {
+      form.reset();
+      form.querySelectorAll('textarea, input').forEach(field => {
+        if (field.type !== 'checkbox' && field.type !== 'radio') field.value = '';
+      });
+    }
+  }
+
+  const privacy = document.querySelector('#privacy-check');
+  if (privacy) {
+    privacy.hidden = true;
+    privacy.innerHTML = '';
+    privacy.className = 'privacy-check';
+  }
+
+  const understanding = document.querySelector('#situation-understanding');
+  if (understanding) understanding.hidden = true;
+  const understandingContent = document.querySelector('#understanding-content');
+  if (understandingContent) understandingContent.innerHTML = '';
+
+  const followup = document.querySelector('#followup-panel');
+  if (followup) followup.hidden = true;
+  const followupQuestions = document.querySelector('#followup-questions');
+  if (followupQuestions) followupQuestions.innerHTML = '';
+
+  const result = document.querySelector('#prototype-result');
+  if (result) result.hidden = true;
+  const guidance = document.querySelector('#structured-guidance');
+  if (guidance) guidance.innerHTML = '';
+
+  const thread = document.querySelector('#conversation-thread');
+  if (thread) thread.innerHTML = '';
+  const continueInput = document.querySelector('#continue-input');
+  if (continueInput) continueInput.value = '';
+}
+
 function resetConversationState() {
   currentTopic = null;
   currentSubtopic = null;
@@ -234,34 +273,7 @@ function resetConversationState() {
     suggestion.innerHTML = '';
   }
 
-  const form = document.querySelector('#situation-form');
-  if (form) form.reset();
-
-  const privacy = document.querySelector('#privacy-check');
-  if (privacy) {
-    privacy.hidden = true;
-    privacy.innerHTML = '';
-    privacy.className = 'privacy-check';
-  }
-
-  const understanding = document.querySelector('#situation-understanding');
-  if (understanding) {
-    understanding.hidden = true;
-    const understandingContent = document.querySelector('#understanding-content');
-    if (understandingContent) understandingContent.innerHTML = '';
-  }
-
-  const followup = document.querySelector('#followup-panel');
-  if (followup) followup.hidden = true;
-
-  const followupQuestions = document.querySelector('#followup-questions');
-  if (followupQuestions) followupQuestions.innerHTML = '';
-
-  const result = document.querySelector('#prototype-result');
-  if (result) result.hidden = true;
-
-  const guidance = document.querySelector('#structured-guidance');
-  if (guidance) guidance.innerHTML = '';
+  clearGuidanceSession({ clearInputs: true });
 }
 
 function createTopicCard(topic) {
@@ -333,9 +345,7 @@ function openGuidance(title, help) {
   document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
   document.querySelector('#guidance-help').textContent = help;
   setBreadcrumb(`Forbered samtale / ${currentTopic.title} / ${title}`);
-  document.querySelector('#prototype-result').hidden = true;
-  document.querySelector('#followup-panel').hidden = true;
-  document.querySelector('#situation-form').reset();
+  clearGuidanceSession({ clearInputs: true });
   updatePrivacyCheck();
   showView('guidance');
 }
@@ -832,10 +842,19 @@ function buildCrossThemeDilemmaGuidance(context) {
   if (!criteriaKnown) attention.push('Gjør eventuelle krav til den nye rollen konkrete før du bruker dem som begrunnelse.');
   if (!expectationKnown) attention.push('Avklar hva medarbeideren allerede har fått signaler om, fordi det påvirker hvordan samtalen bør åpnes.');
 
+  const reactions = [
+    ['«Dette føles urettferdig – jeg blir straffet for å ha vært syk.»', 'Ikke gå i forsvar. Anerkjenn opplevelsen og forklar hvilke konkrete forhold du faktisk legger til grunn. Hvis vurderingen i realiteten bygger på fraværet alene, bør beslutningen kvalitetssikres før du argumenterer videre.'],
+    ['«Betyr dette at dere ikke har tro på meg lenger?»', 'Skill mellom personens verdi og tidspunktet eller kravene i rollen. Vær konkret på hva som er avklart, og hva som fortsatt vurderes.'],
+    ['Medarbeideren blir stille eller tydelig skuffet.', 'Gi litt rom. Du kan si at du ser at dette treffer, og spørre hva medarbeideren trenger å få avklart før dere går videre.'],
+    ['Medarbeideren blir sint eller utfordrer begrunnelsen.', 'Hold deg til saklige forhold og unngå å diskutere motiv. Be gjerne medarbeideren si hva de opplever som feil eller urimelig i vurderingen.']
+  ];
+  const reactionHtml = reactions.map(([reaction, response]) => `<strong>${reaction}</strong><br>${response}`).join('<br><br>');
+
   return [
     ['Hva dilemmaet egentlig handler om', 'Dette er ikke bare en fraværssamtale. Det handler om hvordan du håndterer en mulig karrieremulighet samtidig som medarbeideren kommer tilbake etter et langt fravær.'],
     ['Forslag til åpning', opening],
     ['Spørsmål du kan bruke', questions.map(q => `• ${q}`).join('<br>')],
+    ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Vær særlig oppmerksom på', attention.map(item => `• ${item}`).join('<br>')],
     ['Neste steg', 'Avklar først om du trenger hjelp til å vurdere selve beslutningen, eller til å kommunisere en beslutning som allerede er tatt. De to samtalene bør ikke blandes sammen.']
   ];
@@ -888,6 +907,50 @@ function showStructuredGuidance() {
   document.querySelector('#prototype-result').hidden = false;
   renderStructuredGuidance();
   document.querySelector('#prototype-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function buildContinuationReply(question) {
+  const q = question.trim().toLowerCase();
+  const situation = document.querySelector('#situation')?.value.trim() || '';
+  const crossTheme = buildDilemmaUnderstanding(situation).special;
+
+  if (/sint|irritert|forbanna|provosert|urettferdig/.test(q)) {
+    return 'Hvis medarbeideren blir sint, prøv først å finne ut hva reaksjonen gjelder. Du kan for eksempel si: «Jeg hører at dette oppleves sterkt. Hva er det i det jeg har sagt som kjennes mest urimelig?» Unngå å forsvare beslutningen med en gang. Lytt først, korriger eventuelle misforståelser og gå deretter tilbake til de konkrete forholdene vurderingen bygger på.';
+  }
+  if (/lei seg|trist|gråt|gråter|skuffet/.test(q)) {
+    return 'Hvis medarbeideren blir lei seg eller skuffet, trenger du ikke fylle stillheten med flere argumenter. Anerkjenn reaksjonen, for eksempel: «Jeg ser at dette er vanskelig å høre.» Gi litt tid, og spør deretter hva medarbeideren trenger å få avklart. Det går an å være empatisk uten å trekke tilbake eller forskuttere en beslutning.';
+  }
+  if (/hva bør jeg ikke si|ikke si|unngå/.test(q)) {
+    return crossTheme
+      ? 'Unngå formuleringer som kobler opprykket direkte til sykefraværet, som «du har vært borte for lenge til at vi kan stole på deg i rollen». Unngå også å fremstille antakelser om kapasitet som fakta. Hold deg til det som faktisk er besluttet, hvilke krav rollen har, og hvilke vurderinger som fortsatt er åpne.'
+      : 'Unngå merkelapper, antakelser om motiv og formuleringer du ikke kan underbygge. Hold deg til konkrete observasjoner, konsekvenser og hva du ønsker å avklare sammen.';
+  }
+  if (/formuler|si det|åpne|ordlegge|tydelig/.test(q)) {
+    return crossTheme
+      ? 'En mulig formulering er: «Jeg vil være åpen med deg om at stillingen fortsatt er relevant i vurderingen, men jeg ønsker å være tydelig på hva vi trenger å avklare før vi tar en endelig beslutning. Jeg vil gjerne høre hvordan du selv ser på tidspunktet og kravene i rollen.» Tilpass dette til om beslutningen faktisk er tatt eller ikke.'
+      : 'Prøv en kort struktur: hva du vil snakke om, hva du konkret har observert, hvorfor det er viktig å avklare, og så et åpent spørsmål. For eksempel: «Jeg ønsker å ta opp … Jeg har observert … Jeg vil gjerne forstå hvordan du ser på dette.»';
+  }
+  if (/uenig|uenighet|enig/.test(q)) {
+    return 'Hvis medarbeideren er uenig, skill mellom uenighet om fakta og uenighet om vurderingen. Spør: «Hva i beskrivelsen min mener du ikke stemmer?» og deretter «Hva er du uenig i når det gjelder vurderingen eller veien videre?» Det gjør det lettere å unngå at hele samtalen blir én stor konflikt.';
+  }
+  if (/rettferdig|diskrimin|lovlig|juss|juridisk/.test(q)) {
+    return 'Det kan være en sensitiv vurdering. Jeg kan hjelpe deg med samtaleformen og med å skille fakta fra antakelser, men en konkret juridisk vurdering av beslutningen bør kvalitetssikres mot virksomhetens HR-/juridiske kompetanse og relevant regelverk før du kommuniserer en endelig konklusjon.';
+  }
+  return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale prototypelogikken. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
+}
+
+function appendConversationTurn(question) {
+  const thread = document.querySelector('#conversation-thread');
+  if (!thread || !question.trim()) return;
+  const reply = buildContinuationReply(question);
+  const user = document.createElement('div');
+  user.className = 'conversation-turn conversation-user';
+  user.innerHTML = `<span>Du</span><p>${question.replace(/[<>&]/g, ch => ({'<':'&lt;','>':'&gt;','&':'&amp;'}[ch]))}</p>`;
+  const assistant = document.createElement('div');
+  assistant.className = 'conversation-turn conversation-assistant';
+  assistant.innerHTML = `<span>Samtalestøtte</span><p>${reply}</p>`;
+  thread.append(user, assistant);
+  assistant.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
 function scoreTopic(topic, query) {
@@ -1150,10 +1213,14 @@ document.querySelector('#situation-form').addEventListener('submit', event => {
   event.preventDefault();
   updatePrivacyCheck();
   const text = document.querySelector('#situation').value;
+  const helpRequest = document.querySelector('#help-request').value;
+  clearGuidanceSession({ clearInputs: false });
+  document.querySelector('#situation').value = text;
+  document.querySelector('#help-request').value = helpRequest;
+  updatePrivacyCheck();
+
   const analysis = analyzeSituation(text);
   const questions = buildFollowupQuestions(text);
-  document.querySelector('#prototype-result').hidden = true;
-  document.querySelector('#followup-panel').hidden = true;
 
   renderSituationUnderstanding(analysis);
 
@@ -1169,6 +1236,21 @@ document.querySelector('#situation-form').addEventListener('submit', event => {
 
 document.querySelector('#generate-guidance').addEventListener('click', showStructuredGuidance);
 document.querySelector('#show-guidance-anyway').addEventListener('click', showStructuredGuidance);
+
+
+document.querySelector('#continue-form')?.addEventListener('submit', event => {
+  event.preventDefault();
+  const input = document.querySelector('#continue-input');
+  const value = input.value.trim();
+  if (!value) return;
+  appendConversationTurn(value);
+  input.value = '';
+  input.focus();
+});
+
+document.querySelectorAll('.continue-chip').forEach(button => {
+  button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
+});
 
 
 window.addEventListener('resize', () => {

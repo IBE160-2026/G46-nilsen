@@ -366,3 +366,47 @@ html[data-theme="dark"] .brand-logo{content:url('logo-light.png');filter:drop-sh
   .followup-choice-row,.followup-custom-input{grid-column:1/-1}
   .followup-choice{min-height:38px}
 }
+
+/* Fortsett samtalen */
+.continue-conversation{
+  margin-top:22px;
+  padding-top:20px;
+  border-top:1px solid var(--border);
+}
+.continue-heading{
+  display:flex;
+  align-items:flex-end;
+  justify-content:space-between;
+  gap:18px;
+  margin-bottom:12px;
+}
+.continue-heading h3{margin:3px 0 0;font-size:1.2rem;letter-spacing:-.02em}
+.continue-heading p{margin:0;color:var(--muted);font-size:.88rem}
+.continue-suggestions{display:flex;flex-wrap:wrap;gap:7px;margin-bottom:12px}
+.continue-chip{
+  min-height:34px;
+  padding:7px 11px;
+  border-radius:999px;
+  border:1px solid color-mix(in srgb,var(--accent) 20%,var(--border));
+  background:color-mix(in srgb,var(--accent-soft) 24%,var(--surface));
+  color:var(--text);
+  font:inherit;
+  font-size:.84rem;
+  font-weight:650;
+  cursor:pointer;
+}
+.continue-chip:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--border));background:color-mix(in srgb,var(--accent-soft) 50%,var(--surface))}
+.conversation-thread{display:grid;gap:8px;margin:10px 0}
+.conversation-turn{max-width:86%;padding:10px 12px;border-radius:14px;border:1px solid var(--border)}
+.conversation-turn span{display:block;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:4px}
+.conversation-turn p{margin:0;line-height:1.5;font-size:.92rem}
+.conversation-user{justify-self:end;background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface))}
+.conversation-assistant{justify-self:start;background:var(--surface)}
+.continue-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end;margin-top:10px}
+.continue-form textarea{min-height:54px;max-height:130px;resize:vertical;padding:10px 12px;font:inherit;font-size:.92rem}
+.continue-form .primary-button{min-height:44px;white-space:nowrap}
+@media(max-width:720px){
+  .continue-heading{align-items:flex-start;flex-direction:column;gap:5px}
+  .continue-form{grid-template-columns:1fr}
+  .conversation-turn{max-width:96%}
+}
