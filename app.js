@@ -207,6 +207,45 @@ function showView(name) {
 }
 
 
+function clearGuidanceSession({ clearInputs = true } = {}) {
+  if (clearInputs) {
+    const form = document.querySelector('#situation-form');
+    if (form) {
+      form.reset();
+      form.querySelectorAll('textarea, input').forEach(field => {
+        if (field.type !== 'checkbox' && field.type !== 'radio') field.value = '';
+      });
+    }
+  }
+
+  const privacy = document.querySelector('#privacy-check');
+  if (privacy) {
+    privacy.hidden = true;
+    privacy.innerHTML = '';
+    privacy.className = 'privacy-check';
+  }
+
+  const understanding = document.querySelector('#situation-understanding');
+  if (understanding) understanding.hidden = true;
+  const understandingContent = document.querySelector('#understanding-content');
+  if (understandingContent) understandingContent.innerHTML = '';
+
+  const followup = document.querySelector('#followup-panel');
+  if (followup) followup.hidden = true;
+  const followupQuestions = document.querySelector('#followup-questions');
+  if (followupQuestions) followupQuestions.innerHTML = '';
+
+  const result = document.querySelector('#prototype-result');
+  if (result) result.hidden = true;
+  const guidance = document.querySelector('#structured-guidance');
+  if (guidance) guidance.innerHTML = '';
+
+  const thread = document.querySelector('#conversation-thread');
+  if (thread) thread.innerHTML = '';
+  const continueInput = document.querySelector('#continue-input');
+  if (continueInput) continueInput.value = '';
+}
+
 function resetConversationState() {
   currentTopic = null;
   currentSubtopic = null;
@@ -234,39 +273,7 @@ function resetConversationState() {
     suggestion.innerHTML = '';
   }
 
-  const form = document.querySelector('#situation-form');
-  if (form) form.reset();
-
-  const privacy = document.querySelector('#privacy-check');
-  if (privacy) {
-    privacy.hidden = true;
-    privacy.innerHTML = '';
-    privacy.className = 'privacy-check';
-  }
-
-  const understanding = document.querySelector('#situation-understanding');
-  if (understanding) {
-    understanding.hidden = true;
-    const understandingContent = document.querySelector('#understanding-content');
-    if (understandingContent) understandingContent.innerHTML = '';
-  }
-
-  const followup = document.querySelector('#followup-panel');
-  if (followup) followup.hidden = true;
-
-  const followupQuestions = document.querySelector('#followup-questions');
-  if (followupQuestions) followupQuestions.innerHTML = '';
-
-  const result = document.querySelector('#prototype-result');
-  if (result) result.hidden = true;
-
-  const guidance = document.querySelector('#structured-guidance');
-  if (guidance) guidance.innerHTML = '';
-
-  const thread = document.querySelector('#conversation-thread');
-  if (thread) thread.innerHTML = '';
-  const continueInput = document.querySelector('#continue-input');
-  if (continueInput) continueInput.value = '';
+  clearGuidanceSession({ clearInputs: true });
 }
 
 function createTopicCard(topic) {
@@ -338,9 +345,7 @@ function openGuidance(title, help) {
   document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
   document.querySelector('#guidance-help').textContent = help;
   setBreadcrumb(`Forbered samtale / ${currentTopic.title} / ${title}`);
-  document.querySelector('#prototype-result').hidden = true;
-  document.querySelector('#followup-panel').hidden = true;
-  document.querySelector('#situation-form').reset();
+  clearGuidanceSession({ clearInputs: true });
   updatePrivacyCheck();
   showView('guidance');
 }
@@ -529,6 +534,144 @@ function renderSituationUnderstanding(analysis) {
   panel.hidden = false;
 }
 
+
+async function requestAiSituationAnalysis(situation, helpRequest) {
+  const response = await fetch('/api/analyze-situation', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      situation,
+      helpRequest,
+      selectedTopic: currentTopic?.title || '',
+      selectedSubtopic: currentSubtopic || ''
+    })
+  });
+
+  if (!response.ok) {
+    let payload = {};
+    try { payload = await response.json(); } catch (_) {}
+    const error = new Error(payload.message || 'KI-analysen kunne ikke gjennomføres.');
+    error.code = payload.error || 'AI_ERROR';
+    throw error;
+  }
+  return response.json();
+}
+
+function renderAiSituationUnderstanding(analysis) {
+  const panel = document.querySelector('#situation-understanding');
+  const content = document.querySelector('#understanding-content');
+  const confidence = document.querySelector('#understanding-confidence');
+  if (!panel || !content || !confidence) return;
+
+  const labels = { low: 'Foreløpig forståelse', medium: 'God forståelse', high: 'Tydelig forståelse' };
+  confidence.textContent = labels[analysis.confidence] || 'KI-forståelse';
+  confidence.dataset.level = analysis.confidence || 'medium';
+
+  const topics = (analysis.relevant_topics || []).length
+    ? analysis.relevant_topics.map(item => `<span class="representation-chip">${escapeHtml(item)}</span>`).join('')
+    : '<span class="representation-chip">Tema ikke låst ennå</span>';
+
+  const facts = (analysis.facts || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  const dilemma = (analysis.dilemma || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  const uncertainty = (analysis.uncertainties || []).length
+    ? `<div class="understanding-block"><strong>Det som fortsatt er uklart</strong><ul>${analysis.uncertainties.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`
+    : '';
+  const cautions = (analysis.cautions || []).length
+    ? `<div class="understanding-caution"><strong>Vær oppmerksom på</strong><ul>${analysis.cautions.map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul></div>`
+    : '';
+
+  content.innerHTML = `
+    <div class="understanding-summary"><p>${escapeHtml(analysis.summary || '')}</p></div>
+    <div class="understanding-block">
+      <strong>Dette ser ut til å berøre</strong>
+      <div class="topic-representations">${topics}</div>
+    </div>
+    <div class="understanding-block">
+      <strong>Dette har jeg forstått fra beskrivelsen din</strong>
+      <ul>${facts || '<li>Ingen sikre fakta utover beskrivelsen er lagt til.</li>'}</ul>
+    </div>
+    <div class="understanding-block">
+      <strong>Selve dilemmaet</strong>
+      <ul>${dilemma || '<li>Dilemmaet er ikke tydelig nok formulert ennå.</li>'}</ul>
+    </div>
+    ${uncertainty}
+    ${cautions}
+  `;
+  panel.hidden = false;
+}
+
+function normalizeAiClarifications(items) {
+  return (items || []).slice(0, 3).map((item, index) => ({
+    id: item.id || `ai-${index + 1}`,
+    question: item.question,
+    options: Array.isArray(item.options) ? item.options.slice(0, 5) : [],
+    customLabel: item.allow_custom === false ? null : (item.custom_label || 'Annet / skriv selv'),
+    allowCustom: item.allow_custom !== false
+  })).filter(item => item.question && item.options.length >= 2);
+}
+
+function renderAiFollowupQuestions(items) {
+  const normalized = normalizeAiClarifications(items);
+  const container = document.querySelector('#followup-questions');
+  container.innerHTML = normalized.map((item, index) => `
+    <div class="followup-question-field" data-followup-question="${escapeHtml(item.id)}">
+      <span class="followup-number">${index + 1}</span>
+      <span class="followup-question-copy">${escapeHtml(item.question)}</span>
+      <div class="followup-choice-row" role="group" aria-label="Svaralternativer">
+        ${item.options.map(option => `<button type="button" class="followup-choice" data-followup-choice="${escapeHtml(item.id)}" data-value="${escapeHtml(option)}">${escapeHtml(option)}</button>`).join('')}
+        ${item.allowCustom ? `<button type="button" class="followup-choice followup-choice-custom" data-followup-custom="${escapeHtml(item.id)}">${escapeHtml(item.customLabel || 'Annet / skriv selv')}</button>` : ''}
+      </div>
+      ${item.allowCustom ? `<textarea class="followup-custom-input" rows="2" data-followup-custom-input="${escapeHtml(item.id)}" autocomplete="off" placeholder="Skriv kort med egne ord …" hidden></textarea>` : ''}
+    </div>
+  `).join('');
+
+  wireFollowupControls(container);
+  return normalized.length;
+}
+
+function wireFollowupControls(container) {
+  container.querySelectorAll('[data-followup-choice]').forEach(button => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.followupChoice;
+      const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
+      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
+      button.classList.add('selected');
+      field.dataset.answer = button.dataset.value;
+      const custom = field.querySelector(`[data-followup-custom-input="${CSS.escape(id)}"]`);
+      if (custom) { custom.hidden = true; custom.value = ''; }
+    });
+  });
+
+  container.querySelectorAll('[data-followup-custom]').forEach(button => {
+    button.addEventListener('click', () => {
+      const id = button.dataset.followupCustom;
+      const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
+      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
+      button.classList.add('selected');
+      field.dataset.answer = '';
+      const custom = field.querySelector(`[data-followup-custom-input="${CSS.escape(id)}"]`);
+      if (custom) { custom.hidden = false; custom.focus(); }
+    });
+  });
+
+  container.querySelectorAll('[data-followup-custom-input]').forEach(input => {
+    input.addEventListener('input', () => {
+      const id = input.dataset.followupCustomInput;
+      const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
+      field.dataset.answer = input.value.trim();
+    });
+  });
+}
+
+function escapeHtml(value) {
+  return String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+    .replaceAll("'", '&#039;');
+}
+
 function buildFollowupQuestions(text) {
   const questions = [];
   const normalized = text.toLowerCase();
@@ -643,40 +786,7 @@ function renderFollowupQuestions(questions) {
       <textarea class="followup-custom-input" rows="2" data-followup-custom-input="${item.id}" autocomplete="off" placeholder="Skriv kort med egne ord …" hidden></textarea>
     </div>
   `).join('');
-
-  container.querySelectorAll('[data-followup-choice]').forEach(button => {
-    button.addEventListener('click', () => {
-      const id = button.dataset.followupChoice;
-      const field = container.querySelector(`[data-followup-question="${id}"]`);
-      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
-      button.classList.add('selected');
-      field.dataset.answer = button.dataset.value;
-      const custom = field.querySelector(`[data-followup-custom-input="${id}"]`);
-      custom.hidden = true;
-      custom.value = '';
-    });
-  });
-
-  container.querySelectorAll('[data-followup-custom]').forEach(button => {
-    button.addEventListener('click', () => {
-      const id = button.dataset.followupCustom;
-      const field = container.querySelector(`[data-followup-question="${id}"]`);
-      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
-      button.classList.add('selected');
-      field.dataset.answer = '';
-      const custom = field.querySelector(`[data-followup-custom-input="${id}"]`);
-      custom.hidden = false;
-      custom.focus();
-    });
-  });
-
-  container.querySelectorAll('[data-followup-custom-input]').forEach(input => {
-    input.addEventListener('input', () => {
-      const id = input.dataset.followupCustomInput;
-      const field = container.querySelector(`[data-followup-question="${id}"]`);
-      field.dataset.answer = input.value.trim();
-    });
-  });
+  wireFollowupControls(container);
 }
 
 function collectFollowupAnswers() {
@@ -931,7 +1041,7 @@ function buildContinuationReply(question) {
   if (/rettferdig|diskrimin|lovlig|juss|juridisk/.test(q)) {
     return 'Det kan være en sensitiv vurdering. Jeg kan hjelpe deg med samtaleformen og med å skille fakta fra antakelser, men en konkret juridisk vurdering av beslutningen bør kvalitetssikres mot virksomhetens HR-/juridiske kompetanse og relevant regelverk før du kommuniserer en endelig konklusjon.';
   }
-  return 'Jeg kan hjelpe videre med akkurat den delen. I denne lokale prototypen er fritekstoppfølgingen begrenset, så prøv gjerne å spørre mer konkret om en reaksjon, formulering, et vanskelig spørsmål fra medarbeideren eller hva du bør unngå å si. Når ekte KI kobles på, skal denne dialogen bruke hele situasjonen og alle tidligere svar som kontekst.';
+  return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale prototypelogikken. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
 }
 
 function appendConversationTurn(question) {
@@ -1204,22 +1314,55 @@ document.querySelector('#topic-detail-search').addEventListener('input', event =
 document.querySelector('#situation').addEventListener('input', updatePrivacyCheck);
 document.querySelector('#help-request').addEventListener('input', updatePrivacyCheck);
 
-document.querySelector('#situation-form').addEventListener('submit', event => {
+document.querySelector('#situation-form').addEventListener('submit', async event => {
   event.preventDefault();
   updatePrivacyCheck();
-  const text = document.querySelector('#situation').value;
-  const analysis = analyzeSituation(text);
-  const questions = buildFollowupQuestions(text);
-  document.querySelector('#prototype-result').hidden = true;
-  document.querySelector('#followup-panel').hidden = true;
+  const situationText = document.querySelector('#situation').value;
+  const helpRequest = document.querySelector('#help-request').value;
+  const submitButton = event.currentTarget.querySelector('button[type="submit"]');
 
-  renderSituationUnderstanding(analysis);
+  clearGuidanceSession({ clearInputs: false });
+  document.querySelector('#situation').value = situationText;
+  document.querySelector('#help-request').value = helpRequest;
+  updatePrivacyCheck();
 
-  if (questions.length) {
-    renderFollowupQuestions(questions);
+  const originalLabel = submitButton?.textContent || 'Forstå situasjonen';
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.textContent = 'Forstår situasjonen …';
+  }
+
+  try {
+    const aiAnalysis = await requestAiSituationAnalysis(situationText, helpRequest);
+    renderAiSituationUnderstanding(aiAnalysis);
+    const count = aiAnalysis.needs_clarification
+      ? renderAiFollowupQuestions(aiAnalysis.clarifications)
+      : 0;
+
+    if (count > 0) {
+      document.querySelector('#followup-panel').hidden = false;
+    } else {
+      // KI har bare analysert situasjonen i denne fasen. Vi lar ikke lokal motor late som
+      // den kan gi et ekte KI-råd uten at brukeren uttrykkelig går videre.
+      document.querySelector('#followup-panel').hidden = false;
+      document.querySelector('#followup-questions').innerHTML = '<p class="ai-ready-note">KI-en mener ingen nødvendig avklaring mangler. Du kan gå videre til samtalestøtten.</p>';
+    }
+  } catch (error) {
+    const localAnalysis = analyzeSituation(situationText);
+    const localQuestions = buildFollowupQuestions(situationText);
+    renderSituationUnderstanding(localAnalysis);
+    if (localQuestions.length) renderFollowupQuestions(localQuestions);
     document.querySelector('#followup-panel').hidden = false;
-  } else {
-    showStructuredGuidance();
+
+    const note = document.createElement('div');
+    note.className = 'privacy-check warning ai-fallback-note';
+    note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale prototypen vises kun for å teste flyten.</span>`;
+    document.querySelector('#situation-understanding').prepend(note);
+  } finally {
+    if (submitButton) {
+      submitButton.disabled = false;
+      submitButton.textContent = originalLabel;
+    }
   }
 
   document.querySelector('#situation-understanding').scrollIntoView({ behavior: 'smooth', block: 'start' });

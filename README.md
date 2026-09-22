@@ -1,31 +1,44 @@
-# Samtalestøtte – prototype v2
+# Samtalestøtte – prototype v11
 
-Videreutviklet fra prototype v1 med endringene som ble avtalt for v2.
+Denne versjonen markerer overgangen fra lokal nøkkelordlogikk til ekte KI.
 
-## Endringer i v2
-- valgt Samtalestøtte-logo integrert
-- renere og luftigere forside med mindre hjelpetekst
-- større temakort, høyere kontrast og tydelig ikon per hovedtema
-- flyten hovedtema → undertema → forberedelse beholdt
-- situasjonssiden forenklet til ett stort hovedfelt + ett valgfritt felt «Hva ønsker du hjelp til?»
-- tydelig personvernveiledning med anonymiseringseksempler: «medarbeideren» og «hen»
-- enkel lokal prototypekontroll for mulig e-post, telefonnummer, kjønnede pronomen og mulig personnavn
-- prototypelogikk for å stille noen oppfølgingsspørsmål dersom situasjonsbeskrivelsen mangler sentral kontekst
-- strukturert eksempel på fremtidig KI-svar: åpning, struktur, spørsmål, mulige reaksjoner, oppmerksomhetspunkter og oppfølging
-- venstremeny beholdt
-- lyst, mørkt og systemtema beholdt
+## Ekte KI i denne versjonen
+
+KI brukes foreløpig bare til:
+- å forstå brukerens fritekst semantisk
+- å skille fakta fra antakelser
+- å formulere selve dilemmaet
+- å identifisere maks to relevante temaer
+- å stille 0–3 nødvendige avklaringsspørsmål
+- å lage korte klikkbare svaralternativer
+
+Selve samtalerådene er fortsatt lokal prototype-logikk. Dette er bevisst: situasjonsforståelsen skal kvalitetstestes før KI får generere råd.
+
+## Start appen med KI
+
+1. Installer Node.js.
+2. Åpne terminal i denne mappen.
+3. Kjør `npm install`.
+4. Kopier `.env.example` til `.env`.
+5. Sett inn API-nøkkelen din i `OPENAI_API_KEY`.
+6. Kjør `npm start`.
+7. Åpne `http://localhost:3000`.
+
+Appen må kjøres via serveren for at KI-integrasjonen skal virke. Åpner du bare `index.html` direkte, faller den tilbake til lokal prototypelogikk.
+
+## Sikkerhet
+
+API-nøkkelen ligger kun på serversiden og skal aldri legges inn i `app.js`, HTML eller annen kode som sendes til nettleseren. `.env` er lagt i `.gitignore`.
+
+## Kvalitet og faggrunnlag
+
+- `AI-SYSTEMPROMPT.md` – sikkerhets- og samtaleprinsipper
+- `FAGGRUNNLAG-FRAVAER.md` – faglig grunnlag for Fravær og oppfølging
+- `AI-TESTCASES.json` – realistiske testscenarier
+- `AI-TESTPLAN.md` – kriterier for god og dårlig modelladferd
+- `AI-RESPONSE-CONTRACT.md` – responskontrakt
+- `AI-INTEGRATION.md` – tekniske detaljer for første KI-kobling
 
 ## Viktig
-Personvernkontrollen er bare en prototype og kan både overse opplysninger og gi falske treff. Den er ment å vise hvordan funksjonen kan fungere i en senere KI-versjon.
 
-Åpne `index.html` i nettleseren for å teste prototypen.
-
-## KI-kvalitetstesting
-
-Prosjektet inneholder nå også:
-- `AI-TESTCASES.json` – realistiske testscenarier for temaidentifikasjon og sikker adferd.
-- `AI-TESTPLAN.md` – kriterier for hvordan KI-responser skal vurderes.
-- `AI-RESPONSE-CONTRACT.md` – strukturert responsformat for fremtidig KI-integrasjon.
-
-Disse skal brukes som regresjonstester når systemprompt, modell eller faglogikk endres.
-
+Personvernkontrollen i nettleseren er fortsatt en prototype og kan både overse opplysninger og gi falske treff. Ikke bruk reelle navn eller andre unødvendige identifiserende personopplysninger under testing.
