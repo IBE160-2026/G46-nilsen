@@ -7,67 +7,49 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <div class="app-shell">
-    <aside class="sidebar" id="sidebar">
-      <div class="sidebar-top">
-        <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
-          <img class="brand-logo" src="logo.png" alt="Samtalestøtte" />
-        </button>
-        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Skjul eller vis meny">☰</button>
-      </div>
+  <div class="page-shell">
+    <header class="site-header">
+      <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
+        <img class="brand-logo" src="logo.png" alt="Samtalestøtte" />
+        <span class="brand-text">
+          <strong>Samtalestøtte</strong>
+          <small>Støtte til krevende samtaler i arbeidslivet</small>
+        </span>
+      </button>
 
-      <nav class="nav" aria-label="Hovedmeny">
-        <button class="nav-item active" data-view="home" type="button"><span class="nav-glyph">⌂</span><span>Hjem</span></button>
-        <button class="nav-item" data-view="prepare" type="button"><span class="nav-glyph">💬</span><span>Forbered samtale</span></button>
-        <button class="nav-item" data-view="settings" type="button"><span class="nav-glyph">⚙</span><span>Innstillinger</span></button>
-        <button class="nav-item" disabled type="button"><span class="nav-glyph">🕘</span><span>Historikk</span><small>ved innlogging</small></button>
-      </nav>
-
-      <div class="sidebar-bottom">
-        <div class="privacy-mini">
-          <strong>Personvern først</strong>
-          <p>Beskriv roller og situasjoner – ikke personer.</p>
+      <div class="header-actions">
+        <div class="theme-switcher" role="group" aria-label="Velg fargetema">
+          <button data-theme="light">Lyst</button>
+          <button data-theme="dark">Mørkt</button>
+          <button data-theme="system">System</button>
+        </div>
+        <button class="settings-trigger" data-view="settings" type="button" aria-label="Innstillinger">⚙</button>
+        <div class="profile-chip" aria-label="Eksempel på brukerprofil">
+          <span class="profile-avatar">K</span>
+          <span>Kari Nilsen</span>
         </div>
       </div>
-    </aside>
+    </header>
 
-    <main class="main">
-      <header class="topbar">
-        <div class="topbar-left">
-          <div id="breadcrumb">Hjem</div>
-        </div>
-        <div class="topbar-right">
-          <div class="theme-switcher" role="group" aria-label="Velg fargetema">
-            <button data-theme="light" type="button">Lyst</button>
-            <button data-theme="dark" type="button">Mørkt</button>
-            <button data-theme="system" type="button">System</button>
-          </div>
-          <div class="profile-chip" aria-label="Eksempel på brukerprofil">
-            <span class="profile-avatar">K</span>
-            <span class="profile-text">
-              <strong>Kari Nilsen</strong>
-              <small>Logg inn for historikk</small>
-            </span>
-          </div>
-        </div>
-      </header>
-
+    <main class="main-content">
       <section id="home-view" class="view active-view">
-        <div class="page-intro compact-intro">
-          <div class="intro-copy">
-            <span class="eyebrow">BEDRE FORBEREDT. BEDRE SAMTALER.</span>
+        <section class="hero-banner">
+          <div class="hero-copy">
+            <span class="eyebrow">BEDRE SAMTALER. ET STYRKET ARBEIDSLIV.</span>
             <h1>Forbered vanskelige samtaler med trygghet og struktur</h1>
-            <p>Velg tema direkte, eller skriv kort hva samtalen gjelder for å få forslag til riktig kategori.</p>
+            <p>Velg tema, beskriv situasjonen anonymt og få støtte til å planlegge en profesjonell og tydelig samtale.</p>
+            <button class="primary-button" id="hero-start-button" type="button">Kom i gang <span aria-hidden="true">→</span></button>
           </div>
-          <div class="intro-visual">
-            <img src="hero-conversation.png" alt="Mennesker som snakker sammen i et møte" />
+          <div class="hero-visual">
+            <img src="hero-conversation.png" alt="Illustrasjon av mennesker i samtale" />
           </div>
-        </div>
+        </section>
 
         <section class="finder-panel">
           <div class="finder-heading">
-            <h2>Finn riktig tema</h2>
-            <p>Skriv kort hva du ønsker samtale om, så foreslår prototypen hvilket tema som passer best.</p>
+            <span class="eyebrow">USIKKER PÅ TEMA?</span>
+            <h2>Beskriv hva du ønsker samtale om</h2>
+            <p>Skriv kort hva saken gjelder, så foreslår prototypen hvilket tema som passer best.</p>
           </div>
 
           <form id="topic-finder-form" class="topic-finder-form">
@@ -78,7 +60,7 @@
               aria-label="Beskriv hva samtalen gjelder"
               required
             />
-            <button type="submit" class="primary-button compact-button">Finn tema</button>
+            <button type="submit" class="primary-button">Finn riktig tema</button>
           </form>
 
           <div id="topic-suggestion" class="topic-suggestion" hidden></div>
@@ -88,7 +70,7 @@
           <div class="section-heading">
             <div>
               <h2>Velg tema</h2>
-              <p>Du kan gå direkte videre til undertema og samtaleforberedelse.</p>
+              <p>Velg det temaet som ligner mest på situasjonen din. Du kommer deretter til en egen side med undertemaer, spørsmål og forslag til formuleringer.</p>
             </div>
           </div>
           <div id="topic-grid" class="topic-grid"></div>
@@ -105,8 +87,8 @@
           <article class="info-card info-card-warm">
             <div class="info-icon">💡</div>
             <div>
-              <strong>Når du velger et tema, får du støtte til:</strong>
-              <p>åpning, spørsmål, mulige reaksjoner og ting å være oppmerksom på.</p>
+              <strong>Når du velger et tema, får du en egen temaside med:</strong>
+              <p>forslag til åpning, spørsmål, mulige reaksjoner og ting å være oppmerksom på.</p>
             </div>
           </article>
         </section>

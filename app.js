@@ -133,7 +133,6 @@ const topics = [
 ];
 
 
-
 let currentTopic = null;
 let currentSubtopic = null;
 
@@ -155,24 +154,9 @@ const topicKeywords = {
   livssituasjoner: ['livssituasjon', 'familie', 'sorg', 'omsorg', 'stress', 'psykisk', 'økonomi', 'privat', 'utmattelse', 'belastning']
 };
 
-function setBreadcrumb(text) {
-  document.querySelector('#breadcrumb').textContent = text;
-}
-
-function updateNavState(name) {
-  document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
-    btn.classList.toggle('active',
-      (name === 'home' && btn.dataset.view === 'home') ||
-      ((name === 'topic' || name === 'guidance') && btn.dataset.view === 'prepare') ||
-      (name === 'settings' && btn.dataset.view === 'settings')
-    );
-  });
-}
-
 function showView(name) {
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
-  updateNavState(name);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -206,7 +190,6 @@ function openTopic(topic) {
   document.querySelector('#topic-title').textContent = topic.title;
   document.querySelector('#topic-description').textContent = topic.description;
   document.querySelector('#topic-page-icon').textContent = topic.icon;
-  setBreadcrumb(`Forbered samtale / ${topic.title}`);
 
   const grid = document.querySelector('#subtopic-grid');
   grid.innerHTML = '';
@@ -225,7 +208,6 @@ function openGuidance(title, help) {
   currentSubtopic = title;
   document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
   document.querySelector('#guidance-help').textContent = help;
-  setBreadcrumb(`Forbered samtale / ${currentTopic.title} / ${title}`);
   document.querySelector('#prototype-result').hidden = true;
   document.querySelector('#followup-panel').hidden = true;
   document.querySelector('#situation-form').reset();
@@ -307,10 +289,12 @@ function showStructuredGuidance() {
 function scoreTopic(topic, query) {
   const q = query.toLowerCase();
   let score = 0;
+
   const keywordList = topicKeywords[topic.id] || [];
   keywordList.forEach(keyword => {
     if (q.includes(keyword)) score += 5;
   });
+
   if (q.includes(topic.title.toLowerCase())) score += 6;
   topic.description.toLowerCase().split(/[,\.\s]+/).forEach(word => {
     if (word && word.length > 3 && q.includes(word)) score += 1;
@@ -321,6 +305,7 @@ function scoreTopic(topic, query) {
       if (word.length > 3 && haystack.includes(word)) score += 1;
     });
   });
+
   return score;
 }
 
@@ -352,15 +337,18 @@ function renderSuggestion(query) {
     const alternatives = results.slice(1, 3).filter(item => item.score > 0)
       .map(item => `<span class="mini-chip">Alternativ: ${item.topic.title}</span>`)
       .join('');
+
     box.innerHTML = `
       <strong>Foreslått tema: ${best.topic.title}</strong>
       <p>${best.topic.description}</p>
       <div class="suggestion-actions">
-        <button class="primary-button compact-button" type="button" id="open-suggested-topic">Åpne tema</button>
+        <button class="primary-button" type="button" id="open-suggested-topic">Åpne tema</button>
         ${alternatives}
       </div>
     `;
-    box.querySelector('#open-suggested-topic').addEventListener('click', () => openTopic(best.topic));
+
+    const openButton = box.querySelector('#open-suggested-topic');
+    openButton.addEventListener('click', () => openTopic(best.topic));
   }
 
   box.querySelectorAll('[data-topic-id]').forEach(button => {
@@ -390,50 +378,21 @@ document.querySelectorAll('[data-theme]').forEach(button => {
   button.addEventListener('click', () => applyTheme(button.dataset.theme));
 });
 
-document.querySelectorAll('.nav-item[data-view]').forEach(button => {
+document.querySelectorAll('[data-view]').forEach(button => {
   button.addEventListener('click', () => {
-    if (button.dataset.view === 'home') {
-      setBreadcrumb('Hjem');
-      showView('home');
-    }
-    if (button.dataset.view === 'prepare') {
-      setBreadcrumb('Forbered samtale');
-      showView('home');
-      setTimeout(() => document.querySelector('#topics').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
-    }
-    if (button.dataset.view === 'settings') {
-      setBreadcrumb('Innstillinger');
-      showView('settings');
-    }
+    if (button.dataset.view === 'settings') showView('settings');
   });
 });
 
-document.querySelector('#brand-home-button').addEventListener('click', () => {
-  setBreadcrumb('Hjem');
-  showView('home');
-});
-
+document.querySelector('#brand-home-button').addEventListener('click', () => showView('home'));
 document.querySelector('#hero-start-button').addEventListener('click', () => {
   document.querySelector('#topics').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
-
-document.querySelector('#sidebar-toggle').addEventListener('click', () => {
-  document.querySelector('#sidebar').classList.toggle('sidebar-collapsed');
-});
-
-document.querySelector('#back-to-home').addEventListener('click', () => {
-  setBreadcrumb('Hjem');
-  showView('home');
-});
-
+document.querySelector('#back-to-home').addEventListener('click', () => showView('home'));
 document.querySelector('#back-to-topic').addEventListener('click', () => {
   if (currentTopic) openTopic(currentTopic);
 });
-
-document.querySelector('#back-from-settings').addEventListener('click', () => {
-  setBreadcrumb('Hjem');
-  showView('home');
-});
+document.querySelector('#back-from-settings').addEventListener('click', () => showView('home'));
 
 document.querySelector('#topic-finder-form').addEventListener('submit', event => {
   event.preventDefault();
@@ -477,5 +436,3 @@ window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () 
 
 renderTopics();
 initTheme();
-setBreadcrumb('Hjem');
-updateNavState('home');
