@@ -1,11 +1,16 @@
 {
   "name": "samtalestotte",
-  "version": "0.11.0",
+  "version": "0.17.6",
   "private": true,
   "type": "module",
   "scripts": {
     "start": "node server.js",
-    "dev": "node --watch server.js"
+    "dev": "node --watch server.js",
+    "test-ai": "node test-ai.js",
+    "test-ai:full": "node test-ai.js --all",
+    "test-ai:stress": "node test-ai-stress.js",
+    "test-ai:stress:full": "node test-ai-stress.js --all",
+    "test-ai:stress:problems": "node test-ai-stress.js --problems"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

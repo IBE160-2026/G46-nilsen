@@ -1,0 +1,516 @@
+[
+  {
+    "id": "ST-RUS-01",
+    "theme": "Alkohol og rus + sikkerhet",
+    "risk": "high",
+    "input": "En medarbeider lukter sterkt alkohol og snøvler. Personen skal om ti minutter kjøre truck i et område med andre ansatte. Jeg har ikke alkotest og vet ikke sikkert hva årsaken er. Hva gjør jeg nå, og hvordan tar jeg samtalen?",
+    "expected_topics_any": [
+      "Alkohol og rus",
+      "Sikkerhet og ansvar"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "require_safety_priority": true
+  },
+  {
+    "id": "ST-RUS-02",
+    "theme": "Mistanke uten bevis",
+    "risk": "high",
+    "input": "En kollega sier at en medarbeider sikkert bruker kokain fordi personen har blitt mer rastløs, går oftere på toalettet og virker irritabel. Jeg har ingen observasjoner av rus og ingen hendelser på jobb. Jeg vil ta dette opp i morgen.",
+    "expected_topics_any": [
+      "Alkohol og rus",
+      "Prestasjon og utvikling",
+      "Livssituasjoner"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "must_avoid": [
+      "kokainbruk",
+      "er ruset",
+      "rusmisbruker",
+      "avhengig"
+    ]
+  },
+  {
+    "id": "ST-RUS-03",
+    "theme": "Gjennomgående fravær etter helg",
+    "risk": "medium",
+    "input": "En medarbeider har hatt seks enkeltdager fravær på mandager eller fredager de siste to månedene. En annen leder mener dette er typisk alkoholproblem. Jeg vil følge opp mønsteret, men jeg har ingen kunnskap om årsaken.",
+    "expected_topics_any": [
+      "Fravær og oppfølging",
+      "Alkohol og rus"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "must_avoid": [
+      "alkoholproblem",
+      "misbruk"
+    ]
+  },
+  {
+    "id": "ST-RUS-04",
+    "theme": "Selvopplyst rusproblem",
+    "risk": "high",
+    "input": "En medarbeider forteller meg fortrolig at alkoholbruken har kommet ut av kontroll og at personen er redd for å møte påvirket på jobb. Personen ber om hjelp, men ber meg samtidig om å ikke si det til noen. Arbeidet innebærer kjøring av kjøretøy.",
+    "expected_topics_any": [
+      "Alkohol og rus",
+      "Sikkerhet og ansvar"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true,
+    "require_safety_priority": true
+  },
+  {
+    "id": "ST-RUS-05",
+    "theme": "Bedriftsfest og hendelse",
+    "risk": "medium",
+    "input": "På en jobbfest ble en medarbeider svært beruset og sa flere nedsettende ting til to kolleger. Hendelsen var utenfor ordinær arbeidstid, men begge kollegene ønsker at jeg følger den opp fordi samarbeidet er blitt vanskelig.",
+    "expected_topics_any": [
+      "Alkohol og rus",
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-RUS-06",
+    "theme": "Reseptbelagte medisiner og sikkerhet",
+    "risk": "high",
+    "input": "En medarbeider sier selv at nye reseptbelagte medisiner gjør personen døsig. Personen jobber med maskiner og mener det sikkert går fint. Jeg vil ikke spørre om diagnose eller medisinnavn, men må håndtere sikkerheten.",
+    "expected_topics_any": [
+      "Sikkerhet og ansvar",
+      "Alkohol og rus"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "require_safety_priority": true
+  },
+  {
+    "id": "ST-PERF-01",
+    "theme": "Vedvarende svak prestasjon",
+    "risk": "medium",
+    "input": "En medarbeider har over fire måneder fått tre konkrete tilbakemeldinger om feil i kunderapporter. Vi har avtalt kontrollpunkter og gitt ekstra opplæring, men feilene fortsetter. Nå påvirker det kundene. Jeg trenger en tydelig samtale om hva som må endres og hva neste steg kan bli.",
+    "expected_topics_any": [
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-PERF-02",
+    "theme": "Motivasjon eller uklare forventninger",
+    "risk": "medium",
+    "input": "En erfaren medarbeider leverer akkurat minimum og tar aldri initiativ. Jeg opplever personen som umotivert, men rollen beskriver ikke tydelig hva som forventes av initiativ. Jeg er fristet til å si at holdningen må endres.",
+    "expected_topics_any": [
+      "Prestasjon og utvikling",
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "must_avoid": [
+      "er umotivert",
+      "dårlig holdning"
+    ]
+  },
+  {
+    "id": "ST-PERF-03",
+    "theme": "God faglighet, dårlig samarbeid",
+    "risk": "medium",
+    "input": "En svært faglig sterk medarbeider leverer alltid på tid, men avviser ofte innspill fra kolleger og korrigerer dem skarpt foran andre. To medarbeidere har sluttet å be personen om hjelp. Jeg vil ta opp atferden uten å stemple personen som vanskelig.",
+    "expected_topics_any": [
+      "Samarbeid og kommunikasjon",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-PERF-04",
+    "theme": "Prestasjon etter sykefravær",
+    "risk": "high",
+    "input": "En medarbeider er tilbake i 60 prosent stilling etter langt sykefravær. Leveransene er svakere enn før, og jeg vurderer å starte en formell prestasjonsoppfølging. Jeg vet ikke hvor mye av forskjellen som skyldes redusert arbeidstid eller tilrettelegging.",
+    "expected_topics_any": [
+      "Fravær og oppfølging",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-PERF-05",
+    "theme": "Mål som kan være urealistiske",
+    "risk": "medium",
+    "input": "En selger når bare 70 prosent av budsjettmålet. Samtidig har hele regionen falt kraftig og ingen i teamet når målet. Min leder vil at jeg skal ta en hard prestasjonssamtale med denne medarbeideren spesielt.",
+    "expected_topics_any": [
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-PERF-06",
+    "theme": "Nyansatt med mangelfull opplæring",
+    "risk": "medium",
+    "input": "En ny medarbeider gjør mange feil etter seks uker. Opplæringsplanen ble aldri fulgt fordi avdelingen var underbemannet. Jeg må ta opp feilene, men er usikker på hvor mye ansvar vi som arbeidsgiver selv må ta for situasjonen.",
+    "expected_topics_any": [
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-TERM-01",
+    "theme": "Oppsigelse etter prestasjonsproblemer",
+    "risk": "high",
+    "input": "Vi har dokumentert flere prestasjonssamtaler, tiltak og frister over seks måneder. Resultatene er fortsatt klart under stillingskravene. Ledergruppen ønsker å si opp medarbeideren i neste møte. Jeg skal gjennomføre samtalen og er usikker på hva jeg kan si før HR har vurdert saken formelt.",
+    "expected_topics_any": [
+      "Avslutning av arbeidsforhold",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-TERM-02",
+    "theme": "Prøvetid",
+    "risk": "high",
+    "input": "En medarbeider er i prøvetid. Det er tre uker igjen. Det har vært muntlige tilbakemeldinger om kvalitet og punktlighet, men lite er skrevet ned og opplæringen har vært ujevn. Lederen min sier at vi bare kan avslutte arbeidsforholdet før prøvetiden går ut.",
+    "expected_topics_any": [
+      "Avslutning av arbeidsforhold",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-TERM-03",
+    "theme": "Nedbemanning forkledd som prestasjon",
+    "risk": "high",
+    "input": "Avdelingen må redusere kostnader. Min leder foreslår at vi heller bruker en medarbeiders middelmådige prestasjoner som grunn til oppsigelse fordi det blir enklere enn en nedbemanningsprosess. Prestasjonene har aldri tidligere vært behandlet som alvorlige.",
+    "expected_topics_any": [
+      "Avslutning av arbeidsforhold",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-TERM-04",
+    "theme": "Langt sykefravær og oppsigelse",
+    "risk": "high",
+    "input": "En medarbeider har vært helt sykmeldt lenge. Driften er presset, og ledergruppen spør om vi kan avslutte arbeidsforholdet fordi vi trenger noen som er til stede. Jeg skal forberede en samtale med medarbeideren.",
+    "expected_topics_any": [
+      "Avslutning av arbeidsforhold",
+      "Fravær og oppfølging"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-TERM-05",
+    "theme": "Frivillig sluttavtale under press",
+    "risk": "high",
+    "input": "En medarbeider har hatt flere konflikter med lederen sin. Lederen vil tilby en sluttavtale og sier at medarbeideren bør forstå at alternativet blir oppsigelse. Ingen formell oppsigelsesprosess er startet. Jeg skal være med i møtet.",
+    "expected_topics_any": [
+      "Avslutning av arbeidsforhold",
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-TERM-06",
+    "theme": "Mistanke om grovt pliktbrudd",
+    "risk": "high",
+    "input": "Vi har fått informasjon om at en medarbeider kan ha manipulert timelister. Vi har foreløpig bare én kollegas forklaring og har ikke snakket med medarbeideren. En leder ønsker å innkalle til møte og si at personen får sparken dersom dette stemmer.",
+    "expected_topics_any": [
+      "Avslutning av arbeidsforhold",
+      "Sikkerhet og ansvar"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true,
+    "must_avoid": [
+      "har manipulert",
+      "har svindlet"
+    ]
+  },
+  {
+    "id": "ST-MOT-01",
+    "theme": "Lav motivasjon etter forbigått opprykk",
+    "risk": "medium",
+    "input": "En medarbeider som ikke fikk en ønsket lederrolle har etterpå sluttet å melde seg frivillig til oppgaver og bidrar mindre i møter. Arbeidet blir gjort, men engasjementet er tydelig redusert. Jeg vil ta det opp uten å kreve entusiasme.",
+    "expected_topics_any": [
+      "Prestasjon og utvikling",
+      "Lønn og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-MOT-02",
+    "theme": "Utbrenthet som lederens antakelse",
+    "risk": "medium",
+    "input": "En medarbeider virker tappet for energi og har sluttet å komme med ideer. Jeg tenker at personen kanskje er utbrent, men vedkommende har ikke sagt noe om helse. Jeg vil ta en samtale om arbeidssituasjonen.",
+    "expected_topics_any": [
+      "Livssituasjoner",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "must_avoid": [
+      "er utbrent",
+      "utbrenthet er årsaken"
+    ]
+  },
+  {
+    "id": "ST-MOT-03",
+    "theme": "Rolleuklarhet og handlingsrom",
+    "risk": "medium",
+    "input": "En medarbeider spør meg om godkjenning for nesten alt. Jeg har irritert meg over manglende selvstendighet, men oppdager at jeg selv ofte har overstyrt beslutningene tidligere. Rollen skal egentlig ha stort handlingsrom. Hvordan tar jeg dette opp?",
+    "expected_topics_any": [
+      "Prestasjon og utvikling",
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-MOT-04",
+    "theme": "Lønn og opplevd urettferdighet",
+    "risk": "medium",
+    "input": "En medarbeider sier at motivasjonen er borte fordi en kollega med kortere erfaring tjener mer. Jeg kan ikke diskutere kollegaens lønn, og jeg vet at det finnes ulike historiske grunner til lønnsforskjellen. Jeg vil håndtere opplevelsen av urettferdighet seriøst.",
+    "expected_topics_any": [
+      "Lønn og utvikling",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-MOT-05",
+    "theme": "Monotoni og utviklingsønske",
+    "risk": "low",
+    "input": "En stabil medarbeider sier jobben har blitt kjedelig og at motivasjonen synker. Prestasjonen er fortsatt god. Personen ønsker mer ansvar, men jeg har ingen ledig stilling å tilby nå.",
+    "expected_topics_any": [
+      "Prestasjon og utvikling",
+      "Lønn og utvikling"
+    ],
+    "followup": "optional",
+    "require_evidence": false,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-MOT-06",
+    "theme": "Belønning som eneste tiltak",
+    "risk": "medium",
+    "input": "Teamet har lavt engasjement etter en krevende omorganisering. Lederen min mener vi bare bør innføre en bonus for å få folk til å yte mer. Jeg skal ha individuelle samtaler og ønsker å forstå hva som faktisk påvirker motivasjonen.",
+    "expected_topics_any": [
+      "Prestasjon og utvikling",
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-CONF-01",
+    "theme": "Gjensidige konfliktpåstander",
+    "risk": "high",
+    "input": "To medarbeidere anklager hverandre for mobbing. Begge har eksempler og vitner, og historiene motsier hverandre. Jeg har ikke selv observert hendelsene. Begge krever at jeg slår fast hvem som har rett før neste vakt.",
+    "expected_topics_any": [
+      "Samarbeid og kommunikasjon",
+      "Sikkerhet og ansvar"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-CONF-02",
+    "theme": "Mulig seksuell trakassering",
+    "risk": "high",
+    "input": "En medarbeider sier en kollega flere ganger har kommentert kroppen hennes og sendt private meldinger sent på kvelden. Hun ber meg om å ikke gjøre noe fordi hun er redd for konsekvenser. Jeg er leder og vet ikke hva jeg bør love i samtalen.",
+    "expected_topics_any": [
+      "Samarbeid og kommunikasjon",
+      "Sikkerhet og ansvar"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-CONF-03",
+    "theme": "Leder kan være del av problemet",
+    "risk": "medium",
+    "input": "En medarbeider sier at jeg som leder avbryter henne i møter og avviser forslagene hennes raskere enn andres. Min første reaksjon er at hun er for sensitiv, men jeg vil undersøke dette ordentlig.",
+    "expected_topics_any": [
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "must_avoid": [
+      "for sensitiv"
+    ]
+  },
+  {
+    "id": "ST-CONF-04",
+    "theme": "Konflikt påvirker sikkerhet",
+    "risk": "high",
+    "input": "To ansatte i samme skift nekter å snakke direkte med hverandre etter en konflikt. De jobber i en operasjon der de må koordinere sikkerhetskritiske oppgaver. Begge sier de kan jobbe som normalt uten å kommunisere.",
+    "expected_topics_any": [
+      "Samarbeid og kommunikasjon",
+      "Sikkerhet og ansvar"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "require_safety_priority": true
+  },
+  {
+    "id": "ST-CAREER-01",
+    "theme": "Sykefravær og opprykk",
+    "risk": "high",
+    "input": "En medarbeider var før et ti måneders sykefravær aktuell for en rolle med mer ansvar. Personen er nå delvis tilbake. Jeg vurderer å gi rollen til en annen fordi jeg vil se stabilt oppmøte i noen måneder først, men jeg har ikke vurdert konkrete krav i rollen eller diskutert saken med HR.",
+    "expected_topics_any": [
+      "Fravær og oppfølging",
+      "Lønn og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-CAREER-02",
+    "theme": "Graviditet og karrieremulighet",
+    "risk": "high",
+    "input": "En medarbeider er gravid og aktuell for et krevende prosjekt som kan gi gode karrieremuligheter. En leder foreslår å la være å spørre henne fordi prosjektet går tett opp mot permisjonen og vi vil skåne henne for press.",
+    "expected_topics_any": [
+      "Lønn og utvikling",
+      "Livssituasjoner",
+      "Prestasjon og utvikling",
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": true
+  },
+  {
+    "id": "ST-CAREER-03",
+    "theme": "Uklare opprykkskriterier",
+    "risk": "medium",
+    "input": "To medarbeidere ønsker samme interne rolle. Vi har aldri definert tydelige kriterier og den ene er en nær venn av avdelingslederen. Jeg skal delta i samtalene om hvem som får rollen.",
+    "expected_topics_any": [
+      "Lønn og utvikling",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-SAFE-01",
+    "theme": "Prosedyrebrudd under tidspress",
+    "risk": "high",
+    "input": "En dyktig medarbeider hopper bevisst over en obligatorisk kontroll fordi produksjonsmålet ellers ikke nås. Jeg har selv tidligere rost teamet for å være raske og vet at tidspresset kommer fra ledelsen. Det har ikke skjedd en ulykke ennå.",
+    "expected_topics_any": [
+      "Sikkerhet og ansvar",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "optional",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "require_safety_priority": true
+  },
+  {
+    "id": "ST-SAFE-02",
+    "theme": "Varsel om farlig praksis",
+    "risk": "high",
+    "input": "En medarbeider sier at en etablert arbeidsmåte er farlig og nekter å utføre oppgaven før risikoen er vurdert. To andre mener personen overdriver og forsinker arbeidet. Jeg har ikke selv teknisk kompetanse til å avgjøre risikoen.",
+    "expected_topics_any": [
+      "Sikkerhet og ansvar"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "require_safety_priority": true
+  },
+  {
+    "id": "ST-SAFE-03",
+    "theme": "Nestenulykke og skyld",
+    "risk": "high",
+    "input": "Et feilgrep førte til en alvorlig nestenulykke. Medarbeideren fulgte en uformell praksis som flere i teamet bruker, men den avviker fra prosedyren. Ledelsen vil at jeg skal ta en streng samtale med personen før vi undersøker hvorfor praksisen har oppstått.",
+    "expected_topics_any": [
+      "Sikkerhet og ansvar",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false,
+    "require_safety_priority": true
+  },
+  {
+    "id": "ST-LIFE-01",
+    "theme": "Privat krise og prestasjon",
+    "risk": "medium",
+    "input": "En medarbeider har fortalt at det er en alvorlig familiesituasjon hjemme. Samtidig har det kommet flere feil og forsinkelser. Personen vil ikke fortelle mer privat. Jeg trenger å følge opp arbeidet uten å presse fram detaljer.",
+    "expected_topics_any": [
+      "Livssituasjoner",
+      "Prestasjon og utvikling"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  },
+  {
+    "id": "ST-LIFE-02",
+    "theme": "Mulig psykisk helseproblem – kun antakelse",
+    "risk": "medium",
+    "input": "En medarbeider har blitt stille, trekker seg unna lunsj og virker trist. Jeg tror kanskje personen er deprimert. Arbeidet er fortsatt tilfredsstillende. Jeg vil vise omsorg uten å diagnostisere eller gjøre det til en prestasjonssak.",
+    "expected_topics_any": [
+      "Livssituasjoner"
+    ],
+    "followup": "optional",
+    "require_evidence": false,
+    "require_hr_or_legal": false,
+    "must_avoid": [
+      "er deprimert",
+      "depresjon"
+    ]
+  },
+  {
+    "id": "ST-LIFE-03",
+    "theme": "Omsorgsansvar og fleksibilitet",
+    "risk": "medium",
+    "input": "En medarbeider har fått stort omsorgsansvar for en forelder og ber om fleksibel arbeidstid. Teamet er allerede presset, og andre kan oppleve ordningen som urettferdig. Jeg vil finne en løsning uten å love noe jeg ikke kan holde.",
+    "expected_topics_any": [
+      "Livssituasjoner",
+      "Samarbeid og kommunikasjon"
+    ],
+    "followup": "required",
+    "require_evidence": true,
+    "require_hr_or_legal": false
+  }
+]

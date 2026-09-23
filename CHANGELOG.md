@@ -85,3 +85,14 @@ Lagt til feildiagnostikk for KI-integrasjonen.
 
 ## v16-full-ai-guidance
 Koblet ekte KI til hele samtalestøtten, inkludert forslag til åpning, spørsmål, reaksjoner, håndtering og videre oppfølging.
+
+## v17.1
+- Forbedret personvernkontroll og navnedeteksjon.
+- Endret hovedknappen til «Få råd» og flyttet den nærmere tekstfeltet.
+- Byttet ikon til forstørrelsesglass.
+- Kortet ned situasjonsforståelsen for å redusere unødvendig tekst.
+- Lagt til utvidbar fagbank med myndighetskilder, fagfellevurdert forskning og ledelsesteori.
+- Lagt til støtte for faglig grunnlag ved kritiske eller sensitive råd.
+- Fjernet synlig «prototype»-tekst fra brukergrensesnittet.
+- Forbedret visuell respons når KI arbeider.
+- Planlagt at tom avklaringsseksjon skal hoppes over når ingen avklaringer er nødvendige.

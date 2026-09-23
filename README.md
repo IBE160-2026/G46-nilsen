@@ -53,3 +53,34 @@ Selve samtalestøtten og oppfølgingssamtalen bruker nå ekte KI, ikke bare situ
 
 ## Fagbank
 Prosjektet inneholder nå `SOURCEBANK.json` og `SOURCEBANK.md`. Fagbanken er kurert og utvidbar og brukes selektivt av KI-en. Kritiske eller juridisk sensitive råd kan knyttes til kjente kilde-ID-er; modellen kan ikke oppgi vilkårlige kilder i strukturert veiledning.
+
+### KI-stresstest
+
+For kompliserte personalsaker kan du kjøre en kort stresstest:
+
+```bash
+npm run test-ai:stress
+```
+
+Hele stresstesten med 37 krevende caser:
+
+```bash
+npm run test-ai:stress:full
+```
+
+Rapportene lagres lokalt i `test-results/`.
+
+### v17.4 – smartere stresstest
+Den automatiske stresstesten er justert for å redusere falske kritiske avvik. Risikouttrykk flagges nå bare når modellen ser ut til å adoptere dem som fakta, ikke når modellen eksplisitt avviser eller problematiserer dem.
+
+
+## v17.5 – smartere klassifisering av testfeil
+- Tekniske API-/serverfeil rapporteres som `TEKNISK FEIL`, ikke som faglig `KRITISK AVVIK`.
+- Midlertidige 429/5xx-feil prøves automatisk på nytt med økende ventetid.
+- Påstands-/diagnosekontrollen ser etter negasjon, usikkerhet og attribusjon før den flagger en formulering som faktapåstand.
+- `npm run test-ai:stress:problems` kjører bare de fem tidligere problemcasene.
+
+## v17.6 – temajustering i stresstest
+- ST-CAREER-02 godtar nå flere faglig plausible temakombinasjoner.
+- Testen skal fortsatt flagge helt feil temavalg, men ikke et godt svar bare fordi modellen velger Prestasjon og utvikling eller Samarbeid og kommunikasjon fremfor Lønn og utvikling/Livssituasjoner.
+- Ingen endring i selve KI-prompten eller rådslogikken.
