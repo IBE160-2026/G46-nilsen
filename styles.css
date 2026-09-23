@@ -535,7 +535,7 @@ textarea[aria-invalid="true"]{
   .in-field-submit{left:8px;bottom:8px}
 }
 
-.send-arrow{font-size:1rem;line-height:1;font-weight:900}
+.button-icon{width:18px;height:18px;display:inline-flex;align-items:center;justify-content:center;flex:0 0 auto}.button-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.in-field-submit{display:inline-flex;align-items:center;gap:8px}
 .understanding-summary.compact p{margin:0;font-size:1.02rem;line-height:1.55}
 .compact-topics{margin-top:10px}
 .compact-caution{margin-top:12px;padding:10px 12px}

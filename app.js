@@ -1129,12 +1129,12 @@ function renderStructuredGuidance() {
   const intro = document.querySelector('#result-intro');
   if (intro) {
     if (crossThemeSections) {
-      intro.textContent = 'Lokal prototype: denne saken er behandlet som et dilemma som berører flere tema. Ekte KI er ikke koblet til ennå; denne flyten viser hvordan Samtalestøtte skal arbeide som samtalepartner fremfor å tvinge saken inn i én kategori.';
+      intro.textContent = 'Lokal reserveflyt: saken er behandlet som et dilemma som berører flere tema. Denne vises bare dersom KI-tjenesten ikke er tilgjengelig.';
     } else if (currentTopic?.id === 'fravaer-oppfolging') {
       const localAnalysis = analyzeSituation(context.situation + ' ' + Object.values(context.followups || {}).join(' '));
-      intro.textContent = `Lokal prototype: rådet er tilpasset mønstre som er gjenkjent som «${localAnalysis.classification}». Ekte KI er ikke koblet til ennå, så vurder om rådet faktisk passer situasjonen.`;
+      intro.textContent = `Lokal reserveflyt: rådet er tilpasset mønstre som er gjenkjent som «${localAnalysis.classification}». Vurder om rådet faktisk passer situasjonen.`;
     } else {
-      intro.textContent = 'Dette er foreløpig generell prototypelogikk. Ekte KI er ikke koblet til ennå, så vurder om rådet faktisk passer situasjonen.';
+      intro.textContent = 'Dette er en lokal reserveflyt. Vurder om rådet faktisk passer situasjonen.';
     }
   }
 }
@@ -1190,7 +1190,7 @@ function buildContinuationReply(question) {
   if (/rettferdig|diskrimin|lovlig|juss|juridisk/.test(q)) {
     return 'Det kan være en sensitiv vurdering. Jeg kan hjelpe deg med samtaleformen og med å skille fakta fra antakelser, men en konkret juridisk vurdering av beslutningen bør kvalitetssikres mot virksomhetens HR-/juridiske kompetanse og relevant regelverk før du kommuniserer en endelig konklusjon.';
   }
-  return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale prototypelogikken. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
+  return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale reserveflyten. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
 }
 
 async function appendConversationTurn(question) {
@@ -1270,7 +1270,7 @@ function renderSuggestion(query) {
   box.hidden = false;
 
   if (!query.trim()) {
-    box.innerHTML = '<strong>Skriv litt om situasjonen.</strong><p>Da kan prototypen foreslå hvilket tema som passer best.</p>';
+    box.innerHTML = '<strong>Skriv litt om situasjonen.</strong><p>Da kan Samtalestøtte foreslå hvilket tema som passer best.</p>';
     return;
   }
 
@@ -1593,7 +1593,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
          <span>${escapeHtml(diagnostic.hint || '')}</span>
          <details><summary>Teknisk detalj</summary><small>${escapeHtml(diagnostic.apiMessage || 'Ingen detalj tilgjengelig.')} · Modell: ${escapeHtml(diagnostic.model || 'ukjent')}</small></details>`
       : '<span>Se PowerShell-vinduet for den konkrete API-feilen.</span>';
-    note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale prototypen vises kun for å teste flyten.</span>${details}`;
+    note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale reserveflyten vises kun dersom KI-tjenesten ikke er tilgjengelig.</span>${details}`;
     document.querySelector('#situation-understanding').prepend(note);
   } finally {
     if (thinking) thinking.hidden = true;
