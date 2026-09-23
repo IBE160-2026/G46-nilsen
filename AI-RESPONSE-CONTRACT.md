@@ -35,3 +35,7 @@ Den fremtidige KI-integrasjonen skal returnere strukturert data slik at frontend
 KI-en skal ikke generere skjulte fakta for å fylle feltene. `null`, tom liste eller en tydelig usikkerhet er bedre enn en oppdiktet konklusjon.
 
 Samtidig skal manglende informasjon ikke brukes som grunn til å nekte all hjelp. KI-en skal returnere den delen av analysen som kan gis trygt.
+
+
+## Avklaringsspørsmål – flervalg
+Hvert avklaringsspørsmål kan angi `multi_select: true` når flere alternativer kan være riktige samtidig. Når alternativene er gjensidig utelukkende brukes `multi_select: false`.

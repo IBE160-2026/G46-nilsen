@@ -545,3 +545,45 @@ textarea[aria-invalid="true"]{
 .evidence-list a{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border:1px solid var(--border);border-radius:12px;text-decoration:none;color:var(--text);background:color-mix(in srgb,var(--accent-soft) 26%,var(--surface))}
 .evidence-list a:hover{border-color:color-mix(in srgb,var(--accent) 42%,var(--border))}
 .evidence-list span{font-size:.82rem;color:var(--muted)}
+
+/* v17.7: samme visuelle KI-indikator i videre dialog */
+.conversation-thinking{display:flex;align-items:center;gap:10px;margin-top:6px}
+.conversation-thinking .thinking-spinner{width:19px;height:19px;flex-basis:19px;border-width:2px}
+.conversation-thinking p{margin:0;color:var(--muted)}
+
+
+/* v17.9 – mer kompakt situasjonsforståelse */
+.situation-understanding{
+  width:100%;
+  max-width:none;
+  margin:14px 0 12px;
+  padding:12px 16px;
+  border-radius:15px;
+}
+.situation-understanding .understanding-heading{
+  align-items:center;
+  margin-bottom:7px;
+  gap:12px;
+}
+.situation-understanding .understanding-heading>div{
+  display:flex;
+  align-items:baseline;
+  gap:10px;
+  min-width:0;
+}
+.situation-understanding .understanding-heading .eyebrow{margin:0;white-space:nowrap}
+.situation-understanding .understanding-heading h2{margin:0;font-size:1.05rem;white-space:nowrap}
+.situation-understanding .understanding-confidence{padding:5px 8px;font-size:.75rem}
+.situation-understanding .understanding-content{display:block;width:100%}
+.understanding-summary.compact{width:100%}
+.understanding-summary.compact p{margin:0;max-width:none;line-height:1.42;font-size:.92rem}
+.compact-topics{margin-top:7px;display:flex;gap:6px;flex-wrap:wrap}
+.compact-topics .representation-chip{padding:5px 8px;font-size:.76rem}
+.compact-caution{margin-top:7px;padding:8px 10px;font-size:.84rem}
+.multi-select-hint{display:inline-block;margin-left:8px;color:var(--muted);font-weight:600;font-size:.76rem}
+.suggestion-kicker{display:block;margin-bottom:4px;color:var(--accent);font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+@media(max-width:700px){
+  .situation-understanding .understanding-heading{align-items:flex-start}
+  .situation-understanding .understanding-heading>div{display:block}
+  .situation-understanding .understanding-heading h2{white-space:normal;margin-top:2px}
+}

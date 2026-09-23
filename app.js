@@ -345,14 +345,25 @@ function openTopic(topic) {
   showView('topic');
 }
 
-function openGuidance(title, help) {
+function openGuidance(title, help, initialSituation = '') {
   currentSubtopic = title;
   document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
   document.querySelector('#guidance-help').textContent = help;
   setBreadcrumb(`Forbered samtale / ${currentTopic.title} / ${title}`);
   clearGuidanceSession({ clearInputs: true });
+  const situationField = document.querySelector('#situation');
+  if (situationField && initialSituation.trim()) {
+    situationField.value = initialSituation.trim();
+    autoGrowTextarea(situationField, 220);
+  }
   updatePrivacyCheck();
   showView('guidance');
+}
+
+function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
+  currentTopic = topic;
+  highlightTopicCard(topic.id);
+  openGuidance(subtopic[0], subtopic[1], originalQuery);
 }
 
 
@@ -375,32 +386,65 @@ Kwame Kofi Ama Akosua Chinedu Ngozi Adaeze Amina Nia Zuri Tendai Thabo Sipho Ler
 
 const NAME_FALSE_POSITIVES = new Set(`
 Jeg Vi Det Den Dette En Et Når Hvis På I Som Med Men Og Eller For Til Fra Av Etter Før Under Over Ikke Ja Nei Usikker
-Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT
+Person Personen Vedkommende Hen Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT
 Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen Oppfølging Tilrettelegging Mandag Tirsdag Onsdag Torsdag Fredag Lørdag Søndag Januar Februar Mars April Mai Juni Juli August September Oktober November Desember
 `.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase('nb-NO')));
 
+// Fornavn som også kan være vanlige ord i arbeidsrelatert tekst.
+// Disse krever tydelig personkontekst dersom de er skrevet med liten bokstav.
+const AMBIGUOUS_GIVEN_NAMES = new Set(`
+per liv live line ben even
+`.split(/\s+/).filter(Boolean));
+
+function normalizeNameToken(value) {
+  return String(value || '').toLocaleLowerCase('nb-NO');
+}
+
+function isKnownGivenName(value) {
+  const normalized = normalizeNameToken(value);
+  return COMMON_GIVEN_NAMES.has(normalized) && !NAME_FALSE_POSITIVES.has(normalized);
+}
+
 function findLikelyGivenName(source) {
-  const words = String(source || '').match(/\b[\p{Lu}][\p{L}'’-]{1,30}\b/gu) || [];
-  for (const word of words) {
-    const normalized = word.toLocaleLowerCase('nb-NO');
-    if (COMMON_GIVEN_NAMES.has(normalized)) return word;
+  const text = String(source || '');
+
+  // 1. Eksplisitte navneformuleringer er sterke signaler og skal virke uavhengig av stor/liten bokstav.
+  // Eksempel: "han heter knut", "navnet er Cecilie".
+  const explicit = text.match(/\b(?:heter|navn(?:et)?\s+er|kalles|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter|leder(?:en)?\s+heter)\s+([\p{L}][\p{L}'’-]{1,30})\b/iu);
+  if (explicit) {
+    const normalized = normalizeNameToken(explicit[1]);
+    if (!NAME_FALSE_POSITIVES.has(normalized)) return explicit[1];
   }
 
-  // Strong contextual patterns also catch names not present in the dictionary.
-  const contextual = String(source || '').match(/\b(?:heter|navn(?:et)?\s+er|kalles|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter|leder(?:en)?\s+heter)\s+([\p{Lu}][\p{L}'’-]{1,30})\b/iu);
-  if (contextual && !NAME_FALSE_POSITIVES.has(contextual[1].toLocaleLowerCase('nb-NO'))) return contextual[1];
+  // 2. Kjente navn fra navnelisten fanges case-insensitivt, også "knut" med liten k.
+  // Ambivalente ord som "per" og "liv" krever ekstra personkontekst.
+  const tokens = text.match(/\b[\p{L}][\p{L}'’-]{1,30}\b/gu) || [];
+  for (const token of tokens) {
+    const normalized = normalizeNameToken(token);
+    if (!isKnownGivenName(token)) continue;
+    if (!AMBIGUOUS_GIVEN_NAMES.has(normalized)) return token;
 
-  // Navn i typiske personkontekster. Dette fanger også navn som ikke finnes i ordlisten.
-  const personContext = String(source || '').match(/(?:^|[.!?]\s+|\b(?:med|til|fra|om|for|hos)\s+)([\p{Lu}][\p{L}'’-]{1,30})(?=\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\b)/u);
-  if (personContext && !NAME_FALSE_POSITIVES.has(personContext[1].toLocaleLowerCase('nb-NO'))) return personContext[1];
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const personUse = new RegExp(`(?:\\b(?:heter|med|til|fra|hos|snakket\\s+med|møte\\s+med)\\s+${escaped}\\b|\\b${escaped}\\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\\b)`, 'iu');
+    if (personUse.test(text)) return token;
+  }
 
-  // To adjacent capitalized words are highly likely to be a full name.
-  const fullName = String(source || '').match(/\b([\p{Lu}][\p{L}'’-]{1,30})\s+([\p{Lu}][\p{L}'’-]{1,30})\b/u);
+  // 3. Ukjente navn kan fortsatt oppdages i tydelig personkontekst, men vi bruker ikke
+  // "stor bokstav ved setningsstart" som signal alene. Det var årsaken til at "Personen" ble flagget.
+  const personContext = text.match(/\b(?:med|til|fra|hos|snakket\s+med|møte\s+med)\s+([\p{Lu}][\p{L}'’-]{1,30})(?=\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\b)/u);
+  if (personContext && !NAME_FALSE_POSITIVES.has(normalizeNameToken(personContext[1]))) return personContext[1];
+
+  // 4. To navn med stor forbokstav ved siden av hverandre er et sterkt signal om fullt navn.
+  // Begge ordene må enten finnes i navnelisten, eller minst ett må være et kjent fornavn.
+  const fullName = text.match(/\b([\p{Lu}][\p{L}'’-]{1,30})\s+([\p{Lu}][\p{L}'’-]{1,30})\b/u);
   if (fullName) {
-    const a = fullName[1].toLocaleLowerCase('nb-NO');
-    const b = fullName[2].toLocaleLowerCase('nb-NO');
-    if (!NAME_FALSE_POSITIVES.has(a) && !NAME_FALSE_POSITIVES.has(b)) return `${fullName[1]} ${fullName[2]}`;
+    const a = normalizeNameToken(fullName[1]);
+    const b = normalizeNameToken(fullName[2]);
+    if (!NAME_FALSE_POSITIVES.has(a) && !NAME_FALSE_POSITIVES.has(b) && (isKnownGivenName(fullName[1]) || isKnownGivenName(fullName[2]))) {
+      return `${fullName[1]} ${fullName[2]}`;
+    }
   }
+
   return null;
 }
 
@@ -782,7 +826,8 @@ function normalizeAiClarifications(items) {
     question: item.question,
     options: Array.isArray(item.options) ? item.options.slice(0, 5) : [],
     customLabel: item.allow_custom === false ? null : (item.custom_label || 'Annet / skriv selv'),
-    allowCustom: item.allow_custom !== false
+    allowCustom: item.allow_custom !== false,
+    multiSelect: item.multi_select === true
   })).filter(item => item.question && item.options.length >= 2);
 }
 
@@ -790,9 +835,9 @@ function renderAiFollowupQuestions(items) {
   const normalized = normalizeAiClarifications(items);
   const container = document.querySelector('#followup-questions');
   container.innerHTML = normalized.map((item, index) => `
-    <div class="followup-question-field" data-followup-question="${escapeHtml(item.id)}">
+    <div class="followup-question-field" data-followup-question="${escapeHtml(item.id)}" data-multi-select="${item.multiSelect ? 'true' : 'false'}">
       <span class="followup-number">${index + 1}</span>
-      <span class="followup-question-copy">${escapeHtml(item.question)}</span>
+      <span class="followup-question-copy">${escapeHtml(item.question)}${item.multiSelect ? '<small class="multi-select-hint">Du kan velge flere</small>' : ''}</span>
       <div class="followup-choice-row" role="group" aria-label="Svaralternativer">
         ${item.options.map(option => `<button type="button" class="followup-choice" data-followup-choice="${escapeHtml(item.id)}" data-value="${escapeHtml(option)}">${escapeHtml(option)}</button>`).join('')}
         ${item.allowCustom ? `<button type="button" class="followup-choice followup-choice-custom" data-followup-custom="${escapeHtml(item.id)}">${escapeHtml(item.customLabel || 'Annet / skriv selv')}</button>` : ''}
@@ -810,11 +855,19 @@ function wireFollowupControls(container) {
     button.addEventListener('click', () => {
       const id = button.dataset.followupChoice;
       const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
-      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
-      button.classList.add('selected');
-      field.dataset.answer = button.dataset.value;
+      const multiSelect = field?.dataset.multiSelect === 'true';
+      if (!field) return;
+
+      if (multiSelect) {
+        button.classList.toggle('selected');
+      } else {
+        field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
+        button.classList.add('selected');
+      }
+
       const custom = field.querySelector(`[data-followup-custom-input="${CSS.escape(id)}"]`);
-      if (custom) { custom.hidden = true; custom.value = ''; }
+      if (!multiSelect && custom) { custom.hidden = true; custom.value = ''; }
+      field.dataset.answer = '';
     });
   });
 
@@ -822,11 +875,23 @@ function wireFollowupControls(container) {
     button.addEventListener('click', () => {
       const id = button.dataset.followupCustom;
       const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
-      field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
-      button.classList.add('selected');
-      field.dataset.answer = '';
+      const multiSelect = field?.dataset.multiSelect === 'true';
+      if (!field) return;
+
+      if (multiSelect) {
+        button.classList.toggle('selected');
+      } else {
+        field.querySelectorAll('.followup-choice').forEach(choice => choice.classList.remove('selected'));
+        button.classList.add('selected');
+      }
+
       const custom = field.querySelector(`[data-followup-custom-input="${CSS.escape(id)}"]`);
-      if (custom) { custom.hidden = false; custom.focus(); }
+      if (custom) {
+        custom.hidden = !button.classList.contains('selected');
+        if (!custom.hidden) custom.focus();
+        if (custom.hidden) custom.value = '';
+      }
+      field.dataset.answer = '';
     });
   });
 
@@ -834,7 +899,7 @@ function wireFollowupControls(container) {
     input.addEventListener('input', () => {
       const id = input.dataset.followupCustomInput;
       const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
-      field.dataset.answer = input.value.trim();
+      if (field) field.dataset.answer = '';
     });
   });
 }
@@ -886,6 +951,7 @@ function buildFollowupQuestions(text) {
     return [{
       id: 'clarify-situation',
       question: 'Hva er det viktigste du ønsker hjelp til i denne situasjonen?',
+      multiSelect: true,
       options: ['Forstå dilemmaet', 'Forberede hva jeg skal si', 'Håndtere en mulig reaksjon', 'Vurdere hva jeg bør gjøre først'],
       customLabel: 'Noe annet / skriv selv'
     }];
@@ -895,6 +961,7 @@ function buildFollowupQuestions(text) {
     return [{
       id: 'goal',
       question: 'Hva ønsker du mest hjelp til akkurat nå?',
+      multiSelect: true,
       options: ['Hvordan åpne samtalen', 'Hvilke spørsmål jeg bør stille', 'Hvordan håndtere reaksjoner', 'Hvordan vurdere veien videre'],
       customLabel: 'Noe annet / skriv selv'
     }];
@@ -908,9 +975,9 @@ function buildFollowupQuestions(text) {
 function renderFollowupQuestions(questions) {
   const container = document.querySelector('#followup-questions');
   container.innerHTML = questions.map((item, index) => `
-    <div class="followup-question-field" data-followup-question="${item.id}">
+    <div class="followup-question-field" data-followup-question="${item.id}" data-multi-select="${item.multiSelect ? 'true' : 'false'}">
       <span class="followup-number">${index + 1}</span>
-      <span class="followup-question-copy">${item.question}</span>
+      <span class="followup-question-copy">${item.question}${item.multiSelect ? '<small class="multi-select-hint">Du kan velge flere</small>' : ''}</span>
       <div class="followup-choice-row" role="group" aria-label="Svaralternativer">
         ${(item.options || []).map(option => `<button type="button" class="followup-choice" data-followup-choice="${item.id}" data-value="${option}">${option}</button>`).join('')}
         <button type="button" class="followup-choice followup-choice-custom" data-followup-custom="${item.id}">${item.customLabel || 'Annet / skriv selv'}</button>
@@ -925,9 +992,22 @@ function collectFollowupAnswers() {
   const answers = {};
   document.querySelectorAll('[data-followup-question]').forEach(field => {
     const id = field.dataset.followupQuestion;
-    const custom = field.querySelector(`[data-followup-custom-input="${id}"]`);
-    const answer = (field.dataset.answer || (custom && !custom.hidden ? custom.value : '') || '').trim();
-    if (answer) answers[id] = answer;
+    const multiSelect = field.dataset.multiSelect === 'true';
+    const selectedValues = [...field.querySelectorAll('[data-followup-choice].selected')]
+      .map(button => button.dataset.value)
+      .filter(Boolean);
+    const customButton = field.querySelector('[data-followup-custom].selected');
+    const custom = field.querySelector(`[data-followup-custom-input="${CSS.escape(id)}"]`);
+    const customValue = customButton && custom && !custom.hidden ? custom.value.trim() : '';
+
+    if (multiSelect) {
+      const values = [...selectedValues];
+      if (customValue) values.push(customValue);
+      if (values.length) answers[id] = values;
+    } else {
+      const value = selectedValues[0] || customValue || '';
+      if (value) answers[id] = value;
+    }
   });
   return answers;
 }
@@ -1146,9 +1226,8 @@ async function showStructuredGuidance() {
   const original = button?.textContent || 'Lag samtalestøtte';
   if (button) { button.disabled = true; button.textContent = 'Lager samtalestøtte …'; }
   document.querySelector('#followup-panel').hidden = true;
-  document.querySelector('#prototype-result').hidden = false;
-  const intro = document.querySelector('#result-intro');
-  if (intro) intro.textContent = 'Samtalestøtte tenker …';
+  document.querySelector('#prototype-result').hidden = true;
+  setAiThinking(true, 'Samtalestøtte jobber …', 'Bruker situasjonen og svarene dine til å lage konkrete råd.');
   try {
     if (!lastAiAnalysis) throw new Error('Ingen aktiv KI-analyse finnes for denne saken.');
     const guidance = await requestAiGuidance(situation, lastAiAnalysis, followups);
@@ -1156,8 +1235,11 @@ async function showStructuredGuidance() {
     renderAiGuidance(guidance);
   } catch (error) {
     renderStructuredGuidance();
+    const intro = document.querySelector('#result-intro');
     if (intro) intro.textContent = `KI-samtalestøtten feilet (${error.diagnostic?.status || error.code || 'ukjent'}). Lokal reserve vises bare for testing.`;
   } finally {
+    setAiThinking(false);
+    document.querySelector('#prototype-result').hidden = false;
     if (button) { button.disabled = false; button.textContent = original; }
   }
   document.querySelector('#prototype-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -1201,7 +1283,7 @@ async function appendConversationTurn(question) {
   user.innerHTML = `<span>Du</span><p>${escapeHtml(question)}</p>`;
   const assistant = document.createElement('div');
   assistant.className = 'conversation-turn conversation-assistant';
-  assistant.innerHTML = `<span>Samtalestøtte</span><p>Samtalestøtte tenker …</p>`;
+  assistant.innerHTML = `<span>Samtalestøtte</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker på svaret ditt …</p></div>`;
   thread.append(user, assistant);
   assistant.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
@@ -1265,34 +1347,56 @@ function suggestTopics(query) {
 
 function renderSuggestion(query) {
   const box = document.querySelector('#topic-suggestion');
-  const results = suggestTopics(query.trim());
+  const trimmed = query.trim();
+  const results = suggestTopics(trimmed);
   const best = results[0];
   box.hidden = false;
 
-  if (!query.trim()) {
-    box.innerHTML = '<strong>Skriv litt om situasjonen.</strong><p>Da kan Samtalestøtte foreslå hvilket tema som passer best.</p>';
+  if (!trimmed) {
+    box.innerHTML = '<strong>Skriv litt om situasjonen.</strong><p>Da kan Samtalestøtte foreslå både hovedtema og undertema.</p>';
     return;
   }
 
   if (!best || best.score <= 0) {
     const fallback = topics.slice(0, 3).map(topic => `<button class="ghost-button" type="button" data-topic-id="${topic.id}">${topic.title}</button>`).join('');
     box.innerHTML = `
-      <strong>Jeg er usikker på hvilket tema som passer best.</strong>
+      <strong>Jeg er usikker på hva som passer best.</strong>
       <p>Prøv å beskrive situasjonen litt mer konkret, eller velg ett av temaene under.</p>
       <div class="suggestion-actions">${fallback}</div>
     `;
   } else {
+    const rankedSubtopics = best.topic.subtopics
+      .map(subtopic => ({ subtopic, score: scoreSubtopicForTopic(best.topic, subtopic, trimmed) }))
+      .sort((a, b) => b.score - a.score);
+    const bestSubtopic = rankedSubtopics[0];
     const alternatives = results.slice(1, 3).filter(item => item.score > 0)
-      .map(item => `<span class="mini-chip">Alternativ: ${item.topic.title}</span>`).join('');
-    box.innerHTML = `
-      <strong>Foreslått tema: ${best.topic.title}</strong>
-      <p>${best.topic.description}</p>
-      <div class="suggestion-actions">
-        <button class="primary-button" type="button" id="open-suggested-topic">Åpne tema</button>
-        ${alternatives}
-      </div>
-    `;
-    box.querySelector('#open-suggested-topic').addEventListener('click', () => openTopic(best.topic));
+      .map(item => `<span class="mini-chip">Alternativt hovedtema: ${item.topic.title}</span>`).join('');
+
+    if (bestSubtopic && bestSubtopic.score > 0) {
+      const [subTitle, subHelp] = bestSubtopic.subtopic;
+      box.innerHTML = `
+        <span class="suggestion-kicker">Foreslått vei</span>
+        <strong>${best.topic.title} <span aria-hidden="true">→</span> ${subTitle}</strong>
+        <p>${subHelp}</p>
+        <div class="suggestion-actions">
+          <button class="primary-button" type="button" id="open-suggested-guidance">Bruk forslag</button>
+          <button class="ghost-button" type="button" id="review-suggested-topic">Se andre undertemaer</button>
+          ${alternatives}
+        </div>
+      `;
+      box.querySelector('#open-suggested-guidance').addEventListener('click', () => openGuidanceFromSuggestion(best.topic, bestSubtopic.subtopic, trimmed));
+      box.querySelector('#review-suggested-topic').addEventListener('click', () => openTopic(best.topic));
+    } else {
+      box.innerHTML = `
+        <strong>Foreslått hovedtema: ${best.topic.title}</strong>
+        <p>${best.topic.description}</p>
+        <div class="suggestion-actions">
+          <button class="primary-button" type="button" id="open-suggested-topic">Se undertemaer</button>
+          ${alternatives}
+        </div>
+      `;
+      box.querySelector('#open-suggested-topic').addEventListener('click', () => openTopic(best.topic));
+    }
   }
 
   box.querySelectorAll('[data-topic-id]').forEach(button => {
@@ -1313,7 +1417,7 @@ function filterTopicCards(query) {
 }
 
 
-function scoreSubtopic([title, help], query) {
+function scoreSubtopicForTopic(topic, [title, help], query) {
   const q = normalizeSearchText(query);
   const haystack = `${title} ${help}`.toLowerCase();
   let score = 0;
@@ -1329,8 +1433,13 @@ function scoreSubtopic([title, help], query) {
   (aliasMap[t] || []).forEach(alias => { if (q.includes(alias)) score += 8; });
   q.split(/\s+/).forEach(word => { if (word.length > 2 && haystack.includes(word)) score += 2; });
   if (q.includes(t)) score += 6;
-  if (currentTopic?.id === 'fravaer-oppfolging' && /syk[e]?meld|sykefravær/i.test(q) && t === 'langvarig fravær') score += 5;
+  if (topic?.id === 'fravaer-oppfolging' && /syk[e]?meld|sykefravær/i.test(q) && t === 'langvarig fravær') score += 5;
   return score;
+}
+
+
+function scoreSubtopic(subtopic, query) {
+  return scoreSubtopicForTopic(currentTopic, subtopic, query);
 }
 
 function renderSubtopicSuggestion(query) {
@@ -1507,6 +1616,21 @@ document.querySelector('#topic-detail-search').addEventListener('input', event =
   if (value.trim().length >= 2) renderSubtopicSuggestion(value);
 });
 
+function setAiThinking(active, title = 'Samtalestøtte jobber …', detail = 'Leser situasjonen og finner relevante hensyn.') {
+  const box = document.querySelector('#ai-thinking');
+  if (!box) return;
+  const titleEl = box.querySelector('[data-thinking-title]');
+  const detailEl = box.querySelector('[data-thinking-detail]');
+  if (titleEl) titleEl.textContent = title;
+  if (detailEl) detailEl.textContent = detail;
+  box.hidden = !active;
+  if (active) {
+    requestAnimationFrame(() => {
+      box.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+  }
+}
+
 function autoGrowTextarea(textarea, maxHeight = 220) {
   if (!textarea) return;
   textarea.style.height = 'auto';
@@ -1533,7 +1657,6 @@ document.querySelector('#situation-form').addEventListener('submit', async event
   const situationText = document.querySelector('#situation').value;
   const helpRequest = '';
   const submitButton = event.currentTarget.querySelector('button[type="submit"]');
-  const thinking = document.querySelector('#ai-thinking');
 
   if (privacyFindings.length) {
     document.querySelector('#privacy-check')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
@@ -1550,10 +1673,8 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     submitButton.disabled = true;
     submitButton.textContent = 'Jobber …';
   }
-  if (thinking) {
-    thinking.hidden = false;
-    thinking.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
+  setAiThinking(true, 'Samtalestøtte jobber …', 'Leser situasjonen og finner relevante hensyn.');
+  let directGuidance = false;
 
   try {
     const aiAnalysis = await requestAiSituationAnalysis(situationText, helpRequest);
@@ -1566,10 +1687,10 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     if (count > 0) {
       document.querySelector('#followup-panel').hidden = false;
     } else {
-      // KI har bare analysert situasjonen i denne fasen. Vi lar ikke lokal motor late som
-      // den kan gi et ekte KI-råd uten at brukeren uttrykkelig går videre.
-      document.querySelector('#followup-panel').hidden = false;
-      document.querySelector('#followup-questions').innerHTML = '<p class="ai-ready-note">KI-en mener ingen nødvendig avklaring mangler. Du kan gå videre til samtalestøtten.</p>';
+      // Ingen nødvendige avklaringer: hopp over avklaringsseksjonen og gå rett til rådet.
+      document.querySelector('#followup-panel').hidden = true;
+      directGuidance = true;
+      await showStructuredGuidance();
     }
   } catch (error) {
     lastAiAnalysis = null;
@@ -1581,8 +1702,8 @@ document.querySelector('#situation-form').addEventListener('submit', async event
       renderFollowupQuestions(localQuestions);
       document.querySelector('#followup-panel').hidden = false;
     } else {
-      followupContainer.innerHTML = '<p class="ai-ready-note">Den lokale reserveflyten har ingen nødvendig avklaring å stille. Når ekte KI er tilgjengelig, genereres spørsmål bare dersom svaret kan endre rådet.</p>';
-      document.querySelector('#followup-panel').hidden = false;
+      followupContainer.innerHTML = '';
+      document.querySelector('#followup-panel').hidden = true;
     }
 
     const note = document.createElement('div');
@@ -1596,7 +1717,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale reserveflyten vises kun dersom KI-tjenesten ikke er tilgjengelig.</span>${details}`;
     document.querySelector('#situation-understanding').prepend(note);
   } finally {
-    if (thinking) thinking.hidden = true;
+    setAiThinking(false);
     if (submitButton) {
       submitButton.dataset.loading = 'false';
       submitButton.textContent = originalLabel;
@@ -1604,7 +1725,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     updatePrivacyCheck();
   }
 
-  document.querySelector('#situation-understanding').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  if (!directGuidance) document.querySelector('#situation-understanding').scrollIntoView({ behavior: 'smooth', block: 'start' });
 });
 
 document.querySelector('#generate-guidance').addEventListener('click', showStructuredGuidance);

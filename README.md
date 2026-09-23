@@ -84,3 +84,24 @@ Den automatiske stresstesten er justert for å redusere falske kritiske avvik. R
 - ST-CAREER-02 godtar nå flere faglig plausible temakombinasjoner.
 - Testen skal fortsatt flagge helt feil temavalg, men ikke et godt svar bare fordi modellen velger Prestasjon og utvikling eller Samarbeid og kommunikasjon fremfor Lønn og utvikling/Livssituasjoner.
 - Ingen endring i selve KI-prompten eller rådslogikken.
+
+## v17.7 – forbedret KI-flyt
+- Hopper over «Kort avklaring» når KI-en ikke trenger flere opplysninger, og går direkte til samtalestøtten.
+- Bruker samme visuelle tenker-indikator ved første analyse, etter avklaringssvar og under videre dialog.
+- Skjuler tom avklaringsseksjon også i lokal reserveflyt.
+
+
+## v17.8 – personvernkontroll
+- Navnedeteksjonen bruker ikke lenger stor forbokstav som bevis på personnavn.
+- Kjente navn oppdages case-insensitivt, slik at for eksempel `knut` og `Knut` behandles likt.
+- Vanlige rolleord som `Personen`, `Medarbeideren` og `Lederen` filtreres bort.
+- Tvetydige navn/ord som `per` krever tydelig personkontekst når de skrives med liten bokstav.
+- Kjør `npm run test-privacy` for en liten regresjonstest av personvernlogikken.
+
+
+## v17.9 – forbedret flyt og kompakt visning
+- Hovedsiden foreslår både hovedtema og undertema i samme steg og kan gå direkte til samtalestøtten.
+- Teksten fra hovedsidens søk tas med videre som utgangspunkt, slik at brukeren slipper å skrive det samme på nytt.
+- Avklaringsspørsmål kan bruke markerbare flervalgsknapper når flere svar kan være riktige samtidig.
+- Tenker-indikatoren scrolles tydelig inn i visningen etter avklaringssvar og ved videre KI-arbeid.
+- «Slik forstår jeg det» bruker større bredde og vesentlig mindre høyde.
