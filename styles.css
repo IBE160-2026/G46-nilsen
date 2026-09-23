@@ -587,3 +587,20 @@ textarea[aria-invalid="true"]{
   .situation-understanding .understanding-heading>div{display:block}
   .situation-understanding .understanding-heading h2{white-space:normal;margin-top:2px}
 }
+
+/* v17.10 – KI-oppsummering skal ikke ligne et skrivefelt */
+.situation-understanding.ai-summary-card{
+  background:color-mix(in srgb,var(--accent-soft) 48%,var(--surface));
+  border:1px solid color-mix(in srgb,var(--accent) 24%,var(--border));
+  box-shadow:0 5px 16px rgba(24,104,124,.06);
+}
+.ai-summary-title-wrap{display:flex!important;align-items:center!important;gap:9px!important}
+.ai-summary-glyph{display:grid;place-items:center;width:28px;height:28px;flex:0 0 28px;border-radius:50%;background:color-mix(in srgb,var(--accent) 12%,var(--surface));color:var(--accent);font-size:1rem;font-weight:900}
+.situation-understanding.ai-summary-card .understanding-summary.compact{
+  padding:4px 0 2px;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+.situation-understanding.ai-summary-card .understanding-summary.compact p{font-size:.93rem;line-height:1.42}
+.situation-understanding.ai-summary-card .representation-chip{background:color-mix(in srgb,var(--accent-soft) 78%,var(--surface));border-color:color-mix(in srgb,var(--accent) 20%,var(--border))}

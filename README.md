@@ -52,7 +52,7 @@ Selve samtalestøtten og oppfølgingssamtalen bruker nå ekte KI, ikke bare situ
 
 
 ## Fagbank
-Prosjektet inneholder nå `SOURCEBANK.json` og `SOURCEBANK.md`. Fagbanken er kurert og utvidbar og brukes selektivt av KI-en. Kritiske eller juridisk sensitive råd kan knyttes til kjente kilde-ID-er; modellen kan ikke oppgi vilkårlige kilder i strukturert veiledning.
+Prosjektet inneholder `SOURCEBANK.json` og `SOURCEBANK.md`. Fagbanken er kurert og brukes som førstevalg og kvalitetsanker. Ved behov kan KI-en supplere med mer presise eller nyere kilder via nettsøk; supplerende lenker vises bare når de kan knyttes til kilder som faktisk ble brukt i søket.
 
 ### KI-stresstest
 
@@ -105,3 +105,14 @@ Den automatiske stresstesten er justert for å redusere falske kritiske avvik. R
 - Avklaringsspørsmål kan bruke markerbare flervalgsknapper når flere svar kan være riktige samtidig.
 - Tenker-indikatoren scrolles tydelig inn i visningen etter avklaringssvar og ved videre KI-arbeid.
 - «Slik forstår jeg det» bruker større bredde og vesentlig mindre høyde.
+
+
+## v17.10 – personvern, fagbank og visuell tydelighet
+- «Slik forstår jeg situasjonen» er tydelig merket som KI-oppsummering og visuelt skilt fra skrivefelt.
+- Nytt, mer intuitivt ikonsett for alle åtte hovedtemaer.
+- Tekst som følger med fra hovedsiden markeres som et utkast når brukeren går videre, slik at den enkelt kan erstattes eller bygges videre på.
+- Personvernkontrollen fanger flere kombinasjoner av indirekte identifiserende opplysninger, blant annet detaljerte familieopplysninger, svangerskapsuke og unike roller i små grupper.
+- «Fiks personvern» generaliserer familie- og livsfaseopplysninger der det er mulig i stedet for bare å slette dem.
+- Fagbanken er utvidet til minst fem kvalitetssikrede kilder per hovedtema, med sterkere dekning av psykisk helse, rus, motivasjon, feedback, konflikt, psykologisk trygghet, arbeidskrav/-ressurser og sikkerhet.
+- Kildeutvelgelsen bruker både tema og sakens faktiske innhold.
+- Den kuraterte fagbanken er førstevalg, men ikke en lukket liste: KI-en kan ved behov bruke nettsøk etter mer presis eller nyere empiri. Supplerende kilder filtreres mot kilder som faktisk ble brukt i nettsøket.

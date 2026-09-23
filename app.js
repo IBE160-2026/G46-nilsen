@@ -13,6 +13,14 @@ const svgIcons = {
   person: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"></path><path d="M5 20a7 7 0 0 1 14 0"></path></svg>`,
   coins: `<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="9" cy="7" rx="4" ry="2.5"></ellipse><path d="M5 7v6c0 1.4 1.8 2.5 4 2.5s4-1.1 4-2.5V7"></path><ellipse cx="16" cy="12" rx="4" ry="2.5"></ellipse><path d="M12 12v5c0 1.4 1.8 2.5 4 2.5s4-1.1 4-2.5v-5"></path></svg>`,
   scales: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v16"></path><path d="M7 7h10"></path><path d="m7 7-3 5h6L7 7Z"></path><path d="m17 7-3 5h6l-3-5Z"></path><path d="M9 20h6"></path></svg>`,
+  glassOff: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l-1.4 7.2A3.7 3.7 0 0 1 12 14.2a3.7 3.7 0 0 1-3.6-3L7 4Z"></path><path d="M12 14.2V20"></path><path d="M8.5 20h7"></path><path d="M4 4l16 16"></path></svg>`,
+  calendarClock: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="14" height="14" rx="2"></rect><path d="M7 3.5v4M14 3.5v4M3.5 9.5h14"></path><circle cx="17.5" cy="16.5" r="4"></circle><path d="M17.5 14.3v2.4l1.5 1"></path></svg>`,
+  trendUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"></path><path d="m7 15 4-4 3 2 5-6"></path><path d="M15.5 7H19v3.5"></path></svg>`,
+  coinsUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="8" cy="15.5" rx="4" ry="2"></ellipse><path d="M4 15.5v3c0 1.1 1.8 2 4 2s4-.9 4-2v-3"></path><path d="M13 12l5-5"></path><path d="M14.5 7H18v3.5"></path></svg>`,
+  chatPeople: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.5"></circle><circle cx="16" cy="8" r="2.5"></circle><path d="M3.5 16c.5-2.2 2.2-3.5 4.5-3.5 1.1 0 2.1.3 2.8.8M20.5 16c-.5-2.2-2.2-3.5-4.5-3.5-1.1 0-2.1.3-2.8.8"></path><path d="M8 17.5h8l2.5-2.2V20H8z"></path></svg>`,
+  exitDoor: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 20V4h9v16"></path><path d="M10 12h10"></path><path d="m17 9 3 3-3 3"></path></svg>`,
+  shieldCheck: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>`,
+  homeHeart: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M12 17s-3-1.8-3-4a1.8 1.8 0 0 1 3-1.3 1.8 1.8 0 0 1 3 1.3c0 2.2-3 4-3 4Z"></path></svg>`,
   more: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h.01"></path><path d="M12 12h.01"></path><path d="M18 12h.01"></path></svg>`
 };
 
@@ -23,7 +31,7 @@ const topics = [
   {
     id: 'alkohol-rus',
     title: 'Alkohol og rus',
-    iconKey: 'bottle',
+    iconKey: 'glassOff',
     image: 'topic-alkohol-rus.png',
     imageAlt: 'Alvorlig, men rolig samtale mellom kvinnelig leder og kvinnelig medarbeider i et moderne møterom',
     description: 'Støtte til samtaler der observasjoner, bekymring, påvirkning eller sikkerhet gjør det nødvendig å ta opp alkohol eller rus på en tydelig og respektfull måte.',
@@ -41,7 +49,7 @@ const topics = [
   {
     id: 'fravaer-oppfolging',
     title: 'Fravær og oppfølging',
-    iconKey: 'bed',
+    iconKey: 'calendarClock',
     image: 'topic-fravaer-oppfolging.png',
     imageAlt: 'Oppfølgingssamtale mellom leder og medarbeider i et lyst kontormiljø',
     description: 'Støtte til gode samtaler om fravær, oppmøte, tilbakekomst, arbeidsevne og tilrettelegging – med fokus på både medarbeideren og arbeidssituasjonen.',
@@ -59,7 +67,7 @@ const topics = [
   {
     id: 'prestasjon-utvikling',
     title: 'Prestasjon og utvikling',
-    iconKey: 'list',
+    iconKey: 'trendUp',
     image: 'topic-prestasjon-utvikling.png',
     imageAlt: 'Utviklingssamtale med fokus på mål og fremgang ved et skrivebord',
     description: 'Støtte til samtaler om forventninger, kvalitet, mål, kompetanse og utvikling når arbeidshverdagen ikke fungerer helt som ønsket.',
@@ -77,7 +85,7 @@ const topics = [
   {
     id: 'lonn-utvikling',
     title: 'Lønn og utvikling',
-    iconKey: 'coins',
+    iconKey: 'coinsUp',
     image: 'topic-lonn-utvikling.png',
     imageAlt: 'Positiv samtale om lønn, utvikling og forventninger i et moderne kontor',
     description: 'Støtte til ryddige samtaler om lønn, forventninger, ansvar, utviklingsmuligheter og hvordan virksomhetens rammer kan forklares tydelig.',
@@ -94,7 +102,7 @@ const topics = [
   {
     id: 'samarbeid-kommunikasjon',
     title: 'Samarbeid og kommunikasjon',
-    iconKey: 'people',
+    iconKey: 'chatPeople',
     image: 'topic-samarbeid-kommunikasjon.png',
     imageAlt: 'Flere kolleger samarbeider rundt en laptop i et moderne kontor',
     description: 'Støtte til samtaler som skal styrke kommunikasjon, tillit, rolleforståelse og samspill når samarbeidet har blitt krevende.',
@@ -112,7 +120,7 @@ const topics = [
   {
     id: 'avslutning-arbeidsforhold',
     title: 'Avslutning av arbeidsforhold',
-    iconKey: 'person',
+    iconKey: 'exitDoor',
     image: 'topic-avslutning-arbeidsforhold.png',
     imageAlt: 'Alvorlig og profesjonell samtale om avslutning av arbeidsforhold',
     description: 'Støtte til tydelige og respektfulle samtaler når arbeidsforholdet kan være på vei mot en avslutning eller saken krever en mer formell videre prosess.',
@@ -130,7 +138,7 @@ const topics = [
   {
     id: 'sikkerhet-ansvar',
     title: 'Sikkerhet og ansvar',
-    iconKey: 'warning',
+    iconKey: 'shieldCheck',
     image: 'topic-sikkerhet-ansvar.png',
     imageAlt: 'Sikkerhetsmøte med planer, sikkerhetsutstyr og tydelig dialog',
     description: 'Støtte til samtaler om sikker praksis, rutiner, risiko, avvik og ansvar – med mål om læring, tydelighet og tryggere arbeid.',
@@ -148,7 +156,7 @@ const topics = [
   {
     id: 'livssituasjoner',
     title: 'Livssituasjoner',
-    iconKey: 'team',
+    iconKey: 'homeHeart',
     image: 'topic-livssituasjoner.png',
     imageAlt: 'Omsorgsfull samtale der en medarbeider sitter med hodet bøyd og blir lyttet til',
     description: 'Støtte til omsorgsfulle og profesjonelle samtaler når personlige belastninger, omsorgsansvar, sorg eller andre livssituasjoner påvirker arbeidshverdagen.',
@@ -355,6 +363,10 @@ function openGuidance(title, help, initialSituation = '') {
   if (situationField && initialSituation.trim()) {
     situationField.value = initialSituation.trim();
     autoGrowTextarea(situationField, 220);
+    requestAnimationFrame(() => {
+      situationField.focus();
+      situationField.select();
+    });
   }
   updatePrivacyCheck();
   showView('guidance');
@@ -473,6 +485,23 @@ function detectSensitiveInfo(text) {
   if (/\b(?:han|hun|ham|henne|hans|hennes)\b/i.test(source)) {
     add('gender', 'Kjønnet pronomen', 'Bruk «hen» eller rollen, for eksempel «medarbeideren», når kjønn ikke er nødvendig.');
   }
+  // Kombinasjoner av indirekte personopplysninger kan gjøre en medarbeider gjenkjennelig.
+  const familyAgeCombo = /\b(?:har|med|til)\s+(?:(?:ett|to|tre|fire|fem|seks|\d+)\s+)?(?:barn|datter|døtre|sønn|sønner|gutt|gutter|jente|jenter)\b[^.!?]{0,55}\b(?:på\s+)?\d{1,2}(?:\s*(?:,|og)\s*\d{1,2})+(?:\s*år)?\b/iu;
+  const singleChildAge = /\b(?:barn|datter|sønn|gutt|jente)\s+(?:som\s+er\s+|på\s+)\d{1,2}\s*år\b/iu;
+  const soloParentAge = /\b(?:alenemor|alenefar|enslig\s+(?:mor|far))\b[^.!?]{0,60}\b(?:barn|datter|sønn|gutt|jente)\b[^.!?]{0,35}\b\d{1,2}\b/iu;
+  const householdCombo = /\b(?:bor|lever)\s+med\s+(?:mannen|kona|ektefellen|samboeren|partneren)\b[^.!?]{0,70}\b(?:barn|datter|døtre|sønn|sønner)\b/iu;
+  const pregnancyDetail = /\bgravid\b[^.!?]{0,30}\b(?:uke|svangerskapsuke)\s*\d{1,2}\b/iu;
+  const uniquenessCombo = /\b(?:den\s+eneste|en\s+av\s+(?:to|tre|fire|\d+))\b[^.!?]{0,70}\b(?:ansatt(?:e|en)?|medarbeider(?:e|en)?|leder(?:e|en)?|ingeniør(?:er|en)?|sykepleier(?:e|en)?|lærer(?:e|en)?|rådgiver(?:e|en)?|tekniker(?:e|en)?|operatør(?:er|en)?|elektriker(?:e|en)?|lege(?:r|n)?|psykolog(?:er|en)?|jurist(?:er|en)?)\b/iu;
+  if (familyAgeCombo.test(source) || singleChildAge.test(source) || soloParentAge.test(source) || householdCombo.test(source)) {
+    add('family_details', 'Detaljerte familieopplysninger', 'Generaliser familieforhold, antall, kjønn og eksakte aldre slik at personen ikke blir lett gjenkjennelig.');
+  }
+  if (pregnancyDetail.test(source)) {
+    add('pregnancy_detail', 'Detaljert livsfaseopplysning', 'Fjern eksakt svangerskapsuke dersom den ikke er nødvendig.');
+  }
+  if (uniquenessCombo.test(source)) {
+    add('unique_role', 'Mulig indirekte identifisering', 'Unngå kombinasjoner som beskriver en unik eller svært liten gruppe i virksomheten.');
+  }
+
   const likelyName = findLikelyGivenName(source);
   if (likelyName) {
     add('name', `Mulig personnavn: «${likelyName}»`, 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».');
@@ -493,6 +522,17 @@ function autoFixPrivacyText(text, findings) {
   fixed = fixed.replace(/(?:\+47\s?)?(?:\d[\s-]?){8}\b/g, '[fjernet telefonnummer]');
   fixed = fixed.replace(/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/gi, '[fjernet identifikator]');
   fixed = fixed.replace(/\b\d{11}\b/g, '[fjernet identifikator]');
+
+  // Generaliser familie- og livsfasedetaljer før enkeltaldre håndteres.
+  fixed = fixed.replace(/\bhar\s+(?:to|2)\s+(?:døtre|sønner)\s+på\s+(?:[6-9]|1[0-2])\s*(?:,|og)\s*(?:[6-9]|1[0-2])(?:\s*år)?\b/giu, 'har flere barn i småskolealder');
+  fixed = fixed.replace(/\bhar\s+(?:ett|to|tre|fire|fem|seks|\d+)\s+(?:barn|døtre|sønner)\s+på\s+\d{1,2}(?:\s*(?:,|og)\s*\d{1,2})+(?:\s*år)?\b/giu, 'har flere barn i ulike aldre');
+  fixed = fixed.replace(/\b(?:datter|sønn|barn|gutt|jente)\s+(?:som\s+er\s+|på\s+)(?:1[3-9])\s*år\b/giu, 'barn i tenårene');
+  fixed = fixed.replace(/\b(?:datter|sønn|barn|gutt|jente)\s+(?:som\s+er\s+|på\s+)(?:[6-9]|1[0-2])\s*år\b/giu, 'barn i småskolealder');
+  fixed = fixed.replace(/\bgravid(?:\s+i)?\s+(?:uke|svangerskapsuke)\s*\d{1,2}\b/giu, 'gravid');
+
+  fixed = fixed.replace(/\b(?:er\s+)?(?:alenemor|alenefar|enslig\s+(?:mor|far))\b[^.!?]{0,60}\b(?:til\s+)?(?:ett|to|tre|fire|fem|seks|\d+)?\s*(?:barn|datter|sønn|gutt|jente)\b[^.!?]{0,35}/giu, 'har omsorgsansvar for barn');
+  fixed = fixed.replace(/\b(?:bor|lever)\s+med\s+(?:mannen|kona|ektefellen|samboeren|partneren)\b[^.!?]{0,70}\b(?:og\s+)?(?:ett|to|tre|fire|fem|seks|\d+)?\s*(?:barn|datter|døtre|sønn|sønner)\b/giu, 'har familieforhold som påvirker situasjonen');
+  fixed = fixed.replace(/\b(?:den\s+eneste|en\s+av\s+(?:to|tre|fire|\d+))\s+((?:ansatt|medarbeider|leder|ingeniør|sykepleier|lærer|rådgiver|tekniker|operatør|elektriker|lege|psykolog|jurist)[\p{L}-]*)\b/giu, 'en medarbeider i en liten faggruppe');
 
   // Konkret alder/fødselsdata generaliseres uten å endre resten av setningen.
   fixed = fixed.replace(/\b(?:[1-9]|[1-9]\d|1[01]\d|120)\s*år(?:\s+gammel)?\b/gi, '[alder fjernet]');

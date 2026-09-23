@@ -1,6 +1,6 @@
 {
-  "version": 1,
-  "description": "Kurert og utvidbar fagbank for Samtalestøtte. Ingen øvre grense på antall kilder.",
+  "version": 2,
+  "description": "Kurert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken er et førstevalg og kvalitetsanker, ikke en lukket liste; supplerende troverdige kilder kan brukes ved behov.",
   "sources": [
     {
       "id": "NAV_SYKEFRAVAER_OPPFOLGING",
@@ -424,6 +424,389 @@
         "oppsigelse"
       ],
       "authority": "research"
+    },
+    {
+      "id": "AKAN_MODELLEN",
+      "type": "faglig veiledning",
+      "title": "Akan-modellen",
+      "author": "Akan kompetansesenter",
+      "year": 2026,
+      "url": "https://www.akan.no/kortforklart-akan-modellen",
+      "topics": [
+        "Alkohol og rus",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Tidlig innsats, tydelige rammer og støtte bør sees i sammenheng.",
+        "Bekymringer bør tas opp på grunnlag av konkrete observasjoner og arbeidsmessige konsekvenser."
+      ],
+      "use_when": [
+        "alkohol",
+        "rus",
+        "spill",
+        "bekymring",
+        "påvirket",
+        "policy",
+        "akan"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AKAN_POLICY",
+      "type": "faglig veiledning",
+      "title": "Hvordan kan arbeidsplassen forebygge rus- og spillproblematikk?",
+      "author": "Akan kompetansesenter",
+      "year": 2026,
+      "url": "https://www.akan.no/rusmiddelpolicykjoreregler",
+      "topics": [
+        "Alkohol og rus",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "En kjent policy gir forutsigbarhet om hva som gjelder og hvordan bekymringer og brudd håndteres."
+      ],
+      "use_when": [
+        "rusmiddelpolicy",
+        "kjøreregler",
+        "jobbfest",
+        "sikkerhet",
+        "brudd",
+        "påvirkning"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "ILO_ALCOHOL_DRUG_WORK",
+      "type": "faglig rammeverk",
+      "title": "Management of alcohol- and drug-related issues in the workplace",
+      "author": "International Labour Organization",
+      "year": 1996,
+      "url": "https://www.ilo.org/publications/management-alcohol-and-drug-related-issues-workplace",
+      "topics": [
+        "Alkohol og rus",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Arbeidsplassen bør kombinere forebygging, tydelige prosedyrer, støtte og rehabilitering ved rusrelaterte utfordringer."
+      ],
+      "use_when": [
+        "alkohol",
+        "rus",
+        "rehabilitering",
+        "policy",
+        "arbeidsplass",
+        "sikkerhet"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AT_TILRETTELEGGING",
+      "type": "myndighet",
+      "title": "Tilrettelegging av arbeidet",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/tilrettelegging/",
+      "topics": [
+        "Fravær og oppfølging",
+        "Livssituasjoner",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Tilrettelegging kan gjelde organisering, oppgaver, arbeidstid og andre arbeidsforhold.",
+        "Arbeidsevne og arbeidsfunksjon kan drøftes uten å kreve private medisinske detaljer."
+      ],
+      "use_when": [
+        "tilrettelegging",
+        "arbeidsevne",
+        "kapasitet",
+        "livsfase",
+        "redusert arbeidsevne",
+        "tilbakekomst"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "NAV_PSYKISK_HELSE_ARBEIDSGIVER",
+      "type": "myndighet",
+      "title": "Ansatte som sliter psykisk",
+      "author": "NAV",
+      "year": 2026,
+      "url": "https://www.nav.no/arbeidsgiver/psykiske-helseproblemer",
+      "topics": [
+        "Livssituasjoner",
+        "Fravær og oppfølging",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Leder kan vise omsorg, spørre om arbeidssituasjonen og lytte uten å opptre som behandler.",
+        "Fokus bør være på arbeid, funksjon, støtte og eventuell tilrettelegging fremfor diagnose."
+      ],
+      "use_when": [
+        "nedstemt",
+        "psykisk",
+        "stress",
+        "belastning",
+        "tilbaketrukket",
+        "livssituasjon",
+        "arbeidsevne"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "WHO_MENTAL_HEALTH_WORK_2022",
+      "type": "faglig rammeverk",
+      "title": "Guidelines on mental health at work",
+      "author": "World Health Organization",
+      "year": 2022,
+      "url": "https://www.who.int/publications-detail-redirect/9789240053052",
+      "topics": [
+        "Livssituasjoner",
+        "Fravær og oppfølging",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Arbeidsrettede tiltak bør støtte psykisk helse, deltakelse i arbeid og trygg tilbakeføring.",
+        "Lederopplæring og organisatoriske tiltak inngår i evidensbaserte anbefalinger."
+      ],
+      "use_when": [
+        "psykisk helse",
+        "stress",
+        "angst",
+        "depresjon",
+        "tilbakeføring",
+        "return to work",
+        "lederstøtte"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "KLUGER_DENISI_1996_FEEDBACK",
+      "type": "fagfellevurdert forskning",
+      "title": "The effects of feedback interventions on performance: A historical review, a meta-analysis, and a preliminary feedback intervention theory",
+      "author": "Avraham N. Kluger & Angelo DeNisi",
+      "year": 1996,
+      "url": "https://doi.org/10.1037/0033-2909.119.2.254",
+      "doi": "10.1037/0033-2909.119.2.254",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Tilbakemelding virker ikke automatisk positivt; innretning mot oppgave og læring er viktig."
+      ],
+      "use_when": [
+        "feedback",
+        "tilbakemelding",
+        "prestasjon",
+        "kvalitet",
+        "feil",
+        "utvikling"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "DECI_OLAFSEN_RYAN_2017_SDT",
+      "type": "fagfellevurdert forskning",
+      "title": "Self-Determination Theory in Work Organizations: The State of a Science",
+      "author": "Edward L. Deci, Anja H. Olafsen & Richard M. Ryan",
+      "year": 2017,
+      "url": "https://doi.org/10.1146/annurev-orgpsych-032516-113108",
+      "doi": "10.1146/annurev-orgpsych-032516-113108",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Lønn og utvikling",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Autonomi, kompetanse og tilhørighet er sentrale for kvalitativ motivasjon, prestasjon og velvære."
+      ],
+      "use_when": [
+        "motivasjon",
+        "autonomi",
+        "mestring",
+        "kompetanse",
+        "tilhørighet",
+        "belønning",
+        "lønn"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "BAKKER_DEMEROUTI_2007_JDR",
+      "type": "fagfellevurdert forskning",
+      "title": "The Job Demands-Resources model: state of the art",
+      "author": "Arnold B. Bakker & Evangelia Demerouti",
+      "year": 2007,
+      "url": "https://doi.org/10.1108/02683940710733115",
+      "doi": "10.1108/02683940710733115",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Livssituasjoner",
+        "Fravær og oppfølging",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Arbeidskrav og tilgjengelige ressurser bør vurderes sammen når prestasjon, belastning eller engasjement endrer seg."
+      ],
+      "use_when": [
+        "arbeidsbelastning",
+        "ressurser",
+        "krav",
+        "stress",
+        "utbrenthet",
+        "engasjement",
+        "motivasjon"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "FRAZIER_2017_PSYCH_SAFETY_META",
+      "type": "fagfellevurdert forskning",
+      "title": "Psychological Safety: A Meta-Analytic Review and Extension",
+      "author": "M. Lance Frazier mfl.",
+      "year": 2017,
+      "url": "https://doi.org/10.1111/peps.12183",
+      "doi": "10.1111/peps.12183",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Psykologisk trygghet henger sammen med sentrale forhold i team, læring og det å kunne ta mellommenneskelig risiko."
+      ],
+      "use_when": [
+        "psykologisk trygghet",
+        "si fra",
+        "team",
+        "uenighet",
+        "feil",
+        "læring",
+        "varsling"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "ONEILL_2013_TEAM_CONFLICT_META",
+      "type": "fagfellevurdert forskning",
+      "title": "Examining the Pros and Cons of Team Conflict: A Team-Level Meta-Analysis of Task, Relationship, and Process Conflict",
+      "author": "Thomas A. O’Neill, Natalie J. Allen & Stephanie E. Hastings",
+      "year": 2013,
+      "url": "https://doi.org/10.1080/08959285.2013.795573",
+      "doi": "10.1080/08959285.2013.795573",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Oppgave-, relasjons- og prosesskonflikt bør skilles fordi de kan ha ulike konsekvenser for teamet."
+      ],
+      "use_when": [
+        "konflikt",
+        "uenighet",
+        "team",
+        "samarbeid",
+        "prosesskonflikt",
+        "relasjonskonflikt"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AT_RISIKOVURDERING",
+      "type": "myndighet",
+      "title": "Risikovurdering",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/hms/risikovurdering/",
+      "topics": [
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Farer og problemer skal kartlegges systematisk, risiko vurderes og tiltak følges opp."
+      ],
+      "use_when": [
+        "risiko",
+        "sikkerhet",
+        "hendelse",
+        "fare",
+        "HMS",
+        "avvik"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AT_VOLD_TRUSLER",
+      "type": "myndighet",
+      "title": "Vold og trusler i arbeidslivet",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/vold-og-trusler/",
+      "topics": [
+        "Sikkerhet og ansvar",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Arbeidsgiver skal forebygge og håndtere arbeidsrelatert vold og trusler systematisk."
+      ],
+      "use_when": [
+        "vold",
+        "trussel",
+        "truende",
+        "aggressiv",
+        "sikkerhet",
+        "hendelse"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AT_LONN",
+      "type": "myndighet",
+      "title": "Lønn",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/lonn/",
+      "topics": [
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Lønn og vilkår må forstås i lys av arbeidsavtale, eventuelle tariffavtaler og gjeldende regelverk."
+      ],
+      "use_when": [
+        "lønn",
+        "lønnssamtale",
+        "lønnsøkning",
+        "prestasjonlønn",
+        "tariff"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "COLQUITT_2001_JUSTICE_META",
+      "type": "fagfellevurdert forskning",
+      "title": "Justice at the millennium: A meta-analytic review of 25 years of organizational justice research",
+      "author": "Jason A. Colquitt mfl.",
+      "year": 2001,
+      "url": "https://doi.org/10.1037/0021-9010.86.3.425",
+      "doi": "10.1037/0021-9010.86.3.425",
+      "topics": [
+        "Lønn og utvikling",
+        "Avslutning av arbeidsforhold",
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Fordelings-, prosedyre-, mellommenneskelig og informasjonsmessig rettferdighet har betydning for hvordan beslutninger oppleves."
+      ],
+      "use_when": [
+        "rettferdighet",
+        "lønn",
+        "forfremmelse",
+        "oppsigelse",
+        "prosess",
+        "begrunnelse",
+        "ulik behandling"
+      ],
+      "authority": "high"
     }
   ]
 }

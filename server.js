@@ -25,15 +25,23 @@ const sourceIds = sourceBank.sources.map(source => source.id);
 
 function selectRelevantSources(analysis = {}, situation = "") {
   const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
-  const q = String(situation || "").toLocaleLowerCase("nb-NO");
+  const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || [])]
+    .filter(Boolean).join(" ");
+  const q = `${situation || ""} ${analysisText}`.toLocaleLowerCase("nb-NO");
+  const authorityWeight = { high: 2, medium: 1 };
   const scored = sourceBank.sources.map(source => {
     let score = 0;
     source.topics.forEach(topic => { if (topics.has(topic)) score += 5; });
-    (source.use_when || []).forEach(term => { if (q.includes(String(term).toLocaleLowerCase("nb-NO"))) score += 2; });
-    if (["fagfellevurdert forskning", "faglig rammeverk"].includes(source.type)) score += 0.5;
+    (source.use_when || []).forEach(term => {
+      const normalized = String(term).toLocaleLowerCase("nb-NO");
+      if (normalized && q.includes(normalized)) score += 3;
+    });
+    score += authorityWeight[source.authority] || 0;
+    if (source.type === "lovverk" || source.type === "myndighet") score += 1.5;
+    if (source.type === "fagfellevurdert forskning") score += 1;
     return { source, score };
   }).filter(item => item.score > 0).sort((a,b) => b.score - a.score);
-  return scored.slice(0, 8).map(item => item.source);
+  return scored.slice(0, 10).map(item => item.source);
 }
 
 function publicSources(ids = []) {
@@ -41,6 +49,18 @@ function publicSources(ids = []) {
   return sourceBank.sources.filter(source => wanted.has(source.id)).map(source => ({
     id: source.id, title: source.title, author: source.author, year: source.year, type: source.type, url: source.url, doi: source.doi || null
   }));
+}
+
+function webSourceUrls(response) {
+  const urls = new Set();
+  for (const item of response?.output || []) {
+    const sources = item?.action?.sources;
+    if (!Array.isArray(sources)) continue;
+    for (const source of sources) {
+      if (source?.type === "url" && typeof source.url === "string") urls.add(source.url);
+    }
+  }
+  return urls;
 }
 
 const analysisSchema = {
@@ -125,9 +145,20 @@ const guidanceSchema = {
     check_before_meeting: { type: "array", items: { type: "string" }, maxItems: 5 },
     legal_hr_note: { type: "string" },
     source_ids: { type: "array", maxItems: 4, items: { type: "string", enum: sourceIds } },
+    supplementary_sources: {
+      type: "array", maxItems: 2,
+      items: {
+        type: "object", additionalProperties: false,
+        properties: {
+          title: { type: "string" }, author: { type: "string" }, year: { type: "string" },
+          type: { type: "string" }, url: { type: "string" }
+        },
+        required: ["title", "author", "year", "type", "url"]
+      }
+    },
     next_steps: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 4 }
   },
-  required: ["opening", "questions", "reactions", "attention", "check_before_meeting", "legal_hr_note", "source_ids", "next_steps"]
+  required: ["opening", "questions", "reactions", "attention", "check_before_meeting", "legal_hr_note", "source_ids", "supplementary_sources", "next_steps"]
 };
 
 app.get("/api/status", (_req, res) => {
@@ -206,11 +237,12 @@ app.post("/api/generate-guidance", async (req, res) => {
   }
 
   const relevantSources = selectRelevantSources(analysis, situation);
-  const guidanceTask = `\n\n## Oppgave: lag konkret samtalestøtte\nDu skal nå lage selve samtalestøtten til akkurat denne saken. Ikke bruk standardråd som kunne passet enhver leder.\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Åpningen skal kunne sies høyt i denne konkrete samtalen.\n- Spørsmålene skal være få og målrettede; hvert spørsmål må ha en tydelig funksjon i akkurat saken.\n- Foreslå 2–4 plausible reaksjoner som er SPESIFIKKE for det som står på spill. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- Skill mellom hva lederen bør AVKLARE før møtet og hva lederen bør SI i møtet.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk fagbanken selektivt. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør knyttes til 1–4 kilde-ID-er fra listen under.\n- source_ids må kun inneholde ID-er fra den oppgitte fagbanken. Bruk tom liste hvis ingen kilde er nødvendig.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal HR/juridisk kvalitetssikring når det er nødvendig, uten å konkludere definitivt.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n`;
+  const guidanceTask = `\n\n## Oppgave: lag konkret samtalestøtte\nDu skal nå lage selve samtalestøtten til akkurat denne saken. Ikke bruk standardråd som kunne passet enhver leder.\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Åpningen skal kunne sies høyt i denne konkrete samtalen.\n- Spørsmålene skal være få og målrettede; hvert spørsmål må ha en tydelig funksjon i akkurat saken.\n- Foreslå 2–4 plausible reaksjoner som er SPESIFIKKE for det som står på spill. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- Skill mellom hva lederen bør AVKLARE før møtet og hva lederen bør SI i møtet.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk den kuraterte fagbanken som førstevalg og kvalitetsanker. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør støttes av relevante kilder.\n- source_ids må kun inneholde ID-er fra den oppgitte fagbanken. Velg 1–4 presise kilder når de faktisk passer.\n- Fagbanken er IKKE en lukket liste. Dersom saken trenger en mer presis, nyere eller manglende kilde, kan du bruke nettsøk og supplere med inntil 2 kilder. Prioriter norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning. Unngå blogger, markedsføring og tilfeldige rådssider.\n- supplementary_sources skal bare inneholde kilder du faktisk har funnet og brukt gjennom nettsøk. Ikke konstruer titler, forfattere eller lenker. Bruk tom liste hvis fagbanken er tilstrekkelig.\n- Ved juridisk sensitivitet: prioriter gjeldende norsk lov/myndighetskilde og anbefal HR/juridisk kvalitetssikring når nødvendig, uten å konkludere definitivt.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n`;
 
   try {
     const response = await client.responses.create({
       model,
+      tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + guidanceTask,
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
       text: {
@@ -223,7 +255,11 @@ app.post("/api/generate-guidance", async (req, res) => {
       }
     });
     const parsed = JSON.parse(response.output_text);
-    return res.json({ ...parsed, evidence_sources: publicSources(parsed.source_ids), ai: true, model });
+    const curated = publicSources(parsed.source_ids);
+    const usedWebUrls = webSourceUrls(response);
+    const supplementary = (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
+      .filter(source => source?.url && usedWebUrls.has(source.url));
+    return res.json({ ...parsed, evidence_sources: [...curated, ...supplementary], ai: true, model });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -246,10 +282,11 @@ app.post("/api/continue-conversation", async (req, res) => {
     return res.status(400).json({ error: "MISSING_QUESTION", message: "Oppfølgingsspørsmål mangler." });
   }
   const relevantSources = selectRelevantSources(analysis, situation);
-  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal HR/juridisk kvalitetssikring, uten å konkludere definitivt.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Hold svaret kort og praktisk, helst 1–4 avsnitt.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nRelevante kilder i fagbanken: ${JSON.stringify(relevantSources)}\n`;
+  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal HR/juridisk kvalitetssikring, uten å konkludere definitivt.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Hold svaret kort og praktisk, helst 1–4 avsnitt.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nRelevante kilder i fagbanken: ${JSON.stringify(relevantSources)}\n`;
   try {
     const response = await client.responses.create({
       model,
+      tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + continueTask,
       input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }]
     });

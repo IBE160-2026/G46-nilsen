@@ -150,3 +150,63 @@ Koblet ekte KI til hele samtalestøtten, inkludert forslag til åpning, spørsm�
 - Flervalg gjøres med markerbare knapper som kan slås av og på.
 - Forbedret automatisk scroll/fokus til tenker-indikatoren når KI-en arbeider etter avklaringssvar.
 - «Slik forstår jeg det» er gjort mer kompakt og bruker mer av tilgjengelig bredde.
+
+## v17.10 – Personvern, fagbank og UI-forbedringer
+
+### Brukergrensesnitt
+- Gjort «Slik forstår jeg situasjonen» tydeligere som KI-generert oppsummering.
+- Forbedret visuell forskjell mellom KI-oppsummering og brukerens egne tekstfelt.
+- Lagt inn nytt og mer intuitivt ikonsett for hovedtemaene.
+- Tekst fra hovedsiden videreføres som et utkast som enkelt kan erstattes eller bygges videre på.
+
+### Personvern
+- Utvidet personvernkontrollen til å oppdage flere indirekte identifiserende opplysninger.
+- Bedre kontroll av kombinasjoner som familieforhold, antall barn, kjønn og eksakte aldre.
+- Lagt til mer meningsbevarende anonymisering.
+- Eksempel: «har to døtre på 7 og 9» kan generaliseres til «har flere barn i småskolealder».
+- Personverntestene er utvidet fra 9 til 17 kontroller.
+- Alle 17 personverntester besto.
+
+### Faglig kildebank
+- Utvidet den kuraterte kildebanken til 33 kvalitetssikrede kilder.
+- Alle hovedtemaer har minst 5 registrerte kilder.
+- Utvidet dekningen av blant annet:
+  - psykisk helse i arbeidslivet
+  - lederstøtte
+  - feedback
+  - motivasjon
+  - Job Demands–Resources
+  - psykologisk trygghet
+  - konflikt
+  - organisatorisk rettferdighet
+  - fravær og tilrettelegging
+  - sikkerhet
+  - alkohol og rus
+  - avslutning av arbeidsforhold
+
+### Kildevalg
+- Kilder velges i større grad ut fra sakens faktiske faglige innhold, ikke bare valgt hovedtema.
+- Den kuraterte kildebanken brukes som førstevalg og kvalitetsanker.
+- KI-en er ikke begrenset til kun de faste kildene.
+- Ved behov kan systemet supplere med mer presis eller nyere faglig empiri.
+- Supplerende kilder skal være relevante og troverdige, fortrinnsvis myndighetskilder, anerkjente fagmiljøer eller fagfellevurdert forskning.
+
+### Ledelses- og organisasjonspsykologisk grunnlag
+- Utvidet grunnlaget med relevante teorier og forskningsområder innen blant annet:
+  - LMX
+  - psykologisk trygghet
+  - Self-Determination Theory
+  - Goal-setting theory
+  - feedback
+  - organisatorisk rettferdighet
+  - Job Demands–Resources
+  - konfliktteori
+  - relasjonsledelse
+  - aktiv lytting
+  - motiverende intervju
+  - endringskommunikasjon
+  - oppdragsbasert/intensjonsbasert ledelse
+
+### Teknisk kontroll
+- Kontrollert syntaks i app.js og server.js.
+- v17.10 pakket som samlet versjon etter testing av de nye personvernreglene.

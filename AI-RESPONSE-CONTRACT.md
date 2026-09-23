@@ -39,3 +39,12 @@ Samtidig skal manglende informasjon ikke brukes som grunn til å nekte all hjelp
 
 ## Avklaringsspørsmål – flervalg
 Hvert avklaringsspørsmål kan angi `multi_select: true` når flere alternativer kan være riktige samtidig. Når alternativene er gjensidig utelukkende brukes `multi_select: false`.
+
+
+## Faglig grunnlag og supplerende kilder
+Den strukturerte samtalestøtten kan returnere `source_ids` fra den kuraterte fagbanken og `supplementary_sources` for inntil to supplerende kilder funnet gjennom nettsøk.
+
+- `source_ids` er førstevalg og må peke på registrerte kilder i `SOURCEBANK.json`.
+- `supplementary_sources` brukes bare når banken mangler en mer presis eller oppdatert kilde.
+- Supplerende kilder prioriteres etter kvalitet: norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning.
+- Serveren filtrerer bort supplerende URL-er som ikke finnes blant kildene nettsøket faktisk brukte.
