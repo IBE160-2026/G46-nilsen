@@ -210,3 +210,51 @@ Koblet ekte KI til hele samtalestøtten, inkludert forslag til åpning, spørsm�
 ### Teknisk kontroll
 - Kontrollert syntaks i app.js og server.js.
 - v17.10 pakket som samlet versjon etter testing av de nye personvernreglene.
+
+## v18.0 – Brukerkonto og historikkpilot
+
+### Brukerkonto
+- Lagt til første prototype for brukerregistrering og innlogging.
+- Brukeren velger eget brukernavn, e-post og passord.
+- Brukernavn trenger ikke være personens virkelige navn.
+- Passord lagres ikke i klartekst.
+- Når bruker ikke er innlogget, vises «Logg på» i profilområdet.
+- Når bruker er innlogget, vises initialer og brukernavn.
+
+### Lukket pilot
+- Lagt til støtte for engangsinvitasjoner.
+- Nye brukere kan registrere seg via en gyldig invitasjonslenke.
+- Invitasjoner kan brukes én gang.
+- Ingen åpen registrering for tilfeldige brukere.
+
+### Historikk
+- Lagt til første prototype for lagring av samtalehistorikk for innloggede brukere.
+- Brukeren kan åpne tidligere samtaler.
+- Brukeren kan slette enkeltsamtaler.
+- Brukeren kan slette all historikk.
+- Lagt til mulighet for å bruke en samtale uten å lagre den.
+- Uinnloggede brukere får informasjon om at samtalen ikke lagres permanent.
+- Lagt til varsel før «Ny samtale» dersom den aktive samtalen ikke er lagret.
+
+### Personvern og bruksvilkår
+- Lagt til utkast til personvernerklæring.
+- Lagt til utkast til bruksvilkår.
+- Tydeliggjort brukerens ansvar for å anonymisere informasjon og følge egen taushetsplikt og virksomhetens regler.
+- Videreutviklet personvernkontrollen for arbeidssted, avdeling og andre organisatoriske kjennetegn.
+- Anonymiseringen forsøker å bevare relevant arbeidskontekst.
+- Eksempel: konkret virksomhet kan generaliseres til virksomhetstype eller relevant arbeidsmiljø.
+
+### Samtaleflyt
+- Forbedret formateringen av svar i «Fortsett samtalen».
+- Nummererte seksjoner vises tydeligere under hverandre.
+- Forbedret håndtering av Markdown, punktlister og sitater.
+
+### Testing
+- Personverntestene er utvidet til 22 kontroller.
+- Alle 22 personverntester besto.
+- JavaScript-filer er syntakskontrollert.
+
+### Viktig teknisk begrensning
+- Konto og historikk lagres foreløpig i lokale JSON-filer.
+- Denne lagringen er kun ment for lokal utvikling og prototype.
+- Før løsningen brukes av eksterne testbrukere skal konto og historikk flyttes til en persistent database og produksjonsegnet autentiseringsløsning.

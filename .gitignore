@@ -4,3 +4,5 @@ node_modules/
 
 # Lokale KI-testrapporter
 test-results/
+data/*.json
+data/*.tmp

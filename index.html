@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=17" />
+  <link rel="stylesheet" href="styles.css?v=18" />
 </head>
 <body>
   <div class="app-shell">
@@ -31,10 +31,10 @@
           <span class="nav-glyph" id="nav-settings-icon"></span>
           <span class="nav-label">Innstillinger</span>
         </button>
-        <button class="nav-item" data-view="history" type="button" disabled>
+        <button class="nav-item" data-view="history" type="button">
           <span class="nav-glyph" id="nav-history-icon"></span>
           <span class="nav-label">Historikk</span>
-          <small>ved innlogging</small>
+          <small id="history-nav-note">logg inn</small>
         </button>
       </nav>
 
@@ -58,14 +58,21 @@
             <button data-theme="dark" type="button"><span>☾</span>Mørkt</button>
             <button data-theme="system" type="button"><span>◐</span>System</button>
           </div>
-          <button class="profile-chip" type="button" aria-label="Brukerprofil">
-            <span class="profile-avatar">KN</span>
-            <span class="profile-text">
-              <strong>Kari Nilsen</strong>
-              <small>Logg inn for historikk</small>
-            </span>
-            <span class="profile-caret">⌄</span>
-          </button>
+          <button class="secondary-button topbar-new-chat" id="new-conversation-button" type="button">Ny samtale</button>
+          <div class="profile-wrap">
+            <button class="profile-chip" id="profile-button" type="button" aria-label="Brukerprofil" aria-expanded="false">
+              <span class="profile-avatar" id="profile-avatar">○</span>
+              <span class="profile-text">
+                <strong id="profile-name">Logg på</strong>
+                <small id="profile-note">for historikk</small>
+              </span>
+              <span class="profile-caret">⌄</span>
+            </button>
+            <div class="profile-menu" id="profile-menu" hidden>
+              <button type="button" data-profile-action="history">Historikk</button>
+              <button type="button" data-profile-action="logout">Logg ut</button>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -197,6 +204,10 @@
 
           <div id="privacy-check" class="privacy-check" role="status" aria-live="polite" hidden></div>
           <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
+          <label class="temporary-chat-option" id="temporary-chat-option" hidden>
+            <input type="checkbox" id="temporary-chat" />
+            <span><strong>Ikke lagre denne samtalen</strong><small>Samtalen vises ikke i historikken din.</small></span>
+          </label>
         </form>
 
         <div id="ai-thinking" class="ai-thinking" role="status" aria-live="polite" hidden>
@@ -277,10 +288,97 @@
             <button data-theme="system" type="button"><span>◐</span>Følg systemet</button>
           </div>
         </div>
+        <div class="settings-card account-settings-card">
+          <h2>Konto og personvern</h2>
+          <p id="settings-account-status">Du er ikke logget inn.</p>
+          <div class="settings-account-actions">
+            <button class="secondary-button" type="button" data-open-legal="privacy">Personvernerklæring</button>
+            <button class="secondary-button" type="button" data-open-legal="terms">Bruksvilkår</button>
+            <button class="danger-text-button" id="delete-account-button" type="button" hidden>Slett konto og historikk</button>
+          </div>
+        </div>
+      </section>
+
+      <section id="history-view" class="view">
+        <button class="back-link" id="back-from-history" type="button">← Tilbake til hjem</button>
+        <div class="content-header history-header">
+          <span class="eyebrow">DIN KONTO</span>
+          <h1>Samtalehistorikk</h1>
+          <p>Her finner du samtalene du har valgt å lagre. Du kan åpne eller slette dem når du vil.</p>
+        </div>
+        <div id="history-logged-out" class="settings-card">
+          <h2>Logg inn for historikk</h2>
+          <p>Uten konto lagres ikke samtalene permanent.</p>
+          <button class="primary-button" id="history-login-button" type="button">Logg på</button>
+        </div>
+        <div id="history-logged-in" hidden>
+          <div class="history-toolbar"><span id="history-count"></span><button class="secondary-button" id="delete-all-history" type="button">Slett all historikk</button></div>
+          <div id="history-list" class="history-list"></div>
+        </div>
+      </section>
+
+      <section id="privacy-view" class="view legal-view">
+        <button class="back-link legal-back" type="button">← Tilbake</button>
+        <div class="content-header"><span class="eyebrow">PERSONVERN</span><h1>Personvernerklæring</h1><p>Slik behandler Samtalestøtte opplysninger i pilotversjonen.</p></div>
+        <article class="legal-document">
+          <h2>Hvilke opplysninger lagres?</h2><p>Når du oppretter konto lagres valgt brukernavn, e-postadresse og teknisk informasjon som er nødvendig for sikker innlogging. Passord lagres ikke i klartekst.</p>
+          <h2>Hvorfor lagres opplysningene?</h2><p>Opplysningene brukes for å opprette og administrere kontoen, gi tilgang til samtalehistorikk og la deg logge inn igjen. Du trenger ikke bruke ditt virkelige navn som brukernavn.</p>
+          <h2>Samtalehistorikk</h2><p>Innloggede brukere kan lagre samtaler. Du kan velge «Ikke lagre denne samtalen», slette enkeltsamtaler eller slette all historikk. Uinnloggede samtaler lagres ikke permanent av konto-/historikkfunksjonen.</p>
+          <h2>Personopplysninger om andre</h2><p>Samtalestøtte er laget for at saker skal beskrives anonymt. Ikke legg inn navn, kontaktopplysninger, identifikasjonsnumre eller andre unødvendige opplysninger som identifiserer en medarbeider. Arbeidskontekst kan beskrives når den er relevant, men konkrete virksomhetsnavn, avdelinger og små lokasjoner bør generaliseres når de ikke er nødvendige.</p>
+          <h2>Eksterne tjenester</h2><p>Når KI-funksjonen brukes, sendes den anonymiserte situasjonsteksten og nødvendig samtalekontekst til KI-tjenesten som appen er konfigurert mot. Før en offentlig produksjonslansering må behandlingsansvarlig, databehandlere, lagringstid og kontaktinformasjon oppgis konkret.</p>
+          <h2>Dine valg</h2><p>Du kan slette historikk og konto. Produksjonsversjonen skal også beskrive innsyn, retting, sletting, lagringstid og kontaktpunkt i tråd med gjeldende personvernregler.</p>
+          <p class="legal-note"><strong>Pilotstatus:</strong> Denne teksten er et utkast for prosjekt/pilot og må kvalitetssikres før offentlig lansering.</p>
+        </article>
+      </section>
+
+      <section id="terms-view" class="view legal-view">
+        <button class="back-link legal-back" type="button">← Tilbake</button>
+        <div class="content-header"><span class="eyebrow">VILKÅR</span><h1>Bruksvilkår</h1><p>Rammer for trygg bruk av Samtalestøtte.</p></div>
+        <article class="legal-document">
+          <h2>Brukerens ansvar</h2><p>Du er ansvarlig for innholdet du legger inn og for å følge eventuell taushetsplikt, sikkerhetsinstruks og arbeidsgivers interne regler.</p>
+          <h2>Anonymiser så langt som mulig</h2><p>Unngå navn, kontaktinformasjon, fødselsdato, personnummer og andre unødvendige identifiserende opplysninger. Bruk rollebeskrivelser som «medarbeideren». Behold bare arbeidskontekst som er nødvendig for relevante råd.</p>
+          <h2>Ikke legg inn opplysninger som ikke kan behandles eksternt</h2><p>Graderte opplysninger eller andre opplysninger som etter lov, instruks eller virksomhetens regler ikke kan behandles i eksterne digitale tjenester, skal ikke legges inn.</p>
+          <h2>KI-råd er beslutningsstøtte</h2><p>Samtalestøtte gir støtte til forberedelse og samtaleform. Juridiske, medisinske, sikkerhetskritiske og andre alvorlige beslutninger må kvalitetssikres mot relevante fagpersoner og gjeldende regelverk.</p>
+          <p class="legal-note"><strong>Pilotstatus:</strong> Vilkårene er et prosjektutkast og må kvalitetssikres før offentlig lansering.</p>
+        </article>
       </section>
     </main>
   </div>
 
-  <script src="app.js?v=17"></script>
+  <dialog id="auth-dialog" class="auth-dialog">
+    <div class="auth-shell">
+      <button class="dialog-close" id="auth-close" type="button" aria-label="Lukk">×</button>
+      <div id="login-panel">
+        <span class="eyebrow">SAMTALESTØTTE</span><h2>Logg på</h2><p>Logg inn for å lagre og finne igjen samtaler.</p>
+        <form id="login-form" class="auth-form">
+          <label>E-post<input id="login-email" type="email" autocomplete="email" required></label>
+          <label>Passord<input id="login-password" type="password" autocomplete="current-password" required></label>
+          <div class="auth-message" id="login-message" aria-live="polite"></div>
+          <button class="primary-button" type="submit">Logg på</button>
+        </form>
+        <p class="auth-switch">Har du invitasjon? <button type="button" id="show-register">Opprett konto</button></p>
+      </div>
+      <div id="register-panel" hidden>
+        <span class="eyebrow">LUKKET PILOT</span><h2>Opprett konto</h2><p>Du bestemmer selv hvilket brukernavn du vil bruke.</p>
+        <form id="register-form" class="auth-form">
+          <label>Brukernavn<input id="register-username" maxlength="40" autocomplete="nickname" required></label>
+          <label>E-post<input id="register-email" type="email" autocomplete="email" required></label>
+          <label>Passord <small>minst 10 tegn</small><input id="register-password" type="password" minlength="10" autocomplete="new-password" required></label>
+          <label>Bekreft passord<input id="register-password-confirm" type="password" minlength="10" autocomplete="new-password" required></label>
+          <label>Invitasjonskode<input id="register-invite" autocomplete="off" required></label>
+          <label class="terms-check"><input id="register-terms" type="checkbox" required><span>Jeg godtar <button class="link-button" type="button" data-open-legal="terms">bruksvilkårene</button> og bekrefter at jeg har lest <button class="link-button" type="button" data-open-legal="privacy">personvernerklæringen</button>.</span></label>
+          <div class="auth-message" id="register-message" aria-live="polite"></div>
+          <button class="primary-button" type="submit">Opprett konto</button>
+        </form>
+        <p class="auth-switch">Har du allerede konto? <button type="button" id="show-login">Logg på</button></p>
+      </div>
+    </div>
+  </dialog>
+
+  <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
+    <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
+  </dialog>
+
+  <script src="app.js?v=18"></script>
 </body>
 </html>

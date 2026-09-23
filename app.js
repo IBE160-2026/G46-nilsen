@@ -26,6 +26,10 @@ const svgIcons = {
 
 let lastAiAnalysis = null;
 let lastAiGuidance = null;
+let currentUser = null;
+let currentConversationId = null;
+let conversationDirty = false;
+let legalReturnView = "home";
 
 const topics = [
   {
@@ -180,7 +184,10 @@ const views = {
   home: document.querySelector('#home-view'),
   topic: document.querySelector('#topic-view'),
   guidance: document.querySelector('#guidance-view'),
-  settings: document.querySelector('#settings-view')
+  settings: document.querySelector('#settings-view'),
+  history: document.querySelector('#history-view'),
+  privacy: document.querySelector('#privacy-view'),
+  terms: document.querySelector('#terms-view')
 };
 
 function setSvg(targetId, svg) {
@@ -221,6 +228,7 @@ function showView(name) {
 function clearGuidanceSession({ clearInputs = true } = {}) {
   lastAiAnalysis = null;
   lastAiGuidance = null;
+  if (clearInputs) { currentConversationId = null; conversationDirty = false; }
   if (clearInputs) {
     const form = document.querySelector('#situation-form');
     if (form) {
@@ -501,6 +509,11 @@ function detectSensitiveInfo(text) {
   if (uniquenessCombo.test(source)) {
     add('unique_role', 'Mulig indirekte identifisering', 'Unngå kombinasjoner som beskriver en unik eller svært liten gruppe i virksomheten.');
   }
+  const exactWorkplace = /\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+(?:Forsvaret|[A-ZÆØÅ][\p{L}.-]+(?:\s+[A-ZÆØÅ][\p{L}.-]+){0,3}(?:\s+(?:AS|ASA|kommune|sykehus|barnehage|skole|etat|avdeling|kontor))?)\b/u;
+  const namedUnit = /\b(?:ved|på|i)\s+(?:[A-ZÆØÅ][\p{L}.-]+\s+){1,3}(?:avdeling|seksjon|kontor|barnehage|skole|sykehus)\b/u;
+  if (exactWorkplace.test(source) || namedUnit.test(source)) {
+    add('workplace_detail', 'Konkret arbeidssted eller enhet', 'Generaliser virksomhetsnavn, avdeling eller lokasjon dersom den konkrete identiteten ikke er nødvendig for rådet. Behold relevant arbeidskontekst.');
+  }
 
   const likelyName = findLikelyGivenName(source);
   if (likelyName) {
@@ -533,6 +546,16 @@ function autoFixPrivacyText(text, findings) {
   fixed = fixed.replace(/\b(?:er\s+)?(?:alenemor|alenefar|enslig\s+(?:mor|far))\b[^.!?]{0,60}\b(?:til\s+)?(?:ett|to|tre|fire|fem|seks|\d+)?\s*(?:barn|datter|sønn|gutt|jente)\b[^.!?]{0,35}/giu, 'har omsorgsansvar for barn');
   fixed = fixed.replace(/\b(?:bor|lever)\s+med\s+(?:mannen|kona|ektefellen|samboeren|partneren)\b[^.!?]{0,70}\b(?:og\s+)?(?:ett|to|tre|fire|fem|seks|\d+)?\s*(?:barn|datter|døtre|sønn|sønner)\b/giu, 'har familieforhold som påvirker situasjonen');
   fixed = fixed.replace(/\b(?:den\s+eneste|en\s+av\s+(?:to|tre|fire|\d+))\s+((?:ansatt|medarbeider|leder|ingeniør|sykepleier|lærer|rådgiver|tekniker|operatør|elektriker|lege|psykolog|jurist)[\p{L}-]*)\b/giu, 'en medarbeider i en liten faggruppe');
+
+  // Bevar relevant arbeidskontekst, men fjern konkrete virksomhets-/stedsnavn når de er flagget.
+  if ((findings || []).some(item => item.type === 'workplace_detail')) {
+    fixed = fixed.replace(/\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+Forsvaret\b/giu, 'jobber i en sikkerhetskritisk virksomhet');
+    fixed = fixed.replace(/\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+[A-ZÆØÅ][\p{L}.-]+(?:\s+[A-ZÆØÅ][\p{L}.-]+){0,3}\s+barnehage\b/gu, 'jobber i en barnehage');
+    fixed = fixed.replace(/\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+[A-ZÆØÅ][\p{L}.-]+(?:\s+[A-ZÆØÅ][\p{L}.-]+){0,3}\s+skole\b/gu, 'jobber i en skole');
+    fixed = fixed.replace(/\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+[A-ZÆØÅ][\p{L}.-]+(?:\s+[A-ZÆØÅ][\p{L}.-]+){0,3}\s+sykehus\b/gu, 'jobber i helsetjenesten');
+    fixed = fixed.replace(/\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+[A-ZÆØÅ][\p{L}.-]+(?:\s+[A-ZÆØÅ][\p{L}.-]+){0,3}\s+kommune\b/gu, 'jobber i en offentlig virksomhet');
+    fixed = fixed.replace(/\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+[A-ZÆØÅ][\p{L}.-]+(?:\s+[A-ZÆØÅ][\p{L}.-]+){0,3}\s+(?:AS|ASA)\b/gu, 'jobber i en virksomhet');
+  }
 
   // Konkret alder/fødselsdata generaliseres uten å endre resten av setningen.
   fixed = fixed.replace(/\b(?:[1-9]|[1-9]\d|1[01]\d|120)\s*år(?:\s+gammel)?\b/gi, '[alder fjernet]');
@@ -1272,7 +1295,9 @@ async function showStructuredGuidance() {
     if (!lastAiAnalysis) throw new Error('Ingen aktiv KI-analyse finnes for denne saken.');
     const guidance = await requestAiGuidance(situation, lastAiAnalysis, followups);
     lastAiGuidance = guidance;
+    conversationDirty = true;
     renderAiGuidance(guidance);
+    await saveCurrentConversation();
   } catch (error) {
     renderStructuredGuidance();
     const intro = document.querySelector('#result-intro');
@@ -1341,10 +1366,12 @@ async function appendConversationTurn(question) {
     });
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
     const payload = await response.json();
-    assistant.innerHTML = `<span>Samtalestøtte</span><p>${escapeHtml(payload.reply || '')}</p>`;
+    assistant.innerHTML = `<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(payload.reply || '')}</div>`;
+    conversationDirty = true;
+    await saveCurrentConversation();
   } catch (_) {
     const reply = buildContinuationReply(question);
-    assistant.innerHTML = `<span>Samtalestøtte</span><p>${escapeHtml(reply)}</p><small>Lokal reserve</small>`;
+    assistant.innerHTML = `<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
   }
 }
 
@@ -1591,6 +1618,9 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
       setBreadcrumb('Innstillinger');
       showView('settings');
     }
+    if (button.dataset.view === 'history') {
+      openHistory();
+    }
   });
 });
 
@@ -1680,6 +1710,7 @@ function autoGrowTextarea(textarea, maxHeight = 220) {
 }
 
 function handleSituationInput(event) {
+  conversationDirty = true;
   autoGrowTextarea(event.target, event.target.id === 'situation' ? 220 : 150);
   updatePrivacyCheck();
 }
@@ -1786,6 +1817,111 @@ document.querySelectorAll('.continue-chip').forEach(button => {
   button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
 });
 
+
+
+function formatContinuationReply(text) {
+  const safe = escapeHtml(String(text || '')).replace(/\r/g, '');
+  const lines = safe.split('\n');
+  let html = ''; let listOpen = false; let sectionOpen = false;
+  const closeList = () => { if (listOpen) { html += '</ul>'; listOpen = false; } };
+  const closeSection = () => { closeList(); if (sectionOpen) { html += '</div>'; sectionOpen = false; } };
+  for (const raw of lines) {
+    const line = raw.trim();
+    if (!line) { closeList(); continue; }
+    const heading = line.match(/^(?:#{1,4}\s*)?(\d+)[.)]?\s*(.+)$/);
+    const hashHeading = line.match(/^#{1,4}\s+(.+)$/);
+    if (heading || hashHeading) {
+      closeSection(); sectionOpen = true; html += `<div class="reply-section"><h4>${heading ? `${heading[1]}. ${heading[2]}` : hashHeading[1]}</h4>`; continue;
+    }
+    if (/^[-•]\s+/.test(line)) { if (!listOpen) { html += '<ul>'; listOpen = true; } html += `<li>${line.replace(/^[-•]\s+/, '')}</li>`; continue; }
+    closeList();
+    if (/^&gt;\s*/.test(line)) html += `<blockquote>${line.replace(/^&gt;\s*/, '')}</blockquote>`;
+    else html += `<p>${line}</p>`;
+  }
+  closeSection(); return html || '<p>Ingen tekst.</p>';
+}
+
+function initialsFor(username='') {
+  const parts=String(username).trim().split(/\s+/).filter(Boolean); if(!parts.length) return '○';
+  return parts.slice(0,2).map(x=>x[0].toUpperCase()).join('');
+}
+function updateAuthUi() {
+  const name=document.querySelector('#profile-name'), note=document.querySelector('#profile-note'), avatar=document.querySelector('#profile-avatar');
+  const histNote=document.querySelector('#history-nav-note'), temp=document.querySelector('#temporary-chat-option');
+  const status=document.querySelector('#settings-account-status'), del=document.querySelector('#delete-account-button');
+  if(currentUser){ name.textContent=currentUser.username; note.textContent='Historikk aktiv'; avatar.textContent=initialsFor(currentUser.username); if(histNote) histNote.textContent=''; if(temp) temp.hidden=false; if(status) status.textContent=`Logget inn som ${currentUser.username}.`; if(del) del.hidden=false; }
+  else { name.textContent='Logg på'; note.textContent='for historikk'; avatar.textContent='○'; if(histNote) histNote.textContent='logg inn'; if(temp) temp.hidden=true; if(status) status.textContent='Du er ikke logget inn. Samtaler lagres ikke permanent.'; if(del) del.hidden=true; }
+}
+async function refreshAuth() {
+  try { const r=await fetch('/api/auth/me'); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
+  updateAuthUi();
+}
+function openAuth(mode='login') {
+  const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
+  document.querySelector('#login-panel').hidden=mode!=='login'; document.querySelector('#register-panel').hidden=mode!=='register';
+  if(!dlg.open) dlg.showModal();
+}
+function closeAuth(){ const dlg=document.querySelector('#auth-dialog'); if(dlg?.open) dlg.close(); }
+function getConversationTurns(){
+  return [...document.querySelectorAll('#conversation-thread .conversation-turn')].map(el=>({role:el.classList.contains('conversation-user')?'user':'assistant',text:el.innerText.replace(/^Du\s*|^Samtalestøtte\s*/,'').trim()}));
+}
+async function saveCurrentConversation(){
+  if(!currentUser || document.querySelector('#temporary-chat')?.checked || !lastAiGuidance) return;
+  const situation=document.querySelector('#situation')?.value.trim()||''; if(!situation) return;
+  try{
+    const r=await fetch('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+      id:currentConversationId,title:(currentSubtopic||currentTopic?.title||situation.slice(0,70)),topic:currentTopic?.title||'',subtopic:currentSubtopic||'',situation,analysis:lastAiAnalysis,guidance:lastAiGuidance,conversation:getConversationTurns()
+    })});
+    if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
+  }catch(_){}
+}
+async function openHistory(){
+  setBreadcrumb('Historikk'); showView('history');
+  const loggedOut=document.querySelector('#history-logged-out'), loggedIn=document.querySelector('#history-logged-in');
+  if(!currentUser){ loggedOut.hidden=false; loggedIn.hidden=true; return; }
+  loggedOut.hidden=true; loggedIn.hidden=false;
+  const list=document.querySelector('#history-list'); list.innerHTML='<div class="history-empty">Henter historikk …</div>';
+  try{ const r=await fetch('/api/history'); const p=await r.json(); renderHistory(p.items||[]); }catch(_){ list.innerHTML='<div class="history-empty">Kunne ikke hente historikken.</div>'; }
+}
+function renderHistory(items){
+  const list=document.querySelector('#history-list'); document.querySelector('#history-count').textContent=`${items.length} lagrede samtaler`;
+  if(!items.length){ list.innerHTML='<div class="history-empty">Du har ingen lagrede samtaler ennå.</div>'; return; }
+  list.innerHTML=items.map(item=>`<article class="history-item" data-history-id="${item.id}"><div class="history-item-top"><div><h3>${escapeHtml(item.title||'Samtale')}</h3><div class="history-meta">${escapeHtml([item.topic,item.subtopic].filter(Boolean).join(' · '))} · ${new Date(item.updatedAt).toLocaleDateString('nb-NO')}</div></div></div><div class="history-actions"><button class="primary-button" data-open-history="${item.id}" type="button">Åpne</button><button class="secondary-button" data-delete-history="${item.id}" type="button">Slett</button></div></article>`).join('');
+  list.querySelectorAll('[data-open-history]').forEach(b=>b.addEventListener('click',()=>loadHistoryItem(items.find(x=>x.id===b.dataset.openHistory))));
+  list.querySelectorAll('[data-delete-history]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Slette denne samtalen?'))return;await fetch(`/api/history/${b.dataset.deleteHistory}`,{method:'DELETE'});openHistory();}));
+}
+function loadHistoryItem(item){
+  if(!item)return; clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
+  currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
+  document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
+  if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
+  const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
+  setBreadcrumb('Lagret samtale'); showView('guidance');
+}
+function startNewConversation(force=false){
+  const hasContent=Boolean(document.querySelector('#situation')?.value.trim());
+  const unsaved=hasContent && (!currentUser || document.querySelector('#temporary-chat')?.checked || conversationDirty);
+  if(unsaved && !force){ const msg=document.querySelector('#discard-message'); msg.textContent=currentUser?'Denne samtalen er ikke lagret. Hvis du fortsetter, kan den ikke gjenopprettes.':'Denne samtalen er ikke lagret og kan ikke gjenopprettes. Logg inn dersom du vil lagre historikk.'; document.querySelector('#discard-dialog').showModal(); return; }
+  resetConversationState(); currentConversationId=null; conversationDirty=false; setBreadcrumb(''); showView('home');
+}
+function openLegal(which){ legalReturnView=Object.entries(views).find(([,el])=>el.classList.contains('active-view'))?.[0]||'home'; closeAuth(); setBreadcrumb(which==='privacy'?'Personvern':'Bruksvilkår'); showView(which); }
+
+document.querySelector('#profile-button')?.addEventListener('click',()=>{
+  if(!currentUser) return openAuth('login'); const m=document.querySelector('#profile-menu'); m.hidden=!m.hidden; document.querySelector('#profile-button').setAttribute('aria-expanded',String(!m.hidden));
+});
+document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{document.querySelector('#profile-menu').hidden=true;openHistory();});
+document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST'});currentUser=null;currentConversationId=null;updateAuthUi();document.querySelector('#profile-menu').hidden=true;showView('home');});
+document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register')); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login'));
+document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
+document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
+document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
+document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
+document.querySelector('#new-conversation-button')?.addEventListener('click',()=>startNewConversation()); document.querySelector('#cancel-new-chat')?.addEventListener('click',()=>document.querySelector('#discard-dialog').close()); document.querySelector('#confirm-new-chat')?.addEventListener('click',()=>{document.querySelector('#discard-dialog').close();startNewConversation(true);});
+document.querySelector('#delete-account-button')?.addEventListener('click',async()=>{if(!confirm('Slette kontoen og all lagret historikk? Dette kan ikke angres.'))return;const r=await fetch('/api/account',{method:'DELETE'});if(r.ok){currentUser=null;currentConversationId=null;updateAuthUi();startNewConversation(true);}});
+document.querySelector('#delete-all-history')?.addEventListener('click',async()=>{if(!confirm('Slette all samtalehistorikk?'))return;await fetch('/api/history',{method:'DELETE'});openHistory();});
+document.querySelector('#temporary-chat')?.addEventListener('change',e=>{conversationDirty=true;if(!e.target.checked) saveCurrentConversation();});
+const inviteFromUrl=new URLSearchParams(location.search).get('invite'); if(inviteFromUrl){document.querySelector('#register-invite').value=inviteFromUrl;openAuth('register');history.replaceState(null,'',location.pathname);}
+refreshAuth();
 
 window.addEventListener('resize', () => {
   if (!localStorage.getItem('samtalestotte-sidebar')) applySidebarState();

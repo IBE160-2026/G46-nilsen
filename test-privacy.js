@@ -30,6 +30,10 @@ const privacyCases = [
   ['Medarbeideren er gravid i uke 27.', 'pregnancy_detail'],
   ['Medarbeideren er den eneste elektrikeren på avdelingen.', 'unique_role'],
   ['Medarbeideren har flere barn i småskolealder.', null],
+  ['Jeg jobber i Forsvaret og medarbeideren har brutt en sikkerhetsrutine.', 'workplace_detail'],
+  ['Jeg jobber i Solsikken barnehage og trenger råd.', 'workplace_detail'],
+  ['Jeg jobber i en barnehage og trenger råd.', null],
+  ['Jeg jobber i en sikkerhetskritisk virksomhet.', null],
 ];
 
 let failures = 0;
@@ -53,8 +57,14 @@ const fixOk = fixed.includes('flere barn i småskolealder') && !/døtre|\b7\b|\b
 if (!fixOk) failures += 1;
 console.log(`${fixOk ? 'OK' : 'FEIL'} anonymisering: ${fixInput} -> ${fixed}`);
 
+const workInput='Jeg jobber i Forsvaret og medarbeideren brøt en sikkerhetsrutine.';
+const workFixed=sandbox.autoFixPrivacyText(workInput,sandbox.detectSensitiveInfo(workInput));
+const workOk=workFixed.includes('sikkerhetskritisk virksomhet') && !workFixed.includes('Forsvaret');
+if(!workOk) failures += 1;
+console.log(`${workOk ? 'OK' : 'FEIL'} arbeidssted-anonymisering: ${workInput} -> ${workFixed}`);
+
 if (failures) {
   console.error(`\n${failures} personverntest(er) feilet.`);
   process.exit(1);
 }
-console.log(`\nAlle ${nameCases.length + privacyCases.length + 1} personverntester OK.`);
+console.log(`\nAlle ${nameCases.length + privacyCases.length + 2} personverntester OK.`);

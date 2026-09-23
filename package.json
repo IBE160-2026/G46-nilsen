@@ -1,6 +1,6 @@
 {
   "name": "samtalestotte",
-  "version": "0.17.10",
+  "version": "18.0.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -11,7 +11,8 @@
     "test-ai:stress": "node test-ai-stress.js",
     "test-ai:stress:full": "node test-ai-stress.js --all",
     "test-ai:stress:problems": "node test-ai-stress.js --problems",
-    "test-privacy": "node test-privacy.js"
+    "test-privacy": "node test-privacy.js",
+    "invite": "node create-invite.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
