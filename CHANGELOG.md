@@ -1,5 +1,20 @@
 # Changelog
 
+## v19.0.0 – Samtalesimulering
+
+- Ny «Øv på samtalen»-modul etter den vanlige samtalestøtten.
+- Brukeren spiller leder, mens KI-en spiller kun medarbeideren.
+- To treningsmoduser: «Øv selv» og «Øv med KI-støtte».
+- KI-støtte gis bare når brukeren ber om den, med korte valg for formulering, spørsmål, tydelighet og hva som bør unngås.
+- Seks reaksjonsstiler: åpen/samarbeidsvillig, usikker/tilbaketrukket, defensiv/uenig, følelsesmessig berørt, frustrert/kritisk og «Overrask meg».
+- Samtalen vises i profesjonelle snakkebobler inspirert av Samtalestøtte-logoen.
+- Øvelsen kan avsluttes når som helst og gir konkret tilbakemelding uten poengsum eller karakter.
+- Tilbakemeldingen er delt i: hva som fungerte, hva som kunne vært tydeligere, alternativ formulering og viktigste læringspunkt.
+- «Prøv samme samtale på nytt» lar brukeren øve igjen med samme case.
+- Simulatoren får eksplisitte regler mot å finne på diagnoser, familieforhold, konflikter, motiv eller annen bakgrunn som ikke finnes i saken.
+- Simulering og tilbakemelding lagres sammen med samtalen i eksisterende historikk når brukeren er innlogget og samtalen ikke er midlertidig. Ingen ny databasetabell er nødvendig.
+- Ny regresjonstest `npm run test-simulation` kontrollerer at simulatorens UI, API-ruter og sikkerhetsgrenser finnes i bygget.
+
 ## v18.3.0 – UX, Om-side og sterkere personvernkontroll
 
 - Profilmenyen lukkes ved klikk utenfor og med Esc. Innloggingsdialogen kan også lukkes ved klikk på bakgrunnen.

@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "18.3.0";
+const appVersion = process.env.APP_VERSION || "19.0.0";
 const contactEmail = String(process.env.CONTACT_EMAIL || "").trim();
 
 app.use(express.json({ limit: "1mb" }));
@@ -227,7 +227,16 @@ function historyPayload(body = {}) {
     situation: String(body.situation || "").slice(0, 20000),
     analysis: body.analysis || null,
     guidance: body.guidance || null,
-    conversation: Array.isArray(body.conversation) ? body.conversation.slice(-40) : []
+    conversation: Array.isArray(body.conversation) ? body.conversation.slice(-40) : [],
+    simulation: body.simulation && typeof body.simulation === "object" ? {
+      mode: String(body.simulation.mode || "solo").slice(0, 20),
+      style: String(body.simulation.style || "open").slice(0, 30),
+      turns: Array.isArray(body.simulation.turns) ? body.simulation.turns.slice(-40).map(turn => ({
+        role: turn?.role === "employee" ? "employee" : "leader",
+        text: String(turn?.text || "").slice(0, 5000)
+      })) : [],
+      feedback: body.simulation.feedback || null
+    } : null
   };
 }
 
@@ -595,6 +604,104 @@ app.post("/api/continue-conversation", async (req, res) => {
       error: "AI_CONTINUATION_FAILED", message: "KI-oppfølgingen feilet.",
       diagnostic: { status, code, apiMessage: rawMessage, model }
     });
+  }
+});
+
+
+const simulationStyleInstructions = {
+  open: 'Medarbeideren er i utgangspunktet åpen, saklig og samarbeidsvillig, men skal fortsatt ha egne perspektiver og kunne stille spørsmål.',
+  uncertain: 'Medarbeideren er usikker og noe tilbaketrukket. Svarene kan være korte eller forsiktige, men ikke kunstig vage.',
+  defensive: 'Medarbeideren er defensiv og kan være uenig i lederens beskrivelse eller vurdering. Reager realistisk uten å bli karikert eller aggressiv uten grunnlag.',
+  emotional: 'Medarbeideren kan bli følelsesmessig berørt av temaet. Vis dette naturlig uten å dikte opp årsaker, diagnose eller privat bakgrunn.',
+  critical: 'Medarbeideren er frustrert eller kritisk og kan utfordre lederens vurdering, prosess eller formuleringer. Hold reaksjonen realistisk og saklig nok til at øvelsen er nyttig.',
+  surprise: 'Velg en realistisk reaksjonsmåte som passer saken og utviklingen i samtalen. Ikke opplys brukeren om hvilken stil du valgte.'
+};
+
+function sanitizeSimulationTurns(turns) {
+  if (!Array.isArray(turns)) return [];
+  return turns.slice(-24).map(turn => ({
+    role: turn?.role === 'employee' ? 'employee' : 'leader',
+    text: String(turn?.text || '').trim().slice(0, 4000)
+  })).filter(turn => turn.text);
+}
+
+function simulationContextText({ situation = '', analysis = null, followups = {}, guidance = null, style = 'open', turns = [] }) {
+  return `\n\n## Samtalesimulering\nDu spiller KUN medarbeideren i en øvelse for en leder. Brukeren spiller lederen.\n\nViktige grenser:\n- Ikke gi råd til lederen mens du spiller medarbeideren.\n- Ikke fortell hva lederen bør gjøre. Svar bare slik medarbeideren plausibelt kunne svart.\n- Ikke finn på diagnose, familieforhold, traumer, konflikter, rusbruk, motiv, hendelser eller annen personlig bakgrunn som ikke finnes i saken.\n- Ikke gjør tredjepartsopplysninger om til egne observasjoner.\n- Du kan uttrykke usikkerhet, uenighet, følelser eller spørsmål uten å forklare dem med oppdiktede fakta.\n- Hold hvert medarbeidersvar naturlig og relativt kort, vanligvis 1–4 setninger.\n- Reaksjonen skal utvikle seg ut fra det lederen faktisk sier, ikke låses mekanisk til én tone.\n\nValgt reaksjonsstil: ${style}. ${simulationStyleInstructions[style] || simulationStyleInstructions.open}\n\nSituasjon: ${String(situation).slice(0, 12000)}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nSamtalen så langt: ${JSON.stringify(sanitizeSimulationTurns(turns))}\n`;
+}
+
+app.post('/api/simulation-turn', async (req, res) => {
+  if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
+  const body = req.body || {};
+  const turns = sanitizeSimulationTurns(body.turns);
+  if (!turns.length || turns[turns.length - 1].role !== 'leader') {
+    return res.status(400).json({ error: 'MISSING_LEADER_TURN', message: 'Skriv først hva du vil si som leder.' });
+  }
+  const style = Object.prototype.hasOwnProperty.call(simulationStyleInstructions, body.style) ? body.style : 'open';
+  try {
+    const response = await client.responses.create({
+      model,
+      instructions: systemPrompt + simulationContextText({ ...body, style, turns }),
+      input: [{ role: 'user', content: [{ type: 'input_text', text: 'Svar nå som medarbeideren på lederens siste utsagn. Ikke kommenter øvelsen eller gi lederråd.' }] }]
+    });
+    res.json({ reply: String(response.output_text || '').trim(), ai: true, model });
+  } catch (error) {
+    console.error('Simulation turn failed:', error);
+    const status = Number(error?.status) || 500;
+    res.status(status >= 400 && status < 600 ? status : 500).json({ error: 'SIMULATION_FAILED', message: 'Samtalesimuleringen feilet.' });
+  }
+});
+
+app.post('/api/simulation-help', async (req, res) => {
+  if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
+  const body = req.body || {};
+  const helpKinds = {
+    formulation: 'Gi ett kort forslag til hva lederen kan si som neste formulering.',
+    question: 'Gi ett eller to gode spørsmål lederen kan stille akkurat nå.',
+    clearer: 'Hjelp lederen å formulere sitt siste budskap tydeligere og mer respektfullt.',
+    avoid: 'Nevn kort hva lederen særlig bør unngå å si akkurat nå, og hvorfor.'
+  };
+  const task = helpKinds[body.kind] || helpKinds.formulation;
+  const turns = sanitizeSimulationTurns(body.turns);
+  const prompt = `Du er nå trener, IKKE medarbeider. ${task}\nBruk bare opplysninger som finnes i saken og samtalen. Ikke dikt opp fakta. Ikke gi en lang forklaring. Maks 80 ord.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nSamtalen så langt: ${JSON.stringify(turns)}`;
+  try {
+    const response = await client.responses.create({ model, instructions: systemPrompt, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }] });
+    res.json({ help: String(response.output_text || '').trim(), ai: true, model });
+  } catch (error) {
+    console.error('Simulation help failed:', error);
+    const status = Number(error?.status) || 500;
+    res.status(status >= 400 && status < 600 ? status : 500).json({ error: 'SIMULATION_HELP_FAILED', message: 'KI-støtten feilet.' });
+  }
+});
+
+const simulationFeedbackSchema = {
+  type: 'object', additionalProperties: false,
+  properties: {
+    worked_well: { type: 'array', minItems: 1, maxItems: 4, items: { type: 'string' } },
+    could_be_clearer: { type: 'array', minItems: 1, maxItems: 4, items: { type: 'string' } },
+    alternative_phrase: { type: 'string' },
+    takeaway: { type: 'string' }
+  },
+  required: ['worked_well', 'could_be_clearer', 'alternative_phrase', 'takeaway']
+};
+
+app.post('/api/simulation-feedback', async (req, res) => {
+  if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
+  const body = req.body || {};
+  const turns = sanitizeSimulationTurns(body.turns);
+  if (!turns.some(turn => turn.role === 'leader')) return res.status(400).json({ error: 'EMPTY_SIMULATION', message: 'Øvelsen har ingen lederutsagn å vurdere.' });
+  const task = `\n\n## Oppgave: tilbakemelding etter samtaleøvelse\nDu er trener, ikke medarbeider. Vurder KUN det lederen faktisk sa i transkriptet.\n- Ingen poengsum, karakter eller rangering.\n- Pek på konkrete formuleringer eller grep som fungerte godt.\n- Pek på konkrete steder som kunne vært tydeligere, mer åpne eller mer presise.\n- Ikke anta lederens intensjon utover ordene som står der.\n- Ikke finn på fakta om medarbeideren.\n- Gi én alternativ formulering som passer saken.\n- Avslutt med ett kort læringspunkt.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nTranskript: ${JSON.stringify(turns)}`;
+  try {
+    const response = await client.responses.create({
+      model,
+      instructions: systemPrompt + task,
+      input: [{ role: 'user', content: [{ type: 'input_text', text: 'Gi strukturert tilbakemelding på øvelsen.' }] }],
+      text: { format: { type: 'json_schema', name: 'samtalesimulering_tilbakemelding', strict: true, schema: simulationFeedbackSchema } }
+    });
+    res.json({ ...JSON.parse(response.output_text), ai: true, model });
+  } catch (error) {
+    console.error('Simulation feedback failed:', error);
+    const status = Number(error?.status) || 500;
+    res.status(status >= 400 && status < 600 ? status : 500).json({ error: 'SIMULATION_FEEDBACK_FAILED', message: 'Tilbakemeldingen feilet.' });
   }
 });
 

@@ -31,9 +31,13 @@ let lastAiGuidance = null;
 let currentUser = null;
 let currentConversationId = null;
 let conversationDirty = false;
+let simulationMode = "solo";
+let simulationStyle = "open";
+let simulationTurns = [];
+let simulationFeedback = null;
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "18.3.0", contactEmail: "" };
+let publicConfig = { appVersion: "19.0.0", contactEmail: "" };
 
 const topics = [
   {
@@ -276,6 +280,23 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
   if (thread) thread.innerHTML = '';
   const continueInput = document.querySelector('#continue-input');
   if (continueInput) continueInput.value = '';
+
+  simulationTurns = [];
+  simulationFeedback = null;
+  simulationMode = 'solo';
+  simulationStyle = 'open';
+  const simPanel = document.querySelector('#simulation-panel');
+  const simSetup = document.querySelector('#simulation-setup');
+  const simLive = document.querySelector('#simulation-live');
+  const simFeedback = document.querySelector('#simulation-feedback');
+  if (simPanel) simPanel.hidden = true;
+  if (simSetup) simSetup.hidden = false;
+  if (simLive) simLive.hidden = true;
+  if (simFeedback) simFeedback.hidden = true;
+  const simThread = document.querySelector('#simulation-thread');
+  if (simThread) simThread.innerHTML = '<div class="simulation-coach-note">Du starter samtalen. Skriv det du faktisk ville sagt til medarbeideren.</div>';
+  const simInput = document.querySelector('#simulation-input');
+  if (simInput) simInput.value = '';
 }
 
 function resetConversationState() {
@@ -1903,7 +1924,7 @@ async function saveCurrentConversation(){
   const situation=document.querySelector('#situation')?.value.trim()||''; if(!situation) return;
   try{
     const r=await fetch('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      id:currentConversationId,title:(currentSubtopic||currentTopic?.title||situation.slice(0,70)),topic:currentTopic?.title||'',subtopic:currentSubtopic||'',situation,analysis:lastAiAnalysis,guidance:lastAiGuidance,conversation:getConversationTurns()
+      id:currentConversationId,title:(currentSubtopic||currentTopic?.title||situation.slice(0,70)),topic:currentTopic?.title||'',subtopic:currentSubtopic||'',situation,analysis:lastAiAnalysis,guidance:lastAiGuidance,conversation:getConversationTurns(),simulation:{mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
     })});
     if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
   }catch(_){}
@@ -1929,6 +1950,7 @@ function loadHistoryItem(item){
   document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
   const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
+  simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   setBreadcrumb('Lagret samtale'); showView('guidance');
 }
 function startNewConversation(force=false){
@@ -1953,7 +1975,7 @@ async function loadPublicConfig(){
     const r=await fetch('/api/public-config');
     if(r.ok) publicConfig={...publicConfig,...await r.json()};
   }catch(_){}
-  const version=publicConfig.appVersion||'18.3.0';
+  const version=publicConfig.appVersion||'19.0.0';
   const v1=document.querySelector('#about-app-version'), meta=document.querySelector('#report-meta');
   if(v1) v1.textContent=version; if(meta) meta.textContent=`Versjon ${version}`;
   const status=document.querySelector('#contact-email-status'), link=document.querySelector('#contact-email-link');
@@ -1969,7 +1991,7 @@ async function loadPublicConfig(){
 function buildFeedbackText(){
   const category=document.querySelector('#report-category')?.value||'Tilbakemelding';
   const description=document.querySelector('#report-description')?.value.trim()||'';
-  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'18.3.0'}\nNettleser: ${navigator.userAgent}\n\nBeskrivelse:\n${description}`;
+  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'19.0.0'}\nNettleser: ${navigator.userAgent}\n\nBeskrivelse:\n${description}`;
 }
 
 function closeProfileMenu(){
@@ -2020,6 +2042,210 @@ document.querySelector('#copy-report-button')?.addEventListener('click',async()=
   const msg=document.querySelector('#report-message');
   try{await navigator.clipboard.writeText(buildFeedbackText());msg.className='auth-message ok';msg.textContent='Rapporten er kopiert.';}catch(_){msg.className='auth-message error';msg.textContent='Kunne ikke kopiere automatisk.';}
 });
+
+
+const simulationStyleLabels = {
+  open: 'Åpen og samarbeidsvillig',
+  uncertain: 'Usikker og tilbaketrukket',
+  defensive: 'Defensiv og uenig',
+  emotional: 'Følelsesmessig berørt',
+  critical: 'Frustrert og kritisk',
+  surprise: 'Overrask meg'
+};
+
+function setSimulationChoice(groupSelector, attr, value) {
+  document.querySelectorAll(groupSelector).forEach(button => {
+    button.classList.toggle('selected', button.dataset[attr] === value);
+  });
+}
+
+function openSimulation() {
+  if (!lastAiGuidance || !lastAiAnalysis) return;
+  const panel = document.querySelector('#simulation-panel');
+  panel.hidden = false;
+  const setup = document.querySelector('#simulation-setup');
+  const live = document.querySelector('#simulation-live');
+  const feedback = document.querySelector('#simulation-feedback');
+  setup.hidden = Boolean(simulationTurns.length || simulationFeedback);
+  live.hidden = true;
+  feedback.hidden = !simulationFeedback;
+  if (simulationFeedback) renderSimulationFeedback(simulationFeedback);
+  else if (simulationTurns.length) {
+    live.hidden = false;
+    document.querySelector('#toggle-simulation-help').hidden = simulationMode !== 'assisted';
+    const topic = currentSubtopic || currentTopic?.title || 'Samtale';
+    document.querySelector('#simulation-status').textContent = `${topic} · ${simulationStyleLabels[simulationStyle]}`;
+    renderSimulationThread();
+  }
+  setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
+  setSimulationChoice('[data-sim-style]', 'simStyle', simulationStyle);
+  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function closeSimulation() {
+  const panel = document.querySelector('#simulation-panel');
+  if (panel) panel.hidden = true;
+  document.querySelector('#simulation-entry')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function simulationContext() {
+  return {
+    situation: document.querySelector('#situation')?.value.trim() || '',
+    analysis: lastAiAnalysis,
+    followups: collectFollowupAnswers(),
+    guidance: lastAiGuidance,
+    mode: simulationMode,
+    style: simulationStyle,
+    turns: simulationTurns
+  };
+}
+
+function renderSimulationThread() {
+  const thread = document.querySelector('#simulation-thread');
+  if (!thread) return;
+  const intro = '<div class="simulation-coach-note">Du starter samtalen. Skriv det du faktisk ville sagt til medarbeideren.</div>';
+  const turns = simulationTurns.map(turn => {
+    const leader = turn.role === 'leader';
+    return `<div class="simulation-bubble-row ${leader ? 'leader-row' : 'employee-row'}">
+      <div class="simulation-bubble ${leader ? 'leader-bubble' : 'employee-bubble'}">
+        <span>${leader ? 'Du · leder' : 'Medarbeider'}</span>
+        <p>${escapeHtml(turn.text)}</p>
+      </div>
+    </div>`;
+  }).join('');
+  thread.innerHTML = intro + turns;
+  thread.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+function startSimulation() {
+  simulationTurns = [];
+  simulationFeedback = null;
+  document.querySelector('#simulation-setup').hidden = true;
+  document.querySelector('#simulation-feedback').hidden = true;
+  document.querySelector('#simulation-live').hidden = false;
+  document.querySelector('#simulation-help').hidden = true;
+  document.querySelector('#simulation-help-result').hidden = true;
+  const helpButton = document.querySelector('#toggle-simulation-help');
+  helpButton.hidden = simulationMode !== 'assisted';
+  const topic = currentSubtopic || currentTopic?.title || 'Samtale';
+  document.querySelector('#simulation-status').textContent = `${topic} · ${simulationStyleLabels[simulationStyle]}`;
+  renderSimulationThread();
+  document.querySelector('#simulation-input')?.focus();
+  conversationDirty = true;
+}
+
+async function submitSimulationTurn(text) {
+  const cleaned = text.trim();
+  if (!cleaned) return;
+  simulationTurns.push({ role: 'leader', text: cleaned });
+  renderSimulationThread();
+  const thread = document.querySelector('#simulation-thread');
+  const waiting = document.createElement('div');
+  waiting.className = 'simulation-bubble-row employee-row simulation-waiting';
+  waiting.innerHTML = '<div class="simulation-bubble employee-bubble"><span>Medarbeider</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>';
+  thread.appendChild(waiting);
+  waiting.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  try {
+    const response = await fetch('/api/simulation-turn', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(simulationContext())
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.message || 'Simulatoren kunne ikke svare.');
+    simulationTurns.push({ role: 'employee', text: payload.reply || '' });
+    conversationDirty = true;
+    renderSimulationThread();
+    await saveCurrentConversation();
+  } catch (error) {
+    waiting.remove();
+    const note = document.createElement('div');
+    note.className = 'simulation-coach-note error-note';
+    note.textContent = error.message || 'Simulatoren kunne ikke svare akkurat nå.';
+    thread.appendChild(note);
+  }
+}
+
+async function requestSimulationHelp(kind) {
+  const result = document.querySelector('#simulation-help-result');
+  result.hidden = false;
+  result.innerHTML = '<div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Finner et kort forslag …</p></div>';
+  try {
+    const response = await fetch('/api/simulation-help', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...simulationContext(), kind })
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.message || 'Kunne ikke hente hjelp.');
+    result.innerHTML = `<p>${escapeHtml(payload.help || '')}</p>`;
+  } catch (error) {
+    result.textContent = error.message || 'Kunne ikke hente hjelp akkurat nå.';
+  }
+}
+
+function renderSimulationFeedback(feedback) {
+  const content = document.querySelector('#simulation-feedback-content');
+  const list = items => (items || []).map(item => `<li>${escapeHtml(item)}</li>`).join('');
+  content.innerHTML = `
+    <article><h4>Dette fungerte godt</h4><ul>${list(feedback.worked_well)}</ul></article>
+    <article><h4>Dette kunne vært tydeligere</h4><ul>${list(feedback.could_be_clearer)}</ul></article>
+    <article><h4>En formulering du kan prøve</h4><p>${escapeHtml(feedback.alternative_phrase || '')}</p></article>
+    <article><h4>Ta med deg dette</h4><p>${escapeHtml(feedback.takeaway || '')}</p></article>`;
+}
+
+async function endSimulation() {
+  if (!simulationTurns.some(turn => turn.role === 'leader')) {
+    document.querySelector('#simulation-input')?.focus();
+    return;
+  }
+  const live = document.querySelector('#simulation-live');
+  const feedbackPanel = document.querySelector('#simulation-feedback');
+  live.hidden = true;
+  feedbackPanel.hidden = false;
+  const content = document.querySelector('#simulation-feedback-content');
+  content.innerHTML = '<div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Ser gjennom øvelsen …</p></div>';
+  try {
+    const response = await fetch('/api/simulation-feedback', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(simulationContext())
+    });
+    const payload = await response.json();
+    if (!response.ok) throw new Error(payload.message || 'Kunne ikke lage tilbakemelding.');
+    simulationFeedback = payload;
+    renderSimulationFeedback(payload);
+    conversationDirty = true;
+    await saveCurrentConversation();
+  } catch (error) {
+    content.innerHTML = `<div class="simulation-coach-note error-note">${escapeHtml(error.message || 'Kunne ikke lage tilbakemelding akkurat nå.')}</div>`;
+  }
+}
+
+document.querySelector('#open-simulation')?.addEventListener('click', openSimulation);
+document.querySelector('#close-simulation')?.addEventListener('click', closeSimulation);
+document.querySelectorAll('[data-sim-mode]').forEach(button => button.addEventListener('click', () => {
+  simulationMode = button.dataset.simMode;
+  setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
+}));
+document.querySelectorAll('[data-sim-style]').forEach(button => button.addEventListener('click', () => {
+  simulationStyle = button.dataset.simStyle;
+  setSimulationChoice('[data-sim-style]', 'simStyle', simulationStyle);
+}));
+document.querySelector('#start-simulation')?.addEventListener('click', startSimulation);
+document.querySelector('#simulation-form')?.addEventListener('submit', async event => {
+  event.preventDefault();
+  const input = document.querySelector('#simulation-input');
+  const text = input.value;
+  input.value = '';
+  await submitSimulationTurn(text);
+});
+document.querySelector('#toggle-simulation-help')?.addEventListener('click', () => {
+  const help = document.querySelector('#simulation-help');
+  help.hidden = !help.hidden;
+});
+document.querySelectorAll('[data-sim-help]').forEach(button => button.addEventListener('click', () => requestSimulationHelp(button.dataset.simHelp)));
+document.querySelector('#end-simulation')?.addEventListener('click', endSimulation);
+document.querySelector('#end-simulation-top')?.addEventListener('click', endSimulation);
+document.querySelector('#retry-simulation')?.addEventListener('click', startSimulation);
+document.querySelector('#simulation-new-conversation')?.addEventListener('click', () => startNewConversation());
 
 const inviteFromUrl=new URLSearchParams(location.search).get('invite'); if(inviteFromUrl){document.querySelector('#register-invite').value=inviteFromUrl;openAuth('register');history.replaceState(null,'',location.pathname);}
 refreshAuth();
