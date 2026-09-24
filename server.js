@@ -13,9 +13,15 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
+const appVersion = process.env.APP_VERSION || "18.2.0";
+const contactEmail = String(process.env.CONTACT_EMAIL || "").trim();
 
 app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
+
+app.get("/api/public-config", (req, res) => {
+  res.json({ appVersion, contactEmail });
+});
 
 const apiKey = process.env.OPENAI_API_KEY;
 const model = process.env.OPENAI_MODEL || "gpt-5.6-luna";

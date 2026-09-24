@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=18" />
+  <link rel="stylesheet" href="styles.css?v=18.2" />
 </head>
 <body>
   <div class="app-shell">
@@ -16,6 +16,10 @@
       </div>
       <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Skjul sidemeny" title="Skjul sidemeny">
         <span class="sidebar-toggle-arrow" aria-hidden="true">‹</span>
+      </button>
+
+      <button class="sidebar-new-chat" id="sidebar-new-conversation" type="button" title="Start ny samtale">
+        <span class="sidebar-new-chat-icon" aria-hidden="true">＋</span><span class="sidebar-new-chat-label">Ny samtale</span>
       </button>
 
       <nav class="nav" aria-label="Hovedmeny">
@@ -35,6 +39,14 @@
           <span class="nav-glyph" id="nav-history-icon"></span>
           <span class="nav-label">Historikk</span>
           <small id="history-nav-note">logg inn</small>
+        </button>
+        <button class="nav-item" data-view="about" type="button">
+          <span class="nav-glyph" id="nav-about-icon"></span>
+          <span class="nav-label">Om</span>
+        </button>
+        <button class="nav-item" data-view="contact" type="button">
+          <span class="nav-glyph" id="nav-contact-icon"></span>
+          <span class="nav-label">Kontakt</span>
         </button>
       </nav>
 
@@ -70,6 +82,8 @@
             </button>
             <div class="profile-menu" id="profile-menu" hidden>
               <button type="button" data-profile-action="history">Historikk</button>
+              <button type="button" data-profile-action="about">Om Samtalestøtte</button>
+              <button type="button" data-profile-action="contact">Kontakt / rapporter feil</button>
               <button type="button" data-profile-action="logout">Logg ut</button>
             </div>
           </div>
@@ -205,8 +219,11 @@
           <div id="privacy-check" class="privacy-check" role="status" aria-live="polite" hidden></div>
           <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
           <label class="temporary-chat-option" id="temporary-chat-option" hidden>
-            <input type="checkbox" id="temporary-chat" />
-            <span><strong>Ikke lagre denne samtalen</strong><small>Samtalen vises ikke i historikken din.</small></span>
+            <span class="temporary-chat-copy"><strong>Midlertidig samtale</strong><small>Slå på hvis denne samtalen ikke skal lagres i historikken.</small></span>
+            <span class="switch-control">
+              <input type="checkbox" id="temporary-chat" />
+              <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+            </span>
           </label>
         </form>
 
@@ -248,6 +265,10 @@
             </div>
           </div>
           <p class="result-intro" id="result-intro">Forslaget er tilpasset det du har skrevet.</p>
+          <div class="conversation-utility-bar">
+            <button class="secondary-button" id="report-from-conversation" type="button">Rapporter feil</button>
+            <button class="secondary-button" id="result-new-conversation" type="button">＋ Ny samtale</button>
+          </div>
           <div id="structured-guidance" class="guidance-grid"></div>
 
           <section class="continue-conversation" id="continue-conversation">
@@ -294,6 +315,8 @@
           <div class="settings-account-actions">
             <button class="secondary-button" type="button" data-open-legal="privacy">Personvernerklæring</button>
             <button class="secondary-button" type="button" data-open-legal="terms">Bruksvilkår</button>
+            <button class="secondary-button" type="button" data-open-info="about">Om Samtalestøtte</button>
+            <button class="secondary-button" type="button" data-open-info="contact">Kontakt / rapporter feil</button>
             <button class="danger-text-button" id="delete-account-button" type="button" hidden>Slett konto og historikk</button>
           </div>
         </div>
@@ -312,7 +335,7 @@
           <button class="primary-button" id="history-login-button" type="button">Logg på</button>
         </div>
         <div id="history-logged-in" hidden>
-          <div class="history-toolbar"><span id="history-count"></span><button class="secondary-button" id="delete-all-history" type="button">Slett all historikk</button></div>
+          <div class="history-toolbar"><span id="history-count"></span><div class="history-toolbar-actions"><button class="secondary-button" id="history-new-conversation" type="button">＋ Ny samtale</button><button class="secondary-button" id="delete-all-history" type="button">Slett all historikk</button></div></div>
           <div id="history-list" class="history-list"></div>
         </div>
       </section>
@@ -344,6 +367,57 @@
       </section>
     </main>
   </div>
+
+      <section id="about-view" class="view">
+        <button class="back-link info-back" type="button">← Tilbake</button>
+        <div class="content-header">
+          <span class="eyebrow">OM TJENESTEN</span>
+          <h1>Om Samtalestøtte</h1>
+          <p>Samtalestøtte er et utviklingsprosjekt for ledere som skal forberede krevende samtaler i arbeidslivet.</p>
+        </div>
+        <div class="about-grid">
+          <article class="settings-card"><h2>Hva verktøyet gjør</h2><p>Verktøyet hjelper deg med å strukturere en samtale, formulere en åpning, finne relevante spørsmål og forberede deg på mulige reaksjoner. Rådene tilpasses situasjonen du beskriver.</p></article>
+          <article class="settings-card"><h2>Hva verktøyet ikke gjør</h2><p>Samtalestøtte tar ikke beslutninger på vegne av lederen og erstatter ikke HR-, juridisk, medisinsk eller annen faglig vurdering når saken krever det.</p></article>
+          <article class="settings-card"><h2>Personvern</h2><p>Beskriv situasjoner anonymt. Ikke skriv navn eller andre unødvendige opplysninger som kan identifisere medarbeidere eller andre personer.</p></article>
+          <article class="settings-card"><h2>Pilotversjon</h2><p>Denne versjonen er under utprøving. Tilbakemeldinger om tekniske feil, uklare KI-svar og kildehenvisninger er særlig nyttige.</p><p class="app-version-line">Versjon <strong id="about-app-version">18.2.0</strong></p></article>
+        </div>
+      </section>
+
+      <section id="contact-view" class="view">
+        <button class="back-link info-back" type="button">← Tilbake</button>
+        <div class="content-header">
+          <span class="eyebrow">KONTAKT OG TILBAKEMELDING</span>
+          <h1>Spørsmål eller noe som ikke virker?</h1>
+          <p>Rapporter gjerne tekniske feil, uklare råd, feil i kilder eller andre forbedringsforslag.</p>
+        </div>
+        <div class="contact-layout">
+          <div class="settings-card contact-card">
+            <h2>Kontakt</h2>
+            <p id="contact-email-status">Henter kontaktinformasjon …</p>
+            <a class="primary-button contact-email-link" id="contact-email-link" href="#" hidden>Send e-post</a>
+            <p class="contact-privacy-note">Ikke ta med navn eller andre identifiserende personopplysninger i feilrapporten.</p>
+          </div>
+          <form class="settings-card report-form" id="report-form">
+            <h2>Rapporter feil eller gi tilbakemelding</h2>
+            <label>Hva gjelder det?
+              <select id="report-category">
+                <option>Teknisk feil</option>
+                <option>Uklart eller dårlig KI-svar</option>
+                <option>Feil eller manglende kilde</option>
+                <option>Personvern</option>
+                <option>Forslag til forbedring</option>
+                <option>Annet spørsmål</option>
+              </select>
+            </label>
+            <label>Beskriv kort hva som skjedde
+              <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
+            </label>
+            <div class="report-meta" id="report-meta">Versjon 18.2.0</div>
+            <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
+            <div class="auth-message" id="report-message" aria-live="polite"></div>
+          </form>
+        </div>
+      </section>
 
   <dialog id="auth-dialog" class="auth-dialog">
     <div class="auth-shell">
@@ -379,6 +453,6 @@
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
 
-  <script src="app.js?v=18"></script>
+  <script src="app.js?v=18.2"></script>
 </body>
 </html>
