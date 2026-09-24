@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=18.2" />
+  <link rel="stylesheet" href="styles.css?v=18.3" />
 </head>
 <body>
   <div class="app-shell">
@@ -18,10 +18,6 @@
         <span class="sidebar-toggle-arrow" aria-hidden="true">‹</span>
       </button>
 
-      <button class="sidebar-new-chat" id="sidebar-new-conversation" type="button" title="Start ny samtale">
-        <span class="sidebar-new-chat-icon" aria-hidden="true">＋</span><span class="sidebar-new-chat-label">Ny samtale</span>
-      </button>
-
       <nav class="nav" aria-label="Hovedmeny">
         <button class="nav-item active" data-view="home" type="button">
           <span class="nav-glyph" id="nav-home-icon"></span>
@@ -29,7 +25,7 @@
         </button>
         <button class="nav-item" data-view="prepare" type="button">
           <span class="nav-glyph" id="nav-prepare-icon"></span>
-          <span class="nav-label">Forbered samtale</span>
+          <span class="nav-label">Ny samtale</span>
         </button>
         <button class="nav-item" data-view="settings" type="button">
           <span class="nav-glyph" id="nav-settings-icon"></span>
@@ -291,6 +287,9 @@
               <button type="submit" class="primary-button">Spør videre</button>
             </form>
           </section>
+          <div class="conversation-bottom-actions">
+            <button class="primary-button" id="bottom-new-conversation" type="button">＋ Ny samtale</button>
+          </div>
         </section>
       </section>
 
@@ -342,15 +341,15 @@
 
       <section id="privacy-view" class="view legal-view">
         <button class="back-link legal-back" type="button">← Tilbake</button>
-        <div class="content-header"><span class="eyebrow">PERSONVERN</span><h1>Personvernerklæring</h1><p>Slik behandler Samtalestøtte opplysninger i pilotversjonen.</p></div>
+        <div class="content-header"><span class="eyebrow">PERSONVERN</span><h1>Personvernerklæring</h1><p>Slik behandler Samtalestøtte opplysninger i betaversjonen.</p></div>
         <article class="legal-document">
           <h2>Hvilke opplysninger lagres?</h2><p>Når du oppretter konto lagres valgt brukernavn, e-postadresse og teknisk informasjon som er nødvendig for sikker innlogging. Passord lagres ikke i klartekst.</p>
           <h2>Hvorfor lagres opplysningene?</h2><p>Opplysningene brukes for å opprette og administrere kontoen, gi tilgang til samtalehistorikk og la deg logge inn igjen. Du trenger ikke bruke ditt virkelige navn som brukernavn.</p>
-          <h2>Samtalehistorikk</h2><p>Innloggede brukere kan lagre samtaler. Du kan velge «Ikke lagre denne samtalen», slette enkeltsamtaler eller slette all historikk. Uinnloggede samtaler lagres ikke permanent av konto-/historikkfunksjonen.</p>
+          <h2>Samtalehistorikk</h2><p>Innloggede brukere kan lagre samtaler. Du kan slå på «Midlertidig samtale», slette enkeltsamtaler eller slette all historikk. Uinnloggede samtaler lagres ikke permanent av konto-/historikkfunksjonen.</p>
           <h2>Personopplysninger om andre</h2><p>Samtalestøtte er laget for at saker skal beskrives anonymt. Ikke legg inn navn, kontaktopplysninger, identifikasjonsnumre eller andre unødvendige opplysninger som identifiserer en medarbeider. Arbeidskontekst kan beskrives når den er relevant, men konkrete virksomhetsnavn, avdelinger og små lokasjoner bør generaliseres når de ikke er nødvendige.</p>
           <h2>Eksterne tjenester</h2><p>Når KI-funksjonen brukes, sendes den anonymiserte situasjonsteksten og nødvendig samtalekontekst til KI-tjenesten som appen er konfigurert mot. Før en offentlig produksjonslansering må behandlingsansvarlig, databehandlere, lagringstid og kontaktinformasjon oppgis konkret.</p>
           <h2>Dine valg</h2><p>Du kan slette historikk og konto. Produksjonsversjonen skal også beskrive innsyn, retting, sletting, lagringstid og kontaktpunkt i tråd med gjeldende personvernregler.</p>
-          <p class="legal-note"><strong>Pilotstatus:</strong> Denne teksten er et utkast for prosjekt/pilot og må kvalitetssikres før offentlig lansering.</p>
+          <p class="legal-note"><strong>Betastatus:</strong> Denne teksten er et prosjektutkast for betaversjonen og må kvalitetssikres før offentlig lansering.</p>
         </article>
       </section>
 
@@ -362,24 +361,26 @@
           <h2>Anonymiser så langt som mulig</h2><p>Unngå navn, kontaktinformasjon, fødselsdato, personnummer og andre unødvendige identifiserende opplysninger. Bruk rollebeskrivelser som «medarbeideren». Behold bare arbeidskontekst som er nødvendig for relevante råd.</p>
           <h2>Ikke legg inn opplysninger som ikke kan behandles eksternt</h2><p>Graderte opplysninger eller andre opplysninger som etter lov, instruks eller virksomhetens regler ikke kan behandles i eksterne digitale tjenester, skal ikke legges inn.</p>
           <h2>KI-råd er beslutningsstøtte</h2><p>Samtalestøtte gir støtte til forberedelse og samtaleform. Juridiske, medisinske, sikkerhetskritiske og andre alvorlige beslutninger må kvalitetssikres mot relevante fagpersoner og gjeldende regelverk.</p>
-          <p class="legal-note"><strong>Pilotstatus:</strong> Vilkårene er et prosjektutkast og må kvalitetssikres før offentlig lansering.</p>
+          <p class="legal-note"><strong>Betastatus:</strong> Vilkårene er et prosjektutkast og må kvalitetssikres før offentlig lansering.</p>
         </article>
       </section>
-    </main>
-  </div>
-
       <section id="about-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
         <div class="content-header">
           <span class="eyebrow">OM TJENESTEN</span>
           <h1>Om Samtalestøtte</h1>
-          <p>Samtalestøtte er et utviklingsprosjekt for ledere som skal forberede krevende samtaler i arbeidslivet.</p>
+          <p>Samtalestøtte er utviklet for å hjelpe ledere med å forberede krevende samtaler i arbeidslivet.</p>
+        </div>
+        <div class="about-intro settings-card">
+          <h2>Et studieprosjekt</h2>
+          <p>Samtalestøtte er utviklet av <strong>Cecilie C. Nilsen</strong> i forbindelse med en prosjektoppgave i et studie ved <strong>Høgskolen i Molde</strong>.</p>
+          <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
         </div>
         <div class="about-grid">
           <article class="settings-card"><h2>Hva verktøyet gjør</h2><p>Verktøyet hjelper deg med å strukturere en samtale, formulere en åpning, finne relevante spørsmål og forberede deg på mulige reaksjoner. Rådene tilpasses situasjonen du beskriver.</p></article>
           <article class="settings-card"><h2>Hva verktøyet ikke gjør</h2><p>Samtalestøtte tar ikke beslutninger på vegne av lederen og erstatter ikke HR-, juridisk, medisinsk eller annen faglig vurdering når saken krever det.</p></article>
-          <article class="settings-card"><h2>Personvern</h2><p>Beskriv situasjoner anonymt. Ikke skriv navn eller andre unødvendige opplysninger som kan identifisere medarbeidere eller andre personer.</p></article>
-          <article class="settings-card"><h2>Pilotversjon</h2><p>Denne versjonen er under utprøving. Tilbakemeldinger om tekniske feil, uklare KI-svar og kildehenvisninger er særlig nyttige.</p><p class="app-version-line">Versjon <strong id="about-app-version">18.2.0</strong></p></article>
+          <article class="settings-card"><h2>Personvern og trygg bruk</h2><p>Beskriv situasjoner anonymt. Ikke skriv navn eller andre unødvendige opplysninger som kan identifisere medarbeidere eller andre personer.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-legal="privacy">Les personvernerklæringen</button><button class="secondary-button" type="button" data-open-legal="terms">Les bruksvilkårene</button></div></article>
+          <article class="settings-card"><h2>Beta</h2><p>Status: <strong>Betaversjon – under utvikling og testing.</strong></p><p>Har du spørsmål, finner en feil eller får et uklart KI-svar, ønsker vi gjerne tilbakemelding.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div><p class="app-version-line">Versjon <strong id="about-app-version">18.3.0</strong></p></article>
         </div>
       </section>
 
@@ -412,12 +413,15 @@
             <label>Beskriv kort hva som skjedde
               <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
             </label>
-            <div class="report-meta" id="report-meta">Versjon 18.2.0</div>
+            <div class="report-meta" id="report-meta">Versjon 18.3.0</div>
             <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
             <div class="auth-message" id="report-message" aria-live="polite"></div>
           </form>
         </div>
       </section>
+
+    </main>
+  </div>
 
   <dialog id="auth-dialog" class="auth-dialog">
     <div class="auth-shell">
@@ -433,7 +437,7 @@
         <p class="auth-switch">Har du invitasjon? <button type="button" id="show-register">Opprett konto</button></p>
       </div>
       <div id="register-panel" hidden>
-        <span class="eyebrow">LUKKET PILOT</span><h2>Opprett konto</h2><p>Du bestemmer selv hvilket brukernavn du vil bruke.</p>
+        <span class="eyebrow">LUKKET BETA</span><h2>Opprett konto</h2><p>Du bestemmer selv hvilket brukernavn du vil bruke.</p>
         <form id="register-form" class="auth-form">
           <label>Brukernavn<input id="register-username" maxlength="40" autocomplete="nickname" required></label>
           <label>E-post<input id="register-email" type="email" autocomplete="email" required></label>
@@ -453,6 +457,6 @@
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
 
-  <script src="app.js?v=18.2"></script>
+  <script src="app.js?v=18.3"></script>
 </body>
 </html>

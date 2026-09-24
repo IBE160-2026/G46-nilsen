@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "18.2.0";
+const appVersion = process.env.APP_VERSION || "18.3.0";
 const contactEmail = String(process.env.CONTACT_EMAIL || "").trim();
 
 app.use(express.json({ limit: "1mb" }));
@@ -144,7 +144,7 @@ app.post("/api/auth/register", async (req, res) => {
   if (username.length < 2 || username.length > 40) return res.status(400).json({ error: "INVALID_USERNAME", message: "Brukernavn må være mellom 2 og 40 tegn." });
   if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ error: "INVALID_EMAIL", message: "Skriv inn en gyldig e-postadresse." });
   if (password.length < 10) return res.status(400).json({ error: "WEAK_PASSWORD", message: "Passordet må ha minst 10 tegn." });
-  if (!inviteCode) return res.status(403).json({ error: "INVITE_REQUIRED", message: "Samtalestøtte er en lukket pilot og krever invitasjon." });
+  if (!inviteCode) return res.status(403).json({ error: "INVITE_REQUIRED", message: "Samtalestøtte er en lukket betaversjon og krever invitasjon." });
 
   const inviteHash = hashInvite(inviteCode);
   const { data: invite, error: inviteError } = await supabaseAdmin

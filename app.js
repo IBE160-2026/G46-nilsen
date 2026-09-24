@@ -33,7 +33,7 @@ let currentConversationId = null;
 let conversationDirty = false;
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "18.2.0", contactEmail: "" };
+let publicConfig = { appVersion: "18.3.0", contactEmail: "" };
 
 const topics = [
   {
@@ -399,8 +399,8 @@ function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
 
 
 const COMMON_GIVEN_NAMES = new Set(`
-Kine Gro Reidun Cecilie Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild
-Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein
+Kine Gro Reidun Cecilie Trude Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild Bente Berit Britt Brit Gerd Grete Gry Jorunn Jorun Randi Rita Siv Sissel Tone Torill Tove Unni Vigdis Wenche Åsebjørg Elisabeth Elise Ellen Eva Else Gunn Gunhild Ingeborg Kjersti Merete Mette Renate Solfrid Therese Trude Vibeke
+Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein Alf Arild Bjarne Dag Einar Erlend Finn Frank Harald Helge Ivar Kjell Kjetil Leif Magne Odd Ove Roar Roy Steinar Svein Terje Tom Tommy Trygve
 Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam
 Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria
 Giulia Giorgia Francesca Alessandra Martina Chiara Federica Marco Luca Matteo Lorenzo Alessandro Andrea Giovanni Giuseppe Antonio Stefano Davide
@@ -474,6 +474,25 @@ function findLikelyGivenName(source) {
     if (!NAME_FALSE_POSITIVES.has(a) && !NAME_FALSE_POSITIVES.has(b) && (isKnownGivenName(fullName[1]) || isKnownGivenName(fullName[2]))) {
       return `${fullName[1]} ${fullName[2]}`;
     }
+  }
+
+  // 5. Ekstra lokal kontekstsjekk for navn skrevet med små bokstaver.
+  // Vi sender ikke teksten til ekstern KI for å avgjøre dette, fordi personvernkontrollen skal skje før KI-kallet.
+  // Kandidaten må stå i en tydelig personsetning, og vanlige arbeidsord filtreres bort.
+  const contextualNonNames = new Set(`
+  situasjonen samtalen medarbeider medarbeideren kollega kollegaen leder lederen person personen team teamet
+  arbeidet arbeid stilling stillingen fravær sykefravær oppfølging utvikling prestasjon lønn samarbeid sikkerhet ansvar
+  mandag tirsdag onsdag torsdag fredag lørdag søndag uke uken måned måneden dag dagen år tiden perioden
+  dette det den en et jeg vi du de hen han hun noen ingen alle flere mye lite kanskje derfor fordi dersom
+  `.split(/\s+/).filter(Boolean));
+  const contextualPattern = /(?:^|[.!?]\s+|\b(?:med|til|fra|hos|om)\s+)([\p{L}][\p{L}'’-]{2,30})\s+(?:er|var|har|hadde|ble|blir|skal|vil|kan|må|sier|sa|jobber|arbeider|ønsker|mener|kommer|møter|trenger|opplever)\b/giu;
+  for (const match of text.matchAll(contextualPattern)) {
+    const candidate = match[1];
+    const normalized = normalizeNameToken(candidate);
+    if (NAME_FALSE_POSITIVES.has(normalized) || contextualNonNames.has(normalized)) continue;
+    if (isKnownGivenName(candidate)) return candidate;
+    // Ukjente småbokstav-kandidater flagges bare etter en sterk relasjonspreposisjon, ikke bare fordi et vanlig ord står først i en setning.
+    if (/^(?:med|til|fra|hos|om)\s+/iu.test(match[0]) && /^[\p{L}]{3,16}$/u.test(candidate)) return candidate;
   }
 
   return null;
@@ -1620,10 +1639,7 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
       showView('home');
     }
     if (button.dataset.view === 'prepare') {
-      resetConversationState();
-      setBreadcrumb('Forbered samtale');
-      showView('home');
-      setTimeout(() => document.querySelector('#topics').scrollIntoView({ behavior: 'smooth', block: 'start' }), 50);
+      startNewConversation();
     }
     if (button.dataset.view === 'settings') {
       setBreadcrumb('Innstillinger');
@@ -1927,7 +1943,7 @@ function openInfoView(which){
   infoReturnView=Object.entries(views).find(([,el])=>el.classList.contains('active-view'))?.[0]||'home';
   if(which==='contact' && infoReturnView==='contact') infoReturnView='home';
   if(which==='about' && infoReturnView==='about') infoReturnView='home';
-  const menu=document.querySelector('#profile-menu'); if(menu) menu.hidden=true;
+  closeProfileMenu();
   setBreadcrumb(which==='about'?'Om Samtalestøtte':'Kontakt og tilbakemelding');
   showView(which);
 }
@@ -1937,7 +1953,7 @@ async function loadPublicConfig(){
     const r=await fetch('/api/public-config');
     if(r.ok) publicConfig={...publicConfig,...await r.json()};
   }catch(_){}
-  const version=publicConfig.appVersion||'18.2.0';
+  const version=publicConfig.appVersion||'18.3.0';
   const v1=document.querySelector('#about-app-version'), meta=document.querySelector('#report-meta');
   if(v1) v1.textContent=version; if(meta) meta.textContent=`Versjon ${version}`;
   const status=document.querySelector('#contact-email-status'), link=document.querySelector('#contact-email-link');
@@ -1953,17 +1969,32 @@ async function loadPublicConfig(){
 function buildFeedbackText(){
   const category=document.querySelector('#report-category')?.value||'Tilbakemelding';
   const description=document.querySelector('#report-description')?.value.trim()||'';
-  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'18.2.0'}\nNettleser: ${navigator.userAgent}\n\nBeskrivelse:\n${description}`;
+  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'18.3.0'}\nNettleser: ${navigator.userAgent}\n\nBeskrivelse:\n${description}`;
 }
 
-document.querySelector('#profile-button')?.addEventListener('click',()=>{
-  if(!currentUser) return openAuth('login'); const m=document.querySelector('#profile-menu'); m.hidden=!m.hidden; document.querySelector('#profile-button').setAttribute('aria-expanded',String(!m.hidden));
+function closeProfileMenu(){
+  const menu=document.querySelector('#profile-menu');
+  const button=document.querySelector('#profile-button');
+  if(menu) menu.hidden=true;
+  if(button) button.setAttribute('aria-expanded','false');
+}
+
+document.querySelector('#profile-button')?.addEventListener('click',(event)=>{
+  event.stopPropagation();
+  if(!currentUser) return openAuth('login');
+  const m=document.querySelector('#profile-menu');
+  m.hidden=!m.hidden;
+  document.querySelector('#profile-button').setAttribute('aria-expanded',String(!m.hidden));
 });
-document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{document.querySelector('#profile-menu').hidden=true;openHistory();});
+document.querySelector('#profile-menu')?.addEventListener('click',event=>event.stopPropagation());
+document.addEventListener('click',()=>closeProfileMenu());
+document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfileMenu();});
+document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{closeProfileMenu();openHistory();});
 document.querySelector('[data-profile-action="about"]')?.addEventListener('click',()=>openInfoView('about'));
 document.querySelector('[data-profile-action="contact"]')?.addEventListener('click',()=>openInfoView('contact'));
-document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST'});currentUser=null;currentConversationId=null;updateAuthUi();document.querySelector('#profile-menu').hidden=true;showView('home');});
+document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');});
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register')); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login'));
+document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
 document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
@@ -1972,8 +2003,8 @@ document.querySelector('#report-from-conversation')?.addEventListener('click',()
 document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
 document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
 document.querySelector('#new-conversation-button')?.addEventListener('click',()=>startNewConversation());
-document.querySelector('#sidebar-new-conversation')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#result-new-conversation')?.addEventListener('click',()=>startNewConversation());
+document.querySelector('#bottom-new-conversation')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#history-new-conversation')?.addEventListener('click',()=>startNewConversation()); document.querySelector('#cancel-new-chat')?.addEventListener('click',()=>document.querySelector('#discard-dialog').close()); document.querySelector('#confirm-new-chat')?.addEventListener('click',()=>{document.querySelector('#discard-dialog').close();startNewConversation(true);});
 document.querySelector('#delete-account-button')?.addEventListener('click',async()=>{if(!confirm('Slette kontoen og all lagret historikk? Dette kan ikke angres.'))return;const r=await fetch('/api/account',{method:'DELETE'});if(r.ok){currentUser=null;currentConversationId=null;updateAuthUi();startNewConversation(true);}});
 document.querySelector('#delete-all-history')?.addEventListener('click',async()=>{if(!confirm('Slette all samtalehistorikk?'))return;await fetch('/api/history',{method:'DELETE'});openHistory();});
