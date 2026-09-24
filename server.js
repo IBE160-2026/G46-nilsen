@@ -5,6 +5,7 @@ import fs from "node:fs";
 import path from "node:path";
 import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
+import { createClient } from "@supabase/supabase-js";
 
 dotenv.config();
 
@@ -17,135 +18,294 @@ app.use(express.json({ limit: "1mb" }));
 app.use(express.static(__dirname));
 
 const apiKey = process.env.OPENAI_API_KEY;
-const model = process.env.OPENAI_MODEL || "gpt-5.6-terra";
+const model = process.env.OPENAI_MODEL || "gpt-5.6-luna";
 const client = apiKey ? new OpenAI({ apiKey }) : null;
 
+// --- v18.1: Supabase Auth + database ---
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabasePublishableKey = process.env.SUPABASE_PUBLISHABLE_KEY;
+const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
 
-// --- v18: lukket pilot, konto og historikk ---
-const dataDir = path.join(__dirname, "data");
-const usersFile = path.join(dataDir, "users.json");
-const invitesFile = path.join(dataDir, "invites.json");
-const historyFile = path.join(dataDir, "history.json");
-fs.mkdirSync(dataDir, { recursive: true });
-for (const file of [usersFile, invitesFile, historyFile]) {
-  if (!fs.existsSync(file)) fs.writeFileSync(file, "[]", "utf8");
+if (!supabaseUrl || !supabasePublishableKey || !supabaseSecretKey) {
+  throw new Error("Mangler SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY eller SUPABASE_SECRET_KEY i .env");
 }
 
-function readJson(file) {
-  try { return JSON.parse(fs.readFileSync(file, "utf8")); } catch (_) { return []; }
+function newUserClient() {
+  return createClient(supabaseUrl, supabasePublishableKey, {
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+  });
 }
-function writeJson(file, value) {
-  const temp = `${file}.tmp`;
-  fs.writeFileSync(temp, JSON.stringify(value, null, 2), "utf8");
-  fs.renameSync(temp, file);
-}
+
+const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
+  auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
+
 function normalizeEmail(value) { return String(value || "").trim().toLowerCase(); }
-function hashPassword(password, salt = crypto.randomBytes(16).toString("hex")) {
-  const hash = crypto.scryptSync(password, salt, 64).toString("hex");
-  return { salt, hash };
-}
-function verifyPassword(password, salt, expected) {
-  const actual = crypto.scryptSync(password, salt, 64);
-  const expectedBuffer = Buffer.from(expected, "hex");
-  return actual.length === expectedBuffer.length && crypto.timingSafeEqual(actual, expectedBuffer);
-}
 function hashInvite(code) { return crypto.createHash("sha256").update(String(code)).digest("hex"); }
 
 const sessions = new Map();
 const SESSION_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
+
 function parseCookies(req) {
   return Object.fromEntries(String(req.headers.cookie || "").split(";").map(v => v.trim()).filter(Boolean).map(v => {
-    const i = v.indexOf("="); return i >= 0 ? [decodeURIComponent(v.slice(0,i)), decodeURIComponent(v.slice(i+1))] : [v, ""];
+    const i = v.indexOf("=");
+    return i >= 0 ? [decodeURIComponent(v.slice(0, i)), decodeURIComponent(v.slice(i + 1))] : [v, ""];
   }));
 }
-function currentUser(req) {
-  const token = parseCookies(req).samtalestotte_session;
-  const session = token ? sessions.get(token) : null;
-  if (!session || Date.now() > session.expiresAt) { if (token) sessions.delete(token); return null; }
-  return readJson(usersFile).find(u => u.id === session.userId) || null;
+
+function sessionCookie(token, maxAge) {
+  const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
+  return `samtalestotte_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure}`;
 }
-function requireUser(req, res, next) {
-  const user = currentUser(req);
-  if (!user) return res.status(401).json({ error: "AUTH_REQUIRED", message: "Du må logge inn." });
-  req.user = user; next();
+
+function publicUser(user) {
+  if (!user) return null;
+  return {
+    id: user.id,
+    username: user.user_metadata?.username || user.email?.split("@")[0] || "Bruker",
+    email: user.email,
+    createdAt: user.created_at || null
+  };
 }
-function setSession(res, userId) {
+
+function setSession(res, authSession, user) {
   const token = crypto.randomBytes(32).toString("hex");
-  sessions.set(token, { userId, expiresAt: Date.now() + SESSION_MAX_AGE_MS });
-  res.setHeader("Set-Cookie", `samtalestotte_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${Math.floor(SESSION_MAX_AGE_MS/1000)}`);
+  sessions.set(token, {
+    accessToken: authSession.access_token,
+    refreshToken: authSession.refresh_token,
+    user: publicUser(user || authSession.user),
+    expiresAt: Date.now() + SESSION_MAX_AGE_MS
+  });
+  res.setHeader("Set-Cookie", sessionCookie(token, Math.floor(SESSION_MAX_AGE_MS / 1000)));
 }
+
 function clearSession(req, res) {
   const token = parseCookies(req).samtalestotte_session;
   if (token) sessions.delete(token);
-  res.setHeader("Set-Cookie", "samtalestotte_session=; HttpOnly; SameSite=Lax; Path=/; Max-Age=0");
+  res.setHeader("Set-Cookie", sessionCookie("", 0));
 }
-function publicUser(user) { return user ? { id:user.id, username:user.username, email:user.email, createdAt:user.createdAt } : null; }
 
-app.get("/api/auth/me", (req,res) => res.json({ user: publicUser(currentUser(req)) }));
+async function resolveSession(req) {
+  const token = parseCookies(req).samtalestotte_session;
+  const local = token ? sessions.get(token) : null;
+  if (!local || Date.now() > local.expiresAt) {
+    if (token) sessions.delete(token);
+    return null;
+  }
 
-app.post("/api/auth/register", (req,res) => {
+  const userClient = newUserClient();
+  const { data, error } = await userClient.auth.setSession({
+    access_token: local.accessToken,
+    refresh_token: local.refreshToken
+  });
+
+  if (error || !data.session || !data.user) {
+    sessions.delete(token);
+    return null;
+  }
+
+  local.accessToken = data.session.access_token;
+  local.refreshToken = data.session.refresh_token;
+  local.user = publicUser(data.user);
+  local.expiresAt = Date.now() + SESSION_MAX_AGE_MS;
+  return { token, local, userClient, user: local.user };
+}
+
+async function requireUser(req, res, next) {
+  try {
+    const resolved = await resolveSession(req);
+    if (!resolved) return res.status(401).json({ error: "AUTH_REQUIRED", message: "Du må logge inn." });
+    req.user = resolved.user;
+    req.supabase = resolved.userClient;
+    next();
+  } catch (error) {
+    console.error("Auth-feil:", error);
+    res.status(500).json({ error: "AUTH_ERROR", message: "Kunne ikke kontrollere innloggingen." });
+  }
+}
+
+app.get("/api/auth/me", async (req, res) => {
+  const resolved = await resolveSession(req);
+  res.json({ user: resolved?.user || null });
+});
+
+app.post("/api/auth/register", async (req, res) => {
   const username = String(req.body?.username || "").trim();
   const email = normalizeEmail(req.body?.email);
   const password = String(req.body?.password || "");
   const inviteCode = String(req.body?.inviteCode || "").trim();
-  if (username.length < 2 || username.length > 40) return res.status(400).json({ error:"INVALID_USERNAME", message:"Brukernavn må være mellom 2 og 40 tegn." });
-  if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ error:"INVALID_EMAIL", message:"Skriv inn en gyldig e-postadresse." });
-  if (password.length < 10) return res.status(400).json({ error:"WEAK_PASSWORD", message:"Passordet må ha minst 10 tegn." });
-  if (!inviteCode) return res.status(403).json({ error:"INVITE_REQUIRED", message:"Samtalestøtte er en lukket pilot og krever invitasjon." });
-  const invites = readJson(invitesFile);
+
+  if (username.length < 2 || username.length > 40) return res.status(400).json({ error: "INVALID_USERNAME", message: "Brukernavn må være mellom 2 og 40 tegn." });
+  if (!/^\S+@\S+\.\S+$/.test(email)) return res.status(400).json({ error: "INVALID_EMAIL", message: "Skriv inn en gyldig e-postadresse." });
+  if (password.length < 10) return res.status(400).json({ error: "WEAK_PASSWORD", message: "Passordet må ha minst 10 tegn." });
+  if (!inviteCode) return res.status(403).json({ error: "INVITE_REQUIRED", message: "Samtalestøtte er en lukket pilot og krever invitasjon." });
+
   const inviteHash = hashInvite(inviteCode);
-  const invite = invites.find(i => i.codeHash === inviteHash && !i.usedAt);
-  if (!invite) return res.status(403).json({ error:"INVALID_INVITE", message:"Invitasjonen er ugyldig eller allerede brukt." });
-  const users = readJson(usersFile);
-  if (users.some(u => u.email === email)) return res.status(409).json({ error:"EMAIL_EXISTS", message:"Det finnes allerede en konto med denne e-postadressen." });
-  const {salt,hash} = hashPassword(password);
-  const user = { id:crypto.randomUUID(), username, email, passwordSalt:salt, passwordHash:hash, createdAt:new Date().toISOString() };
-  users.push(user); writeJson(usersFile, users);
-  invite.usedAt = new Date().toISOString(); invite.userId = user.id; writeJson(invitesFile, invites);
-  setSession(res, user.id);
-  return res.status(201).json({ user: publicUser(user) });
+  const { data: invite, error: inviteError } = await supabaseAdmin
+    .from("invites")
+    .select("id, used_at")
+    .eq("code_hash", inviteHash)
+    .is("used_at", null)
+    .maybeSingle();
+
+  if (inviteError) {
+    console.error("Invitasjonsfeil:", inviteError);
+    return res.status(500).json({ error: "INVITE_LOOKUP_FAILED", message: "Kunne ikke kontrollere invitasjonen." });
+  }
+  if (!invite) return res.status(403).json({ error: "INVALID_INVITE", message: "Invitasjonen er ugyldig eller allerede brukt." });
+
+  const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
+    email,
+    password,
+    email_confirm: true,
+    user_metadata: { username }
+  });
+
+  if (createError || !created.user) {
+    const msg = String(createError?.message || "").toLowerCase();
+    if (msg.includes("already") || msg.includes("registered") || msg.includes("exists")) {
+      return res.status(409).json({ error: "EMAIL_EXISTS", message: "Det finnes allerede en konto med denne e-postadressen." });
+    }
+    console.error("Opprett bruker-feil:", createError);
+    return res.status(500).json({ error: "REGISTER_FAILED", message: "Kunne ikke opprette konto." });
+  }
+
+  const now = new Date().toISOString();
+  const { data: usedRows, error: useInviteError } = await supabaseAdmin
+    .from("invites")
+    .update({ used_at: now, user_id: created.user.id })
+    .eq("id", invite.id)
+    .is("used_at", null)
+    .select("id");
+
+  if (useInviteError || !usedRows?.length) {
+    await supabaseAdmin.auth.admin.deleteUser(created.user.id);
+    return res.status(409).json({ error: "INVITE_ALREADY_USED", message: "Invitasjonen ble brukt av noen andre. Be om en ny invitasjon." });
+  }
+
+  const signInClient = newUserClient();
+  const { data: signedIn, error: signInError } = await signInClient.auth.signInWithPassword({ email, password });
+  if (signInError || !signedIn.session) {
+    console.error("Innlogging etter registrering feilet:", signInError);
+    return res.status(201).json({ user: publicUser(created.user), loginRequired: true });
+  }
+
+  setSession(res, signedIn.session, signedIn.user);
+  res.status(201).json({ user: publicUser(signedIn.user) });
 });
 
-app.post("/api/auth/login", (req,res) => {
+app.post("/api/auth/login", async (req, res) => {
   const email = normalizeEmail(req.body?.email);
   const password = String(req.body?.password || "");
-  const user = readJson(usersFile).find(u => u.email === email);
-  if (!user || !verifyPassword(password, user.passwordSalt, user.passwordHash)) return res.status(401).json({ error:"INVALID_LOGIN", message:"Feil e-post eller passord." });
-  setSession(res, user.id); return res.json({ user: publicUser(user) });
+  const authClient = newUserClient();
+  const { data, error } = await authClient.auth.signInWithPassword({ email, password });
+  if (error || !data.session || !data.user) return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post eller passord." });
+  setSession(res, data.session, data.user);
+  res.json({ user: publicUser(data.user) });
 });
-app.post("/api/auth/logout", (req,res) => { clearSession(req,res); res.json({ ok:true }); });
 
-app.get("/api/history", requireUser, (req,res) => {
-  const items = readJson(historyFile).filter(x => x.userId === req.user.id).sort((a,b) => String(b.updatedAt).localeCompare(String(a.updatedAt)));
-  res.json({ items });
+app.post("/api/auth/logout", async (req, res) => {
+  const resolved = await resolveSession(req);
+  if (resolved) {
+    try { await resolved.userClient.auth.signOut(); } catch (_) {}
+  }
+  clearSession(req, res);
+  res.json({ ok: true });
 });
-app.post("/api/history", requireUser, (req,res) => {
-  const body = req.body || {};
-  if (body.temporary) return res.json({ skipped:true });
-  const all = readJson(historyFile);
-  let item = body.id ? all.find(x => x.id === body.id && x.userId === req.user.id) : null;
-  const now = new Date().toISOString();
-  const payload = {
-    title:String(body.title || "Samtale uten tittel").slice(0,120), topic:String(body.topic || "").slice(0,80), subtopic:String(body.subtopic || "").slice(0,100),
-    situation:String(body.situation || "").slice(0,20000), analysis:body.analysis || null, guidance:body.guidance || null,
-    conversation:Array.isArray(body.conversation) ? body.conversation.slice(-40) : []
+
+function historyPayload(body = {}) {
+  return {
+    title: String(body.title || "Samtale uten tittel").slice(0, 120),
+    topic: String(body.topic || "").slice(0, 80),
+    subtopic: String(body.subtopic || "").slice(0, 100),
+    situation: String(body.situation || "").slice(0, 20000),
+    analysis: body.analysis || null,
+    guidance: body.guidance || null,
+    conversation: Array.isArray(body.conversation) ? body.conversation.slice(-40) : []
   };
-  if (item) Object.assign(item, payload, { updatedAt:now });
-  else { item={ id:crypto.randomUUID(), userId:req.user.id, ...payload, createdAt:now, updatedAt:now }; all.push(item); }
-  writeJson(historyFile, all); res.json({ item });
+}
+
+function rowToHistory(row) {
+  let stored = {};
+  try { stored = JSON.parse(row.content || "{}"); } catch (_) {}
+  return {
+    id: String(row.id),
+    ...stored,
+    title: row.title || stored.title || "Samtale uten tittel",
+    createdAt: row.created_at,
+    updatedAt: row.updated_at
+  };
+}
+
+app.get("/api/history", requireUser, async (req, res) => {
+  const { data, error } = await req.supabase
+    .from("conversations")
+    .select("id,title,content,created_at,updated_at")
+    .order("updated_at", { ascending: false });
+  if (error) return res.status(500).json({ error: "HISTORY_READ_FAILED", message: "Kunne ikke hente historikken." });
+  res.json({ items: (data || []).map(rowToHistory) });
 });
-app.delete("/api/history/:id", requireUser, (req,res) => {
-  const all = readJson(historyFile); const next = all.filter(x => !(x.id === req.params.id && x.userId === req.user.id));
-  if (next.length === all.length) return res.status(404).json({ error:"NOT_FOUND" });
-  writeJson(historyFile, next); res.json({ ok:true });
+
+app.post("/api/history", requireUser, async (req, res) => {
+  const body = req.body || {};
+  if (body.temporary) return res.json({ skipped: true });
+  const payload = historyPayload(body);
+  const now = new Date().toISOString();
+  let query;
+
+  if (body.id) {
+    query = req.supabase
+      .from("conversations")
+      .update({ title: payload.title, content: JSON.stringify(payload), updated_at: now })
+      .eq("id", body.id)
+      .select("id,title,content,created_at,updated_at")
+      .maybeSingle();
+  } else {
+    query = req.supabase
+      .from("conversations")
+      .insert({ user_id: req.user.id, title: payload.title, content: JSON.stringify(payload), updated_at: now })
+      .select("id,title,content,created_at,updated_at")
+      .single();
+  }
+
+  const { data, error } = await query;
+  if (error || !data) {
+    console.error("Lagre historikk-feil:", error);
+    return res.status(500).json({ error: "HISTORY_SAVE_FAILED", message: "Kunne ikke lagre samtalen." });
+  }
+  res.json({ item: rowToHistory(data) });
 });
-app.delete("/api/history", requireUser, (req,res) => {
-  writeJson(historyFile, readJson(historyFile).filter(x => x.userId !== req.user.id)); res.json({ ok:true });
+
+app.delete("/api/history/:id", requireUser, async (req, res) => {
+  const { data, error } = await req.supabase
+    .from("conversations")
+    .delete()
+    .eq("id", req.params.id)
+    .select("id");
+  if (error) return res.status(500).json({ error: "HISTORY_DELETE_FAILED", message: "Kunne ikke slette samtalen." });
+  if (!data?.length) return res.status(404).json({ error: "NOT_FOUND" });
+  res.json({ ok: true });
 });
-app.delete("/api/account", requireUser, (req,res) => {
-  writeJson(usersFile, readJson(usersFile).filter(u => u.id !== req.user.id));
-  writeJson(historyFile, readJson(historyFile).filter(x => x.userId !== req.user.id));
-  clearSession(req,res); res.json({ ok:true });
+
+app.delete("/api/history", requireUser, async (req, res) => {
+  const { error } = await req.supabase.from("conversations").delete().eq("user_id", req.user.id);
+  if (error) return res.status(500).json({ error: "HISTORY_DELETE_FAILED", message: "Kunne ikke slette historikken." });
+  res.json({ ok: true });
+});
+
+app.delete("/api/account", requireUser, async (req, res) => {
+  const userId = req.user.id;
+  const { error: historyError } = await req.supabase.from("conversations").delete().eq("user_id", userId);
+  if (historyError) return res.status(500).json({ error: "ACCOUNT_DELETE_FAILED", message: "Kunne ikke slette samtalehistorikken." });
+
+  const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(userId);
+  if (deleteUserError) {
+    console.error("Slett konto-feil:", deleteUserError);
+    return res.status(500).json({ error: "ACCOUNT_DELETE_FAILED", message: "Kunne ikke slette kontoen." });
+  }
+
+  clearSession(req, res);
+  res.json({ ok: true });
 });
 
 const systemPrompt = fs.readFileSync(path.join(__dirname, "AI-SYSTEMPROMPT.md"), "utf8");

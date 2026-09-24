@@ -1,16 +1,26 @@
-import fs from "node:fs";
-import path from "node:path";
+import dotenv from "dotenv";
 import crypto from "node:crypto";
-import { fileURLToPath } from "node:url";
-const __dirname=path.dirname(fileURLToPath(import.meta.url));
-const dataDir=path.join(__dirname,"data"); const file=path.join(dataDir,"invites.json");
-fs.mkdirSync(dataDir,{recursive:true});
-let invites=[]; try{invites=JSON.parse(fs.readFileSync(file,"utf8"));}catch(_){}
-const count=Math.max(1,Math.min(50,Number(process.argv[2]||1)));
-const baseUrl=(process.env.APP_BASE_URL||`http://localhost:${process.env.PORT||3000}`).replace(/\/$/,"");
-for(let i=0;i<count;i++){
-  const code=crypto.randomBytes(18).toString("base64url");
-  invites.push({id:crypto.randomUUID(),codeHash:crypto.createHash("sha256").update(code).digest("hex"),createdAt:new Date().toISOString(),usedAt:null,userId:null});
-  console.log(`Invitasjon ${i+1}: ${baseUrl}/?invite=${code}`);
+import { createClient } from "@supabase/supabase-js";
+
+dotenv.config();
+
+const supabaseUrl = process.env.SUPABASE_URL;
+const supabaseSecretKey = process.env.SUPABASE_SECRET_KEY;
+if (!supabaseUrl || !supabaseSecretKey) {
+  throw new Error("Mangler SUPABASE_URL eller SUPABASE_SECRET_KEY i .env");
 }
-fs.writeFileSync(file,JSON.stringify(invites,null,2),"utf8");
+
+const supabase = createClient(supabaseUrl, supabaseSecretKey, {
+  auth: { persistSession: false, autoRefreshToken: false }
+});
+
+const count = Math.max(1, Math.min(50, Number(process.argv[2] || 1)));
+const baseUrl = (process.env.APP_BASE_URL || `http://localhost:${process.env.PORT || 3000}`).replace(/\/$/, "");
+
+for (let i = 0; i < count; i++) {
+  const code = crypto.randomBytes(18).toString("base64url");
+  const codeHash = crypto.createHash("sha256").update(code).digest("hex");
+  const { error } = await supabase.from("invites").insert({ code_hash: codeHash });
+  if (error) throw error;
+  console.log(`Invitasjon ${i + 1}: ${baseUrl}/?invite=${code}`);
+}
