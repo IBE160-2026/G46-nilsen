@@ -274,7 +274,7 @@
           <div id="structured-guidance" class="guidance-grid"></div>
 
           <section class="simulation-entry" id="simulation-entry">
-            <div class="simulation-entry-icon" aria-hidden="true">💬</div>
+            <div class="simulation-entry-icon" aria-hidden="true"><img src="logo-symbol.png" alt="" /></div>
             <div class="simulation-entry-copy">
               <span class="eyebrow">SAMTALEØVELSE</span>
               <h3>Vil du øve før den virkelige samtalen?</h3>
@@ -330,7 +330,7 @@
           <div class="simulation-launch-grid">
             <button class="simulation-launch-card" id="simulation-use-current" type="button">
               <span class="launch-bubble">↗</span>
-              <strong>Øv på eksisterende samtale</strong>
+              <strong>Øv på denne samtalen</strong>
               <span id="simulation-current-note">Åpne en samtale først for å bruke denne.</span>
             </button>
             <button class="simulation-launch-card featured" id="simulation-new-direct" type="button">
@@ -412,8 +412,9 @@
 
             <div id="simulation-live" class="simulation-live" hidden>
               <div class="simulation-statusbar">
-                <span class="speech-mark" aria-hidden="true">◯</span>
+                <span class="speech-mark simulation-status-logo" aria-hidden="true"><img src="logo-symbol.png" alt="" /></span>
                 <span id="simulation-status">Øvelse</span>
+                <button class="text-button simulation-expand" id="toggle-simulation-size" type="button" aria-pressed="false">Utvid samtalen</button>
                 <button class="text-button simulation-end-top" id="end-simulation-top" type="button">Avslutt øvelse</button>
               </div>
               <div class="simulation-thread" id="simulation-thread" aria-live="polite">
@@ -432,8 +433,8 @@
               <form id="simulation-form" class="simulation-form" autocomplete="off">
                 <textarea id="simulation-input" rows="2" placeholder="Skriv det du ville sagt …" required></textarea>
                 <div class="simulation-form-actions">
-                  <button class="secondary-button" id="toggle-simulation-help" type="button" hidden>Trenger du hjelp?</button>
                   <button class="primary-button" type="submit">Si dette</button>
+                  <button class="secondary-button" id="toggle-simulation-help" type="button" hidden>Trenger du hjelp?</button>
                 </div>
               </form>
               <div class="simulation-live-actions">

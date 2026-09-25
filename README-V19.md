@@ -50,3 +50,21 @@ npm run test-simulation:v19.2:live
 ```
 
 Automatiske tester er et filter. Før ekstern brukertesting bør simulatoren fortsatt vurderes manuelt for realisme, språk og treningsverdi.
+
+## v19.4 – simulatorchat og øvelsesrom
+
+v19.4 fokuserer på å gjøre selve øvelsen lettere å forstå og bruke:
+
+- chatten er høyere og kan utvides ytterligere med **Utvid samtalen**
+- startinstruksjonen er ikke lenger utformet som en tom snakkeboble
+- avatarene viser hele profilen og speilvendes kun i simuleringschatten slik at begge vender inn mot dialogen
+- snakkeboblehalene er tydeligere og peker mot riktig avatar
+- **Si dette** ligger til venstre sammen med øvrige primærhandlinger
+- **Øv på denne samtalen** vises bare når en aktiv samtale faktisk kan brukes som grunnlag
+- øv-kortet i vanlig KI-veiledning er gjort tydeligere som et naturlig neste steg
+
+Ny strukturell test:
+
+```powershell
+npm run test-simulation:v19.4
+```

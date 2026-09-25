@@ -738,3 +738,82 @@ html[data-theme="dark"] .privacy-check.ok span{color:#c8e6e5}
   .simulation-avatar img{width:42px;height:42px}
   .simulation-view .simulation-bubble{max-width:calc(100% - 54px)}
 }
+
+/* v19.4 – tydeligere øvelsesrom og mer lesbar simulering */
+/* Øv-på-samtalen skal fremstå som et tydelig neste steg i veiledningen. */
+.simulation-entry{
+  border-color:color-mix(in srgb,var(--accent) 48%,var(--border));
+  background:linear-gradient(135deg,color-mix(in srgb,var(--accent-soft) 78%,var(--surface)),color-mix(in srgb,var(--accent-soft) 34%,var(--surface)));
+  box-shadow:0 12px 30px rgba(16,63,60,.10);
+  padding:20px 22px;
+}
+.simulation-entry-icon{
+  width:68px;height:58px;border:0;border-radius:0;background:transparent;overflow:visible;
+}
+.simulation-entry-icon:after{display:none}
+.simulation-entry-icon img{width:66px;height:54px;object-fit:contain;display:block}
+html[data-theme="dark"] .simulation-entry-icon img{content:url('logo-symbol-light.png')}
+.simulation-entry-copy h3{font-size:1.18rem}
+.simulation-entry .primary-button{min-height:48px;padding-inline:22px;font-weight:800}
+
+/* Når det ikke finnes en aktiv samtale, skjules det irrelevante valget helt. */
+.simulation-launch-grid.two-options{grid-template-columns:repeat(2,minmax(0,1fr));max-width:1120px}
+
+/* Selve øvelsen skal dominere skjermen. */
+.simulation-panel:has(.simulation-live:not([hidden])){padding:14px 16px 18px}
+.simulation-live{min-height:0}
+.simulation-statusbar{margin-bottom:8px}
+.simulation-status-logo{width:34px;height:27px;border:0;border-radius:0;overflow:visible;display:grid;place-items:center}
+.simulation-status-logo:after{display:none}
+.simulation-status-logo img{width:34px;height:27px;object-fit:contain}
+html[data-theme="dark"] .simulation-status-logo img{content:url('logo-symbol-light.png')}
+.simulation-expand{margin-left:auto}
+.simulation-end-top{margin-left:0}
+
+/* Introduksjonen er en instruksjon, ikke en melding i dialogen. */
+.simulation-coach-note{
+  justify-self:stretch;max-width:none;padding:7px 12px;border-radius:9px;
+  background:transparent;border-left:3px solid color-mix(in srgb,var(--accent) 55%,var(--border));
+  color:var(--muted);font-size:.86rem;text-align:left;
+}
+
+/* Høyere samtaleområde som standard, med valgfri ekstra utvidelse. */
+.simulation-thread{
+  min-height:330px;max-height:66vh;gap:16px;padding:14px 10px 18px;
+  scrollbar-gutter:stable;
+}
+.simulation-live.expanded .simulation-thread{max-height:78vh;min-height:520px}
+
+/* Hele profilene skal være lesbare. Speilvending gjelder kun simuleringschatten. */
+.simulation-avatar{
+  width:58px;height:58px;flex:0 0 58px;border-radius:50%;overflow:visible;
+  padding:3px;background:color-mix(in srgb,var(--surface) 88%,var(--accent-soft));
+}
+.simulation-avatar img{
+  width:52px;height:52px;object-fit:contain;object-position:center;max-width:100%;
+  transform:scaleX(-1);
+}
+.employee-avatar img,.leader-avatar img{object-position:center}
+
+/* Mer tydelige snakkebobler og lengre haler mot avatarene. */
+.simulation-view .simulation-bubble{max-width:min(80%,820px);padding:15px 18px;border-radius:24px}
+.leader-bubble:after,.employee-bubble:after{width:22px;height:22px;bottom:10px}
+.leader-bubble:after{right:-12px;transform:rotate(-34deg)}
+.employee-bubble:after{left:-12px;transform:rotate(34deg)}
+
+/* Primærhandlingen følger resten av appen og ligger til venstre. */
+.simulation-form{margin-top:8px}
+.simulation-form textarea{min-height:64px;max-height:180px}
+.simulation-form-actions{justify-content:flex-start}
+.simulation-live-actions{justify-content:flex-start}
+
+@media(max-width:760px){
+  .simulation-launch-grid.two-options{grid-template-columns:1fr}
+  .simulation-thread{min-height:300px;max-height:62vh}
+  .simulation-live.expanded .simulation-thread{min-height:420px;max-height:76vh}
+  .simulation-avatar{width:46px;height:46px;flex-basis:46px}
+  .simulation-avatar img{width:40px;height:40px}
+  .simulation-view .simulation-bubble{max-width:calc(100% - 66px)}
+  .simulation-expand{margin-left:0}
+  .simulation-statusbar{flex-wrap:wrap}
+}

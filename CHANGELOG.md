@@ -1,5 +1,39 @@
 # CHANGELOG – Samtalestøtte
 
+## v19.4 – Tydeligere øvelsesrom og simulatorchat
+
+### Samtaleflyt og oppmerksomhet
+- Selve øvelsesområdet er gjort visuelt tydeligere slik at brukeren raskere ser hvor samtalen starter.
+- Introduksjonsteksten i tom chat vises som en kort instruksjon i stedet for en stor, tom snakkeboble.
+- Samtaleområdet er gjort høyere som standard, slik at flere meldinger kan vises samtidig.
+- Lagt til **Utvid samtalen / Normal størrelse** i statuslinjen for brukere som ønsker å se mer av dialogen uten å avslutte øvelsen.
+
+### Avatarer og snakkebobler
+- Profilavatarene i selve simuleringschatten er gjort større og viser hele profilen med `object-fit: contain` i stedet for hard beskjæring.
+- **Kun i simuleringschatten** speilvendes avatarene slik at begge profilene vender inn mot dialogen: medarbeider/KI fra venstre mot høyre, leder fra høyre mot venstre.
+- Denne speilvendingen påvirker ikke logo, sidemeny eller andre illustrasjoner i appen.
+- Snakkeboblenes haler er gjort lengre og tydeligere slik at de peker mot riktig avatar og er lettere å lese som dialog.
+- Maksbredden på meldingsboblene er økt noe for bedre utnyttelse av større skjermer.
+
+### Simulatorinnganger
+- **Øv på eksisterende samtale** er endret til **Øv på denne samtalen**.
+- Valget skjules helt når det ikke finnes en aktiv samtale med nok kontekst, i stedet for å vises deaktivert uten tydelig nytte.
+- Når valget skjules, tilpasses startflaten automatisk til to relevante innganger.
+- Øv-på-samtalen-kortet i vanlig KI-veiledning er gjort mer synlig med tydeligere petrolflate, sterkere knapp og logosymbol.
+
+### Kontroller i øvelsen
+- **Si dette** er flyttet til venstre side i tråd med primærhandlingene ellers i løsningen.
+- KI-støtte ligger fortsatt ved siden av som sekundær handling når støtte er aktivert.
+- Statuslinjen bruker logosymbolet i stedet for en generisk liten boble.
+
+### Testing og dokumentasjon
+- Lagt til `test-simulation-v19-4.js` for å kontrollere avatarretning, full profilvisning, utvidbar chat, skjuling av irrelevant eksisterende-samtale-valg og venstrejustert primærhandling.
+- `package.json` oppdatert til v19.4.0.
+- `README-V19.md` oppdatert med v19.4-endringene.
+- Eksisterende changelog-historikk er bevart; v19.4 er lagt øverst uten å overskrive tidligere versjoner.
+
+---
+
 ## v19.3 – Simulatoridentitet, mørkmodus og utvidet Om-side
 
 ### Samtalesimulator

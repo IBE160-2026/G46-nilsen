@@ -2097,10 +2097,15 @@ function refreshSimulationHub() {
   const currentButton = document.querySelector('#simulation-use-current');
   const currentNote = document.querySelector('#simulation-current-note');
   const available = hasCurrentSimulationContext();
-  if (currentButton) currentButton.disabled = !available;
+  const launchGrid = document.querySelector('.simulation-launch-grid');
+  if (currentButton) {
+    currentButton.disabled = !available;
+    currentButton.hidden = !available;
+  }
+  launchGrid?.classList.toggle('two-options', !available);
   if (currentNote) currentNote.textContent = available
     ? `Bruk saken ${currentSubtopic || currentTopic?.title || 'du allerede jobber med'}.`
-    : 'Åpne en samtale først for å bruke denne.';
+    : '';
 }
 
 function resetSimulationPanel() {
@@ -2121,6 +2126,9 @@ function resetSimulationPanel() {
   if (feedback) feedback.hidden = true;
   document.querySelector('#simulation-help')?.setAttribute('hidden','');
   document.querySelector('#simulation-help-result')?.setAttribute('hidden','');
+  document.querySelector('#simulation-live')?.classList.remove('expanded');
+  const expandButton = document.querySelector('#toggle-simulation-size');
+  if (expandButton) { expandButton.textContent = 'Utvid samtalen'; expandButton.setAttribute('aria-pressed','false'); }
   setSimulationChoice('[data-sim-fidelity]', 'simFidelity', simulationFidelity);
   setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
   updateSimulationFidelityNote();
@@ -2404,6 +2412,14 @@ document.querySelector('#toggle-simulation-help')?.addEventListener('click', () 
   help.hidden = !help.hidden;
 });
 document.querySelectorAll('[data-sim-help]').forEach(button => button.addEventListener('click', () => requestSimulationHelp(button.dataset.simHelp)));
+document.querySelector('#toggle-simulation-size')?.addEventListener('click', () => {
+  const live = document.querySelector('#simulation-live');
+  const button = document.querySelector('#toggle-simulation-size');
+  if (!live || !button) return;
+  const expanded = live.classList.toggle('expanded');
+  button.textContent = expanded ? 'Normal størrelse' : 'Utvid samtalen';
+  button.setAttribute('aria-pressed', String(expanded));
+});
 document.querySelector('#end-simulation')?.addEventListener('click', endSimulation);
 document.querySelector('#end-simulation-top')?.addEventListener('click', endSimulation);
 document.querySelector('#retry-simulation')?.addEventListener('click', startSimulation);
