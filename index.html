@@ -438,8 +438,9 @@
               <form id="simulation-form" class="simulation-form" autocomplete="off">
                 <textarea id="simulation-input" rows="2" placeholder="Skriv det du ville sagt …" required></textarea>
                 <div class="simulation-input-meta">Enter for å sende · Shift + Enter for linjeskift</div>
+                <div id="simulation-turn-privacy" class="privacy-check simulation-turn-privacy" hidden></div>
                 <div class="simulation-form-actions">
-                  <button class="primary-button" type="submit">Si dette</button>
+                  <button class="primary-button" id="simulation-submit" type="submit">Si dette</button>
                   <button class="secondary-button" id="toggle-simulation-help" type="button" hidden>Trenger du hjelp?</button>
                 </div>
               </form>

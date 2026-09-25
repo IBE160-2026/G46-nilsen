@@ -2151,6 +2151,9 @@ function resetSimulationPanel() {
   document.querySelector('#simulation-live')?.classList.remove('expanded');
   const expandButton = document.querySelector('#toggle-simulation-size');
   if (expandButton) { expandButton.textContent = 'Utvid samtalen'; expandButton.setAttribute('aria-pressed','false'); }
+  const simInput = document.querySelector('#simulation-input');
+  if (simInput) simInput.value = '';
+  document.querySelector('#simulation-turn-privacy')?.setAttribute('hidden','');
   setSimulationChoice('[data-sim-fidelity]', 'simFidelity', simulationFidelity);
   setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
   updateSimulationFidelityNote();
@@ -2428,18 +2431,54 @@ document.querySelectorAll('[data-sim-style]').forEach(button => button.addEventL
   setSimulationChoice('[data-sim-style]', 'simStyle', simulationStyle);
 }));
 document.querySelector('#start-simulation')?.addEventListener('click', startSimulation);
+function updateSimulationTurnPrivacy() {
+  const input = document.querySelector('#simulation-input');
+  const box = document.querySelector('#simulation-turn-privacy');
+  const submit = document.querySelector('#simulation-submit');
+  if (!input || !box) return [];
+  const text = input.value;
+  const findings = detectSensitiveInfo(text);
+  const { hard, soft } = splitPrivacyFindings(findings);
+  const hasText = Boolean(text.trim());
+  input.setAttribute('aria-invalid', hard.length ? 'true' : 'false');
+  if (submit) submit.disabled = !hasText || hard.length > 0;
+  if (!hasText || (!hard.length && !soft.length)) {
+    box.hidden = true;
+    box.innerHTML = '';
+    return findings;
+  }
+  const visible = hard.length ? hard : soft;
+  box.hidden = false;
+  box.className = `privacy-check simulation-turn-privacy warning ${hard.length ? 'blocking' : 'advisory'}`;
+  box.innerHTML = hard.length
+    ? `<strong>Kan ikke sendes ennå</strong><span>Jeg fant opplysninger som må anonymiseres først:</span><ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul><div class="privacy-fix-actions"><button type="button" class="secondary-button compact-fix-button" id="simulation-privacy-fix">Fiks personvern</button><small>Les gjennom teksten før du sender.</small></div>`
+    : `<strong>Kan dette anonymiseres litt mer?</strong><span>Disse detaljene kan gjøre personen lettere å kjenne igjen. Du kan sende likevel, eller generalisere dem først:</span><ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul><div class="privacy-fix-actions"><button type="button" class="secondary-button compact-fix-button" id="simulation-privacy-fix">Generaliser forslag</button><small>Dette er en anbefaling, ikke en blokkering.</small></div>`;
+  box.querySelector('#simulation-privacy-fix')?.addEventListener('click', () => {
+    input.value = autoFixPrivacyText(input.value, findings);
+    updateSimulationTurnPrivacy();
+    input.focus();
+  });
+  return findings;
+}
+
 document.querySelector('#simulation-form')?.addEventListener('submit', async event => {
   event.preventDefault();
   const input = document.querySelector('#simulation-input');
   const text = input.value;
+  const findings = updateSimulationTurnPrivacy();
+  if (splitPrivacyFindings(findings).hard.length || !text.trim()) return;
   input.value = '';
+  updateSimulationTurnPrivacy();
   await submitSimulationTurn(text);
 });
+document.querySelector('#simulation-input')?.addEventListener('input', updateSimulationTurnPrivacy);
 document.querySelector('#simulation-input')?.addEventListener('keydown', event => {
   if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
   event.preventDefault();
   const input = event.currentTarget;
   if (!input.value.trim()) return;
+  const findings = updateSimulationTurnPrivacy();
+  if (splitPrivacyFindings(findings).hard.length) return;
   input.form?.requestSubmit();
 });
 document.querySelector('#toggle-simulation-help')?.addEventListener('click', () => {

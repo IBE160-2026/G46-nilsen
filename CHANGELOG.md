@@ -1,3 +1,11 @@
+# v19.7.0 – Simulatorpolering og personvern i live-chat
+
+- Snakkebobler i simuleringen har fått lengre, mykere og tydeligere haler som peker mot profilene uten å treffe avatarene.
+- «Personvern», «Utvid samtalen» og «Avslutt øvelse» bruker samme kompakte pill-stil.
+- Personvernkontrollen kjører nå også på hver melding i simuleringen før sending. Tydelige identifikatorer blokkeres, mens mykere funn gir råd om generalisering.
+- Brukeren kan generalisere flagget tekst direkte i simuleringsfeltet før sending.
+- Logo på Om, Kontakt, Innstillinger, Historikk og juridiske sider er større og plassert til høyre for overskriftsteksten.
+
 
 ## 19.6.0
 - La personvernspåminnelse synlig på Samtalesimulering.

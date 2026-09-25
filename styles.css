@@ -989,3 +989,74 @@ html[data-theme="dark"] .legal-note{background:color-mix(in srgb,var(--accent-so
 }
 
 html[data-theme="dark"] .utility-page-logo{content:url('logo-symbol-light.png')}
+
+/* v19.7 – mykere bobler, konsekvente simulatorhandlinger og logo til høyre */
+.simulation-bubble-row{gap:26px}
+.simulation-view .simulation-bubble{position:relative;overflow:visible}
+/* Lang, markant og avsmalnende hale som peker mot profilbildet uten å treffe det. */
+.leader-bubble:before,.employee-bubble:before,
+.leader-bubble:after,.employee-bubble:after{
+  content:"";position:absolute;bottom:7px;height:26px;pointer-events:none;
+  clip-path:polygon(0 5%,100% 100%,7% 68%);
+}
+.leader-bubble:before,.employee-bubble:before{width:27px;background:var(--border)}
+.leader-bubble:after,.employee-bubble:after{width:24px;background:inherit;bottom:8px}
+.leader-bubble:before{right:-22px;transform:scaleX(-1)}
+.leader-bubble:after{right:-19px;transform:scaleX(-1)}
+.employee-bubble:before{left:-22px}
+.employee-bubble:after{left:-19px}
+
+/* Samme pill-stil for alle små handlinger i simulatoren. */
+.simulation-expand,.simulation-end-top,.simulation-privacy-link{
+  border:1px solid var(--border);border-radius:999px;padding:7px 12px;
+  background:var(--surface);color:var(--accent);font-weight:750;line-height:1.2;
+  transition:background .16s ease,border-color .16s ease,transform .16s ease,color .16s ease;
+}
+.simulation-expand:hover,.simulation-end-top:hover,.simulation-privacy-link:hover{
+  background:color-mix(in srgb,var(--accent) 13%,var(--surface));
+  border-color:color-mix(in srgb,var(--accent) 45%,var(--border));
+  color:var(--accent-strong);transform:translateY(-1px)
+}
+html[data-theme="dark"] .simulation-expand:hover,
+html[data-theme="dark"] .simulation-end-top:hover,
+html[data-theme="dark"] .simulation-privacy-link:hover{
+  background:color-mix(in srgb,var(--accent) 20%,var(--surface));
+}
+
+/* Infosider: teksten til venstre, en tydelig større logo til høyre. */
+#settings-view .content-header,
+#about-view .content-header,
+#contact-view .content-header,
+#history-view .content-header,
+.legal-view .content-header{
+  grid-template-columns:minmax(0,1fr) auto;
+  column-gap:26px;align-items:center;
+}
+#settings-view .utility-page-brand,
+#about-view .utility-page-brand,
+#contact-view .utility-page-brand,
+#history-view .utility-page-brand,
+.legal-view .utility-page-brand{
+  grid-column:2;grid-row:1 / span 3;margin:0;justify-self:end;
+}
+#settings-view .utility-page-logo,
+#about-view .utility-page-logo,
+#contact-view .utility-page-logo,
+#history-view .utility-page-logo,
+.legal-view .utility-page-logo{width:132px;max-width:none}
+#settings-view .content-header>.eyebrow,#settings-view .content-header>h1,#settings-view .content-header>p,
+#about-view .content-header>.eyebrow,#about-view .content-header>h1,#about-view .content-header>p,
+#contact-view .content-header>.eyebrow,#contact-view .content-header>h1,#contact-view .content-header>p,
+#history-view .content-header>.eyebrow,#history-view .content-header>h1,#history-view .content-header>p,
+.legal-view .content-header>.eyebrow,.legal-view .content-header>h1,.legal-view .content-header>p{grid-column:1}
+
+.simulation-turn-privacy{margin:8px 0 2px;max-width:none}
+@media(max-width:760px){
+  .simulation-bubble-row{gap:18px}
+  .leader-bubble:before{right:-16px}.leader-bubble:after{right:-13px}
+  .employee-bubble:before{left:-16px}.employee-bubble:after{left:-13px}
+  #settings-view .utility-page-logo,#about-view .utility-page-logo,#contact-view .utility-page-logo,
+  #history-view .utility-page-logo,.legal-view .utility-page-logo{width:88px}
+  #settings-view .content-header,#about-view .content-header,#contact-view .content-header,
+  #history-view .content-header,.legal-view .content-header{column-gap:14px}
+}
