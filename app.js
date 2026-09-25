@@ -32,6 +32,7 @@ let lastAiGuidance = null;
 let currentUser = null;
 let currentConversationId = null;
 let conversationDirty = false;
+let pendingSituationText = '';
 let simulationFidelity = "factual";
 let simulationMode = "solo";
 let simulationStyle = "open";
@@ -41,7 +42,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.10.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "19.11.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 
 const topics = [
   {
@@ -323,7 +324,7 @@ function resetConversationState() {
   if (search) search.value = '';
 
   const detailSearch = document.querySelector('#topic-detail-search');
-  if (detailSearch) detailSearch.value = '';
+  if (detailSearch) detailSearch.value = carriedSituation;
 
   const subSuggestion = document.querySelector('#subtopic-suggestion');
   if (subSuggestion) {
@@ -375,8 +376,10 @@ function highlightTopicCard(topicId) {
   });
 }
 
-function openTopic(topic) {
+function openTopic(topic, preservedSituation = '') {
   currentTopic = topic;
+  const carriedSituation = String(preservedSituation || pendingSituationText || document.querySelector('#topic-search')?.value || '').trim();
+  if (carriedSituation) pendingSituationText = carriedSituation;
   highlightTopicCard(topic.id);
   document.querySelector('#topic-title').textContent = topic.title;
   document.querySelector('#topic-description').textContent = topic.description;
@@ -393,7 +396,7 @@ function openTopic(topic) {
   setBreadcrumb(`Forbered samtale / ${topic.title}`);
 
   const detailSearch = document.querySelector('#topic-detail-search');
-  if (detailSearch) detailSearch.value = '';
+  if (detailSearch) detailSearch.value = carriedSituation;
   const subSuggestion = document.querySelector('#subtopic-suggestion');
   if (subSuggestion) {
     subSuggestion.hidden = true;
@@ -407,7 +410,7 @@ function openTopic(topic) {
     button.className = 'subtopic-card';
     button.dataset.searchText = `${title} ${help}`.toLowerCase();
     button.innerHTML = `<strong>${title}</strong><p>${help}</p>`;
-    button.addEventListener('click', () => openGuidance(title, help));
+    button.addEventListener('click', () => openGuidance(title, help, carriedSituation));
     grid.appendChild(button);
   });
 
@@ -416,18 +419,19 @@ function openTopic(topic) {
 
 function openGuidance(title, help, initialSituation = '') {
   hideAutoTopicNote();
+  const carriedSituation = String(initialSituation || pendingSituationText || '').trim();
+  if (carriedSituation) pendingSituationText = carriedSituation;
   currentSubtopic = title;
   document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
   document.querySelector('#guidance-help').textContent = help;
   setBreadcrumb(`Forbered samtale / ${currentTopic.title} / ${title}`);
   clearGuidanceSession({ clearInputs: true });
   const situationField = document.querySelector('#situation');
-  if (situationField && initialSituation.trim()) {
-    situationField.value = initialSituation.trim();
+  if (situationField && carriedSituation) {
+    situationField.value = carriedSituation;
     autoGrowTextarea(situationField, 220);
     requestAnimationFrame(() => {
       situationField.focus();
-      situationField.select();
     });
   }
   updatePrivacyCheck();
@@ -829,7 +833,7 @@ function renderLowConfidenceTopicChoice(box, classification, situation) {
     const preferred = id === classification.primary_topic_id
       ? topicSubtopicByTitle(topic, classification.primary_subtopic)
       : null;
-    return `<button type="button" class="secondary-button topic-choice-button" data-ai-topic="${escapeHtml(id)}" data-ai-subtopic="${escapeHtml(preferred?.[0] || '')}">${escapeHtml(topic.title)}</button>`;
+    return `<button type="button" class="secondary-button topic-choice-button" data-ai-topic="${escapeHtml(id)}" data-ai-subtopic="${escapeHtml(preferred?.[0] || '')}"><strong>${escapeHtml(topic.title)}</strong>${preferred ? `<span>${escapeHtml(preferred[0])}</span>` : ''}</button>`;
   }).join('');
 
   box.hidden = false;
@@ -854,6 +858,7 @@ function renderLowConfidenceTopicChoice(box, classification, situation) {
 
 async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBoxId, selectedTopicId = '' }) {
   const situation = String(value || '').trim();
+  if (situation) pendingSituationText = situation;
   const box = document.querySelector(boxId);
   if (!box || situation.length < 4) {
     if (box) {
@@ -1797,7 +1802,7 @@ function renderSubtopicSuggestion(query) {
       <button class="primary-button" type="button" id="open-suggested-subtopic">Bruk dette undertemaet</button>
     </div>
   `;
-  box.querySelector('#open-suggested-subtopic').addEventListener('click', () => openGuidance(title, help));
+  box.querySelector('#open-suggested-subtopic').addEventListener('click', () => openGuidance(title, help, query));
 }
 
 function filterSubtopicCards(query) {
@@ -1922,6 +1927,7 @@ document.querySelector('#back-from-settings').addEventListener('click', () => {
 
 document.querySelector('#topic-finder-form').addEventListener('submit', async event => {
   event.preventDefault();
+  if(!requireLogin()) return;
   const value = document.querySelector('#topic-search').value;
   await classifyAndContinueFromFinder({
     value,
@@ -2142,13 +2148,25 @@ function updateAuthUi() {
 async function refreshAuth() {
   try { const r=await fetch('/api/auth/me'); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
   updateAuthUi();
+  if (!currentUser && !new URLSearchParams(location.search).get('invite')) openAuth('login', true);
 }
-function openAuth(mode='login') {
+function openAuth(mode='login', required = !currentUser) {
   const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
   document.querySelector('#login-panel').hidden=mode!=='login'; document.querySelector('#register-panel').hidden=mode!=='register';
+  dlg.classList.toggle('required-auth', Boolean(required && !currentUser));
   if(!dlg.open) dlg.showModal();
 }
-function closeAuth(){ const dlg=document.querySelector('#auth-dialog'); if(dlg?.open) dlg.close(); }
+function closeAuth(){
+  const dlg=document.querySelector('#auth-dialog');
+  if(!dlg?.open) return;
+  if(!currentUser && dlg.classList.contains('required-auth')) return;
+  dlg.close();
+}
+function requireLogin() {
+  if (currentUser) return true;
+  openAuth('login', true);
+  return false;
+}
 function getConversationTurns(){
   return [...document.querySelectorAll('#conversation-thread .conversation-turn')].map(el=>({role:el.classList.contains('conversation-user')?'user':'assistant',text:el.innerText.replace(/^Du\s*|^Samtalestøtte\s*/,'').trim()}));
 }
@@ -2192,6 +2210,7 @@ function loadHistoryItem(item){
   setBreadcrumb('Lagret samtale'); showView('guidance');
 }
 function startNewConversation(force=false){
+  if(!requireLogin()) return;
   const hasContent=Boolean(document.querySelector('#situation')?.value.trim());
   const unsaved=hasContent && (!currentUser || document.querySelector('#temporary-chat')?.checked || conversationDirty);
   if(unsaved && !force){ const msg=document.querySelector('#discard-message'); msg.textContent=currentUser?'Denne samtalen er ikke lagret. Hvis du fortsetter, kan den ikke gjenopprettes.':'Denne samtalen er ikke lagret og kan ikke gjenopprettes. Logg inn dersom du vil lagre historikk.'; document.querySelector('#discard-dialog').showModal(); return; }
@@ -2252,9 +2271,10 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfil
 document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{closeProfileMenu();openHistory();});
 document.querySelector('[data-profile-action="about"]')?.addEventListener('click',()=>openInfoView('about'));
 document.querySelector('[data-profile-action="contact"]')?.addEventListener('click',()=>openInfoView('contact'));
-document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');});
+document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register')); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login'));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
+document.querySelector('#auth-dialog')?.addEventListener('cancel',event=>{if(!currentUser){event.preventDefault();openAuth('login',true);}});
 document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
@@ -2352,6 +2372,7 @@ function resetSimulationPanel() {
 }
 
 function openSimulationHub() {
+  if(!requireLogin()) return;
   setBreadcrumb('Samtalesimulering');
   showView('simulation');
   const hub = document.querySelector('#simulation-hub');
@@ -2364,6 +2385,7 @@ function openSimulationHub() {
 }
 
 function openSimulation() {
+  if(!requireLogin()) return;
   if (!hasCurrentSimulationContext()) return;
   simulationSource = 'current';
   simulationDirectSituation = '';
@@ -2435,6 +2457,7 @@ function showDirectSimulationPrivacy(findings) {
 }
 
 function beginDirectSimulation() {
+  if(!requireLogin()) return;
   const input = document.querySelector('#direct-simulation-situation');
   const text = input?.value.trim() || '';
   if (!text) return;
@@ -2652,6 +2675,7 @@ function updateSimulationTurnPrivacy() {
 
 document.querySelector('#simulation-form')?.addEventListener('submit', async event => {
   event.preventDefault();
+  if(!requireLogin()) return;
   const input = document.querySelector('#simulation-input');
   const text = input.value;
   const findings = updateSimulationTurnPrivacy();
@@ -2688,8 +2712,8 @@ document.querySelector('#end-simulation-top')?.addEventListener('click', endSimu
 document.querySelector('#retry-simulation')?.addEventListener('click', startSimulation);
 document.querySelector('#simulation-new-conversation')?.addEventListener('click', () => startNewConversation());
 
-const inviteFromUrl=new URLSearchParams(location.search).get('invite'); if(inviteFromUrl){document.querySelector('#register-invite').value=inviteFromUrl;openAuth('register');history.replaceState(null,'',location.pathname);}
-refreshAuth();
+const inviteFromUrl=new URLSearchParams(location.search).get('invite'); if(inviteFromUrl){document.querySelector('#register-invite').value=inviteFromUrl;openAuth('register',true);}
+refreshAuth().finally(()=>{ if(inviteFromUrl) history.replaceState(null,'',location.pathname); });
 loadPublicConfig();
 
 window.addEventListener('resize', () => {

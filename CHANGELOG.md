@@ -947,3 +947,11 @@ Fra og med neste versjon skal følgende alltid gjøres:
 5. `CHANGELOG.md` skal inngå i samme Git-commit som versjonen den dokumenterer.
 6. Ved generering av ny ZIP skal den oppdaterte, komplette changelog-filen være kilden – aldri en lagret eldre mal.
 
+
+## 19.11.0
+- Bevarer situasjonsbeskrivelsen gjennom tema- og undertemaflyten slik at teksten ikke må skrives på nytt.
+- Viser KI-forslått hovedtema og undertema tydeligere, også ved lavere sikkerhet.
+- Beskytter alle KI- og simulatorendepunkter med gyldig innlogget bruker.
+- Gjør innlogging obligatorisk for bruk av den lukkede betaversjonen; registrering krever fortsatt engangsinvitasjon.
+- Bygger snakkeboblehaler om til kurvede, integrerte speech-bubble-former og gjenbruker dem i videre KI-dialog.
+- Løfter infosidelogoene og lysner hovedlogoen tydeligere i hybridtema.

@@ -1382,3 +1382,125 @@ html[data-theme="hybrid"] .sidebar .brand-logo{
   .leader-bubble:before{right:-32px}.leader-bubble:after{right:-29px}
   .auto-topic-note{align-items:flex-start;flex-direction:column;gap:9px}
 }
+
+
+/* v19.11 – lukket beta, bedre kontinuitet og klassiske integrerte snakkebobler */
+
+/* Hovedlogo: tydelig lysere ordmerke i hybridtema. */
+html[data-theme="hybrid"] .sidebar .brand-logo{
+  filter:brightness(1.55) saturate(.88) contrast(.96);
+}
+
+/* Infosider: symbolet løftes tydelig over midtlinjen slik at halen peker mot overskriftens øvre del. */
+.utility-title-row{align-items:flex-start}
+.utility-title-row .utility-page-brand{
+  transform:translateY(-20px);
+}
+@media(max-width:760px){
+  .utility-title-row .utility-page-brand{transform:translateY(-15px)}
+}
+
+/* Lav sikkerhet skal også vise undertema når KI faktisk har foreslått ett. */
+.topic-choice-button{display:grid;gap:2px;text-align:left}
+.topic-choice-button strong{font-size:.9rem}
+.topic-choice-button span{font-size:.78rem;color:var(--muted);font-weight:600}
+
+/* Låst betaversjon: auth-dialog kan ikke lukkes før gyldig bruker er innlogget. */
+.auth-dialog.required-auth .dialog-close{display:none}
+.auth-dialog.required-auth::backdrop{background:rgba(8,24,29,.78);backdrop-filter:blur(3px)}
+
+/*
+  Klassisk speech-bubble-form. Halen bygges med to kurvede flater som vokser ut av
+  boblekroppen; ingen trekant/clip-path er festet på rektangelet.
+*/
+.simulation-bubble-row{gap:38px}
+.simulation-view .simulation-bubble,
+.conversation-turn{
+  position:relative;
+  overflow:visible;
+  border-radius:24px;
+  isolation:isolate;
+}
+
+/* Fjern alle eldre halevarianter. */
+.leader-bubble:before,.leader-bubble:after,
+.employee-bubble:before,.employee-bubble:after,
+.conversation-user:before,.conversation-user:after,
+.conversation-assistant:before,.conversation-assistant:after{
+  content:none;
+}
+
+/* Ytre kurve – samme flate som boblen med tynn kant. */
+.employee-bubble::after,
+.conversation-assistant::after{
+  content:"";
+  position:absolute;
+  left:-23px;
+  bottom:-1px;
+  width:46px;
+  height:36px;
+  background:inherit;
+  border-left:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-left-radius:38px 30px;
+  transform:rotate(-10deg);
+  transform-origin:right bottom;
+  z-index:-2;
+}
+.leader-bubble::after,
+.conversation-user::after{
+  content:"";
+  position:absolute;
+  right:-23px;
+  bottom:-1px;
+  width:46px;
+  height:36px;
+  background:inherit;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-right-radius:38px 30px;
+  transform:rotate(10deg);
+  transform-origin:left bottom;
+  z-index:-2;
+}
+
+/* Innskåret kurve lager den karakteristiske, integrerte speech-bubble-halen. */
+.employee-bubble::before,
+.conversation-assistant::before{
+  content:"";
+  position:absolute;
+  left:-31px;
+  bottom:8px;
+  width:32px;
+  height:28px;
+  background:var(--bg);
+  border-bottom-right-radius:28px 24px;
+  z-index:-1;
+}
+.leader-bubble::before,
+.conversation-user::before{
+  content:"";
+  position:absolute;
+  right:-31px;
+  bottom:8px;
+  width:32px;
+  height:28px;
+  background:var(--bg);
+  border-bottom-left-radius:28px 24px;
+  z-index:-1;
+}
+
+/* Fortsett-samtalen bruker samme visuelle språk som simulatoren. */
+.conversation-thread{gap:14px;padding:6px 34px 8px}
+.conversation-turn{max-width:82%;padding:12px 15px;border-radius:22px}
+.conversation-user{background:color-mix(in srgb,var(--accent-soft) 58%,var(--surface))}
+.conversation-assistant{background:var(--surface)}
+
+@media(max-width:760px){
+  .simulation-bubble-row{gap:30px}
+  .conversation-thread{padding-left:26px;padding-right:26px}
+  .employee-bubble::after,.conversation-assistant::after{left:-18px;width:39px;height:31px}
+  .leader-bubble::after,.conversation-user::after{right:-18px;width:39px;height:31px}
+  .employee-bubble::before,.conversation-assistant::before{left:-26px;width:28px;height:24px}
+  .leader-bubble::before,.conversation-user::before{right:-26px;width:28px;height:24px}
+}

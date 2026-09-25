@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.10.0";
+const appVersion = process.env.APP_VERSION || "19.11.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -611,7 +611,7 @@ app.get("/api/status", (_req, res) => {
   res.json({ aiConfigured: Boolean(client), model: client ? model : null });
 });
 
-app.post("/api/analyze-situation", async (req, res) => {
+app.post("/api/analyze-situation", requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({
       error: "AI_NOT_CONFIGURED",
@@ -672,7 +672,7 @@ app.post("/api/analyze-situation", async (req, res) => {
 });
 
 
-app.post("/api/generate-guidance", async (req, res) => {
+app.post("/api/generate-guidance", requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
   }
@@ -719,7 +719,7 @@ app.post("/api/generate-guidance", async (req, res) => {
 });
 
 
-app.post("/api/continue-conversation", async (req, res) => {
+app.post("/api/continue-conversation", requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
   }
@@ -786,7 +786,7 @@ function simulationContextText({ situation = '', analysis = null, followups = {}
   return `\n\n## Samtalesimulering\nDu spiller KUN medarbeideren i en øvelse for en leder. Brukeren spiller lederen.\n\nViktige grenser:\n- Ikke gi råd til lederen mens du spiller medarbeideren.\n- Ikke fortell hva lederen bør gjøre. Svar bare slik medarbeideren plausibelt kunne svart.\n- Ikke gjør tredjepartsopplysninger om til egne observasjoner.\n- Hold hvert medarbeidersvar naturlig og relativt kort, vanligvis 1–4 setninger.\n- Reaksjonen skal utvikle seg ut fra det lederen faktisk sier, ikke låses mekanisk til én tone.\n- Hold rollespillfakta og den virkelige saken strengt adskilt.\n\nValgt simuleringsmodus: ${fidelity}. ${simulationFidelityInstructions[fidelity] || simulationFidelityInstructions.factual}\n\nValgt reaksjonsstil: ${style}. ${simulationStyleInstructions[style] || simulationStyleInstructions.open}\n\nSituasjon: ${String(situation).slice(0, 12000)}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nSamtalen så langt: ${JSON.stringify(sanitizeSimulationTurns(turns))}\n`;
 }
 
-app.post('/api/simulation-turn', async (req, res) => {
+app.post('/api/simulation-turn', requireUser, async (req, res) => {
   if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
   const body = req.body || {};
   const turns = sanitizeSimulationTurns(body.turns);
@@ -809,7 +809,7 @@ app.post('/api/simulation-turn', async (req, res) => {
   }
 });
 
-app.post('/api/simulation-help', async (req, res) => {
+app.post('/api/simulation-help', requireUser, async (req, res) => {
   if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
   const body = req.body || {};
   const helpKinds = {
@@ -842,7 +842,7 @@ const simulationFeedbackSchema = {
   required: ['worked_well', 'could_be_clearer', 'alternative_phrase', 'takeaway']
 };
 
-app.post('/api/simulation-feedback', async (req, res) => {
+app.post('/api/simulation-feedback', requireUser, async (req, res) => {
   if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
   const body = req.body || {};
   const turns = sanitizeSimulationTurns(body.turns);
