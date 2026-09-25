@@ -1,3 +1,20 @@
+# v19.8.0 – Samlet brukertestpolering
+
+- Fjernet «Øv på denne samtalen» fra simulatorhuben. Øving fra en eksisterende sak startes fortsatt fra rådsvisningen.
+- Fjernet de dekorative små snakkebobleikonene fra simulatorens startkort.
+- Beholdt de rektangulære chatboblene, men laget en lengre, mykere og mer logo-inspirert hale med luft mot profilbildene.
+- Flyttet logo på Om, Kontakt, Innstillinger, Historikk, Personvern og Vilkår slik at den står rett til høyre for overskriftsteksten, i mindre størrelse enn på Samtalesimulering.
+- Normalisert bredder på kort og bokser, blant annet nederste boks på Om-siden.
+- Gjort personvernfeltene bredere og lavere, og gitt simulatorens personvernfelt samme fargefamilie som vanlig samtaledel.
+- Lagt inn mer luft mellom tekstfelt og personvernvarsel i simuleringen.
+- Kontakt-e-post er satt til cecilie.c.nilsen@himolde.no og vises som sekundær kontaktmulighet ved siden av kontaktskjemaet.
+- Personvernerklæringen forklarer nødvendig innloggingscookie og lokal lagring av tema/menyvalg, og at betaversjonen ikke bruker markedsførings- eller sporingscookies.
+- Lagt til tre korte refleksjonsspørsmål etter samtalesimulering.
+- Lagt til tydelig tastaturfokus for bedre tilgjengelighet.
+- Leveransepakken for v19.8 inneholder ikke PNG-filer; eksisterende bilder i prosjektet skal beholdes.
+
+---
+
 # v19.7.0 – Simulatorpolering og personvern i live-chat
 
 - Snakkebobler i simuleringen har fått lengre, mykere og tydeligere haler som peker mot profilene uten å treffe avatarene.

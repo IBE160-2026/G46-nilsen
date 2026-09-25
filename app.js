@@ -41,7 +41,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.6.0", contactEmail: "" };
+let publicConfig = { appVersion: "19.8.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 
 const topics = [
   {
@@ -2116,18 +2116,9 @@ function hasCurrentSimulationContext() {
 }
 
 function refreshSimulationHub() {
-  const currentButton = document.querySelector('#simulation-use-current');
-  const currentNote = document.querySelector('#simulation-current-note');
-  const available = hasCurrentSimulationContext();
-  const launchGrid = document.querySelector('.simulation-launch-grid');
-  if (currentButton) {
-    currentButton.disabled = !available;
-    currentButton.hidden = !available;
-  }
-  launchGrid?.classList.toggle('two-options', !available);
-  if (currentNote) currentNote.textContent = available
-    ? `Bruk saken ${currentSubtopic || currentTopic?.title || 'du allerede jobber med'}.`
-    : '';
+  // v19.8: Simulatorhuben har to faste innganger.
+  // Øving fra en eksisterende samtale startes fortsatt via «Øv på samtalen» i rådsvisningen.
+  document.querySelector('.simulation-launch-grid')?.classList.add('two-options');
 }
 
 function resetSimulationPanel() {
@@ -2409,7 +2400,6 @@ async function endSimulation() {
 }
 
 document.querySelector('#open-simulation')?.addEventListener('click', openSimulation);
-document.querySelector('#simulation-use-current')?.addEventListener('click', openSimulation);
 document.querySelector('#simulation-new-direct')?.addEventListener('click', openDirectSimulationSetup);
 document.querySelector('#simulation-history')?.addEventListener('click', openHistory);
 document.querySelector('#cancel-direct-simulation')?.addEventListener('click', () => { document.querySelector('#direct-simulation-form').hidden = true; showDirectSimulationPrivacy([]); });

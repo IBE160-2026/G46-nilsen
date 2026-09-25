@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=19.6" />
+  <link rel="stylesheet" href="styles.css?v=19.8" />
 </head>
 <body>
   <div class="app-shell">
@@ -332,19 +332,12 @@
             <h2>Hvordan vil du starte?</h2>
             <p>Velg inngangen som passer. Du kan øve helt selv eller be om KI-støtte underveis.</p>
           </div>
-          <div class="simulation-launch-grid">
-            <button class="simulation-launch-card" id="simulation-use-current" type="button">
-              <span class="launch-bubble">↗</span>
-              <strong>Øv på denne samtalen</strong>
-              <span id="simulation-current-note">Åpne en samtale først for å bruke denne.</span>
-            </button>
+          <div class="simulation-launch-grid two-options">
             <button class="simulation-launch-card featured" id="simulation-new-direct" type="button">
-              <span class="launch-bubble">＋</span>
               <strong>Start en ny simulering</strong>
               <span>Beskriv situasjonen kort og gå rett til øvelsen.</span>
             </button>
             <button class="simulation-launch-card" id="simulation-history" type="button">
-              <span class="launch-bubble">↺</span>
               <strong>Se tidligere øvelser</strong>
               <span>Åpne lagrede samtaler og simuleringer fra historikken.</span>
             </button>
@@ -454,6 +447,14 @@
               <h3>Tilbakemelding på samtalen</h3>
               <p class="simulation-feedback-intro">Ingen poengsum – bare konkrete observasjoner du kan bruke videre.</p>
               <div id="simulation-feedback-content" class="simulation-feedback-grid"></div>
+              <section class="simulation-reflection" aria-labelledby="simulation-reflection-title">
+                <h4 id="simulation-reflection-title">Kort refleksjon før du går videre</h4>
+                <div class="simulation-reflection-grid">
+                  <div><strong>Hva fungerte?</strong><span>Hva vil du gjøre på samme måte i den virkelige samtalen?</span></div>
+                  <div><strong>Hva vil du justere?</strong><span>Er det en formulering eller reaksjon du vil håndtere annerledes?</span></div>
+                  <div><strong>Hva er neste steg?</strong><span>Hva trenger du å avklare eller forberede før samtalen?</span></div>
+                </div>
+              </section>
               <div class="simulation-feedback-actions">
                 <button class="secondary-button" id="retry-simulation" type="button">Prøv samme samtale på nytt</button>
                 <button class="primary-button" id="simulation-new-conversation" type="button">＋ Ny samtale</button>
@@ -466,11 +467,9 @@
 
       <section id="settings-view" class="view">
         <button class="back-link" id="back-from-settings" type="button">← Tilbake til hjem</button>
-        <div class="content-header">
+        <div class="content-header utility-header">
+          <div class="utility-header-copy"><span class="eyebrow">INNSTILLINGER</span><h1>Utseende</h1><p>Velg det temaet som er mest behagelig å bruke.</p></div>
           <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
-          <span class="eyebrow">INNSTILLINGER</span>
-          <h1>Utseende</h1>
-          <p>Velg det temaet som er mest behagelig å bruke.</p>
         </div>
         <div class="settings-card">
           <h2>Fargetema</h2>
@@ -495,11 +494,9 @@
 
       <section id="history-view" class="view">
         <button class="back-link" id="back-from-history" type="button">← Tilbake til hjem</button>
-        <div class="content-header history-header">
+        <div class="content-header history-header utility-header">
+          <div class="utility-header-copy"><span class="eyebrow">DIN KONTO</span><h1>Samtalehistorikk</h1><p>Her finner du samtalene du har valgt å lagre. Du kan åpne eller slette dem når du vil.</p></div>
           <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
-          <span class="eyebrow">DIN KONTO</span>
-          <h1>Samtalehistorikk</h1>
-          <p>Her finner du samtalene du har valgt å lagre. Du kan åpne eller slette dem når du vil.</p>
         </div>
         <div id="history-logged-out" class="settings-card">
           <h2>Logg inn for historikk</h2>
@@ -514,10 +511,11 @@
 
       <section id="privacy-view" class="view legal-view">
         <button class="back-link legal-back" type="button">← Tilbake</button>
-        <div class="content-header"><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div><span class="eyebrow">PERSONVERN</span><h1>Personvernerklæring</h1><p>Slik behandler Samtalestøtte opplysninger i betaversjonen.</p></div>
+        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">PERSONVERN</span><h1>Personvernerklæring</h1><p>Slik behandler Samtalestøtte opplysninger i betaversjonen.</p></div><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div>
         <article class="legal-document">
           <h2>Hvilke opplysninger lagres?</h2><p>Når du oppretter konto lagres valgt brukernavn, e-postadresse og teknisk informasjon som er nødvendig for sikker innlogging. Passord lagres ikke i klartekst.</p>
           <h2>Hvorfor lagres opplysningene?</h2><p>Opplysningene brukes for å opprette og administrere kontoen, gi tilgang til samtalehistorikk og la deg logge inn igjen. Du trenger ikke bruke ditt virkelige navn som brukernavn.</p>
+          <h2>Nødvendig lokal lagring</h2><p>Appen bruker en nødvendig innloggingscookie for å holde deg innlogget. Nettleseren lagrer også valg av lyst, mørkt eller systemtema og om sidemenyen er åpen eller lukket. Betaversjonen bruker ikke markedsførings- eller sporingscookies.</p>
           <h2>Samtalehistorikk</h2><p>Innloggede brukere kan lagre samtaler. Du kan slå på «Midlertidig samtale», slette enkeltsamtaler eller slette all historikk. Uinnloggede samtaler lagres ikke permanent av konto-/historikkfunksjonen.</p>
           <h2>Personopplysninger om andre</h2><p>Samtalestøtte er laget for at saker skal beskrives anonymt. Ikke legg inn navn, kontaktopplysninger, identifikasjonsnumre eller andre unødvendige opplysninger som identifiserer en medarbeider. Arbeidskontekst kan beskrives når den er relevant, men konkrete virksomhetsnavn, avdelinger og små lokasjoner bør generaliseres når de ikke er nødvendige.</p>
           <h2>Eksterne tjenester</h2><p>Når KI-funksjonen brukes, sendes den anonymiserte situasjonsteksten og nødvendig samtalekontekst til KI-tjenesten som appen er konfigurert mot. Før en offentlig produksjonslansering må behandlingsansvarlig, databehandlere, lagringstid og kontaktinformasjon oppgis konkret.</p>
@@ -528,7 +526,7 @@
 
       <section id="terms-view" class="view legal-view">
         <button class="back-link legal-back" type="button">← Tilbake</button>
-        <div class="content-header"><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div><span class="eyebrow">VILKÅR</span><h1>Bruksvilkår</h1><p>Rammer for trygg bruk av Samtalestøtte.</p></div>
+        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">VILKÅR</span><h1>Bruksvilkår</h1><p>Rammer for trygg bruk av Samtalestøtte.</p></div><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div>
         <article class="legal-document">
           <h2>Brukerens ansvar</h2><p>Du er ansvarlig for innholdet du legger inn og for å følge eventuell taushetsplikt, sikkerhetsinstruks og arbeidsgivers interne regler.</p>
           <h2>Anonymiser så langt som mulig</h2><p>Unngå navn, kontaktinformasjon, fødselsdato, personnummer og andre unødvendige identifiserende opplysninger. Bruk rollebeskrivelser som «medarbeideren». Behold bare arbeidskontekst som er nødvendig for relevante råd.</p>
@@ -539,11 +537,9 @@
       </section>
       <section id="about-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header">
+        <div class="content-header utility-header">
+          <div class="utility-header-copy"><span class="eyebrow">OM TJENESTEN</span><h1>Om Samtalestøtte</h1><p>Samtalestøtte er utviklet for å hjelpe ledere med å forberede og gjennomføre krevende samtaler i arbeidslivet.</p></div>
           <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
-          <span class="eyebrow">OM TJENESTEN</span>
-          <h1>Om Samtalestøtte</h1>
-          <p>Samtalestøtte er utviklet for å hjelpe ledere med å forberede og gjennomføre krevende samtaler i arbeidslivet.</p>
         </div>
         <div class="about-intro settings-card about-purpose">
           <h2>Hvorfor Samtalestøtte?</h2>
@@ -563,23 +559,21 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">19.6.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">19.8.0</strong></p>
         </div>
       </section>
 
       <section id="contact-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header">
+        <div class="content-header utility-header">
+          <div class="utility-header-copy"><span class="eyebrow">KONTAKT OG TILBAKEMELDING</span><h1>Spørsmål eller noe som ikke virker?</h1><p>Rapporter gjerne tekniske feil, uklare råd, feil i kilder eller andre forbedringsforslag.</p></div>
           <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
-          <span class="eyebrow">KONTAKT OG TILBAKEMELDING</span>
-          <h1>Spørsmål eller noe som ikke virker?</h1>
-          <p>Rapporter gjerne tekniske feil, uklare råd, feil i kilder eller andre forbedringsforslag.</p>
         </div>
         <div class="contact-layout">
           <div class="settings-card contact-card">
-            <h2>Kontakt</h2>
+            <h2>Foretrekker du e-post?</h2>
             <p id="contact-email-status">Henter kontaktinformasjon …</p>
-            <a class="primary-button contact-email-link" id="contact-email-link" href="#" hidden>Send e-post</a>
+            <a class="secondary-button contact-email-link" id="contact-email-link" href="#" hidden>Send e-post</a>
             <p class="contact-privacy-note">Ikke ta med navn eller andre identifiserende personopplysninger i feilrapporten.</p>
           </div>
           <form class="settings-card report-form" id="report-form">
@@ -597,7 +591,7 @@
             <label>Beskriv kort hva som skjedde
               <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
             </label>
-            <div class="report-meta" id="report-meta">Versjon 19.1.0</div>
+            <div class="report-meta" id="report-meta">Versjon 19.8.0</div>
             <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
             <div class="auth-message" id="report-message" aria-live="polite"></div>
           </form>
@@ -641,6 +635,6 @@
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
 
-  <script src="app.js?v=18.3"></script>
+  <script src="app.js?v=19.8"></script>
 </body>
 </html>

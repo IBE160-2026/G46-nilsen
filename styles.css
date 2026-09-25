@@ -1060,3 +1060,151 @@ html[data-theme="dark"] .simulation-privacy-link:hover{
   #settings-view .content-header,#about-view .content-header,#contact-view .content-header,
   #history-view .content-header,.legal-view .content-header{column-gap:14px}
 }
+
+/* v19.8 – samlet UI-polering */
+
+/* Infosider: logoen skal sitte sammen med overskriftsteksten, ikke ytterst i siden. */
+#settings-view .content-header.utility-header,
+#about-view .content-header.utility-header,
+#contact-view .content-header.utility-header,
+#history-view .content-header.utility-header,
+.legal-view .content-header.utility-header{
+  display:flex;
+  align-items:center;
+  justify-content:flex-start;
+  gap:18px;
+  flex-wrap:nowrap;
+}
+.utility-header-copy{min-width:0;max-width:760px}
+.utility-header-copy h1{margin:0}
+.utility-header-copy p{margin-top:10px}
+#settings-view .utility-page-brand,
+#about-view .utility-page-brand,
+#contact-view .utility-page-brand,
+#history-view .utility-page-brand,
+.legal-view .utility-page-brand{
+  flex:0 0 auto;
+  margin:0;
+  justify-self:auto;
+  align-self:center;
+  grid-column:auto;
+  grid-row:auto;
+}
+#settings-view .utility-page-logo,
+#about-view .utility-page-logo,
+#contact-view .utility-page-logo,
+#history-view .utility-page-logo,
+.legal-view .utility-page-logo{
+  width:104px;
+  max-width:none;
+}
+
+/* Jevn bredde på innholdskort – unngå bokser som stopper på tilfeldige bredder. */
+#about-view .about-purpose,
+#about-view .about-development,
+#settings-view > .settings-card,
+#history-view > .settings-card{
+  width:100%;
+  max-width:none;
+}
+#about-view .about-grid{width:100%}
+#contact-view .contact-layout{width:100%}
+
+/* Personvernfelt: samme fargefamilie som vanlig samtaledel, full bredde og lavere høyde. */
+.privacy-banner,
+.privacy-check{
+  max-width:none;
+  width:100%;
+  margin-left:0;
+  margin-right:0;
+  border-radius:14px;
+  padding:10px 14px;
+}
+.simulation-privacy-banner{
+  width:100%;
+  grid-template-columns:auto minmax(0,1fr) auto;
+  gap:10px;
+  padding:10px 14px;
+  border-radius:14px;
+  background:var(--warning);
+  border-color:var(--warning-border);
+}
+.simulation-privacy-banner p{font-size:.82rem;line-height:1.4}
+html[data-theme="dark"] .simulation-privacy-banner{
+  background:color-mix(in srgb,#6c4e58 35%,var(--surface));
+  border-color:color-mix(in srgb,#c69aa7 42%,var(--border));
+}
+html[data-theme="dark"] .simulation-privacy-banner p{color:#e7cbd5}
+.simulation-turn-privacy{margin:14px 0 4px;max-width:none}
+.direct-simulation-card .privacy-check{margin-top:14px}
+
+/* Simulatorhub: to rene valg uten dekorative pseudo-snakkebobler. */
+.simulation-launch-grid.two-options{
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  max-width:1120px;
+}
+.simulation-launch-card{min-height:132px;justify-content:center}
+.simulation-launch-card strong{margin-top:0;font-size:1.05rem}
+
+/* Chatbobler: behold rektangelet, men gi halen en lengre, mykere logo-inspirert spiss. */
+.simulation-bubble-row{gap:36px}
+.simulation-view .simulation-bubble{border-radius:22px}
+.leader-bubble{border-bottom-right-radius:9px}
+.employee-bubble{border-bottom-left-radius:9px}
+.leader-bubble:before,.employee-bubble:before,
+.leader-bubble:after,.employee-bubble:after{
+  content:"";
+  position:absolute;
+  bottom:4px;
+  height:30px;
+  pointer-events:none;
+  clip-path:path("M 38 1 C 30 8 22 19 2 29 C 17 25 30 20 38 12 Z");
+  transform:none;
+}
+.leader-bubble:before,.employee-bubble:before{width:38px;background:var(--border)}
+.leader-bubble:after,.employee-bubble:after{width:35px;height:27px;background:inherit;bottom:5px}
+.employee-bubble:before{left:-29px}
+.employee-bubble:after{left:-27px}
+.leader-bubble:before{right:-29px;transform:scaleX(-1)}
+.leader-bubble:after{right:-27px;transform:scaleX(-1)}
+
+/* Refleksjon etter øvelsen. */
+.simulation-reflection{
+  margin-top:18px;
+  padding:17px 18px;
+  border:1px solid var(--border);
+  border-radius:18px;
+  background:color-mix(in srgb,var(--accent-soft) 24%,var(--surface));
+}
+.simulation-reflection h4{margin:0 0 12px;font-size:1rem}
+.simulation-reflection-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+.simulation-reflection-grid>div{display:grid;gap:5px;padding:12px;border-radius:13px;background:var(--surface);border:1px solid var(--border)}
+.simulation-reflection-grid strong{font-size:.88rem}
+.simulation-reflection-grid span{font-size:.82rem;line-height:1.45;color:var(--muted)}
+
+/* Tydelig tastaturfokus på alle interaktive elementer. */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible{
+  outline:3px solid color-mix(in srgb,var(--accent) 42%,transparent);
+  outline-offset:3px;
+}
+
+@media(max-width:760px){
+  #settings-view .content-header.utility-header,
+  #about-view .content-header.utility-header,
+  #contact-view .content-header.utility-header,
+  #history-view .content-header.utility-header,
+  .legal-view .content-header.utility-header{gap:12px;align-items:flex-start}
+  #settings-view .utility-page-logo,#about-view .utility-page-logo,#contact-view .utility-page-logo,
+  #history-view .utility-page-logo,.legal-view .utility-page-logo{width:72px}
+  .simulation-launch-grid.two-options{grid-template-columns:1fr}
+  .simulation-bubble-row{gap:28px}
+  .employee-bubble:before{left:-23px}.employee-bubble:after{left:-21px}
+  .leader-bubble:before{right:-23px}.leader-bubble:after{right:-21px}
+  .simulation-reflection-grid{grid-template-columns:1fr}
+  .simulation-privacy-banner{grid-template-columns:auto 1fr}
+  .simulation-privacy-link{grid-column:2;justify-self:start}
+}
