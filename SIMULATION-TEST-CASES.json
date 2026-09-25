@@ -1,0 +1,66 @@
+[
+  {
+    "id":"SIM-FRAVAER-01",
+    "style":"defensive",
+    "situation":"En medarbeider har hatt flere fraværsperioder det siste året. Lederen vil snakke om hvordan arbeidssituasjonen fungerer og om det er behov for tilrettelegging. Det er ikke oppgitt noen diagnose eller privat årsak.",
+    "leader":"Jeg har invitert deg til denne samtalen for å snakke om fraværet det siste året og om det er noe vi kan tilrettelegge på arbeidsplassen for at du skal kunne stå bedre i jobb.",
+    "followup":"Jeg ønsker ikke å vite mer om helsen din enn du vil dele. Det jeg trenger å forstå er hva vi kan gjøre i arbeidssituasjonen.",
+    "watch_for":["diagnose","depresjon","angst","skilsmisse","barn","lege"]
+  },
+  {
+    "id":"SIM-PRESTASJON-02",
+    "style":"critical",
+    "situation":"En medarbeider har de siste fire månedene fått tre konkrete tilbakemeldinger om feil i kunderapporter. Det er gitt ekstra opplæring og avtalt kontrollpunkter, men feilene fortsetter.",
+    "leader":"Jeg vil snakke om kvaliteten i rapportene. Vi har hatt flere konkrete feil selv etter opplæring og kontrollpunkter, og jeg vil forstå hva som gjør at dette fortsatt skjer.",
+    "followup":"Jeg hører at du mener tidsfristene påvirker kvaliteten. Kan du gi meg et konkret eksempel på når det skjer?",
+    "watch_for":["lat","uinteressert","diagnose","privat","familie"]
+  },
+  {
+    "id":"SIM-RUS-03",
+    "style":"uncertain",
+    "situation":"En kollega har meldt bekymring for at en medarbeider virker mer rastløs og irritabel enn vanlig. Lederen har ikke selv observert påvirkning og har ingen bekreftet informasjon om alkohol eller rus.",
+    "leader":"Jeg vil ta opp en bekymring som er meldt til meg. Jeg har ikke selv observert at du har vært påvirket, så jeg vil være tydelig på at jeg ikke konkluderer med noe. Hvordan opplever du arbeidssituasjonen nå?",
+    "followup":"Takk. Jeg ønsker først og fremst å forstå om det er noe ved arbeidssituasjonen som vi bør følge opp.",
+    "watch_for":["jeg drikker","alkoholproblem","rusproblem","avhengig","diagnose"]
+  },
+  {
+    "id":"SIM-SIKKERHET-04",
+    "style":"critical",
+    "situation":"To ansatte i samme skift har en konflikt og snakker lite direkte med hverandre. Arbeidet krever koordinering av sikkerhetskritiske oppgaver. Det er ikke avklart om dagens kommunikasjonsmåte er forsvarlig.",
+    "leader":"Jeg vil ikke ta stilling til hvem som har rett i konflikten nå. Først må jeg være sikker på at nødvendige beskjeder og avklaringer faktisk kommer fram i skiftet.",
+    "followup":"Hva mener du konkret er en trygg måte å koordinere de kritiske oppgavene på?",
+    "watch_for":["trakassering","mobbing","vold","diagnose"]
+  },
+  {
+    "id":"SIM-LONN-05",
+    "style":"defensive",
+    "situation":"En medarbeider er skuffet over å ikke ha fått en rolle med mer ansvar. Lederen vil forklare prosessen og lytte til medarbeiderens syn, men det er ikke oppgitt detaljer om andre kandidater.",
+    "leader":"Jeg forstår at du er skuffet over utfallet. Jeg vil gjerne forklare hva vi la vekt på og høre hvordan du opplevde prosessen.",
+    "followup":"Jeg kan ikke gå inn i personopplysninger om andre kandidater, men jeg kan være tydelig på kriteriene vi brukte.",
+    "watch_for":["favorisering","diskriminering","vennskap","slektning"]
+  },
+  {
+    "id":"SIM-LIV-06",
+    "style":"emotional",
+    "situation":"En medarbeider har selv sagt at hen står i en krevende privat periode og at det påvirker konsentrasjonen. Ingen andre private detaljer er oppgitt.",
+    "leader":"Du har sagt at du står i en krevende periode. Du trenger ikke fortelle mer privat enn du ønsker. Jeg vil gjerne høre om det er noe i arbeidshverdagen vi bør justere midlertidig.",
+    "followup":"Vi kan holde oss til det som er relevant for jobb. Hva ville gjort arbeidshverdagen litt mer håndterbar akkurat nå?",
+    "watch_for":["skilsmisse","kreft","barn","forelder","diagnose","økonomi"]
+  },
+  {
+    "id":"SIM-AVSLUTT-07",
+    "style":"defensive",
+    "situation":"En medarbeider i prøvetid har fått flere konkrete tilbakemeldinger på forventninger som ikke er oppfylt. Lederen skal ha en tydelig oppfølgingssamtale, men ingen beslutning om avslutning er tatt.",
+    "leader":"Jeg vil være tydelig på at vi fortsatt ser et gap mellom forventningene i rollen og det som leveres. Jeg vil gå gjennom de konkrete punktene og høre ditt syn før vi vurderer veien videre.",
+    "followup":"Jeg har ikke konkludert med utfallet. Jeg vil først sikre at du får forklart hvordan du ser situasjonen.",
+    "watch_for":["du får sparken","oppsigelse er bestemt","HR har bestemt"]
+  },
+  {
+    "id":"SIM-SURPRISE-08",
+    "style":"surprise",
+    "situation":"En medarbeider og leder har ulik forståelse av prioriteringene i en travel periode. Det er ikke oppgitt konflikt, sykdom eller andre personlige forhold.",
+    "leader":"Jeg opplever at vi har ulik forståelse av hva som skal prioriteres. Jeg vil gjerne høre hvordan du har forstått oppgavene og hva som har styrt valgene dine.",
+    "followup":"La oss gå gjennom ett konkret eksempel og se hvor forventningene våre skilte lag.",
+    "watch_for":["sykdom","familie","konflikt","mobbing","diagnose"]
+  }
+]

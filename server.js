@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.0.0";
+const appVersion = process.env.APP_VERSION || "19.1.0";
 const contactEmail = String(process.env.CONTACT_EMAIL || "").trim();
 
 app.use(express.json({ limit: "1mb" }));

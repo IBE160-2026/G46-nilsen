@@ -5,6 +5,7 @@ const svgIcons = {
   settings: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Z"></path><path d="m19.4 15 .8 1.4-1.6 2.8-1.7-.4a7.9 7.9 0 0 1-1.8 1l-.4 1.7H9.3l-.4-1.7a7.9 7.9 0 0 1-1.8-1l-1.7.4-1.6-2.8.8-1.4a8.5 8.5 0 0 1 0-2l-.8-1.4 1.6-2.8 1.7.4a7.9 7.9 0 0 1 1.8-1l.4-1.7h3.4l.4 1.7a7.9 7.9 0 0 1 1.8 1l1.7-.4 1.6 2.8-.8 1.4a8.5 8.5 0 0 1 0 2Z"></path></svg>`,
   about: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 10.5V17"></path><path d="M12 7h.01"></path></svg>`,
   contact: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v13H4z"></path><path d="m4.5 6 7.5 6 7.5-6"></path></svg>`,
+  simulation: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h11a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path><path d="M8 9h6M8 12h4"></path></svg>`,
   team: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path><path d="M16.5 12.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"></path><path d="M3.5 19c.5-2.2 2.2-3.5 4-3.5s3.5 1.3 4 3.5"></path><path d="M12.5 19c.5-2.2 2.2-3.5 4-3.5s3.5 1.3 4 3.5"></path></svg>`,
   bed: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7v12"></path><path d="M4 13.5h16"></path><path d="M7 13.5v-4h5a2 2 0 0 1 2 2v2"></path><path d="M20 19v-6"></path></svg>`,
   list: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6.5h9"></path><path d="M8 11.5h9"></path><path d="M8 16.5h9"></path><path d="M5 6.5h.01"></path><path d="M5 11.5h.01"></path><path d="M5 16.5h.01"></path><path d="M4 3.5h16v17H4z"></path></svg>`,
@@ -35,9 +36,11 @@ let simulationMode = "solo";
 let simulationStyle = "open";
 let simulationTurns = [];
 let simulationFeedback = null;
+let simulationSource = "current";
+let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.0.0", contactEmail: "" };
+let publicConfig = { appVersion: "19.1.0", contactEmail: "" };
 
 const topics = [
   {
@@ -192,6 +195,7 @@ const views = {
   home: document.querySelector('#home-view'),
   topic: document.querySelector('#topic-view'),
   guidance: document.querySelector('#guidance-view'),
+  simulation: document.querySelector('#simulation-view'),
   settings: document.querySelector('#settings-view'),
   history: document.querySelector('#history-view'),
   privacy: document.querySelector('#privacy-view'),
@@ -208,6 +212,7 @@ function setSvg(targetId, svg) {
 function renderStaticIcons() {
   setSvg('nav-home-icon', svgIcons.home);
   setSvg('nav-prepare-icon', svgIcons.prepare);
+  setSvg('nav-simulation-icon', svgIcons.simulation);
   setSvg('nav-settings-icon', svgIcons.settings);
   setSvg('nav-history-icon', svgIcons.history);
   setSvg('nav-about-icon', svgIcons.about);
@@ -224,6 +229,7 @@ function updateNavState(name) {
     btn.classList.toggle('active',
       (name === 'home' && btn.dataset.view === 'home') ||
       ((name === 'topic' || name === 'guidance') && btn.dataset.view === 'prepare') ||
+      (name === 'simulation' && btn.dataset.view === 'simulation') ||
       (name === 'settings' && btn.dataset.view === 'settings') ||
       (name === 'history' && btn.dataset.view === 'history') ||
       (name === 'about' && btn.dataset.view === 'about') ||
@@ -285,6 +291,8 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
   simulationFeedback = null;
   simulationMode = 'solo';
   simulationStyle = 'open';
+  simulationSource = 'current';
+  simulationDirectSituation = '';
   const simPanel = document.querySelector('#simulation-panel');
   const simSetup = document.querySelector('#simulation-setup');
   const simLive = document.querySelector('#simulation-live');
@@ -1662,6 +1670,9 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
     if (button.dataset.view === 'prepare') {
       startNewConversation();
     }
+    if (button.dataset.view === 'simulation') {
+      openSimulationHub();
+    }
     if (button.dataset.view === 'settings') {
       setBreadcrumb('Innstillinger');
       showView('settings');
@@ -1920,11 +1931,12 @@ function getConversationTurns(){
   return [...document.querySelectorAll('#conversation-thread .conversation-turn')].map(el=>({role:el.classList.contains('conversation-user')?'user':'assistant',text:el.innerText.replace(/^Du\s*|^Samtalestøtte\s*/,'').trim()}));
 }
 async function saveCurrentConversation(){
-  if(!currentUser || document.querySelector('#temporary-chat')?.checked || !lastAiGuidance) return;
-  const situation=document.querySelector('#situation')?.value.trim()||''; if(!situation) return;
+  const directSimulation = simulationSource === 'direct' && simulationDirectSituation && simulationTurns.length;
+  if(!currentUser || document.querySelector('#temporary-chat')?.checked || document.querySelector('#simulation-temporary')?.checked || (!lastAiGuidance && !directSimulation)) return;
+  const situation=directSimulation ? simulationDirectSituation : (document.querySelector('#situation')?.value.trim()||''); if(!situation) return;
   try{
     const r=await fetch('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      id:currentConversationId,title:(currentSubtopic||currentTopic?.title||situation.slice(0,70)),topic:currentTopic?.title||'',subtopic:currentSubtopic||'',situation,analysis:lastAiAnalysis,guidance:lastAiGuidance,conversation:getConversationTurns(),simulation:{mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
+      id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtalesimulering':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
     })});
     if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
   }catch(_){}
@@ -1951,6 +1963,10 @@ function loadHistoryItem(item){
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
   const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
   simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
+  if(!lastAiGuidance && simulationTurns.length){
+    simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); return;
+  }
+  simulationSource='current';
   setBreadcrumb('Lagret samtale'); showView('guidance');
 }
 function startNewConversation(force=false){
@@ -1975,7 +1991,7 @@ async function loadPublicConfig(){
     const r=await fetch('/api/public-config');
     if(r.ok) publicConfig={...publicConfig,...await r.json()};
   }catch(_){}
-  const version=publicConfig.appVersion||'19.0.0';
+  const version=publicConfig.appVersion||'19.1.0';
   const v1=document.querySelector('#about-app-version'), meta=document.querySelector('#report-meta');
   if(v1) v1.textContent=version; if(meta) meta.textContent=`Versjon ${version}`;
   const status=document.querySelector('#contact-email-status'), link=document.querySelector('#contact-email-link');
@@ -1991,7 +2007,7 @@ async function loadPublicConfig(){
 function buildFeedbackText(){
   const category=document.querySelector('#report-category')?.value||'Tilbakemelding';
   const description=document.querySelector('#report-description')?.value.trim()||'';
-  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'19.0.0'}\nNettleser: ${navigator.userAgent}\n\nBeskrivelse:\n${description}`;
+  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'19.1.0'}\nNettleser: ${navigator.userAgent}\n\nBeskrivelse:\n${description}`;
 }
 
 function closeProfileMenu(){
@@ -2059,10 +2075,66 @@ function setSimulationChoice(groupSelector, attr, value) {
   });
 }
 
-function openSimulation() {
-  if (!lastAiGuidance || !lastAiAnalysis) return;
+function hasCurrentSimulationContext() {
+  return Boolean((document.querySelector('#situation')?.value.trim()) && (lastAiGuidance || lastAiAnalysis));
+}
+
+function refreshSimulationHub() {
+  const currentButton = document.querySelector('#simulation-use-current');
+  const currentNote = document.querySelector('#simulation-current-note');
+  const available = hasCurrentSimulationContext();
+  if (currentButton) currentButton.disabled = !available;
+  if (currentNote) currentNote.textContent = available
+    ? `Bruk saken ${currentSubtopic || currentTopic?.title || 'du allerede jobber med'}.`
+    : 'Åpne en samtale først for å bruke denne.';
+}
+
+function resetSimulationPanel() {
+  simulationTurns = [];
+  simulationFeedback = null;
+  simulationMode = 'solo';
+  simulationStyle = 'open';
+  const simTemporary = document.querySelector('#simulation-temporary');
+  if (simTemporary) simTemporary.checked = false;
   const panel = document.querySelector('#simulation-panel');
-  panel.hidden = false;
+  const setup = document.querySelector('#simulation-setup');
+  const live = document.querySelector('#simulation-live');
+  const feedback = document.querySelector('#simulation-feedback');
+  if (panel) panel.hidden = false;
+  if (setup) setup.hidden = false;
+  if (live) live.hidden = true;
+  if (feedback) feedback.hidden = true;
+  document.querySelector('#simulation-help')?.setAttribute('hidden','');
+  document.querySelector('#simulation-help-result')?.setAttribute('hidden','');
+  setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
+  setSimulationChoice('[data-sim-style]', 'simStyle', simulationStyle);
+  renderSimulationThread();
+}
+
+function openSimulationHub() {
+  setBreadcrumb('Samtalesimulering');
+  showView('simulation');
+  const hub = document.querySelector('#simulation-hub');
+  const panel = document.querySelector('#simulation-panel');
+  if (hub) hub.hidden = false;
+  if (panel) panel.hidden = true;
+  const directForm = document.querySelector('#direct-simulation-form');
+  if (directForm) directForm.hidden = true;
+  refreshSimulationHub();
+}
+
+function openSimulation() {
+  if (!hasCurrentSimulationContext()) return;
+  simulationSource = 'current';
+  simulationDirectSituation = '';
+  setBreadcrumb('Samtalesimulering · eksisterende samtale');
+  showView('simulation');
+  const hub = document.querySelector('#simulation-hub');
+  if (hub) hub.hidden = true;
+  const panel = document.querySelector('#simulation-panel');
+  if (panel) panel.hidden = false;
+  const close = document.querySelector('#close-simulation');
+  if (close) close.textContent = 'Tilbake til rådene';
   const setup = document.querySelector('#simulation-setup');
   const live = document.querySelector('#simulation-live');
   const feedback = document.querySelector('#simulation-feedback');
@@ -2079,21 +2151,65 @@ function openSimulation() {
   }
   setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
   setSimulationChoice('[data-sim-style]', 'simStyle', simulationStyle);
-  panel.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function closeSimulation() {
-  const panel = document.querySelector('#simulation-panel');
-  if (panel) panel.hidden = true;
-  document.querySelector('#simulation-entry')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  if (simulationSource === 'current' && hasCurrentSimulationContext()) {
+    setBreadcrumb(currentSubtopic || currentTopic?.title || 'Samtale');
+    showView('guidance');
+    document.querySelector('#simulation-entry')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  openSimulationHub();
+}
+
+function openDirectSimulationSetup() {
+  simulationSource = 'direct';
+  simulationDirectSituation = '';
+  const form = document.querySelector('#direct-simulation-form');
+  if (!form) return;
+  form.hidden = false;
+  document.querySelector('#direct-simulation-situation')?.focus();
+  form.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+function showDirectSimulationPrivacy(findings) {
+  const box = document.querySelector('#direct-simulation-privacy');
+  if (!box) return;
+  if (!findings.length) {
+    box.hidden = true;
+    box.innerHTML = '';
+    return;
+  }
+  box.hidden = false;
+  box.className = 'privacy-check privacy-blocking';
+  box.innerHTML = `<strong>Fjern eller generaliser dette før øvelsen:</strong><ul>${findings.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul>`;
+}
+
+function beginDirectSimulation() {
+  const input = document.querySelector('#direct-simulation-situation');
+  const text = input?.value.trim() || '';
+  if (!text) return;
+  const findings = detectSensitiveInfo(text);
+  showDirectSimulationPrivacy(findings);
+  if (findings.length) return;
+  simulationSource = 'direct';
+  simulationDirectSituation = text;
+  currentConversationId = null;
+  resetSimulationPanel();
+  document.querySelector('#simulation-hub').hidden = true;
+  document.querySelector('#close-simulation').textContent = 'Tilbake til simulatoren';
+  setBreadcrumb('Samtalesimulering · ny øvelse');
+  document.querySelector('#simulation-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 function simulationContext() {
+  const direct = simulationSource === 'direct';
   return {
-    situation: document.querySelector('#situation')?.value.trim() || '',
-    analysis: lastAiAnalysis,
-    followups: collectFollowupAnswers(),
-    guidance: lastAiGuidance,
+    situation: direct ? simulationDirectSituation : (document.querySelector('#situation')?.value.trim() || ''),
+    analysis: direct ? null : lastAiAnalysis,
+    followups: direct ? {} : collectFollowupAnswers(),
+    guidance: direct ? null : lastAiGuidance,
     mode: simulationMode,
     style: simulationStyle,
     turns: simulationTurns
@@ -2127,11 +2243,23 @@ function startSimulation() {
   document.querySelector('#simulation-help-result').hidden = true;
   const helpButton = document.querySelector('#toggle-simulation-help');
   helpButton.hidden = simulationMode !== 'assisted';
-  const topic = currentSubtopic || currentTopic?.title || 'Samtale';
+  const topic = simulationSource === 'direct' ? 'Ny simulering' : (currentSubtopic || currentTopic?.title || 'Samtale');
   document.querySelector('#simulation-status').textContent = `${topic} · ${simulationStyleLabels[simulationStyle]}`;
   renderSimulationThread();
   document.querySelector('#simulation-input')?.focus();
   conversationDirty = true;
+}
+
+async function readJsonResponse(response) {
+  const contentType = response.headers.get('content-type') || '';
+  const raw = await response.text();
+  if (!contentType.includes('application/json')) {
+    throw new Error(response.status === 404
+      ? 'Simulator-ruten finnes ikke på serveren. Start serveren på nytt etter oppdateringen.'
+      : 'Serveren svarte i feil format. Prøv å starte serveren på nytt.');
+  }
+  try { return raw ? JSON.parse(raw) : {}; }
+  catch (_) { throw new Error('Serveren returnerte et ugyldig svar.'); }
 }
 
 async function submitSimulationTurn(text) {
@@ -2150,7 +2278,7 @@ async function submitSimulationTurn(text) {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(simulationContext())
     });
-    const payload = await response.json();
+    const payload = await readJsonResponse(response);
     if (!response.ok) throw new Error(payload.message || 'Simulatoren kunne ikke svare.');
     simulationTurns.push({ role: 'employee', text: payload.reply || '' });
     conversationDirty = true;
@@ -2174,7 +2302,7 @@ async function requestSimulationHelp(kind) {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...simulationContext(), kind })
     });
-    const payload = await response.json();
+    const payload = await readJsonResponse(response);
     if (!response.ok) throw new Error(payload.message || 'Kunne ikke hente hjelp.');
     result.innerHTML = `<p>${escapeHtml(payload.help || '')}</p>`;
   } catch (error) {
@@ -2208,7 +2336,7 @@ async function endSimulation() {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(simulationContext())
     });
-    const payload = await response.json();
+    const payload = await readJsonResponse(response);
     if (!response.ok) throw new Error(payload.message || 'Kunne ikke lage tilbakemelding.');
     simulationFeedback = payload;
     renderSimulationFeedback(payload);
@@ -2220,6 +2348,11 @@ async function endSimulation() {
 }
 
 document.querySelector('#open-simulation')?.addEventListener('click', openSimulation);
+document.querySelector('#simulation-use-current')?.addEventListener('click', openSimulation);
+document.querySelector('#simulation-new-direct')?.addEventListener('click', openDirectSimulationSetup);
+document.querySelector('#simulation-history')?.addEventListener('click', openHistory);
+document.querySelector('#cancel-direct-simulation')?.addEventListener('click', () => { document.querySelector('#direct-simulation-form').hidden = true; showDirectSimulationPrivacy([]); });
+document.querySelector('#direct-simulation-form')?.addEventListener('submit', event => { event.preventDefault(); beginDirectSimulation(); });
 document.querySelector('#close-simulation')?.addEventListener('click', closeSimulation);
 document.querySelectorAll('[data-sim-mode]').forEach(button => button.addEventListener('click', () => {
   simulationMode = button.dataset.simMode;

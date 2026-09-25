@@ -7,6 +7,12 @@ const css = fs.readFileSync("styles.css", "utf8");
 
 const checks = [
   ["UI har Øv på samtalen", html.includes("Øv på samtalen")],
+  ["Simulator har egen hovedvisning", html.includes(`id="simulation-view"`)],
+  ["Simulator finnes i sidemenyen", html.includes("Samtalesimulering") && app.includes("openSimulationHub")],
+  ["Direkte simulering finnes", html.includes(`id="direct-simulation-form"`) && app.includes("beginDirectSimulation")],
+  ["Tidligere øvelser er tilgjengelig", html.includes(`id="simulation-history"`)],
+  ["Direkte simulering bruker personvernkontroll", app.includes("detectSensitiveInfo(text)")],
+  ["Midlertidig øvelse finnes", html.includes(`id="simulation-temporary"`)],
   ["UI har Øv selv", html.includes("Øv selv")],
   ["UI har KI-støtte", html.includes("Øv med KI-støtte")],
   ["UI har Overrask meg", html.includes("Overrask meg")],
@@ -22,6 +28,8 @@ const checks = [
   ["Ingen poengsum i feedback", server.includes("Ingen poengsum")],
   ["Historikk inkluderer simulation", server.includes("simulation: body.simulation")],
   ["Snakkeboble-stiler finnes", css.includes(".simulation-bubble")],
+  ["Visuelt simulatornav finnes", css.includes(".simulation-hub-hero")],
+  ["Live testsett finnes", fs.existsSync("SIMULATION-TEST-CASES.json") && fs.existsSync("test-simulation-ai.js")],
 ];
 
 let failed = 0;

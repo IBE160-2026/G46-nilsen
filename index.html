@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=18.3" />
+  <link rel="stylesheet" href="styles.css?v=19.1" />
 </head>
 <body>
   <div class="app-shell">
@@ -26,6 +26,10 @@
         <button class="nav-item" data-view="prepare" type="button">
           <span class="nav-glyph" id="nav-prepare-icon"></span>
           <span class="nav-label">Ny samtale</span>
+        </button>
+        <button class="nav-item" data-view="simulation" type="button">
+          <span class="nav-glyph" id="nav-simulation-icon"></span>
+          <span class="nav-label">Samtalesimulering</span>
         </button>
         <button class="nav-item" data-view="settings" type="button">
           <span class="nav-glyph" id="nav-settings-icon"></span>
@@ -277,6 +281,81 @@
             <button class="primary-button" id="open-simulation" type="button">Øv på samtalen</button>
           </section>
 
+          <section class="continue-conversation" id="continue-conversation">
+            <div class="continue-heading">
+              <div>
+                <span class="eyebrow">FORTSETT SAMTALEN</span>
+                <h3>Hva vil du utforske videre?</h3>
+              </div>
+              <p>Still et oppfølgingsspørsmål om akkurat denne situasjonen.</p>
+            </div>
+            <div class="continue-suggestions" id="continue-suggestions">
+              <button type="button" class="continue-chip">Hva hvis medarbeideren blir sint?</button>
+              <button type="button" class="continue-chip">Hva hvis medarbeideren blir veldig lei seg?</button>
+              <button type="button" class="continue-chip">Hvordan kan jeg formulere dette tydeligere?</button>
+              <button type="button" class="continue-chip">Hva bør jeg ikke si?</button>
+            </div>
+            <div id="conversation-thread" class="conversation-thread" aria-live="polite"></div>
+            <form id="continue-form" class="continue-form" autocomplete="off">
+              <textarea id="continue-input" rows="2" autocomplete="off" placeholder="Skriv for eksempel: Hva gjør jeg hvis hen sier at dette er urettferdig?"></textarea>
+              <button type="submit" class="primary-button">Spør videre</button>
+            </form>
+          </section>
+          <div class="conversation-bottom-actions">
+            <button class="primary-button" id="bottom-new-conversation" type="button">＋ Ny samtale</button>
+          </div>
+        </section>
+      </section>
+
+
+      <section id="simulation-view" class="view simulation-view">
+        <div class="simulation-hub-hero">
+          <div>
+            <span class="eyebrow">SAMTALELAB · BETA</span>
+            <h1>Øv på krevende samtaler</h1>
+            <p>Tren i et eget samtalerom. Du er leder, KI-en spiller medarbeideren. Start fra en sak du allerede jobber med, eller gå rett inn i en ny simulering.</p>
+          </div>
+          <div class="simulation-hero-mark" aria-hidden="true"><span></span><span></span></div>
+        </div>
+
+        <section id="simulation-hub" class="simulation-hub">
+          <div class="simulation-hub-heading">
+            <h2>Hvordan vil du starte?</h2>
+            <p>Velg inngangen som passer. Du kan øve helt selv eller be om KI-støtte underveis.</p>
+          </div>
+          <div class="simulation-launch-grid">
+            <button class="simulation-launch-card" id="simulation-use-current" type="button">
+              <span class="launch-bubble">↗</span>
+              <strong>Øv på eksisterende samtale</strong>
+              <span id="simulation-current-note">Åpne en samtale først for å bruke denne.</span>
+            </button>
+            <button class="simulation-launch-card featured" id="simulation-new-direct" type="button">
+              <span class="launch-bubble">＋</span>
+              <strong>Start en ny simulering</strong>
+              <span>Beskriv situasjonen kort og gå rett til øvelsen.</span>
+            </button>
+            <button class="simulation-launch-card" id="simulation-history" type="button">
+              <span class="launch-bubble">↺</span>
+              <strong>Se tidligere øvelser</strong>
+              <span>Åpne lagrede samtaler og simuleringer fra historikken.</span>
+            </button>
+          </div>
+
+          <form id="direct-simulation-form" class="direct-simulation-card" hidden autocomplete="off">
+            <div>
+              <span class="eyebrow">NY SIMULERING</span>
+              <h3>Hva skal du øve på?</h3>
+              <p>Beskriv bare det medarbeideren og lederen trenger for at øvelsen skal gi mening. Unngå navn og andre identifiserende opplysninger.</p>
+            </div>
+            <textarea id="direct-simulation-situation" rows="4" placeholder="Eksempel: En medarbeider har hatt flere fraværsperioder det siste året. Jeg vil snakke om hvordan arbeidssituasjonen fungerer og om det er behov for tilrettelegging." required></textarea>
+            <div id="direct-simulation-privacy" class="privacy-check" hidden></div>
+            <div class="direct-simulation-actions">
+              <button class="secondary-button" id="cancel-direct-simulation" type="button">Avbryt</button>
+              <button class="primary-button" type="submit">Velg øvelsesform</button>
+            </div>
+          </form>
+        </section>
+
           <section class="simulation-panel" id="simulation-panel" hidden>
             <div class="simulation-stage-heading">
               <div>
@@ -284,7 +363,7 @@
                 <h3>Øv på samtalen</h3>
                 <p>Du er leder. KI-en spiller medarbeideren ut fra saken du allerede har beskrevet.</p>
               </div>
-              <button class="secondary-button" id="close-simulation" type="button">Tilbake til rådene</button>
+              <button class="secondary-button" id="close-simulation" type="button">Tilbake</button>
             </div>
 
             <div id="simulation-setup" class="simulation-setup">
@@ -307,6 +386,10 @@
                 </div>
               </div>
               <div class="simulation-safety-note"><strong>Rollegrense:</strong> Simulatoren skal reagere ut fra opplysningene i saken og skal ikke finne på diagnose, familieforhold, konflikter eller annen personlig bakgrunn.</div>
+              <label class="temporary-chat-option simulation-temporary-option" id="simulation-temporary-option">
+                <span class="temporary-chat-copy"><strong>Midlertidig øvelse</strong><small>Ikke lagre simuleringen i historikken.</small></span>
+                <span class="switch-control"><input id="simulation-temporary" type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></span>
+              </label>
               <button class="primary-button" id="start-simulation" type="button">Start øvelsen</button>
             </div>
 
@@ -353,30 +436,7 @@
             </div>
           </section>
 
-          <section class="continue-conversation" id="continue-conversation">
-            <div class="continue-heading">
-              <div>
-                <span class="eyebrow">FORTSETT SAMTALEN</span>
-                <h3>Hva vil du utforske videre?</h3>
-              </div>
-              <p>Still et oppfølgingsspørsmål om akkurat denne situasjonen.</p>
-            </div>
-            <div class="continue-suggestions" id="continue-suggestions">
-              <button type="button" class="continue-chip">Hva hvis medarbeideren blir sint?</button>
-              <button type="button" class="continue-chip">Hva hvis medarbeideren blir veldig lei seg?</button>
-              <button type="button" class="continue-chip">Hvordan kan jeg formulere dette tydeligere?</button>
-              <button type="button" class="continue-chip">Hva bør jeg ikke si?</button>
-            </div>
-            <div id="conversation-thread" class="conversation-thread" aria-live="polite"></div>
-            <form id="continue-form" class="continue-form" autocomplete="off">
-              <textarea id="continue-input" rows="2" autocomplete="off" placeholder="Skriv for eksempel: Hva gjør jeg hvis hen sier at dette er urettferdig?"></textarea>
-              <button type="submit" class="primary-button">Spør videre</button>
-            </form>
-          </section>
-          <div class="conversation-bottom-actions">
-            <button class="primary-button" id="bottom-new-conversation" type="button">＋ Ny samtale</button>
-          </div>
-        </section>
+
       </section>
 
       <section id="settings-view" class="view">
@@ -466,7 +526,7 @@
           <article class="settings-card"><h2>Hva verktøyet gjør</h2><p>Verktøyet hjelper deg med å strukturere en samtale, formulere en åpning, finne relevante spørsmål og forberede deg på mulige reaksjoner. Rådene tilpasses situasjonen du beskriver.</p></article>
           <article class="settings-card"><h2>Hva verktøyet ikke gjør</h2><p>Samtalestøtte tar ikke beslutninger på vegne av lederen og erstatter ikke HR-, juridisk, medisinsk eller annen faglig vurdering når saken krever det.</p></article>
           <article class="settings-card"><h2>Personvern og trygg bruk</h2><p>Beskriv situasjoner anonymt. Ikke skriv navn eller andre unødvendige opplysninger som kan identifisere medarbeidere eller andre personer.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-legal="privacy">Les personvernerklæringen</button><button class="secondary-button" type="button" data-open-legal="terms">Les bruksvilkårene</button></div></article>
-          <article class="settings-card"><h2>Beta</h2><p>Status: <strong>Betaversjon – under utvikling og testing.</strong></p><p>Har du spørsmål, finner en feil eller får et uklart KI-svar, ønsker vi gjerne tilbakemelding.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div><p class="app-version-line">Versjon <strong id="about-app-version">19.0.0</strong></p></article>
+          <article class="settings-card"><h2>Beta</h2><p>Status: <strong>Betaversjon – under utvikling og testing.</strong></p><p>Har du spørsmål, finner en feil eller får et uklart KI-svar, ønsker vi gjerne tilbakemelding.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div><p class="app-version-line">Versjon <strong id="about-app-version">19.1.0</strong></p></article>
         </div>
       </section>
 
@@ -499,7 +559,7 @@
             <label>Beskriv kort hva som skjedde
               <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
             </label>
-            <div class="report-meta" id="report-meta">Versjon 19.0.0</div>
+            <div class="report-meta" id="report-meta">Versjon 19.1.0</div>
             <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
             <div class="auth-message" id="report-message" aria-live="polite"></div>
           </form>
