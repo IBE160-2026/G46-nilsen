@@ -1,107 +1,257 @@
-# Samtalestøtte – prototype v11
+# Samtalestøtte
 
-Denne versjonen markerer overgangen fra lokal nøkkelordlogikk til ekte KI.
+Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Prosjektet er utviklet som en del av en prosjektoppgave ved Høgskolen i Molde.
 
-## Ekte KI i denne versjonen
+Ideen bygger på erfaring fra lederarbeid, der vanskelige samtaler ofte må håndteres i praksis uten at man nødvendigvis har fått særlig mye trening i selve gjennomføringen. Målet er derfor ikke å la KI ta beslutninger for lederen, men å gi støtte til forberedelse, formuleringer, refleksjon og øvelse.
 
-KI brukes foreløpig bare til:
-- å forstå brukerens fritekst semantisk
-- å skille fakta fra antakelser
-- å formulere selve dilemmaet
-- å identifisere maks to relevante temaer
-- å stille 0–3 nødvendige avklaringsspørsmål
-- å lage korte klikkbare svaralternativer
+> **Status:** Betaversjon – under utvikling og testing.
 
-Selve samtalerådene er fortsatt lokal prototype-logikk. Dette er bevisst: situasjonsforståelsen skal kvalitetstestes før KI får generere råd.
+## Hva kan løsningen gjøre?
 
-## Start appen med KI
+Brukeren kan beskrive en situasjon og få KI-basert støtte til å forberede samtalen. Løsningen kan blant annet:
 
-1. Installer Node.js.
-2. Åpne terminal i denne mappen.
-3. Kjør `npm install`.
-4. Kopier `.env.example` til `.env`.
-5. Sett inn API-nøkkelen din i `OPENAI_API_KEY`.
-6. Kjør `npm start`.
-7. Åpne `http://localhost:3000`.
+- hjelpe med å strukturere situasjonen
+- stille avklaringsspørsmål når det er nødvendig
+- foreslå en mulig åpning på samtalen
+- foreslå relevante spørsmål
+- forberede lederen på mulige reaksjoner
+- gi forslag til hvordan reaksjoner kan møtes
+- markere forhold som kan kreve HR-, juridisk eller annen faglig vurdering
+- fortsette dialogen med KI om samme situasjon
+- simulere en samtale med en medarbeider
+- gi rom for refleksjon etter en øvelse
+- lagre historikk for innloggede brukere
 
-Appen må kjøres via serveren for at KI-integrasjonen skal virke. Åpner du bare `index.html` direkte, faller den tilbake til lokal prototypelogikk.
+Samtalestøtte er ikke et HR-system, journalsystem eller beslutningsverktøy. Rådene er veiledende og erstatter ikke lederens eget skjønn eller nødvendig faglig bistand.
 
-## Sikkerhet
+## Temaer
 
-API-nøkkelen ligger kun på serversiden og skal aldri legges inn i `app.js`, HTML eller annen kode som sendes til nettleseren. `.env` er lagt i `.gitignore`.
+Prototypen er bygget rundt åtte hovedtemaer:
 
-## Kvalitet og faggrunnlag
+1. Alkohol og rus
+2. Fravær og oppfølging
+3. Prestasjon og utvikling
+4. Lønn og utvikling
+5. Samarbeid og kommunikasjon
+6. Avslutning av arbeidsforhold
+7. Sikkerhet og ansvar
+8. Livssituasjoner
 
-- `AI-SYSTEMPROMPT.md` – sikkerhets- og samtaleprinsipper
-- `FAGGRUNNLAG-FRAVAER.md` – faglig grunnlag for Fravær og oppfølging
-- `AI-TESTCASES.json` – realistiske testscenarier
-- `AI-TESTPLAN.md` – kriterier for god og dårlig modelladferd
-- `AI-RESPONSE-CONTRACT.md` – responskontrakt
-- `AI-INTEGRATION.md` – tekniske detaljer for første KI-kobling
+Brukeren kan også beskrive situasjonen med egne ord dersom den ikke passer naturlig inn i et bestemt undertema.
 
-## Viktig
+## Samtalesimulering
 
-Personvernkontrollen i nettleseren er fortsatt en prototype og kan både overse opplysninger og gi falske treff. Ikke bruk reelle navn eller andre unødvendige identifiserende personopplysninger under testing.
+I samtalesimuleringen kan brukeren øve på selve dialogen. KI-en spiller medarbeideren ut fra situasjonen og valgt reaksjonsstil.
 
+Det finnes ulike måter å gjøre øvelsen mer eller mindre krevende på. Hensikten er å gi praktisk trening, ikke å lage en fasit på hvordan et menneske vil reagere.
 
-## Feildiagnostikk
-Hvis appen viser «Ekte KI er ikke tilgjengelig», viser v15 også HTTP-status, eventuell API-feilkode, modellnavn og et kort hint. Dette gjør det mulig å skille mellom ugyldig nøkkel (401), manglende tilgang (403), feil modell (404) og betalings-/bruksgrense (429).
+Etter øvelsen kan brukeren reflektere over hva som fungerte, hva som kunne vært gjort annerledes og hva som bør være neste steg.
 
-## v16
-Selve samtalestøtten og oppfølgingssamtalen bruker nå ekte KI, ikke bare situasjonsforståelsen. Rådene skal være situasjonsspesifikke, inkludere plausible reaksjoner og flagge relevante HR-/regelverkskontroller ved sensitive saker.
+## Personvern
 
+Personvern er en sentral del av prosjektet fordi brukeren kan komme til å beskrive sensitive forhold fra arbeidsplassen.
 
-## Fagbank
-Prosjektet inneholder nå `SOURCEBANK.json` og `SOURCEBANK.md`. Fagbanken er kurert og utvidbar og brukes selektivt av KI-en. Kritiske eller juridisk sensitive råd kan knyttes til kjente kilde-ID-er; modellen kan ikke oppgi vilkårlige kilder i strukturert veiledning.
+Tekst som skrives inn kontrolleres lokalt før den sendes til KI. Kontrollen ser blant annet etter tydelige identifikatorer som:
 
-### KI-stresstest
+- navn
+- e-postadresser
+- telefonnummer
+- fødselsopplysninger
+- person- eller ansatt-ID
+- adresser
 
-For kompliserte personalsaker kan du kjøre en kort stresstest:
+Ved tydelige funn stoppes sendingen slik at brukeren kan endre teksten først. Prinsippet er:
+
+**Anonymiser identitet, ikke nødvendig kontekst.**
+
+Personvernkontrollen reduserer risiko, men kan ikke garantere at all identifiserende informasjon oppdages. Reelle navn eller andre unødvendige personopplysninger skal derfor ikke brukes under testing.
+
+Løsningen bruker nødvendig lokal lagring og sesjonsinformasjon til blant annet innlogging, tema og brukerinnstillinger. Det er ikke lagt inn markedsførings- eller sporingscookies.
+
+## KI og faglig sikkerhet
+
+KI-en skal blant annet:
+
+- skille mellom oppgitte fakta og antakelser
+- unngå å dikte opp opplysninger som ikke finnes i saken
+- ikke fastslå diagnose, motiv, skyld eller personlighet uten grunnlag
+- være forsiktig i sensitive HR- og juridiske spørsmål
+- vise når en situasjon bør vurderes videre av HR, jurist eller annen relevant fagperson
+
+Prosjektet inneholder en fagbank og egne regler for hvordan KI-en skal svare. Se blant annet:
+
+- `AI-SYSTEMPROMPT.md`
+- `AI-RESPONSE-CONTRACT.md`
+- `SOURCEBANK.md`
+- `FAGGRUNNLAG-FRAVAER.md`
+
+## Teknologi
+
+Prosjektet bruker:
+
+- HTML, CSS og JavaScript i klienten
+- Node.js og Express på serversiden
+- OpenAI API for KI-funksjonene
+- Supabase for konto og historikk
+- Git og GitHub for versjonskontroll
+
+Prosjektet bruker eksisterende språkmodeller via API. Det trenes ikke en egen modell.
+
+## Kjør prosjektet lokalt
+
+### 1. Forutsetninger
+
+Installer [Node.js](https://nodejs.org/) på maskinen.
+
+### 2. Hent prosjektet
+
+Hvis prosjektet ligger på GitHub:
+
+```bash
+git clone <adresse-til-repositoriet>
+cd <prosjektmappe>
+```
+
+Har du allerede prosjektmappen lokalt, åpner du bare terminalen i den mappen.
+
+### 3. Installer avhengigheter
+
+```bash
+npm install
+```
+
+### 4. Opprett `.env`
+
+Kopier `.env.example` til en ny fil som heter `.env`.
+
+Eksempel:
+
+```env
+OPENAI_API_KEY=din_openai_nokkel
+OPENAI_MODEL=gpt-5.6-luna
+PORT=3000
+APP_BASE_URL=http://localhost:3000
+
+SUPABASE_URL=https://ditt-prosjekt.supabase.co
+SUPABASE_PUBLISHABLE_KEY=din_publishable_key
+SUPABASE_SECRET_KEY=din_secret_key
+
+APP_VERSION=19.9.0
+```
+
+`.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.
+
+### 5. Start appen
+
+```bash
+npm start
+```
+
+Åpne deretter:
+
+```text
+http://localhost:3000
+```
+
+For utvikling med automatisk omstart av serveren:
+
+```bash
+npm run dev
+```
+
+Appen bør kjøres via Node-serveren og ikke ved å åpne `index.html` direkte.
+
+## Testing
+
+Prosjektet har flere automatiserte tester.
+
+### Personvern
+
+```bash
+npm run test-privacy
+```
+
+### KI-tester
+
+Kort test:
+
+```bash
+npm run test-ai
+```
+
+Full test:
+
+```bash
+npm run test-ai:full
+```
+
+Stresstest:
 
 ```bash
 npm run test-ai:stress
 ```
 
-Hele stresstesten med 37 krevende caser:
+Full stresstest:
 
 ```bash
 npm run test-ai:stress:full
 ```
 
-Rapportene lagres lokalt i `test-results/`.
+Bare tidligere problemcaser:
 
-### v17.4 – smartere stresstest
-Den automatiske stresstesten er justert for å redusere falske kritiske avvik. Risikouttrykk flagges nå bare når modellen ser ut til å adoptere dem som fakta, ikke når modellen eksplisitt avviser eller problematiserer dem.
+```bash
+npm run test-ai:stress:problems
+```
 
+### Samtalesimulering
 
-## v17.5 – smartere klassifisering av testfeil
-- Tekniske API-/serverfeil rapporteres som `TEKNISK FEIL`, ikke som faglig `KRITISK AVVIK`.
-- Midlertidige 429/5xx-feil prøves automatisk på nytt med økende ventetid.
-- Påstands-/diagnosekontrollen ser etter negasjon, usikkerhet og attribusjon før den flagger en formulering som faktapåstand.
-- `npm run test-ai:stress:problems` kjører bare de fem tidligere problemcasene.
+```bash
+npm run test-simulation
+npm run test-simulation:v19.2
+npm run test-simulation:v19.3
+npm run test-simulation:v19.4
+```
 
-## v17.6 – temajustering i stresstest
-- ST-CAREER-02 godtar nå flere faglig plausible temakombinasjoner.
-- Testen skal fortsatt flagge helt feil temavalg, men ikke et godt svar bare fordi modellen velger Prestasjon og utvikling eller Samarbeid og kommunikasjon fremfor Lønn og utvikling/Livssituasjoner.
-- Ingen endring i selve KI-prompten eller rådslogikken.
+Live-tester gjør faktiske KI-kall og krever at serveren og API-oppsettet fungerer:
 
-## v17.7 – forbedret KI-flyt
-- Hopper over «Kort avklaring» når KI-en ikke trenger flere opplysninger, og går direkte til samtalestøtten.
-- Bruker samme visuelle tenker-indikator ved første analyse, etter avklaringssvar og under videre dialog.
-- Skjuler tom avklaringsseksjon også i lokal reserveflyt.
+```bash
+npm run test-simulation:live
+npm run test-simulation:v19.2:live
+```
 
+Automatiske tester brukes som støtte. KI-svar må fortsatt vurderes manuelt for språk, realisme, relevans og faglig kvalitet.
 
-## v17.8 – personvernkontroll
-- Navnedeteksjonen bruker ikke lenger stor forbokstav som bevis på personnavn.
-- Kjente navn oppdages case-insensitivt, slik at for eksempel `knut` og `Knut` behandles likt.
-- Vanlige rolleord som `Personen`, `Medarbeideren` og `Lederen` filtreres bort.
-- Tvetydige navn/ord som `per` krever tydelig personkontekst når de skrives med liten bokstav.
-- Kjør `npm run test-privacy` for en liten regresjonstest av personvernlogikken.
+## Viktige filer
 
+| Fil | Innhold |
+|---|---|
+| `product-brief.md` | Kort beskrivelse av behov, mål, plan og avgrensning |
+| `README.md` | Denne filen |
+| `CHANGELOG.md` | Utviklingshistorikk og endringer mellom versjoner |
+| `AI-SYSTEMPROMPT.md` | Regler og føringer for KI-en |
+| `AI-RESPONSE-CONTRACT.md` | Forventet struktur på KI-svar |
+| `AI-TESTPLAN.md` | Plan og kriterier for KI-testing |
+| `SOURCEBANK.md` / `SOURCEBANK.json` | Kurert fag- og kildebank |
+| `FAGGRUNNLAG-FRAVAER.md` | Faglig grunnlag for temaet fravær |
+| `server.js` | Server, API-ruter og KI-integrasjon |
+| `app.js` | Hovedlogikk i brukergrensesnittet |
+| `styles.css` | Visuell utforming |
+| `SUPABASE-SETUP.sql` | Oppsett for Supabase |
 
-## v17.9 – forbedret flyt og kompakt visning
-- Hovedsiden foreslår både hovedtema og undertema i samme steg og kan gå direkte til samtalestøtten.
-- Teksten fra hovedsidens søk tas med videre som utgangspunkt, slik at brukeren slipper å skrive det samme på nytt.
-- Avklaringsspørsmål kan bruke markerbare flervalgsknapper når flere svar kan være riktige samtidig.
-- Tenker-indikatoren scrolles tydelig inn i visningen etter avklaringssvar og ved videre KI-arbeid.
-- «Slik forstår jeg det» bruker større bredde og vesentlig mindre høyde.
+## Tema og brukergrensesnitt
+
+Appen har lys, mørk, systemstyrt og hybrid visning. Hybrid er standard for nye brukere og kombinerer mørk sidemeny med lyst hovedinnhold.
+
+Valgt tema lagres lokalt i nettleseren.
+
+## Kontakt
+
+Prosjektet er utviklet av Cecilie C. Nilsen som del av en prosjektoppgave ved Høgskolen i Molde.
+
+Kontakt: **cecilie.c.nilsen@himolde.no**
+
+## Videre arbeid
+
+Før eventuell ordinær publisering skal løsningen blant annet gjennom mer brukertesting. Det skal også vurderes hvilken KI-modell som gir best balanse mellom kvalitet, sikkerhet, responstid og kostnad.
+
+Dette er fortsatt en prototype, og funksjoner og utforming kan derfor endres etter testing.
