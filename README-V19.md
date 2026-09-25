@@ -68,3 +68,16 @@ Ny strukturell test:
 ```powershell
 npm run test-simulation:v19.4
 ```
+
+
+## v19.5 – opprydding før brukertest
+
+- kompaktere lys/mørk/system-velger
+- fjernet duplisert «Ny samtale» i sidemenyen
+- «＋ Ny samtale» i toppfeltet vises bare utenfor Hjem
+- Historikk følger nå mørk modus konsekvent
+- to-nivå personvernkontroll: tydelige identifikatorer blokkeres, indirekte gjenkjennbarhet varsles
+- kjønnede pronomen alene blokkeres ikke
+- smalere og sentrerte personvern-/infobokser
+- eksisterende logo vises på støtte- og informasjonssidene
+- ingen bildefiler endret

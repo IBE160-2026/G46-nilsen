@@ -41,7 +41,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.3.0", contactEmail: "" };
+let publicConfig = { appVersion: "19.5.0", contactEmail: "" };
 
 const topics = [
   {
@@ -242,6 +242,8 @@ function showView(name) {
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
+  const topNew = document.querySelector('#new-conversation-button');
+  if (topNew) topNew.hidden = name === 'home';
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -550,9 +552,6 @@ function detectSensitiveInfo(text) {
   if (/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source) || /\b\d{11}\b/.test(source)) {
     add('identifier', 'Person- eller ansattnummer', 'Fjern identifikasjonsnummer før teksten sendes.');
   }
-  if (/\b(?:han|hun|ham|henne|hans|hennes)\b/i.test(source)) {
-    add('gender', 'Kjønnet pronomen', 'Bruk «hen» eller rollen, for eksempel «medarbeideren», når kjønn ikke er nødvendig.');
-  }
   // Kombinasjoner av indirekte personopplysninger kan gjøre en medarbeider gjenkjennelig.
   const familyAgeCombo = /\b(?:har|med|til)\s+(?:(?:ett|to|tre|fire|fem|seks|\d+)\s+)?(?:barn|datter|døtre|sønn|sønner|gutt|gutter|jente|jenter)\b[^.!?]{0,55}\b(?:på\s+)?\d{1,2}(?:\s*(?:,|og)\s*\d{1,2})+(?:\s*år)?\b/iu;
   const singleChildAge = /\b(?:barn|datter|sønn|gutt|jente)\s+(?:som\s+er\s+|på\s+)\d{1,2}\s*år\b/iu;
@@ -584,6 +583,16 @@ function detectSensitiveInfo(text) {
   }
 
   return findings;
+}
+
+
+const HARD_PRIVACY_TYPES = new Set(['email', 'phone', 'birthdate', 'identifier', 'name', 'address']);
+
+function splitPrivacyFindings(findings = []) {
+  return {
+    hard: findings.filter(item => HARD_PRIVACY_TYPES.has(item.type)),
+    soft: findings.filter(item => !HARD_PRIVACY_TYPES.has(item.type))
+  };
 }
 
 
@@ -655,46 +664,59 @@ function updatePrivacyCheck() {
   const box = document.querySelector('#privacy-check');
   const text = document.querySelector('#situation').value;
   const findings = detectSensitiveInfo(text);
+  const { hard, soft } = splitPrivacyFindings(findings);
   const submitButton = document.querySelector('#understand-submit');
   const note = document.querySelector('#privacy-submit-note');
   const hasText = Boolean(text.trim());
-  const blocked = findings.length > 0;
+  const blocked = hard.length > 0;
 
   document.querySelector('#situation')?.setAttribute('aria-invalid', blocked ? 'true' : 'false');
 
   if (submitButton && submitButton.dataset.loading !== 'true') {
-    submitButton.disabled = blocked || !text.trim();
+    submitButton.disabled = blocked || !hasText;
   }
   if (note) {
     note.textContent = blocked
-      ? 'Rett personopplysningene som er markert før teksten kan sendes.'
-      : (text.trim() ? 'Personvernkontrollen er klar.' : 'Beskriv situasjonen for å gå videre.');
-    note.classList.toggle('ok', Boolean(text.trim()) && !blocked);
+      ? 'Tydelige identifikatorer må fjernes før teksten kan sendes.'
+      : soft.length
+        ? 'Personvernkontroll: vurder om de markerte detaljene kan generaliseres.'
+        : (hasText ? '🛡 Personvernkontroll: ingen tydelige identifikatorer funnet.' : 'Beskriv situasjonen for å gå videre.');
+    note.classList.toggle('ok', hasText && !blocked && !soft.length);
+    note.classList.toggle('soft-warning', Boolean(soft.length) && !blocked);
   }
 
-  if (!hasText) {
+  if (!hasText || (!blocked && !soft.length)) {
     box.hidden = true;
     box.innerHTML = '';
     return findings;
   }
 
   box.hidden = false;
+  const visible = blocked ? hard : soft;
   if (blocked) {
     box.className = 'privacy-check warning blocking';
     box.innerHTML = `
       <strong>Kan ikke sendes ennå</strong>
-      <span>Jeg fant opplysninger som bør fjernes eller anonymiseres:</span>
-      <ul class="privacy-findings">${findings.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
+      <span>Jeg fant tydelige identifikatorer som må fjernes:</span>
+      <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
       <div class="privacy-fix-actions">
         <button type="button" class="secondary-button compact-fix-button" id="privacy-fix-button">Fiks personvern</button>
         <small>Erstatter bare opplysninger kontrollen har flagget. Les gjennom teksten før du sender.</small>
       </div>
     `;
-    box.querySelector('#privacy-fix-button')?.addEventListener('click', applyPrivacyFix);
   } else {
-    box.className = 'privacy-check ok';
-    box.innerHTML = `<strong>Klar til å sendes</strong><span>Ingen åpenbare identifiserende opplysninger ble funnet av den lokale kontrollen.</span>`;
+    box.className = 'privacy-check warning advisory';
+    box.innerHTML = `
+      <strong>Kan dette anonymiseres litt mer?</strong>
+      <span>Disse detaljene kan gjøre personen lettere å kjenne igjen. Du kan sende likevel, eller generalisere dem først:</span>
+      <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
+      <div class="privacy-fix-actions">
+        <button type="button" class="secondary-button compact-fix-button" id="privacy-fix-button">Generaliser forslag</button>
+        <small>Dette er en anbefaling, ikke en blokkering.</small>
+      </div>
+    `;
   }
+  box.querySelector('#privacy-fix-button')?.addEventListener('click', applyPrivacyFix);
   return findings;
 }
 
@@ -2203,14 +2225,20 @@ function openDirectSimulationSetup() {
 function showDirectSimulationPrivacy(findings) {
   const box = document.querySelector('#direct-simulation-privacy');
   if (!box) return;
-  if (!findings.length) {
+  const { hard, soft } = splitPrivacyFindings(findings);
+  if (!hard.length && !soft.length) {
     box.hidden = true;
     box.innerHTML = '';
     return;
   }
   box.hidden = false;
-  box.className = 'privacy-check privacy-blocking';
-  box.innerHTML = `<strong>Fjern eller generaliser dette før øvelsen:</strong><ul>${findings.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul>`;
+  if (hard.length) {
+    box.className = 'privacy-check warning blocking';
+    box.innerHTML = `<strong>Fjern dette før øvelsen:</strong><ul>${hard.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul>`;
+  } else {
+    box.className = 'privacy-check warning advisory';
+    box.innerHTML = `<strong>Vurder å generalisere litt mer</strong><ul>${soft.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul><small>Dette er en anbefaling og hindrer ikke at du starter øvelsen.</small>`;
+  }
 }
 
 function beginDirectSimulation() {
@@ -2219,7 +2247,7 @@ function beginDirectSimulation() {
   if (!text) return;
   const findings = detectSensitiveInfo(text);
   showDirectSimulationPrivacy(findings);
-  if (findings.length) return;
+  if (splitPrivacyFindings(findings).hard.length) return;
   simulationSource = 'direct';
   simulationDirectSituation = text;
   currentConversationId = null;

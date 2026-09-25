@@ -1,5 +1,35 @@
 # CHANGELOG – Samtalestøtte
 
+## v19.5 – Opprydding før brukertest
+
+### Navigasjon og tema
+- Fjernet duplisert «Ny samtale» fra sidemenyen fordi Hjem dekker samme inngang.
+- Toppknappen heter nå «＋ Ny samtale» og skjules på Hjem-siden.
+- Fargetemavelgeren er gjort mer kompakt både i toppfeltet og under Innstillinger.
+
+### Historikk og mørk modus
+- Rettet feil der Historikk-kort og juridiske dokumenter kunne bruke hardkodet lys bakgrunn i mørk modus.
+- Historikk, tomtilstand og juridiske sider følger nå appens felles tema-variabler.
+
+### Personvernkontroll
+- Personvernkontrollen er delt i to nivåer.
+- Tydelige identifikatorer som navn, e-post, telefon, fødselsdata, identifikasjonsnummer og adresse blokkerer fortsatt sending.
+- Indirekte opplysninger som eksakt alder, konkret arbeidssted, unik rolle og detaljerte familieopplysninger gir nå en myk anbefaling om generalisering, men stopper ikke brukeren.
+- Kjønnede pronomen alene («han/hun») blokkeres ikke lenger.
+- Når ingen tydelige identifikatorer finnes, vises kun en kompakt statuslinje i stedet for en stor grønn boks.
+- Samme to-nivå-prinsipp brukes når en ny samtalesimulering startes direkte.
+
+### Layout og identitet
+- Personvern- og informasjonsbokser er smalere og sentrert for tydeligere hierarki.
+- Eksisterende Samtalestøtte-logo vises på Innstillinger, Historikk, Personvern, Bruksvilkår, Om og Kontakt.
+- Ingen logo-, profil-, hero- eller temabildefiler er endret i denne versjonen.
+
+### Dokumentasjon
+- `package.json` oppdatert til v19.5.0.
+- Hele tidligere changelog-historikken er bevart.
+
+---
+
 ## v19.4 – Tydeligere øvelsesrom og simulatorchat
 
 ### Samtaleflyt og oppmerksomhet
