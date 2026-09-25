@@ -1,5 +1,63 @@
 # CHANGELOG – Samtalestøtte
 
+## v19.2 – To simuleringsmoduser og visuell opprydding
+
+### Samtalesimulering
+- Lagt til to tydelig forskjellige simuleringsmoduser før valg av støtte og reaksjonsstil.
+- **Hold deg til saken** er ny standardmodus. Medarbeideren kan improvisere følelser, holdninger, spørsmål, motstand og reaksjoner, men skal ikke etablere nye verifiserbare fakta som ikke finnes i saken eller den tidligere dialogen.
+- Faktamodusen er eksplisitt instruert til å unngå sikre ja/nei-svar på forhold som ikke er kjent, for eksempel alkoholinntak, tidligere hendelser eller arbeidsrutiner som ikke er beskrevet.
+- **Utfordre meg** tillater plausible, relevante og uventede rollespillopplysninger for generell trening.
+- Nye opplysninger i fri modus er uttrykkelig definert som **simulerte rollespillfakta** og skal ikke behandles som fakta om den virkelige saken.
+- Fri modus skal ikke motsi etablerte fakta eller introdusere ekstreme/svært sensitive vendinger bare for å gjøre øvelsen vanskeligere.
+- Valgt simuleringsmodus lagres sammen med selve simuleringen i historikken.
+
+### Reaksjonsstiler
+- **Følelsesmessig berørt** er justert slik at følelsen kan komme tydeligere fram gjennom nøling, pauser og vansker med å konkretisere, uten melodrama eller oppdiktede årsaker.
+- **Usikker og tilbaketrukket** tillater tydeligere korte og forsiktige svar.
+- **Overrask meg** er styrket slik at reaksjonen faktisk skal være mindre forutsigbar og kan utfordre lederen med spørsmål, kort avvisning, uventet enighet eller et annet perspektiv.
+- I fri modus kan Overrask meg også bruke en plausibel ny opplysning når dette gir treningsverdi.
+
+### Simulator-UI
+- Oppsettet er nå: simuleringsmodus → treningsstøtte → reaksjonsstil.
+- Aktiv modus forklares tydelig i en egen rollegrense-/informasjonsboks.
+- Simulatorens statuslinje viser både simuleringsmodus og reaksjonsstil.
+- Bedre avstand mellom statusinformasjon og **Avslutt øvelse**.
+- Samtaleboblene er gjort litt større og luftigere.
+
+### Logo og navigasjon
+- Simulatorens hovedside bruker den eksisterende Samtalestøtte-logoen uten ordmerket ved å vise bare symbolområdet av den faktiske logoressursen.
+- Simulatorikonet i sidemenyen bruker KI-profilen fra den faktiske logoen i stedet for et generisk snakkebobleikon.
+- **Ny samtale** bruker nå snakkebobleikon.
+- **Om** og **Kontakt** er flyttet til en tydelig separat seksjon nederst i sidemenyen.
+
+### Mørk modus og statusflater
+- Personvern-, varsel- og informasjonsbokser er harmonisert i størrelse, padding og hjørneradius.
+- Den sterke grønne OK-statusen i mørk modus er tonet ned til en dempet petrolflate.
+- Varslingsfargen i mørk modus er endret fra brunlig tone til en roligere støvrosa/beige retning.
+
+### Testing
+- Lagt til egen strukturell v19.2-test for de nye simuleringsmodusene og UX-endringene.
+- Lagt til nytt live-testsett som skiller mellom **Hold deg til saken** og **Utfordre meg**.
+- Faktamodus-testene ser spesielt etter små oppdiktede fakta som tidligere passerte automatiske kontroller.
+- Fri modus-testene vurderer om improvisasjonen er plausibel, relevant og uten ekstreme eller usikre sidespor.
+- Ny kommando: `npm run test-simulation:v19.2`.
+- Ny live-kommando: `npm run test-simulation:v19.2:live`.
+
+### Dokumentasjon
+- `README-V19.md` oppdatert til v19.2.
+- Den komplette changelog-historikken fra v1 er gjenopprettet i prosjektpakken.
+- Fast vedlikeholdsregel beholdes: nye versjoner skal legges øverst i samme `CHANGELOG.md`; eldre historikk skal aldri erstattes av en gammel kopi.
+
+---
+
+> **Rekonstruert 25.09.2026**
+>
+> Denne filen er rekonstruert fra tidligere versjoner, prosjektpakker, testresultater og dokumentert utviklingshistorikk etter at en nyere prosjektpakke utilsiktet overskrev den løpende `CHANGELOG.md`.
+>
+> **Fast regel fra nå av:** `CHANGELOG.md` er én kontinuerlig prosjektfil. Nye versjoner skal legges øverst i filen. Filen skal aldri erstattes av en eldre kopi fra en ZIP-pakke.
+>
+---
+
 > **Rekonstruert 25.09.2026**
 >
 > Denne filen er rekonstruert fra tidligere versjoner, prosjektpakker, testresultater og dokumentert utviklingshistorikk etter at en nyere prosjektpakke utilsiktet overskrev den løpende `CHANGELOG.md`.

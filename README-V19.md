@@ -1,37 +1,40 @@
-# Samtalestøtte v19.1 – Samtalesimulering
+# Samtalestøtte v19.2 – To simuleringsmoduser og UX-opprydding
 
-Versjon 19.1 gjør samtaletreningen til en egen modul i Samtalestøtte.
+Versjon 19.2 bygger videre på den separate samtalesimulatoren fra v19.1.
 
-## To innganger
+## Nytt i simulatoren
 
-- **Fra en eksisterende samtale:** Trykk «Øv på samtalen». Situasjonen og relevante råd følger med automatisk.
-- **Direkte simulering:** Åpne «Samtalesimulering» i sidemenyen, beskriv situasjonen kort og start øvelsen uten å generere ordinære råd først.
+- **Hold deg til saken**: faktabasert simulering. Medarbeideren kan improvisere følelser, reaksjoner, spørsmål og motstand, men skal ikke etablere nye verifiserbare fakta som ikke finnes i saken.
+- **Utfordre meg**: friere treningsmodus. Medarbeideren kan introdusere plausible og relevante overraskelser som bare gjelder inne i rollespillet.
+- Reaksjonsstilen **Følelsesmessig berørt** er justert slik at nøling og følelsesmessig belastning blir tydeligere uten karikatur.
+- **Overrask meg** er gjort mindre forutsigbar.
+- Valgt simuleringsmodus lagres sammen med øvelsen, men simulerte fakta blandes ikke inn i den virkelige saken eller KI-rådene.
 
-På simulatorens startside kan brukeren også gå til tidligere lagrede øvelser.
+## UI/UX
 
-## Under øvelsen
+- Samtalesimulatoren bruker den faktiske Samtalestøtte-logoen uten ordmerket i hovedflaten.
+- Simulatorikonet i sidemenyen bruker KI-profilen fra logoen.
+- «Ny samtale» bruker snakkebobleikon.
+- Om og Kontakt er flyttet til en separat seksjon nederst i sidemenyen.
+- Personvern- og statusbokser er harmonisert i størrelse, padding og hjørneradius.
+- Mørk modus har roligere petrolfarget OK-status og dempet støvrosa/beige varsling.
+- Statuslinjen i simulatoren har bedre avstand mellom reaksjonsstil og «Avslutt øvelse».
+- Samtaleboblene er gjort litt større og luftigere.
 
-Brukeren velger «Øv selv» eller «Øv med KI-støtte», og kan velge reaksjonsstil for medarbeideren. KI-en spiller kun medarbeideren. KI-støtte er skjult til brukeren selv ber om hjelp.
+## Testing
 
-Simulatoren skal ikke finne på diagnoser, familieforhold, konflikter, motiv eller annen personlig bakgrunn som ikke finnes i caset. Direkte case går gjennom lokal personvernkontroll før de sendes til KI.
-
-## Historikk
-
-Innloggede brukere kan lagre både simuleringer knyttet til en ordinær samtale og direkte simuleringer. «Midlertidig øvelse» hindrer at simuleringen lagres.
-
-## Tester
-
-Statisk regresjon og personvern:
+Kjør tekniske kontroller:
 
 ```bash
 npm run test-simulation
+npm run test-simulation:v19.2
 npm run test-privacy
 ```
 
-Live kvalitetstest av KI-svar (serveren må kjøre lokalt med fungerende API-nøkkel):
+Når serveren kjører, kan live-testen for begge simuleringsmodusene kjøres med:
 
 ```bash
-npm run test-simulation:live
+npm run test-simulation:v19.2:live
 ```
 
-Live-testen sender åtte representative samtaler gjennom simulatoren, kjører to lederreplikker i hvert case og lager en rapport i `test-results/`. Automatiske flagg er bare en første kontroll; rapporten bør leses manuelt for realisme, relevans og om KI-en holder seg til faktagrunnlaget.
+Live-testen har egne caser for faktabasert og fri simulering. Automatisk kontroll er et filter; manuell vurdering av realisme og faktatrohet er fortsatt nødvendig.

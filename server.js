@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.1.0";
+const appVersion = process.env.APP_VERSION || "19.2.0";
 const contactEmail = String(process.env.CONTACT_EMAIL || "").trim();
 
 app.use(express.json({ limit: "1mb" }));
@@ -610,11 +610,26 @@ app.post("/api/continue-conversation", async (req, res) => {
 
 const simulationStyleInstructions = {
   open: 'Medarbeideren er i utgangspunktet åpen, saklig og samarbeidsvillig, men skal fortsatt ha egne perspektiver og kunne stille spørsmål.',
-  uncertain: 'Medarbeideren er usikker og noe tilbaketrukket. Svarene kan være korte eller forsiktige, men ikke kunstig vage.',
+  uncertain: 'Medarbeideren er usikker og noe tilbaketrukket. Tillat korte svar, nøling, forsiktige formuleringer og behov for tid. Ikke gjør personen kunstig vag.',
   defensive: 'Medarbeideren er defensiv og kan være uenig i lederens beskrivelse eller vurdering. Reager realistisk uten å bli karikert eller aggressiv uten grunnlag.',
-  emotional: 'Medarbeideren kan bli følelsesmessig berørt av temaet. Vis dette naturlig uten å dikte opp årsaker, diagnose eller privat bakgrunn.',
+  emotional: 'Medarbeideren er tydelig følelsesmessig berørt. La reaksjonen merkes i ordvalg, pauser, nøling eller vansker med å konkretisere. Ikke gjør personen melodramatisk og ikke dikt opp årsaken til følelsene.',
   critical: 'Medarbeideren er frustrert eller kritisk og kan utfordre lederens vurdering, prosess eller formuleringer. Hold reaksjonen realistisk og saklig nok til at øvelsen er nyttig.',
-  surprise: 'Velg en realistisk reaksjonsmåte som passer saken og utviklingen i samtalen. Ikke opplys brukeren om hvilken stil du valgte.'
+  surprise: 'Gi en genuint mindre forutsigbar, men plausibel reaksjon som tvinger lederen til å lytte og tilpasse seg. Varier mellom for eksempel et vanskelig spørsmål tilbake, uventet enighet, kort avvisning, annen forståelse av problemet, usikkerhet eller en relevant ny opplysning når fri modus tillater det. Ikke velg bare en vanlig samarbeidsvillig reaksjon.'
+};
+
+const simulationFidelityInstructions = {
+  factual: `FAKTABASERT MODUS – «Hold deg til saken»:
+- Du kan improvisere følelser, holdninger, uenighet, spørsmål, motstand, usikkerhet og måten medarbeideren uttrykker seg på.
+- Du skal IKKE etablere nye verifiserbare fakta som ikke finnes i situasjonen eller tidligere dialog.
+- Dette gjelder også tilsynelatende små fakta som «jeg har ikke drukket mer», «vi kommuniserer det vi må», «jeg fikk beskjed forrige uke» eller «jeg har vært mer kort i tonen», dersom dette ikke allerede er oppgitt.
+- Når lederen spør om noe som ikke er oppgitt, reager som en medarbeider uten å gjøre et ukjent forhold til et sikkert ja/nei-faktum. Du kan spørre hvorfor lederen spør, avvise premisset, si at du ikke ønsker å gå inn i det, eller formulere deg eksplisitt som en opplevelse når det er naturlig.
+- Ikke bruk oppdiktede detaljer som forklaring på følelser eller motstand.`,
+  challenge: `FRI TRENINGSMODUS – «Utfordre meg»:
+- Du kan introdusere nye, plausible opplysninger, hendelser eller perspektiver for å skape realistiske overraskelser og trene lederen på å håndtere ukjent informasjon.
+- Nye opplysninger må være saklig relevante, troverdige og proporsjonale. Ikke lag sensasjonelle eller ekstreme vendinger uten grunn.
+- Ikke finn på diagnose, detaljerte familieforhold, ulovlig aktivitet, alvorlige anklager eller andre svært sensitive forhold bare for å gjøre øvelsen vanskeligere, med mindre saken allerede åpner for dette på en tydelig måte.
+- Ikke motsi etablerte fakta i saken.
+- Opplysninger du finner på er kun simulerte rollespillfakta. De skal aldri presenteres som kjente fakta om den virkelige saken utenfor simulatoren.`
 };
 
 function sanitizeSimulationTurns(turns) {
@@ -625,8 +640,8 @@ function sanitizeSimulationTurns(turns) {
   })).filter(turn => turn.text);
 }
 
-function simulationContextText({ situation = '', analysis = null, followups = {}, guidance = null, style = 'open', turns = [] }) {
-  return `\n\n## Samtalesimulering\nDu spiller KUN medarbeideren i en øvelse for en leder. Brukeren spiller lederen.\n\nViktige grenser:\n- Ikke gi råd til lederen mens du spiller medarbeideren.\n- Ikke fortell hva lederen bør gjøre. Svar bare slik medarbeideren plausibelt kunne svart.\n- Ikke finn på diagnose, familieforhold, traumer, konflikter, rusbruk, motiv, hendelser eller annen personlig bakgrunn som ikke finnes i saken.\n- Ikke gjør tredjepartsopplysninger om til egne observasjoner.\n- Du kan uttrykke usikkerhet, uenighet, følelser eller spørsmål uten å forklare dem med oppdiktede fakta.\n- Hold hvert medarbeidersvar naturlig og relativt kort, vanligvis 1–4 setninger.\n- Reaksjonen skal utvikle seg ut fra det lederen faktisk sier, ikke låses mekanisk til én tone.\n\nValgt reaksjonsstil: ${style}. ${simulationStyleInstructions[style] || simulationStyleInstructions.open}\n\nSituasjon: ${String(situation).slice(0, 12000)}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nSamtalen så langt: ${JSON.stringify(sanitizeSimulationTurns(turns))}\n`;
+function simulationContextText({ situation = '', analysis = null, followups = {}, guidance = null, fidelity = 'factual', style = 'open', turns = [] }) {
+  return `\n\n## Samtalesimulering\nDu spiller KUN medarbeideren i en øvelse for en leder. Brukeren spiller lederen.\n\nViktige grenser:\n- Ikke gi råd til lederen mens du spiller medarbeideren.\n- Ikke fortell hva lederen bør gjøre. Svar bare slik medarbeideren plausibelt kunne svart.\n- Ikke gjør tredjepartsopplysninger om til egne observasjoner.\n- Hold hvert medarbeidersvar naturlig og relativt kort, vanligvis 1–4 setninger.\n- Reaksjonen skal utvikle seg ut fra det lederen faktisk sier, ikke låses mekanisk til én tone.\n- Hold rollespillfakta og den virkelige saken strengt adskilt.\n\nValgt simuleringsmodus: ${fidelity}. ${simulationFidelityInstructions[fidelity] || simulationFidelityInstructions.factual}\n\nValgt reaksjonsstil: ${style}. ${simulationStyleInstructions[style] || simulationStyleInstructions.open}\n\nSituasjon: ${String(situation).slice(0, 12000)}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nSamtalen så langt: ${JSON.stringify(sanitizeSimulationTurns(turns))}\n`;
 }
 
 app.post('/api/simulation-turn', async (req, res) => {
@@ -637,10 +652,11 @@ app.post('/api/simulation-turn', async (req, res) => {
     return res.status(400).json({ error: 'MISSING_LEADER_TURN', message: 'Skriv først hva du vil si som leder.' });
   }
   const style = Object.prototype.hasOwnProperty.call(simulationStyleInstructions, body.style) ? body.style : 'open';
+  const fidelity = Object.prototype.hasOwnProperty.call(simulationFidelityInstructions, body.fidelity) ? body.fidelity : 'factual';
   try {
     const response = await client.responses.create({
       model,
-      instructions: systemPrompt + simulationContextText({ ...body, style, turns }),
+      instructions: systemPrompt + simulationContextText({ ...body, fidelity, style, turns }),
       input: [{ role: 'user', content: [{ type: 'input_text', text: 'Svar nå som medarbeideren på lederens siste utsagn. Ikke kommenter øvelsen eller gi lederråd.' }] }]
     });
     res.json({ reply: String(response.output_text || '').trim(), ai: true, model });

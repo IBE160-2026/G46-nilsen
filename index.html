@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=19.1" />
+  <link rel="stylesheet" href="styles.css?v=19.2" />
 </head>
 <body>
   <div class="app-shell">
@@ -28,7 +28,7 @@
           <span class="nav-label">Ny samtale</span>
         </button>
         <button class="nav-item" data-view="simulation" type="button">
-          <span class="nav-glyph" id="nav-simulation-icon"></span>
+          <span class="nav-glyph nav-logo-glyph" id="nav-simulation-icon" aria-hidden="true"><img src="logo.png" alt="" /></span>
           <span class="nav-label">Samtalesimulering</span>
         </button>
         <button class="nav-item" data-view="settings" type="button">
@@ -40,17 +40,19 @@
           <span class="nav-label">Historikk</span>
           <small id="history-nav-note">logg inn</small>
         </button>
-        <button class="nav-item" data-view="about" type="button">
-          <span class="nav-glyph" id="nav-about-icon"></span>
-          <span class="nav-label">Om</span>
-        </button>
-        <button class="nav-item" data-view="contact" type="button">
-          <span class="nav-glyph" id="nav-contact-icon"></span>
-          <span class="nav-label">Kontakt</span>
-        </button>
       </nav>
 
       <div class="sidebar-bottom">
+        <nav class="nav nav-secondary" aria-label="Om og kontakt">
+          <button class="nav-item" data-view="about" type="button">
+            <span class="nav-glyph" id="nav-about-icon"></span>
+            <span class="nav-label">Om</span>
+          </button>
+          <button class="nav-item" data-view="contact" type="button">
+            <span class="nav-glyph" id="nav-contact-icon"></span>
+            <span class="nav-label">Kontakt</span>
+          </button>
+        </nav>
         <div class="sidebar-message">
           <div class="sidebar-message-icon" id="sidebar-message-icon"></div>
           <p>Sammen skaper<br>vi bedre arbeidsplasser</p>
@@ -315,7 +317,9 @@
             <h1>Øv på krevende samtaler</h1>
             <p>Tren i et eget samtalerom. Du er leder, KI-en spiller medarbeideren. Start fra en sak du allerede jobber med, eller gå rett inn i en ny simulering.</p>
           </div>
-          <div class="simulation-hero-mark" aria-hidden="true"><span></span><span></span></div>
+          <div class="simulation-logo-crop" aria-hidden="true">
+            <img src="logo.png" alt="" />
+          </div>
         </div>
 
         <section id="simulation-hub" class="simulation-hub">
@@ -368,14 +372,27 @@
 
             <div id="simulation-setup" class="simulation-setup">
               <div class="simulation-choice-block">
-                <h4>1. Hvordan vil du øve?</h4>
+                <h4>1. Hvor fritt skal simulatoren spille?</h4>
+                <div class="simulation-choice-grid" id="simulation-fidelity-options">
+                  <button class="simulation-choice selected" data-sim-fidelity="factual" type="button">
+                    <strong>Hold deg til saken</strong>
+                    <span>Medarbeideren kan reagere fritt, men skal ikke finne på nye hendelser eller bakgrunnsopplysninger.</span>
+                  </button>
+                  <button class="simulation-choice" data-sim-fidelity="challenge" type="button">
+                    <strong>Utfordre meg</strong>
+                    <span>Medarbeideren kan introdusere plausible, uventede opplysninger for å trene deg på det du ikke kan forutse.</span>
+                  </button>
+                </div>
+              </div>
+              <div class="simulation-choice-block">
+                <h4>2. Hvordan vil du øve?</h4>
                 <div class="simulation-choice-grid" id="simulation-mode-options">
                   <button class="simulation-choice selected" data-sim-mode="solo" type="button"><strong>Øv selv</strong><span>Ingen hjelp underveis. Du får tilbakemelding etterpå.</span></button>
                   <button class="simulation-choice" data-sim-mode="assisted" type="button"><strong>Øv med KI-støtte</strong><span>Be om hjelp når du trenger det uten å avbryte rollespillet.</span></button>
                 </div>
               </div>
               <div class="simulation-choice-block">
-                <h4>2. Hvordan skal medarbeideren reagere?</h4>
+                <h4>3. Hvordan skal medarbeideren reagere?</h4>
                 <div class="reaction-style-grid" id="simulation-style-options">
                   <button class="reaction-style selected" data-sim-style="open" type="button">Åpen og samarbeidsvillig</button>
                   <button class="reaction-style" data-sim-style="uncertain" type="button">Usikker og tilbaketrukket</button>
@@ -385,7 +402,7 @@
                   <button class="reaction-style" data-sim-style="surprise" type="button">Overrask meg</button>
                 </div>
               </div>
-              <div class="simulation-safety-note"><strong>Rollegrense:</strong> Simulatoren skal reagere ut fra opplysningene i saken og skal ikke finne på diagnose, familieforhold, konflikter eller annen personlig bakgrunn.</div>
+              <div class="simulation-safety-note" id="simulation-fidelity-note"><strong>Hold deg til saken:</strong> Medarbeideren kan være uenig, følelsesmessig, kritisk eller stille, men skal markere usikkerhet når et faktum ikke finnes i saken.</div>
               <label class="temporary-chat-option simulation-temporary-option" id="simulation-temporary-option">
                 <span class="temporary-chat-copy"><strong>Midlertidig øvelse</strong><small>Ikke lagre simuleringen i historikken.</small></span>
                 <span class="switch-control"><input id="simulation-temporary" type="checkbox" /><span class="switch-track"><span class="switch-thumb"></span></span></span>
@@ -526,7 +543,7 @@
           <article class="settings-card"><h2>Hva verktøyet gjør</h2><p>Verktøyet hjelper deg med å strukturere en samtale, formulere en åpning, finne relevante spørsmål og forberede deg på mulige reaksjoner. Rådene tilpasses situasjonen du beskriver.</p></article>
           <article class="settings-card"><h2>Hva verktøyet ikke gjør</h2><p>Samtalestøtte tar ikke beslutninger på vegne av lederen og erstatter ikke HR-, juridisk, medisinsk eller annen faglig vurdering når saken krever det.</p></article>
           <article class="settings-card"><h2>Personvern og trygg bruk</h2><p>Beskriv situasjoner anonymt. Ikke skriv navn eller andre unødvendige opplysninger som kan identifisere medarbeidere eller andre personer.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-legal="privacy">Les personvernerklæringen</button><button class="secondary-button" type="button" data-open-legal="terms">Les bruksvilkårene</button></div></article>
-          <article class="settings-card"><h2>Beta</h2><p>Status: <strong>Betaversjon – under utvikling og testing.</strong></p><p>Har du spørsmål, finner en feil eller får et uklart KI-svar, ønsker vi gjerne tilbakemelding.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div><p class="app-version-line">Versjon <strong id="about-app-version">19.1.0</strong></p></article>
+          <article class="settings-card"><h2>Beta</h2><p>Status: <strong>Betaversjon – under utvikling og testing.</strong></p><p>Har du spørsmål, finner en feil eller får et uklart KI-svar, ønsker vi gjerne tilbakemelding.</p><div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div><p class="app-version-line">Versjon <strong id="about-app-version">19.2.0</strong></p></article>
         </div>
       </section>
 

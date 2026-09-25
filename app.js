@@ -32,6 +32,7 @@ let lastAiGuidance = null;
 let currentUser = null;
 let currentConversationId = null;
 let conversationDirty = false;
+let simulationFidelity = "factual";
 let simulationMode = "solo";
 let simulationStyle = "open";
 let simulationTurns = [];
@@ -40,7 +41,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.1.0", contactEmail: "" };
+let publicConfig = { appVersion: "19.2.0", contactEmail: "" };
 
 const topics = [
   {
@@ -211,8 +212,7 @@ function setSvg(targetId, svg) {
 
 function renderStaticIcons() {
   setSvg('nav-home-icon', svgIcons.home);
-  setSvg('nav-prepare-icon', svgIcons.prepare);
-  setSvg('nav-simulation-icon', svgIcons.simulation);
+  setSvg('nav-prepare-icon', svgIcons.simulation);
   setSvg('nav-settings-icon', svgIcons.settings);
   setSvg('nav-history-icon', svgIcons.history);
   setSvg('nav-about-icon', svgIcons.about);
@@ -289,6 +289,7 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
 
   simulationTurns = [];
   simulationFeedback = null;
+  simulationFidelity = 'factual';
   simulationMode = 'solo';
   simulationStyle = 'open';
   simulationSource = 'current';
@@ -1936,7 +1937,7 @@ async function saveCurrentConversation(){
   const situation=directSimulation ? simulationDirectSituation : (document.querySelector('#situation')?.value.trim()||''); if(!situation) return;
   try{
     const r=await fetch('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtalesimulering':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
+      id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtalesimulering':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{fidelity:simulationFidelity,mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
     })});
     if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
   }catch(_){}
@@ -1962,7 +1963,7 @@ function loadHistoryItem(item){
   document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
   const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
-  simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
+  simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
     simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); return;
   }
@@ -2069,6 +2070,19 @@ const simulationStyleLabels = {
   surprise: 'Overrask meg'
 };
 
+const simulationFidelityLabels = {
+  factual: 'Hold deg til saken',
+  challenge: 'Utfordre meg'
+};
+
+function updateSimulationFidelityNote() {
+  const note = document.querySelector('#simulation-fidelity-note');
+  if (!note) return;
+  note.innerHTML = simulationFidelity === 'challenge'
+    ? '<strong>Utfordre meg:</strong> Nye opplysninger er en del av rollespillet og skal behandles som simulerte – ikke som fakta om den virkelige saken.'
+    : '<strong>Hold deg til saken:</strong> Medarbeideren kan være uenig, følelsesmessig, kritisk eller stille, men skal markere usikkerhet når et faktum ikke finnes i saken.';
+}
+
 function setSimulationChoice(groupSelector, attr, value) {
   document.querySelectorAll(groupSelector).forEach(button => {
     button.classList.toggle('selected', button.dataset[attr] === value);
@@ -2092,6 +2106,7 @@ function refreshSimulationHub() {
 function resetSimulationPanel() {
   simulationTurns = [];
   simulationFeedback = null;
+  simulationFidelity = 'factual';
   simulationMode = 'solo';
   simulationStyle = 'open';
   const simTemporary = document.querySelector('#simulation-temporary');
@@ -2106,7 +2121,9 @@ function resetSimulationPanel() {
   if (feedback) feedback.hidden = true;
   document.querySelector('#simulation-help')?.setAttribute('hidden','');
   document.querySelector('#simulation-help-result')?.setAttribute('hidden','');
+  setSimulationChoice('[data-sim-fidelity]', 'simFidelity', simulationFidelity);
   setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
+  updateSimulationFidelityNote();
   setSimulationChoice('[data-sim-style]', 'simStyle', simulationStyle);
   renderSimulationThread();
 }
@@ -2146,10 +2163,12 @@ function openSimulation() {
     live.hidden = false;
     document.querySelector('#toggle-simulation-help').hidden = simulationMode !== 'assisted';
     const topic = currentSubtopic || currentTopic?.title || 'Samtale';
-    document.querySelector('#simulation-status').textContent = `${topic} · ${simulationStyleLabels[simulationStyle]}`;
+    document.querySelector('#simulation-status').textContent = `${topic} · ${simulationFidelityLabels[simulationFidelity]} · ${simulationStyleLabels[simulationStyle]}`;
     renderSimulationThread();
   }
+  setSimulationChoice('[data-sim-fidelity]', 'simFidelity', simulationFidelity);
   setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
+  updateSimulationFidelityNote();
   setSimulationChoice('[data-sim-style]', 'simStyle', simulationStyle);
 }
 
@@ -2210,6 +2229,7 @@ function simulationContext() {
     analysis: direct ? null : lastAiAnalysis,
     followups: direct ? {} : collectFollowupAnswers(),
     guidance: direct ? null : lastAiGuidance,
+    fidelity: simulationFidelity,
     mode: simulationMode,
     style: simulationStyle,
     turns: simulationTurns
@@ -2244,7 +2264,7 @@ function startSimulation() {
   const helpButton = document.querySelector('#toggle-simulation-help');
   helpButton.hidden = simulationMode !== 'assisted';
   const topic = simulationSource === 'direct' ? 'Ny simulering' : (currentSubtopic || currentTopic?.title || 'Samtale');
-  document.querySelector('#simulation-status').textContent = `${topic} · ${simulationStyleLabels[simulationStyle]}`;
+  document.querySelector('#simulation-status').textContent = `${topic} · ${simulationFidelityLabels[simulationFidelity]} · ${simulationStyleLabels[simulationStyle]}`;
   renderSimulationThread();
   document.querySelector('#simulation-input')?.focus();
   conversationDirty = true;
@@ -2354,9 +2374,16 @@ document.querySelector('#simulation-history')?.addEventListener('click', openHis
 document.querySelector('#cancel-direct-simulation')?.addEventListener('click', () => { document.querySelector('#direct-simulation-form').hidden = true; showDirectSimulationPrivacy([]); });
 document.querySelector('#direct-simulation-form')?.addEventListener('submit', event => { event.preventDefault(); beginDirectSimulation(); });
 document.querySelector('#close-simulation')?.addEventListener('click', closeSimulation);
+document.querySelectorAll('[data-sim-fidelity]').forEach(button => button.addEventListener('click', () => {
+  simulationFidelity = button.dataset.simFidelity;
+  setSimulationChoice('[data-sim-fidelity]', 'simFidelity', simulationFidelity);
+  updateSimulationFidelityNote();
+}));
 document.querySelectorAll('[data-sim-mode]').forEach(button => button.addEventListener('click', () => {
   simulationMode = button.dataset.simMode;
+  setSimulationChoice('[data-sim-fidelity]', 'simFidelity', simulationFidelity);
   setSimulationChoice('[data-sim-mode]', 'simMode', simulationMode);
+  updateSimulationFidelityNote();
 }));
 document.querySelectorAll('[data-sim-style]').forEach(button => button.addEventListener('click', () => {
   simulationStyle = button.dataset.simStyle;
