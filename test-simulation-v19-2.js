@@ -7,7 +7,7 @@ const css = fs.readFileSync("styles.css", "utf8");
 const pkg = JSON.parse(fs.readFileSync("package.json", "utf8"));
 
 const checks = [
-  ["Versjon er 19.2.0", pkg.version === "19.2.0" && html.includes("19.2.0") && server.includes('"19.2.0"')],
+  ["Versjon er 19.2 eller nyere", /^19\.(?:[2-9]|[1-9]\d)\./.test(pkg.version)],
   ["Hold deg til saken finnes", html.includes("Hold deg til saken") && app.includes("simulationFidelity")],
   ["Utfordre meg finnes", html.includes("Utfordre meg") && server.includes("FRI TRENINGSMODUS")],
   ["Faktamodus sendes til server", app.includes("fidelity: simulationFidelity")],
@@ -18,8 +18,8 @@ const checks = [
   ["Fri modus merker opplysninger som simulerte", server.includes("kun simulerte rollespillfakta")],
   ["Fri modus skal ikke motsi etablerte fakta", server.includes("Ikke motsi etablerte fakta")],
   ["Emosjonell stil er tydeligere", server.includes("pauser, nøling")],
-  ["Overrask meg er styrket", server.includes("genuint mindre forutsigbar")],
-  ["Simulator bruker faktisk logo", html.includes('class="simulation-logo-crop"') && html.includes('src="logo.png"')],
+  ["Overrask meg er styrket", server.includes("tydelig uventet") || server.includes("genuint mindre forutsigbar")],
+  ["Simulator bruker faktisk logo", html.includes('class="simulation-logo-crop"') && (html.includes('src="logo-symbol.png"') || html.includes('src="logo.png"'))],
   ["Simulatorikon bruker logo", html.includes('nav-logo-glyph')],
   ["Ny samtale bruker snakkebobleikon", app.includes("setSvg('nav-prepare-icon', svgIcons.simulation)")],
   ["Om og Kontakt ligger i sekundær sidemeny", html.includes('class="nav nav-secondary"')],

@@ -679,3 +679,62 @@ html[data-theme="dark"] .privacy-check.warning,html[data-theme="dark"] .privacy-
 .simulation-view .simulation-bubble{max-width:min(82%,760px);padding:13px 16px}
 .simulation-view .simulation-thread{gap:14px}
 @media(max-width:900px){.simulation-logo-crop{display:none}}
+
+
+/* v19.3 – tydeligere simulatoridentitet, snakkebobler og statusfarger */
+/* Bruk egne, hardt beskårne symbolfiler i stedet for å flytte hele ordlogoen i en skjult ramme. */
+.nav-logo-glyph{display:grid;place-items:center;overflow:visible}
+.nav-logo-glyph img{position:static;width:27px;height:27px;object-fit:contain;max-width:27px}
+html[data-theme="dark"] .nav-logo-glyph img{content:url('profile-ai-light.png')}
+
+.simulation-logo-crop{width:330px;height:220px;overflow:visible;justify-self:end;display:grid;place-items:center}
+.simulation-logo-crop img{width:320px;height:auto;max-width:100%;display:block;filter:drop-shadow(0 14px 26px rgba(20,89,107,.10))}
+html[data-theme="dark"] .simulation-logo-crop img{content:url('logo-symbol-light.png');filter:drop-shadow(0 16px 30px rgba(0,0,0,.30))}
+
+.simulation-bubble-row{align-items:flex-end;gap:10px}
+.simulation-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;overflow:hidden;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--border));background:color-mix(in srgb,var(--accent-soft) 72%,var(--surface));box-shadow:0 3px 10px rgba(18,55,53,.07)}
+.simulation-avatar img{width:50px;height:50px;object-fit:cover;max-width:none}
+.employee-avatar img{object-position:center}
+.leader-avatar{background:color-mix(in srgb,var(--surface-3) 72%,var(--surface))}
+html[data-theme="dark"] .employee-avatar img{content:url('profile-ai-light.png')}
+html[data-theme="dark"] .leader-avatar img{content:url('profile-human-light.png')}
+
+.simulation-view .simulation-bubble{max-width:min(78%,730px);padding:14px 17px;border-radius:24px;overflow:visible}
+.leader-bubble{border-bottom-right-radius:7px}
+.employee-bubble{border-bottom-left-radius:7px}
+/* større, synlig hale gjør at kortene faktisk leses som snakkebobler */
+.leader-bubble:after,.employee-bubble:after{width:15px;height:15px;bottom:7px;z-index:0}
+.leader-bubble:after{right:-8px;transform:rotate(-38deg)}
+.employee-bubble:after{left:-8px;transform:rotate(38deg)}
+.simulation-bubble span,.simulation-bubble p{position:relative;z-index:1}
+
+/* Personvernstatus skal skille seg tydelig fra resten av mørkmodus-paletten. */
+html[data-theme="dark"] .privacy-check.warning,
+html[data-theme="dark"] .privacy-check.blocking,
+html[data-theme="dark"] .privacy-banner{
+  background:#4b333d;
+  border-color:#b97f93;
+  color:#f8e7ed;
+}
+html[data-theme="dark"] .privacy-check.warning span,
+html[data-theme="dark"] .privacy-check.blocking span,
+html[data-theme="dark"] .privacy-banner p{color:#e7cbd5}
+html[data-theme="dark"] .privacy-check.ok{
+  background:#244b50;
+  border-color:#73b6ba;
+  color:#dcf4f3;
+}
+html[data-theme="dark"] .privacy-check.ok span{color:#c8e6e5}
+
+.about-purpose{max-width:100%;margin-bottom:18px}
+.about-purpose p,.about-development p{line-height:1.62}
+.about-development{margin-top:18px}
+
+@media(max-width:900px){
+  .simulation-logo-crop{display:none}
+}
+@media(max-width:640px){
+  .simulation-avatar{width:34px;height:34px;flex-basis:34px}
+  .simulation-avatar img{width:42px;height:42px}
+  .simulation-view .simulation-bubble{max-width:calc(100% - 54px)}
+}

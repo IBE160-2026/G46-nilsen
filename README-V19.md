@@ -1,25 +1,36 @@
-# Samtalestøtte v19.2 – To simuleringsmoduser og UX-opprydding
+# Samtalestøtte v19.3 – Klarere simulator og bedre produktforklaring
 
-Versjon 19.2 bygger videre på den separate samtalesimulatoren fra v19.1.
+Versjon 19.3 finpusser samtalesimulatoren før brukertesting og gjør Om-siden tydeligere på hvorfor løsningen finnes og hvordan den er utviklet.
 
-## Nytt i simulatoren
+## Simulator
 
-- **Hold deg til saken**: faktabasert simulering. Medarbeideren kan improvisere følelser, reaksjoner, spørsmål og motstand, men skal ikke etablere nye verifiserbare fakta som ikke finnes i saken.
-- **Utfordre meg**: friere treningsmodus. Medarbeideren kan introdusere plausible og relevante overraskelser som bare gjelder inne i rollespillet.
-- Reaksjonsstilen **Følelsesmessig berørt** er justert slik at nøling og følelsesmessig belastning blir tydeligere uten karikatur.
-- **Overrask meg** er gjort mindre forutsigbar.
-- Valgt simuleringsmodus lagres sammen med øvelsen, men simulerte fakta blandes ikke inn i den virkelige saken eller KI-rådene.
+- **Hold deg til saken** og **Utfordre meg** videreføres fra v19.2.
+- **Overrask meg** er styrket slik at reaksjonen faktisk skal endre hva lederen må forholde seg til, ikke bare gi et vanlig samarbeidsvillig svar.
+- **Følelsesmessig berørt** bruker kortere og mindre polerte svar med mer naturlig nøling.
+- KI og bruker har nå hver sin avatar hentet fra de to profilene i Samtalestøtte-logoen.
+- Samtaleboblene har tydeligere haler og mer uttalt snakkebobleform.
 
-## UI/UX
+## Logo og visuell identitet
 
-- Samtalesimulatoren bruker den faktiske Samtalestøtte-logoen uten ordmerket i hovedflaten.
+- Simulatorens hovedlogo er en egen hardt beskåret PNG med bare snakkeboblen og de to profilene – ingen bokstaver fra ordmerket.
+- Logosymbolet er større på simulatorens startside.
 - Simulatorikonet i sidemenyen bruker KI-profilen fra logoen.
-- «Ny samtale» bruker snakkebobleikon.
-- Om og Kontakt er flyttet til en separat seksjon nederst i sidemenyen.
-- Personvern- og statusbokser er harmonisert i størrelse, padding og hjørneradius.
-- Mørk modus har roligere petrolfarget OK-status og dempet støvrosa/beige varsling.
-- Statuslinjen i simulatoren har bedre avstand mellom reaksjonsstil og «Avslutt øvelse».
-- Samtaleboblene er gjort litt større og luftigere.
+
+## Mørk modus
+
+- Personvernadvarsler er tydelig dus rosa med bedre kontrast.
+- Godkjent personvernstatus bruker en lysere petrolflate som skiller seg fra øvrige appflater.
+
+## Om Samtalestøtte
+
+Om-siden forklarer nå:
+
+- hvorfor verktøyet er utviklet
+- hvorfor praktisk øvelse i krevende samtaler er viktig
+- hvordan KI-støtten og simulatoren skal brukes
+- hva verktøyet ikke erstatter
+- at Samtalestøtte er utviklet av studenten **CCN** i samarbeid med **ChatGPT fra OpenAI** som del av en prosjektoppgave ved Høgskolen i Molde
+- arbeidsdelingen mellom studentens produkt-/fagansvar og ChatGPT som utviklingsstøtte
 
 ## Testing
 
@@ -28,13 +39,14 @@ Kjør tekniske kontroller:
 ```bash
 npm run test-simulation
 npm run test-simulation:v19.2
+npm run test-simulation:v19.3
 npm run test-privacy
 ```
 
-Når serveren kjører, kan live-testen for begge simuleringsmodusene kjøres med:
+For live-test av simuleringsmodusene, start serveren og kjør:
 
 ```bash
 npm run test-simulation:v19.2:live
 ```
 
-Live-testen har egne caser for faktabasert og fri simulering. Automatisk kontroll er et filter; manuell vurdering av realisme og faktatrohet er fortsatt nødvendig.
+Automatiske tester er et filter. Før ekstern brukertesting bør simulatoren fortsatt vurderes manuelt for realisme, språk og treningsverdi.

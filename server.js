@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.2.0";
+const appVersion = process.env.APP_VERSION || "19.3.0";
 const contactEmail = String(process.env.CONTACT_EMAIL || "").trim();
 
 app.use(express.json({ limit: "1mb" }));
@@ -612,9 +612,9 @@ const simulationStyleInstructions = {
   open: 'Medarbeideren er i utgangspunktet åpen, saklig og samarbeidsvillig, men skal fortsatt ha egne perspektiver og kunne stille spørsmål.',
   uncertain: 'Medarbeideren er usikker og noe tilbaketrukket. Tillat korte svar, nøling, forsiktige formuleringer og behov for tid. Ikke gjør personen kunstig vag.',
   defensive: 'Medarbeideren er defensiv og kan være uenig i lederens beskrivelse eller vurdering. Reager realistisk uten å bli karikert eller aggressiv uten grunnlag.',
-  emotional: 'Medarbeideren er tydelig følelsesmessig berørt. La reaksjonen merkes i ordvalg, pauser, nøling eller vansker med å konkretisere. Ikke gjør personen melodramatisk og ikke dikt opp årsaken til følelsene.',
+  emotional: 'Medarbeideren er tydelig følelsesmessig berørt. La reaksjonen merkes i ordvalg, pauser, nøling, kortere setninger eller vansker med å konkretisere. Svarene skal ikke høres ut som ferdigpolerte refleksjoner eller gå for raskt over i ryddig problemløsning. Ikke gjør personen melodramatisk og ikke dikt opp årsaken til følelsene.',
   critical: 'Medarbeideren er frustrert eller kritisk og kan utfordre lederens vurdering, prosess eller formuleringer. Hold reaksjonen realistisk og saklig nok til at øvelsen er nyttig.',
-  surprise: 'Gi en genuint mindre forutsigbar, men plausibel reaksjon som tvinger lederen til å lytte og tilpasse seg. Varier mellom for eksempel et vanskelig spørsmål tilbake, uventet enighet, kort avvisning, annen forståelse av problemet, usikkerhet eller en relevant ny opplysning når fri modus tillater det. Ikke velg bare en vanlig samarbeidsvillig reaksjon.'
+  surprise: 'Gi en tydelig uventet, men plausibel reaksjon som faktisk endrer hva lederen må forholde seg til i neste replikk. Ikke bruk standardsvar om uklare forventninger eller vanlig samarbeidsvilje med mindre samtalen gjør det genuint overraskende. Varier mellom for eksempel et direkte vanskelig spørsmål tilbake, uventet sterk enighet, kort avvisning, taushet/nøling, en annen problemforståelse eller – i fri modus – en relevant ny opplysning. I faktamodus skal overraskelsen ligge i reaksjonen eller perspektivet, ikke i nye fakta.'
 };
 
 const simulationFidelityInstructions = {

@@ -1,5 +1,41 @@
 # CHANGELOG – Samtalestøtte
 
+## v19.3 – Simulatoridentitet, mørkmodus og utvidet Om-side
+
+### Samtalesimulator
+- **Overrask meg** er strammet ytterligere inn. Reaksjonen skal nå gi lederen noe reelt uventet å forholde seg til, og unngå standardsvar om uklare forventninger når dette ikke faktisk er overraskende.
+- I **Hold deg til saken** skal overraskelsen ligge i reaksjon, spørsmål eller perspektiv uten å etablere nye fakta.
+- I **Utfordre meg** kan overraskelsen fortsatt bestå av en plausibel ny rollespillopplysning.
+- **Følelsesmessig berørt** er justert mot kortere, mindre ferdigpolerte svar med mer naturlig nøling og mindre umiddelbar problemløsning.
+
+### Logo og samtalebobler
+- Simulatorens topp bruker nå en egen hardt beskåret symbolfil fra den eksisterende Samtalestøtte-logoen. Ordmerket er ikke lenger en del av ressursen som vises i simulatoren.
+- Logosymbolet er gjort betydelig større i simulatorens hovedflate.
+- KI-profilen fra logoen brukes som avatar for medarbeider/KI i rollespillet.
+- Menneskeprofilen fra logoen brukes som avatar for bruker/lederen.
+- Samtaleboblene har fått større og tydeligere haler, mer avrundet form og tydeligere avstand mellom avatar og tekst, slik at dialogen leses som snakkebobler fremfor vanlige kort.
+- Simulatorikonet i sidemenyen bruker en egen beskåret KI-profil i stedet for hele logoen.
+
+### Mørk modus
+- Personvernadvarsler bruker en tydeligere, dus rosafarge i mørk modus.
+- Tekst og kant på advarselsflater er justert for bedre kontrast.
+- Godkjent/klar-til-sending-status bruker en lysere petrolfarge som skiller seg fra appens øvrige mørke flater.
+
+### Om Samtalestøtte
+- Om-siden er utvidet med bakgrunnen for hvorfor løsningen er utviklet.
+- Beskriver gapet som kan oppstå mellom generell lederkunnskap og praktisk trening i krevende samtaler.
+- Forklarer tydeligere hvordan KI-støtten og samtalesimulatoren brukes som praktisk supplement, ikke som fasit eller erstatning for faglig vurdering.
+- Utviklerinformasjonen er anonymisert til **studenten CCN**.
+- Det fremgår at løsningen er utviklet av studenten CCN i samarbeid med **ChatGPT fra OpenAI** som del av en prosjektoppgave ved Høgskolen i Molde.
+- Ansvarsfordelingen i utviklingsprosessen beskrives: studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg; ChatGPT er brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.
+
+### Testing og dokumentasjon
+- Lagt til strukturell v19.3-test for nye logoressurser, avatarer, mørkmodusfarger, Om-side og simulatorprompt.
+- `README-V19.md` oppdatert til v19.3.
+- Komplett `CHANGELOG.md` fra v1 er bevart og v19.3 er lagt øverst uten å erstatte tidligere historikk.
+
+---
+
 ## v19.2 – To simuleringsmoduser og visuell opprydding
 
 ### Samtalesimulering
@@ -56,16 +92,6 @@
 >
 > **Fast regel fra nå av:** `CHANGELOG.md` er én kontinuerlig prosjektfil. Nye versjoner skal legges øverst i filen. Filen skal aldri erstattes av en eldre kopi fra en ZIP-pakke.
 >
----
-
-> **Rekonstruert 25.09.2026**
->
-> Denne filen er rekonstruert fra tidligere versjoner, prosjektpakker, testresultater og dokumentert utviklingshistorikk etter at en nyere prosjektpakke utilsiktet overskrev den løpende `CHANGELOG.md`.
->
-> **Fast regel fra nå av:** `CHANGELOG.md` er én kontinuerlig prosjektfil. Nye versjoner skal legges øverst i filen. Filen skal aldri erstattes av en eldre kopi fra en ZIP-pakke.
->
-> v19.2 er ikke tatt med her fordi den ikke er ferdig bygget og verifisert.
-
 ---
 
 ## v19.1 – Simulator som egen modul og live-testing

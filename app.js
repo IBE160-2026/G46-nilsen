@@ -41,7 +41,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.2.0", contactEmail: "" };
+let publicConfig = { appVersion: "19.3.0", contactEmail: "" };
 
 const topics = [
   {
@@ -2243,10 +2243,12 @@ function renderSimulationThread() {
   const turns = simulationTurns.map(turn => {
     const leader = turn.role === 'leader';
     return `<div class="simulation-bubble-row ${leader ? 'leader-row' : 'employee-row'}">
+      ${leader ? '' : '<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div>'}
       <div class="simulation-bubble ${leader ? 'leader-bubble' : 'employee-bubble'}">
-        <span>${leader ? 'Du · leder' : 'Medarbeider'}</span>
+        <span>${leader ? 'Du · leder' : 'Medarbeider · KI'}</span>
         <p>${escapeHtml(turn.text)}</p>
       </div>
+      ${leader ? '<div class="simulation-avatar leader-avatar" aria-hidden="true"><img src="profile-human.png" alt="" /></div>' : ''}
     </div>`;
   }).join('');
   thread.innerHTML = intro + turns;
@@ -2290,7 +2292,7 @@ async function submitSimulationTurn(text) {
   const thread = document.querySelector('#simulation-thread');
   const waiting = document.createElement('div');
   waiting.className = 'simulation-bubble-row employee-row simulation-waiting';
-  waiting.innerHTML = '<div class="simulation-bubble employee-bubble"><span>Medarbeider</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>';
+  waiting.innerHTML = '<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble"><span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>';
   thread.appendChild(waiting);
   waiting.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
