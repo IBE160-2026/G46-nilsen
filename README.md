@@ -6,6 +6,33 @@ Ideen bygger på erfaring fra lederarbeid, der vanskelige samtaler ofte må hån
 
 > **Status:** Betaversjon – under utvikling og testing.
 
+## Testtilgang
+
+Samtalestøtte er satt opp som en **lukket betaversjon**. For å teste løsningen må du først opprette en konto ved hjelp av en av invitasjonslenkene nedenfor.
+
+**Invitasjon 1:**  
+https://samtalestotte.onrender.com/?invite=xuQt07FiN7EJpvObPXMru5ld
+
+**Invitasjon 2:**  
+https://samtalestotte.onrender.com/?invite=mUxSXWp7QINf2t-F-1auV4bf
+
+Hver invitasjonslenke kan bare brukes **én gang** til å opprette en konto. Ved registrering velger du selv e-postadresse, brukernavn og passord. Etter at kontoen er opprettet, brukes vanlig innlogging videre og invitasjonslenken trengs ikke igjen.
+
+### Forslag til testing
+
+For å få et inntrykk av de viktigste delene av løsningen anbefales det å:
+
+1. Opprette konto med en av invitasjonslenkene og logge inn.
+2. Starte **Ny samtale**, velge et tema og beskrive en tenkt situasjon. Ikke bruk virkelige navn eller andre identifiserende personopplysninger.
+3. Følge KI-veiledningen og prøve videre dialog i samme samtale.
+4. Åpne **Samtalesimulering** og gjennomføre en kort øvelse.
+5. Se på **Historikk** og kontroller at en lagret samtale kan åpnes igjen.
+6. Test gjerne personvernkontrollen ved å skrive inn et tydelig fiktivt navn, en e-postadresse eller et telefonnummer. Løsningen skal reagere før teksten sendes til KI.
+
+Løsningen er fortsatt en betaversjon. KI-svarene er ment som samtalestøtte og ikke som en fasit eller erstatning for HR-, juridisk eller annen nødvendig faglig vurdering.
+
+> Render bruker en gratis testtjeneste. Dersom appen ikke har vært brukt på en stund, kan første åpning ta litt ekstra tid mens tjenesten starter.
+
 ## Hva kan løsningen gjøre?
 
 Brukeren kan beskrive en situasjon og få KI-basert støtte til å forberede samtalen. Løsningen kan blant annet:
