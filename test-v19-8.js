@@ -7,7 +7,7 @@ const server = fs.readFileSync(new URL('./server.js', import.meta.url), 'utf8');
 const pkg = JSON.parse(fs.readFileSync(new URL('./package.json', import.meta.url), 'utf8'));
 
 const checks = [
-  ['version 19.8.0', pkg.version === '19.8.0'],
+  ['version 19.9.0', pkg.version === '19.9.0'],
   ['old simulator hub card removed', !html.includes('Øv på denne samtalen')],
   ['two simulator hub choices', html.includes('simulation-launch-grid two-options')],
   ['reflection section exists', html.includes('Kort refleksjon før du går videre')],

@@ -1208,3 +1208,98 @@ select:focus-visible{
   .simulation-privacy-banner{grid-template-columns:auto 1fr}
   .simulation-privacy-link{grid-column:2;justify-self:start}
 }
+
+/* v19.9 – Hybridtema, normaliserte snakkebobler og siste UI-justeringer */
+:root[data-theme="hybrid"]{
+  color-scheme:light;
+}
+html[data-theme="hybrid"] .sidebar{
+  background:linear-gradient(180deg,#123e4a 0%,#0f3440 100%);
+  border-right-color:#255766;
+  color:#f2fbfd;
+}
+html[data-theme="hybrid"] .sidebar .brand-logo{content:url('logo-light.png');filter:none}
+html[data-theme="hybrid"] .sidebar .nav-item{color:#edf8fa}
+html[data-theme="hybrid"] .sidebar .nav-item small{color:#b8d1d7}
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled),
+html[data-theme="hybrid"] .sidebar .nav-item.active{background:#245d6d;color:#fff}
+html[data-theme="hybrid"] .sidebar .nav-glyph{
+  background:rgba(255,255,255,.10);
+  color:#d9f5f7;
+  box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
+}
+html[data-theme="hybrid"] .sidebar .nav-logo-glyph img{content:url('profile-ai-light.png')}
+html[data-theme="hybrid"] .sidebar .sidebar-message{border-top-color:rgba(255,255,255,.18);color:#bfd4d9}
+html[data-theme="hybrid"] .sidebar .sidebar-message-icon{color:#d9f5f7}
+html[data-theme="hybrid"] .sidebar-toggle{
+  background:#123e4a;
+  border-color:#255766;
+  color:#f2fbfd;
+  box-shadow:5px 0 14px rgba(11,47,58,.24);
+}
+html[data-theme="hybrid"] .sidebar-toggle:hover{background:#245d6d}
+
+/* Tittel og symbol skal leses som én samlet header, som på Samtalesimulering. */
+.content-header.utility-header{display:block}
+.utility-header-copy{max-width:900px}
+.utility-title-row{display:flex;align-items:center;gap:12px;flex-wrap:nowrap}
+.utility-title-row .utility-page-brand{margin:0;display:flex;align-items:center;flex:0 0 auto}
+.utility-title-row .utility-page-logo{width:78px;max-width:none}
+.utility-header-copy>p{max-width:760px}
+
+/* Kontakt: e-post først som et kompakt alternativ, deretter skjemaet. */
+#contact-view .contact-layout{display:flex;flex-direction:column;gap:16px;width:100%}
+#contact-view .contact-card{width:100%;padding:16px 18px}
+#contact-view .contact-card h2{font-size:1.25rem}
+#contact-view .contact-card p{margin:8px 0 0}
+#contact-view .contact-email-link{margin-top:10px}
+#contact-view .report-form{width:100%}
+
+/* Simulator: vanlig chatboble med en myk, integrert hale – ikke en løs trekant. */
+.simulation-bubble-row{gap:14px}
+.simulation-view .simulation-bubble{
+  border-radius:24px;
+  overflow:visible;
+  isolation:isolate;
+}
+.leader-bubble,.employee-bubble{border-bottom-left-radius:24px;border-bottom-right-radius:24px}
+.leader-bubble:before,.employee-bubble:before,
+.leader-bubble:after,.employee-bubble:after{content:none}
+.employee-bubble::after,
+.leader-bubble::after{
+  content:"";
+  position:absolute;
+  bottom:7px;
+  width:26px;
+  height:22px;
+  background:inherit;
+  pointer-events:none;
+  z-index:-1;
+}
+.employee-bubble::after{
+  left:-14px;
+  border-left:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-left-radius:24px 18px;
+  transform:skewX(-24deg);
+}
+.leader-bubble::after{
+  right:-14px;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-right-radius:24px 18px;
+  transform:skewX(24deg);
+}
+.simulation-avatar{position:relative;z-index:2}
+
+/* Fire temavalg må fortsatt fungere i topplinjen uten å dominere. */
+.theme-switcher button{padding:7px 8px;font-size:.78rem}
+.settings-theme-options{flex-wrap:wrap}
+
+@media(max-width:760px){
+  .utility-title-row{gap:9px}
+  .utility-title-row .utility-page-logo{width:60px}
+  .simulation-bubble-row{gap:10px}
+  .employee-bubble::after{left:-11px}
+  .leader-bubble::after{right:-11px}
+}

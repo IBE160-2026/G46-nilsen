@@ -41,7 +41,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.8.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "19.9.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 
 const topics = [
   {
@@ -1646,7 +1646,7 @@ function applyTheme(theme) {
 }
 
 function initTheme() {
-  applyTheme(localStorage.getItem('samtalestotte-theme') || 'system');
+  applyTheme(localStorage.getItem('samtalestotte-theme') || 'hybrid');
 }
 
 function setSidebarCollapsed(collapsed) {
@@ -2497,7 +2497,7 @@ window.addEventListener('resize', () => {
   if (!localStorage.getItem('samtalestotte-sidebar')) applySidebarState();
 });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
-  if ((localStorage.getItem('samtalestotte-theme') || 'system') === 'system') applyTheme('system');
+  if ((localStorage.getItem('samtalestotte-theme') || 'hybrid') === 'system') applyTheme('system');
 });
 
 
