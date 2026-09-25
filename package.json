@@ -1,6 +1,6 @@
 {
   "name": "samtalestotte",
-  "version": "19.9.0",
+  "version": "19.10.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -18,7 +18,8 @@
     "test-simulation:v19.2": "node test-simulation-v19-2.js",
     "test-simulation:v19.2:live": "node test-simulation-ai-v19-2.js",
     "test-simulation:v19.3": "node test-simulation-v19-3.js",
-    "test-simulation:v19.4": "node test-simulation-v19-4.js"
+    "test-simulation:v19.4": "node test-simulation-v19-4.js",
+    "test-ui:v19.10": "node test-v19-10.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

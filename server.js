@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.9.0";
+const appVersion = process.env.APP_VERSION || "19.10.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -26,6 +26,79 @@ app.get("/api/public-config", (req, res) => {
 const apiKey = process.env.OPENAI_API_KEY;
 const model = process.env.OPENAI_MODEL || "gpt-5.6-luna";
 const client = apiKey ? new OpenAI({ apiKey }) : null;
+
+
+// --- v19.10: KI-basert temaforståelse ---
+const topicCatalog = [
+  {
+    id: "alkohol-rus",
+    title: "Alkohol og rus",
+    description: "Eksplisitte observasjoner eller bekymringer om alkohol, rusmidler eller påvirkning.",
+    subtopics: ["Bekymring knyttet til alkohol","Bekymring knyttet til rusmidler","Påvirkning på jobb","Arbeidsevne og fungering","Sikkerhet og hendelser","Oppfølging og tilbakekomst"]
+  },
+  {
+    id: "fravaer-oppfolging",
+    title: "Fravær og oppfølging",
+    description: "Fravær, oppmøte, punktlighet, tilbakekomst, arbeidsevne eller tilrettelegging.",
+    subtopics: ["Korttidsfravær","Langvarig fravær","Oppmøte og punktlighet","Tilbakekomst til arbeid","Tilrettelegging","Arbeidsevne og kapasitet"]
+  },
+  {
+    id: "prestasjon-utvikling",
+    title: "Prestasjon og utvikling",
+    description: "Arbeidsutførelse, prioritering, tidsbruk, mål, kvalitet, motivasjon, ansvar, initiativ eller kompetanse.",
+    subtopics: ["Måloppnåelse","Motivasjon","Kvalitet i arbeidet","Feil og avvik","Kompetanse og mestring","Ansvar og initiativ"]
+  },
+  {
+    id: "lonn-utvikling",
+    title: "Lønn og utvikling",
+    description: "Lønn, lønnsforventninger, ansvarstillegg, karriere, forfremmelse eller utviklingsmuligheter.",
+    subtopics: ["Lønnsutvikling","Forventninger til lønn","Lønnsforskjeller","Nye oppgaver og ansvar","Utvikling og forfremmelse"]
+  },
+  {
+    id: "samarbeid-kommunikasjon",
+    title: "Samarbeid og kommunikasjon",
+    description: "Kommunikasjon, tillit, roller, konflikt, teamarbeid, tone, respekt eller personlige grenser.",
+    subtopics: ["Kommunikasjon","Tillit","Roller og forventninger","Uenighet og konflikt","Samspill i team","Grenser og respekt"]
+  },
+  {
+    id: "avslutning-arbeidsforhold",
+    title: "Avslutning av arbeidsforhold",
+    description: "Oppsigelse, prøvetid, avslutning, nedbemanning eller formell videre prosess.",
+    subtopics: ["Avslutning av arbeidsforhold","Prøvetid","Endringer i stilling eller behov","Tidligere oppfølging","Frivillig avslutning","Samtale før videre prosess"]
+  },
+  {
+    id: "sikkerhet-ansvar",
+    title: "Sikkerhet og ansvar",
+    description: "Sikkerhetsrutiner, risiko, avvik, hendelser, rapportering eller informasjonssikkerhet.",
+    subtopics: ["Sikkerhetsrutiner","Avvik og hendelser","Risikovurdering","Rapportering","Informasjonssikkerhet","Ansvar og læring etter hendelser"]
+  },
+  {
+    id: "livssituasjoner",
+    title: "Livssituasjoner",
+    description: "Personlige belastninger, familie, sorg, omsorgsansvar, psykisk belastning eller utmattelse som påvirker arbeidshverdagen.",
+    subtopics: ["Samlivs- og familieforhold","Sykdom i nær familie","Sorg og tap","Psykisk belastning","Omsorgsansvar","Belastning og utmattelse"]
+  }
+];
+
+const topicIds = topicCatalog.map(topic => topic.id);
+const allSubtopics = [...new Set(topicCatalog.flatMap(topic => topic.subtopics))];
+
+const topicClassificationSchema = {
+  type: "object",
+  additionalProperties: false,
+  properties: {
+    primary_topic_id: { type: "string", enum: topicIds },
+    primary_subtopic: { type: "string", enum: allSubtopics },
+    confidence: { type: "string", enum: ["high","medium","low"] },
+    reason: { type: "string" },
+    alternative_topic_ids: {
+      type: "array",
+      maxItems: 2,
+      items: { type: "string", enum: topicIds }
+    }
+  },
+  required: ["primary_topic_id","primary_subtopic","confidence","reason","alternative_topic_ids"]
+};
 
 // --- v18.1: Supabase Auth + database ---
 const supabaseUrl = process.env.SUPABASE_URL;
@@ -464,6 +537,75 @@ const guidanceSchema = {
   },
   required: ["opening", "questions", "reactions", "attention", "check_before_meeting", "legal_hr_note", "source_ids", "supplementary_sources", "next_steps"]
 };
+
+
+app.post("/api/classify-topic", requireUser, async (req, res) => {
+  if (!client) {
+    return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
+  }
+
+  const situation = String(req.body?.situation || "").trim();
+  const selectedTopicId = String(req.body?.selectedTopicId || "").trim();
+
+  if (situation.length < 4) {
+    return res.status(400).json({ error: "MISSING_SITUATION", message: "Beskriv situasjonen litt mer før tema foreslås." });
+  }
+
+  const catalogText = topicCatalog.map(topic =>
+    `- ${topic.id} | ${topic.title}: ${topic.description}\n  Undertemaer: ${topic.subtopics.join(" | ")}`
+  ).join("\n");
+
+  const classificationInstructions = `Du klassifiserer en kort arbeidslivssituasjon til Samtalestøttes temaer.
+Velg ut fra MENINGEN i hele situasjonen, ikke enkeltord.
+
+Viktige regler:
+- Ikke gjett alkohol/rus uten at teksten faktisk omtaler alkohol, rusmiddel, påvirkning eller en tydelig rusbekymring.
+- Vanlig privat nettbruk, mye surfing, sosiale medier, telefonbruk, lav arbeidsinnsats, manglende prioritering eller tidsbruk i arbeidstiden hører normalt under "prestasjon-utvikling", med mindre teksten eksplisitt beskriver et sikkerhetsbrudd.
+- Ikke velg "sikkerhet-ansvar" bare fordi internett, data eller telefon nevnes. Det krever et faktisk sikkerhets-, risiko-, tilgangs- eller informasjonsproblem.
+- Ikke diagnostiser eller utled skjulte årsaker.
+- Bruk friteksten som hovedkilde. Et eventuelt allerede valgt tema er bare et svakt hint og skal overstyres dersom teksten passer bedre et annet sted.
+- Velg et undertema som faktisk finnes under det valgte hovedtemaet.
+- confidence=high når ett tema er klart mest naturlig, medium når to temaer er plausible, low når teksten er for vag.
+- reason skal være én kort setning på norsk uten å gjenta sensitive detaljer.
+
+Temaer:
+${catalogText}
+
+Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
+
+  try {
+    const response = await client.responses.create({
+      model,
+      instructions: classificationInstructions,
+      input: [{ role: "user", content: [{ type: "input_text", text: situation }] }],
+      text: {
+        format: {
+          type: "json_schema",
+          name: "samtalestotte_temaforstaelse",
+          strict: true,
+          schema: topicClassificationSchema
+        }
+      }
+    });
+
+    const parsed = JSON.parse(response.output_text);
+    const topic = topicCatalog.find(item => item.id === parsed.primary_topic_id);
+    if (!topic || !topic.subtopics.includes(parsed.primary_subtopic)) {
+      throw new Error("KI returnerte en ugyldig tema/undertema-kombinasjon.");
+    }
+
+    return res.json({ ...parsed, ai: true, model });
+  } catch (error) {
+    console.error("OpenAI topic classification failed:", error);
+    const status = Number(error?.status) || 500;
+    return res.status(status >= 400 && status < 600 ? status : 500).json({
+      error: "AI_TOPIC_CLASSIFICATION_FAILED",
+      message: "KI-temaforslaget kunne ikke gjennomføres.",
+      diagnostic: { status, apiMessage: error?.message || "Ukjent feil", model }
+    });
+  }
+});
+
 
 app.get("/api/status", (_req, res) => {
   res.json({ aiConfigured: Boolean(client), model: client ? model : null });

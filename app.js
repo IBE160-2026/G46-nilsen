@@ -41,7 +41,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.9.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "19.10.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 
 const topics = [
   {
@@ -337,6 +337,16 @@ function resetConversationState() {
     suggestion.innerHTML = '';
   }
 
+  ['#topic-finder-privacy', '#topic-detail-privacy'].forEach(selector => {
+    const box = document.querySelector(selector);
+    if (box) {
+      box.hidden = true;
+      box.innerHTML = '';
+      box.className = 'privacy-check finder-privacy-check';
+    }
+  });
+  hideAutoTopicNote();
+
   clearGuidanceSession({ clearInputs: true });
 }
 
@@ -405,6 +415,7 @@ function openTopic(topic) {
 }
 
 function openGuidance(title, help, initialSituation = '') {
+  hideAutoTopicNote();
   currentSubtopic = title;
   document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
   document.querySelector('#guidance-help').textContent = help;
@@ -718,6 +729,171 @@ function updatePrivacyCheck() {
   }
   box.querySelector('#privacy-fix-button')?.addEventListener('click', applyPrivacyFix);
   return findings;
+}
+
+
+function updateFinderPrivacyCheck(inputId, boxId) {
+  const input = document.querySelector(inputId);
+  const box = document.querySelector(boxId);
+  if (!input || !box) return { findings: [], hard: [], soft: [], blocked: false };
+
+  const findings = detectSensitiveInfo(input.value);
+  const { hard, soft } = splitPrivacyFindings(findings);
+  const blocked = hard.length > 0;
+  input.setAttribute('aria-invalid', blocked ? 'true' : 'false');
+
+  if (!input.value.trim() || (!hard.length && !soft.length)) {
+    box.hidden = true;
+    box.innerHTML = '';
+    box.className = 'privacy-check finder-privacy-check';
+    return { findings, hard, soft, blocked };
+  }
+
+  const visible = blocked ? hard : soft;
+  box.hidden = false;
+  box.className = blocked
+    ? 'privacy-check finder-privacy-check warning blocking'
+    : 'privacy-check finder-privacy-check warning advisory';
+  box.innerHTML = blocked ? `
+    <strong>Kan ikke brukes til temaforslag ennå</strong>
+    <span>Fjern tydelige identifikatorer før teksten sendes til KI:</span>
+    <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
+    <div class="privacy-fix-actions">
+      <button type="button" class="secondary-button compact-fix-button" data-finder-privacy-fix>Fiks personvern</button>
+      <small>Temaforslaget kjøres først etter at tydelige identifikatorer er fjernet.</small>
+    </div>
+  ` : `
+    <strong>Kan dette anonymiseres litt mer?</strong>
+    <span>Du kan gå videre, men disse detaljene kan med fordel generaliseres:</span>
+    <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
+    <div class="privacy-fix-actions">
+      <button type="button" class="secondary-button compact-fix-button" data-finder-privacy-fix>Generaliser forslag</button>
+      <small>Dette er en anbefaling, ikke en blokkering.</small>
+    </div>
+  `;
+
+  box.querySelector('[data-finder-privacy-fix]')?.addEventListener('click', () => {
+    input.value = autoFixPrivacyText(input.value, findings);
+    updateFinderPrivacyCheck(inputId, boxId);
+    input.focus();
+  });
+
+  return { findings, hard, soft, blocked };
+}
+
+async function requestTopicClassification(situation, selectedTopicId = '') {
+  const response = await fetch('/api/classify-topic', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ situation, selectedTopicId })
+  });
+  if (!response.ok) {
+    let payload = {};
+    try { payload = await response.json(); } catch (_) {}
+    const error = new Error(payload.message || 'KI-temaforslaget kunne ikke gjennomføres.');
+    error.code = payload.error || 'AI_TOPIC_ERROR';
+    throw error;
+  }
+  return response.json();
+}
+
+function topicSubtopicByTitle(topic, title) {
+  return topic?.subtopics?.find(([subTitle]) => subTitle === title) || null;
+}
+
+function showAutoTopicNote(topic, subtopic, classification) {
+  const note = document.querySelector('#auto-topic-note');
+  const text = document.querySelector('#auto-topic-text');
+  if (!note || !text || !topic || !subtopic) return;
+  const confidenceText = classification?.confidence === 'high'
+    ? 'tydelig treff'
+    : classification?.confidence === 'medium'
+      ? 'sannsynlig treff'
+      : 'foreløpig forslag';
+  text.innerHTML = `<strong>KI foreslo ${escapeHtml(topic.title)} → ${escapeHtml(subtopic[0])}</strong><span>${confidenceText}. ${escapeHtml(classification?.reason || '')}</span>`;
+  note.hidden = false;
+}
+
+function hideAutoTopicNote() {
+  const note = document.querySelector('#auto-topic-note');
+  if (note) note.hidden = true;
+}
+
+function renderLowConfidenceTopicChoice(box, classification, situation) {
+  const ids = [classification.primary_topic_id, ...(classification.alternative_topic_ids || [])]
+    .filter((id, index, all) => id && all.indexOf(id) === index)
+    .slice(0, 3);
+  const choices = ids.map(id => {
+    const topic = topics.find(item => item.id === id);
+    if (!topic) return '';
+    const preferred = id === classification.primary_topic_id
+      ? topicSubtopicByTitle(topic, classification.primary_subtopic)
+      : null;
+    return `<button type="button" class="secondary-button topic-choice-button" data-ai-topic="${escapeHtml(id)}" data-ai-subtopic="${escapeHtml(preferred?.[0] || '')}">${escapeHtml(topic.title)}</button>`;
+  }).join('');
+
+  box.hidden = false;
+  box.className = 'topic-suggestion ai-topic-suggestion';
+  box.innerHTML = `
+    <span class="suggestion-kicker">KI er usikker</span>
+    <strong>Velg temaet som ligger nærmest</strong>
+    <p>${escapeHtml(classification.reason || 'Beskrivelsen kan passe flere steder.')}</p>
+    <div class="suggestion-actions">${choices}</div>
+  `;
+
+  box.querySelectorAll('[data-ai-topic]').forEach(button => {
+    button.addEventListener('click', () => {
+      const topic = topics.find(item => item.id === button.dataset.aiTopic);
+      if (!topic) return;
+      const subtopic = topicSubtopicByTitle(topic, button.dataset.aiSubtopic) || topic.subtopics[0];
+      openGuidanceFromSuggestion(topic, subtopic, situation);
+      showAutoTopicNote(topic, subtopic, { ...classification, confidence: 'low', reason: 'Du valgte temaet etter KI-forslaget.' });
+    });
+  });
+}
+
+async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBoxId, selectedTopicId = '' }) {
+  const situation = String(value || '').trim();
+  const box = document.querySelector(boxId);
+  if (!box || situation.length < 4) {
+    if (box) {
+      box.hidden = false;
+      box.className = 'topic-suggestion';
+      box.innerHTML = '<strong>Beskriv situasjonen litt mer.</strong><p>En kort setning eller to gjør temaforslaget mer presist.</p>';
+    }
+    return;
+  }
+
+  const privacy = updateFinderPrivacyCheck(inputId, privacyBoxId);
+  if (privacy.blocked) return;
+
+  box.hidden = false;
+  box.className = 'topic-suggestion ai-topic-suggestion loading';
+  box.innerHTML = '<div class="topic-thinking"><span class="thinking-spinner" aria-hidden="true"></span><div><strong>Forstår situasjonen …</strong><p>KI vurderer hele konteksten og finner mest sannsynlige tema.</p></div></div>';
+
+  try {
+    const classification = await requestTopicClassification(situation, selectedTopicId);
+    const topic = topics.find(item => item.id === classification.primary_topic_id);
+    const subtopic = topicSubtopicByTitle(topic, classification.primary_subtopic);
+    if (!topic || !subtopic) throw new Error('Ugyldig tema fra KI.');
+
+    if (classification.confidence === 'low') {
+      renderLowConfidenceTopicChoice(box, classification, situation);
+      return;
+    }
+
+    // Høy/middels sikkerhet: færre klikk. Gå direkte videre og la brukeren endre tema ved behov.
+    openGuidanceFromSuggestion(topic, subtopic, situation);
+    showAutoTopicNote(topic, subtopic, classification);
+  } catch (error) {
+    console.warn('KI-temaforslag feilet, bruker lokal reserve:', error);
+    if (selectedTopicId && currentTopic) renderSubtopicSuggestion(situation);
+    else renderSuggestion(situation);
+    const fallbackBox = document.querySelector(boxId);
+    if (fallbackBox) {
+      fallbackBox.insertAdjacentHTML('afterbegin', '<span class="suggestion-kicker">Lokal reserve</span>');
+    }
+  }
 }
 
 
@@ -1459,7 +1635,7 @@ async function appendConversationTurn(question) {
 
 const searchAliases = {
   'fravaer-oppfolging': ['sykemelding','sykmelding','sykemeldt','sykmeldt','sykemeld','sykmeld','sykefravær','fravær','langtidsfravær','langtidssyk','borte fra jobb','mye borte','korttidsfravær','oppmøte','for sent','tilbake etter sykmelding','tilrettelegging'],
-  'prestasjon-utvikling': ['prestasjon','leveranse','resultat','måloppnåelse','kvalitet','frister','kompetanse','mestring','arbeidsutførelse','gjør ikke jobben'],
+  'prestasjon-utvikling': ['prestasjon','leveranse','resultat','måloppnåelse','kvalitet','frister','kompetanse','mestring','arbeidsutførelse','gjør ikke jobben','sitter på internett','internett i arbeidstiden','surfer på nettet','privat surfing','sosiale medier','bruker mye tid på nettet','telefonen i arbeidstiden','mobilen i arbeidstiden','bruker tiden på'],
   'lonn-utvikling': ['lønn','lønnsøkning','opprykk','forfremmelse','ny stilling','karriere','utviklingsmulighet','ansvarstillegg'],
   'samarbeid-kommunikasjon': ['konflikt','samarbeid','kommunikasjon','uenighet','tillit','tone','team','krangel','snakker ikke sammen'],
   'alkohol-rus': ['alkohol','rus','beruset','påvirket','drikking','narkotika','stoff','promille'],
@@ -1730,48 +1906,71 @@ document.querySelector('#back-to-topic').addEventListener('click', () => {
   if (currentTopic) openTopic(currentTopic);
 });
 
+document.querySelector('#change-auto-topic')?.addEventListener('click', () => {
+  const situation = document.querySelector('#situation')?.value || '';
+  const finder = document.querySelector('#topic-search');
+  if (finder) finder.value = situation;
+  setBreadcrumb('');
+  showView('home');
+  requestAnimationFrame(() => finder?.focus());
+});
+
 document.querySelector('#back-from-settings').addEventListener('click', () => {
   setBreadcrumb('');
   showView('home');
 });
 
-document.querySelector('#topic-finder-form').addEventListener('submit', event => {
+document.querySelector('#topic-finder-form').addEventListener('submit', async event => {
   event.preventDefault();
   const value = document.querySelector('#topic-search').value;
-  renderSuggestion(value);
-  filterTopicCards(value);
+  await classifyAndContinueFromFinder({
+    value,
+    boxId: '#topic-suggestion',
+    inputId: '#topic-search',
+    privacyBoxId: '#topic-finder-privacy'
+  });
 });
 
 document.querySelector('#topic-search').addEventListener('input', event => {
   const value = event.target.value;
   const box = document.querySelector('#topic-suggestion');
-  filterTopicCards(value);
+  updateFinderPrivacyCheck('#topic-search', '#topic-finder-privacy');
+  // Ikke prøv å "gjette" tema mens brukeren fortsatt skriver. KI vurderer hele setningen ved innsending.
+  document.querySelectorAll('.topic-card').forEach(card => {
+    card.hidden = false;
+    card.classList.remove('search-match');
+  });
   if (!value.trim()) {
     box.hidden = true;
     box.innerHTML = '';
-    return;
   }
-  if (value.trim().length >= 2) renderSuggestion(value);
 });
 
 
-document.querySelector('#topic-detail-search-form').addEventListener('submit', event => {
+document.querySelector('#topic-detail-search-form').addEventListener('submit', async event => {
   event.preventDefault();
   const value = document.querySelector('#topic-detail-search').value;
-  renderSubtopicSuggestion(value);
-  filterSubtopicCards(value);
+  await classifyAndContinueFromFinder({
+    value,
+    boxId: '#subtopic-suggestion',
+    inputId: '#topic-detail-search',
+    privacyBoxId: '#topic-detail-privacy',
+    selectedTopicId: currentTopic?.id || ''
+  });
 });
 
 document.querySelector('#topic-detail-search').addEventListener('input', event => {
   const value = event.target.value;
-  filterSubtopicCards(value);
+  updateFinderPrivacyCheck('#topic-detail-search', '#topic-detail-privacy');
+  document.querySelectorAll('.subtopic-card').forEach(card => {
+    card.hidden = false;
+    card.classList.remove('search-match');
+  });
   const box = document.querySelector('#subtopic-suggestion');
   if (!value.trim()) {
     box.hidden = true;
     box.innerHTML = '';
-    return;
   }
-  if (value.trim().length >= 2) renderSubtopicSuggestion(value);
 });
 
 function setAiThinking(active, title = 'Samtalestøtte jobber …', detail = 'Leser situasjonen og finner relevante hensyn.') {

@@ -1,3 +1,15 @@
+# Versjon 19.10 – smartere temaforståelse og forbedret førsteflyt
+
+- Ny KI-basert temaklassifisering som vurderer hele situasjonen i stedet for å stole på enkle nøkkelord.
+- Eksplisitt skille mellom vanlig nett-/telefonbruk og faktiske sikkerhets- eller rusrelaterte signaler.
+- Ved høy eller middels sikkerhet går brukeren direkte videre til foreslått hovedtema og undertema, med enkel «Endre tema»-mulighet.
+- Ved lav sikkerhet vises noen få relevante temavalg i stedet for å late som systemet vet sikkert.
+- Lokal personvernsjekk er lagt inn før første tema- og undertemaforslag, slik at tydelige identifikatorer stoppes før KI-kallet.
+- Snakkeboblehalene i simuleringen er bygget om til en betydelig lengre, integrert og avsmalnende form.
+- Hovedlogoen i hybridmenyen er lysnet for bedre kontrast.
+- De små logosymbolene ved Om, Kontakt, Innstillinger, Historikk, Personvern og Vilkår er løftet slik at boblehalen visuelt peker mot øvre del av overskriften.
+- Ny statisk test: `npm run test-ui:v19.10`.
+
 # v19.9.0 – Hybridtema og siste visuelle justeringer
 
 - Lagt til nytt tema **Hybrid** og gjort det til standard: mørk petrolfarget sidemeny med lys tekst og lyst hovedinnhold.

@@ -1303,3 +1303,82 @@ html[data-theme="hybrid"] .sidebar-toggle:hover{background:#245d6d}
   .employee-bubble::after{left:-11px}
   .leader-bubble::after{right:-11px}
 }
+
+/* v19.10 – smartere temaflyt, personvern før KI og tydeligere visuelle detaljer */
+
+/* Hovedlogoen i hybridmenyen skal ha litt lysere ordmerke mot den mørke petroleumsflaten. */
+html[data-theme="hybrid"] .sidebar .brand-logo{
+  filter:brightness(1.24) saturate(.94);
+}
+
+/* Små logosymboler ved Om/Kontakt/Innstillinger m.m. løftes slik at boblehalen peker mot toppen av overskriften. */
+.utility-title-row .utility-page-brand{
+  transform:translateY(-8px);
+}
+
+/* Personvernsjekk også før første tema-/undertemaforslag. */
+.finder-privacy-check{
+  max-width:none;
+  width:100%;
+  margin:10px 0 0;
+}
+.ai-topic-suggestion.loading{padding:16px 18px}
+.topic-thinking{display:flex;align-items:center;gap:12px}
+.topic-thinking p{margin:3px 0 0;color:var(--muted)}
+
+/* KI velger sannsynlig tema automatisk. Brukeren kan enkelt korrigere valget. */
+.auto-topic-note{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+  margin:0 0 14px;
+  padding:11px 14px;
+  border:1px solid color-mix(in srgb,var(--accent) 26%,var(--border));
+  border-radius:14px;
+  background:color-mix(in srgb,var(--accent-soft) 38%,var(--surface));
+}
+.auto-topic-note[hidden]{display:none}
+.auto-topic-copy{display:grid;gap:3px;min-width:0}
+.auto-topic-copy strong{font-size:.92rem}
+.auto-topic-copy span{font-size:.82rem;color:var(--muted);line-height:1.4}
+.auto-topic-change{flex:0 0 auto;white-space:nowrap}
+.topic-choice-button{min-width:160px}
+
+/* Simulator: lang, integrert og tydelig snakkeboblehale – ikke en liten chat-trekant. */
+.simulation-bubble-row{gap:42px}
+.simulation-view .simulation-bubble{overflow:visible;isolation:isolate}
+.leader-bubble:before,.employee-bubble:before,
+.leader-bubble:after,.employee-bubble:after{
+  content:"";
+  position:absolute;
+  pointer-events:none;
+  transform:none;
+  z-index:-1;
+}
+.leader-bubble:before,.employee-bubble:before{
+  bottom:3px;
+  width:50px;
+  height:38px;
+  background:var(--border);
+  clip-path:path("M 50 2 C 40 8 29 21 3 36 C 20 32 38 25 50 14 Z");
+}
+.leader-bubble:after,.employee-bubble:after{
+  bottom:5px;
+  width:46px;
+  height:34px;
+  background:inherit;
+  clip-path:path("M 46 2 C 37 8 27 19 3 32 C 19 29 35 23 46 13 Z");
+}
+.employee-bubble:before{left:-39px}
+.employee-bubble:after{left:-35px}
+.leader-bubble:before{right:-39px;transform:scaleX(-1)}
+.leader-bubble:after{right:-35px;transform:scaleX(-1)}
+
+@media(max-width:760px){
+  .utility-title-row .utility-page-brand{transform:translateY(-6px)}
+  .simulation-bubble-row{gap:34px}
+  .employee-bubble:before{left:-32px}.employee-bubble:after{left:-29px}
+  .leader-bubble:before{right:-32px}.leader-bubble:after{right:-29px}
+  .auto-topic-note{align-items:flex-start;flex-direction:column;gap:9px}
+}
