@@ -1,3 +1,12 @@
+
+## 19.6.0
+- La personvernspåminnelse synlig på Samtalesimulering.
+- Enter sender melding i simulatoren; Shift + Enter gir linjeskift.
+- Gjorde «Ny samtale» i toppbaren mer kompakt.
+- Tilpasset «Utvid samtalen» til øvrig knappestil og hindret grid-rader i å strekkes ved utvidelse.
+- Gjorde snakkeboblehaler tydeligere både på simulatorinnganger og i live-chatten.
+- Innførte mer petrolpreget og konsekvent hover-feedback i lys og mørk modus.
+- Flyttet symbolslogo ved siden av overskriften på innstillinger, historikk, personvern, vilkår, om og kontakt.
 # CHANGELOG – Samtalestøtte
 
 ## v19.5 – Opprydding før brukertest

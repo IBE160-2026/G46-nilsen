@@ -41,7 +41,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.5.0", contactEmail: "" };
+let publicConfig = { appVersion: "19.6.0", contactEmail: "" };
 
 const topics = [
   {
@@ -2434,6 +2434,13 @@ document.querySelector('#simulation-form')?.addEventListener('submit', async eve
   const text = input.value;
   input.value = '';
   await submitSimulationTurn(text);
+});
+document.querySelector('#simulation-input')?.addEventListener('keydown', event => {
+  if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+  event.preventDefault();
+  const input = event.currentTarget;
+  if (!input.value.trim()) return;
+  input.form?.requestSubmit();
 });
 document.querySelector('#toggle-simulation-help')?.addEventListener('click', () => {
   const help = document.querySelector('#simulation-help');

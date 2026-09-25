@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=19.5" />
+  <link rel="stylesheet" href="styles.css?v=19.6" />
 </head>
 <body>
   <div class="app-shell">
@@ -318,6 +318,15 @@
           </div>
         </div>
 
+        <div class="simulation-privacy-banner" role="note" aria-label="Personvern i samtalesimulering">
+          <span class="simulation-privacy-icon" aria-hidden="true">◈</span>
+          <div>
+            <strong>Hold øvelsen anonym</strong>
+            <p>Ikke skriv navn eller andre opplysninger som gjør medarbeideren lett gjenkjennelig. Beskriv situasjonen generelt. Samtalesimuleringen er et øvingsverktøy – ikke et system for lagring av personalsaker.</p>
+          </div>
+          <button class="text-button simulation-privacy-link" type="button" data-open-legal="privacy">Personvern</button>
+        </div>
+
         <section id="simulation-hub" class="simulation-hub">
           <div class="simulation-hub-heading">
             <h2>Hvordan vil du starte?</h2>
@@ -428,6 +437,7 @@
               </div>
               <form id="simulation-form" class="simulation-form" autocomplete="off">
                 <textarea id="simulation-input" rows="2" placeholder="Skriv det du ville sagt …" required></textarea>
+                <div class="simulation-input-meta">Enter for å sende · Shift + Enter for linjeskift</div>
                 <div class="simulation-form-actions">
                   <button class="primary-button" type="submit">Si dette</button>
                   <button class="secondary-button" id="toggle-simulation-help" type="button" hidden>Trenger du hjelp?</button>
@@ -456,7 +466,7 @@
       <section id="settings-view" class="view">
         <button class="back-link" id="back-from-settings" type="button">← Tilbake til hjem</button>
         <div class="content-header">
-          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo.png" alt="" /></div>
+          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
           <span class="eyebrow">INNSTILLINGER</span>
           <h1>Utseende</h1>
           <p>Velg det temaet som er mest behagelig å bruke.</p>
@@ -485,7 +495,7 @@
       <section id="history-view" class="view">
         <button class="back-link" id="back-from-history" type="button">← Tilbake til hjem</button>
         <div class="content-header history-header">
-          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo.png" alt="" /></div>
+          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
           <span class="eyebrow">DIN KONTO</span>
           <h1>Samtalehistorikk</h1>
           <p>Her finner du samtalene du har valgt å lagre. Du kan åpne eller slette dem når du vil.</p>
@@ -503,7 +513,7 @@
 
       <section id="privacy-view" class="view legal-view">
         <button class="back-link legal-back" type="button">← Tilbake</button>
-        <div class="content-header"><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo.png" alt="" /></div><span class="eyebrow">PERSONVERN</span><h1>Personvernerklæring</h1><p>Slik behandler Samtalestøtte opplysninger i betaversjonen.</p></div>
+        <div class="content-header"><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div><span class="eyebrow">PERSONVERN</span><h1>Personvernerklæring</h1><p>Slik behandler Samtalestøtte opplysninger i betaversjonen.</p></div>
         <article class="legal-document">
           <h2>Hvilke opplysninger lagres?</h2><p>Når du oppretter konto lagres valgt brukernavn, e-postadresse og teknisk informasjon som er nødvendig for sikker innlogging. Passord lagres ikke i klartekst.</p>
           <h2>Hvorfor lagres opplysningene?</h2><p>Opplysningene brukes for å opprette og administrere kontoen, gi tilgang til samtalehistorikk og la deg logge inn igjen. Du trenger ikke bruke ditt virkelige navn som brukernavn.</p>
@@ -517,7 +527,7 @@
 
       <section id="terms-view" class="view legal-view">
         <button class="back-link legal-back" type="button">← Tilbake</button>
-        <div class="content-header"><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo.png" alt="" /></div><span class="eyebrow">VILKÅR</span><h1>Bruksvilkår</h1><p>Rammer for trygg bruk av Samtalestøtte.</p></div>
+        <div class="content-header"><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div><span class="eyebrow">VILKÅR</span><h1>Bruksvilkår</h1><p>Rammer for trygg bruk av Samtalestøtte.</p></div>
         <article class="legal-document">
           <h2>Brukerens ansvar</h2><p>Du er ansvarlig for innholdet du legger inn og for å følge eventuell taushetsplikt, sikkerhetsinstruks og arbeidsgivers interne regler.</p>
           <h2>Anonymiser så langt som mulig</h2><p>Unngå navn, kontaktinformasjon, fødselsdato, personnummer og andre unødvendige identifiserende opplysninger. Bruk rollebeskrivelser som «medarbeideren». Behold bare arbeidskontekst som er nødvendig for relevante råd.</p>
@@ -529,7 +539,7 @@
       <section id="about-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
         <div class="content-header">
-          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo.png" alt="" /></div>
+          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
           <span class="eyebrow">OM TJENESTEN</span>
           <h1>Om Samtalestøtte</h1>
           <p>Samtalestøtte er utviklet for å hjelpe ledere med å forberede og gjennomføre krevende samtaler i arbeidslivet.</p>
@@ -552,14 +562,14 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">19.5.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">19.6.0</strong></p>
         </div>
       </section>
 
       <section id="contact-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
         <div class="content-header">
-          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo.png" alt="" /></div>
+          <div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div>
           <span class="eyebrow">KONTAKT OG TILBAKEMELDING</span>
           <h1>Spørsmål eller noe som ikke virker?</h1>
           <p>Rapporter gjerne tekniske feil, uklare råd, feil i kilder eller andre forbedringsforslag.</p>
