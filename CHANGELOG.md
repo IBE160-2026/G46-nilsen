@@ -1,3 +1,10 @@
+# v19.11.1 – hurtigfiks innlogging
+
+- Rettet påloggingsknappen slik at innloggingsdialogen alltid åpnes for utloggede brukere.
+- Innloggingsdialogen forklarer tydelig at innlogging kreves for å bruke Samtalestøtte.
+- Fjernet firkantet hoverflate rundt hele profil/Logg på-elementet.
+- Oppdatert cache-versjon på CSS og JavaScript slik at Render-klienten henter de nye filene etter deploy.
+
 # Versjon 19.10 – smartere temaforståelse og forbedret førsteflyt
 
 - Ny KI-basert temaklassifisering som vurderer hele situasjonen i stedet for å stole på enkle nøkkelord.

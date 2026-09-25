@@ -860,7 +860,6 @@ html[data-theme="dark"] .legal-note{background:color-mix(in srgb,var(--accent-so
 .text-button:hover:not(:disabled),
 .theme-switcher button:hover:not(:disabled),
 .settings-theme-options button:hover:not(:disabled),
-.profile-chip:hover:not(:disabled),
 .reaction-style:hover:not(:disabled),
 .simulation-choice:hover:not(:disabled),
 .simulation-help-actions button:hover:not(:disabled),
@@ -1504,3 +1503,17 @@ html[data-theme="hybrid"] .sidebar .brand-logo{
   .employee-bubble::before,.conversation-assistant::before{left:-26px;width:28px;height:24px}
   .leader-bubble::before,.conversation-user::before{right:-26px;width:28px;height:24px}
 }
+
+
+/* v19.11.1: profil/logg-på skal ikke få en firkantet hoverflate. */
+.profile-chip:hover,
+.profile-chip:focus-visible{
+  background:transparent !important;
+  border-color:transparent !important;
+  box-shadow:none !important;
+  color:inherit !important;
+}
+.profile-chip:hover #profile-name,
+.profile-chip:focus-visible #profile-name{color:var(--accent-strong);}
+.profile-chip:hover .profile-avatar,
+.profile-chip:focus-visible .profile-avatar{box-shadow:0 0 0 2px color-mix(in srgb,var(--accent) 24%,transparent);}

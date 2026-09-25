@@ -2152,9 +2152,26 @@ async function refreshAuth() {
 }
 function openAuth(mode='login', required = !currentUser) {
   const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
-  document.querySelector('#login-panel').hidden=mode!=='login'; document.querySelector('#register-panel').hidden=mode!=='register';
-  dlg.classList.toggle('required-auth', Boolean(required && !currentUser));
-  if(!dlg.open) dlg.showModal();
+  const loginPanel=document.querySelector('#login-panel');
+  const registerPanel=document.querySelector('#register-panel');
+  if(loginPanel) loginPanel.hidden=mode!=='login';
+  if(registerPanel) registerPanel.hidden=mode!=='register';
+  const mustLogin=Boolean(required && !currentUser);
+  dlg.classList.toggle('required-auth', mustLogin);
+  const intro=document.querySelector('#login-intro');
+  if(intro && mode==='login') intro.textContent=mustLogin
+    ? 'Du må være logget inn for å bruke Samtalestøtte.'
+    : 'Logg inn for å bruke Samtalestøtte.';
+  try {
+    if(dlg.open) dlg.close();
+    dlg.showModal();
+  } catch (_) {
+    dlg.setAttribute('open','');
+  }
+  requestAnimationFrame(()=>{
+    const target=mode==='login' ? document.querySelector('#login-email') : document.querySelector('#register-username');
+    target?.focus();
+  });
 }
 function closeAuth(){
   const dlg=document.querySelector('#auth-dialog');
@@ -2260,7 +2277,7 @@ function closeProfileMenu(){
 
 document.querySelector('#profile-button')?.addEventListener('click',(event)=>{
   event.stopPropagation();
-  if(!currentUser) return openAuth('login');
+  if(!currentUser) return openAuth('login', true);
   const m=document.querySelector('#profile-menu');
   m.hidden=!m.hidden;
   document.querySelector('#profile-button').setAttribute('aria-expanded',String(!m.hidden));
