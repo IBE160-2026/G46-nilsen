@@ -1,3 +1,13 @@
+## v19.12.4 – personvern i alle chatter + UI-justeringer
+
+- Oppfølgingschatten («Fortsett samtalen») får lokal personvernsjekk før hver melding sendes.
+- Samtalesimuleringen sjekkes både i skrivefeltet og på nytt rett før meldingen lagres/sendes.
+- Navnedeteksjonen kan finne flere navn i samme melding, for eksempel både «Kenneth» og «Tore».
+- «Fiks personvern» kan erstatte alle flaggede navn i samme tekst.
+- Profillogo/avatar flyttes 6 px lenger ned.
+- Ikonet for «Lønn og utvikling» endres fra mynter til en tydelig pengeseddel med pil.
+- v19.12.3 sin ryddede bobleløsning beholdes urørt.
+
 ## v19.12.3 – ryddet snakkeboblekode
 
 - Fjerner gamle og konkurrerende boble-/haleimplementasjoner.

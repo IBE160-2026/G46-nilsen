@@ -19,7 +19,7 @@ const svgIcons = {
   glassOff: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l-1.4 7.2A3.7 3.7 0 0 1 12 14.2a3.7 3.7 0 0 1-3.6-3L7 4Z"></path><path d="M12 14.2V20"></path><path d="M8.5 20h7"></path><path d="M4 4l16 16"></path></svg>`,
   calendarClock: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="14" height="14" rx="2"></rect><path d="M7 3.5v4M14 3.5v4M3.5 9.5h14"></path><circle cx="17.5" cy="16.5" r="4"></circle><path d="M17.5 14.3v2.4l1.5 1"></path></svg>`,
   trendUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"></path><path d="m7 15 4-4 3 2 5-6"></path><path d="M15.5 7H19v3.5"></path></svg>`,
-  coinsUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="8" cy="15.5" rx="4" ry="2"></ellipse><path d="M4 15.5v3c0 1.1 1.8 2 4 2s4-.9 4-2v-3"></path><path d="M13 12l5-5"></path><path d="M14.5 7H18v3.5"></path></svg>`,
+  coinsUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="7.5" width="13" height="9" rx="1.5"></rect><circle cx="10" cy="12" r="2.2"></circle><path d="M5.5 10h1M13.5 14h1"></path><path d="M14 8l5-4"></path><path d="M15.5 4H19v3.5"></path></svg>`,
   chatPeople: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.5"></circle><circle cx="16" cy="8" r="2.5"></circle><path d="M3.5 16c.5-2.2 2.2-3.5 4.5-3.5 1.1 0 2.1.3 2.8.8M20.5 16c-.5-2.2-2.2-3.5-4.5-3.5-1.1 0-2.1.3-2.8.8"></path><path d="M8 17.5h8l2.5-2.2V20H8z"></path></svg>`,
   exitDoor: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 20V4h9v16"></path><path d="M10 12h10"></path><path d="m17 9 3 3-3 3"></path></svg>`,
   shieldCheck: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>`,
@@ -545,6 +545,25 @@ function findLikelyGivenName(source) {
   return null;
 }
 
+
+function findLikelyGivenNames(source) {
+  const names = [];
+  let working = String(source || '');
+
+  // Bruk den eksisterende navnedetektoren flere ganger.
+  // Hvert treff maskeres før neste søk, slik at f.eks. både Kenneth og Tore blir funnet.
+  for (let i = 0; i < 10; i += 1) {
+    const hit = findLikelyGivenName(working);
+    if (!hit) break;
+    if (!names.some(name => normalizeNameToken(name) === normalizeNameToken(hit))) {
+      names.push(hit);
+    }
+    const escaped = hit.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    working = working.replace(new RegExp(`\\b${escaped}\\b`, 'iu'), ' ');
+  }
+  return names;
+}
+
 function detectSensitiveInfo(text) {
   const findings = [];
   const source = text || '';
@@ -589,10 +608,14 @@ function detectSensitiveInfo(text) {
     add('workplace_detail', 'Konkret arbeidssted eller enhet', 'Generaliser virksomhetsnavn, avdeling eller lokasjon dersom den konkrete identiteten ikke er nødvendig for rådet. Behold relevant arbeidskontekst.');
   }
 
-  const likelyName = findLikelyGivenName(source);
-  if (likelyName) {
-    add('name', `Mulig personnavn: «${likelyName}»`, 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».');
-  }
+  const likelyNames = findLikelyGivenNames(source);
+  likelyNames.forEach(likelyName => {
+    findings.push({
+      type: 'name',
+      label: `Mulig personnavn: «${likelyName}»`,
+      message: 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».'
+    });
+  });
   if (/\b[A-ZÆØÅ][a-zæøå]+(?:gate|gata|veien|vegen|allé|stien)\s+\d+[A-Za-z]?\b/.test(source)) {
     add('address', 'Mulig gateadresse', 'Fjern konkret adresse eller stedsopplysning som kan identifisere personen.');
   }
@@ -1705,6 +1728,16 @@ function getConversationTurnText(element) {
 }
 
 async function appendConversationTurn(question) {
+  const privacyFindings = detectSensitiveInfo(question);
+  if (splitPrivacyFindings(privacyFindings).hard.length) {
+    const input = document.querySelector('#continue-input');
+    if (input) {
+      input.value = question;
+      updateContinuePrivacy();
+      input.focus();
+    }
+    return false;
+  }
   const thread = document.querySelector('#conversation-thread');
   if (!thread || !question.trim()) return;
   const user = document.createElement('div');
@@ -2208,15 +2241,64 @@ document.querySelector('#generate-guidance').addEventListener('click', showStruc
 document.querySelector('#show-guidance-anyway').addEventListener('click', showStructuredGuidance);
 
 
+
+function ensureContinuePrivacyBox() {
+  let box = document.querySelector('#continue-privacy');
+  if (box) return box;
+  const form = document.querySelector('#continue-form');
+  if (!form) return null;
+  box = document.createElement('div');
+  box.id = 'continue-privacy';
+  box.className = 'privacy-check simulation-turn-privacy';
+  box.hidden = true;
+  form.insertAdjacentElement('beforebegin', box);
+  return box;
+}
+
+function updateContinuePrivacy() {
+  const input = document.querySelector('#continue-input');
+  const box = ensureContinuePrivacyBox();
+  if (!input || !box) return [];
+  const findings = detectSensitiveInfo(input.value);
+  const { hard, soft } = splitPrivacyFindings(findings);
+  const visible = hard.length ? hard : soft;
+
+  input.setAttribute('aria-invalid', hard.length ? 'true' : 'false');
+
+  if (!input.value.trim() || !visible.length) {
+    box.hidden = true;
+    box.innerHTML = '';
+    return findings;
+  }
+
+  box.hidden = false;
+  box.className = `privacy-check simulation-turn-privacy warning ${hard.length ? 'blocking' : 'advisory'}`;
+  box.innerHTML = hard.length
+    ? `<strong>Kan ikke sendes ennå</strong><span>Jeg fant opplysninger som må anonymiseres først:</span><ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul><div class="privacy-fix-actions"><button type="button" class="secondary-button compact-fix-button" id="continue-privacy-fix">Fiks personvern</button><small>Les gjennom teksten før du sender.</small></div>`
+    : `<strong>Kan dette anonymiseres litt mer?</strong><span>Disse detaljene kan gjøre personen lettere å kjenne igjen. Du kan sende likevel, eller generalisere dem først:</span><ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul><div class="privacy-fix-actions"><button type="button" class="secondary-button compact-fix-button" id="continue-privacy-fix">Generaliser forslag</button></div>`;
+
+  box.querySelector('#continue-privacy-fix')?.addEventListener('click', () => {
+    input.value = autoFixPrivacyText(input.value, findings);
+    updateContinuePrivacy();
+    input.focus();
+  });
+  return findings;
+}
+
 document.querySelector('#continue-form')?.addEventListener('submit', event => {
   event.preventDefault();
   const input = document.querySelector('#continue-input');
   const value = input.value.trim();
   if (!value) return;
+  const findings = updateContinuePrivacy();
+  if (splitPrivacyFindings(findings).hard.length) return;
   appendConversationTurn(value);
   input.value = '';
+  updateContinuePrivacy();
   input.focus();
 });
+
+document.querySelector('#continue-input')?.addEventListener('input', updateContinuePrivacy);
 
 document.querySelector('#continue-input')?.addEventListener('keydown', event => {
   if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
@@ -2838,6 +2920,16 @@ async function readJsonResponse(response) {
 async function submitSimulationTurn(text) {
   const cleaned = text.trim();
   if (!cleaned) return;
+  const privacyFindings = detectSensitiveInfo(cleaned);
+  if (splitPrivacyFindings(privacyFindings).hard.length) {
+    const input = document.querySelector('#simulation-input');
+    if (input) {
+      input.value = cleaned;
+      updateSimulationTurnPrivacy();
+      input.focus();
+    }
+    return false;
+  }
   simulationTurns.push({ role: 'leader', text: cleaned });
   renderSimulationThread();
   const thread = document.querySelector('#simulation-thread');
