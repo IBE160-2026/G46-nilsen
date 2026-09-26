@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = '19.11.4-debug';
+  const VERSION = '19.11.5-hotfix';
   const startedAt = new Date();
   const lines = [];
   const stamp = () => new Date().toLocaleTimeString('nb-NO', { hour12: false });

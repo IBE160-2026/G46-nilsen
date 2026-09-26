@@ -1,3 +1,9 @@
+## v19.11.5 – innlogging hotfix
+
+- Retter JavaScript-feilen `carriedSituation is not defined` i `resetConversationState()`.
+- Feilen stoppet `app.js` under oppstart og gjorde at knapper/innlogging ikke fikk registrert hendelseslyttere.
+- Beholder midlertidig innloggingsfeilsøker for å verifisere hele kjeden etter deploy.
+
 # v19.11.3 – tvungen innloggingsport
 
 - Innloggingsvinduet vises umiddelbart når nettsiden åpnes dersom ingen gyldig sesjon finnes.

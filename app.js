@@ -324,7 +324,7 @@ function resetConversationState() {
   if (search) search.value = '';
 
   const detailSearch = document.querySelector('#topic-detail-search');
-  if (detailSearch) detailSearch.value = carriedSituation;
+  if (detailSearch) detailSearch.value = pendingSituationText;
 
   const subSuggestion = document.querySelector('#subtopic-suggestion');
   if (subSuggestion) {
