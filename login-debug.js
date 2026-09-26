@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = '19.11.6-persistent-auth';
+  const VERSION = '19.11.7-auth-ai-hotfix';
   const startedAt = new Date();
   const lines = [];
   const stamp = () => new Date().toLocaleTimeString('nb-NO', { hour12: false });
@@ -18,7 +18,7 @@
   async function serverProbe() {
     try {
       log('Steg 1/7: Feilsøker lastet.', { version: VERSION, path: location.pathname });
-      const r = await fetch('/api/auth/diagnostic', { cache: 'no-store', credentials: 'same-origin' });
+      const r = await fetch('/api/auth/diagnostic', { cache: 'no-store', credentials: 'include' });
       const body = await safeJson(r);
       log(`Steg 2/7: Serverkontakt ${r.ok ? 'OK' : 'FEIL'} (HTTP ${r.status}).`, body.parsed || body.raw);
     } catch (error) {
@@ -68,7 +68,7 @@
         const r = await fetch('/api/auth/login', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'X-Login-Debug': VERSION },
-          credentials: 'same-origin',
+          credentials: 'include',
           cache: 'no-store',
           signal: controller.signal,
           body: JSON.stringify({ identifier, password })
@@ -88,7 +88,7 @@
           if (msg) { msg.className = 'auth-message error'; msg.textContent = body.parsed?.message || `Innlogging feilet (HTTP ${r.status}).`; }
           return;
         }
-        const me = await fetch('/api/auth/me', { cache: 'no-store', credentials: 'same-origin' });
+        const me = await fetch('/api/auth/me', { cache: 'no-store', credentials: 'include' });
         const meBody = await safeJson(me);
         log(`Steg 7/7: Session-kontroll HTTP ${me.status}.`, {
           hasUser: Boolean(meBody.parsed?.user),

@@ -788,6 +788,7 @@ function updateFinderPrivacyCheck(inputId, boxId) {
 async function requestTopicClassification(situation, selectedTopicId = '') {
   const response = await fetch('/api/classify-topic', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ situation, selectedTopicId })
   });
@@ -1054,6 +1055,7 @@ function renderSituationUnderstanding(analysis) {
 async function requestAiSituationAnalysis(situation, helpRequest) {
   const response = await fetch('/api/analyze-situation', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
       situation,
@@ -1077,6 +1079,7 @@ async function requestAiSituationAnalysis(situation, helpRequest) {
 async function requestAiGuidance(situation, analysis, followups) {
   const response = await fetch('/api/generate-guidance', {
     method: 'POST',
+    credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ situation, analysis, followups })
   });
@@ -1618,6 +1621,7 @@ async function appendConversationTurn(question) {
     if (!lastAiAnalysis) throw new Error('Ingen aktiv KI-kontekst.');
     const response = await fetch('/api/continue-conversation', {
       method: 'POST',
+      credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         situation: document.querySelector('#situation')?.value.trim() || '',
@@ -2078,7 +2082,10 @@ document.querySelector('#situation-form').addEventListener('submit', async event
          <span>${escapeHtml(diagnostic.hint || '')}</span>
          <details><summary>Teknisk detalj</summary><small>${escapeHtml(diagnostic.apiMessage || 'Ingen detalj tilgjengelig.')} · Modell: ${escapeHtml(diagnostic.model || 'ukjent')}</small></details>`
       : '<span>Se PowerShell-vinduet for den konkrete API-feilen.</span>';
-    note.innerHTML = `<strong>Ekte KI er ikke tilgjengelig akkurat nå.</strong><span>${escapeHtml(error.message)} Den lokale reserveflyten vises kun dersom KI-tjenesten ikke er tilgjengelig.</span>${details}`;
+    const authProblem = error.code === 'AUTH_REQUIRED';
+    note.innerHTML = authProblem
+      ? `<strong>Innloggingen må fornyes.</strong><span>${escapeHtml(error.message)}</span>${details}`
+      : `<strong>KI-kallet kunne ikke gjennomføres.</strong><span>${escapeHtml(error.message)} Den lokale reserveflyten vises midlertidig.</span>${details}`;
     document.querySelector('#situation-understanding').prepend(note);
   } finally {
     setAiThinking(false);
@@ -2157,7 +2164,7 @@ function setAppLocked(locked){
   }
 }
 async function refreshAuth() {
-  try { const r=await fetch('/api/auth/me',{credentials:'same-origin',cache:'no-store'}); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
+  try { const r=await fetch('/api/auth/me',{credentials:'include',cache:'no-store'}); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
   updateAuthUi();
   if(currentUser){
     closeAuth(true);
@@ -2205,7 +2212,7 @@ async function saveCurrentConversation(){
   if(!currentUser || document.querySelector('#temporary-chat')?.checked || document.querySelector('#simulation-temporary')?.checked || (!lastAiGuidance && !directSimulation)) return;
   const situation=directSimulation ? simulationDirectSituation : (document.querySelector('#situation')?.value.trim()||''); if(!situation) return;
   try{
-    const r=await fetch('/api/history',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({
+    const r=await fetch('/api/history',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({
       id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtalesimulering':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{fidelity:simulationFidelity,mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
     })});
     if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
@@ -2217,7 +2224,7 @@ async function openHistory(){
   if(!currentUser){ loggedOut.hidden=false; loggedIn.hidden=true; return; }
   loggedOut.hidden=true; loggedIn.hidden=false;
   const list=document.querySelector('#history-list'); list.innerHTML='<div class="history-empty">Henter historikk …</div>';
-  try{ const r=await fetch('/api/history'); const p=await r.json(); renderHistory(p.items||[]); }catch(_){ list.innerHTML='<div class="history-empty">Kunne ikke hente historikken.</div>'; }
+  try{ const r=await fetch('/api/history',{credentials:'include',cache:'no-store'}); const p=await r.json(); renderHistory(p.items||[]); }catch(_){ list.innerHTML='<div class="history-empty">Kunne ikke hente historikken.</div>'; }
 }
 function renderHistory(items){
   const list=document.querySelector('#history-list'); document.querySelector('#history-count').textContent=`${items.length} lagrede samtaler`;
@@ -2301,7 +2308,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfil
 document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{closeProfileMenu();openHistory();});
 document.querySelector('[data-profile-action="about"]')?.addEventListener('click',()=>openInfoView('about'));
 document.querySelector('[data-profile-action="contact"]')?.addEventListener('click',()=>openInfoView('contact'));
-document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'same-origin'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
+document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth();});
@@ -2310,14 +2317,14 @@ document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('cl
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>{openInfoView('contact'); const c=document.querySelector('#report-category'); if(c)c.value='Uklart eller dårlig KI-svar';});
-document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
-document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',credentials:'same-origin',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
+document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
+document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
 document.querySelector('#new-conversation-button')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#result-new-conversation')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#bottom-new-conversation')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#history-new-conversation')?.addEventListener('click',()=>startNewConversation()); document.querySelector('#cancel-new-chat')?.addEventListener('click',()=>document.querySelector('#discard-dialog').close()); document.querySelector('#confirm-new-chat')?.addEventListener('click',()=>{document.querySelector('#discard-dialog').close();startNewConversation(true);});
-document.querySelector('#delete-account-button')?.addEventListener('click',async()=>{if(!confirm('Slette kontoen og all lagret historikk? Dette kan ikke angres.'))return;const r=await fetch('/api/account',{method:'DELETE'});if(r.ok){currentUser=null;currentConversationId=null;updateAuthUi();startNewConversation(true);}});
-document.querySelector('#delete-all-history')?.addEventListener('click',async()=>{if(!confirm('Slette all samtalehistorikk?'))return;await fetch('/api/history',{method:'DELETE'});openHistory();});
+document.querySelector('#delete-account-button')?.addEventListener('click',async()=>{if(!confirm('Slette kontoen og all lagret historikk? Dette kan ikke angres.'))return;const r=await fetch('/api/account',{method:'DELETE',credentials:'include'});if(r.ok){currentUser=null;currentConversationId=null;updateAuthUi();startNewConversation(true);}});
+document.querySelector('#delete-all-history')?.addEventListener('click',async()=>{if(!confirm('Slette all samtalehistorikk?'))return;await fetch('/api/history',{method:'DELETE',credentials:'include'});openHistory();});
 document.querySelector('#temporary-chat')?.addEventListener('change',e=>{conversationDirty=true;if(!e.target.checked) saveCurrentConversation();});
 document.querySelector('#report-form')?.addEventListener('submit',e=>{
   e.preventDefault(); const msg=document.querySelector('#report-message');
@@ -2579,7 +2586,8 @@ async function submitSimulationTurn(text) {
   waiting.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
     const response = await fetch('/api/simulation-turn', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      credentials: 'include', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(simulationContext())
     });
     const payload = await readJsonResponse(response);
@@ -2603,7 +2611,8 @@ async function requestSimulationHelp(kind) {
   result.innerHTML = '<div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Finner et kort forslag …</p></div>';
   try {
     const response = await fetch('/api/simulation-help', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      credentials: 'include', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ ...simulationContext(), kind })
     });
     const payload = await readJsonResponse(response);
@@ -2637,7 +2646,8 @@ async function endSimulation() {
   content.innerHTML = '<div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Ser gjennom øvelsen …</p></div>';
   try {
     const response = await fetch('/api/simulation-feedback', {
-      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      method: 'POST',
+      credentials: 'include', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(simulationContext())
     });
     const payload = await readJsonResponse(response);

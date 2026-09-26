@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.11.4-debug";
+const appVersion = process.env.APP_VERSION || "19.11.7";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -115,6 +115,13 @@ function newUserClient() {
   });
 }
 
+function authenticatedUserClient(accessToken) {
+  return createClient(supabaseUrl, supabasePublishableKey, {
+    global: { headers: { Authorization: `Bearer ${accessToken}` } },
+    auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+  });
+}
+
 const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
 });
@@ -181,43 +188,73 @@ function clearSession(_req, res) {
 
 async function resolveSession(req, res = null) {
   const cookies = parseCookies(req);
-  const accessToken = cookies[ACCESS_COOKIE];
-  const refreshToken = cookies[REFRESH_COOKIE];
+  let accessToken = cookies[ACCESS_COOKIE];
+  let refreshToken = cookies[REFRESH_COOKIE];
 
-  if (!accessToken || !refreshToken) return null;
-
-  const userClient = newUserClient();
-  const { data, error } = await userClient.auth.setSession({
-    access_token: accessToken,
-    refresh_token: refreshToken
-  });
-
-  if (error || !data.session || !data.user) {
-    if (res) clearSession(req, res);
+  if (!accessToken || !refreshToken) {
     return null;
   }
 
-  // Supabase kan rotere/fornye tokenene. Oppdater de sikre HttpOnly-cookiene
-  // slik at innloggingen overlever Render-redeploy, sleep og serverrestart.
-  if (res && (
-    data.session.access_token !== accessToken ||
-    data.session.refresh_token !== refreshToken
-  )) {
-    setSession(res, data.session);
+  // 1) Valider access-token direkte mot Supabase. Dette er stateless og
+  // overlever Render-redeploy/restart uten serverminne.
+  const { data: userData, error: userError } = await supabaseAdmin.auth.getUser(accessToken);
+  if (!userError && userData?.user) {
+    return {
+      userClient: authenticatedUserClient(accessToken),
+      user: publicUser(userData.user),
+      session: { access_token: accessToken, refresh_token: refreshToken }
+    };
   }
 
-  return { userClient, user: publicUser(data.user), session: data.session };
+  // 2) Access-token kan ha utløpt. Forsøk refresh-token én gang.
+  try {
+    const refreshClient = newUserClient();
+    const { data: refreshed, error: refreshError } = await refreshClient.auth.refreshSession({
+      refresh_token: refreshToken
+    });
+
+    if (!refreshError && refreshed?.session && refreshed?.user) {
+      accessToken = refreshed.session.access_token;
+      refreshToken = refreshed.session.refresh_token;
+      if (res) setSession(res, refreshed.session);
+
+      return {
+        userClient: authenticatedUserClient(accessToken),
+        user: publicUser(refreshed.user),
+        session: refreshed.session
+      };
+    }
+
+    console.warn("[auth] Session kunne ikke fornyes:", refreshError?.message || userError?.message || "ukjent feil");
+  } catch (refreshException) {
+    console.warn("[auth] Refresh kastet feil:", refreshException?.message || refreshException);
+  }
+
+  if (res) clearSession(req, res);
+  return null;
 }
 
 async function requireUser(req, res, next) {
   try {
+    const cookies = parseCookies(req);
+    const hasAccess = Boolean(cookies[ACCESS_COOKIE]);
+    const hasRefresh = Boolean(cookies[REFRESH_COOKIE]);
     const resolved = await resolveSession(req, res);
-    if (!resolved) return res.status(401).json({ error: "AUTH_REQUIRED", message: "Du må logge inn." });
+
+    if (!resolved) {
+      console.warn(`[auth] 401 ${req.method} ${req.path} accessCookie=${hasAccess} refreshCookie=${hasRefresh}`);
+      return res.status(401).json({
+        error: "AUTH_REQUIRED",
+        message: "Innloggingssesjonen ble ikke godkjent. Logg inn på nytt.",
+        diagnostic: { hasAccessCookie: hasAccess, hasRefreshCookie: hasRefresh }
+      });
+    }
+
     req.user = resolved.user;
     req.supabase = resolved.userClient;
     next();
   } catch (error) {
-    console.error("Auth-feil:", error);
+    console.error(`[auth] Feil ${req.method} ${req.path}:`, error);
     res.status(500).json({ error: "AUTH_ERROR", message: "Kunne ikke kontrollere innloggingen." });
   }
 }

@@ -1,3 +1,11 @@
+## v19.11.7 – auth/KI hotfix
+
+- KI- og simulatorkall sender nå eksplisitt innloggingscookies med `credentials: include`.
+- Serveren validerer access-token stateless direkte mot Supabase i stedet for å være avhengig av en lokal auth-session.
+- Utløpt access-token fornyes med refresh-token og nye HttpOnly-cookies sendes tilbake.
+- 401-feil logger nå om access-/refresh-cookie faktisk var med i forespørselen.
+- Meldingen «Ekte KI er ikke tilgjengelig» brukes ikke lenger feilaktig ved auth-problemer.
+
 ## v19.11.6 – persistent innlogging på Render
 
 - Fjerner det midlertidige serverminnet (`Map`) som lagret aktive innlogginger.
