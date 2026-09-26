@@ -1614,12 +1614,53 @@ function buildContinuationReply(question) {
   return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale reserveflyten. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
 }
 
+
+function cleanStoredConversationText(text, role='assistant') {
+  let value = String(text || '').replace(/\r/g, '').trim();
+
+  // Historiske lagringer kunne inneholde UI-tekst fra hele boblen.
+  // Fjern kun kjente UI-rester i starten, og kun når de står som prefiks.
+  value = value.replace(/^(?:svg\s*)+/i, '').trim();
+
+  if (role === 'user') {
+    value = value.replace(/^(?:(?:Du)\s*){1,8}/i, '').trim();
+  } else {
+    value = value.replace(/^(?:(?:Samtalestøtte|SAMTALESTØTTE)\s*){1,8}/i, '').trim();
+  }
+
+  value = value.replace(/^(?:svg\s*)+/i, '').trim();
+  return value;
+}
+
+function setConversationTurnText(element, role, text) {
+  if (!element) return;
+  element.dataset.messageText = cleanStoredConversationText(text, role);
+}
+
+function getConversationTurnText(element) {
+  if (!element) return '';
+  const role = element.classList.contains('conversation-user') ? 'user' : 'assistant';
+
+  // Ny løsning: bruk eksplisitt råtekst som aldri inneholder etikett/SVG.
+  if (typeof element.dataset.messageText === 'string' && element.dataset.messageText.trim()) {
+    return cleanStoredConversationText(element.dataset.messageText, role);
+  }
+
+  // Bakoverkompatibilitet for gamle DOM-elementer: les bare meldingsnoden.
+  const messageNode = role === 'user'
+    ? element.querySelector(':scope > p')
+    : element.querySelector(':scope > .formatted-reply');
+
+  return cleanStoredConversationText(messageNode?.textContent || '', role);
+}
+
 async function appendConversationTurn(question) {
   const thread = document.querySelector('#conversation-thread');
   if (!thread || !question.trim()) return;
   const user = document.createElement('div');
   user.className = 'conversation-turn conversation-user';
   user.innerHTML = `${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(question)}</p>`;
+  setConversationTurnText(user, 'user', question);
   const assistant = document.createElement('div');
   assistant.className = 'conversation-turn conversation-assistant';
   assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker på svaret ditt …</p></div>`;
@@ -1641,12 +1682,15 @@ async function appendConversationTurn(question) {
     });
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
     const payload = await response.json();
-    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(payload.reply || '')}</div>`;
+    const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>`;
+    setConversationTurnText(assistant, 'assistant', assistantReply);
     conversationDirty = true;
     await saveCurrentConversation();
   } catch (_) {
     const reply = buildContinuationReply(question);
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
+    setConversationTurnText(assistant, 'assistant', reply);
   }
 }
 
@@ -2133,26 +2177,57 @@ document.querySelectorAll('.continue-chip').forEach(button => {
 
 
 
+function formatInlineReplyMarkdown(text) {
+  let safe = escapeHtml(String(text || ''));
+
+  // Noen KI-svar kan inneholde escapet markdown. Normaliser bare tegnene vi støtter.
+  safe = safe
+    .replace(/\\\*/g, '*')
+    .replace(/\\:/g, ':');
+
+  // Begrenset inline-Markdown: fet tekst.
+  safe = safe.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
+  return safe;
+}
+
 function formatContinuationReply(text) {
-  const safe = escapeHtml(String(text || '')).replace(/\r/g, '');
-  const lines = safe.split('\n');
+  const normalized = cleanStoredConversationText(text, 'assistant').replace(/\r/g, '');
+  const lines = normalized.split('\n');
   let html = ''; let listOpen = false; let sectionOpen = false;
   const closeList = () => { if (listOpen) { html += '</ul>'; listOpen = false; } };
   const closeSection = () => { closeList(); if (sectionOpen) { html += '</div>'; sectionOpen = false; } };
+
   for (const raw of lines) {
     const line = raw.trim();
     if (!line) { closeList(); continue; }
+
     const heading = line.match(/^(?:#{1,4}\s*)?(\d+)[.)]?\s*(.+)$/);
     const hashHeading = line.match(/^#{1,4}\s+(.+)$/);
+
     if (heading || hashHeading) {
-      closeSection(); sectionOpen = true; html += `<div class="reply-section"><h4>${heading ? `${heading[1]}. ${heading[2]}` : hashHeading[1]}</h4>`; continue;
+      closeSection();
+      sectionOpen = true;
+      const headingText = heading ? `${heading[1]}. ${heading[2]}` : hashHeading[1];
+      html += `<div class="reply-section"><h4>${formatInlineReplyMarkdown(headingText)}</h4>`;
+      continue;
     }
-    if (/^[-•]\s+/.test(line)) { if (!listOpen) { html += '<ul>'; listOpen = true; } html += `<li>${line.replace(/^[-•]\s+/, '')}</li>`; continue; }
+
+    if (/^[-•]\s+/.test(line)) {
+      if (!listOpen) { html += '<ul>'; listOpen = true; }
+      html += `<li>${formatInlineReplyMarkdown(line.replace(/^[-•]\s+/, ''))}</li>`;
+      continue;
+    }
+
     closeList();
-    if (/^&gt;\s*/.test(line)) html += `<blockquote>${line.replace(/^&gt;\s*/, '')}</blockquote>`;
-    else html += `<p>${line}</p>`;
+    if (/^>\s*/.test(line)) {
+      html += `<blockquote>${formatInlineReplyMarkdown(line.replace(/^>\s*/, ''))}</blockquote>`;
+    } else {
+      html += `<p>${formatInlineReplyMarkdown(line)}</p>`;
+    }
   }
-  closeSection(); return html || '<p>Ingen tekst.</p>';
+
+  closeSection();
+  return html || '<p>Ingen tekst.</p>';
 }
 
 function initialsFor(username='') {
@@ -2227,7 +2302,12 @@ function requireLogin() {
   return false;
 }
 function getConversationTurns(){
-  return [...document.querySelectorAll('#conversation-thread .conversation-turn')].map(el=>({role:el.classList.contains('conversation-user')?'user':'assistant',text:el.innerText.replace(/^Du\s*|^Samtalestøtte\s*/,'').trim()}));
+  return [...document.querySelectorAll('#conversation-thread .conversation-turn')]
+    .map(el => {
+      const role = el.classList.contains('conversation-user') ? 'user' : 'assistant';
+      return { role, text: getConversationTurnText(el) };
+    })
+    .filter(turn => turn.text);
 }
 async function saveCurrentConversation(){
   const directSimulation = simulationSource === 'direct' && simulationDirectSituation && simulationTurns.length;
@@ -2260,7 +2340,20 @@ function loadHistoryItem(item){
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
-  const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
+  const thread=document.querySelector('#conversation-thread');
+  thread.innerHTML='';
+  (item.conversation||[]).forEach(turn=>{
+    const role=turn.role==='user'?'user':'assistant';
+    const cleanText=cleanStoredConversationText(turn.text, role);
+    if(!cleanText) return;
+    const el=document.createElement('div');
+    el.className=`conversation-turn ${role==='user'?'conversation-user':'conversation-assistant'}`;
+    el.innerHTML=role==='user'
+      ? `${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(cleanText)}</p>`
+      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>`;
+    setConversationTurnText(el, role, cleanText);
+    thread.appendChild(el);
+  });
   simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
     simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); return;

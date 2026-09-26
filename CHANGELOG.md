@@ -1,3 +1,12 @@
+## v19.12.2 – hotfix for samtale og historikk
+
+- Retter dupliserte etiketter som `DuDU` og `SamtalestøtteSAMTALESTØTTE`.
+- Samtalehistorikk lagrer nå bare selve meldingsteksten, ikke hele boble-DOM-en.
+- SVG/UI-markup kan ikke lenger bli med i nye historikklagringer.
+- Eldre forurensede historikkmeldinger renses ved innlasting.
+- Escapet `**fet tekst**` og `\:` vises riktig i oppfølgingssvar.
+- Ingen endringer i snakkebobledesign/CSS i denne hotfixen.
+
 ## v19.12.1 – fast størrelse på snakkeboblehale
 
 - Boblekroppen kan igjen vokse naturlig med tekstmengden.

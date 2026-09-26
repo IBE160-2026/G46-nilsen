@@ -1,6 +1,6 @@
 {
   "name": "samtalestotte",
-  "version": "19.12.1",
+  "version": "19.12.2",
   "private": true,
   "type": "module",
   "scripts": {
@@ -29,7 +29,8 @@
     "test-v19.11.9": "node test-v19-11-9.cjs",
     "test-v19.11.10": "node test-v19-11-10.cjs",
     "test-v19.12.0": "node test-v19-12-0.cjs",
-    "test-v19.12.1": "node test-v19-12-1.cjs"
+    "test-v19.12.1": "node test-v19-12-1.cjs",
+    "test-history-hotfix": "node test-history-hotfix.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
