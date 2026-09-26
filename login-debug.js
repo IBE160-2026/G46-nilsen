@@ -1,5 +1,5 @@
 (() => {
-  const VERSION = '19.11.5-hotfix';
+  const VERSION = '19.11.6-persistent-auth';
   const startedAt = new Date();
   const lines = [];
   const stamp = () => new Date().toLocaleTimeString('nb-NO', { hour12: false });

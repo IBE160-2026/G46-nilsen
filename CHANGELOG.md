@@ -1,3 +1,12 @@
+## v19.11.6 – persistent innlogging på Render
+
+- Fjerner det midlertidige serverminnet (`Map`) som lagret aktive innlogginger.
+- Supabase access- og refresh-token lagres nå i sikre, HttpOnly-cookies.
+- Innlogging overlever dermed Render-redeploy, sleep og serverrestart.
+- Supabase-session fornyes ved behov og roterte token lagres tilbake i cookie.
+- Frontend sender eksplisitt same-origin credentials på auth-kall.
+- Gamle `samtalestotte_session`-cookies ryddes ved utlogging.
+
 ## v19.11.5 – innlogging hotfix
 
 - Retter JavaScript-feilen `carriedSituation is not defined` i `resetConversationState()`.

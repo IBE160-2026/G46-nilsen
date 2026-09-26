@@ -135,8 +135,9 @@ app.get("/api/auth/diagnostic", (req, res) => {
 function normalizeEmail(value) { return String(value || "").trim().toLowerCase(); }
 function hashInvite(code) { return crypto.createHash("sha256").update(String(code)).digest("hex"); }
 
-const sessions = new Map();
-const SESSION_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
+const SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 7;
+const ACCESS_COOKIE = "samtalestotte_access";
+const REFRESH_COOKIE = "samtalestotte_refresh";
 
 function parseCookies(req) {
   return Object.fromEntries(String(req.headers.cookie || "").split(";").map(v => v.trim()).filter(Boolean).map(v => {
@@ -145,9 +146,9 @@ function parseCookies(req) {
   }));
 }
 
-function sessionCookie(token, maxAge) {
+function authCookie(name, value, maxAge = SESSION_MAX_AGE_SECONDS) {
   const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
-  return `samtalestotte_session=${token}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure}`;
+  return `${name}=${encodeURIComponent(value || "")}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure}`;
 }
 
 function publicUser(user) {
@@ -160,52 +161,57 @@ function publicUser(user) {
   };
 }
 
-function setSession(res, authSession, user) {
-  const token = crypto.randomBytes(32).toString("hex");
-  sessions.set(token, {
-    accessToken: authSession.access_token,
-    refreshToken: authSession.refresh_token,
-    user: publicUser(user || authSession.user),
-    expiresAt: Date.now() + SESSION_MAX_AGE_MS
-  });
-  res.setHeader("Set-Cookie", sessionCookie(token, Math.floor(SESSION_MAX_AGE_MS / 1000)));
-}
-
-function clearSession(req, res) {
-  const token = parseCookies(req).samtalestotte_session;
-  if (token) sessions.delete(token);
-  res.setHeader("Set-Cookie", sessionCookie("", 0));
-}
-
-async function resolveSession(req) {
-  const token = parseCookies(req).samtalestotte_session;
-  const local = token ? sessions.get(token) : null;
-  if (!local || Date.now() > local.expiresAt) {
-    if (token) sessions.delete(token);
-    return null;
+function setSession(res, authSession) {
+  if (!authSession?.access_token || !authSession?.refresh_token) {
+    throw new Error("Supabase-session mangler access_token eller refresh_token.");
   }
+  res.setHeader("Set-Cookie", [
+    authCookie(ACCESS_COOKIE, authSession.access_token),
+    authCookie(REFRESH_COOKIE, authSession.refresh_token)
+  ]);
+}
+
+function clearSession(_req, res) {
+  res.setHeader("Set-Cookie", [
+    authCookie(ACCESS_COOKIE, "", 0),
+    authCookie(REFRESH_COOKIE, "", 0),
+    authCookie("samtalestotte_session", "", 0)
+  ]);
+}
+
+async function resolveSession(req, res = null) {
+  const cookies = parseCookies(req);
+  const accessToken = cookies[ACCESS_COOKIE];
+  const refreshToken = cookies[REFRESH_COOKIE];
+
+  if (!accessToken || !refreshToken) return null;
 
   const userClient = newUserClient();
   const { data, error } = await userClient.auth.setSession({
-    access_token: local.accessToken,
-    refresh_token: local.refreshToken
+    access_token: accessToken,
+    refresh_token: refreshToken
   });
 
   if (error || !data.session || !data.user) {
-    sessions.delete(token);
+    if (res) clearSession(req, res);
     return null;
   }
 
-  local.accessToken = data.session.access_token;
-  local.refreshToken = data.session.refresh_token;
-  local.user = publicUser(data.user);
-  local.expiresAt = Date.now() + SESSION_MAX_AGE_MS;
-  return { token, local, userClient, user: local.user };
+  // Supabase kan rotere/fornye tokenene. Oppdater de sikre HttpOnly-cookiene
+  // slik at innloggingen overlever Render-redeploy, sleep og serverrestart.
+  if (res && (
+    data.session.access_token !== accessToken ||
+    data.session.refresh_token !== refreshToken
+  )) {
+    setSession(res, data.session);
+  }
+
+  return { userClient, user: publicUser(data.user), session: data.session };
 }
 
 async function requireUser(req, res, next) {
   try {
-    const resolved = await resolveSession(req);
+    const resolved = await resolveSession(req, res);
     if (!resolved) return res.status(401).json({ error: "AUTH_REQUIRED", message: "Du må logge inn." });
     req.user = resolved.user;
     req.supabase = resolved.userClient;
@@ -217,7 +223,7 @@ async function requireUser(req, res, next) {
 }
 
 app.get("/api/auth/me", async (req, res) => {
-  const resolved = await resolveSession(req);
+  const resolved = await resolveSession(req, res);
   res.json({ user: resolved?.user || null });
 });
 
@@ -282,7 +288,7 @@ app.post("/api/auth/register", async (req, res) => {
     return res.status(201).json({ user: publicUser(created.user), loginRequired: true });
   }
 
-  setSession(res, signedIn.session, signedIn.user);
+  setSession(res, signedIn.session);
   res.status(201).json({ user: publicUser(signedIn.user) });
 });
 
@@ -330,13 +336,13 @@ app.post("/api/auth/login", async (req, res) => {
     return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord.", debugStage: "supabase-sign-in" });
   }
   console.log(`[auth-debug ${requestId}] Supabase sign-in OK; creating app session`);
-  setSession(res, data.session, data.user);
+  setSession(res, data.session);
   console.log(`[auth-debug ${requestId}] app session created`);
   res.json({ user: publicUser(data.user), debugStage: "complete" });
 });
 
 app.post("/api/auth/logout", async (req, res) => {
-  const resolved = await resolveSession(req);
+  const resolved = await resolveSession(req, res);
   if (resolved) {
     try { await resolved.userClient.auth.signOut(); } catch (_) {}
   }

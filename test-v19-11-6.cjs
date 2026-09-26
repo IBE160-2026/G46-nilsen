@@ -1,0 +1,10 @@
+const fs=require('fs'); const assert=require('assert');
+const server=fs.readFileSync('server.js','utf8');
+const app=fs.readFileSync('app.js','utf8');
+assert(!server.includes('const sessions = new Map()'));
+assert(server.includes('samtalestotte_access'));
+assert(server.includes('samtalestotte_refresh'));
+assert(server.includes('HttpOnly'));
+assert(server.includes('auth.setSession'));
+assert(app.includes("credentials:'same-origin'"));
+console.log('v19.11.6 auth-test OK');
