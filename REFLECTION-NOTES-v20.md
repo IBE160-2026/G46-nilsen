@@ -58,3 +58,13 @@ Det ble valgt en todelt teststrategi fordi en full ende-til-ende-benchmark av al
 Benchmarken lagrer objektive måledata: tokenbruk, estimert kostnad, responstid, weboppslag, søkestrenger og brukte domener, i tillegg til selve svarene. Dette gjør det mulig å sammenligne modellene på både kvalitet, kildebruk og ressursbruk, samtidig som menneskelig vurdering av svarene fortsatt er nødvendig. Testtrafikk skilles fra reell brukertrafikk, slik at kostnads- og brukstall ikke forurenses.
 
 En eksplisitt budsjettgrense ble valgt som sikkerhetsmekanisme. Dette støtter et viktig prosjektprinsipp: kvalitetsarbeid skal være målbart, men testopplegget må stå i forhold til prosjektets økonomi. De registrerte weboppslagene kan også brukes til å identifisere hvilke kilder som senere bør prioriteres i en lokal SOURCEBANK/RAG-løsning for lukket eller offline drift.
+
+## v20.4 – sikkerhet og personvern som arkitekturvalg
+- Personvernsjekk ble flyttet fra å være primært et UI-tiltak til forsvar i dybden: serveren håndhever de harde personvernreglene før ekstern KI kan kalles.
+- Teknisk KI-/kildestatistikk ble bevisst frikoblet fra bruker-ID. Dette bevarer nytten for kostnadsanalyse og framtidig offline SOURCEBANK uten å gjøre loggen til et verktøy for overvåking av enkeltbrukere.
+- Full URL/sidetittel for webkilder lagres når tilgjengelig, men uten samtaletekst eller brukeridentifikator.
+- Retensjon ble gjort eksplisitt og automatisk for å redusere data som blir liggende uten klart behov.
+- Offentlig serverflate ble redusert fra hele prosjektmappen til eksplisitt allowlist. Dette viser forskjellen mellom «hemmelig fil» og faktisk tilgangskontroll.
+- Rate limiting, same-origin-kontroll og sikkerhetsheadere ble lagt inn som generelle plattformtiltak i stedet for å sikre ett endepunkt av gangen.
+- Kontoeksport og mer fullstendig sletting støtter brukerens kontroll over egne data.
+- Tiltak som DPIA, databehandleravtaler, behandlingsgrunnlag og MFA for driftskontoer er dokumentert som organisatoriske krav og ikke fremstilt som noe applikasjonskoden alene kan løse.

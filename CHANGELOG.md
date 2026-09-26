@@ -1133,3 +1133,21 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Testtrafikk merkes separat (`is_test`) og holdes utenfor vanlig kostnadsoversikt som standard.
 - Websøkets faste verktøykostnad er nå inkludert i nye kostnadsestimater ($0,01 per søk ved gjeldende OpenAI-pris 26.09.2026), i tillegg til tokenkostnad.
 - Ny migrering: `V20-3-SUPABASE-MIGRATION.sql`.
+
+## v20.3.1 – logo-hotfix
+- Hybridtemaet bruker nå original `logo.png` uten CSS-lysning, filter eller mask-overlay.
+- Ingen øvrige UI- eller funksjonsendringer.
+
+## v20.4.0 – sikkerhet og personvern
+- Server-side personverngateway utvidet til å dekke navn, fødselsdata, adresse og øvrige sentrale direkte identifikatorer i tillegg til eksisterende sjekker.
+- KI-/kildelogging frikoblet fra bruker-ID; Supabase-migrering nullstiller gamle koblinger og håndhever dette med trigger.
+- Weboppslag lagrer nå søkestrenger, domener og konkrete kildesider (URL/tittel) når dette finnes i KI-responsen.
+- Automatisk retensjon for KI-logger, feedbackvedlegg, feedback og benchmarkdata.
+- Kontoeksport og utvidet kontosletting.
+- Rate limiting på login, registrering, passordreset, KI og benchmark.
+- Same-origin-kontroll på muterende API-kall.
+- CSP, HSTS i produksjon og øvrige sikkerhetsheadere.
+- Hele prosjektmappen serveres ikke lenger statisk; kun eksplisitt godkjente frontendfiler/medier kan hentes offentlig.
+- Interne auth-/OpenAI-diagnostikkdetaljer fjernet fra klientresponser.
+- Admin «Rediger innhold» er sammenleggbar og lukket som standard.
+- Nytt dokument: `SIKKERHET-OG-PERSONVERN-v20.4.md`.

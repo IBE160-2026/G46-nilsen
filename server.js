@@ -13,13 +13,98 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.3.0";
+const appVersion = process.env.APP_VERSION || "20.4.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
-app.use(express.json({ limit: "1mb" }));
-app.use(express.static(__dirname));
+app.disable("x-powered-by");
+app.set("trust proxy", 1);
 
-app.get("/api/public-config", (req, res) => {
+// v20.4: sikkerhetsheadere, mindre angrepsflate og same-origin-beskyttelse.
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+  res.setHeader("Cross-Origin-Resource-Policy", "same-origin");
+  res.setHeader("Permissions-Policy", "camera=(), microphone=(), geolocation=(), payment=(), usb=()");
+  res.setHeader("Content-Security-Policy", "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'");
+  if (process.env.NODE_ENV === "production") {
+    res.setHeader("Strict-Transport-Security", "max-age=31536000; includeSubDomains");
+  }
+  if (req.path.startsWith("/api/")) res.setHeader("Cache-Control", "no-store");
+  next();
+});
+
+app.use(express.json({ limit: "512kb", type: "application/json" }));
+
+function requestOriginAllowed(req) {
+  const origin = String(req.get("origin") || "").trim();
+  if (!origin) return true; // CLI/server-to-server-kall har ofte ikke Origin.
+  const forwardedProto = String(req.get("x-forwarded-proto") || req.protocol || "https").split(",")[0].trim();
+  const host = String(req.get("host") || "").trim();
+  const allowed = new Set();
+  if (host) allowed.add(`${forwardedProto}://${host}`);
+  const configured = String(process.env.APP_BASE_URL || "").replace(/\/+$/, "");
+  if (configured) allowed.add(configured);
+  return allowed.has(origin.replace(/\/+$/, ""));
+}
+
+app.use("/api", (req, res, next) => {
+  if (["POST", "PUT", "PATCH", "DELETE"].includes(req.method) && !requestOriginAllowed(req)) {
+    return res.status(403).json({ error: "ORIGIN_REJECTED", message: "Forespørselen ble avvist av sikkerhetskontrollen." });
+  }
+  next();
+});
+
+function createRateLimiter({ windowMs, max, keyPrefix }) {
+  const buckets = new Map();
+  let lastSweep = 0;
+  return (req, res, next) => {
+    const now = Date.now();
+    if (now - lastSweep > windowMs) {
+      for (const [key, value] of buckets) if (value.resetAt <= now) buckets.delete(key);
+      lastSweep = now;
+    }
+    const rawKey = `${keyPrefix}|${req.ip || "unknown"}`;
+    const key = crypto.createHash("sha256").update(rawKey).digest("hex");
+    let entry = buckets.get(key);
+    if (!entry || entry.resetAt <= now) entry = { count: 0, resetAt: now + windowMs };
+    entry.count += 1;
+    buckets.set(key, entry);
+    if (entry.count > max) {
+      res.setHeader("Retry-After", String(Math.ceil((entry.resetAt - now) / 1000)));
+      return res.status(429).json({ error: "RATE_LIMITED", message: "For mange forsøk. Vent litt og prøv igjen." });
+    }
+    next();
+  };
+}
+
+const generalApiLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 600, keyPrefix: "api" });
+const loginLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 12, keyPrefix: "login" });
+const registerLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 8, keyPrefix: "register" });
+const resetLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 6, keyPrefix: "reset" });
+const aiLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 80, keyPrefix: "ai" });
+const benchmarkLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 120, keyPrefix: "benchmark" });
+app.use("/api", generalApiLimiter);
+
+// Server kun eksplisitt offentlige frontend-filer. SQL, .env, tester og dokumentasjon er ikke web-tilgjengelige.
+const publicAssetNames = new Set([
+  "index.html", "app.js", "styles.css", "topic.ico", "snakkeboble.svg",
+  "logo.png", "logo-light.png", "logo-symbol.png", "logo-symbol-light.png",
+  "profile-ai.png", "profile-ai-light.png", "profile-human.png", "profile-human-light.png",
+  "hero-conversation-exact.png",
+  "topic-alkohol-rus.png", "topic-avslutning-arbeidsforhold.png", "topic-fravaer-oppfolging.png",
+  "topic-livssituasjoner.png", "topic-lonn-utvikling.png", "topic-prestasjon-utvikling.png",
+  "topic-samarbeid-kommunikasjon.png", "topic-sikkerhet-ansvar.png"
+]);
+app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
+app.get("/:asset", (req, res, next) => {
+  const asset = String(req.params.asset || "");
+  if (!publicAssetNames.has(asset)) return next();
+  return res.sendFile(path.join(__dirname, asset));
+});
+
+app.get("/api/public-config", (_req, res) => {
   res.json({ appVersion, contactEmail });
 });
 
@@ -61,6 +146,7 @@ async function getActiveModel() {
 function extractWebSearchMeta(response) {
   const queries = [];
   const domains = [];
+  const sources = [];
   let used = false;
   for (const item of response?.output || []) {
     if (item?.type === 'web_search_call') {
@@ -73,18 +159,41 @@ function extractWebSearchMeta(response) {
     if (item?.type === 'message') {
       for (const part of item.content || []) {
         for (const ann of part.annotations || []) {
-          const url = ann?.url || ann?.url_citation?.url;
-          if (url) {
-            try { domains.push(new URL(url).hostname.replace(/^www\./,'')); } catch (_) {}
-          }
+          const citation = ann?.url_citation || ann || {};
+          const url = citation?.url;
+          if (!url) continue;
+          try {
+            const parsed = new URL(url);
+            const domain = parsed.hostname.replace(/^www\./,'');
+            domains.push(domain);
+            sources.push({
+              url: parsed.toString().slice(0, 2000),
+              title: String(citation?.title || '').trim().slice(0, 500) || null,
+              domain
+            });
+          } catch (_) {}
         }
       }
     }
   }
-  return { used, count: (response?.output || []).filter(item => item?.type === 'web_search_call').length, queries: [...new Set(queries)].slice(0,10), domains: [...new Set(domains)].slice(0,20) };
+  const uniqueSources = [];
+  const seenUrls = new Set();
+  for (const source of sources) {
+    if (!source.url || seenUrls.has(source.url)) continue;
+    seenUrls.add(source.url);
+    uniqueSources.push(source);
+    if (uniqueSources.length >= 30) break;
+  }
+  return {
+    used,
+    count: (response?.output || []).filter(item => item?.type === 'web_search_call').length,
+    queries: [...new Set(queries)].slice(0,10),
+    domains: [...new Set(domains)].slice(0,20),
+    sources: uniqueSources
+  };
 }
 
-async function logAiUsage({ userId=null, functionName='unknown', modelUsed, response, isTest=false, benchmarkRunId=null, benchmarkCaseId=null }) {
+async function logAiUsage({ functionName='unknown', modelUsed, response, isTest=false, benchmarkRunId=null, benchmarkCaseId=null, topicId=null, subtopic=null }) {
   try {
     const usage = response?.usage || {};
     const inputTokens = Number(usage.input_tokens || usage.inputTokens || 0);
@@ -93,17 +202,25 @@ async function logAiUsage({ userId=null, functionName='unknown', modelUsed, resp
     const web = extractWebSearchMeta(response);
     const tokenCostUsd = (inputTokens / 1_000_000) * meta.inputPerMillion + (outputTokens / 1_000_000) * meta.outputPerMillion;
     const estimatedCostUsd = tokenCostUsd + (web.count * WEB_SEARCH_CALL_USD);
+    // Dataminimering: bruks-/kildeloggen kobles ikke til den innloggede brukeren.
     const baseRow = {
-      user_id:userId, function_name:functionName, model:modelUsed,
+      function_name:functionName, model:modelUsed, topic_id:topicId || null, subtopic:subtopic || null,
       input_tokens:inputTokens, output_tokens:outputTokens, total_tokens:inputTokens+outputTokens,
       estimated_cost_usd:estimatedCostUsd, web_search_used:web.used,
-      web_search_queries:web.queries, source_domains:web.domains
+      web_search_queries:web.queries, source_domains:web.domains, source_pages:web.sources
     };
     const extendedRow = { ...baseRow, web_search_call_count:web.count, is_test:Boolean(isTest), benchmark_run_id:benchmarkRunId, benchmark_case_id:benchmarkCaseId };
     const { error } = await supabaseAdmin.from('ai_usage_log').insert(extendedRow);
     if (error) {
-      // v20.2 compatibility: ordinary KI-kall should still work before the v20.3 migration is run.
-      const { error: fallbackError } = await supabaseAdmin.from('ai_usage_log').insert(baseRow);
+      // Kompatibilitet før v20.4-migreringen: prøv uten de nyeste feltene.
+      const compatibilityRow = {
+        function_name:functionName, model:modelUsed,
+        input_tokens:inputTokens, output_tokens:outputTokens, total_tokens:inputTokens+outputTokens,
+        estimated_cost_usd:estimatedCostUsd, web_search_used:web.used,
+        web_search_queries:web.queries, source_domains:web.domains,
+        web_search_call_count:web.count, is_test:Boolean(isTest), benchmark_run_id:benchmarkRunId, benchmark_case_id:benchmarkCaseId
+      };
+      const { error: fallbackError } = await supabaseAdmin.from('ai_usage_log').insert(compatibilityRow);
       if (fallbackError) throw fallbackError;
     }
     return { inputTokens, outputTokens, totalTokens:inputTokens+outputTokens, tokenCostUsd, estimatedCostUsd, web };
@@ -117,16 +234,35 @@ async function createTrackedResponse(params) {
   const requestedModel = String(params._modelOverride || '');
   const modelUsed = requestedModel && AI_MODELS[requestedModel] ? requestedModel : await getActiveModel();
   const functionName = String(params._functionName || 'unknown');
-  const userId = params._userId || null;
   const isTest = Boolean(params._isTest);
   const benchmarkRunId = params._benchmarkRunId || null;
   const benchmarkCaseId = params._benchmarkCaseId || null;
+  const topicId = params._topicId ? String(params._topicId).slice(0,100) : null;
+  const subtopic = params._subtopic ? String(params._subtopic).slice(0,200) : null;
+  const trustedInternal = Boolean(params._trustedInternal);
+  const privacyTexts = params._privacyTexts;
+  // Sentral personverngateway: alle brukerinitierte KI-kall må eksplisitt levere teksten som skal kontrolleres.
+  if (!trustedInternal) {
+    if (!Array.isArray(privacyTexts)) {
+      const error = new Error("KI-kall mangler personvernkontekst.");
+      error.code = "PRIVACY_CONTEXT_REQUIRED";
+      throw error;
+    }
+    const findings = privacyTexts.flatMap(serverPrivacyFindings).filter(item => SERVER_HARD_PRIVACY_TYPES.has(item.type));
+    if (findings.length) {
+      const error = new Error("Personvernsjekk kreves før KI-kall.");
+      error.code = "PRIVACY_REVIEW_REQUIRED";
+      error.findings = findings;
+      throw error;
+    }
+  }
   const cleanParams = { ...params };
   delete cleanParams._functionName; delete cleanParams._userId; delete cleanParams._modelOverride;
   delete cleanParams._isTest; delete cleanParams._benchmarkRunId; delete cleanParams._benchmarkCaseId;
+  delete cleanParams._topicId; delete cleanParams._subtopic; delete cleanParams._privacyTexts; delete cleanParams._trustedInternal;
   try {
     const response = await client.responses.create({ ...cleanParams, model: modelUsed });
-    const usageSummary = await logAiUsage({ userId, functionName, modelUsed, response, isTest, benchmarkRunId, benchmarkCaseId });
+    const usageSummary = await logAiUsage({ functionName, modelUsed, response, isTest, benchmarkRunId, benchmarkCaseId, topicId, subtopic });
     Object.defineProperty(response, '__samtalestotteModel', { value:modelUsed, enumerable:false });
     Object.defineProperty(response, '__samtalestotteUsage', { value:usageSummary, enumerable:false });
     return response;
@@ -237,16 +373,41 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
 });
 
-app.get("/api/auth/diagnostic", (req, res) => {
+// v20.4: automatisk dataminimering/lagringsbegrensning for tekniske logger.
+const RETENTION = {
+  aiUsageDays: 90,
+  feedbackAttachmentDays: 90,
+  feedbackDays: 365,
+  benchmarkDays: 365
+};
+let lastRetentionCleanup = 0;
+async function cleanupExpiredData() {
+  const now = Date.now();
+  if (now - lastRetentionCleanup < 12 * 60 * 60_000) return;
+  lastRetentionCleanup = now;
+  const isoDaysAgo = days => new Date(now - days * 86400000).toISOString();
+  try {
+    await supabaseAdmin.from('ai_usage_log').delete().lt('created_at', isoDaysAgo(RETENTION.aiUsageDays));
+    await supabaseAdmin.from('ai_response_feedback')
+      .update({ include_conversation:false, conversation_snapshot:null })
+      .eq('include_conversation', true)
+      .lt('created_at', isoDaysAgo(RETENTION.feedbackAttachmentDays));
+    await supabaseAdmin.from('ai_response_feedback').delete().lt('created_at', isoDaysAgo(RETENTION.feedbackDays));
+    await supabaseAdmin.from('benchmark_results').delete().lt('created_at', isoDaysAgo(RETENTION.benchmarkDays));
+  } catch (error) {
+    console.warn('[retention] Opprydding kunne ikke fullføres:', error?.message || 'ukjent feil');
+  }
+}
+app.use('/api', (_req, _res, next) => { cleanupExpiredData().catch(() => {}); next(); });
+
+app.get("/api/auth/diagnostic", requireAdmin, (_req, res) => {
   res.setHeader("Cache-Control", "no-store");
   res.json({
     ok: true,
     appVersion,
     authRouteAvailable: true,
-    supabaseUrlConfigured: Boolean(supabaseUrl),
-    publishableKeyConfigured: Boolean(supabasePublishableKey),
-    secretKeyConfigured: Boolean(supabaseSecretKey),
-    environment: process.env.NODE_ENV || "unspecified"
+    authConfigured: Boolean(supabaseUrl && supabasePublishableKey && supabaseSecretKey),
+    environment: process.env.NODE_ENV === "production" ? "production" : "development"
   });
 });
 
@@ -264,9 +425,11 @@ function parseCookies(req) {
   }));
 }
 
+const cookieSecure = process.env.NODE_ENV === "production" || /^https:\/\//i.test(process.env.APP_BASE_URL || "");
+
 function authCookie(name, value, maxAge = SESSION_MAX_AGE_SECONDS) {
-  const secure = process.env.NODE_ENV === "production" ? "; Secure" : "";
-  return `${name}=${encodeURIComponent(value || "")}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure}`;
+  const secure = cookieSecure ? "; Secure" : "";
+  return `${name}=${encodeURIComponent(value || "")}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure}; Priority=High`;
 }
 
 
@@ -393,8 +556,7 @@ async function requireUser(req, res, next) {
       console.warn(`[auth] 401 ${req.method} ${req.path} accessCookie=${hasAccess} refreshCookie=${hasRefresh}`);
       return res.status(401).json({
         error: "AUTH_REQUIRED",
-        message: "Innloggingssesjonen ble ikke godkjent. Logg inn på nytt.",
-        diagnostic: { hasAccessCookie: hasAccess, hasRefreshCookie: hasRefresh }
+        message: "Innloggingssesjonen ble ikke godkjent. Logg inn på nytt."
       });
     }
 
@@ -523,7 +685,7 @@ app.get('/api/admin/ai-usage', requireAdmin, async (req,res)=>{
   const includeTests = req.query.includeTests === '1';
   let rows=[];
   let extended=true;
-  let result=await supabaseAdmin.from('ai_usage_log').select('function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_call_count,web_search_queries,source_domains,is_test,benchmark_run_id,benchmark_case_id,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
+  let result=await supabaseAdmin.from('ai_usage_log').select('function_name,model,topic_id,subtopic,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_call_count,web_search_queries,source_domains,source_pages,is_test,benchmark_run_id,benchmark_case_id,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
   if(result.error){
     extended=false;
     result=await supabaseAdmin.from('ai_usage_log').select('function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_queries,source_domains,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
@@ -533,10 +695,19 @@ app.get('/api/admin/ai-usage', requireAdmin, async (req,res)=>{
   if(!includeTests) rows=rows.filter(r=>!r.is_test);
   const now=Date.now();
   const sumDays=d=>rows.filter(r=>new Date(r.created_at).getTime()>=now-d*86400000).reduce((a,r)=>a+Number(r.estimated_cost_usd||0),0);
-  const domainCounts={}; const queryCounts={};
-  for(const r of rows){ for(const d of r.source_domains||[]) domainCounts[d]=(domainCounts[d]||0)+1; for(const q of r.web_search_queries||[]) queryCounts[q]=(queryCounts[q]||0)+1; }
+  const domainCounts={}; const queryCounts={}; const pageCounts=new Map();
+  for(const r of rows){
+    for(const d of r.source_domains||[]) domainCounts[d]=(domainCounts[d]||0)+1;
+    for(const q of r.web_search_queries||[]) queryCounts[q]=(queryCounts[q]||0)+1;
+    for(const page of r.source_pages||[]){
+      if(!page?.url) continue;
+      const current=pageCounts.get(page.url)||{url:page.url,title:page.title||null,domain:page.domain||null,count:0};
+      current.count+=1; pageCounts.set(page.url,current);
+    }
+  }
   const top=(obj,n=12)=>Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([name,count])=>({name,count}));
-  res.json({summary:{cost24h:sumDays(1),cost7d:sumDays(7),cost30d:sumDays(30),calls30d:rows.length,webSearchCalls30d:rows.filter(r=>r.web_search_used).length},recent:rows.slice(0,100),topDomains:top(domainCounts),topQueries:top(queryCounts),supportsTestFilter:extended});
+  const topPages=[...pageCounts.values()].sort((a,b)=>b.count-a.count).slice(0,20);
+  res.json({summary:{cost24h:sumDays(1),cost7d:sumDays(7),cost30d:sumDays(30),calls30d:rows.length,webSearchCalls30d:rows.filter(r=>r.web_search_used).length},recent:rows.slice(0,100),topDomains:top(domainCounts),topQueries:top(queryCounts),topPages,supportsTestFilter:extended});
 });
 
 app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
@@ -549,9 +720,9 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   const representative=[]; const seen=new Set();
   for(const item of benchmarkCases){ if(item.variant==='A'&&!seen.has(item.topicId)){seen.add(item.topicId);representative.push(item.id);} }
   let storageReady=true;
-  const probe=await supabaseAdmin.from('benchmark_results').select('id').limit(1);
+  const probe=await supabaseAdmin.from('benchmark_results').select('id,source_pages').limit(1);
   if(probe.error) storageReady=false;
-  res.json({version:'20.3.0',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+  res.json({version:'20.4.0',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
 });
 
 app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
@@ -566,7 +737,7 @@ app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
   res.json({ok:problems.length===0,mode:'mock',checks:{cases:benchmarkCases.length,subtopics:groups.size,minTwoPerSubtopic:[...groups.values()].every(n=>n>=2),privacySafe:!problems.some(x=>x.includes('personvernsjekk')),topicCounts},problems});
 });
 
-app.post('/api/admin/benchmark/live', requireAdmin, async (req,res)=>{
+app.post('/api/admin/benchmark/live', benchmarkLimiter, requireAdmin, async (req,res)=>{
   if(!client) return res.status(503).json({error:'AI_NOT_CONFIGURED',message:'OPENAI_API_KEY mangler på serveren.'});
   const caseId=String(req.body?.caseId||''); const model=String(req.body?.model||'');
   const runId=String(req.body?.runId||'').slice(0,80) || crypto.randomUUID();
@@ -592,26 +763,26 @@ Krav:
 - Ikke omtale dette som en test i selve rådet.`;
   const started=Date.now();
   try{
-    const response=await createTrackedResponse({_functionName:'benchmark',_userId:req.user.id,_modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,tools:[{type:'web_search',search_context_size:'low'}],instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],max_output_tokens:450});
+    const response=await createTrackedResponse({_functionName:'benchmark',_userId:req.user.id,_topicId:item.topicId,_subtopic:item.subtopic,_trustedInternal:true,_modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,tools:[{type:'web_search',search_context_size:'low'}],instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],max_output_tokens:450});
     const latencyMs=Date.now()-started; const usage=response.__samtalestotteUsage||{}; const web=usage.web||extractWebSearchMeta(response);
-    const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],latency_ms:latencyMs,created_by:req.user.id};
+    const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id};
     const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
     if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
     res.json({ok:true,id:save.data?.id,...row});
   }catch(error){
-    const status=Number(error?.status)||500; res.status(status>=400&&status<600?status:500).json({error:'BENCHMARK_FAILED',message:error?.message||'Benchmark-kallet feilet.',model,caseId});
+    const status=Number(error?.status)||500; res.status(status>=400&&status<600?status:500).json({error:'BENCHMARK_FAILED',message:'Benchmark-kallet feilet.',model,caseId});
   }
 });
 
 app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
-  let q=supabaseAdmin.from('benchmark_results').select('id,run_id,case_id,topic_id,topic,subtopic,variant,model,response_text,input_tokens,output_tokens,estimated_cost_usd,web_search_count,web_search_queries,source_domains,latency_ms,created_at').order('created_at',{ascending:false}).limit(300);
+  let q=supabaseAdmin.from('benchmark_results').select('id,run_id,case_id,topic_id,topic,subtopic,variant,model,response_text,input_tokens,output_tokens,estimated_cost_usd,web_search_count,web_search_queries,source_domains,source_pages,latency_ms,created_at').order('created_at',{ascending:false}).limit(300);
   const runId=String(req.query.runId||'').trim(); if(runId) q=q.eq('run_id',runId);
   const {data,error}=await q;
   if(error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Kjør V20-3-SUPABASE-MIGRATION.sql i Supabase først.'});
   res.json({items:data||[]});
 });
 
-app.post("/api/auth/register", async (req, res) => {
+app.post("/api/auth/register", registerLimiter, async (req, res) => {
   const username = String(req.body?.username || "").trim();
   const email = normalizeEmail(req.body?.email);
   const password = String(req.body?.password || "");
@@ -646,7 +817,7 @@ app.post("/api/auth/register", async (req, res) => {
   if (createError || !created.user) {
     const msg = String(createError?.message || "").toLowerCase();
     if (msg.includes("already") || msg.includes("registered") || msg.includes("exists")) {
-      return res.status(409).json({ error: "EMAIL_EXISTS", message: "Det finnes allerede en konto med denne e-postadressen." });
+      return res.status(409).json({ error: "REGISTER_FAILED", message: "Kunne ikke opprette konto med disse opplysningene." });
     }
     console.error("Opprett bruker-feil:", createError);
     return res.status(500).json({ error: "REGISTER_FAILED", message: "Kunne ikke opprette konto." });
@@ -676,17 +847,14 @@ app.post("/api/auth/register", async (req, res) => {
   res.status(201).json({ user: publicUser(signedIn.user) });
 });
 
-app.post("/api/auth/login", async (req, res) => {
+app.post("/api/auth/login", loginLimiter, async (req, res) => {
   const requestId = crypto.randomBytes(5).toString("hex");
-  res.setHeader("X-Debug-Request-Id", requestId);
   res.setHeader("Cache-Control", "no-store");
   const identifier = String(req.body?.identifier || req.body?.email || "").trim();
   const password = String(req.body?.password || "");
   const idType = identifier.includes("@") ? "email" : "username";
-  console.log(`[auth-debug ${requestId}] login received type=${idType} identifierLength=${identifier.length}`);
   if (!identifier || !password) {
-    console.log(`[auth-debug ${requestId}] stopped: missing fields`);
-    return res.status(400).json({ error: "MISSING_LOGIN", message: "Skriv inn e-post eller brukernavn og passord.", debugStage: "request-validation" });
+    return res.status(400).json({ error: "MISSING_LOGIN", message: "Skriv inn e-post eller brukernavn og passord." });
   }
 
   let email = identifier.includes("@") ? normalizeEmail(identifier) : "";
@@ -701,34 +869,29 @@ app.post("/api/auth/login", async (req, res) => {
         if (match?.email) email = normalizeEmail(match.email);
         if (users.length < 100) break;
       }
-      console.log(`[auth-debug ${requestId}] username lookup ${email ? "matched" : "no-match"}`);
     } catch (lookupError) {
-      console.error(`[auth-debug ${requestId}] username lookup failed:`, lookupError?.message || lookupError);
-      return res.status(500).json({ error: "USERNAME_LOOKUP_FAILED", message: "Kunne ikke slå opp brukernavnet akkurat nå.", debugStage: "username-lookup" });
+      console.error(`[auth ${requestId}] username lookup failed`);
+      return res.status(500).json({ error: "USERNAME_LOOKUP_FAILED", message: "Kunne ikke slå opp brukernavnet akkurat nå." });
     }
   }
 
   if (!email) {
-    console.log(`[auth-debug ${requestId}] stopped: no matching email`);
-    return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord.", debugStage: "identifier-resolution" });
+    return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord." });
   }
-  console.log(`[auth-debug ${requestId}] identifier resolved; contacting Supabase Auth`);
   const authClient = newUserClient();
   const { data, error } = await authClient.auth.signInWithPassword({ email, password });
   if (error || !data.session || !data.user) {
-    console.log(`[auth-debug ${requestId}] Supabase sign-in rejected: ${error?.message || "missing session/user"}`);
-    return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord.", debugStage: "supabase-sign-in" });
+    console.warn(`[auth ${requestId}] sign-in rejected`);
+    return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord." });
   }
-  console.log(`[auth-debug ${requestId}] Supabase sign-in OK; creating app session`);
   setSession(res, data.session);
-  console.log(`[auth-debug ${requestId}] app session created`);
-  res.json({ user: publicUser(data.user), debugStage: "complete" });
+  res.json({ user: publicUser(data.user) });
 });
 
 
 const passwordResetAttempts = new Map();
 
-app.post("/api/auth/password-reset-request", async (req, res) => {
+app.post("/api/auth/password-reset-request", resetLimiter, async (req, res) => {
   const email = normalizeEmail(req.body?.email);
   if (!/^\S+@\S+\.\S+$/.test(email)) {
     return res.status(400).json({ error: "INVALID_EMAIL", message: "Skriv inn en gyldig e-postadresse." });
@@ -755,7 +918,7 @@ app.post("/api/auth/password-reset-request", async (req, res) => {
   res.json({ ok: true });
 });
 
-app.post("/api/auth/password-reset-complete", async (req, res) => {
+app.post("/api/auth/password-reset-complete", resetLimiter, async (req, res) => {
   const accessToken = String(req.body?.accessToken || "");
   const refreshToken = String(req.body?.refreshToken || "");
   const password = String(req.body?.password || "");
@@ -887,14 +1050,40 @@ app.delete("/api/history", requireUser, async (req, res) => {
   res.json({ ok: true });
 });
 
+app.get("/api/account/export", requireUser, async (req, res) => {
+  const userId = req.user.id;
+  const [{ data: conversations, error: historyError }, { data: feedback, error: feedbackError }] = await Promise.all([
+    req.supabase.from("conversations").select("id,title,content,created_at,updated_at").order("created_at", { ascending:true }),
+    supabaseAdmin.from("ai_response_feedback").select("id,category,comment,surface,conversation_id,topic_id,subtopic,include_conversation,conversation_snapshot,created_at").eq("user_id", userId).order("created_at", { ascending:true })
+  ]);
+  if (historyError) return res.status(500).json({ error:"ACCOUNT_EXPORT_FAILED", message:"Kunne ikke hente samtalehistorikken." });
+  const exportData = {
+    exported_at: new Date().toISOString(),
+    app_version: appVersion,
+    account: { id:req.user.id, username:req.user.username, email:req.user.email, role:req.user.role, created_at:req.user.createdAt },
+    conversations: (conversations || []).map(rowToHistory),
+    feedback: feedbackError ? [] : (feedback || [])
+  };
+  res.setHeader("Content-Disposition", `attachment; filename="samtalestotte-data-${new Date().toISOString().slice(0,10)}.json"`);
+  res.type("application/json").send(JSON.stringify(exportData, null, 2));
+});
+
 app.delete("/api/account", requireUser, async (req, res) => {
   const userId = req.user.id;
   const { error: historyError } = await req.supabase.from("conversations").delete().eq("user_id", userId);
   if (historyError) return res.status(500).json({ error: "ACCOUNT_DELETE_FAILED", message: "Kunne ikke slette samtalehistorikken." });
 
+  // Feedback kan inneholde frivillig vedlagt samtale og slettes derfor sammen med kontoen.
+  const { error: feedbackError } = await supabaseAdmin.from("ai_response_feedback").delete().eq("user_id", userId);
+  if (feedbackError && !/relation .* does not exist/i.test(String(feedbackError.message || ""))) {
+    return res.status(500).json({ error:"ACCOUNT_DELETE_FAILED", message:"Kunne ikke slette lagrede tilbakemeldinger." });
+  }
+  // Eldre versjoner koblet tekniske KI-logger til bruker-ID. Fjern den koblingen før kontoen slettes.
+  try { await supabaseAdmin.from("ai_usage_log").update({ user_id:null }).eq("user_id", userId); } catch (_) {}
+
   const { error: deleteUserError } = await supabaseAdmin.auth.admin.deleteUser(userId);
   if (deleteUserError) {
-    console.error("Slett konto-feil:", deleteUserError);
+    console.error("Slett konto-feil");
     return res.status(500).json({ error: "ACCOUNT_DELETE_FAILED", message: "Kunne ikke slette kontoen." });
   }
 
@@ -1046,20 +1235,79 @@ const guidanceSchema = {
 
 
 
+const SERVER_COMMON_GIVEN_NAMES = new Set(`Kine Gro Reidun Cecilie Trude Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild Bente Berit Britt Brit Gerd Grete Gry Jorunn Jorun Randi Rita Siv Sissel Tone Torill Tove Unni Vigdis Wenche Åsebjørg Elisabeth Elise Ellen Eva Else Gunn Gunhild Ingeborg Kjersti Merete Mette Renate Solfrid Therese Trude Vibeke Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein Alf Arild Bjarne Dag Einar Erlend Finn Frank Harald Helge Ivar Kjell Kjetil Leif Magne Odd Ove Roar Roy Steinar Svein Terje Tom Tommy Trygve Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria Giulia Giorgia Francesca Alessandra Martina Chiara Federica Marco Luca Matteo Lorenzo Alessandro Andrea Giovanni Giuseppe Antonio Stefano Davide Chloe Chloé Emily Olivia Amelia Charlotte Sophie Jessica Rebecca Rachel Megan Lauren Hannah Grace Alice Lucy Eleanor George James William Harry Oliver Jack Charlie Thomas Edward Henry Samuel Alexander Daniel Michael Matthew Joshua Emma Sophie Anna Lena Laura Julia Sarah Lisa Katharina Hannah Marie Johanna Lea Leon Lukas Luca Finn Felix Paul Jonas Elias Noah Ben Benjamin Maximilian Alexander Niklas Élodie Camille Manon Juliette Claire Pauline Amélie Cécile Celine Céline Lucie Margaux Louise Marie Jean Pierre Julien Nicolas Antoine François Philippe Alexandre Thomas Agnieszka Katarzyna Anna Ewa Joanna Magdalena Natalia Aleksandra Marta Piotr Jakub Mateusz Michał Michal Tomasz Krzysztof Paweł Pawel Łukasz Lukasz Anastasia Ekaterina Elena Irina Natalia Olga Svetlana Tatiana Ivan Dmitri Dmitry Alexei Sergey Sergei Nikolai Mikhail Priya Pooja Anjali Neha Aditi Riya Kavya Aarav Arjun Rahul Rohit Vikram Raj Amit Anil Deepak Sanjay Wei Li Ming Jun Chen Ling Mei Xia Yu Yuki Haruka Sakura Aiko Mei Kenji Hiroshi Takashi Akira Satoshi Minjun Jihoon Jisoo Seojun Hyunwoo Minji Yuna Nguyen Minh Linh Lan Anh Trang Huy Phuong Phương Mai Tuan Tuấn Kwame Kofi Ama Akosua Chinedu Ngozi Adaeze Amina Nia Zuri Tendai Thabo Sipho Lerato`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
+const SERVER_NAME_FALSE_POSITIVES = new Set(`Jeg Vi Det Den Dette En Et Når Hvis På I Som Med Men Og Eller For Til Fra Av Etter Før Under Over Ikke Ja Nei Usikker Person Personen Vedkommende Hen Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen Oppfølging Tilrettelegging Mandag Tirsdag Onsdag Torsdag Fredag Lørdag Søndag Januar Februar Mars April Mai Juni Juli August September Oktober November Desember`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
+const SERVER_AMBIGUOUS_GIVEN_NAMES = new Set(`per liv live line ben even`.split(/\s+/).filter(Boolean));
+const SERVER_HARD_PRIVACY_TYPES = new Set(["email", "phone", "birthdate", "identifier", "name", "address", "gendered_language"]);
+
+function serverNormalizeNameToken(value) { return String(value || "").toLocaleLowerCase("nb-NO"); }
+function serverIsKnownGivenName(value) {
+  const normalized = serverNormalizeNameToken(value);
+  return SERVER_COMMON_GIVEN_NAMES.has(normalized) && !SERVER_NAME_FALSE_POSITIVES.has(normalized);
+}
+function serverFindLikelyGivenName(source) {
+  const text = String(source || "");
+  const explicit = text.match(/\b(?:heter|navn(?:et)?\s+er|kalles|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter|leder(?:en)?\s+heter)\s+([\p{L}][\p{L}'’-]{1,30})\b/iu);
+  if (explicit && !SERVER_NAME_FALSE_POSITIVES.has(serverNormalizeNameToken(explicit[1]))) return explicit[1];
+  const tokens = text.match(/\b[\p{L}][\p{L}'’-]{1,30}\b/gu) || [];
+  for (const token of tokens) {
+    const normalized = serverNormalizeNameToken(token);
+    if (!serverIsKnownGivenName(token)) continue;
+    if (!SERVER_AMBIGUOUS_GIVEN_NAMES.has(normalized)) return token;
+    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    const personUse = new RegExp(`(?:\\b(?:heter|med|til|fra|hos|snakket\\s+med|møte\\s+med)\\s+${escaped}\\b|\\b${escaped}\\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\\b)`, "iu");
+    if (personUse.test(text)) return token;
+  }
+  const personContext = text.match(/\b(?:med|til|fra|hos|snakket\s+med|møte\s+med)\s+([\p{Lu}][\p{L}'’-]{1,30})(?=\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\b)/u);
+  if (personContext && !SERVER_NAME_FALSE_POSITIVES.has(serverNormalizeNameToken(personContext[1]))) return personContext[1];
+  const fullName = text.match(/\b([\p{Lu}][\p{L}'’-]{1,30})\s+([\p{Lu}][\p{L}'’-]{1,30})\b/u);
+  if (fullName) {
+    const a = serverNormalizeNameToken(fullName[1]), b = serverNormalizeNameToken(fullName[2]);
+    if (!SERVER_NAME_FALSE_POSITIVES.has(a) && !SERVER_NAME_FALSE_POSITIVES.has(b) && (serverIsKnownGivenName(fullName[1]) || serverIsKnownGivenName(fullName[2]))) return `${fullName[1]} ${fullName[2]}`;
+  }
+  return null;
+}
+function serverFindLikelyGivenNames(source) {
+  const names = []; let working = String(source || "");
+  for (let i = 0; i < 10; i += 1) {
+    const hit = serverFindLikelyGivenName(working); if (!hit) break;
+    if (!names.some(name => serverNormalizeNameToken(name) === serverNormalizeNameToken(hit))) names.push(hit);
+    const escaped = hit.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+    working = working.replace(new RegExp(`\\b${escaped}\\b`, "iu"), " ");
+  }
+  return names;
+}
+
 function serverPrivacyFindings(text) {
   const source = String(text || "");
   const findings = [];
   const add = (type, message) => { if (!findings.some(item => item.type === type)) findings.push({ type, message }); };
   if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(source)) add("email", "Fjern e-postadresse.");
   if (/(?:\+47\s?)?(?:\d[\s-]?){8}\b/.test(source)) add("phone", "Fjern telefonnummer.");
-  if (/\b\d{11}\b/.test(source) || /\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source)) add("identifier", "Fjern identifikasjonsnummer.");
-  if (/\b(?:han|hun|ham|henne|hans|hennes)\b/i.test(source)) add("gendered_language", "Bruk kjønnsnøytral formulering, for eksempel «hen» eller «medarbeideren».");
+  if (/\b(?:\d{1,2}[.\/-]\d{1,2}[.\/-](?:19|20)?\d{2})\b/.test(source) || /\b(?:født|fødselsdato)\s+(?:i\s+)?(?:19|20)\d{2}\b/i.test(source)) add("birthdate", "Fjern fødselsdato eller fødselsår.");
+  if (/\b(?:[1-9]|[1-9]\d|1[01]\d|120)\s*år(?:\s+gammel)?\b/i.test(source)) add("age", "Generaliser konkret alder hvis den ikke er nødvendig.");
+  if (/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source) || /\b\d{11}\b/.test(source)) add("identifier", "Fjern identifikasjonsnummer.");
+  if (/\b(?:han|hun|ham|henne|hans|hennes)\b/iu.test(source)) add("gendered_language", "Bruk kjønnsnøytral formulering, for eksempel «hen» eller «medarbeideren».");
+  if (/\b[A-ZÆØÅ][a-zæøå]+(?:gate|gata|veien|vegen|allé|stien)\s+\d+[A-Za-z]?\b/.test(source)) add("address", "Fjern konkret gateadresse.");
+  for (const name of serverFindLikelyGivenNames(source)) findings.push({ type: "name", message: `Fjern mulig personnavn «${name}».` });
+
+  const familyAgeCombo = /\b(?:har|med|til)\s+(?:(?:ett|to|tre|fire|fem|seks|\d+)\s+)?(?:barn|datter|døtre|sønn|sønner|gutt|gutter|jente|jenter)\b[^.!?]{0,55}\b(?:på\s+)?\d{1,2}(?:\s*(?:,|og)\s*\d{1,2})+(?:\s*år)?\b/iu;
+  const singleChildAge = /\b(?:barn|datter|sønn|gutt|jente)\s+(?:som\s+er\s+|på\s+)\d{1,2}\s*år\b/iu;
+  const householdCombo = /\b(?:bor|lever)\s+med\s+(?:mannen|kona|ektefellen|samboeren|partneren)\b[^.!?]{0,70}\b(?:barn|datter|døtre|sønn|sønner)\b/iu;
+  const uniquenessCombo = /\b(?:den\s+eneste|en\s+av\s+(?:to|tre|fire|\d+))\b[^.!?]{0,70}\b(?:ansatt(?:e|en)?|medarbeider(?:e|en)?|leder(?:e|en)?|ingeniør(?:er|en)?|sykepleier(?:e|en)?|lærer(?:e|en)?|rådgiver(?:e|en)?|tekniker(?:e|en)?|operatør(?:er|en)?|elektriker(?:e|en)?|lege(?:r|n)?|psykolog(?:er|en)?|jurist(?:er|en)?)\b/iu;
+  if (familyAgeCombo.test(source) || singleChildAge.test(source) || householdCombo.test(source)) add("family_details", "Generaliser detaljerte familieopplysninger.");
+  if (/\bgravid\b[^.!?]{0,30}\b(?:uke|svangerskapsuke)\s*\d{1,2}\b/iu.test(source)) add("pregnancy_detail", "Fjern eksakt svangerskapsuke dersom den ikke er nødvendig.");
+  if (uniquenessCombo.test(source)) add("unique_role", "Generaliser opplysninger som peker ut en unik eller svært liten gruppe.");
+  const exactWorkplace = /\b(?:jobber|arbeider|ansatt|tjenestegjør)\s+(?:i|på|ved|hos)\s+(?:Forsvaret|[A-ZÆØÅ][\p{L}.-]+(?:\s+[A-ZÆØÅ][\p{L}.-]+){0,3}(?:\s+(?:AS|ASA|kommune|sykehus|barnehage|skole|etat|avdeling|kontor))?)\b/u;
+  const namedUnit = /\b(?:ved|på|i)\s+(?:[A-ZÆØÅ][\p{L}.-]+\s+){1,3}(?:avdeling|seksjon|kontor|barnehage|skole|sykehus)\b/u;
+  if (exactWorkplace.test(source) || namedUnit.test(source)) add("workplace_detail", "Generaliser konkret arbeidssted eller enhet dersom det ikke er nødvendig.");
   return findings;
 }
 
 function blockUnsafeAiText(res, texts) {
   const findings = (Array.isArray(texts) ? texts : [texts]).flatMap(serverPrivacyFindings);
-  const unique = findings.filter((item, index, all) => all.findIndex(other => other.type === item.type) === index);
+  const hard = findings.filter(item => SERVER_HARD_PRIVACY_TYPES.has(item.type));
+  const unique = hard.filter((item, index, all) => all.findIndex(other => other.type === item.type && other.message === item.message) === index);
   if (!unique.length) return false;
   res.status(400).json({ error: "PRIVACY_REVIEW_REQUIRED", message: "Teksten må gjennom personvernsjekken før den kan sendes til KI.", findings: unique });
   return true;
@@ -1079,7 +1327,7 @@ function leaderTurnTexts(turns) {
     .map(turn => String(turn?.text || ""));
 }
 
-app.post("/api/classify-topic", requireUser, async (req, res) => {
+app.post("/api/classify-topic", aiLimiter, requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
   }
@@ -1116,7 +1364,7 @@ Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'tema', _userId:req.user.id,
+      _functionName:'tema', _userId:req.user.id, _topicId:selectedTopicId || null, _privacyTexts:[situation],
       instructions: classificationInstructions,
       input: [{ role: "user", content: [{ type: "input_text", text: situation }] }],
       text: {
@@ -1141,18 +1389,17 @@ Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
     const status = Number(error?.status) || 500;
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_TOPIC_CLASSIFICATION_FAILED",
-      message: "KI-temaforslaget kunne ikke gjennomføres.",
-      diagnostic: { status, apiMessage: error?.message || "Ukjent feil", model: error.samtalestotteModel || defaultModel }
+      message: "KI-temaforslaget kunne ikke gjennomføres."
     });
   }
 });
 
 
-app.get("/api/status", async (_req, res) => {
+app.get("/api/status", requireUser, async (_req, res) => {
   res.json({ aiConfigured: Boolean(client), model: client ? await getActiveModel() : null });
 });
 
-app.post("/api/analyze-situation", requireUser, async (req, res) => {
+app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({
       error: "AI_NOT_CONFIGURED",
@@ -1171,7 +1418,7 @@ app.post("/api/analyze-situation", requireUser, async (req, res) => {
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'analyse', _userId:req.user.id,
+      _functionName:'analyse', _userId:req.user.id, _topicId:selectedTopic || null, _subtopic:selectedSubtopic || null, _privacyTexts:[situation, helpRequest],
       instructions: systemPrompt + task,
       input: [
         {
@@ -1207,14 +1454,13 @@ app.post("/api/analyze-situation", requireUser, async (req, res) => {
 
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_ANALYSIS_FAILED",
-      message: "KI-analysen feilet.",
-      diagnostic: { status, code, type, apiMessage: rawMessage, model: error.samtalestotteModel || defaultModel, hint }
+      message: "KI-analysen feilet."
     });
   }
 });
 
 
-app.post("/api/generate-guidance", requireUser, async (req, res) => {
+app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
   }
@@ -1230,7 +1476,7 @@ app.post("/api/generate-guidance", requireUser, async (req, res) => {
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'veiledning', _userId:req.user.id,
+      _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)],
       tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + guidanceTask,
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
@@ -1255,18 +1501,17 @@ app.post("/api/generate-guidance", requireUser, async (req, res) => {
     const code = error?.code || error?.error?.code || null;
     const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
     return res.status(status >= 400 && status < 600 ? status : 500).json({
-      error: "AI_GUIDANCE_FAILED", message: "KI-samtalestøtten feilet.",
-      diagnostic: { status, code, apiMessage: rawMessage, model: error.samtalestotteModel || defaultModel }
+      error: "AI_GUIDANCE_FAILED", message: "KI-samtalestøtten feilet."
     });
   }
 });
 
 
-app.post("/api/continue-conversation", requireUser, async (req, res) => {
+app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
   }
-  const { situation, analysis = null, followups = {}, guidance = null, question = "" } = req.body || {};
+  const { situation, analysis = null, followups = {}, guidance = null, question = "", topicId = "", subtopic = "" } = req.body || {};
   if (typeof question !== "string" || !question.trim()) {
     return res.status(400).json({ error: "MISSING_QUESTION", message: "Oppfølgingsspørsmål mangler." });
   }
@@ -1281,7 +1526,7 @@ app.post("/api/continue-conversation", requireUser, async (req, res) => {
 - Ikke gjenta risikovarsler, HR-råd eller sikkerhetsforbehold som allerede er gitt, med mindre de er direkte relevante for oppfølgingsspørsmålet.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nRelevante kilder i fagbanken: ${JSON.stringify(relevantSources)}\n`;
   try {
     const response = await createTrackedResponse({
-      _functionName:'oppfolging', _userId:req.user.id,
+      _functionName:'oppfolging', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, question, ...flattenTextValues(followups)],
       tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + continueTask,
       input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }]
@@ -1293,8 +1538,7 @@ app.post("/api/continue-conversation", requireUser, async (req, res) => {
     const code = error?.code || error?.error?.code || null;
     const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
     return res.status(status >= 400 && status < 600 ? status : 500).json({
-      error: "AI_CONTINUATION_FAILED", message: "KI-oppfølgingen feilet.",
-      diagnostic: { status, code, apiMessage: rawMessage, model: error.samtalestotteModel || defaultModel }
+      error: "AI_CONTINUATION_FAILED", message: "KI-oppfølgingen feilet."
     });
   }
 });
@@ -1336,7 +1580,7 @@ function simulationContextText({ situation = '', analysis = null, followups = {}
   return `\n\n## Samtalesimulering\nDu spiller KUN medarbeideren i en øvelse for en leder. Brukeren spiller lederen.\n\nViktige grenser:\n- Ikke gi råd til lederen mens du spiller medarbeideren.\n- Ikke fortell hva lederen bør gjøre. Svar bare slik medarbeideren plausibelt kunne svart.\n- Ikke gjør tredjepartsopplysninger om til egne observasjoner.\n- Hold hvert medarbeidersvar naturlig og relativt kort, vanligvis 1–4 setninger.\n- Reaksjonen skal utvikle seg ut fra det lederen faktisk sier, ikke låses mekanisk til én tone.\n- Hold rollespillfakta og den virkelige saken strengt adskilt.\n\nValgt simuleringsmodus: ${fidelity}. ${simulationFidelityInstructions[fidelity] || simulationFidelityInstructions.factual}\n\nValgt reaksjonsstil: ${style}. ${simulationStyleInstructions[style] || simulationStyleInstructions.open}\n\nSituasjon: ${String(situation).slice(0, 12000)}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nSamtalen så langt: ${JSON.stringify(sanitizeSimulationTurns(turns))}\n`;
 }
 
-app.post('/api/simulation-turn', requireUser, async (req, res) => {
+app.post('/api/simulation-turn', aiLimiter, requireUser, async (req, res) => {
   if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
   const body = req.body || {};
   const turns = sanitizeSimulationTurns(body.turns);
@@ -1348,7 +1592,7 @@ app.post('/api/simulation-turn', requireUser, async (req, res) => {
   if (blockUnsafeAiText(res, [body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)])) return;
   try {
     const response = await createTrackedResponse({
-      _functionName:'simulering', _userId:req.user.id,
+      _functionName:'simulering', _userId:req.user.id, _topicId:body.topicId || null, _subtopic:body.subtopic || null, _privacyTexts:[body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)],
       instructions: systemPrompt + simulationContextText({ ...body, fidelity, style, turns }),
       input: [{ role: 'user', content: [{ type: 'input_text', text: 'Svar nå som medarbeideren på lederens siste utsagn. Ikke kommenter øvelsen eller gi lederråd.' }] }]
     });
@@ -1360,7 +1604,7 @@ app.post('/api/simulation-turn', requireUser, async (req, res) => {
   }
 });
 
-app.post('/api/simulation-help', requireUser, async (req, res) => {
+app.post('/api/simulation-help', aiLimiter, requireUser, async (req, res) => {
   if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
   const body = req.body || {};
   const helpKinds = {
@@ -1375,7 +1619,7 @@ app.post('/api/simulation-help', requireUser, async (req, res) => {
   const prompt = `Du er nå trener, IKKE medarbeider. ${task}\nBruk bare opplysninger som finnes i saken og samtalen. Ikke dikt opp fakta. Ikke gi en lang forklaring. Maks 80 ord.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nSamtalen så langt: ${JSON.stringify(turns)}`;
   try {
     const response = await createTrackedResponse({
-      _functionName:'simulator-hjelp', _userId:req.user.id, instructions: systemPrompt, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }] });
+      _functionName:'simulator-hjelp', _userId:req.user.id, _topicId:body.topicId || null, _subtopic:body.subtopic || null, _privacyTexts:[body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)], instructions: systemPrompt, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }] });
     res.json({ help: String(response.output_text || '').trim(), ai: true, model: responseModel(response) });
   } catch (error) {
     console.error('Simulation help failed:', error);
@@ -1395,7 +1639,7 @@ const simulationFeedbackSchema = {
   required: ['worked_well', 'could_be_clearer', 'alternative_phrase', 'takeaway']
 };
 
-app.post('/api/simulation-feedback', requireUser, async (req, res) => {
+app.post('/api/simulation-feedback', aiLimiter, requireUser, async (req, res) => {
   if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
   const body = req.body || {};
   const turns = sanitizeSimulationTurns(body.turns);
@@ -1404,7 +1648,7 @@ app.post('/api/simulation-feedback', requireUser, async (req, res) => {
   const task = `\n\n## Oppgave: tilbakemelding etter samtaleøvelse\nDu er trener, ikke medarbeider. Vurder KUN det lederen faktisk sa i transkriptet.\n- Ingen poengsum, karakter eller rangering.\n- Pek på konkrete formuleringer eller grep som fungerte godt.\n- Pek på konkrete steder som kunne vært tydeligere, mer åpne eller mer presise.\n- Ikke anta lederens intensjon utover ordene som står der.\n- Ikke finn på fakta om medarbeideren.\n- Gi én alternativ formulering som passer saken.\n- Avslutt med ett kort læringspunkt.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nTranskript: ${JSON.stringify(turns)}`;
   try {
     const response = await createTrackedResponse({
-      _functionName:'simulator-tilbakemelding', _userId:req.user.id,
+      _functionName:'simulator-tilbakemelding', _userId:req.user.id, _topicId:body.topicId || null, _subtopic:body.subtopic || null, _privacyTexts:[body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)],
       instructions: systemPrompt + task,
       input: [{ role: 'user', content: [{ type: 'input_text', text: 'Gi strukturert tilbakemelding på øvelsen.' }] }],
       text: { format: { type: 'json_schema', name: 'samtalesimulering_tilbakemelding', strict: true, schema: simulationFeedbackSchema } }

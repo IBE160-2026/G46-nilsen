@@ -503,6 +503,7 @@
             <button class="secondary-button" type="button" data-open-legal="terms">Bruksvilkår</button>
             <button class="secondary-button" type="button" data-open-info="about">Om Samtalestøtte</button>
             <button class="secondary-button" type="button" data-open-info="contact">Kontakt / rapporter feil</button>
+            <button class="secondary-button" id="export-account-data" type="button" hidden>Last ned mine data</button>
             <button class="danger-text-button" id="delete-account-button" type="button" hidden>Slett konto og historikk</button>
           </div>
         </div>
@@ -533,9 +534,10 @@
           <h2>Nødvendig lokal lagring</h2><p>Appen bruker en nødvendig innloggingscookie for å holde deg innlogget. Nettleseren lagrer også valg av hybrid-, lyst, mørkt eller systemtema og om sidemenyen er åpen eller lukket. Betaversjonen bruker ikke markedsførings- eller sporingscookies.</p>
           <h2>Samtalehistorikk</h2><p>Innloggede brukere kan lagre samtaler. Du kan slå på «Midlertidig samtale», slette enkeltsamtaler eller slette all historikk. Uinnloggede samtaler lagres ikke permanent av konto-/historikkfunksjonen.</p>
           <h2>Personopplysninger om andre</h2><p>Samtalestøtte er laget for at saker skal beskrives anonymt. Ikke legg inn navn, kontaktopplysninger, identifikasjonsnumre eller andre unødvendige opplysninger som identifiserer en medarbeider. Arbeidskontekst kan beskrives når den er relevant, men konkrete virksomhetsnavn, avdelinger og små lokasjoner bør generaliseres når de ikke er nødvendige.</p>
-          <h2>Eksterne tjenester</h2><p>Når KI-funksjonen brukes, sendes den anonymiserte situasjonsteksten og nødvendig samtalekontekst til KI-tjenesten som appen er konfigurert mot. Før en offentlig produksjonslansering må behandlingsansvarlig, databehandlere, lagringstid og kontaktinformasjon oppgis konkret.</p>
-          <h2>Dine valg</h2><p>Du kan slette historikk og konto. Produksjonsversjonen skal også beskrive innsyn, retting, sletting, lagringstid og kontaktpunkt i tråd med gjeldende personvernregler.</p>
-          <p class="legal-note"><strong>Betastatus:</strong> Denne teksten er et prosjektutkast for betaversjonen og må kvalitetssikres før offentlig lansering.</p>
+          <h2>Eksterne tjenester</h2><p>Når KI-funksjonen brukes, sendes en dataminimert situasjonstekst og nødvendig samtalekontekst til OpenAI API via Samtalestøtte-serveren. Personvernsjekken reduserer risikoen for identifiserende opplysninger, men kan ikke garantere full anonymitet. Konto, autentisering og lagrede samtaler håndteres i Supabase, mens appserveren kjører på Render.</p>
+          <h2>Lagringstid</h2><p>Samtalehistorikk beholdes til du sletter den eller kontoen. Detaljerte KI-bruks- og kildebrukslogger beholdes i inntil 90 dager og lagres uten bruker-ID. Frivillig vedlagte samtaler i feedback fjernes etter inntil 90 dager, og øvrig feedback slettes etter inntil 12 måneder. Benchmarkdata beholdes i inntil 12 måneder.</p>
+          <h2>Dine valg og rettigheter</h2><p>Du kan laste ned dine lagrede kontoopplysninger, samtaler og egne tilbakemeldinger fra Innstillinger. Du kan slette enkeltsamtaler, all historikk eller hele kontoen. Kontaktpunkt for spørsmål om betaversjonen er <strong>cecilie.c.nilsen@himolde.no</strong>.</p>
+          <p class="legal-note"><strong>Betastatus:</strong> Løsningen er et studieprosjekt. Før bruk som ordinær virksomhetstjeneste må behandlingsansvarlig, behandlingsgrunnlag, databehandleravtaler, eventuell DPIA og organisatoriske rutiner være formelt avklart.</p>
         </article>
       </section>
 
@@ -573,7 +575,7 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">20.3.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.4.0</strong></p>
         </div>
       </section>
 
@@ -582,14 +584,14 @@
         <button class="back-link" id="back-from-admin" type="button">← Tilbake til hjem</button>
         <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">ADMINISTRASJON</span><div class="utility-title-row"><h1>Admin og innhold</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div><p>Rediger utvalgte tekster og administrer roller uten å endre kildekoden.</p></div></div>
         <div class="admin-grid">
-          <section class="settings-card admin-content-card"><div class="admin-section-heading"><div><h2>Rediger innhold</h2><p>Åpne bare delen du vil arbeide med. Tema- og undertematekster kan endres uten å endre den interne KI-logikken.</p></div><span class="role-badge" id="admin-current-role">–</span></div><div class="admin-unsaved" id="admin-unsaved-indicator" hidden>Ulagrede endringer</div><form id="admin-content-form" class="admin-content-form"><div id="admin-content-fields"></div><div class="admin-actions admin-sticky-actions"><button class="primary-button" id="admin-save-content" type="submit" disabled>Lagre endringer</button><button class="secondary-button" id="admin-reload-content" type="button">Last inn på nytt</button></div><div class="auth-message" id="admin-content-message" aria-live="polite"></div></form></section>
+          <section class="settings-card admin-content-card"><details class="admin-content-section" id="admin-content-editor"><summary><span>Rediger innhold</span><span class="role-badge" id="admin-current-role">–</span></summary><div class="admin-section-fields"><p>Åpne bare delen du vil arbeide med. Tema- og undertematekster kan endres uten å endre den interne KI-logikken.</p><div class="admin-unsaved" id="admin-unsaved-indicator" hidden>Ulagrede endringer</div><form id="admin-content-form" class="admin-content-form"><div id="admin-content-fields"></div><div class="admin-actions admin-sticky-actions"><button class="primary-button" id="admin-save-content" type="submit" disabled>Lagre endringer</button><button class="secondary-button" id="admin-reload-content" type="button">Last inn på nytt</button></div><div class="auth-message" id="admin-content-message" aria-live="polite"></div></form></div></details></section>
           <section class="settings-card admin-users-card" id="admin-users-card"><h2>Brukere og roller</h2><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></section><section class="settings-card admin-users-card" id="admin-ai-card" hidden>
             <div class="admin-section-heading"><div><h2>KI-modell og kostnad</h2><p>Bytt modell uten ny deploy, og følg faktisk tokenbruk og estimert API-kostnad.</p></div></div>
             <div class="admin-ai-settings"><label>Aktiv KI-modell<select id="admin-ai-model"></select></label><button class="primary-button" id="admin-save-ai-model" type="button">Lagre modellvalg</button><div class="auth-message" id="admin-ai-model-message" aria-live="polite"></div></div>
             <div class="admin-cost-grid"><div><small>Siste 24 t</small><strong id="admin-cost-24h">–</strong></div><div><small>Siste 7 dager</small><strong id="admin-cost-7d">–</strong></div><div><small>Siste 30 dager</small><strong id="admin-cost-30d">–</strong></div><div><small>KI-kall / 30 dager</small><strong id="admin-calls-30d">–</strong></div></div>
             <label class="benchmark-inline-check"><input id="admin-usage-include-tests" type="checkbox"><span>Inkluder testtrafikk i kostnadsoversikten</span></label>
             <details class="admin-content-section"><summary>Siste KI-kall og kostnad per kall</summary><div class="admin-section-fields"><div id="admin-ai-recent" class="admin-usage-list"></div></div></details>
-            <details class="admin-content-section"><summary>Weboppslag og kandidater til offline-kildebank</summary><div class="admin-section-fields"><div><h3>Mest brukte domener</h3><div id="admin-source-domains" class="admin-compact-list"></div></div><div><h3>Siste registrerte søk</h3><div id="admin-source-queries" class="admin-compact-list"></div></div><p class="muted-note">Bruksmønstrene kan brukes til å prioritere hva som bør legges i SOURCEBANK/RAG for en senere offline-modus.</p></div></details>
+            <details class="admin-content-section"><summary>Weboppslag og kandidater til offline-kildebank</summary><div class="admin-section-fields"><div><h3>Mest brukte domener</h3><div id="admin-source-domains" class="admin-compact-list"></div></div><div><h3>Siste registrerte søk</h3><div id="admin-source-queries" class="admin-compact-list"></div></div><div><h3>Mest brukte konkrete sider</h3><div id="admin-source-pages" class="admin-compact-list"></div></div><p class="muted-note">Bruksmønstrene kan brukes til å prioritere hva som bør legges i SOURCEBANK/RAG for en senere offline-modus.</p></div></details>
             <details class="admin-content-section benchmark-panel" id="admin-benchmark-section"><summary>Automatisk test og modellbenchmark</summary><div class="admin-section-fields">
               <div class="benchmark-intro"><p><strong id="benchmark-coverage">Henter testbank …</strong></p><p class="muted-note">Den gratis testen kontrollerer hele testbanken uten KI-kostnad. Ekte benchmark kjører et begrenset utvalg på Luna, Terra og Sol og lagrer svar, tokens, weboppslag, kilder, kostnad og svartid.</p></div>
               <div class="benchmark-actions"><button class="secondary-button" id="benchmark-run-mock" type="button">Kjør gratis fulltest</button><span id="benchmark-mock-result" class="benchmark-status"></span></div>
@@ -707,6 +709,6 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-  <script src="app.js?v=20.3.0"></script>
+  <script src="app.js?v=20.4.0"></script>
 </body>
 </html>

@@ -8,28 +8,24 @@ Ideen bygger på erfaring fra lederarbeid, der vanskelige samtaler ofte må hån
 
 ## Testtilgang
 
-Samtalestøtte er satt opp som en **lukket betaversjon**. For å teste løsningen må du først opprette en konto ved hjelp av en av invitasjonslenkene nedenfor.
+Samtalestøtte er satt opp som en **lukket betaversjon**. Invitasjonskoder skal ikke publiseres i README, kildekode eller GitHub-historikk. Opprett nye engangsinvitasjoner med:
 
-**Invitasjon 1:**  
-https://samtalestotte.onrender.com/?invite=xuQt07FiN7EJpvObPXMru5ld
+```bash
+npm run invite
+```
 
-**Invitasjon 2:**  
-https://samtalestotte.onrender.com/?invite=mUxSXWp7QINf2t-F-1auV4bf
-
-Hver invitasjonslenke kan bare brukes **én gang** til å opprette en konto. Ved registrering velger du selv e-postadresse, brukernavn og passord. Etter at kontoen er opprettet, brukes vanlig innlogging videre og invitasjonslenken trengs ikke igjen.
+Del lenken direkte med den aktuelle testbrukeren. Hver invitasjon kan bare brukes én gang.
 
 ### Forslag til testing
 
 For å få et inntrykk av de viktigste delene av løsningen anbefales det å:
 
-1. Opprette konto med en av invitasjonslenkene og logge inn.
+1. Opprette konto med en privat engangsinvitasjon og logge inn.
 2. Starte **Ny samtale**, velge et tema og beskrive en tenkt situasjon. Ikke bruk virkelige navn eller andre identifiserende personopplysninger.
 3. Følge KI-veiledningen og prøve videre dialog i samme samtale.
 4. Åpne **Samtalesimulering** og gjennomføre en kort øvelse.
 5. Se på **Historikk** og kontroller at en lagret samtale kan åpnes igjen.
-6. Test gjerne personvernkontrollen ved å skrive inn et tydelig fiktivt navn, en e-postadresse eller et telefonnummer. Løsningen skal reagere før teksten sendes til KI.
-
-Løsningen er fortsatt en betaversjon. KI-svarene er ment som samtalestøtte og ikke som en fasit eller erstatning for HR-, juridisk eller annen nødvendig faglig vurdering.
+6. Test personvernkontrollen med fiktive identifikatorer. Løsningen skal reagere før teksten sendes til KI.
 
 > Render bruker en gratis testtjeneste. Dersom appen ikke har vært brukt på en stund, kan første åpning ta litt ekstra tid mens tjenesten starter.
 
@@ -83,7 +79,7 @@ Etter øvelsen kan brukeren reflektere over hva som fungerte, hva som kunne vær
 
 Personvern er en sentral del av prosjektet fordi brukeren kan komme til å beskrive sensitive forhold fra arbeidsplassen.
 
-Tekst som skrives inn kontrolleres lokalt før den sendes til KI. Kontrollen ser blant annet etter tydelige identifikatorer som:
+Tekst som skrives inn kontrolleres både i nettleseren og på serveren før den sendes til KI. Kontrollen ser blant annet etter tydelige identifikatorer som:
 
 - navn
 - e-postadresser
@@ -99,6 +95,10 @@ Ved tydelige funn stoppes sendingen slik at brukeren kan endre teksten først. P
 Personvernkontrollen reduserer risiko, men kan ikke garantere at all identifiserende informasjon oppdages. Reelle navn eller andre unødvendige personopplysninger skal derfor ikke brukes under testing.
 
 Løsningen bruker nødvendig lokal lagring og sesjonsinformasjon til blant annet innlogging, tema og brukerinnstillinger. Det er ikke lagt inn markedsførings- eller sporingscookies.
+
+## Sikkerhet i v20.4
+
+v20.4 inneholder blant annet server-side personverngateway, rate limiting, same-origin-kontroll, sikkerhetsheadere, begrenset offentlig filtilgang, anonymisert KI-/kildelogging, automatisk retensjon og kontoeksport. Se `SIKKERHET-OG-PERSONVERN-v20.4.md` og kjør `V20-4-SUPABASE-MIGRATION.sql` før versjonen tas i bruk.
 
 ## KI og faglig sikkerhet
 
@@ -168,7 +168,7 @@ SUPABASE_URL=https://ditt-prosjekt.supabase.co
 SUPABASE_PUBLISHABLE_KEY=din_publishable_key
 SUPABASE_SECRET_KEY=din_secret_key
 
-APP_VERSION=19.10.0
+APP_VERSION=20.4.0
 ```
 
 `.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.

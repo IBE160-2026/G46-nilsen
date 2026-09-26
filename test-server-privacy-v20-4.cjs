@@ -1,0 +1,32 @@
+const fs=require('fs');
+const vm=require('vm');
+const assert=require('assert');
+const source=fs.readFileSync('server.js','utf8');
+const start=source.indexOf('const SERVER_COMMON_GIVEN_NAMES');
+const end=source.indexOf('\nfunction flattenTextValues',start);
+assert(start>=0&&end>start,'Fant ikke server-personvernblokken');
+const block=source.slice(start,end)+"\nthis._findings=serverPrivacyFindings; this._hard=SERVER_HARD_PRIVACY_TYPES;";
+const ctx={};vm.createContext(ctx);vm.runInContext(block,ctx);
+const findings=ctx._findings;
+const hard=ctx._hard;
+const cases=[
+  ['Medarbeideren heter Knut og kommer for sent.','name'],
+  ['Knut Hansen kommer for sent.','name'],
+  ['Kontakt er kari@example.no.','email'],
+  ['Telefon 999 88 777.','phone'],
+  ['Fødselsdato 12.04.1984.','birthdate'],
+  ['Ansattnummer ABC-1234.','identifier'],
+  ['Hun ønsker et møte.','gendered_language'],
+  ['Bor i Storgata 14.','address'],
+  ['Medarbeideren er 47 år gammel.','age'],
+  ['Medarbeideren har to døtre på 7 og 9.','family_details'],
+  ['Medarbeideren er den eneste elektrikeren på avdelingen.','unique_role'],
+  ['Jeg jobber i Forsvaret og trenger råd.','workplace_detail']
+];
+for(const [text,type] of cases){
+  const got=findings(text).map(x=>x.type);
+  assert(got.includes(type),`${type} ikke oppdaget i: ${text}; fikk ${got.join(',')}`);
+}
+for(const t of ['email','phone','birthdate','identifier','name','address','gendered_language']) assert(hard.has(t),`${t} skal være hard blokkering`);
+for(const t of ['age','family_details','unique_role','workplace_detail']) assert(!hard.has(t),`${t} skal være rådgivende, ikke hard blokkering`);
+console.log('v20.4 server privacy: OK');
