@@ -1546,3 +1546,9 @@ body.auth-open{overflow:hidden;}
 body.auth-open .app-shell{pointer-events:none;user-select:none;}
 .auth-overlay{pointer-events:auto;}
 .auth-overlay.required-auth .dialog-close{display:none !important;}
+
+/* v19.11.4-debug – synlig, midlertidig innloggingsdiagnostikk. */
+.login-debug-panel{margin-top:6px;border:1px solid var(--border);border-radius:10px;background:color-mix(in srgb,var(--surface) 88%,var(--accent-soft));padding:10px 12px}
+.login-debug-panel summary{cursor:pointer;font-weight:700;font-size:.9rem}
+.login-debug-panel pre{white-space:pre-wrap;word-break:break-word;max-height:210px;overflow:auto;font-size:.78rem;line-height:1.42;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;margin:10px 0}
+.login-debug-panel .secondary-button{width:100%}

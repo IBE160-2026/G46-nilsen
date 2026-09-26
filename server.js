@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.11.0";
+const appVersion = process.env.APP_VERSION || "19.11.4-debug";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -117,6 +117,19 @@ function newUserClient() {
 
 const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
+
+app.get("/api/auth/diagnostic", (req, res) => {
+  res.setHeader("Cache-Control", "no-store");
+  res.json({
+    ok: true,
+    appVersion,
+    authRouteAvailable: true,
+    supabaseUrlConfigured: Boolean(supabaseUrl),
+    publishableKeyConfigured: Boolean(supabasePublishableKey),
+    secretKeyConfigured: Boolean(supabaseSecretKey),
+    environment: process.env.NODE_ENV || "unspecified"
+  });
 });
 
 function normalizeEmail(value) { return String(value || "").trim().toLowerCase(); }
@@ -274,9 +287,17 @@ app.post("/api/auth/register", async (req, res) => {
 });
 
 app.post("/api/auth/login", async (req, res) => {
+  const requestId = crypto.randomBytes(5).toString("hex");
+  res.setHeader("X-Debug-Request-Id", requestId);
+  res.setHeader("Cache-Control", "no-store");
   const identifier = String(req.body?.identifier || req.body?.email || "").trim();
   const password = String(req.body?.password || "");
-  if (!identifier || !password) return res.status(400).json({ error: "MISSING_LOGIN", message: "Skriv inn e-post eller brukernavn og passord." });
+  const idType = identifier.includes("@") ? "email" : "username";
+  console.log(`[auth-debug ${requestId}] login received type=${idType} identifierLength=${identifier.length}`);
+  if (!identifier || !password) {
+    console.log(`[auth-debug ${requestId}] stopped: missing fields`);
+    return res.status(400).json({ error: "MISSING_LOGIN", message: "Skriv inn e-post eller brukernavn og passord.", debugStage: "request-validation" });
+  }
 
   let email = identifier.includes("@") ? normalizeEmail(identifier) : "";
   if (!email) {
@@ -290,17 +311,28 @@ app.post("/api/auth/login", async (req, res) => {
         if (match?.email) email = normalizeEmail(match.email);
         if (users.length < 100) break;
       }
+      console.log(`[auth-debug ${requestId}] username lookup ${email ? "matched" : "no-match"}`);
     } catch (lookupError) {
-      console.error("Brukernavnoppslag feilet:", lookupError);
+      console.error(`[auth-debug ${requestId}] username lookup failed:`, lookupError?.message || lookupError);
+      return res.status(500).json({ error: "USERNAME_LOOKUP_FAILED", message: "Kunne ikke slå opp brukernavnet akkurat nå.", debugStage: "username-lookup" });
     }
   }
 
-  if (!email) return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord." });
+  if (!email) {
+    console.log(`[auth-debug ${requestId}] stopped: no matching email`);
+    return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord.", debugStage: "identifier-resolution" });
+  }
+  console.log(`[auth-debug ${requestId}] identifier resolved; contacting Supabase Auth`);
   const authClient = newUserClient();
   const { data, error } = await authClient.auth.signInWithPassword({ email, password });
-  if (error || !data.session || !data.user) return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord." });
+  if (error || !data.session || !data.user) {
+    console.log(`[auth-debug ${requestId}] Supabase sign-in rejected: ${error?.message || "missing session/user"}`);
+    return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord.", debugStage: "supabase-sign-in" });
+  }
+  console.log(`[auth-debug ${requestId}] Supabase sign-in OK; creating app session`);
   setSession(res, data.session, data.user);
-  res.json({ user: publicUser(data.user) });
+  console.log(`[auth-debug ${requestId}] app session created`);
+  res.json({ user: publicUser(data.user), debugStage: "complete" });
 });
 
 app.post("/api/auth/logout", async (req, res) => {
