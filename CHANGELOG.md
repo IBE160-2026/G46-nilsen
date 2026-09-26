@@ -1,3 +1,12 @@
+## v19.11.9 – speech bubbles, logoplassering og stille auto-innlogging
+
+- Erstatter CSS-pseudo-haler med en egen kurvet SVG-hale som visuelt smelter inn i boblen.
+- Samme speech-bubble-form brukes i simulator og hovedsamtale; hovedsamtalen har en mindre variant.
+- Fjerner alle gamle trekant-/pilhaler helt.
+- Flytter infosidelogoene omtrent 82 px opp på desktop, i tråd med ønsket om minst ca. 2 cm.
+- Beholder persistent innlogging, men sjekker eksisterende session før innloggingsvinduet vises, slik at login ikke blinker ved gyldig session.
+- Invitasjons- og passordreset-lenker åpner fortsatt riktig auth-panel direkte.
+
 ## v19.11.8 – UI-opprydding og glemt passord
 
 - Kontaktskjema vises før e-postalternativet på Kontakt.

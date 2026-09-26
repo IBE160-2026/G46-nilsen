@@ -1701,3 +1701,129 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
 }
 #forgot-password-panel .auth-message.success,
 #reset-password-panel .auth-message.success{color:var(--success,#26745f);}
+
+
+/* v19.11.9 – korrigert logoplassering, ekte kurvede speech-bubble-haler og stille auth-sjekk */
+
+/* Logoene på Om/Kontakt/Innstillinger/Personvern/Vilkår/Historikk:
+   ca. 2 cm høyere på vanlig desktopvisning. */
+.utility-title-row .utility-page-brand{
+  transform:translate(-5px,-82px) !important;
+  position:relative;
+  z-index:2;
+}
+@media(max-width:760px){
+  .utility-title-row .utility-page-brand{
+    transform:translate(-3px,-62px) !important;
+  }
+}
+
+/* Gamle pseudo-element-haler skal ikke brukes i det hele tatt. */
+.leader-bubble::before,.leader-bubble::after,
+.employee-bubble::before,.employee-bubble::after,
+.conversation-user::before,.conversation-user::after,
+.conversation-assistant::before,.conversation-assistant::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Selve boblen er et rolig avrundet felt. SVG-halen overlapper kanten og blir del av formen. */
+.simulation-view .simulation-bubble,
+.conversation-turn{
+  position:relative;
+  overflow:visible !important;
+  isolation:isolate;
+  border:1px solid var(--border);
+  border-radius:22px !important;
+}
+
+.employee-bubble,
+.conversation-assistant{
+  --bubble-fill:var(--surface);
+}
+.leader-bubble,
+.conversation-user{
+  --bubble-fill:color-mix(in srgb,var(--accent-soft) 58%,var(--surface));
+}
+.simulation-view .simulation-bubble,
+.conversation-turn{
+  background:var(--bubble-fill);
+}
+
+.speech-tail{
+  position:absolute;
+  display:block;
+  overflow:visible;
+  pointer-events:none;
+  z-index:0;
+}
+.speech-tail-fill{
+  fill:var(--bubble-fill);
+}
+.speech-tail-outline{
+  fill:none;
+  stroke:var(--border);
+  stroke-width:1.15;
+  vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
+  stroke-linejoin:round;
+}
+
+/* Simulator: tydelig klassisk hale som peker mot avataren, men uten pil-/trekantpreg. */
+.simulation-bubble .speech-tail{
+  width:42px;
+  height:29px;
+  bottom:-7px;
+}
+.simulation-bubble .speech-tail-left{
+  left:-31px;
+}
+.simulation-bubble .speech-tail-right{
+  right:-31px;
+  transform:scaleX(-1);
+}
+
+/* Hovedsamtalen bruker samme form, men mindre og mer diskret. */
+.conversation-turn .speech-tail{
+  width:29px;
+  height:21px;
+  bottom:-4px;
+}
+.conversation-turn .speech-tail-left{
+  left:-21px;
+}
+.conversation-turn .speech-tail-right{
+  right:-21px;
+  transform:scaleX(-1);
+}
+
+/* Tekst må ligge over SVG-overlappen. */
+.simulation-bubble > span,
+.simulation-bubble > p,
+.simulation-bubble > div:not(.speech-tail),
+.conversation-turn > span,
+.conversation-turn > p,
+.conversation-turn > div:not(.speech-tail),
+.conversation-turn > small{
+  position:relative;
+  z-index:1;
+}
+
+/* Litt ekstra luft slik at halen ikke kolliderer med avataren. */
+.simulation-bubble-row{
+  gap:34px !important;
+}
+.conversation-thread{
+  padding-left:30px !important;
+  padding-right:30px !important;
+}
+@media(max-width:760px){
+  .simulation-bubble-row{gap:28px !important;}
+  .simulation-bubble .speech-tail{width:36px;height:25px;bottom:-6px;}
+  .simulation-bubble .speech-tail-left{left:-27px;}
+  .simulation-bubble .speech-tail-right{right:-27px;}
+  .conversation-thread{padding-left:24px !important;padding-right:24px !important;}
+}
+
+/* Auth-vinduet er skjult under den stille session-sjekken; appen er inert fra HTML til sjekken er ferdig. */
+.auth-overlay[hidden]{display:none !important;}

@@ -1241,6 +1241,15 @@ function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 }
+function speechTailMarkup(side='left'){
+  const sideClass = side === 'right' ? 'speech-tail-right' : 'speech-tail-left';
+  return `<svg class="speech-tail ${sideClass}" viewBox="0 0 48 32" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path class="speech-tail-fill" d="M47 2 C39 7 36 14 31 19 C24 25 14 28 2 30 C14 31 27 29 36 23 C43 18 46 11 47 5 Z"></path>
+    <path class="speech-tail-outline" d="M46 3 C39 8 36 14 31 19 C24 25 14 28 2 30 C14 31 27 29 36 23 C43 18 46 11 47 5"></path>
+  </svg>`;
+}
+
+
 
 function buildFollowupQuestions(text) {
   const normalized = String(text || '').toLowerCase();
@@ -1611,10 +1620,10 @@ async function appendConversationTurn(question) {
   if (!thread || !question.trim()) return;
   const user = document.createElement('div');
   user.className = 'conversation-turn conversation-user';
-  user.innerHTML = `<span>Du</span><p>${escapeHtml(question)}</p>`;
+  user.innerHTML = `${speechTailMarkup('right')}<span>Du</span><p>${escapeHtml(question)}</p>`;
   const assistant = document.createElement('div');
   assistant.className = 'conversation-turn conversation-assistant';
-  assistant.innerHTML = `<span>Samtalestøtte</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker på svaret ditt …</p></div>`;
+  assistant.innerHTML = `${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker på svaret ditt …</p></div>`;
   thread.append(user, assistant);
   assistant.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
@@ -1633,12 +1642,12 @@ async function appendConversationTurn(question) {
     });
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
     const payload = await response.json();
-    assistant.innerHTML = `<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(payload.reply || '')}</div>`;
+    assistant.innerHTML = `${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(payload.reply || '')}</div>`;
     conversationDirty = true;
     await saveCurrentConversation();
   } catch (_) {
     const reply = buildContinuationReply(question);
-    assistant.innerHTML = `<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
+    assistant.innerHTML = `${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
   }
 }
 
@@ -2252,7 +2261,7 @@ function loadHistoryItem(item){
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
-  const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
+  const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`${speechTailMarkup('right')}<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
   simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
     simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); return;
@@ -2639,6 +2648,7 @@ function renderSimulationThread() {
     return `<div class="simulation-bubble-row ${leader ? 'leader-row' : 'employee-row'}">
       ${leader ? '' : '<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div>'}
       <div class="simulation-bubble ${leader ? 'leader-bubble' : 'employee-bubble'}">
+        ${speechTailMarkup(leader ? 'right' : 'left')}
         <span>${leader ? 'Du · leder' : 'Medarbeider · KI'}</span>
         <p>${escapeHtml(turn.text)}</p>
       </div>
@@ -2686,7 +2696,7 @@ async function submitSimulationTurn(text) {
   const thread = document.querySelector('#simulation-thread');
   const waiting = document.createElement('div');
   waiting.className = 'simulation-bubble-row employee-row simulation-waiting';
-  waiting.innerHTML = '<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble"><span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>';
+  waiting.innerHTML = `<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble">${speechTailMarkup('left')}<span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>`;
   thread.appendChild(waiting);
   waiting.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
@@ -2858,15 +2868,25 @@ document.querySelector('#retry-simulation')?.addEventListener('click', startSimu
 document.querySelector('#simulation-new-conversation')?.addEventListener('click', () => startNewConversation());
 
 const inviteFromUrl=new URLSearchParams(location.search).get('invite');
-if(inviteFromUrl){document.querySelector('#register-invite').value=inviteFromUrl;openAuth('register',true);}
-else{openAuth('login',true);}
-refreshAuth().finally(()=>{
-  if(!currentUser){
-    if(inviteFromUrl) openAuth('register',true);
-    else openAuth('login',true);
+
+(async function initialiseAuthGate(){
+  // Recovery-lenke og invitasjonslenke skal åpne riktig panel med én gang.
+  if(readPasswordRecoveryFromUrl()) return;
+
+  if(inviteFromUrl){
+    const inviteInput=document.querySelector('#register-invite');
+    if(inviteInput) inviteInput.value=inviteFromUrl;
+    openAuth('register',true);
+    history.replaceState(null,'',location.pathname);
+    return;
   }
-  if(inviteFromUrl) history.replaceState(null,'',location.pathname);
-});
+
+  // Ved vanlig åpning: sjekk eksisterende session før login-vinduet vises.
+  // App-skallet er inert fra HTML mens denne kontrollen pågår.
+  await refreshAuth();
+  if(!currentUser) openAuth('login',true);
+})();
+
 loadPublicConfig();
 
 window.addEventListener('resize', () => {
@@ -2883,6 +2903,3 @@ window.addEventListener('pageshow', () => {
   showView('home');
 });
 
-
-// v19.11.8: åpne passordreset direkte når Supabase returnerer en recovery-lenke.
-queueMicrotask(()=>{ if(readPasswordRecoveryFromUrl()) setAppLocked(true); });
