@@ -4,10 +4,10 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=19.11.2" />
+  <link rel="stylesheet" href="styles.css?v=19.11.3" />
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" inert aria-hidden="true">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
         <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
@@ -596,7 +596,7 @@
             <label>Beskriv kort hva som skjedde
               <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
             </label>
-            <div class="report-meta" id="report-meta">Versjon 19.11.2</div>
+            <div class="report-meta" id="report-meta">Versjon 19.11.3</div>
             <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
             <div class="auth-message" id="report-message" aria-live="polite"></div>
           </form>
@@ -606,7 +606,7 @@
     </main>
   </div>
 
-  <div id="auth-dialog" class="auth-dialog auth-overlay" hidden aria-modal="true" role="dialog" aria-labelledby="auth-title">
+  <div id="auth-dialog" class="auth-dialog auth-overlay required-auth" aria-modal="true" role="dialog" aria-labelledby="auth-title">
     <div class="auth-shell">
       <button class="dialog-close" id="auth-close" type="button" aria-label="Lukk">×</button>
       <div id="login-panel">
@@ -617,7 +617,7 @@
           <div class="auth-message" id="login-message" aria-live="polite"></div>
           <button class="primary-button" type="submit">Logg på</button>
         </form>
-        <p class="auth-switch">Har du invitasjon? <button type="button" id="show-register">Opprett konto</button></p>
+        <p class="auth-switch">Har du en invitasjonskode? <button type="button" id="show-register">Opprett konto</button></p>
       </div>
       <div id="register-panel" hidden>
         <span class="eyebrow">LUKKET BETA</span><h2>Opprett konto</h2><p>Du bestemmer selv hvilket brukernavn du vil bruke.</p>
@@ -640,6 +640,6 @@
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
 
-  <script src="app.js?v=19.11.2"></script>
+  <script src="app.js?v=19.11.3"></script>
 </body>
 </html>

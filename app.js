@@ -2145,9 +2145,26 @@ function updateAuthUi() {
   if(currentUser){ name.textContent=currentUser.username; note.textContent='Historikk aktiv'; avatar.textContent=initialsFor(currentUser.username); if(histNote) histNote.textContent=''; if(temp) temp.hidden=false; if(status) status.textContent=`Logget inn som ${currentUser.username}.`; if(del) del.hidden=false; }
   else { name.textContent='Logg på'; note.textContent='for historikk'; avatar.textContent='○'; if(histNote) histNote.textContent='logg inn'; if(temp) temp.hidden=true; if(status) status.textContent='Du er ikke logget inn. Samtaler lagres ikke permanent.'; if(del) del.hidden=true; }
 }
+function setAppLocked(locked){
+  const shell=document.querySelector('.app-shell');
+  if(!shell) return;
+  if(locked){
+    shell.setAttribute('inert','');
+    shell.setAttribute('aria-hidden','true');
+  }else{
+    shell.removeAttribute('inert');
+    shell.removeAttribute('aria-hidden');
+  }
+}
 async function refreshAuth() {
   try { const r=await fetch('/api/auth/me'); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
   updateAuthUi();
+  if(currentUser){
+    closeAuth(true);
+    setAppLocked(false);
+  }else{
+    setAppLocked(true);
+  }
 }
 function openAuth(mode='login', required = !currentUser) {
   const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
@@ -2158,22 +2175,22 @@ function openAuth(mode='login', required = !currentUser) {
   const mustLogin=Boolean(required && !currentUser);
   dlg.classList.toggle('required-auth', mustLogin);
   const intro=document.querySelector('#login-intro');
-  if(intro && mode==='login') intro.textContent=mustLogin
-    ? 'Du må være logget inn for å bruke Samtalestøtte.'
-    : 'Logg inn for å bruke Samtalestøtte.';
+  if(intro && mode==='login') intro.textContent='Logg inn med en eksisterende brukerprofil. Har du en invitasjonskode, kan du opprette konto.';
   dlg.hidden=false;
   document.body.classList.add('auth-open');
+  if(mustLogin) setAppLocked(true);
   requestAnimationFrame(()=>{
     const target=mode==='login' ? document.querySelector('#login-email') : document.querySelector('#register-username');
     target?.focus();
   });
 }
-function closeAuth(){
+function closeAuth(force=false){
   const dlg=document.querySelector('#auth-dialog');
   if(!dlg || dlg.hidden) return;
-  if(!currentUser && dlg.classList.contains('required-auth')) return;
+  if(!force && !currentUser && dlg.classList.contains('required-auth')) return;
   dlg.hidden=true;
   document.body.classList.remove('auth-open');
+  if(currentUser) setAppLocked(false);
 }
 function requireLogin() {
   if (currentUser) return true;
@@ -2285,7 +2302,7 @@ document.querySelector('[data-profile-action="history"]')?.addEventListener('cli
 document.querySelector('[data-profile-action="about"]')?.addEventListener('click',()=>openInfoView('about'));
 document.querySelector('[data-profile-action="contact"]')?.addEventListener('click',()=>openInfoView('contact'));
 document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
-document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register')); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login'));
+document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth();});
 document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
@@ -2725,8 +2742,16 @@ document.querySelector('#end-simulation-top')?.addEventListener('click', endSimu
 document.querySelector('#retry-simulation')?.addEventListener('click', startSimulation);
 document.querySelector('#simulation-new-conversation')?.addEventListener('click', () => startNewConversation());
 
-const inviteFromUrl=new URLSearchParams(location.search).get('invite'); if(inviteFromUrl){document.querySelector('#register-invite').value=inviteFromUrl;openAuth('register',true);}
-refreshAuth().finally(()=>{ if(inviteFromUrl) history.replaceState(null,'',location.pathname); });
+const inviteFromUrl=new URLSearchParams(location.search).get('invite');
+if(inviteFromUrl){document.querySelector('#register-invite').value=inviteFromUrl;openAuth('register',true);}
+else{openAuth('login',true);}
+refreshAuth().finally(()=>{
+  if(!currentUser){
+    if(inviteFromUrl) openAuth('register',true);
+    else openAuth('login',true);
+  }
+  if(inviteFromUrl) history.replaceState(null,'',location.pathname);
+});
 loadPublicConfig();
 
 window.addEventListener('resize', () => {

@@ -1,3 +1,11 @@
+# v19.11.3 – tvungen innloggingsport
+
+- Innloggingsvinduet vises umiddelbart når nettsiden åpnes dersom ingen gyldig sesjon finnes.
+- Hele appskallet er `inert` og kan ikke klikkes eller fokuseres før innlogging er godkjent.
+- Eksisterende brukere kan logge inn med brukernavn/e-post og passord.
+- Nye profiler kan fortsatt bare opprettes med gyldig, ubrukt invitasjonskode.
+- Invitasjonslenker åpner registreringspanelet direkte og fyller inn koden automatisk.
+
 # v19.11.2 – hurtigfiks innlogging
 
 - Bytter native dialog for innlogging til et robust, fast overlay som ikke låser siden uten synlig innloggingsboks.

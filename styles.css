@@ -1540,3 +1540,9 @@ body.auth-open{overflow:hidden;}
 .auth-overlay.required-auth .dialog-close{display:none;}
 .profile-chip{cursor:pointer;}
 .profile-chip:hover,.profile-chip:focus-visible{background:transparent !important;border-color:transparent !important;box-shadow:none !important;}
+
+
+/* v19.11.3 – full innloggingsport ved første sidevisning. */
+body.auth-open .app-shell{pointer-events:none;user-select:none;}
+.auth-overlay{pointer-events:auto;}
+.auth-overlay.required-auth .dialog-close{display:none !important;}
