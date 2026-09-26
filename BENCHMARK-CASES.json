@@ -1,1045 +1,1684 @@
 {
-  "version": "20.3.0",
-  "generatedFrom": "app.js topic catalog",
-  "rules": {
-    "minimumPerSubtopic": 2,
-    "liveDefault": "1 representativ sak per hovedtema",
-    "testTrafficSeparated": true
-  },
+  "version": "20.5.0",
+  "description": "112 faste testsaker: minst to per undertema. Høyrisiko- og regelverksnære saker inkluderer egne kildetester.",
   "cases": [
     {
-      "id": "alkohol-rus--bekymring-knyttet-til-alkohol--a",
+      "id": "B001",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Bekymring knyttet til alkohol",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om bekymring knyttet til alkohol. Bakgrunnen er følgende: Når endringer i atferd, fravær eller fungering skaper bekymring. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om bekymring knyttet til alkohol. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "alkohol-rus--bekymring-knyttet-til-alkohol--b",
+      "id": "B002",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Bekymring knyttet til alkohol",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til bekymring knyttet til alkohol. Bakgrunnen er følgende: Når endringer i atferd, fravær eller fungering skaper bekymring. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av bekymring knyttet til alkohol. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "alkohol-rus--bekymring-knyttet-til-rusmidler--a",
+      "id": "B003",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Bekymring knyttet til rusmidler",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om bekymring knyttet til rusmidler. Bakgrunnen er følgende: Når observasjoner eller informasjon gir grunn til bekymring for annen rusmiddelbruk. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om bekymring knyttet til rusmidler. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "alkohol-rus--bekymring-knyttet-til-rusmidler--b",
+      "id": "B004",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Bekymring knyttet til rusmidler",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til bekymring knyttet til rusmidler. Bakgrunnen er følgende: Når observasjoner eller informasjon gir grunn til bekymring for annen rusmiddelbruk. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av bekymring knyttet til rusmidler. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "alkohol-rus--pavirkning-pa-jobb--a",
+      "id": "B005",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Påvirkning på jobb",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om påvirkning på jobb. Bakgrunnen er følgende: Når en medarbeider kan fremstå påvirket i arbeidstiden. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om påvirkning på jobb. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "alkohol-rus--pavirkning-pa-jobb--b",
+      "id": "B006",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Påvirkning på jobb",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til påvirkning på jobb. Bakgrunnen er følgende: Når en medarbeider kan fremstå påvirket i arbeidstiden. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av påvirkning på jobb. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "alkohol-rus--arbeidsevne-og-fungering--a",
+      "id": "B007",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Arbeidsevne og fungering",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om arbeidsevne og fungering. Bakgrunnen er følgende: Når alkohol eller rus kan ha sammenheng med arbeidsutførelse, oppmøte eller samspill. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om arbeidsevne og fungering. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "alkohol-rus--arbeidsevne-og-fungering--b",
+      "id": "B008",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Arbeidsevne og fungering",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til arbeidsevne og fungering. Bakgrunnen er følgende: Når alkohol eller rus kan ha sammenheng med arbeidsutførelse, oppmøte eller samspill. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av arbeidsevne og fungering. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "alkohol-rus--sikkerhet-og-hendelser--a",
+      "id": "B009",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Sikkerhet og hendelser",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om sikkerhet og hendelser. Bakgrunnen er følgende: Når alkohol eller rus kan ha betydning for sikkerhet, feil eller en hendelse. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om sikkerhet og hendelser. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "alkohol-rus--sikkerhet-og-hendelser--b",
+      "id": "B010",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Sikkerhet og hendelser",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til sikkerhet og hendelser. Bakgrunnen er følgende: Når alkohol eller rus kan ha betydning for sikkerhet, feil eller en hendelse. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av sikkerhet og hendelser. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "alkohol-rus--oppfolging-og-tilbakekomst--a",
+      "id": "B011",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Oppfølging og tilbakekomst",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om oppfølging og tilbakekomst. Bakgrunnen er følgende: Samtaler etter behandling, fravær eller tidligere oppfølging. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om oppfølging og tilbakekomst. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "alkohol-rus--oppfolging-og-tilbakekomst--b",
+      "id": "B012",
       "topicId": "alkohol-rus",
       "topic": "Alkohol og rus",
       "subtopic": "Oppfølging og tilbakekomst",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til oppfølging og tilbakekomst. Bakgrunnen er følgende: Samtaler etter behandling, fravær eller tidligere oppfølging. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av oppfølging og tilbakekomst. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "fravaer-oppfolging--korttidsfravaer--a",
+      "id": "B013",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
-      "subtopic": "Korttidsfravær",
+      "subtopic": "Hyppig korttidsfravær og egenmeldinger",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om korttidsfravær. Bakgrunnen er følgende: Hyppige eller gjentatte fraværsperioder over kort tid. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om hyppig korttidsfravær og egenmeldinger. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "fravaer-oppfolging--korttidsfravaer--b",
+      "id": "B014",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
-      "subtopic": "Korttidsfravær",
+      "subtopic": "Hyppig korttidsfravær og egenmeldinger",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til korttidsfravær. Bakgrunnen er følgende: Hyppige eller gjentatte fraværsperioder over kort tid. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av hyppig korttidsfravær og egenmeldinger. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "fravaer-oppfolging--langvarig-fravaer--a",
+      "id": "B015",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
-      "subtopic": "Langvarig fravær",
+      "subtopic": "Langvarig sykefravær",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om langvarig fravær. Bakgrunnen er følgende: Når medarbeideren har vært borte over en lengre periode og trenger oppfølging. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om langvarig sykefravær. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "fravaer-oppfolging--langvarig-fravaer--b",
+      "id": "B016",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
-      "subtopic": "Langvarig fravær",
+      "subtopic": "Langvarig sykefravær",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til langvarig fravær. Bakgrunnen er følgende: Når medarbeideren har vært borte over en lengre periode og trenger oppfølging. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av langvarig sykefravær. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "fravaer-oppfolging--oppmote-og-punktlighet--a",
+      "id": "B017",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
       "subtopic": "Oppmøte og punktlighet",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om oppmøte og punktlighet. Bakgrunnen er følgende: Forsinkelser, ustabilt oppmøte eller andre utfordringer knyttet til tilstedeværelse. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om oppmøte og punktlighet. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "fravaer-oppfolging--oppmote-og-punktlighet--b",
+      "id": "B018",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
       "subtopic": "Oppmøte og punktlighet",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til oppmøte og punktlighet. Bakgrunnen er følgende: Forsinkelser, ustabilt oppmøte eller andre utfordringer knyttet til tilstedeværelse. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av oppmøte og punktlighet. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "fravaer-oppfolging--tilbakekomst-til-arbeid--a",
+      "id": "B019",
+      "topicId": "fravaer-oppfolging",
+      "topic": "Fravær og oppfølging",
+      "subtopic": "Planlagt fravær",
+      "variant": "A",
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om planlagt fravær. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
+    },
+    {
+      "id": "B020",
+      "topicId": "fravaer-oppfolging",
+      "topic": "Fravær og oppfølging",
+      "subtopic": "Planlagt fravær",
+      "variant": "B",
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av planlagt fravær. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
+    },
+    {
+      "id": "B021",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
       "subtopic": "Tilbakekomst til arbeid",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om tilbakekomst til arbeid. Bakgrunnen er følgende: Samtaler etter lengre fravær eller overgang tilbake til vanlig arbeid. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om tilbakekomst til arbeid. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "fravaer-oppfolging--tilbakekomst-til-arbeid--b",
+      "id": "B022",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
       "subtopic": "Tilbakekomst til arbeid",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til tilbakekomst til arbeid. Bakgrunnen er følgende: Samtaler etter lengre fravær eller overgang tilbake til vanlig arbeid. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av tilbakekomst til arbeid. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "fravaer-oppfolging--tilrettelegging--a",
+      "id": "B023",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
-      "subtopic": "Tilrettelegging",
+      "subtopic": "Tilrettelegging og arbeidsevne",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om tilrettelegging. Bakgrunnen er følgende: Behov for justeringer i oppgaver, arbeidstid eller arbeidsmåte. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "fokus på funksjon og arbeidsoppgaver",
+        "ikke etterspør diagnose",
+        "involver medarbeideren i løsninger"
+      ],
+      "webRequired": false,
+      "situation": "En sykmeldt medarbeider skal tilbake i jobb og lederen vil snakke om hvilke arbeidsoppgaver og tilpasninger som kan fungere, uten å spørre om diagnose."
     },
     {
-      "id": "fravaer-oppfolging--tilrettelegging--b",
+      "id": "B024",
       "topicId": "fravaer-oppfolging",
       "topic": "Fravær og oppfølging",
-      "subtopic": "Tilrettelegging",
+      "subtopic": "Tilrettelegging og arbeidsevne",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til tilrettelegging. Bakgrunnen er følgende: Behov for justeringer i oppgaver, arbeidstid eller arbeidsmåte. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "fokus på funksjon og arbeidsoppgaver",
+        "ikke etterspør diagnose",
+        "involver medarbeideren i løsninger"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider sier at kapasiteten er redusert. Lederen vil undersøke muligheter for tilrettelegging med fokus på funksjon og arbeid."
     },
     {
-      "id": "fravaer-oppfolging--arbeidsevne-og-kapasitet--a",
-      "topicId": "fravaer-oppfolging",
-      "topic": "Fravær og oppfølging",
-      "subtopic": "Arbeidsevne og kapasitet",
-      "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om arbeidsevne og kapasitet. Bakgrunnen er følgende: Når det er behov for å snakke om hvordan arbeidssituasjonen fungerer i praksis. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
-    },
-    {
-      "id": "fravaer-oppfolging--arbeidsevne-og-kapasitet--b",
-      "topicId": "fravaer-oppfolging",
-      "topic": "Fravær og oppfølging",
-      "subtopic": "Arbeidsevne og kapasitet",
-      "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til arbeidsevne og kapasitet. Bakgrunnen er følgende: Når det er behov for å snakke om hvordan arbeidssituasjonen fungerer i praksis. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
-    },
-    {
-      "id": "prestasjon-utvikling--maloppnaelse--a",
+      "id": "B025",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Måloppnåelse",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om måloppnåelse. Bakgrunnen er følgende: Når mål, leveranser eller forventede resultater trenger en nærmere samtale. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om måloppnåelse. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "prestasjon-utvikling--maloppnaelse--b",
+      "id": "B026",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Måloppnåelse",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til måloppnåelse. Bakgrunnen er følgende: Når mål, leveranser eller forventede resultater trenger en nærmere samtale. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av måloppnåelse. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "prestasjon-utvikling--motivasjon--a",
+      "id": "B027",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Motivasjon",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om motivasjon. Bakgrunnen er følgende: Når engasjement, driv eller interesse ser ut til å ha endret seg. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om motivasjon. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "prestasjon-utvikling--motivasjon--b",
+      "id": "B028",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Motivasjon",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til motivasjon. Bakgrunnen er følgende: Når engasjement, driv eller interesse ser ut til å ha endret seg. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av motivasjon. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "prestasjon-utvikling--kvalitet-i-arbeidet--a",
+      "id": "B029",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Kvalitet i arbeidet",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om kvalitet i arbeidet. Bakgrunnen er følgende: Når kvalitet, nøyaktighet eller standard på arbeidet bør følges opp. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om kvalitet i arbeidet. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "prestasjon-utvikling--kvalitet-i-arbeidet--b",
+      "id": "B030",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Kvalitet i arbeidet",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til kvalitet i arbeidet. Bakgrunnen er følgende: Når kvalitet, nøyaktighet eller standard på arbeidet bør følges opp. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av kvalitet i arbeidet. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "prestasjon-utvikling--feil-og-avvik--a",
+      "id": "B031",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Feil og avvik",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om feil og avvik. Bakgrunnen er følgende: Når feil, hendelser eller avvik trenger gjennomgang og læring. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om feil og avvik. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "prestasjon-utvikling--feil-og-avvik--b",
+      "id": "B032",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Feil og avvik",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til feil og avvik. Bakgrunnen er følgende: Når feil, hendelser eller avvik trenger gjennomgang og læring. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av feil og avvik. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "prestasjon-utvikling--kompetanse-og-mestring--a",
+      "id": "B033",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Kompetanse og mestring",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om kompetanse og mestring. Bakgrunnen er følgende: Når opplæring, ferdigheter eller trygghet i rollen kan være en del av situasjonen. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om kompetanse og mestring. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "prestasjon-utvikling--kompetanse-og-mestring--b",
+      "id": "B034",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Kompetanse og mestring",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til kompetanse og mestring. Bakgrunnen er følgende: Når opplæring, ferdigheter eller trygghet i rollen kan være en del av situasjonen. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av kompetanse og mestring. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "prestasjon-utvikling--ansvar-og-initiativ--a",
+      "id": "B035",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Ansvar og initiativ",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om ansvar og initiativ. Bakgrunnen er følgende: Når forventninger til selvstendighet, ansvar eller initiativ trenger avklaring. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om ansvar og initiativ. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "prestasjon-utvikling--ansvar-og-initiativ--b",
+      "id": "B036",
       "topicId": "prestasjon-utvikling",
       "topic": "Prestasjon og utvikling",
       "subtopic": "Ansvar og initiativ",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til ansvar og initiativ. Bakgrunnen er følgende: Når forventninger til selvstendighet, ansvar eller initiativ trenger avklaring. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av ansvar og initiativ. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "lonn-utvikling--lonnsutvikling--a",
+      "id": "B037",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Lønnsutvikling",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om lønnsutvikling. Bakgrunnen er følgende: Samtaler om utviklingen i lønn over tid. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om lønnsutvikling. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "lonn-utvikling--lonnsutvikling--b",
+      "id": "B038",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Lønnsutvikling",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til lønnsutvikling. Bakgrunnen er følgende: Samtaler om utviklingen i lønn over tid. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av lønnsutvikling. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "lonn-utvikling--forventninger-til-lonn--a",
+      "id": "B039",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Forventninger til lønn",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om forventninger til lønn. Bakgrunnen er følgende: Når medarbeiderens forventninger og virksomhetens rammer må avklares. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om forventninger til lønn. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "lonn-utvikling--forventninger-til-lonn--b",
+      "id": "B040",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Forventninger til lønn",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til forventninger til lønn. Bakgrunnen er følgende: Når medarbeiderens forventninger og virksomhetens rammer må avklares. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av forventninger til lønn. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "lonn-utvikling--lonnsforskjeller--a",
+      "id": "B041",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Lønnsforskjeller",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om lønnsforskjeller. Bakgrunnen er følgende: Når forskjeller mellom roller eller medarbeidere blir tema. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om lønnsforskjeller. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "lonn-utvikling--lonnsforskjeller--b",
+      "id": "B042",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Lønnsforskjeller",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til lønnsforskjeller. Bakgrunnen er følgende: Når forskjeller mellom roller eller medarbeidere blir tema. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av lønnsforskjeller. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "lonn-utvikling--nye-oppgaver-og-ansvar--a",
+      "id": "B043",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Nye oppgaver og ansvar",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om nye oppgaver og ansvar. Bakgrunnen er følgende: Når endringer i rolle eller ansvar kobles til forventninger om lønn. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om nye oppgaver og ansvar. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "lonn-utvikling--nye-oppgaver-og-ansvar--b",
+      "id": "B044",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Nye oppgaver og ansvar",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til nye oppgaver og ansvar. Bakgrunnen er følgende: Når endringer i rolle eller ansvar kobles til forventninger om lønn. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av nye oppgaver og ansvar. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "lonn-utvikling--utvikling-og-forfremmelse--a",
+      "id": "B045",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Utvikling og forfremmelse",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om utvikling og forfremmelse. Bakgrunnen er følgende: Når samtalen handler om videre utvikling, muligheter eller hva som kreves for neste steg. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om utvikling og forfremmelse. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "lonn-utvikling--utvikling-og-forfremmelse--b",
+      "id": "B046",
       "topicId": "lonn-utvikling",
       "topic": "Lønn og utvikling",
       "subtopic": "Utvikling og forfremmelse",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til utvikling og forfremmelse. Bakgrunnen er følgende: Når samtalen handler om videre utvikling, muligheter eller hva som kreves for neste steg. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av utvikling og forfremmelse. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "samarbeid-kommunikasjon--kommunikasjon--a",
+      "id": "B047",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Kommunikasjon",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om kommunikasjon. Bakgrunnen er følgende: Misforståelser, tone, utydelige beskjeder eller manglende informasjonsdeling. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om kommunikasjon. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "samarbeid-kommunikasjon--kommunikasjon--b",
+      "id": "B048",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Kommunikasjon",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til kommunikasjon. Bakgrunnen er følgende: Misforståelser, tone, utydelige beskjeder eller manglende informasjonsdeling. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av kommunikasjon. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "samarbeid-kommunikasjon--tillit--a",
+      "id": "B049",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Tillit",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om tillit. Bakgrunnen er følgende: Når tidligere hendelser eller opplevelser påvirker samarbeidet. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om tillit. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "samarbeid-kommunikasjon--tillit--b",
+      "id": "B050",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Tillit",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til tillit. Bakgrunnen er følgende: Når tidligere hendelser eller opplevelser påvirker samarbeidet. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av tillit. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "samarbeid-kommunikasjon--roller-og-forventninger--a",
+      "id": "B051",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Roller og forventninger",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om roller og forventninger. Bakgrunnen er følgende: Uklare ansvarsområder, ulike forventninger eller behov for avklaringer. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om roller og forventninger. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "samarbeid-kommunikasjon--roller-og-forventninger--b",
+      "id": "B052",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Roller og forventninger",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til roller og forventninger. Bakgrunnen er følgende: Uklare ansvarsområder, ulike forventninger eller behov for avklaringer. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av roller og forventninger. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "samarbeid-kommunikasjon--uenighet-og-konflikt--a",
+      "id": "B053",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Uenighet og konflikt",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om uenighet og konflikt. Bakgrunnen er følgende: Når motsetninger eller uenigheter har blitt vanskelige å håndtere. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om uenighet og konflikt. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "samarbeid-kommunikasjon--uenighet-og-konflikt--b",
+      "id": "B054",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Uenighet og konflikt",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til uenighet og konflikt. Bakgrunnen er følgende: Når motsetninger eller uenigheter har blitt vanskelige å håndtere. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av uenighet og konflikt. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "samarbeid-kommunikasjon--samspill-i-team--a",
+      "id": "B055",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Samspill i team",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om samspill i team. Bakgrunnen er følgende: Hvordan medarbeidere samarbeider, fordeler oppgaver og påvirker arbeidsmiljøet. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om samspill i team. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "samarbeid-kommunikasjon--samspill-i-team--b",
+      "id": "B056",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Samspill i team",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til samspill i team. Bakgrunnen er følgende: Hvordan medarbeidere samarbeider, fordeler oppgaver og påvirker arbeidsmiljøet. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av samspill i team. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "samarbeid-kommunikasjon--grenser-og-respekt--a",
+      "id": "B057",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Grenser og respekt",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om grenser og respekt. Bakgrunnen er følgende: Situasjoner knyttet til tone, humor, oppførsel eller personlige grenser. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om grenser og respekt. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "samarbeid-kommunikasjon--grenser-og-respekt--b",
+      "id": "B058",
       "topicId": "samarbeid-kommunikasjon",
       "topic": "Samarbeid og kommunikasjon",
       "subtopic": "Grenser og respekt",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til grenser og respekt. Bakgrunnen er følgende: Situasjoner knyttet til tone, humor, oppførsel eller personlige grenser. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av grenser og respekt. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "avslutning-arbeidsforhold--avslutning-av-arbeidsforhold--a",
+      "id": "B059",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Avslutning av arbeidsforhold",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om avslutning av arbeidsforhold. Bakgrunnen er følgende: Samtaler der arbeidsforholdet kan være på vei mot en avslutning. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om avslutning av arbeidsforhold. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "avslutning-arbeidsforhold--avslutning-av-arbeidsforhold--b",
+      "id": "B060",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Avslutning av arbeidsforhold",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til avslutning av arbeidsforhold. Bakgrunnen er følgende: Samtaler der arbeidsforholdet kan være på vei mot en avslutning. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av avslutning av arbeidsforhold. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "avslutning-arbeidsforhold--provetid--a",
+      "id": "B061",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Prøvetid",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om prøvetid. Bakgrunnen er følgende: Oppfølging av forventninger, utvikling og vurderinger i prøvetiden. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om prøvetid. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "avslutning-arbeidsforhold--provetid--b",
+      "id": "B062",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Prøvetid",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til prøvetid. Bakgrunnen er følgende: Oppfølging av forventninger, utvikling og vurderinger i prøvetiden. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av prøvetid. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "avslutning-arbeidsforhold--endringer-i-stilling-eller-behov--a",
+      "id": "B063",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Endringer i stilling eller behov",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om endringer i stilling eller behov. Bakgrunnen er følgende: Situasjoner der rolle, oppgaver eller bemanningsbehov endres. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om endringer i stilling eller behov. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "avslutning-arbeidsforhold--endringer-i-stilling-eller-behov--b",
+      "id": "B064",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Endringer i stilling eller behov",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til endringer i stilling eller behov. Bakgrunnen er følgende: Situasjoner der rolle, oppgaver eller bemanningsbehov endres. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av endringer i stilling eller behov. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "avslutning-arbeidsforhold--tidligere-oppfolging--a",
+      "id": "B065",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Tidligere oppfølging",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om tidligere oppfølging. Bakgrunnen er følgende: Når medarbeideren allerede har fått tilbakemeldinger, veiledning eller oppfølgingssamtaler. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om tidligere oppfølging. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "avslutning-arbeidsforhold--tidligere-oppfolging--b",
+      "id": "B066",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Tidligere oppfølging",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til tidligere oppfølging. Bakgrunnen er følgende: Når medarbeideren allerede har fått tilbakemeldinger, veiledning eller oppfølgingssamtaler. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av tidligere oppfølging. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "avslutning-arbeidsforhold--frivillig-avslutning--a",
+      "id": "B067",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Frivillig avslutning",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om frivillig avslutning. Bakgrunnen er følgende: Når medarbeideren selv vurderer å slutte eller ønsker å avslutte arbeidsforholdet. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om frivillig avslutning. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "avslutning-arbeidsforhold--frivillig-avslutning--b",
+      "id": "B068",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Frivillig avslutning",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til frivillig avslutning. Bakgrunnen er følgende: Når medarbeideren selv vurderer å slutte eller ønsker å avslutte arbeidsforholdet. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av frivillig avslutning. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "avslutning-arbeidsforhold--samtale-for-videre-prosess--a",
+      "id": "B069",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Samtale før videre prosess",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om samtale før videre prosess. Bakgrunnen er følgende: Når alvorlige forhold må tas opp før saken eventuelt går videre til HR eller formell behandling. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om samtale før videre prosess. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "avslutning-arbeidsforhold--samtale-for-videre-prosess--b",
+      "id": "B070",
       "topicId": "avslutning-arbeidsforhold",
       "topic": "Avslutning av arbeidsforhold",
       "subtopic": "Samtale før videre prosess",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til samtale før videre prosess. Bakgrunnen er følgende: Når alvorlige forhold må tas opp før saken eventuelt går videre til HR eller formell behandling. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av samtale før videre prosess. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "sikkerhet-ansvar--sikkerhetsrutiner--a",
+      "id": "B071",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Sikkerhetsrutiner",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om sikkerhetsrutiner. Bakgrunnen er følgende: Etterlevelse av prosedyrer, instrukser og etablerte sikkerhetskrav. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om sikkerhetsrutiner. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "sikkerhet-ansvar--sikkerhetsrutiner--b",
+      "id": "B072",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Sikkerhetsrutiner",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til sikkerhetsrutiner. Bakgrunnen er følgende: Etterlevelse av prosedyrer, instrukser og etablerte sikkerhetskrav. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av sikkerhetsrutiner. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "sikkerhet-ansvar--avvik-og-hendelser--a",
+      "id": "B073",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Avvik og hendelser",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om avvik og hendelser. Bakgrunnen er følgende: Når noe har skjedd som bør gjennomgås, følges opp eller læres av. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om avvik og hendelser. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "sikkerhet-ansvar--avvik-og-hendelser--b",
+      "id": "B074",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Avvik og hendelser",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til avvik og hendelser. Bakgrunnen er følgende: Når noe har skjedd som bør gjennomgås, følges opp eller læres av. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av avvik og hendelser. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "sikkerhet-ansvar--risikovurdering--a",
+      "id": "B075",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Risikovurdering",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om risikovurdering. Bakgrunnen er følgende: Når leder og medarbeider har ulik forståelse av risiko eller forsvarlig praksis. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om risikovurdering. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "sikkerhet-ansvar--risikovurdering--b",
+      "id": "B076",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Risikovurdering",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til risikovurdering. Bakgrunnen er følgende: Når leder og medarbeider har ulik forståelse av risiko eller forsvarlig praksis. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av risikovurdering. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "sikkerhet-ansvar--rapportering--a",
+      "id": "B077",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Rapportering",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om rapportering. Bakgrunnen er følgende: Når rapportering av hendelser, feil eller avvik trenger oppfølging. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om rapportering. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "sikkerhet-ansvar--rapportering--b",
+      "id": "B078",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Rapportering",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til rapportering. Bakgrunnen er følgende: Når rapportering av hendelser, feil eller avvik trenger oppfølging. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av rapportering. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "sikkerhet-ansvar--informasjonssikkerhet--a",
+      "id": "B079",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Informasjonssikkerhet",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om informasjonssikkerhet. Bakgrunnen er følgende: Håndtering av informasjon, tilgang, deling eller andre sikkerhetsrelaterte forhold. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om informasjonssikkerhet. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "sikkerhet-ansvar--informasjonssikkerhet--b",
+      "id": "B080",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Informasjonssikkerhet",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til informasjonssikkerhet. Bakgrunnen er følgende: Håndtering av informasjon, tilgang, deling eller andre sikkerhetsrelaterte forhold. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av informasjonssikkerhet. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "sikkerhet-ansvar--ansvar-og-laering-etter-hendelser--a",
+      "id": "B081",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Ansvar og læring etter hendelser",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om ansvar og læring etter hendelser. Bakgrunnen er følgende: Samtaler om hva som skjedde, hva man kan lære og hva som bør endres. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om ansvar og læring etter hendelser. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "sikkerhet-ansvar--ansvar-og-laering-etter-hendelser--b",
+      "id": "B082",
       "topicId": "sikkerhet-ansvar",
       "topic": "Sikkerhet og ansvar",
       "subtopic": "Ansvar og læring etter hendelser",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til ansvar og læring etter hendelser. Bakgrunnen er følgende: Samtaler om hva som skjedde, hva man kan lære og hva som bør endres. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "likely",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av ansvar og læring etter hendelser. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "livssituasjoner--samlivs-og-familieforhold--a",
+      "id": "B083",
+      "topicId": "sikkerhet-ansvar",
+      "topic": "Sikkerhet og ansvar",
+      "subtopic": "Vold og trusler",
+      "variant": "A",
+      "expectedPrinciples": [
+        "prioriter sikkerhet",
+        "følg virksomhetens rutiner",
+        "ivareta medarbeideren",
+        "ikke bagatelliser"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider forteller om en truende hendelse i arbeidssammenheng og lederen skal følge opp etter hendelsen."
+    },
+    {
+      "id": "B084",
+      "topicId": "sikkerhet-ansvar",
+      "topic": "Sikkerhet og ansvar",
+      "subtopic": "Vold og trusler",
+      "variant": "B",
+      "expectedPrinciples": [
+        "prioriter sikkerhet",
+        "følg virksomhetens rutiner",
+        "ivareta medarbeideren",
+        "ikke bagatelliser"
+      ],
+      "webRequired": true,
+      "situation": "Det er kjent risiko for truende atferd i en arbeidssituasjon, og lederen vil forberede en samtale om trygghet og tiltak."
+    },
+    {
+      "id": "B085",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Samlivs- og familieforhold",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om samlivs- og familieforhold. Bakgrunnen er følgende: Samlivsbrudd, krevende familiesituasjoner eller andre forhold hjemme som påvirker arbeidshverdagen. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om samlivs- og familieforhold. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "livssituasjoner--samlivs-og-familieforhold--b",
+      "id": "B086",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Samlivs- og familieforhold",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til samlivs- og familieforhold. Bakgrunnen er følgende: Samlivsbrudd, krevende familiesituasjoner eller andre forhold hjemme som påvirker arbeidshverdagen. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av samlivs- og familieforhold. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "livssituasjoner--sykdom-i-naer-familie--a",
+      "id": "B087",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Sykdom i nær familie",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om sykdom i nær familie. Bakgrunnen er følgende: Når medarbeideren står i omsorgsbelastning eller alvorlig sykdom hos noen nær. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om sykdom i nær familie. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "livssituasjoner--sykdom-i-naer-familie--b",
+      "id": "B088",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Sykdom i nær familie",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til sykdom i nær familie. Bakgrunnen er følgende: Når medarbeideren står i omsorgsbelastning eller alvorlig sykdom hos noen nær. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av sykdom i nær familie. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "livssituasjoner--sorg-og-tap--a",
+      "id": "B089",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Sorg og tap",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om sorg og tap. Bakgrunnen er følgende: Dødsfall, alvorlige tap eller andre situasjoner som krever særlig omtanke. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om sorg og tap. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "livssituasjoner--sorg-og-tap--b",
+      "id": "B090",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Sorg og tap",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til sorg og tap. Bakgrunnen er følgende: Dødsfall, alvorlige tap eller andre situasjoner som krever særlig omtanke. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av sorg og tap. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "livssituasjoner--psykisk-belastning--a",
+      "id": "B091",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Psykisk belastning",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om psykisk belastning. Bakgrunnen er følgende: Når medarbeideren selv forteller om stress, uro, nedstemthet eller andre psykiske belastninger. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om psykisk belastning. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "livssituasjoner--psykisk-belastning--b",
+      "id": "B092",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Psykisk belastning",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til psykisk belastning. Bakgrunnen er følgende: Når medarbeideren selv forteller om stress, uro, nedstemthet eller andre psykiske belastninger. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av psykisk belastning. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "livssituasjoner--omsorgsansvar--a",
+      "id": "B093",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Omsorgsansvar",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om omsorgsansvar. Bakgrunnen er følgende: Barn, foreldre eller andre nærstående som krever mye tid og oppfølging. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om omsorgsansvar. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "livssituasjoner--omsorgsansvar--b",
+      "id": "B094",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Omsorgsansvar",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til omsorgsansvar. Bakgrunnen er følgende: Barn, foreldre eller andre nærstående som krever mye tid og oppfølging. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av omsorgsansvar. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
     },
     {
-      "id": "livssituasjoner--belastning-og-utmattelse--a",
+      "id": "B095",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Belastning og utmattelse",
       "variant": "A",
-      "difficulty": "typisk",
-      "situation": "En leder skal ha en samtale med en medarbeider om belastning og utmattelse. Bakgrunnen er følgende: Søvnproblemer, høyt press eller andre belastninger som påvirker arbeidshverdagen. Lederen ønsker å være tydelig på observasjoner og forventninger, samtidig som medarbeiderens perspektiv blir hørt og det avtales et konkret neste steg.",
-      "expectedWeb": "optional",
-      "purpose": "Typisk situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En leder skal forberede en vanskelig samtale om belastning og utmattelse. Situasjonen er reell, men anonymisert, og lederen ønsker konkrete, respektfulle råd."
     },
     {
-      "id": "livssituasjoner--belastning-og-utmattelse--b",
+      "id": "B096",
       "topicId": "livssituasjoner",
       "topic": "Livssituasjoner",
       "subtopic": "Belastning og utmattelse",
       "variant": "B",
-      "difficulty": "krevende",
-      "situation": "En leder opplever en mer krevende sak knyttet til belastning og utmattelse. Bakgrunnen er følgende: Søvnproblemer, høyt press eller andre belastninger som påvirker arbeidshverdagen. Det finnes flere mulige forklaringer, og lederen har foreløpig ikke hele bildet. Samtalen bør skille mellom fakta, antakelser og det som må avklares, uten å trekke konklusjoner for tidlig.",
-      "expectedWeb": "optional",
-      "purpose": "Tvetydig/krevende situasjon"
+      "expectedPrinciples": [
+        "konkret og respektfull",
+        "skill fakta fra antakelser",
+        "åpne spørsmål",
+        "tydelig neste steg"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider og leder har ulik forståelse av belastning og utmattelse. Lederen vil gjennomføre en tydelig samtale som skiller observasjoner fra antakelser."
+    },
+    {
+      "id": "B097",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Mobbing",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp mobbing og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B098",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Mobbing",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp mobbing og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
+    },
+    {
+      "id": "B099",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Utestenging og utfrysing",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp utestenging og utfrysing og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B100",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Utestenging og utfrysing",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp utestenging og utfrysing og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
+    },
+    {
+      "id": "B101",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Krenkende eller utilbørlig atferd",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp krenkende eller utilbørlig atferd og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B102",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Krenkende eller utilbørlig atferd",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp krenkende eller utilbørlig atferd og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
+    },
+    {
+      "id": "B103",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Seksuell trakassering",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp seksuell trakassering og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B104",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Seksuell trakassering",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp seksuell trakassering og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
+    },
+    {
+      "id": "B105",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Kjønnstrakassering og uønsket seksuell oppmerksomhet",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp kjønnstrakassering og uønsket seksuell oppmerksomhet og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B106",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Kjønnstrakassering og uønsket seksuell oppmerksomhet",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp kjønnstrakassering og uønsket seksuell oppmerksomhet og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
+    },
+    {
+      "id": "B107",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Varsling om mobbing eller trakassering",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp varsling om mobbing eller trakassering og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B108",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Varsling om mobbing eller trakassering",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp varsling om mobbing eller trakassering og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
+    },
+    {
+      "id": "B109",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Samtale med den som sier ifra",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp samtale med den som sier ifra og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B110",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Samtale med den som sier ifra",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp samtale med den som sier ifra og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
+    },
+    {
+      "id": "B111",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Samtale med den varselet gjelder",
+      "variant": "A",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": false,
+      "situation": "En medarbeider tar opp samtale med den varselet gjelder og beskriver en vanskelig arbeidssituasjon. Lederen har bare den ene personens beskrivelse og skal ha en første samtale."
+    },
+    {
+      "id": "B112",
+      "topicId": "mobbing-trakassering",
+      "topic": "Mobbing og trakassering",
+      "subtopic": "Samtale med den varselet gjelder",
+      "variant": "B",
+      "expectedPrinciples": [
+        "ikke konkluder med skyld",
+        "lytt og avklar fakta",
+        "følg varslings-/arbeidsmiljørutiner ved behov",
+        "ivareta alle involverte"
+      ],
+      "webRequired": true,
+      "situation": "En medarbeider tar opp samtale med den varselet gjelder og beskriver en vanskelig arbeidssituasjon. Det finnes ulike beskrivelser av hendelsene, og lederen må ivareta alle involverte og riktig prosess."
     }
   ]
 }

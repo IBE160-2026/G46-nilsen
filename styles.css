@@ -1910,3 +1910,15 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
   display:none !important;
   content:none !important;
 }
+
+/* v20.5: sterkere simulator-CTA, kort brukertest og lokal admin-logojustering */
+.simulation-entry-emphasis{background:color-mix(in srgb,var(--panel,#fff) 82%,#233a55 18%);border-width:2px;box-shadow:0 12px 28px rgba(20,34,52,.12)}
+.simulation-bottom-cta{margin-top:22px;padding:18px 20px;border:1px solid var(--line,#d6dce4);border-radius:18px;display:flex;align-items:center;justify-content:space-between;gap:18px;background:var(--panel,#fff)}
+.simulation-bottom-cta div{display:flex;flex-direction:column;gap:3px}.simulation-bottom-cta span{font-size:.92rem;opacity:.78}
+.survey-form{max-width:760px;display:grid;gap:18px}.survey-form label{display:grid;gap:7px;font-weight:650}.survey-form select,.survey-form textarea{font-weight:400}
+#admin-view .utility-page-logo{transform:translateY(8px)}
+@media(max-width:720px){.simulation-bottom-cta{align-items:stretch;flex-direction:column}.simulation-bottom-cta .primary-button{width:100%}}
+
+.survey-invite{margin-top:22px;padding:16px 18px;border:1px solid var(--line,#d6dce4);border-radius:16px;display:flex;align-items:center;justify-content:space-between;gap:16px;background:var(--panel,#fff)}
+.survey-invite[hidden]{display:none}.survey-invite>div:first-child{display:flex;flex-direction:column;gap:3px}.survey-invite span{font-size:.92rem;opacity:.78}.survey-invite-actions{display:flex;gap:8px}.conversation-bottom-actions-split{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+@media(max-width:720px){.survey-invite{align-items:stretch;flex-direction:column}.survey-invite-actions{justify-content:flex-end}}

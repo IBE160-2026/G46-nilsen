@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=20.0.0" />
+  <link rel="stylesheet" href="styles.css?v=20.5.0" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -43,6 +43,10 @@
           <button class="nav-item" data-view="contact" type="button">
             <span class="nav-glyph" id="nav-contact-icon"></span>
             <span class="nav-label">Kontakt</span>
+          </button>
+          <button class="nav-item" data-view="survey" type="button">
+            <span class="nav-glyph">✓</span>
+            <span class="nav-label">Gi tilbakemelding</span>
           </button>
           <button class="nav-item" data-view="settings" type="button">
             <span class="nav-glyph" id="nav-settings-icon"></span>
@@ -87,6 +91,7 @@
               <button type="button" data-profile-action="history">Historikk</button>
               <button type="button" data-profile-action="about">Om Samtalestøtte</button>
               <button type="button" data-profile-action="contact">Kontakt / rapporter feil</button>
+              <button type="button" data-profile-action="survey">Kort brukertest</button>
               <button type="button" data-profile-action="admin" class="admin-only" hidden>Admin</button>
               <button type="button" data-profile-action="logout">Logg ut</button>
             </div>
@@ -284,7 +289,7 @@
           </div>
           <div id="structured-guidance" class="guidance-grid"></div>
 
-          <section class="simulation-entry" id="simulation-entry">
+          <section class="simulation-entry simulation-entry-emphasis" id="simulation-entry">
             <div class="simulation-entry-icon" aria-hidden="true"><img src="logo-symbol.png" alt="" /></div>
             <div class="simulation-entry-copy">
               <span class="eyebrow">SAMTALEØVELSE</span>
@@ -314,12 +319,16 @@
               <button type="submit" class="primary-button">Spør videre</button>
             </form>
           </section>
-          <div class="conversation-bottom-actions">
-            <button class="primary-button" id="bottom-new-conversation" type="button">＋ Ny samtale</button>
+          <div class="survey-invite" id="survey-invite" hidden>
+            <div><strong>Har du testet Samtalestøtte nok til å gi en kort tilbakemelding?</strong><span>Det tar omtrent 2 minutter.</span></div>
+            <div class="survey-invite-actions"><button class="secondary-button" id="survey-later" type="button">Senere</button><button class="primary-button" id="survey-now" type="button">Svar nå</button></div>
+          </div>
+          <div class="conversation-bottom-actions conversation-bottom-actions-split">
+            <button class="secondary-button" id="bottom-new-conversation" type="button">＋ Ny samtale</button>
+            <button class="primary-button" id="open-simulation-bottom" type="button">Øv på samtalen</button>
           </div>
         </section>
       </section>
-
 
       <section id="simulation-view" class="view simulation-view">
         <div class="simulation-hub-hero">
@@ -575,7 +584,7 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">20.4.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.5.0</strong></p>
         </div>
       </section>
 
@@ -585,7 +594,7 @@
         <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">ADMINISTRASJON</span><div class="utility-title-row"><h1>Admin og innhold</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div><p>Rediger utvalgte tekster og administrer roller uten å endre kildekoden.</p></div></div>
         <div class="admin-grid">
           <section class="settings-card admin-content-card"><details class="admin-content-section" id="admin-content-editor"><summary><span>Rediger innhold</span><span class="role-badge" id="admin-current-role">–</span></summary><div class="admin-section-fields"><p>Åpne bare delen du vil arbeide med. Tema- og undertematekster kan endres uten å endre den interne KI-logikken.</p><div class="admin-unsaved" id="admin-unsaved-indicator" hidden>Ulagrede endringer</div><form id="admin-content-form" class="admin-content-form"><div id="admin-content-fields"></div><div class="admin-actions admin-sticky-actions"><button class="primary-button" id="admin-save-content" type="submit" disabled>Lagre endringer</button><button class="secondary-button" id="admin-reload-content" type="button">Last inn på nytt</button></div><div class="auth-message" id="admin-content-message" aria-live="polite"></div></form></div></details></section>
-          <section class="settings-card admin-users-card" id="admin-users-card"><h2>Brukere og roller</h2><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></section><section class="settings-card admin-users-card" id="admin-ai-card" hidden>
+          <section class="settings-card admin-users-card" id="admin-users-card"><h2>Brukere og roller</h2><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></section><section class="settings-card admin-users-card" id="admin-invite-card" hidden><h2>Invitasjoner for testing og vurdering</h2><p>Opprett en engangslenke med valgt rolle. Admin-lenker gir full administratortilgang og skal bare deles med betrodde vurderere.</p><div class="admin-ai-settings"><label>Rolle<select id="admin-invite-role"><option value="user">Bruker</option><option value="editor">Redaktør</option><option value="admin">Admin</option></select></label><label>Gyldig til<input id="admin-invite-expiry" type="date" value="2026-12-31"></label><button class="primary-button" id="admin-create-invite" type="button">Opprett invitasjon</button><div class="auth-message" id="admin-invite-message" aria-live="polite"></div></div></section><section class="settings-card admin-users-card" id="admin-ai-card" hidden>
             <div class="admin-section-heading"><div><h2>KI-modell og kostnad</h2><p>Bytt modell uten ny deploy, og følg faktisk tokenbruk og estimert API-kostnad.</p></div></div>
             <div class="admin-ai-settings"><label>Aktiv KI-modell<select id="admin-ai-model"></select></label><button class="primary-button" id="admin-save-ai-model" type="button">Lagre modellvalg</button><div class="auth-message" id="admin-ai-model-message" aria-live="polite"></div></div>
             <div class="admin-cost-grid"><div><small>Siste 24 t</small><strong id="admin-cost-24h">–</strong></div><div><small>Siste 7 dager</small><strong id="admin-cost-7d">–</strong></div><div><small>Siste 30 dager</small><strong id="admin-cost-30d">–</strong></div><div><small>KI-kall / 30 dager</small><strong id="admin-calls-30d">–</strong></div></div>
@@ -593,10 +602,10 @@
             <details class="admin-content-section"><summary>Siste KI-kall og kostnad per kall</summary><div class="admin-section-fields"><div id="admin-ai-recent" class="admin-usage-list"></div></div></details>
             <details class="admin-content-section"><summary>Weboppslag og kandidater til offline-kildebank</summary><div class="admin-section-fields"><div><h3>Mest brukte domener</h3><div id="admin-source-domains" class="admin-compact-list"></div></div><div><h3>Siste registrerte søk</h3><div id="admin-source-queries" class="admin-compact-list"></div></div><div><h3>Mest brukte konkrete sider</h3><div id="admin-source-pages" class="admin-compact-list"></div></div><p class="muted-note">Bruksmønstrene kan brukes til å prioritere hva som bør legges i SOURCEBANK/RAG for en senere offline-modus.</p></div></details>
             <details class="admin-content-section benchmark-panel" id="admin-benchmark-section"><summary>Automatisk test og modellbenchmark</summary><div class="admin-section-fields">
-              <div class="benchmark-intro"><p><strong id="benchmark-coverage">Henter testbank …</strong></p><p class="muted-note">Den gratis testen kontrollerer hele testbanken uten KI-kostnad. Ekte benchmark kjører et begrenset utvalg på Luna, Terra og Sol og lagrer svar, tokens, weboppslag, kilder, kostnad og svartid.</p></div>
+              <div class="benchmark-intro"><p><strong id="benchmark-coverage">Henter testbank …</strong></p><p class="muted-note">Den gratis testen kontrollerer hele testbanken uten KI-kostnad. Ekte benchmark kan kjøre samme saker på OpenAI- og OpenRouter-modeller og lagrer svar, tokens, weboppslag, kilder, kostnad og svartid.</p></div>
               <div class="benchmark-actions"><button class="secondary-button" id="benchmark-run-mock" type="button">Kjør gratis fulltest</button><span id="benchmark-mock-result" class="benchmark-status"></span></div>
               <div class="benchmark-live-controls">
-                <label>Testsaker<select id="benchmark-case-set"><option value="8">8 representative saker</option><option value="16">16 saker</option><option value="24">24 saker</option><option value="94">Alle 94 saker</option></select></label>
+                <label>Testsaker<select id="benchmark-case-set"><option value="8">8 representative saker</option><option value="16">16 saker</option><option value="24">24 saker</option><option value="112">Alle 112 saker</option></select></label>
                 <label>Maks budsjett (USD)<input id="benchmark-budget" type="number" min="0.10" max="5" step="0.10" value="2.00"></label>
               </div>
               <div class="benchmark-models" id="benchmark-models"></div>
@@ -607,8 +616,27 @@
               <div id="benchmark-results" class="benchmark-results"></div>
             </div></details>
           </section>
+          <section class="settings-card admin-users-card" id="admin-survey-card" hidden><h2>Kort brukertest</h2><p>Anonyme, strukturerte svar fra testbrukere. Ingen KI-kall brukes for å lagre eller oppsummere disse svarene.</p><div id="admin-survey-summary"></div></section>
           <section class="settings-card admin-users-card" id="admin-feedback-card" hidden><h2>Rapporterte KI-svar</h2><p>Samtaleteksten legges bare ved når brukeren aktivt velger «Legg ved samtalen».</p><div id="admin-feedback-list" class="admin-feedback-list"></div></section>
         </div>
+      </section>
+
+      <section id="survey-view" class="view">
+        <button class="back-link info-back" type="button">← Tilbake</button>
+        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">KORT BRUKERTEST</span><h1>Hvordan fungerte Samtalestøtte?</h1><p>Det tar omtrent 2 minutter. Svarene lagres uten samtaletekst og uten kobling til brukeridentiteten din.</p></div></div>
+        <form id="survey-form" class="settings-card survey-form">
+          <p class="muted-note">Skala: 1 = svært dårlig / lite sannsynlig, 5 = svært godt / svært sannsynlig.</p>
+          <label>1. Hvor enkelt var det å forstå hvordan Samtalestøtte skulle brukes?<select name="usability" required><option value="">Velg</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <label>2. Hvor enkelt var det å finne frem og gjennomføre hovedflyten uten hjelp?<select name="navigation" required><option value="">Velg</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <label>3. Hvor relevant opplevde du KI-veiledningen for situasjonen du testet?<select name="ai_relevance" required><option value="">Velg</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <label>4. Hvor konkret og praktisk nyttig opplevde du rådene?<select name="practical_usefulness" required><option value="">Velg</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <label>5. Hvor nyttig opplevde du samtalesimuleringen som trening?<select name="simulation"><option value="">Ikke testet</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <label>6. Hvor tydelig var informasjonen om personvern og hva du bør unngå å skrive inn?<select name="privacy" required><option value="">Velg</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <label>7. Hvis du var leder med personalansvar, hvor sannsynlig er det at du ville brukt Samtalestøtte i en reell situasjon?<select name="would_use" required><option value="">Velg</option><option>1</option><option>2</option><option>3</option><option>4</option><option>5</option></select></label>
+          <label>8. Hva er det viktigste vi bør forbedre?<textarea name="improvement_text" rows="4" maxlength="1200" placeholder="Kort svar. Ikke skriv navn eller andre personopplysninger."></textarea></label>
+          <label>Hva opplevde du som mest nyttig? <span class="muted-note">(valgfritt)</span><textarea name="most_useful_text" rows="3" maxlength="1200" placeholder="Kort svar. Ikke skriv navn eller andre personopplysninger."></textarea></label>
+          <button class="primary-button" type="submit">Send tilbakemelding</button><div id="survey-message" class="auth-message" aria-live="polite"></div>
+        </form>
       </section>
 
       <section id="contact-view" class="view">
@@ -633,7 +661,7 @@
               <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
             </label>
             <label class="report-log-option"><input id="report-include-log" type="checkbox" checked><span>Ta med teknisk logg <small>Ingen samtaletekst tas med automatisk.</small></span></label>
-            <div class="report-meta" id="report-meta">Versjon 20.0.0</div>
+            <div class="report-meta" id="report-meta">Versjon 20.5.0</div>
             <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
             <div class="auth-message" id="report-message" aria-live="polite"></div>
           </form>
@@ -709,6 +737,6 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-  <script src="app.js?v=20.4.0"></script>
+  <script src="app.js?v=20.5.0"></script>
 </body>
 </html>

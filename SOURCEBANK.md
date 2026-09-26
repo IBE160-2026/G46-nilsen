@@ -184,3 +184,23 @@ Lenke: https://doi.org/10.1037/0021-9010.86.3.425
 Støtter blant annet:
 - Opplevelser av rettferdighet omfatter blant annet fordeling, prosedyrer, mellommenneskelig behandling og informasjon.
 - Hvordan beslutninger forklares og prosessen oppleves kan ha betydning utover selve utfallet.
+
+
+## v20.5 – nye faste fagsider
+
+### Mobbing og trakassering
+- Arbeidstilsynet: Trakassering – https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/
+- Arbeidstilsynet: Mobbing – https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/
+- Arbeidstilsynet: Seksuell trakassering – https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/
+- Arbeidstilsynet: Ansvar, rettigheter og roller i varslingssaker – https://www.arbeidstilsynet.no/arbeidsmiljo/varsling/ansvar-rettigheter-og-roller/
+- Lovdata: Arbeidsmiljøloven kapittel 2 A – varsling – https://lovdata.no/lov/2005-06-17-62/%C2%A72a-1
+- LDO/Arbeidstilsynet: Sammen setter vi strek – https://ldo.no/settestrek/
+- Lovdata: Likestillings- og diskrimineringsloven – https://lovdata.no/dokument/NL/lov/2017-06-16-51
+- Lovdata: § 26 aktivitetsplikt – https://lovdata.no/nav/lov/2017-06-16-51/kap4
+- FFI: MOST 2024 – https://www.ffi.no/publikasjoner/arkiv/mobbing-og-seksuell-trakassering-i-forsvaret-i-fma-og-ved-ffi-resultater-fra-en-sporreundersokelse-i-2024
+
+### Fravær / sikkerhet
+- NAV: Samtalestøtte for arbeidsgiver – https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver
+- Arbeidstilsynet: Vold og trusler – https://www.arbeidstilsynet.no/arbeidsmiljo/vold-og-trusler/
+
+Prinsipp for KI-støtten: Den skal ikke fastslå at mobbing, trakassering eller lovbrudd har skjedd bare fordi en bruker beskriver en påstand. Den skal skille mellom å ta imot informasjon, undersøke saken, ivareta involverte og trekke konklusjoner.

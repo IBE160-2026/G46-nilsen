@@ -24,6 +24,7 @@ const svgIcons = {
   exitDoor: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 20V4h9v16"></path><path d="M10 12h10"></path><path d="m17 9 3 3-3 3"></path></svg>`,
   shieldCheck: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>`,
   homeHeart: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M12 17s-3-1.8-3-4a1.8 1.8 0 0 1 3-1.3 1.8 1.8 0 0 1 3 1.3c0 2.2-3 4-3 4Z"></path></svg>`,
+  harassment: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="M8.5 9.5h7M8.5 13h5"></path></svg>`,
   more: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h.01"></path><path d="M12 12h.01"></path><path d="M18 12h.01"></path></svg>`
 };
 
@@ -42,7 +43,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.3.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "20.5.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 const clientErrorLog = [];
@@ -72,16 +73,16 @@ const topics = [
     iconKey: 'calendarClock',
     image: 'topic-fravaer-oppfolging.png',
     imageAlt: 'Oppfølgingssamtale mellom leder og medarbeider i et lyst kontormiljø',
-    description: 'Støtte til gode samtaler om fravær, oppmøte, tilbakekomst, arbeidsevne og tilrettelegging – med fokus på både medarbeideren og arbeidssituasjonen.',
-    representations: ['Fravær og oppmøte', 'Tilbakekomst til arbeid', 'Tilrettelegging og kapasitet'],
-    keywords: ['sykefravær','fravær','sykmelding','oppmøte','for sent','punktlighet','tilrettelegging','tilbakekomst','arbeidsevne'],
+    description: 'Støtte til gode samtaler om sykefravær, oppmøte, planlagt fravær, tilbakekomst, arbeidsevne og tilrettelegging – med fokus på arbeidssituasjonen fremfor diagnose.',
+    representations: ['Fravær og oppmøte', 'Sykefravær og tilbakekomst', 'Tilrettelegging og arbeidsevne'],
+    keywords: ['sykefravær','fravær','sykmelding','egenmelding','oppmøte','for sent','punktlighet','planlagt fravær','tilrettelegging','tilbakekomst','arbeidsevne'],
     subtopics: [
-      ['Korttidsfravær', 'Hyppige eller gjentatte fraværsperioder over kort tid.'],
-      ['Langvarig fravær', 'Når medarbeideren har vært borte over en lengre periode og trenger oppfølging.'],
+      ['Hyppig korttidsfravær og egenmeldinger', 'Når gjentatte korte fravær eller egenmeldinger gjør det naturlig med en oppfølgingssamtale.'],
+      ['Langvarig sykefravær', 'Når medarbeideren har vært borte over en lengre periode og trenger strukturert oppfølging.'],
       ['Oppmøte og punktlighet', 'Forsinkelser, ustabilt oppmøte eller andre utfordringer knyttet til tilstedeværelse.'],
+      ['Planlagt fravær', 'Når planlagt fravær, permisjon eller forutsigbarhet rundt fravær trenger avklaring.'],
       ['Tilbakekomst til arbeid', 'Samtaler etter lengre fravær eller overgang tilbake til vanlig arbeid.'],
-      ['Tilrettelegging', 'Behov for justeringer i oppgaver, arbeidstid eller arbeidsmåte.'],
-      ['Arbeidsevne og kapasitet', 'Når det er behov for å snakke om hvordan arbeidssituasjonen fungerer i praksis.']
+      ['Tilrettelegging og arbeidsevne', 'Når dere trenger å utforske hvilke arbeidsoppgaver, arbeidstid eller andre tiltak som kan gjøre arbeidssituasjonen gjennomførbar – uten å etterspørre diagnose.']
     ]
   },
   {
@@ -170,7 +171,8 @@ const topics = [
       ['Risikovurdering', 'Når leder og medarbeider har ulik forståelse av risiko eller forsvarlig praksis.'],
       ['Rapportering', 'Når rapportering av hendelser, feil eller avvik trenger oppfølging.'],
       ['Informasjonssikkerhet', 'Håndtering av informasjon, tilgang, deling eller andre sikkerhetsrelaterte forhold.'],
-      ['Ansvar og læring etter hendelser', 'Samtaler om hva som skjedde, hva man kan lære og hva som bør endres.']
+      ['Ansvar og læring etter hendelser', 'Samtaler om hva som skjedde, hva man kan lære og hva som bør endres.'],
+      ['Vold og trusler', 'Når en arbeidstaker har vært utsatt for, eller det er risiko for, vold, trusler eller truende atferd i arbeidssammenheng.']
     ]
   },
   {
@@ -190,6 +192,26 @@ const topics = [
       ['Omsorgsansvar', 'Barn, foreldre eller andre nærstående som krever mye tid og oppfølging.'],
       ['Belastning og utmattelse', 'Søvnproblemer, høyt press eller andre belastninger som påvirker arbeidshverdagen.']
     ]
+  },
+  {
+    id: 'mobbing-trakassering',
+    title: 'Mobbing og trakassering',
+    iconKey: 'harassment',
+    image: 'topic-samarbeid-kommunikasjon.png',
+    imageAlt: 'Profesjonell samtale om arbeidsmiljø, grenser og trygghet',
+    description: 'Støtte til varsomme og ryddige samtaler om mobbing, trakassering, utestenging og uønsket seksuell oppmerksomhet. Verktøyet skal ikke avgjøre skyld, men hjelpe lederen å lytte, ivareta involverte og følge riktig prosess.',
+    representations: ['Mobbing og utestenging', 'Trakassering og seksuell oppmerksomhet', 'Varsling og forsvarlig oppfølging'],
+    keywords: ['mobbing','trakassering','seksuell trakassering','uønsket seksuell oppmerksomhet','kjønnstrakassering','utestenging','utfrysing','krenkende','utilbørlig','varsling','gjengjeldelse','most'],
+    subtopics: [
+      ['Mobbing', 'Når en medarbeider beskriver gjentatte negative handlinger, systematisk belastning eller en opplevelse av å være vanskelig i stand til å forsvare seg.'],
+      ['Utestenging og utfrysing', 'Når en medarbeider opplever å bli holdt utenfor faglige eller sosiale fellesskap på arbeidsplassen.'],
+      ['Krenkende eller utilbørlig atferd', 'Når ord, handlinger eller unnlatelser kan oppleves krenkende, skremmende, fiendtlige, nedverdigende eller ydmykende.'],
+      ['Seksuell trakassering', 'Når det meldes om uønsket seksuell oppmerksomhet eller handlinger som kan være seksuelt trakasserende.'],
+      ['Kjønnstrakassering og uønsket seksuell oppmerksomhet', 'Når kjønnede kommentarer, seksualisert språk, oppmerksomhet eller andre grenseoverskridelser tas opp.'],
+      ['Varsling om mobbing eller trakassering', 'Når en medarbeider sier fra om et mulig kritikkverdig forhold og saken må håndteres etter virksomhetens varslingsrutiner.'],
+      ['Samtale med den som sier ifra', 'Når lederen skal ta imot informasjon, lytte og avklare videre prosess uten å love et bestemt utfall.'],
+      ['Samtale med den varselet gjelder', 'Når lederen skal informere og høre den det varsles om, uten å konkludere på forhånd eller gjøre samtalen til en skyldavgjørelse.']
+    ]
   }
 ];
 
@@ -207,6 +229,7 @@ const views = {
   terms: document.querySelector('#terms-view'),
   about: document.querySelector('#about-view'),
   contact: document.querySelector('#contact-view'),
+  survey: document.querySelector('#survey-view'),
   admin: document.querySelector('#admin-view')
 };
 
@@ -240,6 +263,7 @@ function updateNavState(name) {
       (name === 'history' && btn.dataset.view === 'history') ||
       (name === 'about' && btn.dataset.view === 'about') ||
       (name === 'contact' && btn.dataset.view === 'contact') ||
+      (name === 'survey' && btn.dataset.view === 'survey') ||
       (name === 'admin' && btn.dataset.view === 'admin')
     );
   });
@@ -1702,6 +1726,7 @@ async function showStructuredGuidance() {
   } finally {
     setAiThinking(false);
     document.querySelector('#prototype-result').hidden = false;
+  markGuidanceUsed();
     if (button) { button.disabled = false; button.textContent = original; }
   }
   document.querySelector('#prototype-result').scrollIntoView({ behavior: 'smooth', block: 'start' });
@@ -2732,9 +2757,9 @@ async function loadBenchmarkConfig(){
   if(currentUser?.role!=='admin')return;const coverage=document.querySelector('#benchmark-coverage');
   try{const r=await fetch('/api/admin/benchmark/cases',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente testbanken.');benchmarkConfig=p;if(coverage)coverage.textContent=`${p.totalCases} faste testsaker · ${p.totalSubtopics} undertemaer · minst 2 saker per undertema`;const models=document.querySelector('#benchmark-models');if(models)models.innerHTML=(p.models||[]).map(m=>`<label class="benchmark-model-option"><input type="checkbox" data-benchmark-model value="${escapeHtml(m.id)}" checked><span>${escapeHtml(m.label)}</span></label>`).join('');const run=document.querySelector('#benchmark-run-live');if(run)run.disabled=!p.storageReady;const status=document.querySelector('#benchmark-live-status');if(!p.storageReady&&status)status.textContent='Kjør V20-4-SUPABASE-MIGRATION.sql før ekte benchmark.';try{const rr=await fetch('/api/admin/benchmark/results',{credentials:'include',cache:'no-store'});const rp=await rr.json();if(rr.ok){renderBenchmarkResults((rp.items||[]).slice(0,24));renderBenchmarkSummary((rp.items||[]).slice(0,24));}}catch(_){}}catch(error){if(coverage)coverage.textContent=error.message;}
 }
-async function runBenchmarkMock(){const button=document.querySelector('#benchmark-run-mock'),status=document.querySelector('#benchmark-mock-result');if(button)button.disabled=true;if(status)status.textContent='Tester 94 saker …';try{const r=await fetch('/api/admin/benchmark/mock',{method:'POST',credentials:'include'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Fulltesten feilet.');if(status)status.textContent=p.ok?`Bestått: ${p.checks.cases} saker / ${p.checks.subtopics} undertemaer · 0 KI-kostnad`:`Feil: ${(p.problems||[]).join('; ')}`;}catch(error){if(status)status.textContent=error.message;}finally{if(button)button.disabled=false;}}
+async function runBenchmarkMock(){const button=document.querySelector('#benchmark-run-mock'),status=document.querySelector('#benchmark-mock-result');if(button)button.disabled=true;if(status)status.textContent=`Tester ${benchmarkConfig?.totalCases||'alle'} saker …`;try{const r=await fetch('/api/admin/benchmark/mock',{method:'POST',credentials:'include'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Fulltesten feilet.');if(status)status.textContent=p.ok?`Bestått: ${p.checks.cases} saker / ${p.checks.subtopics} undertemaer · 0 KI-kostnad`:`Feil: ${(p.problems||[]).join('; ')}`;}catch(error){if(status)status.textContent=error.message;}finally{if(button)button.disabled=false;}}
 async function runBenchmarkLive(){
-  if(benchmarkRunning||!benchmarkConfig)return;const models=benchmarkSelectedModels();if(!models.length){alert('Velg minst én KI-modell.');return;}const count=Math.min(Number(document.querySelector('#benchmark-case-set')?.value||8),benchmarkConfig.totalCases||94);const cases=benchmarkSelectCases(count);const budget=Math.min(5,Math.max(.1,Number(document.querySelector('#benchmark-budget')?.value||2)));const total=cases.length*models.length;
+  if(benchmarkRunning||!benchmarkConfig)return;const models=benchmarkSelectedModels();if(!models.length){alert('Velg minst én KI-modell.');return;}const count=Math.min(Number(document.querySelector('#benchmark-case-set')?.value||8),benchmarkConfig.totalCases||112);const cases=benchmarkSelectCases(count);const budget=Math.min(5,Math.max(.1,Number(document.querySelector('#benchmark-budget')?.value||2)));const total=cases.length*models.length;
   if(!confirm(`Kjøre ${cases.length} testsaker på ${models.length} modeller = ${total} ekte KI-kall?
 
 Maks budsjett: $${budget.toFixed(2)}. Testen kan stoppes når som helst.`))return;
@@ -2742,7 +2767,33 @@ Maks budsjett: $${budget.toFixed(2)}. Testen kan stoppes når som helst.`))retur
   outer: for(const c of cases){for(const model of models){if(benchmarkStopRequested)break outer;if(status)status.textContent=`${done+1}/${total}: ${c.topic} → ${c.subtopic} · ${model.replace('gpt-5.6-','')}`;try{const r=await fetch('/api/admin/benchmark/live',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseId:c.id,model,runId,spentSoFar:spent,budgetUsd:budget})});const p=await r.json();if(r.status===409&&p.error==='BUDGET_LIMIT'){if(status)status.textContent=`Stoppet ved budsjettgrensen. Brukt ca. ${formatUsd(spent)}.`;break outer;}if(!r.ok)throw new Error(p.message||'Benchmark-kall feilet.');results.push(p);spent+=Number(p.estimated_cost_usd||0);}catch(error){if(status)status.textContent=`Stoppet: ${error.message}`;break outer;}done++;if(bar)bar.style.width=`${Math.round(done/total*100)}%`;renderBenchmarkSummary(results);renderBenchmarkResults(results);}}
   benchmarkRunning=false;start.disabled=!benchmarkConfig.storageReady;stop.disabled=true;if(!benchmarkStopRequested&&done===total&&status)status.textContent=`Ferdig: ${done} kall · ca. ${formatUsd(spent)}.`;else if(benchmarkStopRequested&&status)status.textContent=`Stoppet manuelt etter ${done} kall · ca. ${formatUsd(spent)}.`;await loadAdminAiUsage();
 }
-async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminFeedback();await loadAdminAiSettings();await loadAdminAiUsage();await loadBenchmarkConfig();}
+
+async function loadAdminSurvey(){
+  const card=document.querySelector('#admin-survey-card'),box=document.querySelector('#admin-survey-summary');
+  if(!card||!box)return; const isAdmin=currentUser?.role==='admin'; card.hidden=!isAdmin; if(!isAdmin)return;
+  box.innerHTML='<div class="history-empty">Henter brukertest …</div>';
+  try{const r=await fetch('/api/admin/survey',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente brukertest.');
+    const a=p.averages||{}; const f=n=>n==null?'–':Number(n).toFixed(1).replace('.',',');
+    box.innerHTML=`<div class="admin-cost-grid"><div><small>Svar</small><strong>${p.count||0}</strong></div><div><small>Forståelse</small><strong>${f(a.usability)}</strong></div><div><small>KI-relevans</small><strong>${f(a.aiRelevance)}</strong></div><div><small>Ville brukt</small><strong>${f(a.wouldUse)}</strong></div></div>${(p.comments||[]).length?`<details class="admin-content-section"><summary>Siste forbedringsforslag</summary><div class="admin-section-fields">${p.comments.map(x=>`<p>${escapeHtml(x.improvement_text||'')}</p>`).join('')}</div></details>`:''}`;
+  }catch(e){box.innerHTML=`<div class="history-empty">${escapeHtml(e.message)}</div>`;}
+}
+
+async function loadAdminInvites(){
+  const card=document.querySelector('#admin-invite-card'); if(!card)return; const isAdmin=currentUser?.role==='admin'; card.hidden=!isAdmin;
+}
+
+function surveyUsageEligible(){
+  try{return Number(localStorage.getItem('samtalestotte_guidance_count')||0)>=1;}catch(_){return true;}
+}
+function maybeShowSurveyInvite(){
+  const box=document.querySelector('#survey-invite'); if(!box)return;
+  let done=false,later=false; try{done=localStorage.getItem('samtalestotte_survey_done')==='1';later=localStorage.getItem('samtalestotte_survey_later')==='1';}catch(_){}
+  box.hidden=done||later||!surveyUsageEligible();
+}
+function markGuidanceUsed(){try{localStorage.setItem('samtalestotte_guidance_count',String(Number(localStorage.getItem('samtalestotte_guidance_count')||0)+1));}catch(_){} maybeShowSurveyInvite();}
+async function openSurvey(){if(!requireLogin())return;setBreadcrumb('Gi tilbakemelding');showView('survey');}
+
+async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminInvites();await loadAdminFeedback();await loadAdminSurvey();await loadAdminAiSettings();await loadAdminAiUsage();await loadBenchmarkConfig();}
 
 async function loadPublicConfig(){
   try{
@@ -2793,6 +2844,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfil
 document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{closeProfileMenu();openHistory();});
 document.querySelector('[data-profile-action="about"]')?.addEventListener('click',()=>openInfoView('about'));
 document.querySelector('[data-profile-action="contact"]')?.addEventListener('click',()=>openInfoView('contact'));
+document.querySelector('[data-profile-action="survey"]')?.addEventListener('click',()=>{closeProfileMenu();openSurvey();});
 document.querySelector('[data-profile-action="admin"]')?.addEventListener('click',()=>{closeProfileMenu();openAdmin();});
 document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
@@ -3297,6 +3349,7 @@ async function endSimulation() {
 }
 
 document.querySelector('#open-simulation')?.addEventListener('click', openSimulation);
+document.querySelector('#open-simulation-bottom')?.addEventListener('click', openSimulation);
 document.querySelector('#simulation-new-direct')?.addEventListener('click', openDirectSimulationSetup);
 document.querySelector('#simulation-history')?.addEventListener('click', openHistory);
 document.querySelector('#cancel-direct-simulation')?.addEventListener('click', () => { document.querySelector('#direct-simulation-form').hidden = true; showDirectSimulationPrivacy([]); });
@@ -3426,3 +3479,22 @@ window.addEventListener('pageshow', () => {
   showView('home');
 });
 
+
+
+document.querySelector('#survey-now')?.addEventListener('click',openSurvey);
+document.querySelector('#survey-later')?.addEventListener('click',()=>{try{localStorage.setItem('samtalestotte_survey_later','1')}catch(_){} const box=document.querySelector('#survey-invite');if(box)box.hidden=true;});
+document.querySelector('[data-view="survey"]')?.addEventListener('click',openSurvey);
+document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
+  event.preventDefault(); const msg=document.querySelector('#survey-message'); const form=event.currentTarget;
+  const body={}; new FormData(form).forEach((v,k)=>body[k]=v);
+  for(const key of ['usability','navigation','ai_relevance','practical_usefulness','simulation','privacy','would_use']) if(body[key]!==undefined&&body[key]!=='') body[key]=Number(body[key]);
+  try{const r=await fetch('/api/survey',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');msg.className='auth-message success';msg.textContent='Takk! Tilbakemeldingen er lagret.';form.reset();try{localStorage.setItem('samtalestotte_survey_done','1')}catch(_){}}
+  catch(e){msg.className='auth-message error';msg.textContent=e.message;}
+});
+
+document.querySelector('#admin-create-invite')?.addEventListener('click',async()=>{
+  const role=document.querySelector('#admin-invite-role')?.value||'user'; const expiry=document.querySelector('#admin-invite-expiry')?.value||'2026-12-31'; const msg=document.querySelector('#admin-invite-message');
+  if(role==='admin'&&!confirm('Denne invitasjonen gir full administratortilgang. Opprette den?'))return;
+  try{const r=await fetch('/api/admin/invites',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({role,expiresAt:`${expiry}T23:59:59+01:00`})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke opprette invitasjon.');msg.className='auth-message success';msg.innerHTML=`Invitasjon opprettet. <button type="button" class="text-button" id="copy-created-invite">Kopier lenke</button><br><small>${escapeHtml(p.url)}</small>`;document.querySelector('#copy-created-invite')?.addEventListener('click',()=>navigator.clipboard.writeText(p.url));}
+  catch(e){msg.className='auth-message error';msg.textContent=e.message;}
+});

@@ -1,3 +1,49 @@
+# CHANGELOG – Samtalestøtte
+
+## v20.5.0 – nye fagtemaer, OpenRouter og kort brukertest
+
+- Nytt hovedtema **Mobbing og trakassering** med åtte undertemaer, inkludert varsling og samtaler med begge sider i en varslingssak.
+- Fravær er oppdatert med tydelig **Tilrettelegging og arbeidsevne**, og Sikkerhet med **Vold og trusler**.
+- SOURCEBANK er utvidet med faste kilder fra Arbeidstilsynet, NAV, Lovdata, LDO og FFI/MOST.
+- Benchmarkbanken er utvidet fra 94 til **112 faste saker**: minst to for hvert av 56 undertemaer.
+- OpenRouter er lagt til som ekstra KI-provider med `openrouter/free` og en fast gratis Gemma-modell, uten å fjerne direkte OpenAI-støtte.
+- Admin kan sammenligne OpenAI- og OpenRouter-modeller og se faktisk routet modell når provider oppgir den.
+- Ny kort brukertest med strukturerte 1–5-spørsmål og fritekst; lagres uten samtaletekst og uten bruker-ID.
+- Admin får enkel oversikt over brukertestresultater.
+- Admin kan opprette engangsinvitasjoner som bruker, redaktør eller admin med utløpsdato.
+- «Øv på samtalen» er gjort tydeligere og gjentas nederst i veiledningen.
+- Admin-logo i innholdsvisningen flyttes lokalt 8 px ned; godkjent snakkeboblegeometri er urørt.
+- README og BMAD-dokumentasjon er oppdatert med Render cold-start, vurderingstilgang, ny taksonomi, brukertest og provider-uavhengighet.
+- Ny migrering: `V20-5-SUPABASE-MIGRATION.sql`.
+
+## v20.4.0 – sikkerhet og personvern
+- Server-side personverngateway utvidet til å dekke navn, fødselsdata, adresse og øvrige sentrale direkte identifikatorer i tillegg til eksisterende sjekker.
+- KI-/kildelogging frikoblet fra bruker-ID; Supabase-migrering nullstiller gamle koblinger og håndhever dette med trigger.
+- Weboppslag lagrer nå søkestrenger, domener og konkrete kildesider (URL/tittel) når dette finnes i KI-responsen.
+- Automatisk retensjon for KI-logger, feedbackvedlegg, feedback og benchmarkdata.
+- Kontoeksport og utvidet kontosletting.
+- Rate limiting på login, registrering, passordreset, KI og benchmark.
+- Same-origin-kontroll på muterende API-kall.
+- CSP, HSTS i produksjon og øvrige sikkerhetsheadere.
+- Hele prosjektmappen serveres ikke lenger statisk; kun eksplisitt godkjente frontendfiler/medier kan hentes offentlig.
+- Interne auth-/OpenAI-diagnostikkdetaljer fjernet fra klientresponser.
+- Admin «Rediger innhold» er sammenleggbar og lukket som standard.
+- Nytt dokument: `SIKKERHET-OG-PERSONVERN-v20.4.md`.
+
+## v20.3.1 – logo-hotfix
+- Hybridtemaet bruker nå original `logo.png` uten CSS-lysning, filter eller mask-overlay.
+- Ingen øvrige UI- eller funksjonsendringer.
+
+## 20.3.0 – Automatisk testbank og modellbenchmark
+- Ny fast testbank med 94 saker: to saker for hvert av 47 undertemaer.
+- Admin kan kjøre en gratis fulltest av testbanken uten KI-kall.
+- Ny lavkost modellbenchmark som kjører samme valgte saker på Luna, Terra og Sol.
+- Benchmark lagrer svar, input/output-tokens, estimert kostnad, antall weboppslag, søk, kilde-domener og svartid.
+- Ekte benchmark er begrenset til maks $5 og har standardbudsjett $2; den reserverer margin før hvert nytt kall og kan stoppes manuelt.
+- Testtrafikk merkes separat (`is_test`) og holdes utenfor vanlig kostnadsoversikt som standard.
+- Websøkets faste verktøykostnad er nå inkludert i nye kostnadsestimater ($0,01 per søk ved gjeldende OpenAI-pris 26.09.2026), i tillegg til tokenkostnad.
+- Ny migrering: `V20-3-SUPABASE-MIGRATION.sql`.
+
 ## v20.2 – modellstyring, kostnad, kildebruk og bedre rapportering
 
 - Admin kan bytte mellom godkjente KI-modeller uten ny deploy.
@@ -166,6 +212,14 @@
 - Fjernet firkantet hoverflate rundt hele profil/Logg på-elementet.
 - Oppdatert cache-versjon på CSS og JavaScript slik at Render-klienten henter de nye filene etter deploy.
 
+## 19.11.0
+- Bevarer situasjonsbeskrivelsen gjennom tema- og undertemaflyten slik at teksten ikke må skrives på nytt.
+- Viser KI-forslått hovedtema og undertema tydeligere, også ved lavere sikkerhet.
+- Beskytter alle KI- og simulatorendepunkter med gyldig innlogget bruker.
+- Gjør innlogging obligatorisk for bruk av den lukkede betaversjonen; registrering krever fortsatt engangsinvitasjon.
+- Bygger snakkeboblehaler om til kurvede, integrerte speech-bubble-former og gjenbruker dem i videre KI-dialog.
+- Løfter infosidelogoene og lysner hovedlogoen tydeligere i hybridtema.
+
 # Versjon 19.10 – smartere temaforståelse og forbedret førsteflyt
 
 - Ny KI-basert temaklassifisering som vurderer hele situasjonen i stedet for å stole på enkle nøkkelord.
@@ -192,7 +246,6 @@
 
 ---
 
-
 # v19.7.0 – Simulatorpolering og personvern i live-chat
 
 - Snakkebobler i simuleringen har fått lengre, mykere og tydeligere haler som peker mot profilene uten å treffe avatarene.
@@ -200,7 +253,6 @@
 - Personvernkontrollen kjører nå også på hver melding i simuleringen før sending. Tydelige identifikatorer blokkeres, mens mykere funn gir råd om generalisering.
 - Brukeren kan generalisere flagget tekst direkte i simuleringsfeltet før sending.
 - Logo på Om, Kontakt, Innstillinger, Historikk og juridiske sider er større og plassert til høyre for overskriftsteksten.
-
 
 ## 19.6.0
 - La personvernspåminnelse synlig på Samtalesimulering.
@@ -210,7 +262,6 @@
 - Gjorde snakkeboblehaler tydeligere både på simulatorinnganger og i live-chatten.
 - Innførte mer petrolpreget og konsekvent hover-feedback i lys og mørk modus.
 - Flyttet symbolslogo ved siden av overskriften på innstillinger, historikk, personvern, vilkår, om og kontakt.
-# CHANGELOG – Samtalestøtte
 
 ## v19.5 – Opprydding før brukertest
 
@@ -1114,40 +1165,3 @@ Fra og med neste versjon skal følgende alltid gjøres:
 4. Kontroller at minst første og siste historiske versjon fortsatt finnes før pakking.
 5. `CHANGELOG.md` skal inngå i samme Git-commit som versjonen den dokumenterer.
 6. Ved generering av ny ZIP skal den oppdaterte, komplette changelog-filen være kilden – aldri en lagret eldre mal.
-
-
-## 19.11.0
-- Bevarer situasjonsbeskrivelsen gjennom tema- og undertemaflyten slik at teksten ikke må skrives på nytt.
-- Viser KI-forslått hovedtema og undertema tydeligere, også ved lavere sikkerhet.
-- Beskytter alle KI- og simulatorendepunkter med gyldig innlogget bruker.
-- Gjør innlogging obligatorisk for bruk av den lukkede betaversjonen; registrering krever fortsatt engangsinvitasjon.
-- Bygger snakkeboblehaler om til kurvede, integrerte speech-bubble-former og gjenbruker dem i videre KI-dialog.
-- Løfter infosidelogoene og lysner hovedlogoen tydeligere i hybridtema.
-
-## 20.3.0 – Automatisk testbank og modellbenchmark
-- Ny fast testbank med 94 saker: to saker for hvert av 47 undertemaer.
-- Admin kan kjøre en gratis fulltest av testbanken uten KI-kall.
-- Ny lavkost modellbenchmark som kjører samme valgte saker på Luna, Terra og Sol.
-- Benchmark lagrer svar, input/output-tokens, estimert kostnad, antall weboppslag, søk, kilde-domener og svartid.
-- Ekte benchmark er begrenset til maks $5 og har standardbudsjett $2; den reserverer margin før hvert nytt kall og kan stoppes manuelt.
-- Testtrafikk merkes separat (`is_test`) og holdes utenfor vanlig kostnadsoversikt som standard.
-- Websøkets faste verktøykostnad er nå inkludert i nye kostnadsestimater ($0,01 per søk ved gjeldende OpenAI-pris 26.09.2026), i tillegg til tokenkostnad.
-- Ny migrering: `V20-3-SUPABASE-MIGRATION.sql`.
-
-## v20.3.1 – logo-hotfix
-- Hybridtemaet bruker nå original `logo.png` uten CSS-lysning, filter eller mask-overlay.
-- Ingen øvrige UI- eller funksjonsendringer.
-
-## v20.4.0 – sikkerhet og personvern
-- Server-side personverngateway utvidet til å dekke navn, fødselsdata, adresse og øvrige sentrale direkte identifikatorer i tillegg til eksisterende sjekker.
-- KI-/kildelogging frikoblet fra bruker-ID; Supabase-migrering nullstiller gamle koblinger og håndhever dette med trigger.
-- Weboppslag lagrer nå søkestrenger, domener og konkrete kildesider (URL/tittel) når dette finnes i KI-responsen.
-- Automatisk retensjon for KI-logger, feedbackvedlegg, feedback og benchmarkdata.
-- Kontoeksport og utvidet kontosletting.
-- Rate limiting på login, registrering, passordreset, KI og benchmark.
-- Same-origin-kontroll på muterende API-kall.
-- CSP, HSTS i produksjon og øvrige sikkerhetsheadere.
-- Hele prosjektmappen serveres ikke lenger statisk; kun eksplisitt godkjente frontendfiler/medier kan hentes offentlig.
-- Interne auth-/OpenAI-diagnostikkdetaljer fjernet fra klientresponser.
-- Admin «Rediger innhold» er sammenleggbar og lukket som standard.
-- Nytt dokument: `SIKKERHET-OG-PERSONVERN-v20.4.md`.

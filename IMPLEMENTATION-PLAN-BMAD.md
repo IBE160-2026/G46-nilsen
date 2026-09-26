@@ -143,7 +143,7 @@ Personvernkontrollen ble gradvis utvidet etter hvert som flere brukerflyter ble 
 
 ## Leveranser
 
-- 8 hovedtemaer
+- 9 hovedtemaer
 - undertemaer
 - situasjonsanalyse
 - temaidentifikasjon
@@ -256,7 +256,7 @@ Det ble vurdert som utilstrekkelig å velge KI-modell kun på bakgrunn av opplev
 
 ## Leveranser
 
-- minst 94 testsaker
+- minst 112 testsaker
 - minimum to per undertema
 - gratis mocktest
 - ekte benchmark
@@ -492,3 +492,18 @@ planlegg
 BMAD brukes for å strukturere og dokumentere beslutningene, mens testing og erfaring brukes for å forbedre produktet.
 
 Denne implementeringsplanen er derfor en revidert plan som viser hvordan utviklingen skal struktureres videre og hvordan tidligere læring innarbeides i prosjektet.
+
+
+## v20.5 – neste iterasjon
+
+Denne iterasjonen følger prosjektets faktiske arbeidsmåte: behov ble oppdaget gjennom faglig gjennomgang og bruk av prototypen, og implementeres deretter med oppdatering av dokumentasjon og tester.
+
+1. Utvide temataksonomien til 9 hovedtemaer / 56 undertemaer.
+2. Utvide SOURCEBANK med faste autoritative kilder for mobbing, trakassering, varsling, tilrettelegging og vold/trusler.
+3. Regenerere fast benchmark til 112 saker og legge inn flere regelverksnære kildetester.
+4. Legge OpenRouter til providerlaget og benchmarkpanelet.
+5. Legge inn kort brukertest og anonymisert lagring i Supabase.
+6. Legge inn rollebaserte, utløpende vurderingsinvitasjoner.
+7. Gjøre simulator-CTA mer synlig uten å endre godkjent boblegeometri.
+8. Oppdatere README, BMAD-filer og changelog i samme versjon.
+9. Kjør statiske tester og eksisterende regresjonstester før pakking.

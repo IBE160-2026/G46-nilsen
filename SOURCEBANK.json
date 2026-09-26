@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "description": "Kurert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken er et førstevalg og kvalitetsanker, ikke en lukket liste; supplerende troverdige kilder kan brukes ved behov.",
   "sources": [
     {
@@ -185,7 +185,8 @@
       "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/",
       "topics": [
         "Samarbeid og kommunikasjon",
-        "Sikkerhet og ansvar"
+        "Sikkerhet og ansvar",
+        "Mobbing og trakassering"
       ],
       "principles": [
         "Arbeidsgiver skal undersøke påstander om trakassering og følge opp involverte.",
@@ -805,6 +806,197 @@
         "prosess",
         "begrunnelse",
         "ulik behandling"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AT_MOBBING",
+      "type": "myndighet",
+      "title": "Mobbing",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Mobbing beskrives som gjentatte negative handlinger over tid der personen opplever det vanskelig å forsvare seg.",
+        "Arbeidsgiver skal forebygge og håndtere mobbing og ivareta de involverte."
+      ],
+      "use_when": [
+        "mobbing",
+        "utestenging",
+        "utfrysing"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AT_SEKSUELL_TRAKASSERING",
+      "type": "myndighet",
+      "title": "Seksuell trakassering",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Seksuell trakassering kan være fysisk, verbal eller ikke-verbal og kan bestå av én alvorlig hendelse.",
+        "Arbeidsgiver har plikt til å forebygge, undersøke påstander og følge opp involverte."
+      ],
+      "use_when": [
+        "seksuell trakassering",
+        "uønsket seksuell oppmerksomhet",
+        "kjønnstrakassering"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AT_VARSLING_ROLLER",
+      "type": "myndighet",
+      "title": "Ansvar, rettigheter og roller i varslingssaker",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/varsling/ansvar-rettigheter-og-roller/",
+      "topics": [
+        "Mobbing og trakassering",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Varsler har vern mot gjengjeldelse.",
+        "Den det varsles om har partsrettigheter og saken må håndteres uten forhåndskonklusjon."
+      ],
+      "use_when": [
+        "varsling",
+        "gjengjeldelse",
+        "samtale med varsler",
+        "samtale med den det varsles om"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "AML_2A_VARSLING",
+      "type": "lovverk",
+      "title": "Arbeidsmiljøloven kapittel 2 A – varsling",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A72a-1",
+      "topics": [
+        "Mobbing og trakassering",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Arbeidsgiver skal sørge for at varsel innen rimelig tid blir tilstrekkelig undersøkt.",
+        "Gjengjeldelse mot arbeidstaker som varsler i samsvar med loven er forbudt."
+      ],
+      "use_when": [
+        "varsling",
+        "aktivitetsplikt",
+        "gjengjeldelse"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "LDO_SETTESTREK",
+      "type": "fagveileder",
+      "title": "Sammen setter vi strek for seksuell trakassering",
+      "author": "Likestillings- og diskrimineringsombudet / Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://ldo.no/settestrek/",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Forebygging krever tydelige rammer, risikovurdering, rutiner og opplæring."
+      ],
+      "use_when": [
+        "forebygging",
+        "seksuell trakassering",
+        "arbeidsmiljø"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "LDL_13_TRAKASSERING",
+      "type": "lovverk",
+      "title": "Likestillings- og diskrimineringsloven – forbud mot trakassering",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/dokument/NL/lov/2017-06-16-51",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Likestillings- og diskrimineringsloven forbyr trakassering og seksuell trakassering."
+      ],
+      "use_when": [
+        "trakassering",
+        "seksuell trakassering",
+        "diskriminering"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "LDL_26_AKTIVITETSPLIKT",
+      "type": "lovverk",
+      "title": "Likestillings- og diskrimineringsloven § 26 – arbeidsgivers aktivitetsplikt",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/nav/lov/2017-06-16-51/kap4",
+      "topics": [
+        "Mobbing og trakassering",
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Arbeidsgivere skal arbeide aktivt, målrettet og planmessig for likestilling og søke å hindre trakassering, seksuell trakassering og kjønnsbasert vold."
+      ],
+      "use_when": [
+        "forebygging",
+        "aktivitetsplikt",
+        "kjønnstrakassering"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "FFI_MOST_2024",
+      "type": "forskning",
+      "title": "Mobbing og seksuell trakassering i Forsvaret, FMA og FFI – MOST 2024",
+      "author": "Forsvarets forskningsinstitutt",
+      "year": 2025,
+      "url": "https://www.ffi.no/publikasjoner/arkiv/mobbing-og-seksuell-trakassering-i-forsvaret-i-fma-og-ved-ffi-resultater-fra-en-sporreundersokelse-i-2024",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "MOST gir sektorspesifikt kunnskapsgrunnlag om mobbing, seksuell trakassering og kjennskap/tillit til varslingssystemet i forsvarssektoren."
+      ],
+      "use_when": [
+        "MOST",
+        "Forsvaret",
+        "mobbing",
+        "seksuell trakassering"
+      ],
+      "authority": "high"
+    },
+    {
+      "id": "NAV_SAMTALESTOTTE_ARBEIDSGIVER",
+      "type": "myndighet",
+      "title": "Samtalestøtte for arbeidsgiver",
+      "author": "NAV",
+      "year": 2026,
+      "url": "https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver",
+      "topics": [
+        "Fravær og oppfølging"
+      ],
+      "principles": [
+        "Samtaler om sykefravær bør handle om arbeid, muligheter og tilrettelegging.",
+        "Medarbeideren skal få bidra til å finne løsninger."
+      ],
+      "use_when": [
+        "sykefravær",
+        "tilrettelegging",
+        "arbeidsevne",
+        "oppfølging"
       ],
       "authority": "high"
     }

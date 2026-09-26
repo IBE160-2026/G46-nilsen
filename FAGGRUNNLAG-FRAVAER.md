@@ -60,3 +60,11 @@ Hvis kritisk informasjon mangler, skal KI-en stille målrettede spørsmål før 
 
 ## Status
 Dette dokumentet er et faglig arbeidsutkast. Juridiske regler og offentlige frister må behandles som tidsavhengig informasjon og verifiseres mot oppdaterte myndighetskilder før produksjonssetting.
+
+## v20.5 – tilrettelegging og arbeidsevne
+
+Undertemaet **Tilrettelegging og arbeidsevne** er lagt under Fravær fordi sykefravær, arbeidsevne, tilbakekomst og praktisk tilrettelegging ofte inngår i samme lederoppfølging. KI-en skal likevel ikke anta at et tilretteleggingsbehov betyr at medarbeideren er syk eller har en bestemt diagnose.
+
+NAVs samtalestøtte for arbeidsgivere brukes som fast fagkilde fordi den konkret legger samtalen på arbeid, observasjoner, muligheter, arbeidsoppgaver og tilrettelegging – ikke diagnose og behandling:
+- NAV: «Samtalestøtte for arbeidsgiver» – https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver
+- NAV: «Tilrettelegging på arbeidsplassen» – https://www.nav.no/arbeidsgiver/tilretteleggingsplikt

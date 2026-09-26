@@ -58,7 +58,7 @@ Målet er ikke at KI-en alltid skal være sikker. Målet er at den skal være **
 
 ## Automatisk testkjøring
 
-Prosjektet inneholder nå `test-ai.js` og 24 balanserte testcaser i `AI-AUTOTEST-CASES.json` (tre per hovedtema).
+Prosjektet inneholder også det eldre regresjonssettet `AI-AUTOTEST-CASES.json` med 24 balanserte testcaser. Dette beholdes som en rask automatisk kontroll, men dekker ikke lenger alle de ni hovedtemaene systematisk. Full tematisk dekning ligger i `BENCHMARK-CASES.json`.
 
 Kort test (6 caser):
 
@@ -104,3 +104,40 @@ Stresstesten skiller nå mellom å **adoptere en ubekreftet påstand som faktum*
 - ST-CAREER-02 godtar nå flere faglig plausible temakombinasjoner.
 - Testen skal fortsatt flagge helt feil temavalg, men ikke et godt svar bare fordi modellen velger Prestasjon og utvikling eller Samarbeid og kommunikasjon fremfor Lønn og utvikling/Livssituasjoner.
 - Ingen endring i selve KI-prompten eller rådslogikken.
+
+## v20.5 – utvidet benchmark og nye risikoområder
+
+Den faste benchmarkbanken er utvidet til `BENCHMARK-CASES.json` med **112 caser fordelt på 56 undertemaer**. Det gir minst to faste caser per undertema i dagens ni hovedtemaer. Den eldre `AI-AUTOTEST-CASES.json` med 24 caser beholdes som et mindre regresjonssett og er ikke lenger en full representasjon av hele temastrukturen.
+
+Nye eller utvidede områder som skal få særskilt kvalitetskontroll:
+
+- mobbing, utestenging og krenkende/utilbørlig atferd
+- seksuell trakassering, kjønnstrakassering og uønsket seksuell oppmerksomhet
+- varsling om mobbing eller trakassering
+- samtale med den som sier ifra og samtale med den et varsel gjelder
+- vold og trusler
+- tilrettelegging, arbeidsevne og tilbakekomst til arbeid
+
+For mobbing, trakassering og varsling er det ikke nok at svaret virker empatisk. Testen skal kontrollere at KI-en ikke fastslår skyld eller lovbrudd på grunnlag av én parts beskrivelse, at den skiller opplysninger/påstander fra konklusjoner, og at den peker mot korrekt intern og faglig oppfølging når saken krever det. KI-en skal heller ikke gjøre lederen til en uformell etterforsker.
+
+For fravær og arbeidsevne skal testene kontrollere at samtalen handler om funksjon, arbeidsoppgaver, muligheter og tilrettelegging – ikke om å få frem diagnose eller unødvendige medisinske opplysninger.
+
+For vold og trusler skal sikkerhet, virksomhetens rutiner og nødvendig oppfølging prioriteres når situasjonen tilsier det.
+
+### Kildetester
+
+En del benchmarkcaser er merket `webRequired: true`. Disse brukes til å teste situasjoner der oppdatert regelverk eller myndighetsinformasjon er særlig relevant. Resultatet skal vurderes både på selve rådet og på om kildene er relevante, autoritative og faktisk støtter påstanden de brukes til.
+
+### Sammenligning av modeller og leverandører
+
+v20.5 åpner for benchmark via både direkte OpenAI-integrasjon og OpenRouter. Samme representative utvalg skal kunne kjøres mot:
+
+1. en premium-modell,
+2. en rimeligere modell,
+3. en gratis OpenRouter-modell.
+
+Sammenligningen skal ikke kåre en modell automatisk. Et menneske vurderer blant annet relevans, konkret nytte, språk, unødvendig generiske svar, sikkerhet og kildebruk. I tillegg registreres responstid, tokenbruk og kostnad der leverandøren rapporterer dette.
+
+`openrouter/free` kan være nyttig for utforskende testing, men kan rute til ulike modeller. Når resultatene skal kunne gjentas og sammenlignes mer direkte, brukes også en eksplisitt gratis modell-ID.
+
+OpenRouter-kall bruker ikke automatisk samme innebygde webverktøy som de direkte OpenAI-kallene i denne versjonen. Dette skal fremgå av vurderingen når caser med `webRequired: true` sammenlignes.

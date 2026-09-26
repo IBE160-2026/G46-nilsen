@@ -1,3 +1,14 @@
+
+## Rask tilgang for vurdering
+
+Samtalestøtte er publisert som testversjon på `https://samtalestotte.onrender.com`. Lærere/sensorer kan teste uten lokal installasjon når prosjekteier oppretter en egen engangsinvitasjon. Invitasjoner kan gis som vanlig bruker, redaktør eller admin og kan settes til å utløpe 31.12.2026. Admin-tilgang gir tilgang til blant annet innholdsredigering, modellvalg, kostnadsoversikt, benchmark, kildebruk og brukertestresultater.
+
+> Aktive invitasjonslenker legges ikke fast i Git. De opprettes fra Admin og deles direkte med vurderer.
+
+## Testmiljø og oppstartstid
+
+Testversjonen kjører på Render sin gratis hostingløsning. Hvis tjenesten ikke har vært brukt på en stund, kan serveren gå i dvale. Første innlasting kan derfor ta litt ekstra tid mens tjenesten starter opp igjen. Vent litt dersom siden ikke åpner umiddelbart. Dette er en begrensning i testmiljøet.
+
 # Samtalestøtte
 
 Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Prosjektet er utviklet som en del av en prosjektoppgave ved Høgskolen i Molde.
@@ -49,7 +60,7 @@ Samtalestøtte er ikke et HR-system, journalsystem eller beslutningsverktøy. R�
 
 ## Temaer
 
-Prototypen er bygget rundt åtte hovedtemaer:
+Prototypen er bygget rundt ni hovedtemaer:
 
 1. Alkohol og rus
 2. Fravær og oppfølging
@@ -59,6 +70,7 @@ Prototypen er bygget rundt åtte hovedtemaer:
 6. Avslutning av arbeidsforhold
 7. Sikkerhet og ansvar
 8. Livssituasjoner
+9. Mobbing og trakassering
 
 Brukeren kan også beskrive situasjonen med egne ord dersom den ikke passer naturlig inn i et bestemt undertema.
 
@@ -116,6 +128,7 @@ Prosjektet inneholder en fagbank og egne regler for hvordan KI-en skal svare. Se
 - `AI-RESPONSE-CONTRACT.md`
 - `SOURCEBANK.md`
 - `FAGGRUNNLAG-FRAVAER.md`
+- `FAGGRUNNLAG-MOBBING-TRAKASSERING.md`
 
 ## Teknologi
 
@@ -123,7 +136,7 @@ Prosjektet bruker:
 
 - HTML, CSS og JavaScript i klienten
 - Node.js og Express på serversiden
-- OpenAI API for KI-funksjonene
+- OpenAI API og OpenRouter som alternative KI-providere
 - Supabase for konto og historikk
 - Git og GitHub for versjonskontroll
 
@@ -168,7 +181,7 @@ SUPABASE_URL=https://ditt-prosjekt.supabase.co
 SUPABASE_PUBLISHABLE_KEY=din_publishable_key
 SUPABASE_SECRET_KEY=din_secret_key
 
-APP_VERSION=20.4.0
+APP_VERSION=20.5.0
 ```
 
 `.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.
@@ -289,6 +302,21 @@ Før eventuell ordinær publisering skal løsningen blant annet gjennom mer bruk
 Dette er fortsatt en prototype, og funksjoner og utforming kan derfor endres etter testing.
 
 ### Automatisk test og modellbenchmark (v20.3)
-Admin-siden har en testbank med 94 faste saker, to for hvert av 47 undertemaer. «Kjør gratis fulltest» kontrollerer testdekning og personvern uten API-kostnad. Ekte benchmark kan kjøre et begrenset utvalg av samme saker på GPT-5.6 Luna, Terra og Sol. Resultatene lagrer svar, tokens, estimert kostnad, responstid og web-/kildebruk. Testtrafikk er merket separat og er skjult fra ordinær KI-bruksstatistikk som standard.
+Admin-siden har en testbank med 112 faste saker, to for hvert av 56 undertemaer. «Kjør gratis fulltest» kontrollerer testdekning og personvern uten API-kostnad. Ekte benchmark kan kjøre et begrenset utvalg av samme saker på valgte OpenAI- og OpenRouter-modeller. Resultatene lagrer svar, tokens, estimert kostnad, responstid og web-/kildebruk. Testtrafikk er merket separat og er skjult fra ordinær KI-bruksstatistikk som standard.
 
 Før ekte benchmark brukes, kjør `V20-3-SUPABASE-MIGRATION.sql` i Supabase. Standardbudsjettet er $2 og hard øvre grense i UI/server er $5.
+
+
+## v20.5 – OpenRouter og Supabase
+
+Kjør `V20-5-SUPABASE-MIGRATION.sql` etter tidligere migreringer. OpenRouter er valgfri ekstra KI-provider:
+
+```env
+OPENROUTER_API_KEY=...
+```
+
+Ikke legg API-nøkler i Git, README, frontendkode eller chat. Admin kan velge `OpenRouter Free Router` eller den faste gratis Gemma-modellen dersom nøkkelen er konfigurert. Gratisruter kan ha rate limits og variabel tilgjengelighet.
+
+### Kort tekst til testbrukere
+
+**Takk for at du vil teste Samtalestøtte!** Test gjerne vanlig samtalestøtte og simulering. Unngå navn og andre opplysninger som kan identifisere virkelige personer. Når du føler at du har testet nok, finner du en kort brukertest i appen; den tar omtrent 2 minutter. Testserveren kan være i dvale etter inaktivitet, så første innlasting kan ta litt ekstra tid.

@@ -39,7 +39,7 @@ Hver story skal ha tydelige akseptansekriterier slik at det er mulig å avgjøre
 
 ### Akseptansekriterier
 
-- åtte hovedtemaer vises
+- ni hovedtemaer vises
 - hvert tema er tydelig navngitt
 - hvert tema kan åpnes
 - visuell stil er konsistent
@@ -450,9 +450,9 @@ Samtaletekst legges ikke ved automatisk.
 
 ### Akseptansekriterier
 
-- minst 47 undertemaer
+- minst 56 undertemaer
 - minst 2 tester per undertema
-- minst 94 saker totalt
+- minst 112 saker totalt
 
 ---
 
@@ -713,3 +713,19 @@ En story er ferdig når:
 - funksjonen er testet
 - ingen kritiske regresjoner er oppdaget
 - dokumentasjon er oppdatert
+
+
+## Epic 21 – Mobbing, trakassering og varsling
+- Som leder vil jeg kunne velge et eget tema for mobbing og trakassering.
+- Som leder vil jeg få støtte som skiller påstand, undersøkelse og konklusjon.
+- Som leder vil jeg få ulike råd når jeg snakker med den som sier ifra og den det varsles om.
+- Som produkteier vil jeg ha faste myndighets- og forskningskilder, inkludert relevant MOST-kunnskap for forsvarssektoren.
+
+## Epic 22 – Brukertest og evaluering
+- Som testbruker vil jeg kunne gi en kort tilbakemelding på omtrent to minutter.
+- Som admin vil jeg se aggregert resultat uten at svarene kobles til samtaletekst eller brukeridentitet.
+- Som evaluator vil jeg kunne få en tidsbegrenset engangsinvitasjon med riktig rolle.
+
+## Epic 23 – Provider-uavhengig modellbenchmark
+- Som admin vil jeg kunne velge OpenAI- eller OpenRouter-modeller uten ny deploy.
+- Som prosjekteier vil jeg sammenligne gratis, rimelige og premium-modeller på de samme 112 testcasene.

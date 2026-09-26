@@ -427,3 +427,13 @@ Brukeren skal først og fremst oppleve:
 > «Jeg skjønner hva jeg skal gjøre, jeg har kontroll, og verktøyet hjelper meg gjennom en vanskelig oppgave.»
 
 Den tekniske kompleksiteten – KI, personvern, database, modellvalg, kostnadsmåling og kildebruk – skal i størst mulig grad håndteres av systemet uten å skape tilsvarende kompleksitet i brukeropplevelsen.
+
+
+## v20.5 – UX-tillegg
+
+- Hovedsiden utvides til ni temaer uten å introdusere flere fargefamilier; samme begrensede palett og illustrasjonsstil beholdes for å redusere visuelt rot.
+- **Mobbing og trakassering** presenteres med nøytralt, selvforklarende språk. Forkortelsen MOST brukes bare som forklarende fagkontekst, ikke som menynavn.
+- Kort brukertest får egen inngang **Gi tilbakemelding** og åpnes i hovedinnholdet, ikke i en trang modal. Den skal kunne besvares på omtrent to minutter.
+- «Øv på samtalen» får sterkere kontrast, og samme handling gjentas nederst etter veiledning slik at brukeren ikke må skrolle tilbake.
+- Adminlogo i innholdsvisningen flyttes kun lokalt ca. 8 px ned; global logogeometri skal ikke endres.
+- Godkjent snakkeboblegeometri fra v19.12.3 skal ikke endres.

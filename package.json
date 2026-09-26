@@ -1,6 +1,6 @@
 {
   "name": "samtalestotte",
-  "version": "20.4.0",
+  "version": "20.5.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -39,7 +39,8 @@
     "test-v20.2": "node test-v20-2.cjs",
     "test-v20.3": "node test-v20-3.cjs",
     "test-v20.4-security": "node test-v20-4-security.cjs",
-    "test-v20.4-server-privacy": "node test-server-privacy-v20-4.cjs"
+    "test-v20.4-server-privacy": "node test-server-privacy-v20-4.cjs",
+    "test-v20.5": "node test-v20-5.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

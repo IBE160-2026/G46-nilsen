@@ -100,7 +100,7 @@ Typiske behov:
 
 ## 6. Hovedtemaer
 
-Første versjon skal støtte disse åtte hovedtemaene:
+Første versjon skal støtte disse ni hovedtemaene:
 
 1. Alkohol og rus
 2. Fravær
@@ -110,6 +110,7 @@ Første versjon skal støtte disse åtte hovedtemaene:
 6. Oppsigelse / avslutning av arbeidsforhold
 7. Sikkerhet
 8. Livssituasjoner
+9. Mobbing og trakassering
 
 Hvert hovedtema skal ha undertemaer. Undertemaene skal fungere som kontekst for KI-en, ikke som et rigid regelverk.
 
@@ -459,9 +460,9 @@ Benchmark skal ha:
 
 Hvert undertema skal ha minst to faste testsaker.
 
-Med 47 undertemaer innebærer dette minst:
+Med 56 undertemaer innebærer dette minst:
 
-**94 testsaker**
+**112 testsaker**
 
 Testbanken skal dekke:
 
@@ -473,7 +474,7 @@ Testbanken skal dekke:
 - tilfeller som bør kreve web
 - ulike nivåer av sensitivitet
 
-Ikke alle 94 saker må kjøres mot alle betalte modeller i hver benchmarkrunde. Et representativt delutvalg skal brukes til ekte modellbenchmark for å holde testkostnaden under kontroll.
+Ikke alle 112 saker må kjøres mot alle betalte modeller i hver benchmarkrunde. Et representativt delutvalg skal brukes til ekte modellbenchmark for å holde testkostnaden under kontroll.
 
 ---
 
@@ -531,7 +532,7 @@ Det skal utvikles tester for:
 
 ### MUST
 
-Det skal finnes minst 94 faste testscenarioer, med minimum to per undertema.
+Det skal finnes minst 112 faste testscenarioer, med minimum to per undertema.
 
 Formålet er å teste:
 
@@ -897,7 +898,7 @@ Første versjon skal evalueres på:
 
 ### Testdekning
 
-- minst 94 faste KI-testsaker
+- minst 112 faste KI-testsaker
 - minst 2 per undertema
 - automatiserte personvern- og regresjonstester
 
@@ -931,7 +932,7 @@ Første versjon skal evalueres på:
 V1 kan regnes som ferdig når:
 
 1. innlogging og rollemodell fungerer
-2. alle åtte hovedtemaer fungerer
+2. alle ni hovedtemaer fungerer
 3. undertemaer brukes som KI-kontekst
 4. situasjon kan beskrives og analyseres
 5. KI kan gi strukturert hovedveiledning
@@ -1061,3 +1062,27 @@ V1 kombinerer:
 - vurdering av økonomisk bærekraft og framtidig produktmodell
 
 Kompleksiteten skal håndteres gjennom tydelig avgrensning, kravprioritering, måling og systematisk testing.
+
+
+## v20.5 – tilleggskrav
+
+### FR-20.5-1 Mobbing og trakassering
+Systemet skal ha et eget hovedtema for mobbing og trakassering med undertemaer for mobbing, utestenging/utfrysing, krenkende eller utilbørlig atferd, seksuell trakassering, kjønnstrakassering/uønsket seksuell oppmerksomhet, varsling, samtale med den som sier ifra og samtale med den varselet gjelder. KI-en skal ikke avgjøre skyld eller fastslå at trakassering har skjedd uten tilstrekkelig grunnlag.
+
+### FR-20.5-2 Fravær og sikkerhet
+Fravær skal omfatte tydelig støtte for tilrettelegging og arbeidsevne med fokus på funksjon og arbeid, ikke diagnose. Sikkerhet skal omfatte vold og trusler.
+
+### FR-20.5-3 Fagbank og testbank
+Fagbanken skal bruke flere faste, autoritative sider for mobbing, trakassering, varsling, sykefravær/tilrettelegging og vold/trusler. Testbanken skal dekke alle 56 undertemaer med minst to saker per undertema, totalt 112 faste saker i v20.5.
+
+### FR-20.5-4 OpenRouter
+KI-laget skal kunne bruke både direkte OpenAI og OpenRouter gjennom server-side nøkler. OpenRouter skal minst støtte `openrouter/free` og én fast gratis modell for reproduserbar sammenligning. Faktisk modell fra router-responsen skal logges når tilgjengelig.
+
+### FR-20.5-5 Kort brukertest
+Innloggede testbrukere skal kunne sende en kort, strukturert undersøkelse uten KI-kall. Svarene skal ikke lagres sammen med samtaletekst eller brukeridentitet. Admin skal kunne se aggregert resultat og fritekstforslag.
+
+### FR-20.5-6 Vurderingstilgang
+Admin skal kunne opprette engangsinvitasjoner med rolle `user`, `editor` eller `admin` og utløpsdato. Admininvitasjoner skal kreve eksplisitt bekreftelse i UI.
+
+### NFR-20.5-1 Testmiljø
+README og testinstruks skal opplyse om at Render-testmiljøet kan gå i dvale og at første innlasting derfor kan ta ekstra tid.

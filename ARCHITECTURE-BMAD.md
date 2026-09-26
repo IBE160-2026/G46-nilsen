@@ -757,3 +757,12 @@ Arkitekturen skal kombinere:
 - observability
 - testbarhet
 - framtidig offline/intranett-støtte
+
+
+## v20.5 – providerlag, brukertest og testmiljø
+
+KI-arkitekturen utvides fra én direkte OpenAI-klient til et providerlag der modellmetadata bestemmer om kallet går direkte til OpenAI eller via OpenRouter. Begge nøkler leses kun server-side (`OPENAI_API_KEY` / `OPENROUTER_API_KEY`). OpenRouter brukes via OpenAI-kompatibelt API og gjør det mulig å benchmarke gratis og betalte modeller gjennom samme applikasjonsflyt. Provider-uavhengigheten støtter også den langsiktige planen om intern KI på lukket nett.
+
+Brukertestdata lagres i en separat `survey_responses`-tabell uten kobling til samtaler eller bruker-ID. Invitasjoner utvides med rolle og utløpsdato. Dette er bevisste skiller mellom produktbruk, evaluering og identitet.
+
+Dagens publiserte testmiljø kjører på Render. Gratis testhosting kan gå i dvale ved inaktivitet og gi treg første innlasting. Dette er en prototypebegrensning, ikke et ytelsesmål for produksjon eller lukket intranett.

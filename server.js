@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.4.0";
+const appVersion = process.env.APP_VERSION || "20.5.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.disable("x-powered-by");
@@ -109,13 +109,26 @@ app.get("/api/public-config", (_req, res) => {
 });
 
 const apiKey = process.env.OPENAI_API_KEY;
-const defaultModel = process.env.OPENAI_MODEL || "gpt-5.6-luna";
+const openRouterApiKey = process.env.OPENROUTER_API_KEY;
+const defaultModel = process.env.OPENAI_MODEL || (openRouterApiKey ? "openrouter/free" : "gpt-5.6-luna");
 const client = apiKey ? new OpenAI({ apiKey }) : null;
+const openRouterClient = openRouterApiKey ? new OpenAI({
+  apiKey: openRouterApiKey,
+  baseURL: "https://openrouter.ai/api/v1",
+  defaultHeaders: {
+    "HTTP-Referer": process.env.APP_BASE_URL || "https://samtalestotte.onrender.com",
+    "X-Title": "Samtalestøtte"
+  }
+}) : null;
+function hasAnyAiClient(){ return Boolean(client || openRouterClient); }
+function modelClient(modelId){ return AI_MODELS[modelId]?.provider === "openrouter" ? openRouterClient : client; }
 
 const AI_MODELS = {
-  "gpt-5.6-luna": { label: "GPT-5.6 Luna", tier: "Kostnad", inputPerMillion: 0.20, outputPerMillion: 1.20 },
-  "gpt-5.6-terra": { label: "GPT-5.6 Terra", tier: "Balansert", inputPerMillion: 2.00, outputPerMillion: 12.00 },
-  "gpt-5.6-sol": { label: "GPT-5.6 Sol", tier: "Høyest kvalitet", inputPerMillion: 4.00, outputPerMillion: 20.00 }
+  "gpt-5.6-luna": { label: "GPT-5.6 Luna", tier: "Kostnad", provider:"openai", inputPerMillion: 0.20, outputPerMillion: 1.20 },
+  "gpt-5.6-terra": { label: "GPT-5.6 Terra", tier: "Balansert", provider:"openai", inputPerMillion: 2.00, outputPerMillion: 12.00 },
+  "gpt-5.6-sol": { label: "GPT-5.6 Sol", tier: "Høyest kvalitet", provider:"openai", inputPerMillion: 4.00, outputPerMillion: 20.00 },
+  "openrouter/free": { label: "OpenRouter Free Router", tier: "Gratis · variabel modell", provider:"openrouter", inputPerMillion: 0, outputPerMillion: 0 },
+  "google/gemma-4-26b-a4b-it:free": { label: "Gemma 4 26B A4B (OpenRouter)", tier: "Gratis · fast modell", provider:"openrouter", inputPerMillion: 0, outputPerMillion: 0 }
 };
 const WEB_SEARCH_CALL_USD = 0.01; // OpenAI web search: $10 / 1000 calls (2026-09).
 const benchmarkCasePath = path.join(__dirname, "BENCHMARK-CASES.json");
@@ -138,7 +151,8 @@ async function getActiveModel() {
       if (candidate && AI_MODELS[candidate]) selected = candidate;
     }
   } catch (_) {}
-  if (!AI_MODELS[selected]) selected = 'gpt-5.6-luna';
+  if (!AI_MODELS[selected]) selected = openRouterClient ? 'openrouter/free' : 'gpt-5.6-luna';
+  if (!modelClient(selected)) selected = openRouterClient ? 'openrouter/free' : 'gpt-5.6-luna';
   activeModelCache = { value: selected, expiresAt: Date.now() + 30000 };
   return selected;
 }
@@ -261,9 +275,12 @@ async function createTrackedResponse(params) {
   delete cleanParams._isTest; delete cleanParams._benchmarkRunId; delete cleanParams._benchmarkCaseId;
   delete cleanParams._topicId; delete cleanParams._subtopic; delete cleanParams._privacyTexts; delete cleanParams._trustedInternal;
   try {
-    const response = await client.responses.create({ ...cleanParams, model: modelUsed });
-    const usageSummary = await logAiUsage({ functionName, modelUsed, response, isTest, benchmarkRunId, benchmarkCaseId, topicId, subtopic });
-    Object.defineProperty(response, '__samtalestotteModel', { value:modelUsed, enumerable:false });
+    const selectedClient = modelClient(modelUsed);
+    if (!selectedClient) { const error=new Error(`API-nøkkel mangler for ${AI_MODELS[modelUsed]?.provider||'valgt provider'}.`); error.code='AI_PROVIDER_NOT_CONFIGURED'; throw error; }
+    const response = await selectedClient.responses.create({ ...cleanParams, model: modelUsed });
+    const routedModel = AI_MODELS[modelUsed]?.provider === 'openrouter' ? String(response?.model || modelUsed) : modelUsed;
+    const usageSummary = await logAiUsage({ functionName, modelUsed:routedModel, response, isTest, benchmarkRunId, benchmarkCaseId, topicId, subtopic });
+    Object.defineProperty(response, '__samtalestotteModel', { value:routedModel, enumerable:false });
     Object.defineProperty(response, '__samtalestotteUsage', { value:usageSummary, enumerable:false });
     return response;
   } catch (error) {
@@ -286,8 +303,8 @@ const topicCatalog = [
   {
     id: "fravaer-oppfolging",
     title: "Fravær og oppfølging",
-    description: "Fravær, oppmøte, punktlighet, tilbakekomst, arbeidsevne eller tilrettelegging.",
-    subtopics: ["Korttidsfravær","Langvarig fravær","Oppmøte og punktlighet","Tilbakekomst til arbeid","Tilrettelegging","Arbeidsevne og kapasitet"]
+    description: "Sykefravær, egenmeldinger, oppmøte, planlagt fravær, tilbakekomst, arbeidsevne eller tilrettelegging.",
+    subtopics: ["Hyppig korttidsfravær og egenmeldinger","Langvarig sykefravær","Oppmøte og punktlighet","Planlagt fravær","Tilbakekomst til arbeid","Tilrettelegging og arbeidsevne"]
   },
   {
     id: "prestasjon-utvikling",
@@ -317,13 +334,19 @@ const topicCatalog = [
     id: "sikkerhet-ansvar",
     title: "Sikkerhet og ansvar",
     description: "Sikkerhetsrutiner, risiko, avvik, hendelser, rapportering eller informasjonssikkerhet.",
-    subtopics: ["Sikkerhetsrutiner","Avvik og hendelser","Risikovurdering","Rapportering","Informasjonssikkerhet","Ansvar og læring etter hendelser"]
+    subtopics: ["Sikkerhetsrutiner","Avvik og hendelser","Risikovurdering","Rapportering","Informasjonssikkerhet","Ansvar og læring etter hendelser","Vold og trusler"]
   },
   {
     id: "livssituasjoner",
     title: "Livssituasjoner",
     description: "Personlige belastninger, familie, sorg, omsorgsansvar, psykisk belastning eller utmattelse som påvirker arbeidshverdagen.",
     subtopics: ["Samlivs- og familieforhold","Sykdom i nær familie","Sorg og tap","Psykisk belastning","Omsorgsansvar","Belastning og utmattelse"]
+  },
+  {
+    id: "mobbing-trakassering",
+    title: "Mobbing og trakassering",
+    description: "Mobbing, utestenging, trakassering, seksuell trakassering, uønsket seksuell oppmerksomhet eller varsling om slike forhold.",
+    subtopics: ["Mobbing","Utestenging og utfrysing","Krenkende eller utilbørlig atferd","Seksuell trakassering","Kjønnstrakassering og uønsket seksuell oppmerksomhet","Varsling om mobbing eller trakassering","Samtale med den som sier ifra","Samtale med den varselet gjelder"]
   }
 ];
 
@@ -722,7 +745,7 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   let storageReady=true;
   const probe=await supabaseAdmin.from('benchmark_results').select('id,source_pages').limit(1);
   if(probe.error) storageReady=false;
-  res.json({version:'20.4.0',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+  res.json({version:'20.5.0',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
 });
 
 app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
@@ -738,7 +761,7 @@ app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
 });
 
 app.post('/api/admin/benchmark/live', benchmarkLimiter, requireAdmin, async (req,res)=>{
-  if(!client) return res.status(503).json({error:'AI_NOT_CONFIGURED',message:'OPENAI_API_KEY mangler på serveren.'});
+  if(!hasAnyAiClient()) return res.status(503).json({error:'AI_NOT_CONFIGURED',message:'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.'});
   const caseId=String(req.body?.caseId||''); const model=String(req.body?.model||'');
   const runId=String(req.body?.runId||'').slice(0,80) || crypto.randomUUID();
   const spentSoFar=Math.max(0,Number(req.body?.spentSoFar||0));
@@ -763,7 +786,10 @@ Krav:
 - Ikke omtale dette som en test i selve rådet.`;
   const started=Date.now();
   try{
-    const response=await createTrackedResponse({_functionName:'benchmark',_userId:req.user.id,_topicId:item.topicId,_subtopic:item.subtopic,_trustedInternal:true,_modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,tools:[{type:'web_search',search_context_size:'low'}],instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],max_output_tokens:450});
+    const benchmarkTools = AI_MODELS[model]?.provider === 'openai' ? [{type:'web_search',search_context_size:'low'}] : undefined;
+    const benchmarkParams={_functionName:'benchmark',_userId:req.user.id,_topicId:item.topicId,_subtopic:item.subtopic,_trustedInternal:true,_modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],max_output_tokens:450};
+    if(benchmarkTools) benchmarkParams.tools=benchmarkTools;
+    const response=await createTrackedResponse(benchmarkParams);
     const latencyMs=Date.now()-started; const usage=response.__samtalestotteUsage||{}; const web=usage.web||extractWebSearchMeta(response);
     const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id};
     const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
@@ -782,6 +808,28 @@ app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
   res.json({items:data||[]});
 });
 
+
+app.post("/api/survey", requireUser, async (req,res)=>{
+  const b=req.body||{}; const score=k=>{const n=Number(b[k]); return Number.isInteger(n)&&n>=1&&n<=5?n:null;};
+  const row={usability:score('usability'),navigation:score('navigation'),ai_relevance:score('ai_relevance'),practical_usefulness:score('practical_usefulness'),simulation:score('simulation'),privacy:score('privacy'),would_use:score('would_use'),improvement_text:String(b.improvement_text||'').trim().slice(0,1200),most_useful_text:String(b.most_useful_text||'').trim().slice(0,1200)};
+  if([row.usability,row.navigation,row.ai_relevance,row.practical_usefulness,row.privacy,row.would_use].some(v=>v===null)) return res.status(400).json({error:'INVALID_SURVEY',message:'Svar på alle obligatoriske spørsmål fra 1 til 5.'});
+  const privacyFindings=serverPrivacyFindings(`${row.improvement_text} ${row.most_useful_text}`).filter(x=>SERVER_HARD_PRIVACY_TYPES.has(x.type));
+  if(privacyFindings.length)return res.status(400).json({error:'PRIVACY_REVIEW_REQUIRED',message:'Fjern navn eller andre tydelige personopplysninger fra friteksten.'});
+  const {error}=await supabaseAdmin.from('survey_responses').insert(row); if(error)return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kunne ikke lagre brukertesten. Kjør V20-5-SUPABASE-MIGRATION.sql i Supabase først.'}); res.json({ok:true});
+});
+app.get("/api/admin/survey", requireAdmin, async (_req,res)=>{
+  const {data,error}=await supabaseAdmin.from('survey_responses').select('*').order('created_at',{ascending:false}).limit(500); if(error)return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kjør V20-5-SUPABASE-MIGRATION.sql i Supabase først.'}); const rows=data||[];
+  const avg=k=>{const vals=rows.map(x=>Number(x[k])).filter(n=>Number.isFinite(n)); return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;};
+  res.json({count:rows.length,averages:{usability:avg('usability'),navigation:avg('navigation'),aiRelevance:avg('ai_relevance'),practicalUsefulness:avg('practical_usefulness'),simulation:avg('simulation'),privacy:avg('privacy'),wouldUse:avg('would_use')},comments:rows.filter(x=>x.improvement_text).slice(0,20).map(x=>({created_at:x.created_at,improvement_text:x.improvement_text}))});
+});
+app.post("/api/admin/invites", requireAdmin, async (req,res)=>{
+  const role=String(req.body?.role||'user').toLowerCase(); if(!VALID_ROLES.has(role))return res.status(400).json({error:'INVALID_ROLE',message:'Ugyldig rolle.'});
+  const expiresAt=new Date(req.body?.expiresAt||'2026-12-31T23:59:59+01:00'); if(Number.isNaN(expiresAt.getTime())||expiresAt<=new Date())return res.status(400).json({error:'INVALID_EXPIRY',message:'Velg en gyldig fremtidig utløpsdato.'});
+  const code=crypto.randomBytes(18).toString('base64url'); const codeHash=hashInvite(code); const {error}=await supabaseAdmin.from('invites').insert({code_hash:codeHash,role,expires_at:expiresAt.toISOString()});
+  if(error)return res.status(503).json({error:'INVITE_SCHEMA_MISSING',message:'Kunne ikke opprette rollebasert invitasjon. Kjør V20-5-SUPABASE-MIGRATION.sql først.'});
+  const base=(process.env.APP_BASE_URL||`${req.protocol}://${req.get('host')}`).replace(/\/$/,''); res.status(201).json({url:`${base}/?invite=${code}`,role,expiresAt:expiresAt.toISOString()});
+});
+
 app.post("/api/auth/register", registerLimiter, async (req, res) => {
   const username = String(req.body?.username || "").trim();
   const email = normalizeEmail(req.body?.email);
@@ -796,7 +844,7 @@ app.post("/api/auth/register", registerLimiter, async (req, res) => {
   const inviteHash = hashInvite(inviteCode);
   const { data: invite, error: inviteError } = await supabaseAdmin
     .from("invites")
-    .select("id, used_at")
+    .select("id, used_at, role, expires_at")
     .eq("code_hash", inviteHash)
     .is("used_at", null)
     .maybeSingle();
@@ -806,12 +854,14 @@ app.post("/api/auth/register", registerLimiter, async (req, res) => {
     return res.status(500).json({ error: "INVITE_LOOKUP_FAILED", message: "Kunne ikke kontrollere invitasjonen." });
   }
   if (!invite) return res.status(403).json({ error: "INVALID_INVITE", message: "Invitasjonen er ugyldig eller allerede brukt." });
+  if (invite.expires_at && new Date(invite.expires_at) < new Date()) return res.status(403).json({ error:"INVITE_EXPIRED", message:"Invitasjonen har utløpt. Be om en ny invitasjon." });
 
   const { data: created, error: createError } = await supabaseAdmin.auth.admin.createUser({
     email,
     password,
     email_confirm: true,
-    user_metadata: { username }
+    user_metadata: { username },
+    app_metadata: { role: VALID_ROLES.has(String(invite.role||'user')) ? String(invite.role||'user') : 'user' }
   });
 
   if (createError || !created.user) {
@@ -1156,7 +1206,8 @@ const analysisSchema = {
           "Samarbeid og kommunikasjon",
           "Avslutning av arbeidsforhold",
           "Sikkerhet og ansvar",
-          "Livssituasjoner"
+          "Livssituasjoner",
+          "Mobbing og trakassering"
         ]
       }
     },
@@ -1328,8 +1379,8 @@ function leaderTurnTexts(turns) {
 }
 
 app.post("/api/classify-topic", aiLimiter, requireUser, async (req, res) => {
-  if (!client) {
-    return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
+  if (!hasAnyAiClient()) {
+    return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
 
   const situation = String(req.body?.situation || "").trim();
@@ -1400,10 +1451,10 @@ app.get("/api/status", requireUser, async (_req, res) => {
 });
 
 app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
-  if (!client) {
+  if (!hasAnyAiClient()) {
     return res.status(503).json({
       error: "AI_NOT_CONFIGURED",
-      message: "OPENAI_API_KEY mangler på serveren."
+      message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren."
     });
   }
 
@@ -1461,8 +1512,8 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
 
 
 app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
-  if (!client) {
-    return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
+  if (!hasAnyAiClient()) {
+    return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
 
   const { situation, analysis = null, followups = {}, topicId = "", subtopic = "" } = req.body || {};
@@ -1508,8 +1559,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
 
 
 app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) => {
-  if (!client) {
-    return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
+  if (!hasAnyAiClient()) {
+    return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
   const { situation, analysis = null, followups = {}, guidance = null, question = "", topicId = "", subtopic = "" } = req.body || {};
   if (typeof question !== "string" || !question.trim()) {
@@ -1581,7 +1632,7 @@ function simulationContextText({ situation = '', analysis = null, followups = {}
 }
 
 app.post('/api/simulation-turn', aiLimiter, requireUser, async (req, res) => {
-  if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
+  if (!hasAnyAiClient()) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.' });
   const body = req.body || {};
   const turns = sanitizeSimulationTurns(body.turns);
   if (!turns.length || turns[turns.length - 1].role !== 'leader') {
@@ -1605,7 +1656,7 @@ app.post('/api/simulation-turn', aiLimiter, requireUser, async (req, res) => {
 });
 
 app.post('/api/simulation-help', aiLimiter, requireUser, async (req, res) => {
-  if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
+  if (!hasAnyAiClient()) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.' });
   const body = req.body || {};
   const helpKinds = {
     formulation: 'Gi ett kort forslag til hva lederen kan si som neste formulering.',
@@ -1640,7 +1691,7 @@ const simulationFeedbackSchema = {
 };
 
 app.post('/api/simulation-feedback', aiLimiter, requireUser, async (req, res) => {
-  if (!client) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'OPENAI_API_KEY mangler på serveren.' });
+  if (!hasAnyAiClient()) return res.status(503).json({ error: 'AI_NOT_CONFIGURED', message: 'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.' });
   const body = req.body || {};
   const turns = sanitizeSimulationTurns(body.turns);
   if (!turns.some(turn => turn.role === 'leader')) return res.status(400).json({ error: 'EMPTY_SIMULATION', message: 'Øvelsen har ingen lederutsagn å vurdere.' });
@@ -1663,5 +1714,5 @@ app.post('/api/simulation-feedback', aiLimiter, requireUser, async (req, res) =>
 
 app.listen(port, () => {
   console.log(`Samtalestøtte kjører på http://localhost:${port}`);
-  console.log(client ? `KI aktivert (standard ${defaultModel}; admin kan overstyre)` : "KI er ikke aktivert: sett OPENAI_API_KEY i .env");
+  console.log(hasAnyAiClient() ? `KI aktivert (standard ${defaultModel}; admin kan overstyre)` : "KI er ikke aktivert: sett OPENAI_API_KEY eller OPENROUTER_API_KEY i .env");
 });
