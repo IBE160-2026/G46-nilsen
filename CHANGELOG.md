@@ -1,3 +1,14 @@
+## v19.11.8 – UI-opprydding og glemt passord
+
+- Kontaktskjema vises før e-postalternativet på Kontakt.
+- Infosidelogoene løftes tydeligere slik at boblehalen peker mot overskriften.
+- Hybridlogoen lysnes mer, med ekstra lys gradering over første del av ordmerket.
+- Snakkeboblene i simulator og hovedsamtale får mindre, roligere og mer integrerte haler.
+- Enter sender i vanlig samtalemodus; Shift+Enter lager linjeskift.
+- Synlig innloggingsdebug fjernes, mens normale feilmeldinger beholdes.
+- Legger til «Glemt passord?» med e-postbasert Supabase-reset og valg av nytt passord.
+- Registrering er fortsatt kun mulig med gyldig engangsinvitasjon.
+
 ## v19.11.7 – auth/KI hotfix
 
 - KI- og simulatorkall sender nå eksplisitt innloggingscookies med `credentials: include`.

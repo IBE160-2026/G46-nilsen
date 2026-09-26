@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.11.7";
+const appVersion = process.env.APP_VERSION || "19.11.8";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -376,6 +376,70 @@ app.post("/api/auth/login", async (req, res) => {
   setSession(res, data.session);
   console.log(`[auth-debug ${requestId}] app session created`);
   res.json({ user: publicUser(data.user), debugStage: "complete" });
+});
+
+
+const passwordResetAttempts = new Map();
+
+app.post("/api/auth/password-reset-request", async (req, res) => {
+  const email = normalizeEmail(req.body?.email);
+  if (!/^\S+@\S+\.\S+$/.test(email)) {
+    return res.status(400).json({ error: "INVALID_EMAIL", message: "Skriv inn en gyldig e-postadresse." });
+  }
+
+  // Enkel brems mot gjentatt utsending. Svaret avslører aldri om kontoen finnes.
+  const throttleKey = crypto.createHash("sha256").update(`${req.ip}|${email}`).digest("hex");
+  const last = passwordResetAttempts.get(throttleKey) || 0;
+  if (Date.now() - last < 60_000) {
+    return res.json({ ok: true });
+  }
+  passwordResetAttempts.set(throttleKey, Date.now());
+
+  const baseUrl = String(process.env.APP_BASE_URL || `${req.protocol}://${req.get("host")}`).replace(/\/+$/, "");
+  const authClient = newUserClient();
+  const { error } = await authClient.auth.resetPasswordForEmail(email, {
+    redirectTo: `${baseUrl}/?password-reset=1`
+  });
+
+  if (error) {
+    console.error("Passordreset-feil:", error.message || error);
+    // Generisk svar for å unngå kontooppslag via endepunktet.
+  }
+  res.json({ ok: true });
+});
+
+app.post("/api/auth/password-reset-complete", async (req, res) => {
+  const accessToken = String(req.body?.accessToken || "");
+  const refreshToken = String(req.body?.refreshToken || "");
+  const password = String(req.body?.password || "");
+
+  if (password.length < 10) {
+    return res.status(400).json({ error: "WEAK_PASSWORD", message: "Passordet må ha minst 10 tegn." });
+  }
+  if (!accessToken || !refreshToken) {
+    return res.status(400).json({ error: "RESET_TOKEN_MISSING", message: "Tilbakestillingslenken mangler eller er utløpt." });
+  }
+
+  const authClient = newUserClient();
+  const { data: sessionData, error: sessionError } = await authClient.auth.setSession({
+    access_token: accessToken,
+    refresh_token: refreshToken
+  });
+  if (sessionError || !sessionData?.session || !sessionData?.user) {
+    return res.status(401).json({ error: "RESET_TOKEN_INVALID", message: "Tilbakestillingslenken er ugyldig eller utløpt. Be om en ny lenke." });
+  }
+
+  const { data: updated, error: updateError } = await authClient.auth.updateUser({ password });
+  if (updateError || !updated?.user) {
+    console.error("Kunne ikke oppdatere passord:", updateError);
+    return res.status(500).json({ error: "PASSWORD_UPDATE_FAILED", message: "Kunne ikke endre passordet. Prøv igjen." });
+  }
+
+  // Hent den eventuelt roterte sessionen og behold brukeren innlogget.
+  const { data: refreshed } = await authClient.auth.getSession();
+  const finalSession = refreshed?.session || sessionData.session;
+  setSession(res, finalSession);
+  res.json({ ok: true, user: publicUser(updated.user) });
 });
 
 app.post("/api/auth/logout", async (req, res) => {

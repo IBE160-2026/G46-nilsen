@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=19.11.7" />
+  <link rel="stylesheet" href="styles.css?v=19.11.8" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -565,7 +565,7 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">19.10.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">19.11.8</strong></p>
         </div>
       </section>
 
@@ -575,12 +575,6 @@
           <div class="utility-header-copy"><span class="eyebrow">KONTAKT OG TILBAKEMELDING</span><div class="utility-title-row"><h1>Spørsmål eller noe som ikke virker?</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div><p>Rapporter gjerne tekniske feil, uklare råd, feil i kilder eller andre forbedringsforslag.</p></div>
         </div>
         <div class="contact-layout">
-          <div class="settings-card contact-card">
-            <h2>Foretrekker du e-post?</h2>
-            <p id="contact-email-status">Henter kontaktinformasjon …</p>
-            <a class="secondary-button contact-email-link" id="contact-email-link" href="#" hidden>Send e-post</a>
-            <p class="contact-privacy-note">Ikke ta med navn eller andre identifiserende personopplysninger i feilrapporten.</p>
-          </div>
           <form class="settings-card report-form" id="report-form">
             <h2>Rapporter feil eller gi tilbakemelding</h2>
             <label>Hva gjelder det?
@@ -596,10 +590,16 @@
             <label>Beskriv kort hva som skjedde
               <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
             </label>
-            <div class="report-meta" id="report-meta">Versjon 19.11.7</div>
+            <div class="report-meta" id="report-meta">Versjon 19.11.8</div>
             <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
             <div class="auth-message" id="report-message" aria-live="polite"></div>
           </form>
+          <div class="settings-card contact-card">
+            <h2>Foretrekker du e-post?</h2>
+            <p id="contact-email-status">Henter kontaktinformasjon …</p>
+            <a class="secondary-button contact-email-link" id="contact-email-link" href="#" hidden>Send e-post</a>
+            <p class="contact-privacy-note">Ikke ta med navn eller andre identifiserende personopplysninger i feilrapporten.</p>
+          </div>
         </div>
       </section>
 
@@ -616,14 +616,32 @@
           <label>Passord<input id="login-password" type="password" autocomplete="current-password" required></label>
           <div class="auth-message" id="login-message" aria-live="polite"></div>
           <button class="primary-button" type="submit">Logg på</button>
-          <details id="login-debug-panel" class="login-debug-panel" open>
-            <summary>Feilsøking av innlogging</summary>
-            <pre id="login-debug-output" aria-live="polite">Laster feilsøker …</pre>
-            <button id="copy-login-debug" class="secondary-button" type="button">Kopier feilsøkingslogg</button>
-          </details>
+          <button class="link-button forgot-password-link" id="show-forgot-password" type="button">Glemt passord?</button>
         </form>
         <p class="auth-switch">Har du en invitasjonskode? <button type="button" id="show-register">Opprett konto</button></p>
       </div>
+      <div id="forgot-password-panel" hidden>
+        <span class="eyebrow">SAMTALESTØTTE</span><h2>Glemt passord?</h2>
+        <p>Skriv inn e-postadressen til brukerprofilen din. Hvis den finnes, sender vi en lenke for å velge nytt passord.</p>
+        <form id="forgot-password-form" class="auth-form">
+          <label>E-post<input id="forgot-password-email" type="email" autocomplete="email" required></label>
+          <div class="auth-message" id="forgot-password-message" aria-live="polite"></div>
+          <button class="primary-button" type="submit">Send lenke</button>
+        </form>
+        <p class="auth-switch"><button type="button" id="back-to-login">← Tilbake til innlogging</button></p>
+      </div>
+
+      <div id="reset-password-panel" hidden>
+        <span class="eyebrow">SAMTALESTØTTE</span><h2>Velg nytt passord</h2>
+        <p>Passordet må ha minst 10 tegn.</p>
+        <form id="reset-password-form" class="auth-form">
+          <label>Nytt passord<input id="reset-password" type="password" minlength="10" autocomplete="new-password" required></label>
+          <label>Bekreft nytt passord<input id="reset-password-confirm" type="password" minlength="10" autocomplete="new-password" required></label>
+          <div class="auth-message" id="reset-password-message" aria-live="polite"></div>
+          <button class="primary-button" type="submit">Lagre nytt passord</button>
+        </form>
+      </div>
+
       <div id="register-panel" hidden>
         <span class="eyebrow">LUKKET BETA</span><h2>Opprett konto</h2><p>Du bestemmer selv hvilket brukernavn du vil bruke.</p>
         <form id="register-form" class="auth-form">
@@ -644,8 +662,6 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-
-  <script src="login-debug.js?v=19.11.7"></script>
-  <script src="app.js?v=19.11.7"></script>
+  <script src="app.js?v=19.11.8"></script>
 </body>
 </html>

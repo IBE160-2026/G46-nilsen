@@ -2113,6 +2113,12 @@ document.querySelector('#continue-form')?.addEventListener('submit', event => {
   input.focus();
 });
 
+document.querySelector('#continue-input')?.addEventListener('keydown', event => {
+  if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
+  event.preventDefault();
+  document.querySelector('#continue-form')?.requestSubmit();
+});
+
 document.querySelectorAll('.continue-chip').forEach(button => {
   button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
 });
@@ -2175,10 +2181,13 @@ async function refreshAuth() {
 }
 function openAuth(mode='login', required = !currentUser) {
   const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
-  const loginPanel=document.querySelector('#login-panel');
-  const registerPanel=document.querySelector('#register-panel');
-  if(loginPanel) loginPanel.hidden=mode!=='login';
-  if(registerPanel) registerPanel.hidden=mode!=='register';
+  const panels={
+    login:document.querySelector('#login-panel'),
+    register:document.querySelector('#register-panel'),
+    forgot:document.querySelector('#forgot-password-panel'),
+    reset:document.querySelector('#reset-password-panel')
+  };
+  Object.entries(panels).forEach(([key,panel])=>{ if(panel) panel.hidden=key!==mode; });
   const mustLogin=Boolean(required && !currentUser);
   dlg.classList.toggle('required-auth', mustLogin);
   const intro=document.querySelector('#login-intro');
@@ -2187,8 +2196,13 @@ function openAuth(mode='login', required = !currentUser) {
   document.body.classList.add('auth-open');
   if(mustLogin) setAppLocked(true);
   requestAnimationFrame(()=>{
-    const target=mode==='login' ? document.querySelector('#login-email') : document.querySelector('#register-username');
-    target?.focus();
+    const targets={
+      login:'#login-email',
+      register:'#register-username',
+      forgot:'#forgot-password-email',
+      reset:'#reset-password'
+    };
+    document.querySelector(targets[mode]||'#login-email')?.focus();
   });
 }
 function closeAuth(force=false){
@@ -2317,6 +2331,97 @@ document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('cl
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>{openInfoView('contact'); const c=document.querySelector('#report-category'); if(c)c.value='Uklart eller dårlig KI-svar';});
+
+let passwordRecoveryTokens = null;
+
+function readPasswordRecoveryFromUrl(){
+  const hash = new URLSearchParams(location.hash.replace(/^#/,''));
+  const type = hash.get('type');
+  const accessToken = hash.get('access_token');
+  const refreshToken = hash.get('refresh_token');
+  if(type==='recovery' && accessToken && refreshToken){
+    passwordRecoveryTokens={accessToken,refreshToken};
+    history.replaceState(null,'',location.pathname+location.search);
+    openAuth('reset',true);
+    return true;
+  }
+  return false;
+}
+
+document.querySelector('#show-forgot-password')?.addEventListener('click',()=>{
+  const loginValue=document.querySelector('#login-email')?.value.trim()||'';
+  const email=document.querySelector('#forgot-password-email');
+  if(email && loginValue.includes('@')) email.value=loginValue;
+  openAuth('forgot',true);
+});
+document.querySelector('#back-to-login')?.addEventListener('click',()=>openAuth('login',true));
+
+document.querySelector('#forgot-password-form')?.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const msg=document.querySelector('#forgot-password-message');
+  const email=document.querySelector('#forgot-password-email')?.value.trim()||'';
+  msg.className='auth-message';
+  msg.textContent='Sender lenke …';
+  try{
+    const response=await fetch('/api/auth/password-reset-request',{
+      method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({email})
+    });
+    const payload=await response.json();
+    if(!response.ok){
+      msg.className='auth-message error';
+      msg.textContent=payload.message||'Kunne ikke sende lenken.';
+      return;
+    }
+    msg.className='auth-message success';
+    msg.textContent='Hvis e-postadressen tilhører en brukerprofil, er en lenke sendt. Sjekk også søppelpost.';
+  }catch(_){
+    msg.className='auth-message error';
+    msg.textContent='Kunne ikke kontakte tjenesten. Prøv igjen.';
+  }
+});
+
+document.querySelector('#reset-password-form')?.addEventListener('submit',async event=>{
+  event.preventDefault();
+  const msg=document.querySelector('#reset-password-message');
+  const password=document.querySelector('#reset-password')?.value||'';
+  const confirmPassword=document.querySelector('#reset-password-confirm')?.value||'';
+  if(password.length<10){
+    msg.className='auth-message error'; msg.textContent='Passordet må ha minst 10 tegn.'; return;
+  }
+  if(password!==confirmPassword){
+    msg.className='auth-message error'; msg.textContent='Passordene er ikke like.'; return;
+  }
+  if(!passwordRecoveryTokens){
+    msg.className='auth-message error'; msg.textContent='Tilbakestillingslenken mangler eller er utløpt. Be om en ny lenke.'; return;
+  }
+  msg.className='auth-message';
+  msg.textContent='Lagrer nytt passord …';
+  try{
+    const response=await fetch('/api/auth/password-reset-complete',{
+      method:'POST',credentials:'include',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({...passwordRecoveryTokens,password})
+    });
+    const payload=await response.json();
+    if(!response.ok){
+      msg.className='auth-message error';
+      msg.textContent=payload.message||'Kunne ikke endre passordet.';
+      return;
+    }
+    passwordRecoveryTokens=null;
+    currentUser=payload.user||null;
+    updateAuthUi();
+    msg.className='auth-message success';
+    msg.textContent='Passordet er endret.';
+    setTimeout(()=>closeAuth(true),450);
+  }catch(_){
+    msg.className='auth-message error';
+    msg.textContent='Kunne ikke kontakte tjenesten. Prøv igjen.';
+  }
+});
+
 document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
 document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
 document.querySelector('#new-conversation-button')?.addEventListener('click',()=>startNewConversation());
@@ -2777,3 +2882,7 @@ window.addEventListener('pageshow', () => {
   setBreadcrumb('');
   showView('home');
 });
+
+
+// v19.11.8: åpne passordreset direkte når Supabase returnerer en recovery-lenke.
+queueMicrotask(()=>{ if(readPasswordRecoveryFromUrl()) setAppLocked(true); });

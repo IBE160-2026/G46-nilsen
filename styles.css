@@ -1552,3 +1552,152 @@ body.auth-open .app-shell{pointer-events:none;user-select:none;}
 .login-debug-panel summary{cursor:pointer;font-weight:700;font-size:.9rem}
 .login-debug-panel pre{white-space:pre-wrap;word-break:break-word;max-height:210px;overflow:auto;font-size:.78rem;line-height:1.42;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:10px;margin:10px 0}
 .login-debug-panel .secondary-button{width:100%}
+
+
+/* v19.11.8 – visuell opprydding, kontakt og passordreset */
+
+/* Hovedlogo: "Samtale"-delen skal være merkbart lysere i hybridtema. */
+html[data-theme="hybrid"] .sidebar .brand-button{
+  position:relative;
+  isolation:isolate;
+}
+html[data-theme="hybrid"] .sidebar .brand-logo{
+  filter:brightness(1.82) saturate(.82) contrast(.94);
+}
+html[data-theme="hybrid"] .sidebar .brand-button::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  background:linear-gradient(90deg,
+    rgba(214,247,243,.44) 0%,
+    rgba(194,238,233,.34) 30%,
+    rgba(170,226,220,.18) 58%,
+    rgba(170,226,220,0) 78%);
+  -webkit-mask:url('logo-light.png') left center/contain no-repeat;
+  mask:url('logo-light.png') left center/contain no-repeat;
+  mix-blend-mode:screen;
+}
+
+/* Infosidelogo: løftes nok til at boblehalen peker mot øvre del av siste bokstav. */
+.utility-title-row{
+  align-items:flex-start;
+  overflow:visible;
+}
+.utility-title-row .utility-page-brand{
+  transform:translate(-3px,-38px) !important;
+}
+@media(max-width:760px){
+  .utility-title-row .utility-page-brand{transform:translate(-2px,-28px) !important;}
+}
+
+/* Kontakt: skjema først, e-post som sekundært alternativ nederst. */
+#contact-view .contact-layout{
+  display:flex;
+  flex-direction:column;
+  gap:16px;
+}
+#contact-view .report-form{order:1;}
+#contact-view .contact-card{order:2;}
+
+/*
+  Snakkebobler – rolig, klassisk og uten store pilformer.
+  Halen er en liten kurvet forlengelse av boblekanten, skåret inn med bakgrunnen.
+*/
+.simulation-bubble-row{gap:24px !important;}
+.simulation-view .simulation-bubble,
+.conversation-turn{
+  overflow:visible;
+  isolation:isolate;
+  border:1px solid var(--border);
+  border-radius:22px !important;
+}
+
+/* Nullstill alle gamle, store haleformer. */
+.leader-bubble::before,.leader-bubble::after,
+.employee-bubble::before,.employee-bubble::after,
+.conversation-user::before,.conversation-user::after,
+.conversation-assistant::before,.conversation-assistant::after{
+  content:"" !important;
+  position:absolute;
+  display:block;
+  border:0;
+  transform:none;
+}
+
+/* Simulator: litt tydeligere hale. */
+.employee-bubble::after{
+  left:-13px; bottom:2px; width:24px; height:20px;
+  background:inherit;
+  border-left:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-left-radius:22px 18px;
+  z-index:-2;
+}
+.employee-bubble::before{
+  left:-17px; bottom:8px; width:17px; height:17px;
+  background:var(--bg);
+  border-bottom-right-radius:17px 15px;
+  z-index:-1;
+}
+.leader-bubble::after{
+  right:-13px; bottom:2px; width:24px; height:20px;
+  background:inherit;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-right-radius:22px 18px;
+  z-index:-2;
+}
+.leader-bubble::before{
+  right:-17px; bottom:8px; width:17px; height:17px;
+  background:var(--bg);
+  border-bottom-left-radius:17px 15px;
+  z-index:-1;
+}
+
+/* Hovedsamtale: samme formspråk, men mindre og mer diskret hale. */
+.conversation-thread{padding-left:22px !important;padding-right:22px !important;}
+.conversation-assistant::after{
+  left:-10px; bottom:3px; width:19px; height:16px;
+  background:inherit;
+  border-left:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-left-radius:18px 14px;
+  z-index:-2;
+}
+.conversation-assistant::before{
+  left:-13px; bottom:8px; width:13px; height:13px;
+  background:var(--bg);
+  border-bottom-right-radius:13px 12px;
+  z-index:-1;
+}
+.conversation-user::after{
+  right:-10px; bottom:3px; width:19px; height:16px;
+  background:inherit;
+  border-right:1px solid var(--border);
+  border-bottom:1px solid var(--border);
+  border-bottom-right-radius:18px 14px;
+  z-index:-2;
+}
+.conversation-user::before{
+  right:-13px; bottom:8px; width:13px; height:13px;
+  background:var(--bg);
+  border-bottom-left-radius:13px 12px;
+  z-index:-1;
+}
+
+@media(max-width:760px){
+  .simulation-bubble-row{gap:20px !important;}
+  .conversation-thread{padding-left:18px !important;padding-right:18px !important;}
+}
+
+/* Innlogging: ingen debugpanel. Vanlige feilmeldinger beholdes. */
+.login-debug-panel{display:none !important;}
+.forgot-password-link{
+  align-self:flex-start;
+  padding:2px 0;
+  margin-top:-2px;
+  font-weight:700;
+}
+#forgot-password-panel .auth-message.success,
+#reset-password-panel .auth-message.success{color:var(--success,#26745f);}
