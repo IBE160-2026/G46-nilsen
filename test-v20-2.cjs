@@ -1,0 +1,16 @@
+const fs=require('fs');const assert=require('assert');
+const app=fs.readFileSync('app.js','utf8');const server=fs.readFileSync('server.js','utf8');const html=fs.readFileSync('index.html','utf8');const css=fs.readFileSync('styles.css','utf8');
+assert(server.includes("const AI_MODELS ="));
+assert(server.includes("app.put('/api/admin/ai-settings'"));
+assert(server.includes("app.get('/api/admin/ai-usage'"));
+assert(server.includes("create table")===false);
+assert(server.includes("ai_usage_log"));
+assert(server.includes("extractWebSearchMeta"));
+assert(html.includes('admin-ai-model'));
+assert(html.includes('ai-feedback-include-conversation'));
+assert(app.includes('buildFeedbackConversationSnapshot'));
+assert(app.includes('updateFeedbackAttachmentPrivacy'));
+assert(app.includes('includeConversation'));
+assert(css.includes('transform:translateY(26px);'));
+assert(css.includes('transform:translateY(24px);'));
+console.log('v20.2 regresjon OK');

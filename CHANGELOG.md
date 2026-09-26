@@ -1,3 +1,15 @@
+## v20.2 – modellstyring, kostnad, kildebruk og bedre rapportering
+
+- Admin kan bytte mellom godkjente KI-modeller uten ny deploy.
+- Modellbytte varsler om mulig kostnadsøkning.
+- Tokenbruk og estimert API-kostnad logges per KI-kall.
+- Admin får kostnad siste 24 timer, 7 dager og 30 dager.
+- Websøk og brukte kildedomener logges uten samtaletekst, som grunnlag for framtidig offline SOURCEBANK/RAG.
+- «Rapporter svar» har valgfritt «Legg ved samtalen», av som standard.
+- Personvernsjekk kjøres før en samtale kan legges ved.
+- Samme rapporteringsløsning brukes i vanlig veiledning, oppfølging og simulering.
+- Simulatoravatarene er flyttet ytterligere 18 px ned.
+
 ## v20.1 – redigerbart innhold, smartere temaflyt og KI-feedback
 
 - Admininnhold er delt i sammenleggbare seksjoner for enklere navigasjon.

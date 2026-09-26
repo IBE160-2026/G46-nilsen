@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.0.0";
+const appVersion = process.env.APP_VERSION || "20.2.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -24,8 +24,94 @@ app.get("/api/public-config", (req, res) => {
 });
 
 const apiKey = process.env.OPENAI_API_KEY;
-const model = process.env.OPENAI_MODEL || "gpt-5.6-luna";
+const defaultModel = process.env.OPENAI_MODEL || "gpt-5.6-luna";
 const client = apiKey ? new OpenAI({ apiKey }) : null;
+
+const AI_MODELS = {
+  "gpt-5.6-luna": { label: "GPT-5.6 Luna", tier: "Kostnad", inputPerMillion: 0.20, outputPerMillion: 1.20 },
+  "gpt-5.6-terra": { label: "GPT-5.6 Terra", tier: "Balansert", inputPerMillion: 2.00, outputPerMillion: 12.00 },
+  "gpt-5.6-sol": { label: "GPT-5.6 Sol", tier: "Høyest kvalitet", inputPerMillion: 4.00, outputPerMillion: 20.00 }
+};
+let activeModelCache = { value: null, expiresAt: 0 };
+
+async function getActiveModel() {
+  if (activeModelCache.value && Date.now() < activeModelCache.expiresAt) return activeModelCache.value;
+  let selected = defaultModel;
+  try {
+    const { data, error } = await supabaseAdmin.from('app_settings').select('value').eq('key','ai_model').maybeSingle();
+    if (!error && data?.value) {
+      const candidate = typeof data.value === 'string' ? data.value : data.value?.model;
+      if (candidate && AI_MODELS[candidate]) selected = candidate;
+    }
+  } catch (_) {}
+  if (!AI_MODELS[selected]) selected = 'gpt-5.6-luna';
+  activeModelCache = { value: selected, expiresAt: Date.now() + 30000 };
+  return selected;
+}
+
+function extractWebSearchMeta(response) {
+  const queries = [];
+  const domains = [];
+  let used = false;
+  for (const item of response?.output || []) {
+    if (item?.type === 'web_search_call') {
+      used = true;
+      const q = item?.action?.query;
+      const qs = item?.action?.queries;
+      if (typeof q === 'string' && q.trim()) queries.push(q.trim());
+      if (Array.isArray(qs)) queries.push(...qs.filter(x => typeof x === 'string' && x.trim()).map(x => x.trim()));
+    }
+    if (item?.type === 'message') {
+      for (const part of item.content || []) {
+        for (const ann of part.annotations || []) {
+          const url = ann?.url || ann?.url_citation?.url;
+          if (url) {
+            try { domains.push(new URL(url).hostname.replace(/^www\./,'')); } catch (_) {}
+          }
+        }
+      }
+    }
+  }
+  return { used, queries: [...new Set(queries)].slice(0,10), domains: [...new Set(domains)].slice(0,20) };
+}
+
+async function logAiUsage({ userId=null, functionName='unknown', modelUsed, response }) {
+  try {
+    const usage = response?.usage || {};
+    const inputTokens = Number(usage.input_tokens || usage.inputTokens || 0);
+    const outputTokens = Number(usage.output_tokens || usage.outputTokens || 0);
+    const meta = AI_MODELS[modelUsed] || { inputPerMillion:0, outputPerMillion:0 };
+    const estimatedCostUsd = (inputTokens / 1_000_000) * meta.inputPerMillion + (outputTokens / 1_000_000) * meta.outputPerMillion;
+    const web = extractWebSearchMeta(response);
+    await supabaseAdmin.from('ai_usage_log').insert({
+      user_id:userId, function_name:functionName, model:modelUsed,
+      input_tokens:inputTokens, output_tokens:outputTokens, total_tokens:inputTokens+outputTokens,
+      estimated_cost_usd:estimatedCostUsd, web_search_used:web.used,
+      web_search_queries:web.queries, source_domains:web.domains
+    });
+  } catch (error) {
+    console.warn('Kunne ikke lagre KI-brukslogg:', error?.message || error);
+  }
+}
+
+async function createTrackedResponse(params) {
+  const modelUsed = await getActiveModel();
+  const functionName = String(params._functionName || 'unknown');
+  const userId = params._userId || null;
+  const cleanParams = { ...params };
+  delete cleanParams._functionName; delete cleanParams._userId;
+  try {
+    const response = await client.responses.create({ ...cleanParams, model: modelUsed });
+    await logAiUsage({ userId, functionName, modelUsed, response });
+    Object.defineProperty(response, '__samtalestotteModel', { value:modelUsed, enumerable:false });
+    return response;
+  } catch (error) {
+    error.samtalestotteModel = modelUsed;
+    throw error;
+  }
+}
+
+function responseModel(response) { return response?.__samtalestotteModel || defaultModel; }
 
 
 // --- v19.10: KI-basert temaforståelse ---
@@ -372,18 +458,52 @@ app.post("/api/ai-feedback", requireUser, async (req, res) => {
   const category = String(req.body?.category || "Annet").slice(0, 80);
   const comment = String(req.body?.comment || "").trim().slice(0, 2000);
   const surface = String(req.body?.surface || "general").slice(0, 80);
+  const includeConversation = Boolean(req.body?.includeConversation);
+  const conversationSnapshot = includeConversation && req.body?.conversationSnapshot && typeof req.body.conversationSnapshot === 'object' ? req.body.conversationSnapshot : null;
   if (comment.length < 3) return res.status(400).json({ error:"COMMENT_REQUIRED", message:"Skriv kort hva som var problemet." });
   if (serverPrivacyFindings(comment).length) return res.status(400).json({ error:"PRIVACY_REVIEW_REQUIRED", message:"Fjern tydelige personopplysninger fra tilbakemeldingen." });
-  const row = { user_id:req.user.id, category, comment, surface, conversation_id:req.body?.conversationId || null, topic_id:String(req.body?.topicId || '').slice(0,100) || null, subtopic:String(req.body?.subtopic || '').slice(0,200) || null };
+  if (conversationSnapshot) {
+    const snapshotText = flattenTextValues(conversationSnapshot).join(' ');
+    if (serverPrivacyFindings(snapshotText).length) return res.status(400).json({ error:'PRIVACY_REVIEW_REQUIRED', message:'Samtalen inneholder opplysninger som må anonymiseres før den kan legges ved.' });
+    if (JSON.stringify(conversationSnapshot).length > 50000) return res.status(413).json({error:'SNAPSHOT_TOO_LARGE',message:'Samtalen er for lang til å legges ved.'});
+  }
+  const row = { user_id:req.user.id, category, comment, surface, conversation_id:req.body?.conversationId || null, topic_id:String(req.body?.topicId || '').slice(0,100) || null, subtopic:String(req.body?.subtopic || '').slice(0,200) || null, include_conversation:includeConversation, conversation_snapshot:conversationSnapshot };
   const { error } = await supabaseAdmin.from('ai_response_feedback').insert(row);
-  if (error) { const missing=/ai_response_feedback|relation .* does not exist/i.test(String(error.message||'')); return res.status(missing?503:500).json({error:missing?'FEEDBACK_TABLE_MISSING':'FEEDBACK_SAVE_FAILED',message:missing?'Kjør V20-1-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke lagre tilbakemeldingen.'}); }
+  if (error) { const missing=/ai_response_feedback|conversation_snapshot|include_conversation|relation .* does not exist/i.test(String(error.message||'')); return res.status(missing?503:500).json({error:missing?'FEEDBACK_TABLE_MISSING':'FEEDBACK_SAVE_FAILED',message:missing?'Kjør V20-2-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke lagre tilbakemeldingen.'}); }
   res.json({ok:true});
 });
 
 app.get("/api/admin/ai-feedback", requireAdmin, async (_req,res)=>{
-  const { data,error }=await supabaseAdmin.from('ai_response_feedback').select('id,category,comment,surface,created_at').order('created_at',{ascending:false}).limit(100);
-  if(error){const missing=/ai_response_feedback|relation .* does not exist/i.test(String(error.message||''));return res.status(missing?503:500).json({error:'FEEDBACK_LOAD_FAILED',message:missing?'Kjør V20-1-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke hente tilbakemeldinger.'});}
+  const { data,error }=await supabaseAdmin.from('ai_response_feedback').select('id,category,comment,surface,include_conversation,conversation_snapshot,created_at').order('created_at',{ascending:false}).limit(100);
+  if(error){const missing=/ai_response_feedback|relation .* does not exist/i.test(String(error.message||''));return res.status(missing?503:500).json({error:'FEEDBACK_LOAD_FAILED',message:missing?'Kjør V20-2-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke hente tilbakemeldinger.'});}
   res.json({items:data||[]});
+});
+
+app.get('/api/admin/ai-settings', requireAdmin, async (_req,res)=>{
+  const activeModel = await getActiveModel();
+  res.json({ activeModel, models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})) });
+});
+
+app.put('/api/admin/ai-settings', requireAdmin, async (req,res)=>{
+  const modelId = String(req.body?.model || '');
+  if (!AI_MODELS[modelId]) return res.status(400).json({error:'INVALID_MODEL',message:'Ugyldig KI-modell.'});
+  const { error } = await supabaseAdmin.from('app_settings').upsert({ key:'ai_model', value:{model:modelId}, updated_at:new Date().toISOString(), updated_by:req.user.id });
+  if (error) return res.status(500).json({error:'MODEL_SAVE_FAILED',message:'Kunne ikke lagre modellvalget. Kjør V20-2-SUPABASE-MIGRATION.sql først.'});
+  activeModelCache={value:modelId,expiresAt:Date.now()+30000};
+  res.json({ok:true,activeModel:modelId});
+});
+
+app.get('/api/admin/ai-usage', requireAdmin, async (_req,res)=>{
+  const since = new Date(Date.now()-30*24*60*60*1000).toISOString();
+  const { data,error }=await supabaseAdmin.from('ai_usage_log').select('function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_queries,source_domains,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
+  if(error) return res.status(500).json({error:'USAGE_LOAD_FAILED',message:'Kunne ikke hente KI-bruk. Kjør V20-2-SUPABASE-MIGRATION.sql først.'});
+  const rows=data||[];
+  const now=Date.now();
+  const sumDays=d=>rows.filter(r=>new Date(r.created_at).getTime()>=now-d*86400000).reduce((a,r)=>a+Number(r.estimated_cost_usd||0),0);
+  const domainCounts={}; const queryCounts={};
+  for(const r of rows){ for(const d of r.source_domains||[]) domainCounts[d]=(domainCounts[d]||0)+1; for(const q of r.web_search_queries||[]) queryCounts[q]=(queryCounts[q]||0)+1; }
+  const top=(obj,n=12)=>Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([name,count])=>({name,count}));
+  res.json({summary:{cost24h:sumDays(1),cost7d:sumDays(7),cost30d:sumDays(30),calls30d:rows.length,webSearchCalls30d:rows.filter(r=>r.web_search_used).length},recent:rows.slice(0,100),topDomains:top(domainCounts),topQueries:top(queryCounts)});
 });
 
 app.post("/api/auth/register", async (req, res) => {
@@ -890,8 +1010,8 @@ ${catalogText}
 Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
 
   try {
-    const response = await client.responses.create({
-      model,
+    const response = await createTrackedResponse({
+      _functionName:'tema', _userId:req.user.id,
       instructions: classificationInstructions,
       input: [{ role: "user", content: [{ type: "input_text", text: situation }] }],
       text: {
@@ -910,21 +1030,21 @@ Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
       throw new Error("KI returnerte en ugyldig tema/undertema-kombinasjon.");
     }
 
-    return res.json({ ...parsed, ai: true, model });
+    return res.json({ ...parsed, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI topic classification failed:", error);
     const status = Number(error?.status) || 500;
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_TOPIC_CLASSIFICATION_FAILED",
       message: "KI-temaforslaget kunne ikke gjennomføres.",
-      diagnostic: { status, apiMessage: error?.message || "Ukjent feil", model }
+      diagnostic: { status, apiMessage: error?.message || "Ukjent feil", model: error.samtalestotteModel || defaultModel }
     });
   }
 });
 
 
-app.get("/api/status", (_req, res) => {
-  res.json({ aiConfigured: Boolean(client), model: client ? model : null });
+app.get("/api/status", async (_req, res) => {
+  res.json({ aiConfigured: Boolean(client), model: client ? await getActiveModel() : null });
 });
 
 app.post("/api/analyze-situation", requireUser, async (req, res) => {
@@ -945,8 +1065,8 @@ app.post("/api/analyze-situation", requireUser, async (req, res) => {
 - Sett multi_select=true når flere svaralternativer realistisk kan være sanne samtidig eller brukeren kan trenge hjelp med flere ting. Bruk false når alternativene faktisk utelukker hverandre.\n- Spør aldri om diagnose eller unødvendige sensitive opplysninger.\n- Hvis valgt tema/undertema ikke passer teksten, skal friteksten veie tyngst.\n\nValgt tema i grensesnittet: ${selectedTopic || "ikke oppgitt"}\nValgt undertema: ${selectedSubtopic || "ikke oppgitt"}\nHva brukeren ønsker hjelp til: ${helpRequest || "ikke oppgitt"}\n`;
 
   try {
-    const response = await client.responses.create({
-      model,
+    const response = await createTrackedResponse({
+      _functionName:'analyse', _userId:req.user.id,
       instructions: systemPrompt + task,
       input: [
         {
@@ -966,7 +1086,7 @@ app.post("/api/analyze-situation", requireUser, async (req, res) => {
 
     const raw = response.output_text;
     const parsed = JSON.parse(raw);
-    return res.json({ ...parsed, ai: true, model });
+    return res.json({ ...parsed, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI analysis failed:", error);
     const status = Number(error?.status) || 500;
@@ -977,13 +1097,13 @@ app.post("/api/analyze-situation", requireUser, async (req, res) => {
     let hint = "Se PowerShell-vinduet for detaljer.";
     if (status === 401) hint = "API-nøkkelen ble avvist. Kontroller OPENAI_API_KEY i .env.";
     else if (status === 403) hint = "API-nøkkelen mangler nødvendig tilgang til Responses API eller modellen.";
-    else if (status === 404) hint = `Modellen ${model} er ikke tilgjengelig for dette prosjektet, eller modellnavnet er feil.`;
+    else if (status === 404) hint = `Modellen ${error.samtalestotteModel || defaultModel} er ikke tilgjengelig for dette prosjektet, eller modellnavnet er feil.`;
     else if (status === 429) hint = "API-prosjektet har nådd en bruks-/betalingsgrense eller mangler tilgjengelig kreditt.";
 
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_ANALYSIS_FAILED",
       message: "KI-analysen feilet.",
-      diagnostic: { status, code, type, apiMessage: rawMessage, model, hint }
+      diagnostic: { status, code, type, apiMessage: rawMessage, model: error.samtalestotteModel || defaultModel, hint }
     });
   }
 });
@@ -1004,8 +1124,8 @@ app.post("/api/generate-guidance", requireUser, async (req, res) => {
   const guidanceTask = `\n\n## Oppgave: lag konkret samtalestøtte\nDu skal nå lage selve samtalestøtten til akkurat denne saken. Ikke bruk standardråd som kunne passet enhver leder.\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Åpningen skal kunne sies høyt i denne konkrete samtalen.\n- Spørsmålene skal være få og målrettede; hvert spørsmål må ha en tydelig funksjon i akkurat saken.\n- Foreslå 2–4 plausible reaksjoner som er SPESIFIKKE for det som står på spill. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- Skill mellom hva lederen bør AVKLARE før møtet og hva lederen bør SI i møtet.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk den kuraterte fagbanken som førstevalg og kvalitetsanker. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør støttes av relevante kilder.\n- source_ids må kun inneholde ID-er fra den oppgitte fagbanken. Velg 1–4 presise kilder når de faktisk passer.\n- Fagbanken er IKKE en lukket liste. Dersom saken trenger en mer presis, nyere eller manglende kilde, kan du bruke nettsøk og supplere med inntil 2 kilder. Prioriter norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning. Unngå blogger, markedsføring og tilfeldige rådssider.\n- supplementary_sources skal bare inneholde kilder du faktisk har funnet og brukt gjennom nettsøk. Ikke konstruer titler, forfattere eller lenker. Bruk tom liste hvis fagbanken er tilstrekkelig.\n- Ved juridisk sensitivitet: prioriter gjeldende norsk lov/myndighetskilde og anbefal HR/juridisk kvalitetssikring når nødvendig, uten å konkludere definitivt.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n`;
 
   try {
-    const response = await client.responses.create({
-      model,
+    const response = await createTrackedResponse({
+      _functionName:'veiledning', _userId:req.user.id,
       tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + guidanceTask,
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
@@ -1023,7 +1143,7 @@ app.post("/api/generate-guidance", requireUser, async (req, res) => {
     const usedWebUrls = webSourceUrls(response);
     const supplementary = (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
       .filter(source => source?.url && usedWebUrls.has(source.url));
-    return res.json({ ...parsed, evidence_sources: [...curated, ...supplementary], ai: true, model });
+    return res.json({ ...parsed, evidence_sources: [...curated, ...supplementary], ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -1031,7 +1151,7 @@ app.post("/api/generate-guidance", requireUser, async (req, res) => {
     const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_GUIDANCE_FAILED", message: "KI-samtalestøtten feilet.",
-      diagnostic: { status, code, apiMessage: rawMessage, model }
+      diagnostic: { status, code, apiMessage: rawMessage, model: error.samtalestotteModel || defaultModel }
     });
   }
 });
@@ -1055,13 +1175,13 @@ app.post("/api/continue-conversation", requireUser, async (req, res) => {
 - Ikke bruk nummererte mini-kapitler med mindre brukeren uttrykkelig ber om en stegvis gjennomgang.
 - Ikke gjenta risikovarsler, HR-råd eller sikkerhetsforbehold som allerede er gitt, med mindre de er direkte relevante for oppfølgingsspørsmålet.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nRelevante kilder i fagbanken: ${JSON.stringify(relevantSources)}\n`;
   try {
-    const response = await client.responses.create({
-      model,
+    const response = await createTrackedResponse({
+      _functionName:'oppfolging', _userId:req.user.id,
       tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + continueTask,
       input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }]
     });
-    return res.json({ reply: response.output_text, ai: true, model });
+    return res.json({ reply: response.output_text, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI continuation failed:", error);
     const status = Number(error?.status) || 500;
@@ -1069,7 +1189,7 @@ app.post("/api/continue-conversation", requireUser, async (req, res) => {
     const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_CONTINUATION_FAILED", message: "KI-oppfølgingen feilet.",
-      diagnostic: { status, code, apiMessage: rawMessage, model }
+      diagnostic: { status, code, apiMessage: rawMessage, model: error.samtalestotteModel || defaultModel }
     });
   }
 });
@@ -1122,12 +1242,12 @@ app.post('/api/simulation-turn', requireUser, async (req, res) => {
   const fidelity = Object.prototype.hasOwnProperty.call(simulationFidelityInstructions, body.fidelity) ? body.fidelity : 'factual';
   if (blockUnsafeAiText(res, [body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)])) return;
   try {
-    const response = await client.responses.create({
-      model,
+    const response = await createTrackedResponse({
+      _functionName:'simulering', _userId:req.user.id,
       instructions: systemPrompt + simulationContextText({ ...body, fidelity, style, turns }),
       input: [{ role: 'user', content: [{ type: 'input_text', text: 'Svar nå som medarbeideren på lederens siste utsagn. Ikke kommenter øvelsen eller gi lederråd.' }] }]
     });
-    res.json({ reply: String(response.output_text || '').trim(), ai: true, model });
+    res.json({ reply: String(response.output_text || '').trim(), ai: true, model: responseModel(response) });
   } catch (error) {
     console.error('Simulation turn failed:', error);
     const status = Number(error?.status) || 500;
@@ -1149,8 +1269,9 @@ app.post('/api/simulation-help', requireUser, async (req, res) => {
   if (blockUnsafeAiText(res, [body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)])) return;
   const prompt = `Du er nå trener, IKKE medarbeider. ${task}\nBruk bare opplysninger som finnes i saken og samtalen. Ikke dikt opp fakta. Ikke gi en lang forklaring. Maks 80 ord.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nSamtalen så langt: ${JSON.stringify(turns)}`;
   try {
-    const response = await client.responses.create({ model, instructions: systemPrompt, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }] });
-    res.json({ help: String(response.output_text || '').trim(), ai: true, model });
+    const response = await createTrackedResponse({
+      _functionName:'simulator-hjelp', _userId:req.user.id, instructions: systemPrompt, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }] });
+    res.json({ help: String(response.output_text || '').trim(), ai: true, model: responseModel(response) });
   } catch (error) {
     console.error('Simulation help failed:', error);
     const status = Number(error?.status) || 500;
@@ -1177,13 +1298,13 @@ app.post('/api/simulation-feedback', requireUser, async (req, res) => {
   if (blockUnsafeAiText(res, [body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)])) return;
   const task = `\n\n## Oppgave: tilbakemelding etter samtaleøvelse\nDu er trener, ikke medarbeider. Vurder KUN det lederen faktisk sa i transkriptet.\n- Ingen poengsum, karakter eller rangering.\n- Pek på konkrete formuleringer eller grep som fungerte godt.\n- Pek på konkrete steder som kunne vært tydeligere, mer åpne eller mer presise.\n- Ikke anta lederens intensjon utover ordene som står der.\n- Ikke finn på fakta om medarbeideren.\n- Gi én alternativ formulering som passer saken.\n- Avslutt med ett kort læringspunkt.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nTranskript: ${JSON.stringify(turns)}`;
   try {
-    const response = await client.responses.create({
-      model,
+    const response = await createTrackedResponse({
+      _functionName:'simulator-tilbakemelding', _userId:req.user.id,
       instructions: systemPrompt + task,
       input: [{ role: 'user', content: [{ type: 'input_text', text: 'Gi strukturert tilbakemelding på øvelsen.' }] }],
       text: { format: { type: 'json_schema', name: 'samtalesimulering_tilbakemelding', strict: true, schema: simulationFeedbackSchema } }
     });
-    res.json({ ...JSON.parse(response.output_text), ai: true, model });
+    res.json({ ...JSON.parse(response.output_text), ai: true, model: responseModel(response) });
   } catch (error) {
     console.error('Simulation feedback failed:', error);
     const status = Number(error?.status) || 500;
@@ -1193,5 +1314,5 @@ app.post('/api/simulation-feedback', requireUser, async (req, res) => {
 
 app.listen(port, () => {
   console.log(`Samtalestøtte kjører på http://localhost:${port}`);
-  console.log(client ? `KI aktivert (${model})` : "KI er ikke aktivert: sett OPENAI_API_KEY i .env");
+  console.log(client ? `KI aktivert (standard ${defaultModel}; admin kan overstyre)` : "KI er ikke aktivert: sett OPENAI_API_KEY i .env");
 });

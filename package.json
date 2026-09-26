@@ -1,6 +1,6 @@
 {
   "name": "samtalestotte",
-  "version": "20.1.0",
+  "version": "20.2.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -35,7 +35,8 @@
     "test-v19.12.4": "node test-v19-12-4.cjs",
     "test-v19.12.5": "node test-v19-12-5.cjs",
     "test-v20.0": "node test-v20-0.cjs",
-    "test-v20.1": "node test-v20-1.cjs"
+    "test-v20.1": "node test-v20-1.cjs",
+    "test-v20.2": "node test-v20-2.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
