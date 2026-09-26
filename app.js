@@ -1242,93 +1242,11 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 function speechBubbleMarkup(side='left'){
-  return `<svg class="speech-bubble-shape" data-side="${side}" aria-hidden="true" focusable="false">
-    <g class="speech-bubble-geometry"><path></path></g>
+  const sideClass = side === 'right' ? 'speech-tail-fixed-right' : 'speech-tail-fixed-left';
+  return `<svg class="speech-tail-fixed ${sideClass}" viewBox="180 470 315 105" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+    <path d="M480.833 479 L190.678 567.008 L309.333 479 Z"></path>
   </svg>`;
 }
-
-function speechBubblePath(width, bodyHeight){
-  // Geometrien er låst til godkjent preview 9.
-  // Halen beholder samme størrelse uansett tekstmengde.
-  const r = 26;
-  const tailH = 26;
-  const attachStart = 30;
-  const attachEnd = 52;
-  const tipOffset = 24;
-  const left = 0;
-  const top = 0;
-  const right = width;
-  const bottom = bodyHeight;
-  const tipX = left + tipOffset;
-
-  return [
-    `M ${left+r} ${top}`,
-    `H ${right-r}`,
-    `Q ${right} ${top} ${right} ${top+r}`,
-    `V ${bottom-r}`,
-    `Q ${right} ${bottom} ${right-r} ${bottom}`,
-    `H ${left+attachEnd}`,
-    `C ${left+attachEnd-5} ${bottom+1}, ${tipX+15} ${bottom+15}, ${tipX} ${bottom+tailH}`,
-    `C ${tipX+10} ${bottom+15}, ${left+attachStart+7} ${bottom+2}, ${left+attachStart} ${bottom}`,
-    `H ${left+r}`,
-    `Q ${left} ${bottom} ${left} ${bottom-r}`,
-    `V ${top+r}`,
-    `Q ${left} ${top} ${left+r} ${top}`,
-    'Z'
-  ].join(' ');
-}
-
-function layoutSpeechBubble(container){
-  if(!container) return;
-  const svg = container.querySelector(':scope > .speech-bubble-shape');
-  if(!svg) return;
-
-  const width = Math.max(120, Math.round(container.clientWidth));
-  const bodyHeight = Math.max(54, Math.round(container.clientHeight));
-  const tailH = 26;
-  const path = svg.querySelector('path');
-  const geometry = svg.querySelector('.speech-bubble-geometry');
-  if(!path || !geometry) return;
-
-  svg.setAttribute('viewBox', `0 0 ${width} ${bodyHeight + tailH}`);
-  svg.style.width = `${width}px`;
-  svg.style.height = `${bodyHeight + tailH}px`;
-  path.setAttribute('d', speechBubblePath(width, bodyHeight));
-
-  // Høyresiden er ren copy/paste av venstresiden, kun speilvendt.
-  const side = svg.dataset.side || 'left';
-  geometry.setAttribute('transform', side === 'right' ? `translate(${width} 0) scale(-1 1)` : '');
-}
-
-const speechBubbleResizeObserver = typeof ResizeObserver !== 'undefined'
-  ? new ResizeObserver(entries => entries.forEach(entry => layoutSpeechBubble(entry.target)))
-  : null;
-
-function activateSpeechBubbles(root=document){
-  const bubbles = [];
-  if(root?.matches?.('.simulation-bubble,.conversation-turn')) bubbles.push(root);
-  root?.querySelectorAll?.('.simulation-bubble,.conversation-turn').forEach(el => bubbles.push(el));
-
-  bubbles.forEach(el => {
-    layoutSpeechBubble(el);
-    speechBubbleResizeObserver?.observe(el);
-  });
-}
-
-const speechBubbleMutationObserver = typeof MutationObserver !== 'undefined'
-  ? new MutationObserver(mutations => {
-      mutations.forEach(mutation => {
-        mutation.addedNodes.forEach(node => {
-          if(node.nodeType === 1) activateSpeechBubbles(node);
-        });
-      });
-    })
-  : null;
-
-if(speechBubbleMutationObserver){
-  speechBubbleMutationObserver.observe(document.documentElement,{childList:true,subtree:true});
-}
-queueMicrotask(()=>activateSpeechBubbles(document));
 
 
 
