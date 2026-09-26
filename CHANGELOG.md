@@ -1,3 +1,11 @@
+# v19.11.2 – hurtigfiks innlogging
+
+- Bytter native dialog for innlogging til et robust, fast overlay som ikke låser siden uten synlig innloggingsboks.
+- Logg på-knappen åpner alltid innloggingsfeltet.
+- Innlogging støtter både e-post og brukernavn.
+- Fjerner automatisk tvangsmodal ved sideinnlasting; beskyttede handlinger åpner innlogging ved behov.
+- Beholder server-side sperre på beskyttede API-er.
+
 # v19.11.1 – hurtigfiks innlogging
 
 - Rettet påloggingsknappen slik at innloggingsdialogen alltid åpnes for utloggede brukere.

@@ -2148,7 +2148,6 @@ function updateAuthUi() {
 async function refreshAuth() {
   try { const r=await fetch('/api/auth/me'); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
   updateAuthUi();
-  if (!currentUser && !new URLSearchParams(location.search).get('invite')) openAuth('login', true);
 }
 function openAuth(mode='login', required = !currentUser) {
   const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
@@ -2162,12 +2161,8 @@ function openAuth(mode='login', required = !currentUser) {
   if(intro && mode==='login') intro.textContent=mustLogin
     ? 'Du må være logget inn for å bruke Samtalestøtte.'
     : 'Logg inn for å bruke Samtalestøtte.';
-  try {
-    if(dlg.open) dlg.close();
-    dlg.showModal();
-  } catch (_) {
-    dlg.setAttribute('open','');
-  }
+  dlg.hidden=false;
+  document.body.classList.add('auth-open');
   requestAnimationFrame(()=>{
     const target=mode==='login' ? document.querySelector('#login-email') : document.querySelector('#register-username');
     target?.focus();
@@ -2175,9 +2170,10 @@ function openAuth(mode='login', required = !currentUser) {
 }
 function closeAuth(){
   const dlg=document.querySelector('#auth-dialog');
-  if(!dlg?.open) return;
+  if(!dlg || dlg.hidden) return;
   if(!currentUser && dlg.classList.contains('required-auth')) return;
-  dlg.close();
+  dlg.hidden=true;
+  document.body.classList.remove('auth-open');
 }
 function requireLogin() {
   if (currentUser) return true;
@@ -2291,13 +2287,13 @@ document.querySelector('[data-profile-action="contact"]')?.addEventListener('cli
 document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register')); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login'));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
-document.querySelector('#auth-dialog')?.addEventListener('cancel',event=>{if(!currentUser){event.preventDefault();openAuth('login',true);}});
+document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth();});
 document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>{openInfoView('contact'); const c=document.querySelector('#report-category'); if(c)c.value='Uklart eller dårlig KI-svar';});
-document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({email:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
+document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
 document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
 document.querySelector('#new-conversation-button')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#result-new-conversation')?.addEventListener('click',()=>startNewConversation());

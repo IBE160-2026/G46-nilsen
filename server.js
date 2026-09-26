@@ -274,11 +274,31 @@ app.post("/api/auth/register", async (req, res) => {
 });
 
 app.post("/api/auth/login", async (req, res) => {
-  const email = normalizeEmail(req.body?.email);
+  const identifier = String(req.body?.identifier || req.body?.email || "").trim();
   const password = String(req.body?.password || "");
+  if (!identifier || !password) return res.status(400).json({ error: "MISSING_LOGIN", message: "Skriv inn e-post eller brukernavn og passord." });
+
+  let email = identifier.includes("@") ? normalizeEmail(identifier) : "";
+  if (!email) {
+    const wanted = identifier.toLocaleLowerCase("nb-NO");
+    try {
+      for (let page = 1; page <= 10 && !email; page += 1) {
+        const { data: listed, error: listError } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 100 });
+        if (listError) throw listError;
+        const users = listed?.users || [];
+        const match = users.find(user => String(user.user_metadata?.username || "").trim().toLocaleLowerCase("nb-NO") === wanted);
+        if (match?.email) email = normalizeEmail(match.email);
+        if (users.length < 100) break;
+      }
+    } catch (lookupError) {
+      console.error("Brukernavnoppslag feilet:", lookupError);
+    }
+  }
+
+  if (!email) return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord." });
   const authClient = newUserClient();
   const { data, error } = await authClient.auth.signInWithPassword({ email, password });
-  if (error || !data.session || !data.user) return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post eller passord." });
+  if (error || !data.session || !data.user) return res.status(401).json({ error: "INVALID_LOGIN", message: "Feil e-post/brukernavn eller passord." });
   setSession(res, data.session, data.user);
   res.json({ user: publicUser(data.user) });
 });
