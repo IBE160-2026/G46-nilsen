@@ -1,3 +1,13 @@
+## v19.12.2 – godkjent snakkeboble fra preview 9
+
+- Implementerer nøyaktig boblegeometrien som ble godkjent i preview 9.
+- KI-boblen er masterformen.
+- Lederboblen er samme geometri speilvendt; bare fargen varierer.
+- Halen er en del av samme SVG-path som boblekroppen, ikke et separat element.
+- Halegeometrien holder samme størrelse selv om boblen blir bredere eller høyere.
+- Profil/avatar flyttes litt lenger ned slik at halen visuelt peker mot profilen.
+- Samme prinsipp brukes i simulator og hovedsamtale.
+
 ## v19.12.1 – fast størrelse på snakkeboblehale
 
 - Boblekroppen kan igjen vokse naturlig med tekstmengden.
