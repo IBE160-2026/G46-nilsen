@@ -1,3 +1,14 @@
+## v19.12.0 – ekte SVG-bobler, mørk variant og kortere oppfølgingssvar
+
+- Brukerens snakkeboblepath rendres nå som et faktisk SVG-element i hver samtaleboble.
+- Ingen mask, CSS-trekant eller separat hale brukes lenger.
+- Høyre boble er samme SVG-form speilvendt.
+- Egen mørk-tema-variant med mørkere fyll og lysere, tynn kant.
+- Hybridtema beholder lyse bobler i hovedinnholdet.
+- Infosidelogoene flyttes 15 px opp fra v19.11.10.
+- Oppfølgingssvar i «Fortsett samtalen» begrenses normalt til ca. 90–160 ord, maksimalt 4 korte avsnitt eller 3 punkter og 1–2 formuleringseksempler.
+- KI skal ikke gjenta hele hovedveiledningen i et oppfølgingssvar.
+
 ## v19.11.10 – brukerens egen snakkeboble
 
 - Bruker nå `snakkeboble.svg` direkte som fasit for hele boblesilhuetten.

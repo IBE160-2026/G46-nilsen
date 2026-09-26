@@ -1241,11 +1241,10 @@ function escapeHtml(value) {
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
 }
-function speechTailMarkup(side='left'){
-  const sideClass = side === 'right' ? 'speech-tail-right' : 'speech-tail-left';
-  return `<svg class="speech-tail ${sideClass}" viewBox="0 0 48 32" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path class="speech-tail-fill" d="M47 2 C39 7 36 14 31 19 C24 25 14 28 2 30 C14 31 27 29 36 23 C43 18 46 11 47 5 Z"></path>
-    <path class="speech-tail-outline" d="M46 3 C39 8 36 14 31 19 C24 25 14 28 2 30 C14 31 27 29 36 23 C43 18 46 11 47 5"></path>
+function speechBubbleMarkup(side='left'){
+  const sideClass = side === 'right' ? 'speech-bubble-shape-right' : 'speech-bubble-shape-left';
+  return `<svg class="speech-bubble-shape ${sideClass}" viewBox="180 105 715 475" preserveAspectRatio="none" aria-hidden="true" focusable="false">
+    <path d="M195 178.168C195 144.938 221.938 118 255.168 118L309.333 118 309.333 118 480.833 118 820.832 118C854.062 118 881 144.938 881 178.168L881 328.583 881 328.583 881 418.833 881 418.832C881 452.062 854.062 479 820.832 479L480.833 479 190.678 567.008 309.333 479 255.168 479C221.938 479 195 452.062 195 418.832L195 418.833 195 328.583 195 328.583Z"></path>
   </svg>`;
 }
 
@@ -1620,10 +1619,10 @@ async function appendConversationTurn(question) {
   if (!thread || !question.trim()) return;
   const user = document.createElement('div');
   user.className = 'conversation-turn conversation-user';
-  user.innerHTML = `${speechTailMarkup('right')}<span>Du</span><p>${escapeHtml(question)}</p>`;
+  user.innerHTML = `${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(question)}</p>`;
   const assistant = document.createElement('div');
   assistant.className = 'conversation-turn conversation-assistant';
-  assistant.innerHTML = `${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker på svaret ditt …</p></div>`;
+  assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker på svaret ditt …</p></div>`;
   thread.append(user, assistant);
   assistant.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
@@ -1642,12 +1641,12 @@ async function appendConversationTurn(question) {
     });
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
     const payload = await response.json();
-    assistant.innerHTML = `${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(payload.reply || '')}</div>`;
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(payload.reply || '')}</div>`;
     conversationDirty = true;
     await saveCurrentConversation();
   } catch (_) {
     const reply = buildContinuationReply(question);
-    assistant.innerHTML = `${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
   }
 }
 
@@ -2261,7 +2260,7 @@ function loadHistoryItem(item){
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
-  const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`${speechTailMarkup('right')}<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`${speechTailMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
+  const thread=document.querySelector('#conversation-thread'); thread.innerHTML=''; (item.conversation||[]).forEach(turn=>{const el=document.createElement('div');el.className=`conversation-turn ${turn.role==='user'?'conversation-user':'conversation-assistant'}`;el.innerHTML=turn.role==='user'?`${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(turn.text)}</p>`:`${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(turn.text)}</div>`;thread.appendChild(el);});
   simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
     simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); return;
@@ -2648,7 +2647,7 @@ function renderSimulationThread() {
     return `<div class="simulation-bubble-row ${leader ? 'leader-row' : 'employee-row'}">
       ${leader ? '' : '<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div>'}
       <div class="simulation-bubble ${leader ? 'leader-bubble' : 'employee-bubble'}">
-        ${speechTailMarkup(leader ? 'right' : 'left')}
+        ${speechBubbleMarkup(leader ? 'right' : 'left')}
         <span>${leader ? 'Du · leder' : 'Medarbeider · KI'}</span>
         <p>${escapeHtml(turn.text)}</p>
       </div>
@@ -2696,7 +2695,7 @@ async function submitSimulationTurn(text) {
   const thread = document.querySelector('#simulation-thread');
   const waiting = document.createElement('div');
   waiting.className = 'simulation-bubble-row employee-row simulation-waiting';
-  waiting.innerHTML = `<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble">${speechTailMarkup('left')}<span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>`;
+  waiting.innerHTML = `<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble">${speechBubbleMarkup('left')}<span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>`;
   thread.appendChild(waiting);
   waiting.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {

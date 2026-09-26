@@ -1973,3 +1973,179 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
   .employee-bubble::after,
   .leader-bubble::after{bottom:-24px;}
 }
+
+
+/* v19.12.0 – brukerens faktiske SVG-form, mørk variant og korrigert logoposisjon */
+
+/* Logoene på Om/Kontakt/Innstillinger osv. 15 px opp fra v19.11.10. */
+.utility-title-row .utility-page-brand{
+  transform:translate(-5px,-62px) !important;
+}
+@media(max-width:760px){
+  .utility-title-row .utility-page-brand{
+    transform:translate(-3px,-42px) !important;
+  }
+}
+
+/* Slå helt av alle gamle masker/pseudo-haler. */
+.speech-tail{display:none !important;}
+.leader-bubble::before,.leader-bubble::after,
+.employee-bubble::before,.employee-bubble::after,
+.conversation-user::before,.conversation-user::after,
+.conversation-assistant::before,.conversation-assistant::after{
+  content:none !important;
+  display:none !important;
+  -webkit-mask:none !important;
+  mask:none !important;
+}
+
+/*
+  Boblen er nå et faktisk SVG-element med brukerens path.
+  Ingen CSS-trekant, ingen mask og ingen separat hale.
+*/
+.simulation-view .simulation-bubble,
+.conversation-turn{
+  position:relative;
+  isolation:isolate;
+  overflow:visible !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+  --bubble-fill:#ffffff;
+  --bubble-stroke:#bfd0d4;
+}
+
+.employee-bubble,
+.conversation-assistant{
+  --bubble-fill:var(--surface);
+  --bubble-stroke:color-mix(in srgb,var(--border) 92%,var(--accent) 8%);
+}
+.leader-bubble,
+.conversation-user{
+  --bubble-fill:color-mix(in srgb,var(--accent-soft) 52%,var(--surface));
+  --bubble-stroke:color-mix(in srgb,var(--accent) 28%,var(--border));
+}
+
+/* Mørkt tema: egen, roligere kontrastvariant. */
+html[data-theme="dark"] .employee-bubble,
+html[data-theme="dark"] .conversation-assistant{
+  --bubble-fill:#16282f;
+  --bubble-stroke:#45636c;
+}
+html[data-theme="dark"] .leader-bubble,
+html[data-theme="dark"] .conversation-user{
+  --bubble-fill:#1d3941;
+  --bubble-stroke:#5c7e86;
+}
+
+/* Hybrid har mørk sidebar, men lyst hovedinnhold – bruk lyse bobler. */
+html[data-theme="hybrid"] .employee-bubble,
+html[data-theme="hybrid"] .conversation-assistant{
+  --bubble-fill:#ffffff;
+  --bubble-stroke:#bfd0d4;
+}
+html[data-theme="hybrid"] .leader-bubble,
+html[data-theme="hybrid"] .conversation-user{
+  --bubble-fill:color-mix(in srgb,var(--accent-soft) 58%,#ffffff);
+  --bubble-stroke:color-mix(in srgb,var(--accent) 28%,#cddde0);
+}
+
+.speech-bubble-shape{
+  position:absolute;
+  display:block;
+  pointer-events:none;
+  overflow:visible;
+  z-index:0;
+}
+.speech-bubble-shape path{
+  fill:var(--bubble-fill);
+  stroke:var(--bubble-stroke);
+  stroke-width:1.3;
+  vector-effect:non-scaling-stroke;
+  stroke-linejoin:round;
+}
+.speech-bubble-shape-right{
+  transform:scaleX(-1);
+}
+
+/* Simulator: den fulle speech-bubble-formen får plass til halen under innholdet. */
+.simulation-bubble .speech-bubble-shape{
+  left:-14px;
+  top:-10px;
+  width:calc(100% + 28px);
+  height:calc(100% + 46px);
+}
+.simulation-bubble .speech-bubble-shape-right{
+  left:auto;
+  right:-14px;
+}
+.simulation-bubble{
+  padding:18px 22px 26px !important;
+  margin-bottom:20px;
+}
+
+/* Hovedsamtale: samme form, men litt mindre og roligere. */
+.conversation-turn .speech-bubble-shape{
+  left:-9px;
+  top:-7px;
+  width:calc(100% + 18px);
+  height:calc(100% + 30px);
+}
+.conversation-turn .speech-bubble-shape-right{
+  left:auto;
+  right:-9px;
+}
+.conversation-turn{
+  padding:12px 15px 18px !important;
+  margin-bottom:12px;
+}
+
+/* Innholdet skal alltid ligge over SVG-bakgrunnen. */
+.simulation-bubble > *:not(.speech-bubble-shape),
+.conversation-turn > *:not(.speech-bubble-shape){
+  position:relative;
+  z-index:1;
+}
+
+/* Fjern ekstra spacing fra forrige mask-implementasjon. */
+.simulation-bubble-row{
+  gap:22px !important;
+  margin-bottom:4px !important;
+}
+.conversation-thread{
+  padding-left:18px !important;
+  padding-right:18px !important;
+}
+
+@media(max-width:760px){
+  .simulation-bubble .speech-bubble-shape{
+    left:-10px;
+    width:calc(100% + 20px);
+    height:calc(100% + 38px);
+  }
+  .simulation-bubble .speech-bubble-shape-right{
+    left:auto;
+    right:-10px;
+  }
+  .conversation-turn .speech-bubble-shape{
+    left:-7px;
+    width:calc(100% + 14px);
+    height:calc(100% + 26px);
+  }
+  .conversation-turn .speech-bubble-shape-right{
+    left:auto;
+    right:-7px;
+  }
+}
+
+/* Kortere oppfølgingssvar skal også se luftige ut, ikke som mini-rapporter. */
+.formatted-reply p{
+  margin:.38rem 0;
+  line-height:1.55;
+}
+.formatted-reply ul{
+  margin:.45rem 0 .45rem 1.1rem;
+}
+.formatted-reply .reply-section{
+  margin:.45rem 0;
+}

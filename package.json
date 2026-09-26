@@ -1,6 +1,6 @@
 {
   "name": "samtalestotte",
-  "version": "19.11.10",
+  "version": "19.12.0",
   "private": true,
   "type": "module",
   "scripts": {
@@ -27,7 +27,8 @@
     "test-auth:v19.11.7": "node test-v19-11-7.cjs",
     "test-v19.11.8": "node test-v19-11-8.cjs",
     "test-v19.11.9": "node test-v19-11-9.cjs",
-    "test-v19.11.10": "node test-v19-11-10.cjs"
+    "test-v19.11.10": "node test-v19-11-10.cjs",
+    "test-v19.12.0": "node test-v19-12-0.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
