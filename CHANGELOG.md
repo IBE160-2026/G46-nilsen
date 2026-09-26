@@ -1,3 +1,12 @@
+## v19.12.1 – fast størrelse på snakkeboblehale
+
+- Boblekroppen kan igjen vokse naturlig med tekstmengden.
+- Halen er et eget SVG-element med fast størrelse og strekkes aldri sammen med boblen.
+- Simulatorhalen er gjort litt mindre enn halen i v19.12.0.
+- Hovedsamtalen bruker samme løsning i en enda mer diskret størrelse.
+- Høyre hale er kun en speilvendt variant av venstre.
+- Infosidelogoene flyttes ytterligere 5 px opp.
+
 ## v19.12.0 – ekte SVG-bobler, mørk variant og kortere oppfølgingssvar
 
 - Brukerens snakkeboblepath rendres nå som et faktisk SVG-element i hver samtaleboble.

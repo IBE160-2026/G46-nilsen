@@ -2149,3 +2149,109 @@ html[data-theme="hybrid"] .conversation-user{
 .formatted-reply .reply-section{
   margin:.45rem 0;
 }
+
+
+/* v19.12.1 – fast halestørrelse, fleksibel boblekropp og logo 5 px opp */
+
+/* Om/Kontakt/Innstillinger osv.: 5 px opp fra v19.12.0. */
+.utility-title-row .utility-page-brand{
+  transform:translate(-5px,-67px) !important;
+}
+@media(max-width:760px){
+  .utility-title-row .utility-page-brand{
+    transform:translate(-3px,-47px) !important;
+  }
+}
+
+/*
+  Viktig: selve boblekroppen vokser med teksten.
+  Halen har fast fysisk størrelse og skal aldri strekkes med boblen.
+*/
+.simulation-view .simulation-bubble,
+.conversation-turn{
+  position:relative;
+  overflow:visible !important;
+  isolation:isolate;
+  background:var(--bubble-fill) !important;
+  border:1px solid var(--bubble-stroke) !important;
+  border-radius:22px !important;
+}
+
+/* Den gamle fullskala-SVG-en er ikke lenger boblebakgrunn. */
+.speech-bubble-shape{
+  display:none !important;
+}
+
+/* Fast hale basert på brukerens snakkeboble.svg-geometri. */
+.speech-tail-fixed{
+  position:absolute;
+  display:block;
+  pointer-events:none;
+  overflow:visible;
+  z-index:0;
+}
+.speech-tail-fixed path{
+  fill:var(--bubble-fill);
+  stroke:var(--bubble-stroke);
+  stroke-width:1.15;
+  vector-effect:non-scaling-stroke;
+  stroke-linejoin:round;
+}
+
+/* Simulator: samme størrelse på alle haler, uansett tekstmengde. */
+.simulation-bubble .speech-tail-fixed{
+  width:34px;
+  height:23px;
+  bottom:-19px;
+}
+.simulation-bubble .speech-tail-fixed-left{
+  left:18px;
+}
+.simulation-bubble .speech-tail-fixed-right{
+  right:18px;
+  transform:scaleX(-1);
+}
+
+/* Hovedsamtalen: enda litt mindre hale, men samme faste størrelse hver gang. */
+.conversation-turn .speech-tail-fixed{
+  width:25px;
+  height:17px;
+  bottom:-14px;
+}
+.conversation-turn .speech-tail-fixed-left{
+  left:14px;
+}
+.conversation-turn .speech-tail-fixed-right{
+  right:14px;
+  transform:scaleX(-1);
+}
+
+/* Innhold over halen. */
+.simulation-bubble > *:not(.speech-tail-fixed),
+.conversation-turn > *:not(.speech-tail-fixed){
+  position:relative;
+  z-index:1;
+}
+
+/* Litt luft under halen uten å blåse opp hele samtaleraden. */
+.simulation-bubble{
+  margin-bottom:15px !important;
+  padding:18px 22px !important;
+}
+.conversation-turn{
+  margin-bottom:11px !important;
+  padding:12px 15px !important;
+}
+
+@media(max-width:760px){
+  .simulation-bubble .speech-tail-fixed{
+    width:31px;
+    height:21px;
+    bottom:-17px;
+  }
+  .conversation-turn .speech-tail-fixed{
+    width:23px;
+    height:16px;
+    bottom:-13px;
+  }
+}

@@ -1242,9 +1242,9 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 function speechBubbleMarkup(side='left'){
-  const sideClass = side === 'right' ? 'speech-bubble-shape-right' : 'speech-bubble-shape-left';
-  return `<svg class="speech-bubble-shape ${sideClass}" viewBox="180 105 715 475" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-    <path d="M195 178.168C195 144.938 221.938 118 255.168 118L309.333 118 309.333 118 480.833 118 820.832 118C854.062 118 881 144.938 881 178.168L881 328.583 881 328.583 881 418.833 881 418.832C881 452.062 854.062 479 820.832 479L480.833 479 190.678 567.008 309.333 479 255.168 479C221.938 479 195 452.062 195 418.832L195 418.833 195 328.583 195 328.583Z"></path>
+  const sideClass = side === 'right' ? 'speech-tail-fixed-right' : 'speech-tail-fixed-left';
+  return `<svg class="speech-tail-fixed ${sideClass}" viewBox="180 470 315 105" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
+    <path d="M480.833 479 L190.678 567.008 L309.333 479 Z"></path>
   </svg>`;
 }
 
