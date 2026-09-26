@@ -1900,3 +1900,13 @@ html[data-theme="dark"] .conversation-user{
 .benchmark-models{display:flex;gap:10px;flex-wrap:wrap}.benchmark-model-option{display:flex;gap:8px;align-items:center;padding:9px 11px;border:1px solid var(--border);border-radius:11px;background:var(--surface-2);font-size:.9rem}.benchmark-model-option input{width:auto}.benchmark-warning{padding:10px 12px;border:1px solid var(--warning-border);border-radius:11px;background:var(--warning);font-size:.88rem;line-height:1.45}
 .benchmark-progress{height:10px;border-radius:999px;background:var(--surface-2);overflow:hidden;border:1px solid var(--border)}.benchmark-progress>div{height:100%;width:0;background:var(--accent);transition:width .2s ease}.benchmark-summary{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}.benchmark-summary>div{padding:10px;border:1px solid var(--border);border-radius:10px;background:var(--surface-2);display:grid;gap:3px}.benchmark-summary small{color:var(--muted)}.benchmark-results{display:grid;gap:12px}.benchmark-case-result{border:1px solid var(--border);border-radius:12px;padding:12px;background:var(--surface)}.benchmark-case-result>h4{margin:0 0 10px}.benchmark-model-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.benchmark-model-result{border:1px solid var(--border);border-radius:10px;padding:10px;background:var(--surface-2);min-width:0}.benchmark-model-result h5{margin:0 0 6px}.benchmark-model-result p{font-size:.86rem;line-height:1.45;white-space:pre-wrap;overflow-wrap:anywhere;max-height:220px;overflow:auto}.benchmark-metrics{display:flex;gap:8px;flex-wrap:wrap;font-size:.75rem;color:var(--muted)}
 @media(max-width:900px){.benchmark-model-grid{grid-template-columns:1fr}.benchmark-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.benchmark-live-controls{grid-template-columns:1fr}}
+
+html[data-theme="hybrid"] .sidebar .brand-logo{
+  content:url("logo.png") !important;
+  filter:none !important;
+}
+
+html[data-theme="hybrid"] .sidebar .brand-button::after{
+  display:none !important;
+  content:none !important;
+}
