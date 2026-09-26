@@ -1902,7 +1902,7 @@ html[data-theme="dark"] .conversation-user{
 @media(max-width:900px){.benchmark-model-grid{grid-template-columns:1fr}.benchmark-summary{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:600px){.benchmark-live-controls{grid-template-columns:1fr}}
 
 html[data-theme="hybrid"] .sidebar .brand-logo{
-  content:url("logo.png") !important;
+  content:url("logo-light.png") !important;
   filter:none !important;
 }
 
