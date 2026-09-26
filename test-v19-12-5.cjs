@@ -1,0 +1,11 @@
+const fs=require('fs'); const assert=require('assert');
+const app=fs.readFileSync('app.js','utf8');
+const css=fs.readFileSync('styles.css','utf8');
+assert(app.includes('coinsUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="14.5" height="10" rx="1.6"></rect>'));
+assert(app.includes('M10.2 9.6v4.8'));
+assert(app.includes('M15.3 7.2l4.5-3.6'));
+assert(css.includes('gap:15px;'));
+assert(css.includes('transform:translateY(8px);'));
+assert(css.includes('.simulation-bubble-row{gap:13px;margin-bottom:24px;}'));
+assert(css.includes('transform:translateY(6px);'));
+console.log('v19.12.5 ui-tweaks OK');

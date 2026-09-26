@@ -1763,7 +1763,7 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
   display:flex;
   width:100%;
   align-items:flex-end;
-  gap:20px;
+  gap:15px;
   margin-bottom:26px;
 }
 
@@ -1838,7 +1838,7 @@ html[data-theme="dark"] .conversation-user{
 }
 
 .simulation-avatar{
-  transform:translateY(20px);
+  transform:translateY(8px);
 }
 
 .conversation-thread{
@@ -1864,9 +1864,9 @@ html[data-theme="dark"] .conversation-user{
 .conversation-assistant{justify-self:start;}
 
 @media(max-width:760px){
-  .simulation-bubble-row{gap:18px;margin-bottom:24px;}
+  .simulation-bubble-row{gap:13px;margin-bottom:24px;}
   .simulation-view .simulation-bubble{max-width:calc(100% - 64px);}
-  .simulation-avatar{transform:translateY(16px);}
+  .simulation-avatar{transform:translateY(6px);}
   .conversation-thread{padding-left:18px;padding-right:18px;}
   .conversation-turn{max-width:94%;margin-bottom:18px;}
 }

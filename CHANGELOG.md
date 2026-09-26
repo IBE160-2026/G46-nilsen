@@ -1,3 +1,11 @@
+## v19.12.5 – ikonjustering og avatar/boble-finjustering
+
+- Ikonet for «Lønn og utvikling» er justert til en tydeligere pengeseddel med dollartegn.
+- Pengeseddelen er gjort litt større.
+- Nordøst-pilen er flyttet litt bort fra selve seddelen for bedre lesbarhet.
+- Avatarene i samtalesimuleringen er løftet opp igjen (mindre vertikal offset).
+- Boblene i samtalesimuleringen er flyttet nærmere avatarene.
+
 ## v19.12.4 – personvern i alle chatter + UI-justeringer
 
 - Oppfølgingschatten («Fortsett samtalen») får lokal personvernsjekk før hver melding sendes.

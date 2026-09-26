@@ -1,6 +1,6 @@
 {
   "name": "samtalestotte",
-  "version": "19.12.4",
+  "version": "19.12.5",
   "private": true,
   "type": "module",
   "scripts": {
@@ -32,7 +32,8 @@
     "test-v19.12.1": "node test-v19-12-1.cjs",
     "test-history-hotfix": "node test-history-hotfix.cjs",
     "test-bubble-cleanup": "node test-bubble-cleanup.cjs",
-    "test-v19.12.4": "node test-v19-12-4.cjs"
+    "test-v19.12.4": "node test-v19-12-4.cjs",
+    "test-v19.12.5": "node test-v19-12-5.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
