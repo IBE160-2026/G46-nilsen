@@ -1242,11 +1242,61 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 function speechBubbleMarkup(side='left'){
-  const sideClass = side === 'right' ? 'speech-tail-fixed-right' : 'speech-tail-fixed-left';
-  return `<svg class="speech-tail-fixed ${sideClass}" viewBox="180 470 315 105" preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false">
-    <path d="M480.833 479 L190.678 567.008 L309.333 479 Z"></path>
-  </svg>`;
+  return `<svg class="speech-bubble-shape" data-side="${side}" aria-hidden="true" focusable="false"><g><path></path></g></svg>`;
 }
+
+function speechBubblePath(width, bodyHeight){
+  const r = 26;
+  const tailH = 26;
+  const attachStart = 30;
+  const attachEnd = 52;
+  const tipOffset = 24;
+  const right = width;
+  const bottom = bodyHeight;
+  const tipX = tipOffset;
+
+  return [
+    `M ${r} 0`,
+    `H ${right-r}`,
+    `Q ${right} 0 ${right} ${r}`,
+    `V ${bottom-r}`,
+    `Q ${right} ${bottom} ${right-r} ${bottom}`,
+    `H ${attachEnd}`,
+    `C ${attachEnd-5} ${bottom+1}, ${tipX+15} ${bottom+15}, ${tipX} ${bottom+tailH}`,
+    `C ${tipX+10} ${bottom+15}, ${attachStart+7} ${bottom+2}, ${attachStart} ${bottom}`,
+    `H ${r}`,
+    `Q 0 ${bottom} 0 ${bottom-r}`,
+    `V ${r}`,
+    `Q 0 0 ${r} 0`,
+    'Z'
+  ].join(' ');
+}
+
+function layoutSpeechBubble(bubble){
+  const svg = bubble?.querySelector(':scope > .speech-bubble-shape');
+  if (!svg) return;
+  const width = Math.max(120, Math.round(bubble.clientWidth));
+  const bodyHeight = Math.max(54, Math.round(bubble.clientHeight));
+  const tailH = 26;
+  const path = svg.querySelector('path');
+  const group = svg.querySelector('g');
+  svg.setAttribute('viewBox', `0 0 ${width} ${bodyHeight + tailH}`);
+  svg.style.width = `${width}px`;
+  svg.style.height = `${bodyHeight + tailH}px`;
+  path.setAttribute('d', speechBubblePath(width, bodyHeight));
+  group.setAttribute('transform', svg.dataset.side === 'right' ? `translate(${width} 0) scale(-1 1)` : '');
+}
+
+function refreshSpeechBubbles(root=document){
+  root.querySelectorAll?.('.simulation-bubble,.conversation-turn').forEach(layoutSpeechBubble);
+}
+
+function queueSpeechBubbleRefresh(){
+  requestAnimationFrame(() => refreshSpeechBubbles(document));
+}
+
+window.addEventListener('resize', queueSpeechBubbleRefresh);
+
 
 
 
@@ -1665,6 +1715,7 @@ async function appendConversationTurn(question) {
   assistant.className = 'conversation-turn conversation-assistant';
   assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker på svaret ditt …</p></div>`;
   thread.append(user, assistant);
+  queueSpeechBubbleRefresh();
   assistant.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
     if (!lastAiAnalysis) throw new Error('Ingen aktiv KI-kontekst.');
@@ -1685,12 +1736,14 @@ async function appendConversationTurn(question) {
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
+    queueSpeechBubbleRefresh();
     conversationDirty = true;
     await saveCurrentConversation();
   } catch (_) {
     const reply = buildContinuationReply(question);
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
     setConversationTurnText(assistant, 'assistant', reply);
+    queueSpeechBubbleRefresh();
   }
 }
 
@@ -2353,6 +2406,7 @@ function loadHistoryItem(item){
       : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>`;
     setConversationTurnText(el, role, cleanText);
     thread.appendChild(el);
+    queueSpeechBubbleRefresh();
   });
   simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
@@ -2748,6 +2802,7 @@ function renderSimulationThread() {
     </div>`;
   }).join('');
   thread.innerHTML = intro + turns;
+  queueSpeechBubbleRefresh();
   thread.lastElementChild?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
@@ -2790,6 +2845,7 @@ async function submitSimulationTurn(text) {
   waiting.className = 'simulation-bubble-row employee-row simulation-waiting';
   waiting.innerHTML = `<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble">${speechBubbleMarkup('left')}<span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>`;
   thread.appendChild(waiting);
+  queueSpeechBubbleRefresh();
   waiting.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   try {
     const response = await fetch('/api/simulation-turn', {

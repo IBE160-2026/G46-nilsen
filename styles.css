@@ -100,7 +100,7 @@ button,input,textarea{font:inherit} button{cursor:pointer} h1,h2,h3,p{text-wrap:
 textarea{width:100%;resize:vertical;border:1px solid var(--border);border-radius:16px;padding:15px;background:var(--surface);color:var(--text)} textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 4px color-mix(in srgb,var(--accent) 16%, transparent)} .situation-form .primary-button{justify-self:start;margin-top:4px}
 .privacy-check{max-width:720px;margin-left:auto;margin-right:auto;border-radius:16px;padding:13px 15px;display:grid;gap:3px;font-size:.95rem}.privacy-check.warning{background:var(--warning);border:1px solid var(--warning-border)}.privacy-check.ok{background:var(--ok);border:1px solid var(--ok-border)}.privacy-check span{color:var(--muted);line-height:1.45}
 .followup-panel,.prototype-result,.settings-card{max-width:980px;margin-top:34px;border:1px solid var(--border);background:var(--surface);border-radius:24px;padding:26px;box-shadow:var(--shadow)}.followup-panel>p,.result-intro{color:var(--muted);line-height:1.6}.followup-questions{display:grid;gap:12px;margin:20px 0}.followup-question{border:1px solid var(--border);background:var(--surface-2);border-radius:14px;padding:14px 16px;font-weight:650}.followup-question-field{display:grid;gap:8px;border:1px solid var(--border);background:var(--surface-2);border-radius:16px;padding:14px 16px}.followup-question-field>span{line-height:1.45}.followup-question-field textarea{min-height:82px;background:var(--surface)}.followup-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.result-heading{display:flex;justify-content:space-between;gap:18px;align-items:flex-start}.prototype-chip{padding:6px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent);font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.guidance-grid{display:grid;gap:12px;margin-top:22px}.guidance-card{display:grid;grid-template-columns:44px 1fr;gap:14px;border-top:1px solid var(--border);padding:18px 0 4px}.guidance-card:first-child{border-top:0}.guidance-number{color:var(--accent);font-weight:900;letter-spacing:.05em}.guidance-card h3{margin:0 0 6px;font-size:1rem}.guidance-card p{margin:0;color:var(--muted);line-height:1.55}
-html[data-theme="dark"] .brand-logo{content:url('logo-light.png');filter:drop-shadow(0 8px 16px rgba(0,0,0,.35))}
+html[data-theme="dark"] .brand-logo{content:url("logo-light.png");filter:drop-shadow(0 8px 16px rgba(0,0,0,.35))}
 @media (max-width:1420px){.topic-grid{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-width:1260px){.app-shell{grid-template-columns:260px 1fr}.hero-panel{grid-template-columns:.95fr 1.05fr}.hero-visual img{height:210px}.topic-grid{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:980px){
@@ -396,19 +396,19 @@ html[data-theme="dark"] .brand-logo{content:url('logo-light.png');filter:drop-sh
   cursor:pointer;
 }
 .continue-chip:hover{border-color:color-mix(in srgb,var(--accent) 50%,var(--border));background:color-mix(in srgb,var(--accent-soft) 50%,var(--surface))}
-.conversation-thread{display:grid;gap:8px;margin:10px 0}
-.conversation-turn{max-width:86%;padding:10px 12px;border-radius:14px;border:1px solid var(--border)}
+
+
 .conversation-turn span{display:block;font-size:.74rem;font-weight:800;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);margin-bottom:4px}
 .conversation-turn p{margin:0;line-height:1.5;font-size:.92rem}
-.conversation-user{justify-self:end;background:color-mix(in srgb,var(--accent-soft) 34%,var(--surface))}
-.conversation-assistant{justify-self:start;background:var(--surface)}
+
+
 .continue-form{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:9px;align-items:end;margin-top:10px}
 .continue-form textarea{min-height:54px;max-height:130px;resize:vertical;padding:10px 12px;font:inherit;font-size:.92rem}
 .continue-form .primary-button{min-height:44px;white-space:nowrap}
 @media(max-width:720px){
   .continue-heading{align-items:flex-start;flex-direction:column;gap:5px}
   .continue-form{grid-template-columns:1fr}
-  .conversation-turn{max-width:96%}
+  
 }
 
 .ai-fallback-note{margin-bottom:14px}
@@ -638,11 +638,11 @@ textarea[aria-invalid="true"]{
 .reaction-style-grid{display:flex;gap:8px;flex-wrap:wrap}.reaction-style{border:1px solid var(--border);background:var(--surface);color:var(--text);padding:9px 12px;border-radius:999px;cursor:pointer;font:inherit;font-size:.88rem}.simulation-safety-note{padding:11px 13px;border-radius:10px;background:color-mix(in srgb,var(--accent-soft) 28%,var(--surface));color:var(--muted);font-size:.86rem;line-height:1.45}
 .simulation-statusbar{position:sticky;top:72px;z-index:3;display:flex;align-items:center;gap:8px;padding:10px 12px;margin:-4px 0 14px;border:1px solid var(--border);border-radius:12px;background:color-mix(in srgb,var(--surface) 92%,transparent);backdrop-filter:blur(8px);font-size:.86rem;font-weight:700}.speech-mark{display:inline-grid;place-items:center;width:23px;height:19px;border:1.5px solid var(--accent);border-radius:50%;color:transparent;position:relative}.speech-mark:after{content:"";position:absolute;left:3px;bottom:-4px;width:6px;height:6px;border-left:1.5px solid var(--accent);border-bottom:1.5px solid var(--accent);transform:rotate(-20deg)}.simulation-end-top{margin-left:auto}
 .simulation-thread{display:grid;gap:12px;min-height:160px;max-height:56vh;overflow:auto;padding:10px 4px 14px}.simulation-coach-note{justify-self:center;max-width:720px;padding:9px 12px;border-radius:999px;background:color-mix(in srgb,var(--muted) 9%,var(--surface));color:var(--muted);font-size:.82rem;text-align:center}.simulation-coach-note.error-note{border-radius:10px;color:var(--text)}
-.simulation-bubble-row{display:flex;width:100%}.leader-row{justify-content:flex-end}.employee-row{justify-content:flex-start}.simulation-bubble{position:relative;max-width:min(78%,720px);padding:11px 14px;border:1px solid var(--border);border-radius:19px;box-shadow:0 2px 8px rgba(24,53,51,.04)}.simulation-bubble span{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.045em;font-weight:800;color:var(--muted);margin-bottom:4px}.simulation-bubble p{margin:0;line-height:1.5}.leader-bubble{background:color-mix(in srgb,var(--accent-soft) 58%,var(--surface));border-bottom-right-radius:6px}.leader-bubble:after{content:"";position:absolute;right:-5px;bottom:5px;width:9px;height:9px;background:inherit;border-right:1px solid var(--border);border-bottom:1px solid var(--border);transform:rotate(-35deg)}.employee-bubble{background:var(--surface);border-bottom-left-radius:6px}.employee-bubble:after{content:"";position:absolute;left:-5px;bottom:5px;width:9px;height:9px;background:inherit;border-left:1px solid var(--border);border-bottom:1px solid var(--border);transform:rotate(35deg)}
+.leader-row{justify-content:flex-end}.employee-row{justify-content:flex-start}.simulation-bubble span{display:block;font-size:.72rem;text-transform:uppercase;letter-spacing:.045em;font-weight:800;color:var(--muted);margin-bottom:4px}.simulation-bubble p{margin:0;line-height:1.5}
 .simulation-form{display:grid;gap:9px;margin-top:10px}.simulation-form textarea{width:100%;box-sizing:border-box;resize:vertical;min-height:70px;border:1px solid var(--border);border-radius:14px;padding:12px 14px;background:var(--surface);color:var(--text);font:inherit}.simulation-form-actions,.simulation-live-actions,.simulation-feedback-actions{display:flex;justify-content:flex-end;gap:9px;flex-wrap:wrap}.simulation-live-actions{margin-top:12px;padding-top:12px;border-top:1px solid var(--border)}
 .simulation-help{margin:12px 0;padding:13px;border:1px dashed color-mix(in srgb,var(--accent) 45%,var(--border));border-radius:13px;background:color-mix(in srgb,var(--accent-soft) 22%,var(--surface))}.simulation-help-heading{display:flex;gap:8px;align-items:baseline;flex-wrap:wrap}.simulation-help-heading span{font-size:.82rem;color:var(--muted)}.simulation-help-actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.simulation-help-actions button{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:7px 10px;font:inherit;font-size:.8rem;cursor:pointer}.simulation-help-result{margin-top:10px;padding:10px 12px;border-radius:10px;background:var(--surface);line-height:1.5}.simulation-help-result p{margin:0}
 .simulation-feedback h3{margin:4px 0}.simulation-feedback-intro{color:var(--muted)}.simulation-feedback-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin:16px 0}.simulation-feedback-grid article{padding:14px;border:1px solid var(--border);border-radius:14px;background:color-mix(in srgb,var(--surface) 96%,var(--accent-soft))}.simulation-feedback-grid h4{margin:0 0 8px}.simulation-feedback-grid p,.simulation-feedback-grid ul{margin:0;line-height:1.5}.simulation-feedback-grid ul{padding-left:19px}.simulation-feedback-actions{margin-top:14px}
-@media(max-width:760px){.simulation-entry{grid-template-columns:auto 1fr}.simulation-entry .primary-button{grid-column:1/-1;width:100%}.simulation-stage-heading{display:grid}.simulation-choice-grid,.simulation-feedback-grid{grid-template-columns:1fr}.simulation-bubble{max-width:90%}.simulation-form-actions,.simulation-live-actions,.simulation-feedback-actions{justify-content:stretch}.simulation-form-actions button,.simulation-live-actions button,.simulation-feedback-actions button{flex:1}.simulation-statusbar{top:58px}}
+@media(max-width:760px){.simulation-entry{grid-template-columns:auto 1fr}.simulation-entry .primary-button{grid-column:1/-1;width:100%}.simulation-stage-heading{display:grid}.simulation-choice-grid,.simulation-feedback-grid{grid-template-columns:1fr}.simulation-form-actions,.simulation-live-actions,.simulation-feedback-actions{justify-content:stretch}.simulation-form-actions button,.simulation-live-actions button,.simulation-feedback-actions button{flex:1}.simulation-statusbar{top:58px}}
 
 /* v19.1 – egen samtalesimulator */
 .simulation-view{padding-bottom:40px}
@@ -662,10 +662,10 @@ textarea[aria-invalid="true"]{
 .sidebar-bottom{margin-top:auto}
 .nav-logo-glyph{overflow:hidden;display:block;position:relative}
 .nav-logo-glyph img{height:28px;width:auto;max-width:none;position:absolute;left:1px;top:3px}
-html[data-theme="dark"] .nav-logo-glyph img{content:url('logo-light.png')}
+html[data-theme="dark"] .nav-logo-glyph img{content:url("logo-light.png")}
 .simulation-logo-crop{width:210px;height:158px;overflow:hidden;justify-self:end;display:flex;align-items:center}
 .simulation-logo-crop img{height:142px;width:auto;max-width:none;display:block}
-html[data-theme="dark"] .simulation-logo-crop img{content:url('logo-light.png')}
+html[data-theme="dark"] .simulation-logo-crop img{content:url("logo-light.png")}
 .privacy-banner,.privacy-check,.simulation-safety-note{max-width:720px;margin-left:auto;margin-right:auto;border-radius:16px;padding:14px 16px}
 html[data-theme="dark"] .privacy-check.ok{background:color-mix(in srgb,var(--accent-soft) 78%,var(--surface));border-color:color-mix(in srgb,var(--accent) 35%,var(--border))}
 html[data-theme="dark"] .privacy-check.warning,html[data-theme="dark"] .privacy-check.blocking,html[data-theme="dark"] .privacy-banner{background:color-mix(in srgb,#6c4e58 35%,var(--surface));border-color:color-mix(in srgb,#c69aa7 42%,var(--border))}
@@ -676,7 +676,7 @@ html[data-theme="dark"] .privacy-check.warning,html[data-theme="dark"] .privacy-
 .simulation-choice-block:first-child .simulation-choice strong{display:flex;align-items:center;gap:8px}
 .simulation-choice-block:first-child .simulation-choice:first-child strong:before{content:"✓";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent)}
 .simulation-choice-block:first-child .simulation-choice:last-child strong:before{content:"↯";display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--accent-soft);color:var(--accent)}
-.simulation-view .simulation-bubble{max-width:min(82%,760px);padding:13px 16px}
+
 .simulation-view .simulation-thread{gap:14px}
 @media(max-width:900px){.simulation-logo-crop{display:none}}
 
@@ -685,27 +685,27 @@ html[data-theme="dark"] .privacy-check.warning,html[data-theme="dark"] .privacy-
 /* Bruk egne, hardt beskårne symbolfiler i stedet for å flytte hele ordlogoen i en skjult ramme. */
 .nav-logo-glyph{display:grid;place-items:center;overflow:visible}
 .nav-logo-glyph img{position:static;width:27px;height:27px;object-fit:contain;max-width:27px}
-html[data-theme="dark"] .nav-logo-glyph img{content:url('profile-ai-light.png')}
+html[data-theme="dark"] .nav-logo-glyph img{content:url("profile-ai-light.png")}
 
 .simulation-logo-crop{width:330px;height:220px;overflow:visible;justify-self:end;display:grid;place-items:center}
 .simulation-logo-crop img{width:320px;height:auto;max-width:100%;display:block;filter:drop-shadow(0 14px 26px rgba(20,89,107,.10))}
-html[data-theme="dark"] .simulation-logo-crop img{content:url('logo-symbol-light.png');filter:drop-shadow(0 16px 30px rgba(0,0,0,.30))}
+html[data-theme="dark"] .simulation-logo-crop img{content:url("logo-symbol-light.png");filter:drop-shadow(0 16px 30px rgba(0,0,0,.30))}
 
-.simulation-bubble-row{align-items:flex-end;gap:10px}
+
 .simulation-avatar{width:42px;height:42px;flex:0 0 42px;border-radius:50%;display:grid;place-items:center;overflow:hidden;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--border));background:color-mix(in srgb,var(--accent-soft) 72%,var(--surface));box-shadow:0 3px 10px rgba(18,55,53,.07)}
 .simulation-avatar img{width:50px;height:50px;object-fit:cover;max-width:none}
 .employee-avatar img{object-position:center}
 .leader-avatar{background:color-mix(in srgb,var(--surface-3) 72%,var(--surface))}
-html[data-theme="dark"] .employee-avatar img{content:url('profile-ai-light.png')}
-html[data-theme="dark"] .leader-avatar img{content:url('profile-human-light.png')}
+html[data-theme="dark"] .employee-avatar img{content:url("profile-ai-light.png")}
+html[data-theme="dark"] .leader-avatar img{content:url("profile-human-light.png")}
 
-.simulation-view .simulation-bubble{max-width:min(78%,730px);padding:14px 17px;border-radius:24px;overflow:visible}
-.leader-bubble{border-bottom-right-radius:7px}
-.employee-bubble{border-bottom-left-radius:7px}
+
+
+
 /* større, synlig hale gjør at kortene faktisk leses som snakkebobler */
-.leader-bubble:after,.employee-bubble:after{width:15px;height:15px;bottom:7px;z-index:0}
-.leader-bubble:after{right:-8px;transform:rotate(-38deg)}
-.employee-bubble:after{left:-8px;transform:rotate(38deg)}
+
+
+
 .simulation-bubble span,.simulation-bubble p{position:relative;z-index:1}
 
 /* Personvernstatus skal skille seg tydelig fra resten av mørkmodus-paletten. */
@@ -736,7 +736,7 @@ html[data-theme="dark"] .privacy-check.ok span{color:#c8e6e5}
 @media(max-width:640px){
   .simulation-avatar{width:34px;height:34px;flex-basis:34px}
   .simulation-avatar img{width:42px;height:42px}
-  .simulation-view .simulation-bubble{max-width:calc(100% - 54px)}
+  
 }
 
 /* v19.4 – tydeligere øvelsesrom og mer lesbar simulering */
@@ -752,7 +752,7 @@ html[data-theme="dark"] .privacy-check.ok span{color:#c8e6e5}
 }
 .simulation-entry-icon:after{display:none}
 .simulation-entry-icon img{width:66px;height:54px;object-fit:contain;display:block}
-html[data-theme="dark"] .simulation-entry-icon img{content:url('logo-symbol-light.png')}
+html[data-theme="dark"] .simulation-entry-icon img{content:url("logo-symbol-light.png")}
 .simulation-entry-copy h3{font-size:1.18rem}
 .simulation-entry .primary-button{min-height:48px;padding-inline:22px;font-weight:800}
 
@@ -766,7 +766,7 @@ html[data-theme="dark"] .simulation-entry-icon img{content:url('logo-symbol-ligh
 .simulation-status-logo{width:34px;height:27px;border:0;border-radius:0;overflow:visible;display:grid;place-items:center}
 .simulation-status-logo:after{display:none}
 .simulation-status-logo img{width:34px;height:27px;object-fit:contain}
-html[data-theme="dark"] .simulation-status-logo img{content:url('logo-symbol-light.png')}
+html[data-theme="dark"] .simulation-status-logo img{content:url("logo-symbol-light.png")}
 .simulation-expand{margin-left:auto}
 .simulation-end-top{margin-left:0}
 
@@ -796,10 +796,10 @@ html[data-theme="dark"] .simulation-status-logo img{content:url('logo-symbol-lig
 .employee-avatar img,.leader-avatar img{object-position:center}
 
 /* Mer tydelige snakkebobler og lengre haler mot avatarene. */
-.simulation-view .simulation-bubble{max-width:min(80%,820px);padding:15px 18px;border-radius:24px}
-.leader-bubble:after,.employee-bubble:after{width:22px;height:22px;bottom:10px}
-.leader-bubble:after{right:-12px;transform:rotate(-34deg)}
-.employee-bubble:after{left:-12px;transform:rotate(34deg)}
+
+
+
+
 
 /* Primærhandlingen følger resten av appen og ligger til venstre. */
 .simulation-form{margin-top:8px}
@@ -813,7 +813,7 @@ html[data-theme="dark"] .simulation-status-logo img{content:url('logo-symbol-lig
   .simulation-live.expanded .simulation-thread{min-height:420px;max-height:76vh}
   .simulation-avatar{width:46px;height:46px;flex-basis:46px}
   .simulation-avatar img{width:40px;height:40px}
-  .simulation-view .simulation-bubble{max-width:calc(100% - 66px)}
+  
   .simulation-expand{margin-left:0}
   .simulation-statusbar{flex-wrap:wrap}
 }
@@ -901,18 +901,12 @@ html[data-theme="dark"] .legal-note{background:color-mix(in srgb,var(--accent-so
 .simulation-privacy-link{align-self:center;white-space:nowrap}
 
 /* Chatboblene skal tydelig se ut som de kommer fra profilene. */
-.simulation-view .simulation-bubble{border-radius:25px}
-.leader-bubble{border-bottom-right-radius:8px}
-.employee-bubble{border-bottom-left-radius:8px}
-.leader-bubble:after,.employee-bubble:after{
-  width:25px;height:18px;bottom:8px;
-}
-.leader-bubble:after{
-  right:-15px;transform:skewX(-15deg) rotate(-27deg);
-}
-.employee-bubble:after{
-  left:-15px;transform:skewX(15deg) rotate(27deg);
-}
+
+
+
+
+
+
 
 /* Utvid kun samtaleområdet. Ikke strekk radene/mellomrommene i gridet. */
 .simulation-thread{align-content:start}
@@ -987,23 +981,19 @@ html[data-theme="dark"] .legal-note{background:color-mix(in srgb,var(--accent-so
   .legal-view .utility-page-logo{width:58px}
 }
 
-html[data-theme="dark"] .utility-page-logo{content:url('logo-symbol-light.png')}
+html[data-theme="dark"] .utility-page-logo{content:url("logo-symbol-light.png")}
 
 /* v19.7 – mykere bobler, konsekvente simulatorhandlinger og logo til høyre */
-.simulation-bubble-row{gap:26px}
-.simulation-view .simulation-bubble{position:relative;overflow:visible}
+
+
 /* Lang, markant og avsmalnende hale som peker mot profilbildet uten å treffe det. */
-.leader-bubble:before,.employee-bubble:before,
-.leader-bubble:after,.employee-bubble:after{
-  content:"";position:absolute;bottom:7px;height:26px;pointer-events:none;
-  clip-path:polygon(0 5%,100% 100%,7% 68%);
-}
-.leader-bubble:before,.employee-bubble:before{width:27px;background:var(--border)}
-.leader-bubble:after,.employee-bubble:after{width:24px;background:inherit;bottom:8px}
-.leader-bubble:before{right:-22px;transform:scaleX(-1)}
-.leader-bubble:after{right:-19px;transform:scaleX(-1)}
-.employee-bubble:before{left:-22px}
-.employee-bubble:after{left:-19px}
+
+
+
+
+
+
+
 
 /* Samme pill-stil for alle små handlinger i simulatoren. */
 .simulation-expand,.simulation-end-top,.simulation-privacy-link{
@@ -1051,9 +1041,9 @@ html[data-theme="dark"] .simulation-privacy-link:hover{
 
 .simulation-turn-privacy{margin:8px 0 2px;max-width:none}
 @media(max-width:760px){
-  .simulation-bubble-row{gap:18px}
-  .leader-bubble:before{right:-16px}.leader-bubble:after{right:-13px}
-  .employee-bubble:before{left:-16px}.employee-bubble:after{left:-13px}
+  
+  
+  
   #settings-view .utility-page-logo,#about-view .utility-page-logo,#contact-view .utility-page-logo,
   #history-view .utility-page-logo,.legal-view .utility-page-logo{width:88px}
   #settings-view .content-header,#about-view .content-header,#contact-view .content-header,
@@ -1146,26 +1136,17 @@ html[data-theme="dark"] .simulation-privacy-banner p{color:#e7cbd5}
 .simulation-launch-card strong{margin-top:0;font-size:1.05rem}
 
 /* Chatbobler: behold rektangelet, men gi halen en lengre, mykere logo-inspirert spiss. */
-.simulation-bubble-row{gap:36px}
-.simulation-view .simulation-bubble{border-radius:22px}
-.leader-bubble{border-bottom-right-radius:9px}
-.employee-bubble{border-bottom-left-radius:9px}
-.leader-bubble:before,.employee-bubble:before,
-.leader-bubble:after,.employee-bubble:after{
-  content:"";
-  position:absolute;
-  bottom:4px;
-  height:30px;
-  pointer-events:none;
-  clip-path:path("M 38 1 C 30 8 22 19 2 29 C 17 25 30 20 38 12 Z");
-  transform:none;
-}
-.leader-bubble:before,.employee-bubble:before{width:38px;background:var(--border)}
-.leader-bubble:after,.employee-bubble:after{width:35px;height:27px;background:inherit;bottom:5px}
-.employee-bubble:before{left:-29px}
-.employee-bubble:after{left:-27px}
-.leader-bubble:before{right:-29px;transform:scaleX(-1)}
-.leader-bubble:after{right:-27px;transform:scaleX(-1)}
+
+
+
+
+
+
+
+
+
+
+
 
 /* Refleksjon etter øvelsen. */
 .simulation-reflection{
@@ -1200,9 +1181,9 @@ select:focus-visible{
   #settings-view .utility-page-logo,#about-view .utility-page-logo,#contact-view .utility-page-logo,
   #history-view .utility-page-logo,.legal-view .utility-page-logo{width:72px}
   .simulation-launch-grid.two-options{grid-template-columns:1fr}
-  .simulation-bubble-row{gap:28px}
-  .employee-bubble:before{left:-23px}.employee-bubble:after{left:-21px}
-  .leader-bubble:before{right:-23px}.leader-bubble:after{right:-21px}
+  
+  
+  
   .simulation-reflection-grid{grid-template-columns:1fr}
   .simulation-privacy-banner{grid-template-columns:auto 1fr}
   .simulation-privacy-link{grid-column:2;justify-self:start}
@@ -1217,7 +1198,7 @@ html[data-theme="hybrid"] .sidebar{
   border-right-color:#255766;
   color:#f2fbfd;
 }
-html[data-theme="hybrid"] .sidebar .brand-logo{content:url('logo-light.png');filter:none}
+html[data-theme="hybrid"] .sidebar .brand-logo{content:url("logo-light.png");filter:none}
 html[data-theme="hybrid"] .sidebar .nav-item{color:#edf8fa}
 html[data-theme="hybrid"] .sidebar .nav-item small{color:#b8d1d7}
 html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled),
@@ -1227,7 +1208,7 @@ html[data-theme="hybrid"] .sidebar .nav-glyph{
   color:#d9f5f7;
   box-shadow:inset 0 0 0 1px rgba(255,255,255,.12);
 }
-html[data-theme="hybrid"] .sidebar .nav-logo-glyph img{content:url('profile-ai-light.png')}
+html[data-theme="hybrid"] .sidebar .nav-logo-glyph img{content:url("profile-ai-light.png")}
 html[data-theme="hybrid"] .sidebar .sidebar-message{border-top-color:rgba(255,255,255,.18);color:#bfd4d9}
 html[data-theme="hybrid"] .sidebar .sidebar-message-icon{color:#d9f5f7}
 html[data-theme="hybrid"] .sidebar-toggle{
@@ -1255,40 +1236,13 @@ html[data-theme="hybrid"] .sidebar-toggle:hover{background:#245d6d}
 #contact-view .report-form{width:100%}
 
 /* Simulator: vanlig chatboble med en myk, integrert hale – ikke en løs trekant. */
-.simulation-bubble-row{gap:14px}
-.simulation-view .simulation-bubble{
-  border-radius:24px;
-  overflow:visible;
-  isolation:isolate;
-}
-.leader-bubble,.employee-bubble{border-bottom-left-radius:24px;border-bottom-right-radius:24px}
-.leader-bubble:before,.employee-bubble:before,
-.leader-bubble:after,.employee-bubble:after{content:none}
-.employee-bubble::after,
-.leader-bubble::after{
-  content:"";
-  position:absolute;
-  bottom:7px;
-  width:26px;
-  height:22px;
-  background:inherit;
-  pointer-events:none;
-  z-index:-1;
-}
-.employee-bubble::after{
-  left:-14px;
-  border-left:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-left-radius:24px 18px;
-  transform:skewX(-24deg);
-}
-.leader-bubble::after{
-  right:-14px;
-  border-right:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-right-radius:24px 18px;
-  transform:skewX(24deg);
-}
+
+
+
+
+
+
+
 .simulation-avatar{position:relative;z-index:2}
 
 /* Fire temavalg må fortsatt fungere i topplinjen uten å dominere. */
@@ -1298,9 +1252,9 @@ html[data-theme="hybrid"] .sidebar-toggle:hover{background:#245d6d}
 @media(max-width:760px){
   .utility-title-row{gap:9px}
   .utility-title-row .utility-page-logo{width:60px}
-  .simulation-bubble-row{gap:10px}
-  .employee-bubble::after{left:-11px}
-  .leader-bubble::after{right:-11px}
+  
+  
+  
 }
 
 /* v19.10 – smartere temaflyt, personvern før KI og tydeligere visuelle detaljer */
@@ -1345,40 +1299,21 @@ html[data-theme="hybrid"] .sidebar .brand-logo{
 .topic-choice-button{min-width:160px}
 
 /* Simulator: lang, integrert og tydelig snakkeboblehale – ikke en liten chat-trekant. */
-.simulation-bubble-row{gap:42px}
-.simulation-view .simulation-bubble{overflow:visible;isolation:isolate}
-.leader-bubble:before,.employee-bubble:before,
-.leader-bubble:after,.employee-bubble:after{
-  content:"";
-  position:absolute;
-  pointer-events:none;
-  transform:none;
-  z-index:-1;
-}
-.leader-bubble:before,.employee-bubble:before{
-  bottom:3px;
-  width:50px;
-  height:38px;
-  background:var(--border);
-  clip-path:path("M 50 2 C 40 8 29 21 3 36 C 20 32 38 25 50 14 Z");
-}
-.leader-bubble:after,.employee-bubble:after{
-  bottom:5px;
-  width:46px;
-  height:34px;
-  background:inherit;
-  clip-path:path("M 46 2 C 37 8 27 19 3 32 C 19 29 35 23 46 13 Z");
-}
-.employee-bubble:before{left:-39px}
-.employee-bubble:after{left:-35px}
-.leader-bubble:before{right:-39px;transform:scaleX(-1)}
-.leader-bubble:after{right:-35px;transform:scaleX(-1)}
+
+
+
+
+
+
+
+
+
 
 @media(max-width:760px){
   .utility-title-row .utility-page-brand{transform:translateY(-6px)}
-  .simulation-bubble-row{gap:34px}
-  .employee-bubble:before{left:-32px}.employee-bubble:after{left:-29px}
-  .leader-bubble:before{right:-32px}.leader-bubble:after{right:-29px}
+  
+  
+  
   .auto-topic-note{align-items:flex-start;flex-direction:column;gap:9px}
 }
 
@@ -1412,96 +1347,33 @@ html[data-theme="hybrid"] .sidebar .brand-logo{
   Klassisk speech-bubble-form. Halen bygges med to kurvede flater som vokser ut av
   boblekroppen; ingen trekant/clip-path er festet på rektangelet.
 */
-.simulation-bubble-row{gap:38px}
-.simulation-view .simulation-bubble,
-.conversation-turn{
-  position:relative;
-  overflow:visible;
-  border-radius:24px;
-  isolation:isolate;
-}
+
+
 
 /* Fjern alle eldre halevarianter. */
-.leader-bubble:before,.leader-bubble:after,
-.employee-bubble:before,.employee-bubble:after,
-.conversation-user:before,.conversation-user:after,
-.conversation-assistant:before,.conversation-assistant:after{
-  content:none;
-}
+
 
 /* Ytre kurve – samme flate som boblen med tynn kant. */
-.employee-bubble::after,
-.conversation-assistant::after{
-  content:"";
-  position:absolute;
-  left:-23px;
-  bottom:-1px;
-  width:46px;
-  height:36px;
-  background:inherit;
-  border-left:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-left-radius:38px 30px;
-  transform:rotate(-10deg);
-  transform-origin:right bottom;
-  z-index:-2;
-}
-.leader-bubble::after,
-.conversation-user::after{
-  content:"";
-  position:absolute;
-  right:-23px;
-  bottom:-1px;
-  width:46px;
-  height:36px;
-  background:inherit;
-  border-right:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-right-radius:38px 30px;
-  transform:rotate(10deg);
-  transform-origin:left bottom;
-  z-index:-2;
-}
+
+
 
 /* Innskåret kurve lager den karakteristiske, integrerte speech-bubble-halen. */
-.employee-bubble::before,
-.conversation-assistant::before{
-  content:"";
-  position:absolute;
-  left:-31px;
-  bottom:8px;
-  width:32px;
-  height:28px;
-  background:var(--bg);
-  border-bottom-right-radius:28px 24px;
-  z-index:-1;
-}
-.leader-bubble::before,
-.conversation-user::before{
-  content:"";
-  position:absolute;
-  right:-31px;
-  bottom:8px;
-  width:32px;
-  height:28px;
-  background:var(--bg);
-  border-bottom-left-radius:28px 24px;
-  z-index:-1;
-}
+
+
 
 /* Fortsett-samtalen bruker samme visuelle språk som simulatoren. */
-.conversation-thread{gap:14px;padding:6px 34px 8px}
-.conversation-turn{max-width:82%;padding:12px 15px;border-radius:22px}
-.conversation-user{background:color-mix(in srgb,var(--accent-soft) 58%,var(--surface))}
-.conversation-assistant{background:var(--surface)}
+
+
+
+
 
 @media(max-width:760px){
-  .simulation-bubble-row{gap:30px}
-  .conversation-thread{padding-left:26px;padding-right:26px}
-  .employee-bubble::after,.conversation-assistant::after{left:-18px;width:39px;height:31px}
-  .leader-bubble::after,.conversation-user::after{right:-18px;width:39px;height:31px}
-  .employee-bubble::before,.conversation-assistant::before{left:-26px;width:28px;height:24px}
-  .leader-bubble::before,.conversation-user::before{right:-26px;width:28px;height:24px}
+  
+  
+  
+  
+  
+  
 }
 
 
@@ -1574,8 +1446,8 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
     rgba(194,238,233,.34) 30%,
     rgba(170,226,220,.18) 58%,
     rgba(170,226,220,0) 78%);
-  -webkit-mask:url('logo-light.png') left center/contain no-repeat;
-  mask:url('logo-light.png') left center/contain no-repeat;
+  -webkit-mask:url("logo-light.png") left center/contain no-repeat;
+  mask:url("logo-light.png") left center/contain no-repeat;
   mix-blend-mode:screen;
 }
 
@@ -1604,91 +1476,28 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
   Snakkebobler – rolig, klassisk og uten store pilformer.
   Halen er en liten kurvet forlengelse av boblekanten, skåret inn med bakgrunnen.
 */
-.simulation-bubble-row{gap:24px !important;}
-.simulation-view .simulation-bubble,
-.conversation-turn{
-  overflow:visible;
-  isolation:isolate;
-  border:1px solid var(--border);
-  border-radius:22px !important;
-}
+
+
 
 /* Nullstill alle gamle, store haleformer. */
-.leader-bubble::before,.leader-bubble::after,
-.employee-bubble::before,.employee-bubble::after,
-.conversation-user::before,.conversation-user::after,
-.conversation-assistant::before,.conversation-assistant::after{
-  content:"" !important;
-  position:absolute;
-  display:block;
-  border:0;
-  transform:none;
-}
+
 
 /* Simulator: litt tydeligere hale. */
-.employee-bubble::after{
-  left:-13px; bottom:2px; width:24px; height:20px;
-  background:inherit;
-  border-left:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-left-radius:22px 18px;
-  z-index:-2;
-}
-.employee-bubble::before{
-  left:-17px; bottom:8px; width:17px; height:17px;
-  background:var(--bg);
-  border-bottom-right-radius:17px 15px;
-  z-index:-1;
-}
-.leader-bubble::after{
-  right:-13px; bottom:2px; width:24px; height:20px;
-  background:inherit;
-  border-right:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-right-radius:22px 18px;
-  z-index:-2;
-}
-.leader-bubble::before{
-  right:-17px; bottom:8px; width:17px; height:17px;
-  background:var(--bg);
-  border-bottom-left-radius:17px 15px;
-  z-index:-1;
-}
+
+
+
+
 
 /* Hovedsamtale: samme formspråk, men mindre og mer diskret hale. */
-.conversation-thread{padding-left:22px !important;padding-right:22px !important;}
-.conversation-assistant::after{
-  left:-10px; bottom:3px; width:19px; height:16px;
-  background:inherit;
-  border-left:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-left-radius:18px 14px;
-  z-index:-2;
-}
-.conversation-assistant::before{
-  left:-13px; bottom:8px; width:13px; height:13px;
-  background:var(--bg);
-  border-bottom-right-radius:13px 12px;
-  z-index:-1;
-}
-.conversation-user::after{
-  right:-10px; bottom:3px; width:19px; height:16px;
-  background:inherit;
-  border-right:1px solid var(--border);
-  border-bottom:1px solid var(--border);
-  border-bottom-right-radius:18px 14px;
-  z-index:-2;
-}
-.conversation-user::before{
-  right:-13px; bottom:8px; width:13px; height:13px;
-  background:var(--bg);
-  border-bottom-left-radius:13px 12px;
-  z-index:-1;
-}
+
+
+
+
+
 
 @media(max-width:760px){
-  .simulation-bubble-row{gap:20px !important;}
-  .conversation-thread{padding-left:18px !important;padding-right:18px !important;}
+  
+  
 }
 
 /* Innlogging: ingen debugpanel. Vanlige feilmeldinger beholdes. */
@@ -1719,110 +1528,41 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
 }
 
 /* Gamle pseudo-element-haler skal ikke brukes i det hele tatt. */
-.leader-bubble::before,.leader-bubble::after,
-.employee-bubble::before,.employee-bubble::after,
-.conversation-user::before,.conversation-user::after,
-.conversation-assistant::before,.conversation-assistant::after{
-  content:none !important;
-  display:none !important;
-}
+
 
 /* Selve boblen er et rolig avrundet felt. SVG-halen overlapper kanten og blir del av formen. */
-.simulation-view .simulation-bubble,
-.conversation-turn{
-  position:relative;
-  overflow:visible !important;
-  isolation:isolate;
-  border:1px solid var(--border);
-  border-radius:22px !important;
-}
 
-.employee-bubble,
-.conversation-assistant{
-  --bubble-fill:var(--surface);
-}
-.leader-bubble,
-.conversation-user{
-  --bubble-fill:color-mix(in srgb,var(--accent-soft) 58%,var(--surface));
-}
-.simulation-view .simulation-bubble,
-.conversation-turn{
-  background:var(--bubble-fill);
-}
 
-.speech-tail{
-  position:absolute;
-  display:block;
-  overflow:visible;
-  pointer-events:none;
-  z-index:0;
-}
-.speech-tail-fill{
-  fill:var(--bubble-fill);
-}
-.speech-tail-outline{
-  fill:none;
-  stroke:var(--border);
-  stroke-width:1.15;
-  vector-effect:non-scaling-stroke;
-  stroke-linecap:round;
-  stroke-linejoin:round;
-}
+
+
+
+
+
+
+
 
 /* Simulator: tydelig klassisk hale som peker mot avataren, men uten pil-/trekantpreg. */
-.simulation-bubble .speech-tail{
-  width:42px;
-  height:29px;
-  bottom:-7px;
-}
-.simulation-bubble .speech-tail-left{
-  left:-31px;
-}
-.simulation-bubble .speech-tail-right{
-  right:-31px;
-  transform:scaleX(-1);
-}
+
+
+
 
 /* Hovedsamtalen bruker samme form, men mindre og mer diskret. */
-.conversation-turn .speech-tail{
-  width:29px;
-  height:21px;
-  bottom:-4px;
-}
-.conversation-turn .speech-tail-left{
-  left:-21px;
-}
-.conversation-turn .speech-tail-right{
-  right:-21px;
-  transform:scaleX(-1);
-}
+
+
+
 
 /* Tekst må ligge over SVG-overlappen. */
-.simulation-bubble > span,
-.simulation-bubble > p,
-.simulation-bubble > div:not(.speech-tail),
-.conversation-turn > span,
-.conversation-turn > p,
-.conversation-turn > div:not(.speech-tail),
-.conversation-turn > small{
-  position:relative;
-  z-index:1;
-}
+
 
 /* Litt ekstra luft slik at halen ikke kolliderer med avataren. */
-.simulation-bubble-row{
-  gap:34px !important;
-}
-.conversation-thread{
-  padding-left:30px !important;
-  padding-right:30px !important;
-}
+
+
 @media(max-width:760px){
-  .simulation-bubble-row{gap:28px !important;}
-  .simulation-bubble .speech-tail{width:36px;height:25px;bottom:-6px;}
-  .simulation-bubble .speech-tail-left{left:-27px;}
-  .simulation-bubble .speech-tail-right{right:-27px;}
-  .conversation-thread{padding-left:24px !important;padding-right:24px !important;}
+  
+  
+  
+  
+  
 }
 
 /* Auth-vinduet er skjult under den stille session-sjekken; appen er inert fra HTML til sjekken er ferdig. */
@@ -1842,119 +1582,43 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
 }
 
 /* Fjern alle gamle genererte haler helt. */
-.speech-tail{
-  display:none !important;
-}
-.leader-bubble::before,.leader-bubble::after,
-.employee-bubble::before,.employee-bubble::after,
-.conversation-user::before,.conversation-user::after,
-.conversation-assistant::before,.conversation-assistant::after{
-  content:none !important;
-  display:none !important;
-}
+
+
 
 /*
   Hele boblesilhuetten kommer fra snakkeboble.svg.
   To maskelag gir en tynn kant: ytre lag = kant, indre lag = fyll.
   Dette er ikke en firkant med en pålimt trekant – halen er del av samme SVG-path.
 */
-.simulation-view .simulation-bubble,
-.conversation-turn{
-  --bubble-outline:var(--border);
-  position:relative;
-  isolation:isolate;
-  overflow:visible !important;
-  border:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-}
+
 
 /* Simulator – venstrevendt original. */
-.employee-bubble::before,
-.employee-bubble::after,
-.leader-bubble::before,
-.leader-bubble::after,
-.conversation-assistant::before,
-.conversation-assistant::after,
-.conversation-user::before,
-.conversation-user::after{
-  content:"" !important;
-  display:block !important;
-  position:absolute;
-  pointer-events:none;
-  -webkit-mask:url("snakkeboble.svg") center / 100% 100% no-repeat;
-  mask:url("snakkeboble.svg") center / 100% 100% no-repeat;
-}
+
 
 /* Ytre lag = tynn kant. */
-.employee-bubble::before,
-.leader-bubble::before{
-  top:-2px;
-  bottom:-30px;
-  width:calc(100% + 30px);
-  background:var(--bubble-outline);
-  z-index:-2;
-}
+
 /* Indre lag = fyll, 1.5–2 px mindre. */
-.employee-bubble::after,
-.leader-bubble::after{
-  top:0;
-  bottom:-28px;
-  width:calc(100% + 26px);
-  background:var(--bubble-fill);
-  z-index:-1;
-}
+
 
 /* Venstre boble: halen peker mot venstre avatar. */
-.employee-bubble::before{left:-24px;}
-.employee-bubble::after{left:-22px;}
+
+
 
 /* Høyre boble: samme SVG speiles, ikke tegnes på nytt. */
-.leader-bubble::before{
-  right:-24px;
-  transform:scaleX(-1);
-}
-.leader-bubble::after{
-  right:-22px;
-  transform:scaleX(-1);
-}
+
+
 
 /* Hovedsamtalen bruker samme form, men mer kompakt. */
-.conversation-assistant::before,
-.conversation-user::before{
-  top:-1px;
-  bottom:-20px;
-  width:calc(100% + 20px);
-  background:var(--bubble-outline);
-  z-index:-2;
-}
-.conversation-assistant::after,
-.conversation-user::after{
-  top:1px;
-  bottom:-18px;
-  width:calc(100% + 16px);
-  background:var(--bubble-fill);
-  z-index:-1;
-}
-.conversation-assistant::before{left:-16px;}
-.conversation-assistant::after{left:-14px;}
-.conversation-user::before{
-  right:-16px;
-  transform:scaleX(-1);
-}
-.conversation-user::after{
-  right:-14px;
-  transform:scaleX(-1);
-}
+
+
+
+
+
+
 
 /* Litt ekstra luft under boblen fordi brukerens SVG-hale går under kroppen. */
-.simulation-bubble-row{
-  margin-bottom:22px;
-  gap:26px !important;
-}
-.conversation-turn{
-  margin-bottom:14px;
-}
+
+
 
 /* Sørg for at innholdet alltid ligger over SVG-formen. */
 .simulation-bubble > *,
@@ -1964,14 +1628,9 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
 }
 
 @media(max-width:760px){
-  .simulation-bubble-row{
-    margin-bottom:18px;
-    gap:22px !important;
-  }
-  .employee-bubble::before,
-  .leader-bubble::before{bottom:-26px;}
-  .employee-bubble::after,
-  .leader-bubble::after{bottom:-24px;}
+  
+  
+  
 }
 
 
@@ -1988,154 +1647,52 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
 }
 
 /* Slå helt av alle gamle masker/pseudo-haler. */
-.speech-tail{display:none !important;}
-.leader-bubble::before,.leader-bubble::after,
-.employee-bubble::before,.employee-bubble::after,
-.conversation-user::before,.conversation-user::after,
-.conversation-assistant::before,.conversation-assistant::after{
-  content:none !important;
-  display:none !important;
-  -webkit-mask:none !important;
-  mask:none !important;
-}
+
+
 
 /*
   Boblen er nå et faktisk SVG-element med brukerens path.
   Ingen CSS-trekant, ingen mask og ingen separat hale.
 */
-.simulation-view .simulation-bubble,
-.conversation-turn{
-  position:relative;
-  isolation:isolate;
-  overflow:visible !important;
-  border:0 !important;
-  border-radius:0 !important;
-  background:transparent !important;
-  --bubble-fill:#ffffff;
-  --bubble-stroke:#bfd0d4;
-}
 
-.employee-bubble,
-.conversation-assistant{
-  --bubble-fill:var(--surface);
-  --bubble-stroke:color-mix(in srgb,var(--border) 92%,var(--accent) 8%);
-}
-.leader-bubble,
-.conversation-user{
-  --bubble-fill:color-mix(in srgb,var(--accent-soft) 52%,var(--surface));
-  --bubble-stroke:color-mix(in srgb,var(--accent) 28%,var(--border));
-}
+
+
+
 
 /* Mørkt tema: egen, roligere kontrastvariant. */
-html[data-theme="dark"] .employee-bubble,
-html[data-theme="dark"] .conversation-assistant{
-  --bubble-fill:#16282f;
-  --bubble-stroke:#45636c;
-}
-html[data-theme="dark"] .leader-bubble,
-html[data-theme="dark"] .conversation-user{
-  --bubble-fill:#1d3941;
-  --bubble-stroke:#5c7e86;
-}
+
+
 
 /* Hybrid har mørk sidebar, men lyst hovedinnhold – bruk lyse bobler. */
-html[data-theme="hybrid"] .employee-bubble,
-html[data-theme="hybrid"] .conversation-assistant{
-  --bubble-fill:#ffffff;
-  --bubble-stroke:#bfd0d4;
-}
-html[data-theme="hybrid"] .leader-bubble,
-html[data-theme="hybrid"] .conversation-user{
-  --bubble-fill:color-mix(in srgb,var(--accent-soft) 58%,#ffffff);
-  --bubble-stroke:color-mix(in srgb,var(--accent) 28%,#cddde0);
-}
 
-.speech-bubble-shape{
-  position:absolute;
-  display:block;
-  pointer-events:none;
-  overflow:visible;
-  z-index:0;
-}
-.speech-bubble-shape path{
-  fill:var(--bubble-fill);
-  stroke:var(--bubble-stroke);
-  stroke-width:1.3;
-  vector-effect:non-scaling-stroke;
-  stroke-linejoin:round;
-}
-.speech-bubble-shape-right{
-  transform:scaleX(-1);
-}
+
+
+
+
+
 
 /* Simulator: den fulle speech-bubble-formen får plass til halen under innholdet. */
-.simulation-bubble .speech-bubble-shape{
-  left:-14px;
-  top:-10px;
-  width:calc(100% + 28px);
-  height:calc(100% + 46px);
-}
-.simulation-bubble .speech-bubble-shape-right{
-  left:auto;
-  right:-14px;
-}
-.simulation-bubble{
-  padding:18px 22px 26px !important;
-  margin-bottom:20px;
-}
+
+
+
 
 /* Hovedsamtale: samme form, men litt mindre og roligere. */
-.conversation-turn .speech-bubble-shape{
-  left:-9px;
-  top:-7px;
-  width:calc(100% + 18px);
-  height:calc(100% + 30px);
-}
-.conversation-turn .speech-bubble-shape-right{
-  left:auto;
-  right:-9px;
-}
-.conversation-turn{
-  padding:12px 15px 18px !important;
-  margin-bottom:12px;
-}
+
+
+
 
 /* Innholdet skal alltid ligge over SVG-bakgrunnen. */
-.simulation-bubble > *:not(.speech-bubble-shape),
-.conversation-turn > *:not(.speech-bubble-shape){
-  position:relative;
-  z-index:1;
-}
+
 
 /* Fjern ekstra spacing fra forrige mask-implementasjon. */
-.simulation-bubble-row{
-  gap:22px !important;
-  margin-bottom:4px !important;
-}
-.conversation-thread{
-  padding-left:18px !important;
-  padding-right:18px !important;
-}
+
+
 
 @media(max-width:760px){
-  .simulation-bubble .speech-bubble-shape{
-    left:-10px;
-    width:calc(100% + 20px);
-    height:calc(100% + 38px);
-  }
-  .simulation-bubble .speech-bubble-shape-right{
-    left:auto;
-    right:-10px;
-  }
-  .conversation-turn .speech-bubble-shape{
-    left:-7px;
-    width:calc(100% + 14px);
-    height:calc(100% + 26px);
-  }
-  .conversation-turn .speech-bubble-shape-right{
-    left:auto;
-    right:-7px;
-  }
+  
+  
+  
+  
 }
 
 /* Kortere oppfølgingssvar skal også se luftige ut, ikke som mini-rapporter. */
@@ -2167,91 +1724,149 @@ html[data-theme="hybrid"] .conversation-user{
   Viktig: selve boblekroppen vokser med teksten.
   Halen har fast fysisk størrelse og skal aldri strekkes med boblen.
 */
-.simulation-view .simulation-bubble,
-.conversation-turn{
-  position:relative;
-  overflow:visible !important;
-  isolation:isolate;
-  background:var(--bubble-fill) !important;
-  border:1px solid var(--bubble-stroke) !important;
-  border-radius:22px !important;
-}
+
 
 /* Den gamle fullskala-SVG-en er ikke lenger boblebakgrunn. */
-.speech-bubble-shape{
-  display:none !important;
-}
+
 
 /* Fast hale basert på brukerens snakkeboble.svg-geometri. */
-.speech-tail-fixed{
-  position:absolute;
-  display:block;
-  pointer-events:none;
+
+
+
+/* Simulator: samme størrelse på alle haler, uansett tekstmengde. */
+
+
+
+
+/* Hovedsamtalen: enda litt mindre hale, men samme faste størrelse hver gang. */
+
+
+
+
+/* Innhold over halen. */
+
+
+/* Litt luft under halen uten å blåse opp hele samtaleraden. */
+
+
+
+@media(max-width:760px){
+  
+  
+}
+
+
+/* v19.12.3 – ENESTE aktive snakkebobleimplementasjon.
+   Preview 9 er fasit. KI-boblen er master; lederboblen er samme geometri speilvendt. */
+
+.simulation-bubble-row{
+  display:flex;
+  width:100%;
+  align-items:flex-end;
+  gap:20px;
+  margin-bottom:26px;
+}
+
+.simulation-view .simulation-bubble{
+  position:relative;
+  max-width:min(78%,730px);
+  padding:14px 17px 18px;
   overflow:visible;
+  isolation:isolate;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+
+.employee-bubble,
+.conversation-assistant{
+  --bubble-fill:var(--surface);
+  --bubble-stroke:color-mix(in srgb,var(--border) 92%,var(--accent) 8%);
+}
+
+.leader-bubble,
+.conversation-user{
+  --bubble-fill:color-mix(in srgb,var(--accent-soft) 58%,var(--surface));
+  --bubble-stroke:color-mix(in srgb,var(--accent) 28%,var(--border));
+}
+
+html[data-theme="hybrid"] .employee-bubble,
+html[data-theme="hybrid"] .conversation-assistant{
+  --bubble-fill:#ffffff;
+  --bubble-stroke:#bfd0d4;
+}
+html[data-theme="hybrid"] .leader-bubble,
+html[data-theme="hybrid"] .conversation-user{
+  --bubble-fill:color-mix(in srgb,var(--accent-soft) 58%,#ffffff);
+  --bubble-stroke:color-mix(in srgb,var(--accent) 28%,#cddde0);
+}
+
+html[data-theme="dark"] .employee-bubble,
+html[data-theme="dark"] .conversation-assistant{
+  --bubble-fill:#16343c;
+  --bubble-stroke:#68878e;
+}
+html[data-theme="dark"] .leader-bubble,
+html[data-theme="dark"] .conversation-user{
+  --bubble-fill:#1d424b;
+  --bubble-stroke:#68878e;
+}
+
+.speech-bubble-shape{
+  position:absolute;
+  left:0;
+  top:0;
+  display:block;
+  overflow:visible;
+  pointer-events:none;
   z-index:0;
 }
-.speech-tail-fixed path{
+
+.speech-bubble-shape path{
   fill:var(--bubble-fill);
   stroke:var(--bubble-stroke);
-  stroke-width:1.15;
+  stroke-width:1.35;
   vector-effect:non-scaling-stroke;
+  stroke-linecap:round;
   stroke-linejoin:round;
 }
 
-/* Simulator: samme størrelse på alle haler, uansett tekstmengde. */
-.simulation-bubble .speech-tail-fixed{
-  width:34px;
-  height:23px;
-  bottom:-19px;
-}
-.simulation-bubble .speech-tail-fixed-left{
-  left:18px;
-}
-.simulation-bubble .speech-tail-fixed-right{
-  right:18px;
-  transform:scaleX(-1);
-}
-
-/* Hovedsamtalen: enda litt mindre hale, men samme faste størrelse hver gang. */
-.conversation-turn .speech-tail-fixed{
-  width:25px;
-  height:17px;
-  bottom:-14px;
-}
-.conversation-turn .speech-tail-fixed-left{
-  left:14px;
-}
-.conversation-turn .speech-tail-fixed-right{
-  right:14px;
-  transform:scaleX(-1);
-}
-
-/* Innhold over halen. */
-.simulation-bubble > *:not(.speech-tail-fixed),
-.conversation-turn > *:not(.speech-tail-fixed){
+.simulation-bubble > *:not(.speech-bubble-shape),
+.conversation-turn > *:not(.speech-bubble-shape){
   position:relative;
   z-index:1;
 }
 
-/* Litt luft under halen uten å blåse opp hele samtaleraden. */
-.simulation-bubble{
-  margin-bottom:15px !important;
-  padding:18px 22px !important;
-}
-.conversation-turn{
-  margin-bottom:11px !important;
-  padding:12px 15px !important;
+.simulation-avatar{
+  transform:translateY(14px);
 }
 
+.conversation-thread{
+  display:grid;
+  gap:14px;
+  margin:10px 0;
+  padding:6px 22px 8px;
+}
+
+.conversation-turn{
+  position:relative;
+  max-width:82%;
+  padding:12px 15px 16px;
+  margin-bottom:20px;
+  overflow:visible;
+  isolation:isolate;
+  border:0;
+  border-radius:0;
+  background:transparent;
+}
+
+.conversation-user{justify-self:end;}
+.conversation-assistant{justify-self:start;}
+
 @media(max-width:760px){
-  .simulation-bubble .speech-tail-fixed{
-    width:31px;
-    height:21px;
-    bottom:-17px;
-  }
-  .conversation-turn .speech-tail-fixed{
-    width:23px;
-    height:16px;
-    bottom:-13px;
-  }
+  .simulation-bubble-row{gap:18px;margin-bottom:24px;}
+  .simulation-view .simulation-bubble{max-width:calc(100% - 64px);}
+  .simulation-avatar{transform:translateY(10px);}
+  .conversation-thread{padding-left:18px;padding-right:18px;}
+  .conversation-turn{max-width:94%;margin-bottom:18px;}
 }

@@ -1,3 +1,11 @@
+## v19.12.3 – ryddet snakkeboblekode
+
+- Fjerner gamle og konkurrerende boble-/haleimplementasjoner.
+- Én aktiv snakkebobleimplementasjon står igjen.
+- Preview 9 er fasit: KI-boblen er masterformen, lederboblen er identisk speilvendt.
+- Beholder v19.12.2-hotfixen for samtale og historikk.
+- Ingen PNG-filer er endret eller pakket med.
+
 ## v19.12.2 – hotfix for samtale og historikk
 
 - Retter dupliserte etiketter som `DuDU` og `SamtalestøtteSAMTALESTØTTE`.

@@ -12,8 +12,8 @@ assert(app.includes("function formatInlineReplyMarkdown(text)"));
 assert(app.includes(".replace(/\\\\\\*/g, '*')"));
 assert(app.includes("'<strong>$1</strong>'"));
 
-// Ensure the bubble implementation itself has not been replaced by the failed v19.12.2 SVG-body experiment.
-assert(app.includes("class=\"speech-tail-fixed"));
-assert(!app.includes("function speechBubblePath(width, bodyHeight)"));
+// v19.12.3 har ny, ryddet bobleimplementasjon. Historikk-hotfixen skal fortsatt være intakt.
+assert(app.includes("function speechBubblePath(width, bodyHeight)"));
+assert(!app.includes("speech-tail-fixed"));
 
 console.log('Historikk/samtale-hotfix OK');
