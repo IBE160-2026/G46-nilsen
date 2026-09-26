@@ -1,3 +1,17 @@
+## v20.0 – admin, redigerbart innhold og samlet personvern
+
+- Ny rollemodell med bruker, redaktør og admin.
+- Flere administratorer kan tildeles fra adminpanelet.
+- Utvalgte tekster kan redigeres og lagres i Supabase uten ny deploy.
+- Personvernsjekk er utvidet til kjønnede pronomen og flere KI-felter.
+- Server-side personvernbarriere før KI-kall.
+- Lagret historikk skannes for personvern ved åpning og kan anonymiseres etter brukerens valg.
+- Simulatorens personvernfelt viser også normalstatus når ingen funn er gjort.
+- Simulatorbobler løftes 10 px uten å endre den godkjente boblegeometrien.
+- Simulatorlogo flyttes 15 px opp.
+- Midlertidig øvelse bruker samme layoutprinsipp som midlertidig samtale.
+- Feilrapport kan inkludere teknisk logg uten samtaletekst.
+
 ## v19.12.5 – ikonjustering og avatar/boble-finjustering
 
 - Ikonet for «Lønn og utvikling» er justert til en tydeligere pengeseddel med dollartegn.

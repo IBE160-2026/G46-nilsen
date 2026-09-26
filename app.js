@@ -42,7 +42,10 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "19.11.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "20.0.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let contentOverrides = {};
+let loadedHistoryItem = null;
+const clientErrorLog = [];
 
 const topics = [
   {
@@ -203,7 +206,8 @@ const views = {
   privacy: document.querySelector('#privacy-view'),
   terms: document.querySelector('#terms-view'),
   about: document.querySelector('#about-view'),
-  contact: document.querySelector('#contact-view')
+  contact: document.querySelector('#contact-view'),
+  admin: document.querySelector('#admin-view')
 };
 
 function setSvg(targetId, svg) {
@@ -218,6 +222,7 @@ function renderStaticIcons() {
   setSvg('nav-history-icon', svgIcons.history);
   setSvg('nav-about-icon', svgIcons.about);
   setSvg('nav-contact-icon', svgIcons.contact);
+  setSvg('nav-admin-icon', svgIcons.shieldCheck);
   setSvg('sidebar-message-icon', svgIcons.team);
 }
 
@@ -234,7 +239,8 @@ function updateNavState(name) {
       (name === 'settings' && btn.dataset.view === 'settings') ||
       (name === 'history' && btn.dataset.view === 'history') ||
       (name === 'about' && btn.dataset.view === 'about') ||
-      (name === 'contact' && btn.dataset.view === 'contact')
+      (name === 'contact' && btn.dataset.view === 'contact') ||
+      (name === 'admin' && btn.dataset.view === 'admin')
     );
   });
 }
@@ -616,6 +622,9 @@ function detectSensitiveInfo(text) {
       message: 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».'
     });
   });
+  if (/\b(?:han|hun|ham|henne|hans|hennes)\b/iu.test(source)) {
+    add('gendered_language', 'Kjønnet pronomen', 'Bruk en kjønnsnøytral formulering, for eksempel «hen» eller «medarbeideren».');
+  }
   if (/\b[A-ZÆØÅ][a-zæøå]+(?:gate|gata|veien|vegen|allé|stien)\s+\d+[A-Za-z]?\b/.test(source)) {
     add('address', 'Mulig gateadresse', 'Fjern konkret adresse eller stedsopplysning som kan identifisere personen.');
   }
@@ -624,7 +633,7 @@ function detectSensitiveInfo(text) {
 }
 
 
-const HARD_PRIVACY_TYPES = new Set(['email', 'phone', 'birthdate', 'identifier', 'name', 'address']);
+const HARD_PRIVACY_TYPES = new Set(['email', 'phone', 'birthdate', 'identifier', 'name', 'address', 'gendered_language']);
 
 function splitPrivacyFindings(findings = []) {
   return {
@@ -806,6 +815,35 @@ function updateFinderPrivacyCheck(inputId, boxId) {
   });
 
   return { findings, hard, soft, blocked };
+}
+
+
+function privacySummaryHtml(findings, { title = 'Personvernsjekk', blocking = true } = {}) {
+  const { hard, soft } = splitPrivacyFindings(findings);
+  const visible = hard.length ? hard : soft;
+  if (!visible.length) return `<strong>${escapeHtml(title)}</strong><span>Ingen tydelige personopplysninger er oppdaget i teksten.</span>`;
+  return `<strong>${escapeHtml(title)}</strong><span>${blocking && hard.length ? 'Dette må anonymiseres før teksten sendes til KI:' : 'Vurder om dette kan generaliseres:'}</span><ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>`;
+}
+function collectFollowupPrivacyFindings() {
+  const inputs = [...document.querySelectorAll('[data-followup-custom-input]')].filter(input => !input.hidden && input.value.trim());
+  return inputs.flatMap(input => detectSensitiveInfo(input.value).map(item => ({ ...item, input })));
+}
+function updateFollowupPrivacy() {
+  const box = document.querySelector('#followup-privacy');
+  if (!box) return [];
+  const findings = collectFollowupPrivacyFindings();
+  const { hard } = splitPrivacyFindings(findings);
+  if (!findings.length) { box.hidden = true; box.innerHTML = ''; return []; }
+  box.hidden = false;
+  box.className = `privacy-check warning ${hard.length ? 'blocking' : 'advisory'}`;
+  box.innerHTML = privacySummaryHtml(findings, { title: 'Personvernsjekk', blocking: true }) + `<div class="privacy-fix-actions"><button type="button" class="secondary-button compact-fix-button" id="followup-privacy-fix">Fiks personvern</button><small>Kontrollen gjelder fritekstsvarene før de sendes til KI.</small></div>`;
+  box.querySelector('#followup-privacy-fix')?.addEventListener('click', () => {
+    const byInput = new Map();
+    findings.forEach(item => { if (item.input) { if (!byInput.has(item.input)) byInput.set(item.input, []); byInput.get(item.input).push(item); } });
+    byInput.forEach((items, input) => { input.value = autoFixPrivacyText(input.value, items); });
+    updateFollowupPrivacy();
+  });
+  return findings;
 }
 
 async function requestTopicClassification(situation, selectedTopicId = '') {
@@ -1252,6 +1290,7 @@ function wireFollowupControls(container) {
       const id = input.dataset.followupCustomInput;
       const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
       if (field) field.dataset.answer = '';
+      updateFollowupPrivacy();
     });
   });
 }
@@ -1633,6 +1672,11 @@ async function showStructuredGuidance() {
   const button = document.querySelector('#generate-guidance');
   const situation = document.querySelector('#situation')?.value.trim() || '';
   const followups = collectFollowupAnswers();
+  const followupPrivacy = updateFollowupPrivacy();
+  if (splitPrivacyFindings(followupPrivacy).hard.length) {
+    document.querySelector('#followup-privacy')?.scrollIntoView({ behavior:'smooth', block:'center' });
+    return;
+  }
   const original = button?.textContent || 'Lag samtalestøtte';
   if (button) { button.disabled = true; button.textContent = 'Lager samtalestøtte …'; }
   document.querySelector('#followup-panel').hidden = true;
@@ -2032,6 +2076,9 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
     if (button.dataset.view === 'contact') {
       openInfoView('contact');
     }
+    if (button.dataset.view === 'admin') {
+      openAdmin();
+    }
   });
 });
 
@@ -2373,8 +2420,9 @@ function updateAuthUi() {
   const name=document.querySelector('#profile-name'), note=document.querySelector('#profile-note'), avatar=document.querySelector('#profile-avatar');
   const histNote=document.querySelector('#history-nav-note'), temp=document.querySelector('#temporary-chat-option');
   const status=document.querySelector('#settings-account-status'), del=document.querySelector('#delete-account-button');
-  if(currentUser){ name.textContent=currentUser.username; note.textContent='Historikk aktiv'; avatar.textContent=initialsFor(currentUser.username); if(histNote) histNote.textContent=''; if(temp) temp.hidden=false; if(status) status.textContent=`Logget inn som ${currentUser.username}.`; if(del) del.hidden=false; }
+  if(currentUser){ name.textContent=currentUser.username; note.textContent=currentUser.role==='admin'?'Administrator':currentUser.role==='editor'?'Redaktør':'Historikk aktiv'; avatar.textContent=initialsFor(currentUser.username); if(histNote) histNote.textContent=''; if(temp) temp.hidden=false; if(status) status.textContent=`Logget inn som ${currentUser.username}.`; if(del) del.hidden=false; }
   else { name.textContent='Logg på'; note.textContent='for historikk'; avatar.textContent='○'; if(histNote) histNote.textContent='logg inn'; if(temp) temp.hidden=true; if(status) status.textContent='Du er ikke logget inn. Samtaler lagres ikke permanent.'; if(del) del.hidden=true; }
+  document.querySelectorAll('.admin-only').forEach(el=>{el.hidden=!['editor','admin'].includes(currentUser?.role||'user');});
 }
 function setAppLocked(locked){
   const shell=document.querySelector('.app-shell');
@@ -2470,8 +2518,40 @@ function renderHistory(items){
   list.querySelectorAll('[data-open-history]').forEach(b=>b.addEventListener('click',()=>loadHistoryItem(items.find(x=>x.id===b.dataset.openHistory))));
   list.querySelectorAll('[data-delete-history]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Slette denne samtalen?'))return;await fetch(`/api/history/${b.dataset.deleteHistory}`,{method:'DELETE'});openHistory();}));
 }
-function loadHistoryItem(item){
-  if(!item)return; clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
+
+function scanHistoryPrivacy(item) {
+  const sources = [];
+  if (item?.situation) sources.push({ where:'Situasjonsbeskrivelse', text:item.situation });
+  (item?.conversation || []).filter(turn => turn.role === 'user').forEach((turn, index) => sources.push({ where:`Oppfølgingsmelding ${index + 1}`, text:turn.text }));
+  (item?.simulation?.turns || []).filter(turn => turn.role === 'leader').forEach((turn, index) => sources.push({ where:`Simulator – ledermelding ${index + 1}`, text:turn.text }));
+  return sources.flatMap(source => detectSensitiveInfo(source.text).map(finding => ({ ...finding, where:source.where })));
+}
+function hideHistoryPrivacyReview() {
+  ['#history-privacy-review-guidance','#history-privacy-review-simulation'].forEach(selector => { const box=document.querySelector(selector); if(box){box.hidden=true;box.innerHTML='';} });
+}
+function renderHistoryPrivacyReview(item, target='guidance') {
+  hideHistoryPrivacyReview();
+  const findings = scanHistoryPrivacy(item);
+  if (!findings.length) return;
+  const box = document.querySelector(target === 'simulation' ? '#history-privacy-review-simulation' : '#history-privacy-review-guidance');
+  if (!box) return;
+  const visible = findings.slice(0,8);
+  box.hidden = false;
+  box.innerHTML = `<strong>Personvernsjekk av lagret samtale</strong><p>Denne historikken inneholder tekst som bør anonymiseres. Ingenting endres automatisk.</p><ul>${visible.map(item => `<li><b>${escapeHtml(item.where)}:</b> ${escapeHtml(item.label)}</li>`).join('')}</ul>${findings.length > visible.length ? `<p>+ ${findings.length - visible.length} flere funn.</p>` : ''}<div class="history-privacy-actions"><button type="button" class="primary-button" data-fix-history-privacy>Fiks personvern og lagre</button><button type="button" class="secondary-button" data-dismiss-history-privacy>La stå foreløpig</button></div>`;
+  box.querySelector('[data-dismiss-history-privacy]')?.addEventListener('click', () => { box.hidden = true; });
+  box.querySelector('[data-fix-history-privacy]')?.addEventListener('click', async () => {
+    item.situation = autoFixPrivacyText(item.situation || '', detectSensitiveInfo(item.situation || ''));
+    (item.conversation || []).forEach(turn => { if(turn.role === 'user') turn.text = autoFixPrivacyText(turn.text || '', detectSensitiveInfo(turn.text || '')); });
+    (item.simulation?.turns || []).forEach(turn => { if(turn.role === 'leader') turn.text = autoFixPrivacyText(turn.text || '', detectSensitiveInfo(turn.text || '')); });
+    loadHistoryItem(item, { skipPrivacyReview:true });
+    conversationDirty = true;
+    await saveCurrentConversation();
+    hideHistoryPrivacyReview();
+  });
+}
+
+function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
+  if(!item)return; loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
@@ -2492,10 +2572,11 @@ function loadHistoryItem(item){
   });
   simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
-    simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); return;
+    simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'simulation'); return;
   }
   simulationSource='current';
   setBreadcrumb('Lagret samtale'); showView('guidance');
+  if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'guidance');
 }
 function startNewConversation(force=false){
   if(!requireLogin()) return;
@@ -2515,6 +2596,25 @@ function openInfoView(which){
   showView(which);
 }
 
+
+const CONTENT_FIELDS = [
+  {key:'home.hero.eyebrow',label:'Hjem – overtekst',selector:'[data-content-key="home.hero.eyebrow"]'},
+  {key:'home.hero.title',label:'Hjem – hovedoverskrift',selector:'[data-content-key="home.hero.title"]'},
+  {key:'home.hero.intro',label:'Hjem – introduksjon',selector:'[data-content-key="home.hero.intro"]',multiline:true},
+  {key:'simulation.hero.title',label:'Simulering – hovedoverskrift',selector:'[data-content-key="simulation.hero.title"]'},
+  {key:'simulation.hero.intro',label:'Simulering – introduksjon',selector:'[data-content-key="simulation.hero.intro"]',multiline:true},
+  {key:'simulation.privacy.title',label:'Simulering – personvernoverskrift',selector:'[data-content-key="simulation.privacy.title"]'},
+  {key:'simulation.privacy.text',label:'Simulering – personverntekst',selector:'[data-content-key="simulation.privacy.text"]',multiline:true},
+  {key:'contact.title',label:'Kontakt – overskrift',selector:'[data-content-key="contact.title"]'},
+  {key:'contact.intro',label:'Kontakt – introduksjon',selector:'[data-content-key="contact.intro"]',multiline:true}
+];
+function defaultContentValue(field){return document.querySelector(field.selector)?.textContent?.trim()||'';}
+function applyContentOverrides(){CONTENT_FIELDS.forEach(field=>{const el=document.querySelector(field.selector);if(el&&Object.prototype.hasOwnProperty.call(contentOverrides,field.key))el.textContent=contentOverrides[field.key];});}
+async function loadContentOverrides(){try{const response=await fetch('/api/content',{cache:'no-store'});if(response.ok){const payload=await response.json();contentOverrides=payload.values||{};applyContentOverrides();return payload;}}catch(_){}return{values:{},setupRequired:false};}
+function renderAdminContentFields(){const host=document.querySelector('#admin-content-fields');if(!host)return;host.className='admin-content-fields';host.innerHTML=CONTENT_FIELDS.map(field=>`<label class="admin-edit-field"><span>${escapeHtml(field.label)}</span><small>${escapeHtml(field.key)}</small><textarea data-admin-content-key="${escapeHtml(field.key)}" rows="${field.multiline?4:2}">${escapeHtml(Object.prototype.hasOwnProperty.call(contentOverrides,field.key)?contentOverrides[field.key]:defaultContentValue(field))}</textarea></label>`).join('');}
+async function loadAdminUsers(){const card=document.querySelector('#admin-users-card'),list=document.querySelector('#admin-users-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter brukere …</div>';try{const response=await fetch('/api/admin/users',{credentials:'include',cache:'no-store'});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke hente brukere.');list.innerHTML=(payload.users||[]).map(user=>`<div class="admin-user-row" data-admin-user="${escapeHtml(user.id)}"><div class="admin-user-copy"><strong>${escapeHtml(user.username||'Bruker')}</strong><small>${escapeHtml(user.email||'')}</small></div><select data-admin-role ${user.id===currentUser.id?'disabled':''}><option value="user" ${user.role==='user'?'selected':''}>Bruker</option><option value="editor" ${user.role==='editor'?'selected':''}>Redaktør</option><option value="admin" ${user.role==='admin'?'selected':''}>Admin</option></select><button class="secondary-button" type="button" data-save-admin-role ${user.id===currentUser.id?'disabled':''}>Lagre rolle</button></div>`).join('')||'<div class="history-empty">Ingen brukere funnet.</div>';list.querySelectorAll('[data-save-admin-role]').forEach(button=>button.addEventListener('click',async()=>{const row=button.closest('[data-admin-user]'),role=row.querySelector('[data-admin-role]').value;button.disabled=true;try{const r=await fetch(`/api/admin/users/${encodeURIComponent(row.dataset.adminUser)}/role`,{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke endre rollen.');const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message success';msg.textContent=`Rollen er endret til ${role}.`;}}catch(error){const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message error';msg.textContent=error.message;}}finally{button.disabled=false;}}));}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
+async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();}
+
 async function loadPublicConfig(){
   try{
     const r=await fetch('/api/public-config');
@@ -2533,12 +2633,17 @@ async function loadPublicConfig(){
   }
 }
 
+function pushClientError(entry){clientErrorLog.push({time:new Date().toISOString(),...entry});if(clientErrorLog.length>12)clientErrorLog.shift();}
+window.addEventListener('error',event=>pushClientError({type:'window.error',message:String(event.message||'Ukjent feil'),source:String(event.filename||'').split('/').pop(),line:event.lineno||null}));
+window.addEventListener('unhandledrejection',event=>pushClientError({type:'unhandledrejection',message:String(event.reason?.message||event.reason||'Ukjent promise-feil')}));
+function currentViewName(){return Object.entries(views).find(([,el])=>el?.classList.contains('active-view'))?.[0]||'ukjent';}
 function buildFeedbackText(){
   const category=document.querySelector('#report-category')?.value||'Tilbakemelding';
   const description=document.querySelector('#report-description')?.value.trim()||'';
-  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'19.1.0'}\nNettleser: ${navigator.userAgent}\n\nBeskrivelse:\n${description}`;
+  const includeLog=document.querySelector('#report-include-log')?.checked!==false;
+  const technical=includeLog?`\n\nTeknisk logg (uten samtaletekst):\nTid: ${new Date().toISOString()}\nVisning: ${currentViewName()}\nSkjerm: ${window.innerWidth}x${window.innerHeight}\nNettleser: ${navigator.userAgent}\nFeil siste økt: ${clientErrorLog.length?JSON.stringify(clientErrorLog,null,2):'Ingen registrerte nettleserfeil.'}`:'';
+  return `Samtalestøtte – ${category}\nVersjon: ${publicConfig.appVersion||'20.0.0'}\n\nBeskrivelse:\n${description}${technical}`;
 }
-
 function closeProfileMenu(){
   const menu=document.querySelector('#profile-menu');
   const button=document.querySelector('#profile-button');
@@ -2559,6 +2664,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfil
 document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{closeProfileMenu();openHistory();});
 document.querySelector('[data-profile-action="about"]')?.addEventListener('click',()=>openInfoView('about'));
 document.querySelector('[data-profile-action="contact"]')?.addEventListener('click',()=>openInfoView('contact'));
+document.querySelector('[data-profile-action="admin"]')?.addEventListener('click',()=>{closeProfileMenu();openAdmin();});
 document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
@@ -2568,6 +2674,11 @@ document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('cl
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>{openInfoView('contact'); const c=document.querySelector('#report-category'); if(c)c.value='Uklart eller dårlig KI-svar';});
+
+
+document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
+document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{await loadContentOverrides();renderAdminContentFields();});
+document.querySelector('#admin-content-form')?.addEventListener('submit',async event=>{event.preventDefault();const msg=document.querySelector('#admin-content-message'),values={};document.querySelectorAll('[data-admin-content-key]').forEach(input=>{values[input.dataset.adminContentKey]=input.value.trim();});try{const response=await fetch('/api/admin/content',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({values})});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke lagre innholdet.');contentOverrides={...contentOverrides,...values};applyContentOverrides();if(msg){msg.className='auth-message success';msg.textContent='Tekstene er lagret og vises med en gang.';}}catch(error){if(msg){msg.className='auth-message error';msg.textContent=error.message;}}});
 
 let passwordRecoveryTokens = null;
 
@@ -2826,13 +2937,21 @@ function showDirectSimulationPrivacy(findings) {
     return;
   }
   box.hidden = false;
+  const visible = hard.length ? hard : soft;
   if (hard.length) {
     box.className = 'privacy-check warning blocking';
-    box.innerHTML = `<strong>Fjern dette før øvelsen:</strong><ul>${hard.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul>`;
+    box.innerHTML = `<strong>Fjern dette før øvelsen:</strong><ul>${visible.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul><div class="privacy-fix-actions"><button type="button" class="secondary-button compact-fix-button" data-direct-privacy-fix>Fiks personvern</button><small>Les gjennom teksten før du fortsetter.</small></div>`;
   } else {
     box.className = 'privacy-check warning advisory';
-    box.innerHTML = `<strong>Vurder å generalisere litt mer</strong><ul>${soft.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul><small>Dette er en anbefaling og hindrer ikke at du starter øvelsen.</small>`;
+    box.innerHTML = `<strong>Vurder å generalisere litt mer</strong><ul>${visible.map(item => `<li><b>${escapeHtml(item.label)}</b> – ${escapeHtml(item.message)}</li>`).join('')}</ul><div class="privacy-fix-actions"><button type="button" class="secondary-button compact-fix-button" data-direct-privacy-fix>Generaliser forslag</button><small>Dette er en anbefaling og hindrer ikke at du starter øvelsen.</small></div>`;
   }
+  box.querySelector('[data-direct-privacy-fix]')?.addEventListener('click', () => {
+    const input = document.querySelector('#direct-simulation-situation');
+    if (!input) return;
+    input.value = autoFixPrivacyText(input.value, findings);
+    showDirectSimulationPrivacy(detectSensitiveInfo(input.value));
+    input.focus();
+  });
 }
 
 function beginDirectSimulation() {
@@ -2901,6 +3020,7 @@ function startSimulation() {
   const topic = simulationSource === 'direct' ? 'Ny simulering' : (currentSubtopic || currentTopic?.title || 'Samtale');
   document.querySelector('#simulation-status').textContent = `${topic} · ${simulationFidelityLabels[simulationFidelity]} · ${simulationStyleLabels[simulationStyle]}`;
   renderSimulationThread();
+  updateSimulationTurnPrivacy();
   document.querySelector('#simulation-input')?.focus();
   conversationDirty = true;
 }
@@ -3021,6 +3141,7 @@ document.querySelector('#simulation-new-direct')?.addEventListener('click', open
 document.querySelector('#simulation-history')?.addEventListener('click', openHistory);
 document.querySelector('#cancel-direct-simulation')?.addEventListener('click', () => { document.querySelector('#direct-simulation-form').hidden = true; showDirectSimulationPrivacy([]); });
 document.querySelector('#direct-simulation-form')?.addEventListener('submit', event => { event.preventDefault(); beginDirectSimulation(); });
+document.querySelector('#direct-simulation-situation')?.addEventListener('input', event => showDirectSimulationPrivacy(detectSensitiveInfo(event.currentTarget.value)));
 document.querySelector('#close-simulation')?.addEventListener('click', closeSimulation);
 document.querySelectorAll('[data-sim-fidelity]').forEach(button => button.addEventListener('click', () => {
   simulationFidelity = button.dataset.simFidelity;
@@ -3050,8 +3171,9 @@ function updateSimulationTurnPrivacy() {
   input.setAttribute('aria-invalid', hard.length ? 'true' : 'false');
   if (submit) submit.disabled = !hasText || hard.length > 0;
   if (!hasText || (!hard.length && !soft.length)) {
-    box.hidden = true;
-    box.innerHTML = '';
+    box.hidden = false;
+    box.className = 'privacy-check simulation-turn-privacy privacy-idle';
+    box.innerHTML = '<strong>Personvernsjekk</strong><span>Ingen tydelige personopplysninger er oppdaget i teksten.</span>';
     return findings;
   }
   const visible = hard.length ? hard : soft;
@@ -3128,6 +3250,7 @@ const inviteFromUrl=new URLSearchParams(location.search).get('invite');
 })();
 
 loadPublicConfig();
+loadContentOverrides();
 
 window.addEventListener('resize', () => {
   if (!localStorage.getItem('samtalestotte-sidebar')) applySidebarState();

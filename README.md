@@ -66,6 +66,11 @@ Prototypen er bygget rundt åtte hovedtemaer:
 
 Brukeren kan også beskrive situasjonen med egne ord dersom den ikke passer naturlig inn i et bestemt undertema.
 
+
+## Admin og redigerbart innhold
+
+Fra v20.0 støtter Samtalestøtte tre roller: bruker, redaktør og admin. Redaktør kan endre utvalgte grensesnitttekster fra adminvisningen, mens admin i tillegg kan tildele og fjerne roller. Rettighetene håndheves på serveren. Redigerte tekster lagres i Supabase-tabellen `content_overrides`. Kjør `V20-SUPABASE-MIGRATION.sql` én gang før funksjonen tas i bruk.
+
 ## Samtalesimulering
 
 I samtalesimuleringen kan brukeren øve på selve dialogen. KI-en spiller medarbeideren ut fra situasjonen og valgt reaksjonsstil.

@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "19.12.0";
+const appVersion = process.env.APP_VERSION || "20.0.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -158,12 +158,59 @@ function authCookie(name, value, maxAge = SESSION_MAX_AGE_SECONDS) {
   return `${name}=${encodeURIComponent(value || "")}; HttpOnly; SameSite=Lax; Path=/; Max-Age=${maxAge}${secure}`;
 }
 
+
+const VALID_ROLES = new Set(["user", "editor", "admin"]);
+const EDITABLE_CONTENT_KEYS = new Set([
+  "home.hero.eyebrow",
+  "home.hero.title",
+  "home.hero.intro",
+  "simulation.hero.title",
+  "simulation.hero.intro",
+  "simulation.privacy.title",
+  "simulation.privacy.text",
+  "contact.title",
+  "contact.intro"
+]);
+
+const bootstrapAdminEmails = new Set(
+  String(process.env.ADMIN_EMAILS || contactEmail || "")
+    .split(",")
+    .map(value => normalizeEmail(value))
+    .filter(Boolean)
+);
+
+function effectiveRole(user) {
+  if (!user) return "user";
+  if (bootstrapAdminEmails.has(normalizeEmail(user.email))) return "admin";
+  const role = String(user.app_metadata?.role || "user").toLowerCase();
+  return VALID_ROLES.has(role) ? role : "user";
+}
+
+async function requireAdmin(req, res, next) {
+  return requireUser(req, res, () => {
+    if (req.user?.role !== "admin") {
+      return res.status(403).json({ error: "ADMIN_REQUIRED", message: "Denne funksjonen krever administratorrettigheter." });
+    }
+    next();
+  });
+}
+
+async function requireContentEditor(req, res, next) {
+  return requireUser(req, res, () => {
+    if (!["editor", "admin"].includes(req.user?.role || "user")) {
+      return res.status(403).json({ error: "EDITOR_REQUIRED", message: "Denne funksjonen krever redaktør- eller administratorrettigheter." });
+    }
+    next();
+  });
+}
+
 function publicUser(user) {
   if (!user) return null;
   return {
     id: user.id,
     username: user.user_metadata?.username || user.email?.split("@")[0] || "Bruker",
     email: user.email,
+    role: effectiveRole(user),
     createdAt: user.created_at || null
   };
 }
@@ -262,6 +309,73 @@ async function requireUser(req, res, next) {
 app.get("/api/auth/me", async (req, res) => {
   const resolved = await resolveSession(req, res);
   res.json({ user: resolved?.user || null });
+});
+
+
+app.get("/api/content", async (_req, res) => {
+  const { data, error } = await supabaseAdmin
+    .from("content_overrides")
+    .select("content_key, content_value, updated_at")
+    .order("content_key", { ascending: true });
+  if (error) {
+    const missing = /content_overrides|relation .* does not exist/i.test(String(error.message || ""));
+    if (!missing) console.error("Kunne ikke hente redigerbart innhold:", error);
+    return res.json({ values: {}, setupRequired: missing });
+  }
+  const values = Object.fromEntries((data || []).map(row => [row.content_key, row.content_value]));
+  res.json({ values, setupRequired: false });
+});
+
+app.put("/api/admin/content", requireContentEditor, async (req, res) => {
+  const values = req.body?.values && typeof req.body.values === "object" ? req.body.values : null;
+  if (!values) return res.status(400).json({ error: "INVALID_CONTENT", message: "Mangler innhold som skal lagres." });
+  const entries = Object.entries(values)
+    .filter(([key]) => EDITABLE_CONTENT_KEYS.has(String(key)))
+    .map(([key, value]) => ({
+      content_key: String(key),
+      content_value: String(value ?? "").slice(0, 20000),
+      updated_by: req.user.id,
+      updated_at: new Date().toISOString()
+    }));
+  if (!entries.length) return res.json({ ok: true, saved: 0 });
+  const { error } = await supabaseAdmin.from("content_overrides").upsert(entries, { onConflict: "content_key" });
+  if (error) {
+    const missing = /content_overrides|relation .* does not exist/i.test(String(error.message || ""));
+    console.error("Kunne ikke lagre redigerbart innhold:", error);
+    return res.status(missing ? 503 : 500).json({
+      error: missing ? "CONTENT_TABLE_MISSING" : "CONTENT_SAVE_FAILED",
+      message: missing ? "Kjør V20-SUPABASE-MIGRATION.sql i Supabase før innholdsredigering tas i bruk." : "Kunne ikke lagre innholdet."
+    });
+  }
+  res.json({ ok: true, saved: entries.length });
+});
+
+app.get("/api/admin/users", requireAdmin, async (_req, res) => {
+  const users = [];
+  for (let page = 1; page <= 10; page += 1) {
+    const { data, error } = await supabaseAdmin.auth.admin.listUsers({ page, perPage: 100 });
+    if (error) return res.status(500).json({ error: "USER_LIST_FAILED", message: "Kunne ikke hente brukere." });
+    const pageUsers = data?.users || [];
+    users.push(...pageUsers.map(user => publicUser(user)));
+    if (pageUsers.length < 100) break;
+  }
+  res.json({ users });
+});
+
+app.patch("/api/admin/users/:id/role", requireAdmin, async (req, res) => {
+  const targetId = String(req.params.id || "");
+  const role = String(req.body?.role || "").toLowerCase();
+  if (!VALID_ROLES.has(role)) return res.status(400).json({ error: "INVALID_ROLE", message: "Ugyldig rolle." });
+  if (targetId === req.user.id) return res.status(400).json({ error: "SELF_ROLE_CHANGE", message: "Du kan ikke endre din egen rolle her." });
+  const { data: targetData, error: targetError } = await supabaseAdmin.auth.admin.getUserById(targetId);
+  if (targetError || !targetData?.user) return res.status(404).json({ error: "USER_NOT_FOUND", message: "Fant ikke brukeren." });
+  if (bootstrapAdminEmails.has(normalizeEmail(targetData.user.email)) && role !== "admin") {
+    return res.status(400).json({ error: "BOOTSTRAP_ADMIN", message: "Denne administratoren er definert som hovedadministrator og kan ikke nedgraderes her." });
+  }
+  const appMetadata = { ...(targetData.user.app_metadata || {}), role };
+  const { data, error } = await supabaseAdmin.auth.admin.updateUserById(targetId, { app_metadata: appMetadata });
+  if (error || !data?.user) return res.status(500).json({ error: "ROLE_UPDATE_FAILED", message: "Kunne ikke oppdatere rollen." });
+  res.json({ user: publicUser(data.user) });
 });
 
 app.post("/api/auth/register", async (req, res) => {
@@ -698,6 +812,40 @@ const guidanceSchema = {
 };
 
 
+
+function serverPrivacyFindings(text) {
+  const source = String(text || "");
+  const findings = [];
+  const add = (type, message) => { if (!findings.some(item => item.type === type)) findings.push({ type, message }); };
+  if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(source)) add("email", "Fjern e-postadresse.");
+  if (/(?:\+47\s?)?(?:\d[\s-]?){8}\b/.test(source)) add("phone", "Fjern telefonnummer.");
+  if (/\b\d{11}\b/.test(source) || /\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source)) add("identifier", "Fjern identifikasjonsnummer.");
+  if (/\b(?:han|hun|ham|henne|hans|hennes)\b/i.test(source)) add("gendered_language", "Bruk kjønnsnøytral formulering, for eksempel «hen» eller «medarbeideren».");
+  return findings;
+}
+
+function blockUnsafeAiText(res, texts) {
+  const findings = (Array.isArray(texts) ? texts : [texts]).flatMap(serverPrivacyFindings);
+  const unique = findings.filter((item, index, all) => all.findIndex(other => other.type === item.type) === index);
+  if (!unique.length) return false;
+  res.status(400).json({ error: "PRIVACY_REVIEW_REQUIRED", message: "Teksten må gjennom personvernsjekken før den kan sendes til KI.", findings: unique });
+  return true;
+}
+
+function flattenTextValues(value) {
+  if (typeof value === "string") return [value];
+  if (Array.isArray(value)) return value.flatMap(flattenTextValues);
+  if (value && typeof value === "object") return Object.values(value).flatMap(flattenTextValues);
+  return [];
+}
+
+function leaderTurnTexts(turns) {
+  if (!Array.isArray(turns)) return [];
+  return turns
+    .filter(turn => turn?.role === "leader")
+    .map(turn => String(turn?.text || ""));
+}
+
 app.post("/api/classify-topic", requireUser, async (req, res) => {
   if (!client) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
@@ -709,6 +857,7 @@ app.post("/api/classify-topic", requireUser, async (req, res) => {
   if (situation.length < 4) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Beskriv situasjonen litt mer før tema foreslås." });
   }
+  if (blockUnsafeAiText(res, situation)) return;
 
   const catalogText = topicCatalog.map(topic =>
     `- ${topic.id} | ${topic.title}: ${topic.description}\n  Undertemaer: ${topic.subtopics.join(" | ")}`
@@ -782,6 +931,7 @@ app.post("/api/analyze-situation", requireUser, async (req, res) => {
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
+  if (blockUnsafeAiText(res, [situation, helpRequest])) return;
 
   const task = `\n\n## Oppgave i denne forespørselen\nAnalyser situasjonen som samtalepartner, ikke som HR-klassifiserer.\n- Gjengi bare fakta som faktisk står i brukerens tekst.\n- Identifiser det menneskelige/praktiske dilemmaet, ikke bare en kategori.\n- Relevante temaer er kun metadata og skal være maks to.\n- Still bare avklaringsspørsmål dersom svarene kan endre rådet vesentlig.\n- Lag korte klikkbare svaralternativer som dekker sannsynlige svar uten å påstå at de er sanne.
 - Sett multi_select=true når flere svaralternativer realistisk kan være sanne samtidig eller brukeren kan trenge hjelp med flere ting. Bruk false når alternativene faktisk utelukker hverandre.\n- Spør aldri om diagnose eller unødvendige sensitive opplysninger.\n- Hvis valgt tema/undertema ikke passer teksten, skal friteksten veie tyngst.\n\nValgt tema i grensesnittet: ${selectedTopic || "ikke oppgitt"}\nValgt undertema: ${selectedSubtopic || "ikke oppgitt"}\nHva brukeren ønsker hjelp til: ${helpRequest || "ikke oppgitt"}\n`;
@@ -840,6 +990,7 @@ app.post("/api/generate-guidance", requireUser, async (req, res) => {
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
+  if (blockUnsafeAiText(res, [situation, ...flattenTextValues(followups)])) return;
 
   const relevantSources = selectRelevantSources(analysis, situation);
   const guidanceTask = `\n\n## Oppgave: lag konkret samtalestøtte\nDu skal nå lage selve samtalestøtten til akkurat denne saken. Ikke bruk standardråd som kunne passet enhver leder.\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Åpningen skal kunne sies høyt i denne konkrete samtalen.\n- Spørsmålene skal være få og målrettede; hvert spørsmål må ha en tydelig funksjon i akkurat saken.\n- Foreslå 2–4 plausible reaksjoner som er SPESIFIKKE for det som står på spill. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- Skill mellom hva lederen bør AVKLARE før møtet og hva lederen bør SI i møtet.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk den kuraterte fagbanken som førstevalg og kvalitetsanker. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør støttes av relevante kilder.\n- source_ids må kun inneholde ID-er fra den oppgitte fagbanken. Velg 1–4 presise kilder når de faktisk passer.\n- Fagbanken er IKKE en lukket liste. Dersom saken trenger en mer presis, nyere eller manglende kilde, kan du bruke nettsøk og supplere med inntil 2 kilder. Prioriter norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning. Unngå blogger, markedsføring og tilfeldige rådssider.\n- supplementary_sources skal bare inneholde kilder du faktisk har funnet og brukt gjennom nettsøk. Ikke konstruer titler, forfattere eller lenker. Bruk tom liste hvis fagbanken er tilstrekkelig.\n- Ved juridisk sensitivitet: prioriter gjeldende norsk lov/myndighetskilde og anbefal HR/juridisk kvalitetssikring når nødvendig, uten å konkludere definitivt.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n`;
@@ -886,6 +1037,7 @@ app.post("/api/continue-conversation", requireUser, async (req, res) => {
   if (typeof question !== "string" || !question.trim()) {
     return res.status(400).json({ error: "MISSING_QUESTION", message: "Oppfølgingsspørsmål mangler." });
   }
+  if (blockUnsafeAiText(res, [situation, question, ...flattenTextValues(followups)])) return;
   const relevantSources = selectRelevantSources(analysis, situation);
   const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal HR/juridisk kvalitetssikring, uten å konkludere definitivt.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Hold svaret kort, direkte og situasjonsnært.
 - Svar på akkurat spørsmålet som ble stilt; ikke skriv hovedveiledningen på nytt.
@@ -960,6 +1112,7 @@ app.post('/api/simulation-turn', requireUser, async (req, res) => {
   }
   const style = Object.prototype.hasOwnProperty.call(simulationStyleInstructions, body.style) ? body.style : 'open';
   const fidelity = Object.prototype.hasOwnProperty.call(simulationFidelityInstructions, body.fidelity) ? body.fidelity : 'factual';
+  if (blockUnsafeAiText(res, [body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)])) return;
   try {
     const response = await client.responses.create({
       model,
@@ -985,6 +1138,7 @@ app.post('/api/simulation-help', requireUser, async (req, res) => {
   };
   const task = helpKinds[body.kind] || helpKinds.formulation;
   const turns = sanitizeSimulationTurns(body.turns);
+  if (blockUnsafeAiText(res, [body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)])) return;
   const prompt = `Du er nå trener, IKKE medarbeider. ${task}\nBruk bare opplysninger som finnes i saken og samtalen. Ikke dikt opp fakta. Ikke gi en lang forklaring. Maks 80 ord.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nSamtalen så langt: ${JSON.stringify(turns)}`;
   try {
     const response = await client.responses.create({ model, instructions: systemPrompt, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }] });
@@ -1012,6 +1166,7 @@ app.post('/api/simulation-feedback', requireUser, async (req, res) => {
   const body = req.body || {};
   const turns = sanitizeSimulationTurns(body.turns);
   if (!turns.some(turn => turn.role === 'leader')) return res.status(400).json({ error: 'EMPTY_SIMULATION', message: 'Øvelsen har ingen lederutsagn å vurdere.' });
+  if (blockUnsafeAiText(res, [body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)])) return;
   const task = `\n\n## Oppgave: tilbakemelding etter samtaleøvelse\nDu er trener, ikke medarbeider. Vurder KUN det lederen faktisk sa i transkriptet.\n- Ingen poengsum, karakter eller rangering.\n- Pek på konkrete formuleringer eller grep som fungerte godt.\n- Pek på konkrete steder som kunne vært tydeligere, mer åpne eller mer presise.\n- Ikke anta lederens intensjon utover ordene som står der.\n- Ikke finn på fakta om medarbeideren.\n- Gi én alternativ formulering som passer saken.\n- Avslutt med ett kort læringspunkt.\n\nSituasjon: ${String(body.situation || '').slice(0,12000)}\nAnalyse: ${JSON.stringify(body.analysis || {})}\nTidligere råd: ${JSON.stringify(body.guidance || {})}\nTranskript: ${JSON.stringify(turns)}`;
   try {
     const response = await client.responses.create({

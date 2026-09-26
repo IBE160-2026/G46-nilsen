@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=19.12.4" />
+  <link rel="stylesheet" href="styles.css?v=20.0.0" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -48,6 +48,10 @@
             <span class="nav-glyph" id="nav-settings-icon"></span>
             <span class="nav-label">Innstillinger</span>
           </button>
+          <button class="nav-item admin-only" data-view="admin" id="nav-admin" type="button" hidden>
+            <span class="nav-glyph" id="nav-admin-icon"></span>
+            <span class="nav-label">Admin</span>
+          </button>
         </nav>
         <div class="sidebar-message">
           <div class="sidebar-message-icon" id="sidebar-message-icon"></div>
@@ -83,6 +87,7 @@
               <button type="button" data-profile-action="history">Historikk</button>
               <button type="button" data-profile-action="about">Om Samtalestøtte</button>
               <button type="button" data-profile-action="contact">Kontakt / rapporter feil</button>
+              <button type="button" data-profile-action="admin" class="admin-only" hidden>Admin</button>
               <button type="button" data-profile-action="logout">Logg ut</button>
             </div>
           </div>
@@ -92,9 +97,9 @@
       <section id="home-view" class="view active-view">
         <section class="hero-panel">
           <div class="hero-copy">
-            <span class="eyebrow">BEDRE SAMTALER. ET STERKERE ARBEIDSLIV.</span>
-            <h1>Forbered vanskelige samtaler med trygghet og struktur</h1>
-            <p>Velg tema, beskriv situasjonen anonymt og få støtte til å planlegge en profesjonell og tydelig samtale.</p>
+            <span class="eyebrow" data-content-key="home.hero.eyebrow">BEDRE SAMTALER. ET STERKERE ARBEIDSLIV.</span>
+            <h1 data-content-key="home.hero.title">Forbered vanskelige samtaler med trygghet og struktur</h1>
+            <p data-content-key="home.hero.intro">Velg tema, beskriv situasjonen anonymt og få støtte til å planlegge en profesjonell og tydelig samtale.</p>
           </div>
           <div class="hero-visual">
             <img src="hero-conversation-exact.png" alt="To personer i samtale på et møte" />
@@ -193,6 +198,7 @@
 
       <section id="guidance-view" class="view">
         <button class="back-link" id="back-to-topic" type="button">← Tilbake til undertemaer</button>
+        <div id="history-privacy-review-guidance" class="history-privacy-review" hidden></div>
         <div class="content-header">
           <span class="eyebrow">FORBEREDELSE</span>
           <h1 id="guidance-title"></h1>
@@ -257,6 +263,7 @@
           <h2>Før vi går videre</h2>
           <p>Svar bare på det som er relevant. Du kan velge flere alternativer når flere passer.</p>
           <div id="followup-questions" class="followup-questions"></div>
+          <div id="followup-privacy" class="privacy-check" role="status" aria-live="polite" hidden></div>
           <div class="followup-actions">
             <button class="primary-button" id="generate-guidance" type="button">Lag samtalestøtte</button>
             <button class="secondary-button" id="show-guidance-anyway" type="button">Fortsett uten å svare</button>
@@ -318,19 +325,20 @@
         <div class="simulation-hub-hero">
           <div>
             <span class="eyebrow">SAMTALELAB · BETA</span>
-            <h1>Øv på krevende samtaler</h1>
-            <p>Tren i et eget samtalerom. Du er leder, KI-en spiller medarbeideren. Start fra en sak du allerede jobber med, eller gå rett inn i en ny simulering.</p>
+            <h1 data-content-key="simulation.hero.title">Øv på krevende samtaler</h1>
+            <p data-content-key="simulation.hero.intro">Tren i et eget samtalerom. Du er leder, KI-en spiller medarbeideren. Start fra en sak du allerede jobber med, eller gå rett inn i en ny simulering.</p>
           </div>
           <div class="simulation-logo-crop" aria-hidden="true">
             <img src="logo-symbol.png" alt="" />
           </div>
         </div>
+        <div id="history-privacy-review-simulation" class="history-privacy-review" hidden></div>
 
         <div class="simulation-privacy-banner" role="note" aria-label="Personvern i samtalesimulering">
           <span class="simulation-privacy-icon" aria-hidden="true">◈</span>
           <div>
-            <strong>Hold øvelsen anonym</strong>
-            <p>Ikke skriv navn eller andre opplysninger som gjør medarbeideren lett gjenkjennelig. Beskriv situasjonen generelt. Samtalesimuleringen er et øvingsverktøy – ikke et system for lagring av personalsaker.</p>
+            <strong data-content-key="simulation.privacy.title">Hold øvelsen anonym</strong>
+            <p data-content-key="simulation.privacy.text">Ikke skriv navn eller andre opplysninger som gjør medarbeideren lett gjenkjennelig. Beskriv situasjonen generelt. Samtalesimuleringen er et øvingsverktøy – ikke et system for lagring av personalsaker.</p>
           </div>
           <button class="text-button simulation-privacy-link" type="button" data-open-legal="privacy">Personvern</button>
         </div>
@@ -439,7 +447,7 @@
               <form id="simulation-form" class="simulation-form" autocomplete="off">
                 <textarea id="simulation-input" rows="2" placeholder="Skriv det du ville sagt …" required></textarea>
                 <div class="simulation-input-meta">Enter for å sende · Shift + Enter for linjeskift</div>
-                <div id="simulation-turn-privacy" class="privacy-check simulation-turn-privacy" hidden></div>
+                <div id="simulation-turn-privacy" class="privacy-check simulation-turn-privacy privacy-idle"><strong>Personvernsjekk</strong><span>Ingen tydelige personopplysninger er oppdaget i teksten.</span></div>
                 <div class="simulation-form-actions">
                   <button class="primary-button" id="simulation-submit" type="submit">Si dette</button>
                   <button class="secondary-button" id="toggle-simulation-help" type="button" hidden>Trenger du hjelp?</button>
@@ -565,14 +573,24 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">19.12.5</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.0.0</strong></p>
+        </div>
+      </section>
+
+
+      <section id="admin-view" class="view admin-view">
+        <button class="back-link" id="back-from-admin" type="button">← Tilbake til hjem</button>
+        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">ADMINISTRASJON</span><div class="utility-title-row"><h1>Admin og innhold</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div><p>Rediger utvalgte tekster og administrer roller uten å endre kildekoden.</p></div></div>
+        <div class="admin-grid">
+          <section class="settings-card admin-content-card"><div class="admin-section-heading"><div><h2>Rediger innhold</h2><p>Disse tekstene kan endres uten ny deploy. Tekster som påvirker KI-logikk og temaklassifisering redigeres fortsatt i kode.</p></div><span class="role-badge" id="admin-current-role">–</span></div><form id="admin-content-form" class="admin-content-form"><div id="admin-content-fields"></div><div class="admin-actions"><button class="primary-button" type="submit">Lagre tekster</button><button class="secondary-button" id="admin-reload-content" type="button">Last inn på nytt</button></div><div class="auth-message" id="admin-content-message" aria-live="polite"></div></form></section>
+          <section class="settings-card admin-users-card" id="admin-users-card"><h2>Brukere og roller</h2><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></section>
         </div>
       </section>
 
       <section id="contact-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
         <div class="content-header utility-header">
-          <div class="utility-header-copy"><span class="eyebrow">KONTAKT OG TILBAKEMELDING</span><div class="utility-title-row"><h1>Spørsmål eller noe som ikke virker?</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div><p>Rapporter gjerne tekniske feil, uklare råd, feil i kilder eller andre forbedringsforslag.</p></div>
+          <div class="utility-header-copy"><span class="eyebrow">KONTAKT OG TILBAKEMELDING</span><div class="utility-title-row"><h1 data-content-key="contact.title">Spørsmål eller noe som ikke virker?</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div><p data-content-key="contact.intro">Rapporter gjerne tekniske feil, uklare råd, feil i kilder eller andre forbedringsforslag.</p></div>
         </div>
         <div class="contact-layout">
           <form class="settings-card report-form" id="report-form">
@@ -590,7 +608,8 @@
             <label>Beskriv kort hva som skjedde
               <textarea id="report-description" rows="5" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea>
             </label>
-            <div class="report-meta" id="report-meta">Versjon 19.12.5</div>
+            <label class="report-log-option"><input id="report-include-log" type="checkbox" checked><span>Ta med teknisk logg <small>Ingen samtaletekst tas med automatisk.</small></span></label>
+            <div class="report-meta" id="report-meta">Versjon 20.0.0</div>
             <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
             <div class="auth-message" id="report-message" aria-live="polite"></div>
           </form>
@@ -662,6 +681,6 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-  <script src="app.js?v=19.12.4"></script>
+  <script src="app.js?v=20.0.0"></script>
 </body>
 </html>

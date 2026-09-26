@@ -38,6 +38,8 @@ const privacyCases = [
   ['Jeg jobber i Solsikken barnehage og trenger råd.', 'workplace_detail'],
   ['Jeg jobber i en barnehage og trenger råd.', null],
   ['Jeg jobber i en sikkerhetskritisk virksomhet.', null],
+  ['Hun ønsker et møte med lederen.', 'gendered_language'],
+  ['Jeg ga beskjed til ham i går.', 'gendered_language'],
 ];
 
 let failures = 0;
@@ -67,8 +69,15 @@ const workOk=workFixed.includes('sikkerhetskritisk virksomhet') && !workFixed.in
 if(!workOk) failures += 1;
 console.log(`${workOk ? 'OK' : 'FEIL'} arbeidssted-anonymisering: ${workInput} -> ${workFixed}`);
 
+
+const pronounInput='Hun sier at hennes opplevelse er annerledes.';
+const pronounFixed=sandbox.autoFixPrivacyText(pronounInput,sandbox.detectSensitiveInfo(pronounInput));
+const pronounOk=/\bhen\b/i.test(pronounFixed) && /\bhens\b/i.test(pronounFixed) && !/\bhun\b|\bhennes\b/i.test(pronounFixed);
+if(!pronounOk) failures += 1;
+console.log(`${pronounOk ? 'OK' : 'FEIL'} kjønnsnøytralisering: ${pronounInput} -> ${pronounFixed}`);
+
 if (failures) {
   console.error(`\n${failures} personverntest(er) feilet.`);
   process.exit(1);
 }
-console.log(`\nAlle ${nameCases.length + privacyCases.length + 2} personverntester OK.`);
+console.log(`\nAlle ${nameCases.length + privacyCases.length + 3} personverntester OK.`);
