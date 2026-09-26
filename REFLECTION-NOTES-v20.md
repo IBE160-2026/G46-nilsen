@@ -51,3 +51,10 @@ Dette dokumentet samler bevisste valg som kan brukes i refleksjonsnotatet senere
 - Faktisk tokenbruk og estimert kostnad logges fordi modellvalg er et produkt- og skaleringsvalg, ikke bare et teknisk valg.
 - Weboppslag logges som søketema/domene, ikke samtaletekst, for å identifisere hvilke eksterne kunnskapskilder en framtidig offline-/lukket versjon bør inneholde.
 - Rapportering av KI-svar kan inkludere samtalen bare etter aktivt samtykke, og personvernsjekken kjøres før vedlegget lagres. Dette balanserer kvalitetsarbeid mot dataminimering.
+
+## v20.3 – teststrategi, kostnad og sammenligning av KI-modeller
+Det ble valgt en todelt teststrategi fordi en full ende-til-ende-benchmark av alle undertemaer på tre modeller ville gi unødvendig API-kostnad i et studentprosjekt. Testbanken dekker alle 47 undertemaer med minst to faste situasjoner per undertema (94 saker totalt), men den store dekningskontrollen kan kjøres uten KI-kall. Ekte modellbenchmark kjøres på et kontrollert utvalg av de samme sakene mot Luna, Terra og Sol.
+
+Benchmarken lagrer objektive måledata: tokenbruk, estimert kostnad, responstid, weboppslag, søkestrenger og brukte domener, i tillegg til selve svarene. Dette gjør det mulig å sammenligne modellene på både kvalitet, kildebruk og ressursbruk, samtidig som menneskelig vurdering av svarene fortsatt er nødvendig. Testtrafikk skilles fra reell brukertrafikk, slik at kostnads- og brukstall ikke forurenses.
+
+En eksplisitt budsjettgrense ble valgt som sikkerhetsmekanisme. Dette støtter et viktig prosjektprinsipp: kvalitetsarbeid skal være målbart, men testopplegget må stå i forhold til prosjektets økonomi. De registrerte weboppslagene kan også brukes til å identifisere hvilke kilder som senere bør prioriteres i en lokal SOURCEBANK/RAG-løsning for lukket eller offline drift.

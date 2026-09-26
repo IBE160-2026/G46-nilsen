@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.2.0";
+const appVersion = process.env.APP_VERSION || "20.3.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.use(express.json({ limit: "1mb" }));
@@ -32,6 +32,15 @@ const AI_MODELS = {
   "gpt-5.6-terra": { label: "GPT-5.6 Terra", tier: "Balansert", inputPerMillion: 2.00, outputPerMillion: 12.00 },
   "gpt-5.6-sol": { label: "GPT-5.6 Sol", tier: "Høyest kvalitet", inputPerMillion: 4.00, outputPerMillion: 20.00 }
 };
+const WEB_SEARCH_CALL_USD = 0.01; // OpenAI web search: $10 / 1000 calls (2026-09).
+const benchmarkCasePath = path.join(__dirname, "BENCHMARK-CASES.json");
+let benchmarkCases = [];
+try {
+  benchmarkCases = JSON.parse(fs.readFileSync(benchmarkCasePath, "utf8")).cases || [];
+} catch (error) {
+  console.warn("Kunne ikke lese BENCHMARK-CASES.json:", error?.message || error);
+}
+const benchmarkCaseById = new Map(benchmarkCases.map(item => [item.id, item]));
 let activeModelCache = { value: null, expiresAt: 0 };
 
 async function getActiveModel() {
@@ -72,38 +81,54 @@ function extractWebSearchMeta(response) {
       }
     }
   }
-  return { used, queries: [...new Set(queries)].slice(0,10), domains: [...new Set(domains)].slice(0,20) };
+  return { used, count: (response?.output || []).filter(item => item?.type === 'web_search_call').length, queries: [...new Set(queries)].slice(0,10), domains: [...new Set(domains)].slice(0,20) };
 }
 
-async function logAiUsage({ userId=null, functionName='unknown', modelUsed, response }) {
+async function logAiUsage({ userId=null, functionName='unknown', modelUsed, response, isTest=false, benchmarkRunId=null, benchmarkCaseId=null }) {
   try {
     const usage = response?.usage || {};
     const inputTokens = Number(usage.input_tokens || usage.inputTokens || 0);
     const outputTokens = Number(usage.output_tokens || usage.outputTokens || 0);
     const meta = AI_MODELS[modelUsed] || { inputPerMillion:0, outputPerMillion:0 };
-    const estimatedCostUsd = (inputTokens / 1_000_000) * meta.inputPerMillion + (outputTokens / 1_000_000) * meta.outputPerMillion;
     const web = extractWebSearchMeta(response);
-    await supabaseAdmin.from('ai_usage_log').insert({
+    const tokenCostUsd = (inputTokens / 1_000_000) * meta.inputPerMillion + (outputTokens / 1_000_000) * meta.outputPerMillion;
+    const estimatedCostUsd = tokenCostUsd + (web.count * WEB_SEARCH_CALL_USD);
+    const baseRow = {
       user_id:userId, function_name:functionName, model:modelUsed,
       input_tokens:inputTokens, output_tokens:outputTokens, total_tokens:inputTokens+outputTokens,
       estimated_cost_usd:estimatedCostUsd, web_search_used:web.used,
       web_search_queries:web.queries, source_domains:web.domains
-    });
+    };
+    const extendedRow = { ...baseRow, web_search_call_count:web.count, is_test:Boolean(isTest), benchmark_run_id:benchmarkRunId, benchmark_case_id:benchmarkCaseId };
+    const { error } = await supabaseAdmin.from('ai_usage_log').insert(extendedRow);
+    if (error) {
+      // v20.2 compatibility: ordinary KI-kall should still work before the v20.3 migration is run.
+      const { error: fallbackError } = await supabaseAdmin.from('ai_usage_log').insert(baseRow);
+      if (fallbackError) throw fallbackError;
+    }
+    return { inputTokens, outputTokens, totalTokens:inputTokens+outputTokens, tokenCostUsd, estimatedCostUsd, web };
   } catch (error) {
     console.warn('Kunne ikke lagre KI-brukslogg:', error?.message || error);
+    return null;
   }
 }
 
 async function createTrackedResponse(params) {
-  const modelUsed = await getActiveModel();
+  const requestedModel = String(params._modelOverride || '');
+  const modelUsed = requestedModel && AI_MODELS[requestedModel] ? requestedModel : await getActiveModel();
   const functionName = String(params._functionName || 'unknown');
   const userId = params._userId || null;
+  const isTest = Boolean(params._isTest);
+  const benchmarkRunId = params._benchmarkRunId || null;
+  const benchmarkCaseId = params._benchmarkCaseId || null;
   const cleanParams = { ...params };
-  delete cleanParams._functionName; delete cleanParams._userId;
+  delete cleanParams._functionName; delete cleanParams._userId; delete cleanParams._modelOverride;
+  delete cleanParams._isTest; delete cleanParams._benchmarkRunId; delete cleanParams._benchmarkCaseId;
   try {
     const response = await client.responses.create({ ...cleanParams, model: modelUsed });
-    await logAiUsage({ userId, functionName, modelUsed, response });
+    const usageSummary = await logAiUsage({ userId, functionName, modelUsed, response, isTest, benchmarkRunId, benchmarkCaseId });
     Object.defineProperty(response, '__samtalestotteModel', { value:modelUsed, enumerable:false });
+    Object.defineProperty(response, '__samtalestotteUsage', { value:usageSummary, enumerable:false });
     return response;
   } catch (error) {
     error.samtalestotteModel = modelUsed;
@@ -493,17 +518,97 @@ app.put('/api/admin/ai-settings', requireAdmin, async (req,res)=>{
   res.json({ok:true,activeModel:modelId});
 });
 
-app.get('/api/admin/ai-usage', requireAdmin, async (_req,res)=>{
+app.get('/api/admin/ai-usage', requireAdmin, async (req,res)=>{
   const since = new Date(Date.now()-30*24*60*60*1000).toISOString();
-  const { data,error }=await supabaseAdmin.from('ai_usage_log').select('function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_queries,source_domains,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
-  if(error) return res.status(500).json({error:'USAGE_LOAD_FAILED',message:'Kunne ikke hente KI-bruk. Kjør V20-2-SUPABASE-MIGRATION.sql først.'});
-  const rows=data||[];
+  const includeTests = req.query.includeTests === '1';
+  let rows=[];
+  let extended=true;
+  let result=await supabaseAdmin.from('ai_usage_log').select('function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_call_count,web_search_queries,source_domains,is_test,benchmark_run_id,benchmark_case_id,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
+  if(result.error){
+    extended=false;
+    result=await supabaseAdmin.from('ai_usage_log').select('function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_queries,source_domains,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
+  }
+  if(result.error) return res.status(500).json({error:'USAGE_LOAD_FAILED',message:'Kunne ikke hente KI-bruk. Kjør V20-2-SUPABASE-MIGRATION.sql først.'});
+  rows=(result.data||[]).map(r=>extended?r:{...r,is_test:false,web_search_call_count:r.web_search_used?1:0});
+  if(!includeTests) rows=rows.filter(r=>!r.is_test);
   const now=Date.now();
   const sumDays=d=>rows.filter(r=>new Date(r.created_at).getTime()>=now-d*86400000).reduce((a,r)=>a+Number(r.estimated_cost_usd||0),0);
   const domainCounts={}; const queryCounts={};
   for(const r of rows){ for(const d of r.source_domains||[]) domainCounts[d]=(domainCounts[d]||0)+1; for(const q of r.web_search_queries||[]) queryCounts[q]=(queryCounts[q]||0)+1; }
   const top=(obj,n=12)=>Object.entries(obj).sort((a,b)=>b[1]-a[1]).slice(0,n).map(([name,count])=>({name,count}));
-  res.json({summary:{cost24h:sumDays(1),cost7d:sumDays(7),cost30d:sumDays(30),calls30d:rows.length,webSearchCalls30d:rows.filter(r=>r.web_search_used).length},recent:rows.slice(0,100),topDomains:top(domainCounts),topQueries:top(queryCounts)});
+  res.json({summary:{cost24h:sumDays(1),cost7d:sumDays(7),cost30d:sumDays(30),calls30d:rows.length,webSearchCalls30d:rows.filter(r=>r.web_search_used).length},recent:rows.slice(0,100),topDomains:top(domainCounts),topQueries:top(queryCounts),supportsTestFilter:extended});
+});
+
+app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
+  const byTopic={};
+  for(const item of benchmarkCases){
+    if(!byTopic[item.topicId]) byTopic[item.topicId]={topicId:item.topicId,topic:item.topic,subtopics:new Set(),cases:0};
+    byTopic[item.topicId].subtopics.add(item.subtopic); byTopic[item.topicId].cases++;
+  }
+  const topics=Object.values(byTopic).map(x=>({topicId:x.topicId,topic:x.topic,subtopicCount:x.subtopics.size,caseCount:x.cases}));
+  const representative=[]; const seen=new Set();
+  for(const item of benchmarkCases){ if(item.variant==='A'&&!seen.has(item.topicId)){seen.add(item.topicId);representative.push(item.id);} }
+  let storageReady=true;
+  const probe=await supabaseAdmin.from('benchmark_results').select('id').limit(1);
+  if(probe.error) storageReady=false;
+  res.json({version:'20.3.0',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+});
+
+app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
+  const groups=new Map(); const problems=[];
+  for(const item of benchmarkCases){
+    const key=`${item.topicId}|${item.subtopic}`; groups.set(key,(groups.get(key)||0)+1);
+    if(!item.id||!item.situation||!item.topicId||!item.subtopic) problems.push(`${item.id||'ukjent'} mangler obligatorisk felt`);
+    if(serverPrivacyFindings(item.situation).length) problems.push(`${item.id} utløser personvernsjekk`);
+  }
+  for(const [key,count] of groups) if(count<2) problems.push(`${key} har bare ${count} testsak(er)`);
+  const topicCounts={}; for(const item of benchmarkCases) topicCounts[item.topic]=(topicCounts[item.topic]||0)+1;
+  res.json({ok:problems.length===0,mode:'mock',checks:{cases:benchmarkCases.length,subtopics:groups.size,minTwoPerSubtopic:[...groups.values()].every(n=>n>=2),privacySafe:!problems.some(x=>x.includes('personvernsjekk')),topicCounts},problems});
+});
+
+app.post('/api/admin/benchmark/live', requireAdmin, async (req,res)=>{
+  if(!client) return res.status(503).json({error:'AI_NOT_CONFIGURED',message:'OPENAI_API_KEY mangler på serveren.'});
+  const caseId=String(req.body?.caseId||''); const model=String(req.body?.model||'');
+  const runId=String(req.body?.runId||'').slice(0,80) || crypto.randomUUID();
+  const spentSoFar=Math.max(0,Number(req.body?.spentSoFar||0));
+  const budget=Math.min(5,Math.max(0.10,Number(req.body?.budgetUsd||2)));
+  const item=benchmarkCaseById.get(caseId);
+  if(!item) return res.status(400).json({error:'INVALID_CASE',message:'Ukjent testsak.'});
+  if(!AI_MODELS[model]) return res.status(400).json({error:'INVALID_MODEL',message:'Ugyldig KI-modell.'});
+  // Reserve 5 cent before each call so the run stops before the requested budget is exhausted.
+  if(spentSoFar + 0.05 > budget) return res.status(409).json({error:'BUDGET_LIMIT',message:`Budsjettgrensen på $${budget.toFixed(2)} er nådd.`,spentSoFar,budget});
+  const benchmarkPrompt=`Du deltar i en kontrollert benchmark av Samtalestøtte. Gi et kort, konkret og profesjonelt råd til en leder.
+Forventet hovedtema: ${item.topic}
+Forventet undertema: ${item.subtopic}
+Situasjon: ${item.situation}
+
+Krav:
+- Svar på norsk.
+- 120–180 ord.
+- Skill mellom fakta og antakelser.
+- Ikke dikt opp virksomhetsregler eller personopplysninger.
+- Bruk nettsøk bare dersom oppdatert eller presis ekstern informasjon faktisk er nødvendig.
+- Hvis du søker: prioriter norske myndighetskilder og relevante fagmiljøer.
+- Ikke omtale dette som en test i selve rådet.`;
+  const started=Date.now();
+  try{
+    const response=await createTrackedResponse({_functionName:'benchmark',_userId:req.user.id,_modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,tools:[{type:'web_search',search_context_size:'low'}],instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],max_output_tokens:450});
+    const latencyMs=Date.now()-started; const usage=response.__samtalestotteUsage||{}; const web=usage.web||extractWebSearchMeta(response);
+    const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],latency_ms:latencyMs,created_by:req.user.id};
+    const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
+    if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
+    res.json({ok:true,id:save.data?.id,...row});
+  }catch(error){
+    const status=Number(error?.status)||500; res.status(status>=400&&status<600?status:500).json({error:'BENCHMARK_FAILED',message:error?.message||'Benchmark-kallet feilet.',model,caseId});
+  }
+});
+
+app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
+  let q=supabaseAdmin.from('benchmark_results').select('id,run_id,case_id,topic_id,topic,subtopic,variant,model,response_text,input_tokens,output_tokens,estimated_cost_usd,web_search_count,web_search_queries,source_domains,latency_ms,created_at').order('created_at',{ascending:false}).limit(300);
+  const runId=String(req.query.runId||'').trim(); if(runId) q=q.eq('run_id',runId);
+  const {data,error}=await q;
+  if(error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Kjør V20-3-SUPABASE-MIGRATION.sql i Supabase først.'});
+  res.json({items:data||[]});
 });
 
 app.post("/api/auth/register", async (req, res) => {

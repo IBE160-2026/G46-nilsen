@@ -287,3 +287,8 @@ Kontakt: **cecilie.c.nilsen@himolde.no**
 Før eventuell ordinær publisering skal løsningen blant annet gjennom mer brukertesting. Det skal også vurderes hvilken KI-modell som gir best balanse mellom kvalitet, sikkerhet, responstid og kostnad.
 
 Dette er fortsatt en prototype, og funksjoner og utforming kan derfor endres etter testing.
+
+### Automatisk test og modellbenchmark (v20.3)
+Admin-siden har en testbank med 94 faste saker, to for hvert av 47 undertemaer. «Kjør gratis fulltest» kontrollerer testdekning og personvern uten API-kostnad. Ekte benchmark kan kjøre et begrenset utvalg av samme saker på GPT-5.6 Luna, Terra og Sol. Resultatene lagrer svar, tokens, estimert kostnad, responstid og web-/kildebruk. Testtrafikk er merket separat og er skjult fra ordinær KI-bruksstatistikk som standard.
+
+Før ekte benchmark brukes, kjør `V20-3-SUPABASE-MIGRATION.sql` i Supabase. Standardbudsjettet er $2 og hard øvre grense i UI/server er $5.

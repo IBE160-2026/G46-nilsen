@@ -573,7 +573,7 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">20.2.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.3.0</strong></p>
         </div>
       </section>
 
@@ -586,8 +586,24 @@
           <section class="settings-card admin-users-card" id="admin-users-card"><h2>Brukere og roller</h2><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></section><section class="settings-card admin-users-card" id="admin-ai-card" hidden>
             <div class="admin-section-heading"><div><h2>KI-modell og kostnad</h2><p>Bytt modell uten ny deploy, og følg faktisk tokenbruk og estimert API-kostnad.</p></div></div>
             <div class="admin-ai-settings"><label>Aktiv KI-modell<select id="admin-ai-model"></select></label><button class="primary-button" id="admin-save-ai-model" type="button">Lagre modellvalg</button><div class="auth-message" id="admin-ai-model-message" aria-live="polite"></div></div>
-            <div class="admin-cost-grid"><div><small>Siste 24 t</small><strong id="admin-cost-24h">–</strong></div><div><small>Siste 7 dager</small><strong id="admin-cost-7d">–</strong></div><div><small>Siste 30 dager</small><strong id="admin-cost-30d">–</strong></div><div><small>KI-kall / 30 dager</small><strong id="admin-calls-30d">–</strong></div></div><details class="admin-content-section"><summary>Siste KI-kall og kostnad per kall</summary><div class="admin-section-fields"><div id="admin-ai-recent" class="admin-usage-list"></div></div></details>
+            <div class="admin-cost-grid"><div><small>Siste 24 t</small><strong id="admin-cost-24h">–</strong></div><div><small>Siste 7 dager</small><strong id="admin-cost-7d">–</strong></div><div><small>Siste 30 dager</small><strong id="admin-cost-30d">–</strong></div><div><small>KI-kall / 30 dager</small><strong id="admin-calls-30d">–</strong></div></div>
+            <label class="benchmark-inline-check"><input id="admin-usage-include-tests" type="checkbox"><span>Inkluder testtrafikk i kostnadsoversikten</span></label>
+            <details class="admin-content-section"><summary>Siste KI-kall og kostnad per kall</summary><div class="admin-section-fields"><div id="admin-ai-recent" class="admin-usage-list"></div></div></details>
             <details class="admin-content-section"><summary>Weboppslag og kandidater til offline-kildebank</summary><div class="admin-section-fields"><div><h3>Mest brukte domener</h3><div id="admin-source-domains" class="admin-compact-list"></div></div><div><h3>Siste registrerte søk</h3><div id="admin-source-queries" class="admin-compact-list"></div></div><p class="muted-note">Bruksmønstrene kan brukes til å prioritere hva som bør legges i SOURCEBANK/RAG for en senere offline-modus.</p></div></details>
+            <details class="admin-content-section benchmark-panel" id="admin-benchmark-section"><summary>Automatisk test og modellbenchmark</summary><div class="admin-section-fields">
+              <div class="benchmark-intro"><p><strong id="benchmark-coverage">Henter testbank …</strong></p><p class="muted-note">Den gratis testen kontrollerer hele testbanken uten KI-kostnad. Ekte benchmark kjører et begrenset utvalg på Luna, Terra og Sol og lagrer svar, tokens, weboppslag, kilder, kostnad og svartid.</p></div>
+              <div class="benchmark-actions"><button class="secondary-button" id="benchmark-run-mock" type="button">Kjør gratis fulltest</button><span id="benchmark-mock-result" class="benchmark-status"></span></div>
+              <div class="benchmark-live-controls">
+                <label>Testsaker<select id="benchmark-case-set"><option value="8">8 representative saker</option><option value="16">16 saker</option><option value="24">24 saker</option><option value="94">Alle 94 saker</option></select></label>
+                <label>Maks budsjett (USD)<input id="benchmark-budget" type="number" min="0.10" max="5" step="0.10" value="2.00"></label>
+              </div>
+              <div class="benchmark-models" id="benchmark-models"></div>
+              <div class="benchmark-warning">Ekte benchmark bruker API-penger. Testen stopper før neste kall dersom den reserverte kostnaden kan passere budsjettgrensen. Alle benchmark-kall merkes som testtrafikk.</div>
+              <div class="benchmark-actions"><button class="primary-button" id="benchmark-run-live" type="button">Kjør ekte benchmark</button><button class="secondary-button" id="benchmark-stop-live" type="button" disabled>Stopp</button><span id="benchmark-live-status" class="benchmark-status"></span></div>
+              <div class="benchmark-progress"><div id="benchmark-progress-bar"></div></div>
+              <div id="benchmark-summary" class="benchmark-summary"></div>
+              <div id="benchmark-results" class="benchmark-results"></div>
+            </div></details>
           </section>
           <section class="settings-card admin-users-card" id="admin-feedback-card" hidden><h2>Rapporterte KI-svar</h2><p>Samtaleteksten legges bare ved når brukeren aktivt velger «Legg ved samtalen».</p><div id="admin-feedback-list" class="admin-feedback-list"></div></section>
         </div>
@@ -691,6 +707,6 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-  <script src="app.js?v=20.0.0"></script>
+  <script src="app.js?v=20.3.0"></script>
 </body>
 </html>

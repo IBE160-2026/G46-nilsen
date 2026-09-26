@@ -1123,3 +1123,13 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Gjør innlogging obligatorisk for bruk av den lukkede betaversjonen; registrering krever fortsatt engangsinvitasjon.
 - Bygger snakkeboblehaler om til kurvede, integrerte speech-bubble-former og gjenbruker dem i videre KI-dialog.
 - Løfter infosidelogoene og lysner hovedlogoen tydeligere i hybridtema.
+
+## 20.3.0 – Automatisk testbank og modellbenchmark
+- Ny fast testbank med 94 saker: to saker for hvert av 47 undertemaer.
+- Admin kan kjøre en gratis fulltest av testbanken uten KI-kall.
+- Ny lavkost modellbenchmark som kjører samme valgte saker på Luna, Terra og Sol.
+- Benchmark lagrer svar, input/output-tokens, estimert kostnad, antall weboppslag, søk, kilde-domener og svartid.
+- Ekte benchmark er begrenset til maks $5 og har standardbudsjett $2; den reserverer margin før hvert nytt kall og kan stoppes manuelt.
+- Testtrafikk merkes separat (`is_test`) og holdes utenfor vanlig kostnadsoversikt som standard.
+- Websøkets faste verktøykostnad er nå inkludert i nye kostnadsestimater ($0,01 per søk ved gjeldende OpenAI-pris 26.09.2026), i tillegg til tokenkostnad.
+- Ny migrering: `V20-3-SUPABASE-MIGRATION.sql`.
