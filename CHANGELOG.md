@@ -1,3 +1,12 @@
+## v19.11.10 – brukerens egen snakkeboble
+
+- Bruker nå `snakkeboble.svg` direkte som fasit for hele boblesilhuetten.
+- PowerPoint-bakgrunn, gradient, skygge og tykk originalstrek er fjernet fra SVG-filen.
+- Boblekropp og hale er én sammenhengende SVG-path; ingen CSS-trekant eller pålimt pil.
+- Høyre boble er bare en speilvendt variant av samme SVG.
+- Samme form brukes i simulator og hovedsamtale, med mer kompakt størrelse i hovedsamtalen.
+- Infosidelogoene flyttes 35 px ned fra v19.11.9-posisjonen.
+
 ## v19.11.9 – speech bubbles, logoplassering og stille auto-innlogging
 
 - Erstatter CSS-pseudo-haler med en egen kurvet SVG-hale som visuelt smelter inn i boblen.

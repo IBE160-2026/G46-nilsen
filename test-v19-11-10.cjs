@@ -1,0 +1,11 @@
+const fs=require('fs');const assert=require('assert');
+const css=fs.readFileSync('styles.css','utf8');
+const svg=fs.readFileSync('snakkeboble.svg','utf8');
+assert(svg.includes('190.678 567.008'));
+assert(svg.includes('309.333 479'));
+assert(css.includes('mask:url("snakkeboble.svg")'));
+assert(css.includes('translate(-5px,-47px)'));
+assert(css.includes('.speech-tail'));
+assert(css.includes('display:none !important'));
+assert(css.includes('transform:scaleX(-1)'));
+console.log('v19.11.10 bruker-SVG-test OK');

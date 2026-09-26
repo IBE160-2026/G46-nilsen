@@ -1827,3 +1827,149 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
 
 /* Auth-vinduet er skjult under den stille session-sjekken; appen er inert fra HTML til sjekken er ferdig. */
 .auth-overlay[hidden]{display:none !important;}
+
+
+/* v19.11.10 – brukerens egen snakkeboble.svg er nå fasit */
+
+/* Om/Kontakt/Innstillinger osv.: 35 px ned fra v19.11.9-posisjonen. */
+.utility-title-row .utility-page-brand{
+  transform:translate(-5px,-47px) !important;
+}
+@media(max-width:760px){
+  .utility-title-row .utility-page-brand{
+    transform:translate(-3px,-27px) !important;
+  }
+}
+
+/* Fjern alle gamle genererte haler helt. */
+.speech-tail{
+  display:none !important;
+}
+.leader-bubble::before,.leader-bubble::after,
+.employee-bubble::before,.employee-bubble::after,
+.conversation-user::before,.conversation-user::after,
+.conversation-assistant::before,.conversation-assistant::after{
+  content:none !important;
+  display:none !important;
+}
+
+/*
+  Hele boblesilhuetten kommer fra snakkeboble.svg.
+  To maskelag gir en tynn kant: ytre lag = kant, indre lag = fyll.
+  Dette er ikke en firkant med en pålimt trekant – halen er del av samme SVG-path.
+*/
+.simulation-view .simulation-bubble,
+.conversation-turn{
+  --bubble-outline:var(--border);
+  position:relative;
+  isolation:isolate;
+  overflow:visible !important;
+  border:0 !important;
+  border-radius:0 !important;
+  background:transparent !important;
+}
+
+/* Simulator – venstrevendt original. */
+.employee-bubble::before,
+.employee-bubble::after,
+.leader-bubble::before,
+.leader-bubble::after,
+.conversation-assistant::before,
+.conversation-assistant::after,
+.conversation-user::before,
+.conversation-user::after{
+  content:"" !important;
+  display:block !important;
+  position:absolute;
+  pointer-events:none;
+  -webkit-mask:url("snakkeboble.svg") center / 100% 100% no-repeat;
+  mask:url("snakkeboble.svg") center / 100% 100% no-repeat;
+}
+
+/* Ytre lag = tynn kant. */
+.employee-bubble::before,
+.leader-bubble::before{
+  top:-2px;
+  bottom:-30px;
+  width:calc(100% + 30px);
+  background:var(--bubble-outline);
+  z-index:-2;
+}
+/* Indre lag = fyll, 1.5–2 px mindre. */
+.employee-bubble::after,
+.leader-bubble::after{
+  top:0;
+  bottom:-28px;
+  width:calc(100% + 26px);
+  background:var(--bubble-fill);
+  z-index:-1;
+}
+
+/* Venstre boble: halen peker mot venstre avatar. */
+.employee-bubble::before{left:-24px;}
+.employee-bubble::after{left:-22px;}
+
+/* Høyre boble: samme SVG speiles, ikke tegnes på nytt. */
+.leader-bubble::before{
+  right:-24px;
+  transform:scaleX(-1);
+}
+.leader-bubble::after{
+  right:-22px;
+  transform:scaleX(-1);
+}
+
+/* Hovedsamtalen bruker samme form, men mer kompakt. */
+.conversation-assistant::before,
+.conversation-user::before{
+  top:-1px;
+  bottom:-20px;
+  width:calc(100% + 20px);
+  background:var(--bubble-outline);
+  z-index:-2;
+}
+.conversation-assistant::after,
+.conversation-user::after{
+  top:1px;
+  bottom:-18px;
+  width:calc(100% + 16px);
+  background:var(--bubble-fill);
+  z-index:-1;
+}
+.conversation-assistant::before{left:-16px;}
+.conversation-assistant::after{left:-14px;}
+.conversation-user::before{
+  right:-16px;
+  transform:scaleX(-1);
+}
+.conversation-user::after{
+  right:-14px;
+  transform:scaleX(-1);
+}
+
+/* Litt ekstra luft under boblen fordi brukerens SVG-hale går under kroppen. */
+.simulation-bubble-row{
+  margin-bottom:22px;
+  gap:26px !important;
+}
+.conversation-turn{
+  margin-bottom:14px;
+}
+
+/* Sørg for at innholdet alltid ligger over SVG-formen. */
+.simulation-bubble > *,
+.conversation-turn > *{
+  position:relative;
+  z-index:1;
+}
+
+@media(max-width:760px){
+  .simulation-bubble-row{
+    margin-bottom:18px;
+    gap:22px !important;
+  }
+  .employee-bubble::before,
+  .leader-bubble::before{bottom:-26px;}
+  .employee-bubble::after,
+  .leader-bubble::after{bottom:-24px;}
+}
