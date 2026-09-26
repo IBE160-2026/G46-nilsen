@@ -19,7 +19,7 @@ const svgIcons = {
   glassOff: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4h10l-1.4 7.2A3.7 3.7 0 0 1 12 14.2a3.7 3.7 0 0 1-3.6-3L7 4Z"></path><path d="M12 14.2V20"></path><path d="M8.5 20h7"></path><path d="M4 4l16 16"></path></svg>`,
   calendarClock: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5.5" width="14" height="14" rx="2"></rect><path d="M7 3.5v4M14 3.5v4M3.5 9.5h14"></path><circle cx="17.5" cy="16.5" r="4"></circle><path d="M17.5 14.3v2.4l1.5 1"></path></svg>`,
   trendUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19V5M4 19h16"></path><path d="m7 15 4-4 3 2 5-6"></path><path d="M15.5 7H19v3.5"></path></svg>`,
-  coinsUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="7" width="14.5" height="10" rx="1.6"></rect><path d="M5.2 9.7h1.1M14.3 14.3h1.1"></path><path d="M10.2 9.6v4.8"></path><path d="M11.9 10.7c-.2-.7-.9-1.2-1.8-1.2-1 0-1.8.6-1.8 1.4 0 .8.7 1.2 1.9 1.5 1.3.3 2 .8 2 1.7 0 .9-.9 1.6-2 1.6-1 0-1.8-.5-2.1-1.3"></path><path d="M15.3 7.2l4.5-3.6"></path><path d="M16.3 3.6H20v3.7"></path></svg>`,
+  coinsUp: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 4.2v15.6"></path><path d="M14.3 7.2c-.7-1.2-2-2-3.8-2-2.3 0-4 1.2-4 3 0 1.9 1.6 2.7 4.2 3.3 2.7.6 4.2 1.5 4.2 3.5 0 2.1-1.9 3.5-4.5 3.5-2 0-3.7-.8-4.5-2.2"></path><path d="M15.5 9.5 20 5"></path><path d="M16.7 5H20v3.3"></path></svg>`,
   chatPeople: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="8" r="2.5"></circle><circle cx="16" cy="8" r="2.5"></circle><path d="M3.5 16c.5-2.2 2.2-3.5 4.5-3.5 1.1 0 2.1.3 2.8.8M20.5 16c-.5-2.2-2.2-3.5-4.5-3.5-1.1 0-2.1.3-2.8.8"></path><path d="M8 17.5h8l2.5-2.2V20H8z"></path></svg>`,
   exitDoor: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 20V4h9v16"></path><path d="M10 12h10"></path><path d="m17 9 3 3-3 3"></path></svg>`,
   shieldCheck: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>`,
@@ -42,7 +42,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.0.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "20.1.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 const clientErrorLog = [];
@@ -364,7 +364,7 @@ function createTopicCard(topic) {
   button.dataset.searchText = `${topic.title} ${topic.description} ${topic.keywords.join(' ')}`.toLowerCase();
   button.innerHTML = `
     <span class="topic-icon" aria-hidden="true">${svgIcons[topic.iconKey]}</span>
-    <strong>${topic.title}</strong>
+    <strong>${escapeHtml(contentValue(`topic.${topic.id}.title`, topic.title))}</strong>
   `;
   button.addEventListener('click', () => openTopic(topic));
   return button;
@@ -387,11 +387,11 @@ function openTopic(topic, preservedSituation = '') {
   const carriedSituation = String(preservedSituation || pendingSituationText || document.querySelector('#topic-search')?.value || '').trim();
   if (carriedSituation) pendingSituationText = carriedSituation;
   highlightTopicCard(topic.id);
-  document.querySelector('#topic-title').textContent = topic.title;
-  document.querySelector('#topic-description').textContent = topic.description;
+  document.querySelector('#topic-title').textContent = contentValue(`topic.${topic.id}.title`, topic.title);
+  document.querySelector('#topic-description').textContent = contentValue(`topic.${topic.id}.description`, topic.description);
   document.querySelector('#topic-page-icon').innerHTML = svgIcons[topic.iconKey];
   document.querySelector('#topic-representations').innerHTML = topic.representations
-    .map(item => `<span class="representation-chip">${item}</span>`).join('');
+    .map((item,index) => `<span class="representation-chip">${escapeHtml(contentValue(`topic.${topic.id}.representation.${index}`, item))}</span>`).join('');
 
   const topicHeroImage = document.querySelector('.topic-hero-visual img');
   if (topicHeroImage) {
@@ -411,11 +411,13 @@ function openTopic(topic, preservedSituation = '') {
 
   const grid = document.querySelector('#subtopic-grid');
   grid.innerHTML = '';
-  topic.subtopics.forEach(([title, help]) => {
+  topic.subtopics.forEach(([title, help], index) => {
+    const displayTitle = contentValue(`topic.${topic.id}.subtopic.${index}.title`, title);
+    const displayHelp = contentValue(`topic.${topic.id}.subtopic.${index}.help`, help);
     const button = document.createElement('button');
     button.className = 'subtopic-card';
-    button.dataset.searchText = `${title} ${help}`.toLowerCase();
-    button.innerHTML = `<strong>${title}</strong><p>${help}</p>`;
+    button.dataset.searchText = `${displayTitle} ${displayHelp}`.toLowerCase();
+    button.innerHTML = `<strong>${escapeHtml(displayTitle)}</strong><p>${escapeHtml(displayHelp)}</p>`;
     button.addEventListener('click', () => openGuidance(title, help, carriedSituation));
     grid.appendChild(button);
   });
@@ -428,8 +430,12 @@ function openGuidance(title, help, initialSituation = '') {
   const carriedSituation = String(initialSituation || pendingSituationText || '').trim();
   if (carriedSituation) pendingSituationText = carriedSituation;
   currentSubtopic = title;
-  document.querySelector('#guidance-title').textContent = `${currentTopic.title}: ${title}`;
-  document.querySelector('#guidance-help').textContent = help;
+  const subIndex=currentTopic?.subtopics?.findIndex(([subTitle])=>subTitle===title) ?? -1;
+  const displayTopic=contentValue(`topic.${currentTopic.id}.title`, currentTopic.title);
+  const displayTitle=subIndex>=0?contentValue(`topic.${currentTopic.id}.subtopic.${subIndex}.title`,title):title;
+  const displayHelp=subIndex>=0?contentValue(`topic.${currentTopic.id}.subtopic.${subIndex}.help`,help):help;
+  document.querySelector('#guidance-title').textContent = `${displayTopic}: ${displayTitle}`;
+  document.querySelector('#guidance-help').textContent = displayHelp;
   setBreadcrumb(`Forbered samtale / ${currentTopic.title} / ${title}`);
   clearGuidanceSession({ clearInputs: true });
   const situationField = document.querySelector('#situation');
@@ -1142,7 +1148,7 @@ async function requestAiGuidance(situation, analysis, followups) {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ situation, analysis, followups })
+    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '' })
   });
   if (!response.ok) {
     let payload = {};
@@ -1811,7 +1817,7 @@ async function appendConversationTurn(question) {
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
     const payload = await response.json();
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
-    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>`;
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div><button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
     queueSpeechBubbleRefresh();
     conversationDirty = true;
@@ -2597,23 +2603,105 @@ function openInfoView(which){
 }
 
 
-const CONTENT_FIELDS = [
-  {key:'home.hero.eyebrow',label:'Hjem – overtekst',selector:'[data-content-key="home.hero.eyebrow"]'},
-  {key:'home.hero.title',label:'Hjem – hovedoverskrift',selector:'[data-content-key="home.hero.title"]'},
-  {key:'home.hero.intro',label:'Hjem – introduksjon',selector:'[data-content-key="home.hero.intro"]',multiline:true},
-  {key:'simulation.hero.title',label:'Simulering – hovedoverskrift',selector:'[data-content-key="simulation.hero.title"]'},
-  {key:'simulation.hero.intro',label:'Simulering – introduksjon',selector:'[data-content-key="simulation.hero.intro"]',multiline:true},
-  {key:'simulation.privacy.title',label:'Simulering – personvernoverskrift',selector:'[data-content-key="simulation.privacy.title"]'},
-  {key:'simulation.privacy.text',label:'Simulering – personverntekst',selector:'[data-content-key="simulation.privacy.text"]',multiline:true},
-  {key:'contact.title',label:'Kontakt – overskrift',selector:'[data-content-key="contact.title"]'},
-  {key:'contact.intro',label:'Kontakt – introduksjon',selector:'[data-content-key="contact.intro"]',multiline:true}
+const STATIC_CONTENT_SECTIONS = [
+  {id:'home',title:'Forside',fields:[
+    {key:'home.hero.eyebrow',label:'Overtekst',selector:'#home-view .hero-copy .eyebrow'},
+    {key:'home.hero.title',label:'Hovedoverskrift',selector:'#home-view .hero-copy h1'},
+    {key:'home.hero.intro',label:'Introduksjon',selector:'#home-view .hero-copy p',multiline:true},
+    {key:'home.topics.title',label:'Temaoverskrift',selector:'#home-view .section-heading h2'},
+    {key:'home.topics.intro',label:'Temabeskrivelse',selector:'#home-view .section-heading p',multiline:true}
+  ]},
+  {id:'topic',title:'Temaside',fields:[
+    {key:'topic.finder.title',label:'Hva gjelder samtalen? – overskrift',selector:'#topic-view .topic-detail-finder h2'},
+    {key:'topic.finder.intro',label:'Hva gjelder samtalen? – beskrivelse',selector:'#topic-view .topic-detail-finder p',multiline:true},
+    {key:'topic.examples.title',label:'Eksempler innen temaet',selector:'#topic-view .subtopic-section h2'},
+    {key:'topic.examples.intro',label:'Eksempler – beskrivelse',selector:'#topic-view .subtopic-section .section-heading p',multiline:true}
+  ]},
+  {id:'guidance',title:'Vanlig Samtalestøtte',fields:[
+    {key:'guidance.understanding.title',label:'KI-oppsummering – overskrift',selector:'#situation-understanding h2'},
+    {key:'guidance.followup.title',label:'Avklaring – overskrift',selector:'#followup-panel h2'},
+    {key:'guidance.followup.intro',label:'Avklaring – beskrivelse',selector:'#followup-panel .followup-intro',multiline:true},
+    {key:'guidance.result.title',label:'Samtalestøtte – overskrift',selector:'#prototype-result > .section-heading h2'},
+    {key:'guidance.simulation.title',label:'Øvelse – overskrift',selector:'#simulation-entry h3'},
+    {key:'guidance.simulation.intro',label:'Øvelse – beskrivelse',selector:'#simulation-entry p',multiline:true},
+    {key:'guidance.continue.title',label:'Fortsett samtalen – overskrift',selector:'#continue-conversation h3'},
+    {key:'guidance.continue.intro',label:'Fortsett samtalen – beskrivelse',selector:'#continue-conversation > p',multiline:true}
+  ]},
+  {id:'simulation',title:'Samtalesimulering',fields:[
+    {key:'simulation.hero.title',label:'Hovedoverskrift',selector:'#simulation-view .simulation-hero h1'},
+    {key:'simulation.hero.intro',label:'Introduksjon',selector:'#simulation-view .simulation-hero p',multiline:true},
+    {key:'simulation.hub.title',label:'Hvordan vil du starte?',selector:'#simulation-hub h2'},
+    {key:'simulation.hub.intro',label:'Start – beskrivelse',selector:'#simulation-hub > p',multiline:true},
+    {key:'simulation.direct.title',label:'Ny simulering – overskrift',selector:'#direct-simulation-form h3'},
+    {key:'simulation.direct.intro',label:'Ny simulering – beskrivelse',selector:'#direct-simulation-form p',multiline:true},
+    {key:'simulation.setup.title',label:'Øv på samtalen',selector:'#simulation-setup h3'},
+    {key:'simulation.setup.intro',label:'Øv på samtalen – beskrivelse',selector:'#simulation-setup .simulation-stage-heading p',multiline:true},
+    {key:'simulation.privacy.title',label:'Personvernsjekk – overskrift',selector:'#simulation-turn-privacy strong'},
+    {key:'simulation.feedback.title',label:'Etter øvelsen – overskrift',selector:'#simulation-feedback h3'},
+    {key:'simulation.feedback.intro',label:'Etter øvelsen – beskrivelse',selector:'#simulation-feedback .simulation-feedback-intro',multiline:true}
+  ]},
+  {id:'history',title:'Historikk',fields:[
+    {key:'history.title',label:'Overskrift',selector:'#history-view h1'},
+    {key:'history.intro',label:'Beskrivelse',selector:'#history-view .content-header p',multiline:true}
+  ]},
+  {id:'settings',title:'Innstillinger',fields:[
+    {key:'settings.title',label:'Overskrift',selector:'#settings-view h1'},
+    {key:'settings.intro',label:'Beskrivelse',selector:'#settings-view .content-header p',multiline:true}
+  ]},
+  {id:'about',title:'Om Samtalestøtte',fields:[
+    {key:'about.title',label:'Overskrift',selector:'#about-view h1'},
+    {key:'about.intro',label:'Introduksjon',selector:'#about-view .content-header p',multiline:true},
+    {key:'about.project.title',label:'Studieprosjekt – overskrift',selector:'#about-view .about-grid .settings-card:last-child h2'},
+    {key:'about.project.text',label:'Studieprosjekt – tekst',selector:'#about-view .about-grid .settings-card:last-child p',multiline:true}
+  ]},
+  {id:'contact',title:'Kontakt og tilbakemelding',fields:[
+    {key:'contact.title',label:'Overskrift',selector:'#contact-view h1'},
+    {key:'contact.intro',label:'Introduksjon',selector:'#contact-view .content-header p',multiline:true},
+    {key:'contact.report.title',label:'Rapportskjema – overskrift',selector:'#report-form h2'},
+    {key:'contact.email.title',label:'E-postkort – overskrift',selector:'#contact-view .contact-card h2'}
+  ]},
+  {id:'privacy',title:'Personvern og vilkår',fields:[
+    {key:'privacy.title',label:'Personvern – overskrift',selector:'#privacy-view h1'},
+    {key:'privacy.intro',label:'Personvern – introduksjon',selector:'#privacy-view .content-header p',multiline:true},
+    {key:'terms.title',label:'Vilkår – overskrift',selector:'#terms-view h1'},
+    {key:'terms.intro',label:'Vilkår – introduksjon',selector:'#terms-view .content-header p',multiline:true}
+  ]}
 ];
-function defaultContentValue(field){return document.querySelector(field.selector)?.textContent?.trim()||'';}
-function applyContentOverrides(){CONTENT_FIELDS.forEach(field=>{const el=document.querySelector(field.selector);if(el&&Object.prototype.hasOwnProperty.call(contentOverrides,field.key))el.textContent=contentOverrides[field.key];});}
+
+function topicContentSections(){
+  return topics.map(topic=>({id:`topic-${topic.id}`,title:`Tema: ${topic.title}`,fields:[
+    {key:`topic.${topic.id}.title`,label:'Hovedtema – navn',kind:'topic',topicId:topic.id,prop:'title',fallback:topic.title},
+    {key:`topic.${topic.id}.description`,label:'Hovedtema – beskrivelse',kind:'topic',topicId:topic.id,prop:'description',fallback:topic.description,multiline:true},
+    ...topic.representations.map((value,index)=>({key:`topic.${topic.id}.representation.${index}`,label:`Kort beskrivelse ${index+1}`,kind:'representation',topicId:topic.id,index,fallback:value})),
+    ...topic.subtopics.flatMap(([title,help],index)=>[
+      {key:`topic.${topic.id}.subtopic.${index}.title`,label:`Undertema ${index+1} – navn`,kind:'subtopic-title',topicId:topic.id,index,fallback:title},
+      {key:`topic.${topic.id}.subtopic.${index}.help`,label:`Undertema ${index+1} – beskrivelse`,kind:'subtopic-help',topicId:topic.id,index,fallback:help,multiline:true}
+    ])
+  ]}));
+}
+function allContentSections(){return [...STATIC_CONTENT_SECTIONS,...topicContentSections()];}
+function allContentFields(){return allContentSections().flatMap(section=>section.fields);}
+function contentValue(key,fallback=''){return Object.prototype.hasOwnProperty.call(contentOverrides,key)?contentOverrides[key]:fallback;}
+function defaultContentValue(field){if('fallback' in field)return field.fallback;return document.querySelector(field.selector)?.textContent?.trim()||'';}
+function applyContentOverrides(){
+  STATIC_CONTENT_SECTIONS.flatMap(s=>s.fields).forEach(field=>{const el=document.querySelector(field.selector);if(el&&Object.prototype.hasOwnProperty.call(contentOverrides,field.key))el.textContent=contentOverrides[field.key];});
+  renderTopics();
+  if(currentTopic && views.topic?.classList.contains('active-view')) openTopic(currentTopic,pendingSituationText);
+}
 async function loadContentOverrides(){try{const response=await fetch('/api/content',{cache:'no-store'});if(response.ok){const payload=await response.json();contentOverrides=payload.values||{};applyContentOverrides();return payload;}}catch(_){}return{values:{},setupRequired:false};}
-function renderAdminContentFields(){const host=document.querySelector('#admin-content-fields');if(!host)return;host.className='admin-content-fields';host.innerHTML=CONTENT_FIELDS.map(field=>`<label class="admin-edit-field"><span>${escapeHtml(field.label)}</span><small>${escapeHtml(field.key)}</small><textarea data-admin-content-key="${escapeHtml(field.key)}" rows="${field.multiline?4:2}">${escapeHtml(Object.prototype.hasOwnProperty.call(contentOverrides,field.key)?contentOverrides[field.key]:defaultContentValue(field))}</textarea></label>`).join('');}
+function renderAdminContentFields(){
+  const host=document.querySelector('#admin-content-fields');if(!host)return;
+  host.className='admin-content-fields admin-content-sections';
+  host.innerHTML=allContentSections().map((section,sectionIndex)=>`<details class="admin-content-section" ${sectionIndex===0?'open':''}><summary><span>${escapeHtml(section.title)}</span><small>${section.fields.length} tekstfelt</small></summary><div class="admin-section-fields">${section.fields.map(field=>`<label class="admin-edit-field"><span>${escapeHtml(field.label)}</span><small>${escapeHtml(field.key)}</small><textarea data-admin-content-key="${escapeHtml(field.key)}" rows="${field.multiline?4:2}">${escapeHtml(contentValue(field.key,defaultContentValue(field)))}</textarea></label>`).join('')}</div></details>`).join('');
+  host.querySelectorAll('[data-admin-content-key]').forEach(input=>input.addEventListener('input',markAdminDirty));
+}
+let adminContentDirty=false;
+function markAdminDirty(){adminContentDirty=true;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=false;const save=document.querySelector('#admin-save-content');if(save)save.disabled=false;}
+function clearAdminDirty(){adminContentDirty=false;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=true;const save=document.querySelector('#admin-save-content');if(save)save.disabled=true;}
+async function saveAdminContent(){const msg=document.querySelector('#admin-content-message'),values={};document.querySelectorAll('[data-admin-content-key]').forEach(input=>{values[input.dataset.adminContentKey]=input.value.trim();});try{const response=await fetch('/api/admin/content',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({values})});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke lagre innholdet.');contentOverrides={...contentOverrides,...values};applyContentOverrides();clearAdminDirty();if(msg){msg.className='auth-message success';msg.textContent='Endringene er lagret og vises med en gang.';}}catch(error){if(msg){msg.className='auth-message error';msg.textContent=error.message;}}}
 async function loadAdminUsers(){const card=document.querySelector('#admin-users-card'),list=document.querySelector('#admin-users-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter brukere …</div>';try{const response=await fetch('/api/admin/users',{credentials:'include',cache:'no-store'});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke hente brukere.');list.innerHTML=(payload.users||[]).map(user=>`<div class="admin-user-row" data-admin-user="${escapeHtml(user.id)}"><div class="admin-user-copy"><strong>${escapeHtml(user.username||'Bruker')}</strong><small>${escapeHtml(user.email||'')}</small></div><select data-admin-role ${user.id===currentUser.id?'disabled':''}><option value="user" ${user.role==='user'?'selected':''}>Bruker</option><option value="editor" ${user.role==='editor'?'selected':''}>Redaktør</option><option value="admin" ${user.role==='admin'?'selected':''}>Admin</option></select><button class="secondary-button" type="button" data-save-admin-role ${user.id===currentUser.id?'disabled':''}>Lagre rolle</button></div>`).join('')||'<div class="history-empty">Ingen brukere funnet.</div>';list.querySelectorAll('[data-save-admin-role]').forEach(button=>button.addEventListener('click',async()=>{const row=button.closest('[data-admin-user]'),role=row.querySelector('[data-admin-role]').value;button.disabled=true;try{const r=await fetch(`/api/admin/users/${encodeURIComponent(row.dataset.adminUser)}/role`,{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke endre rollen.');const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message success';msg.textContent=`Rollen er endret til ${role}.`;}}catch(error){const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message error';msg.textContent=error.message;}}finally{button.disabled=false;}}));}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
-async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();}
+async function loadAdminFeedback(){const card=document.querySelector('#admin-feedback-card'),list=document.querySelector('#admin-feedback-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter tilbakemeldinger …</div>';try{const r=await fetch('/api/admin/ai-feedback',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente tilbakemeldinger.');list.innerHTML=(p.items||[]).map(item=>`<article class="admin-feedback-item"><div><strong>${escapeHtml(item.category)}</strong><small>${escapeHtml(item.surface)} · ${new Date(item.created_at).toLocaleString('nb-NO')}</small></div><p>${escapeHtml(item.comment)}</p></article>`).join('')||'<div class="history-empty">Ingen rapporterte KI-svar ennå.</div>';}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
+async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminFeedback();}
 
 async function loadPublicConfig(){
   try{
@@ -2673,12 +2761,22 @@ document.querySelector('#history-login-button')?.addEventListener('click',()=>op
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
-document.querySelector('#report-from-conversation')?.addEventListener('click',()=>{openInfoView('contact'); const c=document.querySelector('#report-category'); if(c)c.value='Uklart eller dårlig KI-svar';});
+document.querySelector('#report-from-conversation')?.addEventListener('click',()=>openAiFeedback('main-guidance'));
 
+
+
+let pendingAiFeedback={surface:'general',turnIndex:null};
+function openAiFeedback(surface='general',turnIndex=null){pendingAiFeedback={surface,turnIndex};const dialog=document.querySelector('#ai-feedback-dialog');const comment=document.querySelector('#ai-feedback-comment');const message=document.querySelector('#ai-feedback-message');if(comment)comment.value='';if(message){message.textContent='';message.className='auth-message';}dialog?.showModal();}
+function closeAiFeedback(){document.querySelector('#ai-feedback-dialog')?.close();}
+document.addEventListener('click',event=>{const button=event.target.closest('[data-report-ai-response]');if(!button)return;openAiFeedback(button.dataset.reportAiResponse||'general',button.dataset.turnIndex??null);});
+document.querySelector('#ai-feedback-cancel')?.addEventListener('click',closeAiFeedback);
+document.querySelector('#ai-feedback-form')?.addEventListener('submit',async event=>{event.preventDefault();const category=document.querySelector('#ai-feedback-category')?.value||'Annet';const comment=document.querySelector('#ai-feedback-comment')?.value.trim()||'';const message=document.querySelector('#ai-feedback-message');const findings=detectSensitiveInfo(comment);if(splitPrivacyFindings(findings).hard.length){message.className='auth-message error';message.textContent='Fjern navn eller andre tydelige personopplysninger før tilbakemeldingen sendes.';return;}if(comment.length<3){message.className='auth-message error';message.textContent='Skriv kort hva som var problemet.';return;}try{const r=await fetch('/api/ai-feedback',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({category,comment,surface:pendingAiFeedback.surface,turnIndex:pendingAiFeedback.turnIndex,conversationId:currentConversationId||null,topicId:currentTopic?.id||null,subtopic:currentSubtopic||null})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke sende tilbakemeldingen.');message.className='auth-message success';message.textContent='Takk. Tilbakemeldingen er lagret uten samtaleteksten.';setTimeout(closeAiFeedback,700);}catch(error){message.className='auth-message error';message.textContent=error.message;}});
 
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
-document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{await loadContentOverrides();renderAdminContentFields();});
-document.querySelector('#admin-content-form')?.addEventListener('submit',async event=>{event.preventDefault();const msg=document.querySelector('#admin-content-message'),values={};document.querySelectorAll('[data-admin-content-key]').forEach(input=>{values[input.dataset.adminContentKey]=input.value.trim();});try{const response=await fetch('/api/admin/content',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({values})});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke lagre innholdet.');contentOverrides={...contentOverrides,...values};applyContentOverrides();if(msg){msg.className='auth-message success';msg.textContent='Tekstene er lagret og vises med en gang.';}}catch(error){if(msg){msg.className='auth-message error';msg.textContent=error.message;}}});
+document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(adminContentDirty&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;await loadContentOverrides();renderAdminContentFields();clearAdminDirty();});
+document.querySelector('#admin-content-form')?.addEventListener('submit',event=>{event.preventDefault();if(!adminContentDirty)return;document.querySelector('#admin-save-dialog')?.showModal();});
+document.querySelector('#admin-save-cancel')?.addEventListener('click',()=>document.querySelector('#admin-save-dialog')?.close());
+document.querySelector('#admin-save-confirm')?.addEventListener('click',async()=>{document.querySelector('#admin-save-dialog')?.close();await saveAdminContent();});
 
 let passwordRecoveryTokens = null;
 
@@ -2998,6 +3096,7 @@ function renderSimulationThread() {
         ${speechBubbleMarkup(leader ? 'right' : 'left')}
         <span>${leader ? 'Du · leder' : 'Medarbeider · KI'}</span>
         <p>${escapeHtml(turn.text)}</p>
+        ${leader ? '' : `<button type="button" class="ai-report-link" data-report-ai-response="simulation" data-turn-index="${simulationTurns.indexOf(turn)}">Rapporter svar</button>`}
       </div>
       ${leader ? '<div class="simulation-avatar leader-avatar" aria-hidden="true"><img src="profile-human.png" alt="" /></div>' : ''}
     </div>`;

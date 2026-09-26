@@ -160,17 +160,7 @@ function authCookie(name, value, maxAge = SESSION_MAX_AGE_SECONDS) {
 
 
 const VALID_ROLES = new Set(["user", "editor", "admin"]);
-const EDITABLE_CONTENT_KEYS = new Set([
-  "home.hero.eyebrow",
-  "home.hero.title",
-  "home.hero.intro",
-  "simulation.hero.title",
-  "simulation.hero.intro",
-  "simulation.privacy.title",
-  "simulation.privacy.text",
-  "contact.title",
-  "contact.intro"
-]);
+const EDITABLE_CONTENT_KEY_PATTERN = /^(?:home|topic|guidance|simulation|history|settings|about|contact|privacy|terms)\.[a-z0-9._-]{1,160}$/i;
 
 const bootstrapAdminEmails = new Set(
   String(process.env.ADMIN_EMAILS || contactEmail || "")
@@ -330,7 +320,7 @@ app.put("/api/admin/content", requireContentEditor, async (req, res) => {
   const values = req.body?.values && typeof req.body.values === "object" ? req.body.values : null;
   if (!values) return res.status(400).json({ error: "INVALID_CONTENT", message: "Mangler innhold som skal lagres." });
   const entries = Object.entries(values)
-    .filter(([key]) => EDITABLE_CONTENT_KEYS.has(String(key)))
+    .filter(([key]) => EDITABLE_CONTENT_KEY_PATTERN.test(String(key)))
     .map(([key, value]) => ({
       content_key: String(key),
       content_value: String(value ?? "").slice(0, 20000),
@@ -376,6 +366,24 @@ app.patch("/api/admin/users/:id/role", requireAdmin, async (req, res) => {
   const { data, error } = await supabaseAdmin.auth.admin.updateUserById(targetId, { app_metadata: appMetadata });
   if (error || !data?.user) return res.status(500).json({ error: "ROLE_UPDATE_FAILED", message: "Kunne ikke oppdatere rollen." });
   res.json({ user: publicUser(data.user) });
+});
+
+app.post("/api/ai-feedback", requireUser, async (req, res) => {
+  const category = String(req.body?.category || "Annet").slice(0, 80);
+  const comment = String(req.body?.comment || "").trim().slice(0, 2000);
+  const surface = String(req.body?.surface || "general").slice(0, 80);
+  if (comment.length < 3) return res.status(400).json({ error:"COMMENT_REQUIRED", message:"Skriv kort hva som var problemet." });
+  if (serverPrivacyFindings(comment).length) return res.status(400).json({ error:"PRIVACY_REVIEW_REQUIRED", message:"Fjern tydelige personopplysninger fra tilbakemeldingen." });
+  const row = { user_id:req.user.id, category, comment, surface, conversation_id:req.body?.conversationId || null, topic_id:String(req.body?.topicId || '').slice(0,100) || null, subtopic:String(req.body?.subtopic || '').slice(0,200) || null };
+  const { error } = await supabaseAdmin.from('ai_response_feedback').insert(row);
+  if (error) { const missing=/ai_response_feedback|relation .* does not exist/i.test(String(error.message||'')); return res.status(missing?503:500).json({error:missing?'FEEDBACK_TABLE_MISSING':'FEEDBACK_SAVE_FAILED',message:missing?'Kjør V20-1-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke lagre tilbakemeldingen.'}); }
+  res.json({ok:true});
+});
+
+app.get("/api/admin/ai-feedback", requireAdmin, async (_req,res)=>{
+  const { data,error }=await supabaseAdmin.from('ai_response_feedback').select('id,category,comment,surface,created_at').order('created_at',{ascending:false}).limit(100);
+  if(error){const missing=/ai_response_feedback|relation .* does not exist/i.test(String(error.message||''));return res.status(missing?503:500).json({error:'FEEDBACK_LOAD_FAILED',message:missing?'Kjør V20-1-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke hente tilbakemeldinger.'});}
+  res.json({items:data||[]});
 });
 
 app.post("/api/auth/register", async (req, res) => {
@@ -986,7 +994,7 @@ app.post("/api/generate-guidance", requireUser, async (req, res) => {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "OPENAI_API_KEY mangler på serveren." });
   }
 
-  const { situation, analysis = null, followups = {} } = req.body || {};
+  const { situation, analysis = null, followups = {}, topicId = "", subtopic = "" } = req.body || {};
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }

@@ -1,3 +1,15 @@
+## v20.1 – redigerbart innhold, smartere temaflyt og KI-feedback
+
+- Admininnhold er delt i sammenleggbare seksjoner for enklere navigasjon.
+- Langt flere synlige overskrifter, beskrivelser, hovedtemaer og undertemaer kan redigeres uten deploy.
+- Tema-/undertematekster kan endres visuelt uten å endre de interne klassifiseringsverdiene.
+- Lagring krever bekreftelse i popup og viser «Ulagrede endringer».
+- Valgt undertema sendes nå med til KI som kontekst, men situasjonsteksten skal fortsatt veie tyngst.
+- KI-svar kan rapporteres direkte fra hovedveiledning, oppfølgingssamtale og simulering. Selve samtaleteksten lagres ikke automatisk.
+- Admin kan se rapporterte KI-svar.
+- Lønn og utvikling bruker et tydelig $-symbol med nordøst-pil.
+- Simulatorbobler er løftet 18 px for bedre visuell kobling til profilene.
+
 ## v20.0 – admin, redigerbart innhold og samlet personvern
 
 - Ny rollemodell med bruker, redaktør og admin.

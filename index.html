@@ -279,7 +279,7 @@
           </div>
           <p class="result-intro" id="result-intro">Forslaget er tilpasset det du har skrevet.</p>
           <div class="conversation-utility-bar">
-            <button class="secondary-button" id="report-from-conversation" type="button">Rapporter feil</button>
+            <button class="secondary-button" id="report-from-conversation" type="button">Rapporter svar</button>
             <button class="secondary-button" id="result-new-conversation" type="button">＋ Ny samtale</button>
           </div>
           <div id="structured-guidance" class="guidance-grid"></div>
@@ -573,7 +573,7 @@
           <p>Studenten har hatt ansvar for behovsforståelse, faglig retning, krav, innhold og produktvalg, mens ChatGPT har vært brukt som støtte i idéutvikling, programmering, testing og kvalitetssikring.</p>
           <p>Løsningen er en betaversjon under utvikling og testing. Tilbakemeldinger fra testbrukere brukes til å forbedre funksjonalitet, språk, personvern og kvaliteten på KI-støtten.</p>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">20.0.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.1.0</strong></p>
         </div>
       </section>
 
@@ -582,8 +582,8 @@
         <button class="back-link" id="back-from-admin" type="button">← Tilbake til hjem</button>
         <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">ADMINISTRASJON</span><div class="utility-title-row"><h1>Admin og innhold</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="logo-symbol.png" alt="" /></div></div><p>Rediger utvalgte tekster og administrer roller uten å endre kildekoden.</p></div></div>
         <div class="admin-grid">
-          <section class="settings-card admin-content-card"><div class="admin-section-heading"><div><h2>Rediger innhold</h2><p>Disse tekstene kan endres uten ny deploy. Tekster som påvirker KI-logikk og temaklassifisering redigeres fortsatt i kode.</p></div><span class="role-badge" id="admin-current-role">–</span></div><form id="admin-content-form" class="admin-content-form"><div id="admin-content-fields"></div><div class="admin-actions"><button class="primary-button" type="submit">Lagre tekster</button><button class="secondary-button" id="admin-reload-content" type="button">Last inn på nytt</button></div><div class="auth-message" id="admin-content-message" aria-live="polite"></div></form></section>
-          <section class="settings-card admin-users-card" id="admin-users-card"><h2>Brukere og roller</h2><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></section>
+          <section class="settings-card admin-content-card"><div class="admin-section-heading"><div><h2>Rediger innhold</h2><p>Åpne bare delen du vil arbeide med. Tema- og undertematekster kan endres uten å endre den interne KI-logikken.</p></div><span class="role-badge" id="admin-current-role">–</span></div><div class="admin-unsaved" id="admin-unsaved-indicator" hidden>Ulagrede endringer</div><form id="admin-content-form" class="admin-content-form"><div id="admin-content-fields"></div><div class="admin-actions admin-sticky-actions"><button class="primary-button" id="admin-save-content" type="submit" disabled>Lagre endringer</button><button class="secondary-button" id="admin-reload-content" type="button">Last inn på nytt</button></div><div class="auth-message" id="admin-content-message" aria-live="polite"></div></form></section>
+          <section class="settings-card admin-users-card" id="admin-users-card"><h2>Brukere og roller</h2><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></section><section class="settings-card admin-users-card" id="admin-feedback-card" hidden><h2>Rapporterte KI-svar</h2><p>Tilbakemeldingene inneholder ikke selve samtaleteksten automatisk.</p><div id="admin-feedback-list" class="admin-feedback-list"></div></section>
         </div>
       </section>
 
@@ -625,6 +625,10 @@
     </main>
   </div>
 
+
+  <dialog id="admin-save-dialog" class="confirm-dialog"><form method="dialog" class="confirm-dialog-card"><h2>Lagre endringene?</h2><p>Er du sikker på at du vil lagre endringene? De blir synlige for brukerne med en gang.</p><div class="dialog-actions"><button class="secondary-button" id="admin-save-cancel" type="button">Avbryt</button><button class="primary-button" id="admin-save-confirm" type="button">Lagre endringer</button></div></form></dialog>
+
+  <dialog id="ai-feedback-dialog" class="confirm-dialog"><form id="ai-feedback-form" class="confirm-dialog-card"><h2>Rapporter KI-svar</h2><p>Fortell kort hva som var galt eller lite nyttig. Samtaleteksten legges ikke ved automatisk.</p><label>Hva var problemet?<select id="ai-feedback-category"><option>Misforstod situasjonen</option><option>Ikke relevant</option><option>Faglig tvilsomt</option><option>For generelt</option><option>Uheldig formulering</option><option>Annet</option></select></label><label>Kommentar<textarea id="ai-feedback-comment" rows="4" placeholder="Hva burde vært annerledes? Unngå navn og andre personopplysninger."></textarea></label><div class="auth-message" id="ai-feedback-message" aria-live="polite"></div><div class="dialog-actions"><button class="secondary-button" id="ai-feedback-cancel" type="button">Avbryt</button><button class="primary-button" type="submit">Send tilbakemelding</button></div></form></dialog>
   <div id="auth-dialog" class="auth-dialog auth-overlay required-auth" aria-modal="true" role="dialog" aria-labelledby="auth-title" hidden>
     <div class="auth-shell">
       <button class="dialog-close" id="auth-close" type="button" aria-label="Lukk">×</button>

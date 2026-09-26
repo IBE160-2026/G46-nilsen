@@ -36,3 +36,11 @@ Dette dokumentet samler bevisste valg som kan brukes i refleksjonsnotatet senere
 - Feilrapport kan inkludere appversjon, tidspunkt, aktiv visning, skjermstørrelse, nettleser og registrerte JavaScript-feil.
 - Samtaletekst tas ikke med automatisk.
 - Begrunnelse: gjøre feil lettere å reprodusere uten å øke personvernrisikoen unødvendig.
+
+
+## v20.1 – nye refleksjonspunkter
+- Admininnhold ble organisert i sammenleggbare seksjoner fordi et langt redigeringsskjema ga dårlig navigasjon.
+- Visningstekster for tema/undertema ble skilt fra interne klassifiseringsverdier for å gi redigeringsfrihet uten å gjøre KI-logikken ustabil.
+- Lagring krever eksplisitt bekreftelse for å redusere risikoen for utilsiktede publiserte tekstendringer.
+- Undertema brukes som kontekst, ikke som et hardt regelsett; dette bevarer fleksibilitet og lar situasjonsteksten veie tyngst.
+- «Rapporter svar» ble lagt tett på KI-svar for å få kvalitetsfeedback i kontekst. Samtaleteksten lagres ikke automatisk av personvernhensyn.
