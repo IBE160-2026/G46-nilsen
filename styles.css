@@ -2163,10 +2163,9 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
 #admin-view .utility-title-row .utility-page-logo,
 #survey-view .utility-title-row .utility-page-logo,
 #help-view .utility-title-row .utility-page-logo{
-  width:78px;
+  width:132px;
   max-width:none;
 }
-
 /* Når sidemenyen er minimert skjules logoen og sideikonet vises – større og litt høyere. */
 .app-shell.sidebar-collapsed-layout .utility-title-row .utility-page-brand{display:none!important}
 .collapsed-page-icon{
