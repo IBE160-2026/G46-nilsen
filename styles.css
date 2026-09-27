@@ -6154,12 +6154,13 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
 
 .utility-title-row .utility-page-brand {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   flex: 0 0 auto;
+  height: 0;
   margin: 0;
   position: relative;
   z-index: 2;
-  transform: translate(-5px, -80px) !important;
+  transform: translate(-5px, -67px) !important;
 }
 
 .utility-title-row .utility-page-logo {
