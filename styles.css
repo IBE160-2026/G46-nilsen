@@ -212,6 +212,7 @@ h1,h2,h3,p {
   gap: 12px;
   align-items: flex-end;
   color: var(--muted);
+  background: transparent;
 }
 
 .sidebar-message p {
@@ -4329,6 +4330,11 @@ html[data-theme="hybrid"] .sidebar .sidebar-message {
   color: #bfd4d9;
 }
 
+html[data-theme="dark"] .sidebar .sidebar-message {
+  border-top-color: var(--border);
+  color: var(--muted);
+  background: transparent;
+}
 html[data-theme="hybrid"] .sidebar .sidebar-message-icon {
   color: #d9f5f7;
 }
