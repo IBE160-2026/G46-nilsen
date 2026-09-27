@@ -6171,7 +6171,7 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
   margin: 0;
   position: relative;
   z-index: 2;
-  transform: translate(-5px, -67px) !important;
+  transform: translate(-5px, -80px) !important;
 }
 
 .utility-title-row .utility-page-logo {
