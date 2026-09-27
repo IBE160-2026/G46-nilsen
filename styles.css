@@ -975,7 +975,9 @@ html[data-theme="dark"] .brand-logo {
 .sidebar {
   position: sticky;
   top: 0;
-  height: 100vh;
+  min-height: 100vh;
+  height: max-content;
+  align-self: start;
   border-right: 1px solid var(--border);
   border-bottom: 0;
   padding: 12px 8px;
