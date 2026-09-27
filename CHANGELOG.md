@@ -1,5 +1,26 @@
 # CHANGELOG – Samtalestøtte
 
+## v20.6.0 – UX-opprydding, personvern og styrt brukertest
+
+- Nytt realistisk, nedtonet petrolfarget temabilde for **Mobbing og trakassering** er koblet til temaet som `topic-mobbing-trakassering.png`.
+- README inneholder to engangs admininvitasjoner for lærer/sensor slik at vurdering kan gjøres uten lokal installasjon.
+
+- Admin-seksjoner kollapset som standard med tydelige chevrons; Admin-symbol endret til enkel A.
+- Innstillinger og Kontakt er gjort mer kompakte og har tydeligere overskriftshierarki.
+- Ny Hjelp-side med kort brukerveiledning og kuraterte offentlige faglenker.
+- Hovedtemaer vises 3 × 3 på desktop.
+- Hybrid bruker samme hovedlogo som mørkt tema.
+- Simulatorlogo flyttet ytterligere opp, og mørk CTA er dempet.
+- Brukertesten bruker radioknapper, kan slås av/på av admin og kan bare leveres én gang per konto.
+- Fritekstsvar og alle skårer vises i Admin.
+- Førstegangs personverninformasjon krever «Jeg har lest og forstått» uten å kalles GDPR-samtykke.
+- Om-siden er skrevet om med nøktern prosjektstatus, avgrensning og KI-åpenhet.
+- Product Brief og øvrige BMAD-dokumenter er spisset uten å omskrive den iterative utviklingshistorien.
+- Kildekoden har tydeligere seksjonskommentarer for manuell redigering.
+- Nytt seriøst temabilde for Mobbing og trakassering leveres separat og ikke i ZIP.
+
+---
+
 ## v20.5.0 – nye fagtemaer, OpenRouter og kort brukertest
 
 - Nytt hovedtema **Mobbing og trakassering** med åtte undertemaer, inkludert varsling og samtaler med begge sider i en varslingssak.

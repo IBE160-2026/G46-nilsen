@@ -43,7 +43,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.5.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "20.6.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 const clientErrorLog = [];
@@ -197,7 +197,7 @@ const topics = [
     id: 'mobbing-trakassering',
     title: 'Mobbing og trakassering',
     iconKey: 'harassment',
-    image: 'topic-samarbeid-kommunikasjon.png',
+    image: 'topic-mobbing-trakassering.png',
     imageAlt: 'Profesjonell samtale om arbeidsmiljø, grenser og trygghet',
     description: 'Støtte til varsomme og ryddige samtaler om mobbing, trakassering, utestenging og uønsket seksuell oppmerksomhet. Verktøyet skal ikke avgjøre skyld, men hjelpe lederen å lytte, ivareta involverte og følge riktig prosess.',
     representations: ['Mobbing og utestenging', 'Trakassering og seksuell oppmerksomhet', 'Varsling og forsvarlig oppfølging'],
@@ -229,6 +229,7 @@ const views = {
   terms: document.querySelector('#terms-view'),
   about: document.querySelector('#about-view'),
   contact: document.querySelector('#contact-view'),
+  help: document.querySelector('#help-view'),
   survey: document.querySelector('#survey-view'),
   admin: document.querySelector('#admin-view')
 };
@@ -245,7 +246,7 @@ function renderStaticIcons() {
   setSvg('nav-history-icon', svgIcons.history);
   setSvg('nav-about-icon', svgIcons.about);
   setSvg('nav-contact-icon', svgIcons.contact);
-  setSvg('nav-admin-icon', svgIcons.shieldCheck);
+  const adminIcon=document.querySelector('#nav-admin-icon'); if(adminIcon) adminIcon.textContent='A';
   setSvg('sidebar-message-icon', svgIcons.team);
 }
 
@@ -263,6 +264,7 @@ function updateNavState(name) {
       (name === 'history' && btn.dataset.view === 'history') ||
       (name === 'about' && btn.dataset.view === 'about') ||
       (name === 'contact' && btn.dataset.view === 'contact') ||
+      (name === 'help' && btn.dataset.view === 'help') ||
       (name === 'survey' && btn.dataset.view === 'survey') ||
       (name === 'admin' && btn.dataset.view === 'admin')
     );
@@ -2471,6 +2473,7 @@ function setAppLocked(locked){
 async function refreshAuth() {
   try { const r=await fetch('/api/auth/me',{credentials:'include',cache:'no-store'}); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
   updateAuthUi();
+  if(currentUser)setTimeout(ensurePrivacyAcknowledgement,150);
   if(currentUser){
     closeAuth(true);
     setAppLocked(false);
@@ -2625,7 +2628,7 @@ function openInfoView(which){
   if(which==='contact' && infoReturnView==='contact') infoReturnView='home';
   if(which==='about' && infoReturnView==='about') infoReturnView='home';
   closeProfileMenu();
-  setBreadcrumb(which==='about'?'Om Samtalestøtte':'Kontakt og tilbakemelding');
+  setBreadcrumb(which==='about'?'Om Samtalestøtte':which==='help'?'Hjelp':'Kontakt og tilbakemelding');
   showView(which);
 }
 
@@ -2772,9 +2775,12 @@ async function loadAdminSurvey(){
   const card=document.querySelector('#admin-survey-card'),box=document.querySelector('#admin-survey-summary');
   if(!card||!box)return; const isAdmin=currentUser?.role==='admin'; card.hidden=!isAdmin; if(!isAdmin)return;
   box.innerHTML='<div class="history-empty">Henter brukertest …</div>';
-  try{const r=await fetch('/api/admin/survey',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente brukertest.');
-    const a=p.averages||{}; const f=n=>n==null?'–':Number(n).toFixed(1).replace('.',',');
-    box.innerHTML=`<div class="admin-cost-grid"><div><small>Svar</small><strong>${p.count||0}</strong></div><div><small>Forståelse</small><strong>${f(a.usability)}</strong></div><div><small>KI-relevans</small><strong>${f(a.aiRelevance)}</strong></div><div><small>Ville brukt</small><strong>${f(a.wouldUse)}</strong></div></div>${(p.comments||[]).length?`<details class="admin-content-section"><summary>Siste forbedringsforslag</summary><div class="admin-section-fields">${p.comments.map(x=>`<p>${escapeHtml(x.improvement_text||'')}</p>`).join('')}</div></details>`:''}`;
+  try{
+    const [r,sr]=await Promise.all([fetch('/api/admin/survey',{credentials:'include',cache:'no-store'}),fetch('/api/admin/survey/settings',{credentials:'include',cache:'no-store'})]);
+    const p=await r.json(), settings=await sr.json(); if(!r.ok)throw new Error(p.message||'Kunne ikke hente brukertest.');
+    const toggle=document.querySelector('#admin-survey-enabled'); if(toggle)toggle.checked=settings.enabled!==false;
+    const a=p.averages||{},f=v=>Number.isFinite(Number(v))?Number(v).toFixed(1):'–';
+    box.innerHTML=`<div class="admin-cost-grid"><div><small>Svar</small><strong>${p.count||0}</strong></div><div><small>Forståelse</small><strong>${f(a.usability)}</strong></div><div><small>Navigasjon</small><strong>${f(a.navigation)}</strong></div><div><small>KI-relevans</small><strong>${f(a.aiRelevance)}</strong></div><div><small>Praktisk nytte</small><strong>${f(a.practicalUsefulness)}</strong></div><div><small>Simulator</small><strong>${f(a.simulation)}</strong></div><div><small>Personvern</small><strong>${f(a.privacy)}</strong></div><div><small>Ville brukt</small><strong>${f(a.wouldUse)}</strong></div></div>${(p.responses||[]).length?`<div class="survey-response-list">${p.responses.map(x=>`<div class="survey-response-item"><small>${escapeHtml(new Date(x.created_at).toLocaleString('nb-NO'))}</small>${x.improvement_text?`<p><strong>Viktigste forbedring:</strong><br>${escapeHtml(x.improvement_text)}</p>`:''}${x.most_useful_text?`<p><strong>Mest nyttig:</strong><br>${escapeHtml(x.most_useful_text)}</p>`:''}</div>`).join('')}</div>`:'<p class="muted-note">Ingen fritekstsvar ennå.</p>'}`;
   }catch(e){box.innerHTML=`<div class="history-empty">${escapeHtml(e.message)}</div>`;}
 }
 
@@ -2791,7 +2797,15 @@ function maybeShowSurveyInvite(){
   box.hidden=done||later||!surveyUsageEligible();
 }
 function markGuidanceUsed(){try{localStorage.setItem('samtalestotte_guidance_count',String(Number(localStorage.getItem('samtalestotte_guidance_count')||0)+1));}catch(_){} maybeShowSurveyInvite();}
-async function openSurvey(){if(!requireLogin())return;setBreadcrumb('Gi tilbakemelding');showView('survey');}
+async function openSurvey(){
+  if(!requireLogin())return;
+  setBreadcrumb('Gi tilbakemelding');showView('survey');
+  const form=document.querySelector('#survey-form'),done=document.querySelector('#survey-completed-message'),closed=document.querySelector('#survey-closed-message');
+  if(form)form.hidden=true;if(done)done.hidden=true;if(closed)closed.hidden=true;
+  try{const r=await fetch('/api/survey/status',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente status.');
+    if(p.completed){if(done)done.hidden=false;}else if(p.enabled===false){if(closed)closed.hidden=false;}else if(form)form.hidden=false;
+  }catch(_){if(form)form.hidden=false;}
+}
 
 async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminInvites();await loadAdminFeedback();await loadAdminSurvey();await loadAdminAiSettings();await loadAdminAiUsage();await loadBenchmarkConfig();}
 
@@ -2841,6 +2855,15 @@ document.querySelector('#profile-button')?.addEventListener('click',(event)=>{
 document.querySelector('#profile-menu')?.addEventListener('click',event=>event.stopPropagation());
 document.addEventListener('click',()=>closeProfileMenu());
 document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfileMenu();});
+
+async function ensurePrivacyAcknowledgement(){
+  if(!currentUser)return;
+  try{
+    const r=await fetch('/api/privacy-ack',{credentials:'include',cache:'no-store'}); const p=await r.json();
+    if(r.ok&&!p.acknowledged){document.querySelector('#privacy-ack-dialog')?.showModal();}
+  }catch(_){/* Ikke blokker appen hvis statuskallet feiler. */}
+}
+
 document.querySelector('[data-profile-action="history"]')?.addEventListener('click',()=>{closeProfileMenu();openHistory();});
 document.querySelector('[data-profile-action="about"]')?.addEventListener('click',()=>openInfoView('about'));
 document.querySelector('[data-profile-action="contact"]')?.addEventListener('click',()=>openInfoView('contact'));
@@ -2978,8 +3001,8 @@ document.querySelector('#reset-password-form')?.addEventListener('submit',async 
   }
 });
 
-document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
-document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();await saveCurrentConversation();});
+document.querySelector('#login-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#login-message');msg.textContent='';const r=await fetch('/api/auth/login',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({identifier:document.querySelector('#login-email').value,password:document.querySelector('#login-password').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Innlogging feilet.';return;}currentUser=p.user;updateAuthUi();closeAuth();setTimeout(ensurePrivacyAcknowledgement,150);await saveCurrentConversation();});
+document.querySelector('#register-form')?.addEventListener('submit',async e=>{e.preventDefault();const msg=document.querySelector('#register-message');msg.textContent='';const pw=document.querySelector('#register-password').value;if(pw!==document.querySelector('#register-password-confirm').value){msg.className='auth-message error';msg.textContent='Passordene er ikke like.';return;}const r=await fetch('/api/auth/register',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({username:document.querySelector('#register-username').value,email:document.querySelector('#register-email').value,password:pw,inviteCode:document.querySelector('#register-invite').value})});const p=await r.json();if(!r.ok){msg.className='auth-message error';msg.textContent=p.message||'Kunne ikke opprette konto.';return;}currentUser=p.user;updateAuthUi();closeAuth();setTimeout(ensurePrivacyAcknowledgement,150);await saveCurrentConversation();});
 document.querySelector('#new-conversation-button')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#result-new-conversation')?.addEventListener('click',()=>startNewConversation());
 document.querySelector('#bottom-new-conversation')?.addEventListener('click',()=>startNewConversation());
@@ -3488,8 +3511,14 @@ document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
   event.preventDefault(); const msg=document.querySelector('#survey-message'); const form=event.currentTarget;
   const body={}; new FormData(form).forEach((v,k)=>body[k]=v);
   for(const key of ['usability','navigation','ai_relevance','practical_usefulness','simulation','privacy','would_use']) if(body[key]!==undefined&&body[key]!=='') body[key]=Number(body[key]);
-  try{const r=await fetch('/api/survey',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');msg.className='auth-message success';msg.textContent='Takk! Tilbakemeldingen er lagret.';form.reset();try{localStorage.setItem('samtalestotte_survey_done','1')}catch(_){}}
+  try{const r=await fetch('/api/survey',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');msg.className='auth-message success';msg.textContent='Takk! Tilbakemeldingen er lagret.';form.reset();try{localStorage.setItem('samtalestotte_survey_done','1')}catch(_){};setTimeout(()=>openSurvey(),250)}
   catch(e){msg.className='auth-message error';msg.textContent=e.message;}
+});
+
+document.querySelector('#admin-survey-enabled')?.addEventListener('change',async event=>{
+  const msg=document.querySelector('#admin-survey-toggle-message'); if(msg){msg.className='auth-message';msg.textContent='Lagrer …';}
+  try{const r=await fetch('/api/admin/survey/settings',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({enabled:event.target.checked})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke endre brukertest.');if(msg){msg.className='auth-message success';msg.textContent=event.target.checked?'Brukertesten er aktiv.':'Brukertesten er slått av. Eksisterende svar er beholdt.';} }
+  catch(e){event.target.checked=!event.target.checked;if(msg){msg.className='auth-message error';msg.textContent=e.message;}}
 });
 
 document.querySelector('#admin-create-invite')?.addEventListener('click',async()=>{
@@ -3498,3 +3527,8 @@ document.querySelector('#admin-create-invite')?.addEventListener('click',async()
   try{const r=await fetch('/api/admin/invites',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({role,expiresAt:`${expiry}T23:59:59+01:00`})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke opprette invitasjon.');msg.className='auth-message success';msg.innerHTML=`Invitasjon opprettet. <button type="button" class="text-button" id="copy-created-invite">Kopier lenke</button><br><small>${escapeHtml(p.url)}</small>`;document.querySelector('#copy-created-invite')?.addEventListener('click',()=>navigator.clipboard.writeText(p.url));}
   catch(e){msg.className='auth-message error';msg.textContent=e.message;}
 });
+
+
+// v20.6 – førstegangsbekreftelse på lest personverninformasjon. Dette er informasjon, ikke GDPR-samtykke.
+document.querySelector('#privacy-ack-confirm')?.addEventListener('click',async()=>{try{const r=await fetch('/api/privacy-ack',{method:'POST',credentials:'include'});if(r.ok)document.querySelector('#privacy-ack-dialog')?.close();}catch(_){}});
+document.querySelector('#privacy-ack-read-more')?.addEventListener('click',()=>{document.querySelector('#privacy-ack-dialog')?.close();openLegal('privacy');});

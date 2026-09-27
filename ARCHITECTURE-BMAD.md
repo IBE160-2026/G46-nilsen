@@ -766,3 +766,7 @@ KI-arkitekturen utvides fra én direkte OpenAI-klient til et providerlag der mod
 Brukertestdata lagres i en separat `survey_responses`-tabell uten kobling til samtaler eller bruker-ID. Invitasjoner utvides med rolle og utløpsdato. Dette er bevisste skiller mellom produktbruk, evaluering og identitet.
 
 Dagens publiserte testmiljø kjører på Render. Gratis testhosting kan gå i dvale ved inaktivitet og gi treg første innlasting. Dette er en prototypebegrensning, ikke et ytelsesmål for produksjon eller lukket intranett.
+
+## v20.6 – evaluering og personvernmarkører
+Brukertestsvar lagres uten bruker-ID. En separat deltakertabell med kun bruker-ID og tidspunkt hindrer dobbel innsending uten å koble identiteten til svarinnholdet. Personvernbekreftelse lagres separat som tidspunkt per konto. Brukertest kan aktiveres/deaktiveres via app-innstilling uten kodeendring eller sletting av eksisterende data.
+

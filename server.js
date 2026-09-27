@@ -809,19 +809,42 @@ app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
 });
 
 
+app.get('/api/survey/status', requireUser, async (req,res)=>{
+  const [setting,participation]=await Promise.all([
+    supabaseAdmin.from('app_settings').select('value').eq('key','survey_enabled').maybeSingle(),
+    supabaseAdmin.from('survey_participation').select('completed_at').eq('user_id',req.user.id).maybeSingle()
+  ]);
+  const enabled=setting.data?.value?.enabled!==false;
+  res.json({enabled,completed:!!participation.data?.completed_at});
+});
+
 app.post("/api/survey", requireUser, async (req,res)=>{
+  const setting=await supabaseAdmin.from('app_settings').select('value').eq('key','survey_enabled').maybeSingle();
+  if(setting.data?.value?.enabled===false)return res.status(403).json({error:'SURVEY_CLOSED',message:'Brukertesten er avsluttet.'});
+  const existing=await supabaseAdmin.from('survey_participation').select('completed_at').eq('user_id',req.user.id).maybeSingle();
+  if(existing.data?.completed_at)return res.status(409).json({error:'SURVEY_ALREADY_COMPLETED',message:'Du har allerede sendt inn brukertesten. Dersom du har flere tilbakemeldinger, bruk kontaktskjemaet.'});
   const b=req.body||{}; const score=k=>{const n=Number(b[k]); return Number.isInteger(n)&&n>=1&&n<=5?n:null;};
   const row={usability:score('usability'),navigation:score('navigation'),ai_relevance:score('ai_relevance'),practical_usefulness:score('practical_usefulness'),simulation:score('simulation'),privacy:score('privacy'),would_use:score('would_use'),improvement_text:String(b.improvement_text||'').trim().slice(0,1200),most_useful_text:String(b.most_useful_text||'').trim().slice(0,1200)};
   if([row.usability,row.navigation,row.ai_relevance,row.practical_usefulness,row.privacy,row.would_use].some(v=>v===null)) return res.status(400).json({error:'INVALID_SURVEY',message:'Svar på alle obligatoriske spørsmål fra 1 til 5.'});
   const privacyFindings=serverPrivacyFindings(`${row.improvement_text} ${row.most_useful_text}`).filter(x=>SERVER_HARD_PRIVACY_TYPES.has(x.type));
   if(privacyFindings.length)return res.status(400).json({error:'PRIVACY_REVIEW_REQUIRED',message:'Fjern navn eller andre tydelige personopplysninger fra friteksten.'});
-  const {error}=await supabaseAdmin.from('survey_responses').insert(row); if(error)return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kunne ikke lagre brukertesten. Kjør V20-5-SUPABASE-MIGRATION.sql i Supabase først.'}); res.json({ok:true});
+  const mark=await supabaseAdmin.from('survey_participation').insert({user_id:req.user.id});
+  if(mark.error){if(/duplicate|unique/i.test(String(mark.error.message||'')))return res.status(409).json({error:'SURVEY_ALREADY_COMPLETED',message:'Du har allerede sendt inn brukertesten. Dersom du har flere tilbakemeldinger, bruk kontaktskjemaet.'});return res.status(503).json({error:'SURVEY_SCHEMA_MISSING',message:'Kjør V20-6-SUPABASE-MIGRATION.sql i Supabase først.'});}
+  const saved=await supabaseAdmin.from('survey_responses').insert(row);
+  if(saved.error){await supabaseAdmin.from('survey_participation').delete().eq('user_id',req.user.id);return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kunne ikke lagre brukertesten.'});}
+  res.json({ok:true});
 });
 app.get("/api/admin/survey", requireAdmin, async (_req,res)=>{
   const {data,error}=await supabaseAdmin.from('survey_responses').select('*').order('created_at',{ascending:false}).limit(500); if(error)return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kjør V20-5-SUPABASE-MIGRATION.sql i Supabase først.'}); const rows=data||[];
   const avg=k=>{const vals=rows.map(x=>Number(x[k])).filter(n=>Number.isFinite(n)); return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;};
-  res.json({count:rows.length,averages:{usability:avg('usability'),navigation:avg('navigation'),aiRelevance:avg('ai_relevance'),practicalUsefulness:avg('practical_usefulness'),simulation:avg('simulation'),privacy:avg('privacy'),wouldUse:avg('would_use')},comments:rows.filter(x=>x.improvement_text).slice(0,20).map(x=>({created_at:x.created_at,improvement_text:x.improvement_text}))});
+  res.json({count:rows.length,averages:{usability:avg('usability'),navigation:avg('navigation'),aiRelevance:avg('ai_relevance'),practicalUsefulness:avg('practical_usefulness'),simulation:avg('simulation'),privacy:avg('privacy'),wouldUse:avg('would_use')},responses:rows.slice(0,100).map(x=>({created_at:x.created_at,improvement_text:x.improvement_text,most_useful_text:x.most_useful_text}))});
 });
+app.get('/api/admin/survey/settings', requireAdmin, async (_req,res)=>{const {data}=await supabaseAdmin.from('app_settings').select('value').eq('key','survey_enabled').maybeSingle();res.json({enabled:data?.value?.enabled!==false});});
+app.put('/api/admin/survey/settings', requireAdmin, async (req,res)=>{const enabled=req.body?.enabled!==false;const {error}=await supabaseAdmin.from('app_settings').upsert({key:'survey_enabled',value:{enabled},updated_at:new Date().toISOString(),updated_by:req.user.id});if(error)return res.status(503).json({error:'SETTINGS_ERROR',message:'Kunne ikke lagre brukertestinnstillingen.'});res.json({ok:true,enabled});});
+
+app.get('/api/privacy-ack', requireUser, async (req,res)=>{const {data,error}=await supabaseAdmin.from('privacy_acknowledgements').select('acknowledged_at').eq('user_id',req.user.id).maybeSingle();if(error)return res.status(503).json({acknowledged:false});res.json({acknowledged:!!data?.acknowledged_at});});
+app.post('/api/privacy-ack', requireUser, async (req,res)=>{const {error}=await supabaseAdmin.from('privacy_acknowledgements').upsert({user_id:req.user.id,acknowledged_at:new Date().toISOString()},{onConflict:'user_id'});if(error)return res.status(503).json({error:'PRIVACY_ACK_ERROR',message:'Kunne ikke lagre bekreftelsen.'});res.json({ok:true});});
+
 app.post("/api/admin/invites", requireAdmin, async (req,res)=>{
   const role=String(req.body?.role||'user').toLowerCase(); if(!VALID_ROLES.has(role))return res.status(400).json({error:'INVALID_ROLE',message:'Ugyldig rolle.'});
   const expiresAt=new Date(req.body?.expiresAt||'2026-12-31T23:59:59+01:00'); if(Number.isNaN(expiresAt.getTime())||expiresAt<=new Date())return res.status(400).json({error:'INVALID_EXPIRY',message:'Velg en gyldig fremtidig utløpsdato.'});

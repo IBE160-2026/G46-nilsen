@@ -437,3 +437,7 @@ Den tekniske kompleksiteten – KI, personvern, database, modellvalg, kostnadsm�
 - «Øv på samtalen» får sterkere kontrast, og samme handling gjentas nederst etter veiledning slik at brukeren ikke må skrolle tilbake.
 - Adminlogo i innholdsvisningen flyttes kun lokalt ca. 8 px ned; global logogeometri skal ikke endres.
 - Godkjent snakkeboblegeometri fra v19.12.3 skal ikke endres.
+
+## v20.6 – UX-læring og brukertest
+Brukertesting behandles som en kilde til nye krav. Observasjoner og svar kan avdekke behov for endringer i navigasjon, visuelt hierarki, begreper, kontrast, KI-formuleringer og arbeidsflyt. Admin- og Innstillinger-seksjoner skal derfor være sammenleggbare med tydelig chevron, sekundærsider får mindre overskrifter, hovedtemaene organiseres 3 × 3 på desktop, og brukertesten bruker kompakte radiovalg.
+

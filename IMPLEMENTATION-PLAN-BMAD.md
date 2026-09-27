@@ -507,3 +507,7 @@ Denne iterasjonen følger prosjektets faktiske arbeidsmåte: behov ble oppdaget 
 7. Gjøre simulator-CTA mer synlig uten å endre godkjent boblegeometri.
 8. Oppdatere README, BMAD-filer og changelog i samme versjon.
 9. Kjør statiske tester og eksisterende regresjonstester før pakking.
+
+## v20.6 – iterativ justering etter testing
+Planen følger fortsatt mønsteret planlegg → bygg → test → lær → juster → dokumenter → bygg videre. Brukertestene skal eksplisitt kunne utløse endringer i UX og KI-instruksjoner. v20.6 prioriterer navigasjon/hierarki, engangs brukertest, adminstyrt testperiode, personvernbekreftelse og bedre kildekodekommentarer.
+

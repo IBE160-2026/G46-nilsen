@@ -3,7 +3,14 @@
 
 Samtalestøtte er publisert som testversjon på `https://samtalestotte.onrender.com`. Lærere/sensorer kan teste uten lokal installasjon når prosjekteier oppretter en egen engangsinvitasjon. Invitasjoner kan gis som vanlig bruker, redaktør eller admin og kan settes til å utløpe 31.12.2026. Admin-tilgang gir tilgang til blant annet innholdsredigering, modellvalg, kostnadsoversikt, benchmark, kildebruk og brukertestresultater.
 
-> Aktive invitasjonslenker legges ikke fast i Git. De opprettes fra Admin og deles direkte med vurderer.
+### Admin-tilgang for vurdering
+
+Følgende engangsinvitasjoner gir admin-tilgang til den publiserte testversjonen:
+
+- **Admininvitasjon 1:** https://samtalestotte.onrender.com/?invite=1IRDln2gMyjMWMS3grkrKvbK
+- **Admininvitasjon 2:** https://samtalestotte.onrender.com/?invite=L5Y9R3CVl4z8Lc4xrjQehC8W
+
+Hver lenke kan bare brukes én gang. Siden dette er aktive admininvitasjoner, bør de erstattes dersom de blir brukt eller dersom tilgangen ikke lenger skal være tilgjengelig.
 
 ## Testmiljø og oppstartstid
 
@@ -19,13 +26,13 @@ Ideen bygger på erfaring fra lederarbeid, der vanskelige samtaler ofte må hån
 
 ## Testtilgang
 
-Samtalestøtte er satt opp som en **lukket betaversjon**. Invitasjonskoder skal ikke publiseres i README, kildekode eller GitHub-historikk. Opprett nye engangsinvitasjoner med:
+Samtalestøtte er satt opp som en **lukket betaversjon**. For vurdering er to engangslenker med admin-tilgang lagt inn øverst i README. Andre testbrukere kan få egne engangsinvitasjoner opprettet fra Admin eller med:
 
 ```bash
 npm run invite
 ```
 
-Del lenken direkte med den aktuelle testbrukeren. Hver invitasjon kan bare brukes én gang.
+Hver invitasjon kan bare brukes én gang.
 
 ### Forslag til testing
 
@@ -181,7 +188,7 @@ SUPABASE_URL=https://ditt-prosjekt.supabase.co
 SUPABASE_PUBLISHABLE_KEY=din_publishable_key
 SUPABASE_SECRET_KEY=din_secret_key
 
-APP_VERSION=20.5.0
+APP_VERSION=20.6.0
 ```
 
 `.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.
@@ -307,7 +314,7 @@ Admin-siden har en testbank med 112 faste saker, to for hvert av 56 undertemaer.
 Før ekte benchmark brukes, kjør `V20-3-SUPABASE-MIGRATION.sql` i Supabase. Standardbudsjettet er $2 og hard øvre grense i UI/server er $5.
 
 
-## v20.5 – OpenRouter og Supabase
+## v20.6 – OpenRouter og Supabase
 
 Kjør `V20-5-SUPABASE-MIGRATION.sql` etter tidligere migreringer. OpenRouter er valgfri ekstra KI-provider:
 
@@ -320,3 +327,10 @@ Ikke legg API-nøkler i Git, README, frontendkode eller chat. Admin kan velge `O
 ### Kort tekst til testbrukere
 
 **Takk for at du vil teste Samtalestøtte!** Test gjerne vanlig samtalestøtte og simulering. Unngå navn og andre opplysninger som kan identifisere virkelige personer. Når du føler at du har testet nok, finner du en kort brukertest i appen; den tar omtrent 2 minutter. Testserveren kan være i dvale etter inaktivitet, så første innlasting kan ta litt ekstra tid.
+
+
+## v20.6 – UX og brukertest
+- Brukertest kan slås av/på fra Admin og begrenses til én innsending per konto.
+- Hjelp-side samler kort brukerveiledning og autoritative faglenker.
+- `index.html`, `styles.css` og nye v20.6-regler er kommentert slik at sentrale områder er enklere å finne manuelt.
+- Temabilde for **Mobbing og trakassering** er inkludert som `topic-mobbing-trakassering.png` og brukes av temaet i appen.

@@ -729,3 +729,11 @@ En story er ferdig når:
 ## Epic 23 – Provider-uavhengig modellbenchmark
 - Som admin vil jeg kunne velge OpenAI- eller OpenRouter-modeller uten ny deploy.
 - Som prosjekteier vil jeg sammenligne gratis, rimelige og premium-modeller på de samme 112 testcasene.
+
+## v20.6 – nye stories
+- Som testbruker kan jeg bare levere brukertesten én gang og henvises til Kontakt ved flere innspill.
+- Som admin kan jeg slå brukertestskjemaet av/på uten å slette svar.
+- Som bruker får jeg en tydelig førstegangsbekreftelse på personverninformasjonen.
+- Som bruker kan jeg åpne Hjelp med kort veiledning og kuraterte faglenker.
+- Som admin kan jeg finne funksjoner raskt fordi hovedseksjonene er kollapset som standard.
+

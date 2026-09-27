@@ -1086,3 +1086,11 @@ Admin skal kunne opprette engangsinvitasjoner med rolle `user`, `editor` eller `
 
 ### NFR-20.5-1 Testmiljø
 README og testinstruks skal opplyse om at Render-testmiljøet kan gå i dvale og at første innlasting derfor kan ta ekstra tid.
+
+## v20.6 – presisering etter iterativ utvikling og brukertestforberedelse
+- Brukertesting skal også brukes til å avdekke nye UX- og KI-kvalitetsbehov, ikke bare validere eksisterende løsning.
+- Brukertest kan slås av/på av admin; én konto kan levere ett strukturert svar, mens svarinnholdet lagres separat fra deltakermarkøren.
+- Før førstegangsbruk skal brukeren bekrefte at personverninformasjonen er lest og forstått; dette er en informasjonsbekreftelse, ikke et generelt GDPR-samtykke.
+- Hjelp-siden skal samle kort brukerveiledning og kuraterte faglenker fra autoritative kilder.
+- Sekundærsider og Admin skal bruke progressiv visning/kollaps for lavere visuell belastning.
+

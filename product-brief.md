@@ -4,7 +4,7 @@
 
 Samtalestøtte skal utvikles som en KI-basert webapplikasjon for ledere som skal forberede, gjennomføre og reflektere over krevende samtaler med medarbeidere. Mange ledere møter situasjoner som fravær, prestasjon, samarbeid, lønn, rus, sikkerhet, livssituasjoner og avslutning av arbeidsforhold uten å ha fått særlig praktisk trening i hvordan slike samtaler faktisk bør håndteres. Løsningen skal ikke ta beslutninger på vegne av lederen, men gi strukturert støtte slik at lederen kan møte samtalen bedre forberedt, formulere seg tydeligere og reflektere over mulige reaksjoner og neste steg.
 
-Produktet skal kombinere strukturert samtalestøtte med dynamisk KI-simulering. Brukeren skal kunne beskrive en situasjon, få hjelp til å identifisere relevant tema og undertema, få forslag til mål, struktur, spørsmål og formuleringer, og deretter øve i en simulert samtale hvor KI-en spiller medarbeideren og reagerer på lederens valg underveis. Personvern og sikkerhet skal være en del av selve arkitekturen, med kontroll av tekst før KI-kall, rollebasert tilgang, bruker-eid historikk og minimal logging av tekniske data.
+Den opprinnelige planen var et enkelt støtteverktøy der lederen velger tema, beskriver situasjonen med få tekstfelt og får konkrete forslag til forberedelse og gjennomføring. Samtalesimulering, personvernkontroll og refleksjon var sentrale ønsker. Løsningen skal utvikles iterativt, og utforming og prioriteringer kan justeres etter teknisk testing, faglig vurdering og brukertesting. Produktet kombinerer derfor strukturert samtalestøtte med dynamisk KI-simulering, bruker-eid historikk og personvernkontroll før KI-kall.
 
 Løsningen skal samtidig utformes slik at den ikke låses til én KI-leverandør eller til internettilgang. En ordinær nettversjon skal kunne bruke eksterne språkmodeller og kontrollerte weboppslag, mens arkitekturen skal kunne tilpasses lukkede intranett med interne språkmodeller, intern database og lokal kunnskapsbank uten internettilgang. Dette er særlig relevant for virksomheter der informasjonssikkerhet, personvern eller tekniske begrensninger gjør eksterne KI-tjenester uegnet.
 
@@ -26,13 +26,13 @@ Brukeren skal kunne fortsette dialogen med KI-en og stille oppfølgingsspørsmå
 
 KI-støtten skal være faglig avgrenset. Systemet skal ikke diagnostisere medarbeidere, fastslå motiv eller skyld eller ta HR-, juridiske eller personalmessige beslutninger på vegne av lederen. Ved situasjoner som krever juridisk, HR-faglig, medisinsk eller sikkerhetsmessig vurdering skal løsningen tydelig vise begrensningene og anbefale videre vurdering.
 
-Personvern skal være integrert i brukerflyten. Tekst som kan sendes til KI skal kontrolleres før den forlater applikasjonen. Direkte identifikatorer og andre personvernrisikoer skal varsles eller blokkeres, og prinsippet skal være å redusere identifiserbarhet uten å fjerne den konteksten som er nødvendig for å gi nyttig veiledning.
+Personvern skal være integrert i brukerflyten. Tekst som kan sendes til KI skal kontrolleres før den forlater applikasjonen. En særlig utfordring er å redusere risikoen for identifisering uten å fjerne så mye informasjon at KI-en mister konteksten som er nødvendig for å gi relevant støtte.
 
 ## What Makes This Different
 
 Samtalestøtte skal ikke utvikles som en generell chatbot med et nytt navn. Løsningen skal være et spesialisert arbeidsverktøy for krevende medarbeidersamtaler, med en fast brukerflyt fra situasjonsforståelse og forberedelse til øvelse, oppfølging og refleksjon.
 
-Markedsundersøkelsen viser at det finnes både norske og internasjonale løsninger for KI-basert lederstøtte og samtaletrening, men de identifiserte alternativene er i stor grad kommersielle bedriftsprodukter, abonnementstjenester eller KI-agenter bygget på eksisterende plattformer. Samtalestøtte skal derfor ikke hevde at konseptet er unikt, men differensiere seg gjennom kombinasjonen av funksjoner og arkitektur.
+Det finnes allerede KI-baserte løsninger for lederstøtte og samtaletrening. Samtalestøtte skal derfor ikke hevde at konseptet er unikt, men differensiere seg gjennom kombinasjonen av funksjoner og arkitektur.
 
 De viktigste forskjellene skal være:
 
@@ -45,7 +45,7 @@ De viktigste forskjellene skal være:
 - rollebasert administrasjon av innhold og modellvalg
 - arkitektur som skal kunne flyttes fra ekstern KI og webtilgang til interne KI-modeller, intern database og lokal SOURCEBANK/RAG i et lukket nettverk
 
-Prosjektets fortrinn er derfor ikke en påstand om en unik språkmodell eller proprietær KI-teknologi. Fortrinnet ligger i hvordan kjent KI-teknologi kombineres med domenespesifikk brukerflyt, sikkerhet, personvern, simulering, kvalitetstesting og mulighet for drift i miljøer med strenge nettverksbegrensninger.
+Fortrinnet ligger ikke i en egen språkmodell, men i kombinasjonen av domenespesifikk brukerflyt, personvern, simulering og systematisk kvalitetstesting.
 
 ## Who This Serves
 
@@ -73,7 +73,9 @@ Første versjon regnes som vellykket når følgende kriterier er oppfylt:
 - arkitekturen skal dokumentere hvordan ekstern KI og web search kan erstattes av intern KI og lokal kunnskapsbank i et lukket nettverk
 - kritiske brukerflyter, personvernregler og sikkerhetsfunksjoner skal dekkes av automatiserte tester før levering
 
-Testing skal ikke bare brukes til å vurdere om funksjonene virker, men også til å finne ut hvor dyr løsningen faktisk er i bruk. Prosjektet skal derfor følge tokenbruk og estimert kostnad per KI-kall, per testscenario og for representative brukerforløp. Dette skal gi grunnlag for å vurdere hvilken modell som gir best balanse mellom kvalitet og kostnad.
+Brukertesting skal ikke bare bekrefte om den planlagte løsningen fungerer. Den skal også kunne avdekke svakheter og nye forbedringsbehov i blant annet navigasjon, visuelt hierarki, formuleringer, arbeidsflyt og kvaliteten på KI-svarene. Funn kan derfor føre til justeringer av både brukergrensesnitt, systeminstruksjoner og funksjonalitet.
+
+Testing skal heller ikke bare brukes til å vurdere om funksjonene virker, men også til å finne ut hvor dyr løsningen faktisk er i bruk. Prosjektet skal derfor følge tokenbruk og estimert kostnad per KI-kall, per testscenario og for representative brukerforløp. Dette skal gi grunnlag for å vurdere hvilken modell som gir best balanse mellom kvalitet og kostnad.
 
 ## Scope
 
