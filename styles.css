@@ -140,6 +140,9 @@ h1,h2,h3,p {
 .nav {
   display: grid;
   gap: 6px;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .nav-item {
@@ -201,8 +204,9 @@ h1,h2,h3,p {
 }
 
 .sidebar-bottom {
-  margin-top: auto;
-  padding-top: 20px;
+  margin-top: 12px;
+  padding-top: 12px;
+  flex-shrink: 0;
 }
 
 .sidebar-message {
