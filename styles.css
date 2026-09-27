@@ -5940,13 +5940,17 @@ html[data-theme="dark"] .simulation-bottom-cta span {
 }
 
 .resource-links {
-  display: grid;
-  gap: 10px;
+  margin: 0;
+  padding-left: 22px;
+}
+
+.resource-links li {
+  margin-bottom: 8px;
 }
 
 .resource-links a {
   color: var(--accent);
-  font-weight: 700;
+  font-weight: 400;
   text-decoration: none;
 }
 
