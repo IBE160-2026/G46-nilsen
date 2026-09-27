@@ -950,7 +950,7 @@ html[data-theme="dark"] .legal-note{background:color-mix(in srgb,var(--accent-so
 #contact-view .utility-page-logo,
 #history-view .utility-page-logo,
 .legal-view .utility-page-logo{
-  width:78px;
+  width:132px;
   max-width:none;
 }
 #settings-view .content-header>.eyebrow,
@@ -2160,11 +2160,11 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
   display:block;
   margin:0;
 }
-#admin-view .utility-title-row .utility-page-logo,
-#survey-view .utility-title-row .utility-page-logo,
-#help-view .utility-title-row .utility-page-logo{
-  width:132px;
-  max-width:none;
+#admin-view .utility-page-logo,
+#help-view .utility-page-logo,
+#survey-view .utility-page-logo{
+  width:132px!important;
+  transform:translateY(-8px)!important;
 }
 /* Når sidemenyen er minimert skjules logoen og sideikonet vises – større og litt høyere. */
 .app-shell.sidebar-collapsed-layout .utility-title-row .utility-page-brand{display:none!important}
