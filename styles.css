@@ -2060,3 +2060,22 @@ html[data-theme="dark"] .simulation-bottom-cta span{color:#b9d3da}
 #contact-view .compact-report-form{padding:15px 18px}
 #contact-view .compact-report-form h2{font-size:1.1rem}
 #contact-view .contact-compact-row{padding-top:2px}
+
+
+/* v20.8 – lukket meny: kompakt menyikon på samme topplinje som topptekst/logo.
+   Åpen meny og eksisterende pil beholdes uendret. */
+.sidebar-toggle-menu-icon{display:none;font-size:1.18rem;line-height:1;font-weight:800;letter-spacing:-.08em}
+.sidebar.sidebar-collapsed .sidebar-toggle-arrow{display:none}
+.sidebar.sidebar-collapsed .sidebar-toggle-menu-icon{display:inline-flex;align-items:center;justify-content:center}
+.sidebar.sidebar-collapsed .sidebar-toggle{
+  top:24px;
+  right:-44px;
+  width:40px;
+  height:40px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  box-shadow:0 4px 14px rgba(23,92,108,.12);
+}
+@media (max-width:980px){
+  .sidebar.sidebar-collapsed .sidebar-toggle{top:18px;right:-42px;width:38px;height:38px;border-radius:11px}
+}

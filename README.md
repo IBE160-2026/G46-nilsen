@@ -361,3 +361,7 @@ Ikke legg API-nøkler i Git, README, frontendkode eller chat. Admin kan velge `O
 - Hjelp-side samler kort brukerveiledning og autoritative faglenker.
 - `index.html`, `styles.css` og nye v20.6-regler er kommentert slik at sentrale områder er enklere å finne manuelt.
 - Temabilde for **Mobbing og trakassering** er inkludert som `topic-mobbing-trakassering.png` og brukes av temaet i appen.
+
+
+## v20.8 – releaseopprydding
+Åpen sidemeny er uendret. I lukket tilstand bruker menyknappen et kompakt menyikon plassert på topplinjen. Eldre versjonsspesifikke README-filer og UI-regresjonstester er fjernet fra releasepakken; aktiv dokumentasjon, migreringer og sikkerhets-/funksjonstester er beholdt.

@@ -1,3 +1,10 @@
+# v20.8.0 – meny og filopprydding
+
+- Åpen sidemeny er beholdt helt uendret.
+- Når sidemenyen er lukket, vises nå et kompakt menyikon i stedet for pil. Ikonet ligger på samme topplinje som innholdet i toppbaren.
+- Beholder tidligere avtalte v20-funksjoner: lukket «Rediger innhold», roller, personvernkontroller, valgfritt samtalevedlegg, webkildelogging og hjelp/faglenker.
+- Ryddet releasepakken for utdaterte versjons-README-er og gamle versjonsspesifikke UI-regresjonstester. Gjeldende dokumentasjon, migreringer, faggrunnlag og aktive tester er beholdt.
+
 # CHANGELOG – Samtalestøtte
 
 ## v20.7.0 – finjustering, Product Brief og navigasjon

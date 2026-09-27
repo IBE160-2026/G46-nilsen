@@ -2,113 +2,95 @@
 
 ## Executive Summary
 
-Samtalestøtte skal utvikles som en KI-basert webapplikasjon for ledere som skal forberede, gjennomføre og reflektere over krevende samtaler med medarbeidere. Mange ledere møter situasjoner som fravær, prestasjon, samarbeid, lønn, rus, sikkerhet, livssituasjoner og avslutning av arbeidsforhold uten å ha fått særlig praktisk trening i hvordan slike samtaler faktisk bør håndteres. Løsningen skal ikke ta beslutninger på vegne av lederen, men gi strukturert støtte slik at lederen kan møte samtalen bedre forberedt, formulere seg tydeligere og reflektere over mulige reaksjoner og neste steg.
+Samtalestøtte er et KI-basert arbeidsverktøy for ledere som skal forberede, gjennomføre og reflektere over krevende medarbeidersamtaler. Løsningen dekker blant annet fravær, prestasjon, samarbeid, lønn, alkohol og rus, sikkerhet, livssituasjoner, mobbing og trakassering og avslutning av arbeidsforhold.
 
-Den opprinnelige planen var et enkelt støtteverktøy der lederen velger tema, beskriver situasjonen med få tekstfelt og får konkrete forslag til forberedelse og gjennomføring. Samtalesimulering, personvernkontroll og refleksjon var sentrale ønsker. Løsningen skal utvikles iterativt, og utforming og prioriteringer kan justeres etter teknisk testing, faglig vurdering og brukertesting. Produktet kombinerer derfor strukturert samtalestøtte med dynamisk KI-simulering, bruker-eid historikk og personvernkontroll før KI-kall.
+Produktet skal ikke være en generell chatbot. Brukeren føres gjennom en strukturert arbeidsflyt fra situasjonsforståelse og forberedelse til oppfølging, refleksjon og samtalesimulering. KI-en skal kunne foreslå mål, spørsmål og formuleringer, forberede lederen på mulige reaksjoner og opptre som medarbeider i en treningssamtale.
 
-Løsningen skal samtidig utformes slik at den ikke låses til én KI-leverandør eller til internettilgang. En ordinær nettversjon skal kunne bruke eksterne språkmodeller og kontrollerte weboppslag, mens arkitekturen skal kunne tilpasses lukkede intranett med interne språkmodeller, intern database og lokal kunnskapsbank uten internettilgang. Dette er særlig relevant for virksomheter der informasjonssikkerhet, personvern eller tekniske begrensninger gjør eksterne KI-tjenester uegnet.
+Utviklingsutfordringen er å få KI-kvalitet, personvern, autentisering, historikk, kildebruk, simulering, modelltesting og kostnadsmåling til å fungere sammen i én løsning. Arkitekturen skal samtidig være leverandøruavhengig slik at eksterne KI-tjenester senere kan erstattes av interne modeller og lokale kunnskapskilder.
+
+Målet er et praktisk lederverktøy der KI styrker forberedelse, trening og refleksjon uten å overta beslutningsansvaret.
 
 ## The Problem
 
-Ledere forventes å håndtere krevende medarbeidersamtaler på en profesjonell måte, men mange får begrenset praktisk trening i hvordan slike samtaler gjennomføres. Teori om kommunikasjon og ledelse gir et viktig grunnlag, men gir ikke nødvendigvis trening i den konkrete situasjonen: Hvordan åpner man samtalen? Hvilke spørsmål bør stilles? Hvordan holder man seg til observerbare forhold? Hva gjør man hvis medarbeideren blir sint, lei seg, avvisende eller taus? Hvordan følger man opp etterpå?
+Ledere forventes å håndtere krevende medarbeidersamtaler profesjonelt, men får ikke alltid praktisk trening i hvordan slike samtaler faktisk gjennomføres.
 
-I praksis løses dette ofte ved at lederen forbereder seg alene, søker etter informasjon på nettet, bruker generelle KI-verktøy eller kontakter HR når HR er tilgjengelig. Generelle KI-verktøy kjenner imidlertid ikke nødvendigvis konteksten, virksomhetens rammer eller hvilke personvernkrav som bør gjelde når personalsaker beskrives. Nettinformasjon kan være fragmentert, og kommersielle treningsløsninger er ofte rettet mot større virksomheter eller krever abonnement.
+Utfordringen handler blant annet om hvordan samtalen åpnes, hvilke spørsmål som bør stilles, hvordan man holder seg til observerbare forhold, og hvordan man håndterer reaksjoner som sinne, taushet eller avvisning.
 
-Konsekvensen kan være at samtaler utsettes, blir dårlig strukturert eller gjennomføres med for liten forberedelse. Det kan skape usikkerhet for både leder og medarbeider, øke risikoen for misforståelser og konflikt og gjøre det vanskeligere å skille fakta, antakelser og følelser. Samtidig kan ledere som bruker generelle KI-tjenester komme til å dele mer personinformasjon enn nødvendig.
+I praksis forbereder mange ledere seg alene, søker informasjon på nettet, bruker generelle KI-verktøy eller kontakter HR. Disse alternativene dekker deler av behovet, men gir ikke nødvendigvis en samlet arbeidsflyt for forberedelse, øvelse og refleksjon. Generelle KI-verktøy gir også personvernutfordringer dersom brukeren legger inn identifiserende opplysninger fra reelle personalsaker.
 
-Samtalestøtte skal derfor løse to problemer samtidig: behovet for praktisk, situasjonsnær lederstøtte og behovet for at KI-støtten skjer innenfor tydelige rammer for personvern, sikkerhet, kildebruk og menneskelig ansvar.
+Samtalestøtte skal derfor kombinere praktisk lederstøtte med tydelige rammer for personvern, sikkerhet, kildebruk og menneskelig ansvar.
 
 ## The Solution
 
-Samtalestøtte skal gi lederen ett samlet arbeidsrom for hele prosessen rundt en krevende samtale. Brukeren skal kunne beskrive situasjonen med egne ord eller starte fra et relevant hovedtema og undertema. Systemet skal hjelpe med å forstå hva slags samtale brukeren står overfor og gi konkret støtte til forberedelse, blant annet mål for samtalen, struktur, spørsmål, formuleringseksempler og mulige reaksjoner fra medarbeideren.
+Brukeren velger et hovedtema og undertema eller beskriver situasjonen med egne ord. Systemet skal deretter kunne gi støtte til:
 
-Brukeren skal kunne fortsette dialogen med KI-en og stille oppfølgingsspørsmål uten å måtte starte på nytt. Historikken skal gjøre det mulig å gå tilbake til tidligere arbeid. Løsningen skal også ha en egen samtalesimulator der KI-en går inn i rollen som medarbeider. Målet er at brukeren skal kunne øve på formuleringer og håndtere ulike reaksjoner i et trygt miljø før den virkelige samtalen gjennomføres.
+- mål og struktur for samtalen
+- relevante spørsmål og formuleringer
+- mulige reaksjoner fra medarbeideren
+- oppfølgingsdialog med KI
+- refleksjon og neste steg
+- dynamisk samtalesimulering
 
-KI-støtten skal være faglig avgrenset. Systemet skal ikke diagnostisere medarbeidere, fastslå motiv eller skyld eller ta HR-, juridiske eller personalmessige beslutninger på vegne av lederen. Ved situasjoner som krever juridisk, HR-faglig, medisinsk eller sikkerhetsmessig vurdering skal løsningen tydelig vise begrensningene og anbefale videre vurdering.
+Innloggede brukere skal kunne ha egen historikk og gå tilbake til tidligere arbeid.
 
-Personvern skal være integrert i brukerflyten. Tekst som kan sendes til KI skal kontrolleres før den forlater applikasjonen. En særlig utfordring er å redusere risikoen for identifisering uten å fjerne så mye informasjon at KI-en mister konteksten som er nødvendig for å gi relevant støtte.
+Personvern skal være integrert i løsningen. Tekst som sendes til ekstern KI skal kontrolleres både i brukergrensesnittet og på serveren. Systemet skal redusere unødvendige identifiserende opplysninger uten å fjerne nødvendig kontekst.
+
+KI-en skal ikke diagnostisere medarbeidere, fastslå motiv eller skyld, gi bindende juridiske råd eller ta personalmessige beslutninger på vegne av lederen.
 
 ## What Makes This Different
 
-Samtalestøtte skal ikke utvikles som en generell chatbot med et nytt navn. Løsningen skal være et spesialisert arbeidsverktøy for krevende medarbeidersamtaler, med en fast brukerflyt fra situasjonsforståelse og forberedelse til øvelse, oppfølging og refleksjon.
+Samtalestøtte er et spesialisert arbeidsverktøy, ikke en generell chatbot med nytt grensesnitt.
 
-Det finnes allerede KI-baserte løsninger for lederstøtte og samtaletrening. Samtalestøtte skal derfor ikke hevde at konseptet er unikt, men differensiere seg gjennom kombinasjonen av funksjoner og arkitektur.
+Løsningen kombinerer ni hovedtemaer og 56 undertemaer med forberedelse, oppfølging, refleksjon og simulering i samme arbeidsflyt. I tillegg skal den ha personvernkontroll i klient og server, bruker-eid historikk, kontrollert web search, kildehåndtering, rollebasert administrasjon og modelltesting.
 
-De viktigste forskjellene skal være:
+Fortrinnet ligger ikke i å utvikle en egen språkmodell, men i hvordan KI, personvern, simulering, testing og domenespesifikk brukerflyt bygges sammen.
 
-- norsk kontekst og struktur rundt typiske medarbeidersamtaler
-- kombinasjon av forberedelse, oppfølging, refleksjon og dynamisk KI-simulering i samme løsning
-- personvernkontroll både i brukergrensesnittet og på serveren før KI-kall
-- kuratert fag- og kildegrunnlag som kan videreutvikles til lokal kunnskapsbank
-- monitorering av hvilke eksterne kilder KI-en faktisk bruker, uten å lagre samtaletekst eller profilere enkeltbrukere
-- systematisk sammenligning av KI-modeller på kvalitet, kildebruk, responstid og kostnad
-- rollebasert administrasjon av innhold og modellvalg
-- arkitektur som skal kunne flyttes fra ekstern KI og webtilgang til interne KI-modeller, intern database og lokal SOURCEBANK/RAG i et lukket nettverk
+## Project Complexity
 
-Fortrinnet ligger ikke i en egen språkmodell, men i kombinasjonen av domenespesifikk brukerflyt, personvern, simulering og systematisk kvalitetstesting.
+Prosjektets tekniske kompleksitet oppstår fordi flere avhengige lag må fungere samtidig: brukergrensesnitt, serverlogikk, språkmodell, personvern, autentisering, datalagring, historikk, kildebruk, simulator og administrasjon.
 
-Prosjektet dekker ni hovedtemaer og 56 undertemaer. Testgrunnlaget skal ha minst to faste KI-scenarioer per undertema, totalt 112 saker. Regelverksnære og høyrisiko temaer skal ha egne kildetester. Modellaget skal kunne sammenligne flere leverandører og modeller, inkludert gratis, rimelige og premium-alternativer, uten at resten av applikasjonen må bygges om.
+KI-laget skal støtte flere modeller uten at resten av applikasjonen må bygges om. Samtidig skal løsningen kunne registrere responstid, tokenbruk, estimert kostnad og kildebruk slik at modeller kan sammenlignes systematisk.
+
+Personvernkontrollen må finnes både i klient og server. Utfordringen er å redusere identifiserende informasjon uten å fjerne så mye kontekst at KI-støtten blir dårligere.
+
+Simulatoren skal holde en konsistent medarbeiderrolle gjennom flere meldinger og reagere dynamisk på brukerens formuleringer. Samtidig må den styres slik at den ikke diagnostiserer, tillegger personer skjulte motiver eller fremstiller spekulasjoner som fakta.
+
+Prosjektet skal også ha systematisk KI-testing. De 56 undertemaene skal inngå i faste testsituasjoner, og et representativt utvalg skal kunne kjøres mot flere modeller. Dette gjør det mulig å sammenligne blant annet kvalitet, stabilitet, responstid, kostnad og kildebruk.
+
+Web search skal være kontrollert og sporbar. Systemet skal kunne registrere hvilke eksterne kilder som faktisk brukes, uten at selve personalsamtalen automatisk lagres i denne loggen.
+
+Kompleksiteten ligger derfor først og fremst i samspillet mellom KI-kvalitet, personvern, datalagring, kildebruk, testing og brukeropplevelse.
 
 ## Who This Serves
 
-Primærbrukeren er en leder med personalansvar som står foran en krevende medarbeidersamtale og trenger praktisk støtte raskt. Brukeren trenger ikke være ekspert på HR, arbeidsrett eller KI. Løsningen skal være forståelig uten opplæring og hjelpe lederen fra en ustrukturert situasjonsbeskrivelse til en tydeligere plan for samtalen.
+Primærbrukeren er en leder med personalansvar som står foran en krevende medarbeidersamtale og trenger praktisk støtte raskt.
 
-For denne brukeren betyr suksess at vedkommende føler seg bedre forberedt, har et tydelig formål med samtalen, har relevante spørsmål og formuleringer tilgjengelig og har fått mulighet til å øve på hvordan ulike reaksjoner kan møtes.
-
-Sekundære brukere er HR-funksjoner, lederutviklere og virksomheter som ønsker en mer konsistent og ansvarlig måte å gi ledere samtalestøtte på. Løsningen kan også være relevant i virksomheter med begrenset eller ingen internettilgang, der interne språkmodeller og interne kunnskapskilder må brukes.
+Sekundære brukere kan være HR-funksjoner, lederutviklere og virksomheter som ønsker en mer konsistent og ansvarlig måte å tilby KI-basert samtalestøtte og trening på.
 
 ## Success Criteria
 
-Prosjektet regnes som vellykket når følgende kriterier er oppfylt:
+Prosjektet regnes som vellykket dersom prototypen demonstrerer at hovedflyten fungerer og kan evalueres systematisk.
 
-- minst 90 % av representative brukertester kan gjennomføres uten hjelp til navigasjon eller forklaring av hovedflyten
-- brukertestere vurderer støtten som relevant og konkret i minst 80 % av testscenarioene
-- det gjennomføres en planlagt brukertest med om lag 8–12 personer, helst med flere deltakere som har leder- eller personalansvar
-- alle 56 definerte undertemaer har minst to faste testsaker, slik at testbanken inneholder minst 112 KI-scenarioer
-- et representativt utvalg av testcasene kjøres mot minst tre KI-modeller for å sammenligne kvalitet, stabilitet, responstid, weboppslag og kostnad
-- personverntestene skal fange opp definerte direkte identifikatorer før tekst sendes til ekstern KI
-- serveren skal ha en egen personverngateway slik at klientkontrollen ikke kan omgås ved direkte API-kall
-- en innlogget bruker skal bare kunne lese og endre egen samtalehistorikk
-- testkjøringer skal kunne skilles fra ordinær brukertrafikk
-- løsningen skal kunne registrere tokenbruk, estimert kostnad, responstid og web-/kildebruk for modelltesting uten å lagre samtaletekst i tekniske kildelogger
-- administrator skal kunne bytte støttet KI-modell uten kodeendring eller ny deploy
-- arkitekturen skal dokumentere hvordan ekstern KI og web search kan erstattes av intern KI og lokal kunnskapsbank i et lukket nettverk
-- kritiske brukerflyter, personvernregler og sikkerhetsfunksjoner skal dekkes av automatiserte tester før levering
+Det innebærer at brukeren kan gå fra situasjonsvalg til KI-støtte og simulering, at innloggede brukere bare får tilgang til egen historikk, og at personvernregler og kritiske funksjoner kan testes.
 
-Brukertesting skal ikke bare bekrefte om den planlagte løsningen fungerer. Den skal også kunne avdekke svakheter og nye forbedringsbehov i blant annet navigasjon, visuelt hierarki, formuleringer, arbeidsflyt og kvaliteten på KI-svarene. Funn kan derfor føre til justeringer av både brukergrensesnitt, systeminstruksjoner og funksjonalitet.
-
-Testing skal heller ikke bare brukes til å vurdere om funksjonene virker, men også til å finne ut hvor dyr løsningen faktisk er i bruk. Prosjektet skal derfor følge tokenbruk og estimert kostnad per KI-kall, per testscenario og for representative brukerforløp. Dette skal gi grunnlag for å vurdere hvilken modell som gir best balanse mellom kvalitet og kostnad.
+Løsningen skal også kunne sammenligne KI-modeller og registrere responstid, tokenbruk, estimert kostnad og kildebruk.
 
 ## Scope
 
-### In scope
+Første versjon skal være en fungerende webbasert prototype med strukturert KI-støtte, oppfølgingsdialog, samtalesimulator, innlogging, brukerhistorikk, rollebasert administrasjon, personvernkontroll, kontrollert web search, modelltesting og teknisk logging.
 
-Første versjon skal være en fungerende webbasert prototype for krevende medarbeidersamtaler. Den skal dekke ni hovedtemaer med tilhørende undertemaer og gi strukturert KI-støtte før og under forberedelsen av samtalen. Den skal inkludere oppfølging i dialogform, samtalesimulering, bruker-eid historikk, personvernkontroll før KI-kall, rollebasert administrasjon, fag- og kildegrunnlag, kontrollert web search der dette er relevant, rapportering av KI-svar og tekniske feil samt test- og benchmarkfunksjoner for kvalitet, kostnad og kildebruk.
+Løsningen skal ikke være et HR-system, journalsystem eller automatisert beslutningssystem. Den skal ikke fatte personalavgjørelser, stille diagnoser, gi bindende juridiske råd eller erstatte HR, juridisk bistand eller lederens ansvar.
 
-Innlogging skal inngå fordi løsningen håndterer personlig brukerhistorikk og potensielt sensitivt arbeidsrelatert innhold. Innlogging skal muliggjøre sikker tilgang til egne samtaler, skille ordinære brukere fra redaktører og administratorer og gjøre det mulig å tilby sletting og eksport av egne data.
-
-Kostnadsmåling skal inngå fordi de modellene som gir best kvalitet ofte også er blant de dyrere å bruke. Løsningen skal derfor kunne måle faktisk tokenbruk og estimert kostnad slik at modellvalg kan baseres på dokumentert nytte, ikke bare antakelser om at den kraftigste modellen alltid er best.
-
-Arkitekturen skal være modulær nok til at KI-leverandør og kunnskapskilde kan erstattes. Det skal dokumenteres hvordan løsningen kan driftes i et lukket intranett med intern språkmodell, intern database og lokal kunnskapsbank uten internettilgang. Full produksjonssetting i et slikt lukket miljø er avhengig av tilgang til virksomhetens interne infrastruktur og er derfor ikke et krav for studentprototypen.
-
-### Explicitly out of scope
-
-Løsningen skal ikke være et HR-system, personalsystem, journalsystem eller saksbehandlingssystem. Den skal ikke fatte beslutninger om medarbeidere, gjøre automatiserte personalvurderinger, stille diagnoser, gi bindende juridiske råd eller erstatte HR, juridisk bistand, bedriftshelsetjeneste eller lederens eget ansvar.
-
-Løsningen skal ikke trene eller finjustere en egen språkmodell på brukernes samtaler. Brukerinnhold skal heller ikke brukes som skjult treningsdata. Full integrasjon mot virksomhetens HR-systemer, automatisk dokumentasjon i personalmapper og produksjonsklar utrulling i klassifiserte/lukkede nettverk ligger utenfor prosjektets avgrensning.
+Full integrasjon mot HR-systemer og produksjonsklar drift i lukkede nettverk ligger utenfor studentprototypen.
 
 ## Vision
 
-Hvis Samtalestøtte lykkes, skal løsningen innen ett år kunne videreutvikles fra prototype til et mer modent verktøy for ansvarlig KI-basert lederstøtte og praktisk samtaletrening.
+Samtalestøtte skal kunne utvikles fra en studentprototype til en fleksibel plattform for ansvarlig KI-basert lederstøtte og samtaletrening.
 
-Innen samme periode bør det vurderes om løsningen også skal tilbys som egen mobilapplikasjon. Mange brukere benytter i dag mobiltelefon som primær eller eneste digitale enhet, og erfaringer fra brukertesting av webapplikasjonen bør brukes til å vurdere om en app vil gi bedre tilgjengelighet, mobil arbeidsflyt og bruk i situasjoner der PC ikke er tilgjengelig.
+På sikt kan løsningen få en større kuratert kunnskapsbank med virksomhetsspesifikke regler og dokumenter. Data om hvilke eksterne kilder som faktisk brukes, kan gi grunnlag for å bygge en lokal SOURCEBANK/RAG-løsning med mer kontrollerte kilder.
 
-Den nettbaserte versjonen kan videreutvikles med en større kuratert kunnskapsbank, bedre kildehåndtering og virksomhetsspesifikke regler og dokumenter. Data om hvilke eksterne kilder som faktisk brukes, skal kunne brukes til å identifisere hvilke dokumenter og nettsider som bør inngå i en lokal SOURCEBANK/RAG-løsning. På denne måten kan kunnskapsgrunnlaget gradvis flyttes fra åpne nettsøk til kontrollerte og kvalitetssikrede kilder.
+Arkitekturen skal også kunne støtte en lukket variant med intern språkmodell, intern database og lokale dokumenter for virksomheter som ikke kan bruke eksterne skytjenester. Brukeropplevelsen bør kunne beholdes selv om den underliggende KI-leverandøren byttes ut.
 
-Parallelt skal arkitekturen kunne støtte en lukket variant for organisasjoner som ikke kan sende informasjon til eksterne skytjenester. I en slik løsning skal Samtalestøtte kunne kjøres på virksomhetens intranett med interne språkmodeller, intern autentisering og database, lokale dokumenter og ingen internettilgang. Brukeropplevelsen skal i hovedsak være den samme uavhengig av om KI-en leveres fra en ekstern API-tjeneste eller en modell som kjører internt.
+På lengre sikt kan Samtalestøtte brukes både som støtte før reelle medarbeidersamtaler og som treningsverktøy der ledere kan øve på krevende situasjoner før de møter en faktisk medarbeider.
 
-Dersom løsningen etter hvert viser seg å ha reell nytte og etterspørsel, kan den utvikles videre som en betalt tjeneste eller virksomhetslisens. Begrunnelsen er først og fremst å dekke løpende kostnader til KI-kall, database, hosting og øvrig infrastruktur. Kostnadsmodellen skal kunne baseres på faktisk målt bruk fremfor antakelser.
-
-Samtidig utvikler KI-markedet seg svært raskt. Modeller som i dag er kostbare kan senere bli billigere, og rimeligere eller gratis modeller kan etter hvert bli gode nok til å dekke hele eller deler av behovet. Samtalestøtte skal derfor ikke bygges rundt en forutsetning om at en bestemt betalt modell alltid er nødvendig. Fleksibelt modellvalg og provider-uavhengig arkitektur skal gjøre det mulig å redusere kostnader eller tilby gratisnivåer dersom teknologiutviklingen gjør dette forsvarlig.
-
-På lengre sikt kan løsningen bli et verktøy både for individuell lederstøtte og systematisk ledertrening, hvor simuleringer, kvalitetssikret kunnskap og kontrollerte tilbakemeldingssløyfer gjør det mulig å øve på krevende samtaler uten at KI-en overtar beslutningsansvaret. Målet er ikke å erstatte menneskelig ledelse, men å gjøre ledere bedre forberedt når samtalene faktisk må tas.
+Ambisjonen er å utvikle et verktøy som gjør det enklere å forberede seg godt, øve på krevende samtaler og bruke kvalitetssikret støtte når behovet oppstår.
