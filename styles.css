@@ -4129,7 +4129,10 @@ html[data-theme="dark"] .simulation-privacy-link:hover {
 }
 
 .utility-header-copy p {
-  margin: 0 0 18px;
+  margin-top: 2px;
+  margin-right: 0;
+  margin-bottom: 18px;
+  margin-left: 0;
 }
 
 #about-view .about-purpose,
