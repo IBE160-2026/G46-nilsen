@@ -2136,37 +2136,18 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
 }
 
 /* Samme overskriftsstørrelse på alle sammenleggbare seksjoner. Innstillinger er fasit. */
+/* Samme overskriftsstørrelse på alle sammenleggbare seksjoner. Om-siden er fasit. */
 .utility-accordion>summary,
 .admin-panel>summary,
 .admin-content-section>summary{
-  font-size:1.18rem!important;
-  font-weight:800!important;
-  line-height:1.35!important;
+  font-size:1rem!important;
+  font-weight:600!important;
+  line-height:1.3!important;
 }
 
 /* Historiske støttesamtaler beholder samme Midlertidig samtale-komponent. */
 #guidance-view.history-loaded-mode #temporary-chat-option{display:flex!important;}
 
-/* ==================================================
-   v20.10.2 – Admin skal ha samme accordion-geometri som Innstillinger
-   Innstillinger er fasit for bredde, avstand, høyde, padding og typografi.
-   ================================================== */
-#admin-view .admin-grid{
-  max-width:980px;
-  gap:0;
-}
-#admin-view .admin-grid > .settings-card.admin-panel{
-  max-width:980px;
-  margin-top:14px;
-  padding:18px 20px;
-}
-#admin-view .admin-grid > .admin-panel > summary{
-  min-height:0;
-  font-size:1.18rem!important;
-  font-weight:800!important;
-  line-height:1.35!important;
-  padding:0;
-}
 
 /* ==================================================
    v20.10.3 – konsekvent toppidentitet og roligere utility-accordions
@@ -2198,15 +2179,6 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
 }
 .collapsed-page-icon svg{width:24px!important;height:24px!important}
 .collapsed-page-icon-text{font-size:1.35rem!important}
-
-/* Om-siden er fasit: roligere skrift i sammenleggbare bokser. */
-.utility-accordion>summary,
-.admin-panel>summary,
-.admin-content-section>summary{
-  font-size:1.18rem!important;
-  font-weight:700!important;
-  line-height:1.3!important;
-  letter-spacing:normal!important;
 }
 
 /* Behold samme kompakte kortgeometri og alle seksjoner lukket ved innlasting. */
