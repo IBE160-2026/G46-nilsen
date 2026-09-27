@@ -795,10 +795,27 @@ Krav:
     const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
     if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
     res.json({ok:true,id:save.data?.id,...row});
-  }catch(error){
-    const status=Number(error?.status)||500; res.status(status>=400&&status<600?status:500).json({error:'BENCHMARK_FAILED',message:'Benchmark-kallet feilet.',model,caseId});
-  }
-});
+ }catch(error){
+  console.error("Benchmark-feil:", {
+    model,
+    caseId,
+    status: error?.status,
+    message: error?.message,
+    code: error?.code,
+    error: error?.error
+  });
+
+  const status=Number(error?.status)||500;
+
+  res.status(status>=400&&status<600?status:500).json({
+    error:'BENCHMARK_FAILED',
+    message:error?.message || 'Benchmark-kallet feilet.',
+    model,
+    caseId,
+    status:error?.status || null,
+    code:error?.code || null
+  });
+}
 
 app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
   let q=supabaseAdmin.from('benchmark_results').select('id,run_id,case_id,topic_id,topic,subtopic,variant,model,response_text,input_tokens,output_tokens,estimated_cost_usd,web_search_count,web_search_queries,source_domains,source_pages,latency_ms,created_at').order('created_at',{ascending:false}).limit(300);
