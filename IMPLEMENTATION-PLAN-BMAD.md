@@ -509,5 +509,9 @@ Denne iterasjonen følger prosjektets faktiske arbeidsmåte: behov ble oppdaget 
 9. Kjør statiske tester og eksisterende regresjonstester før pakking.
 
 ## v20.6 – iterativ justering etter testing
-Planen følger fortsatt mønsteret planlegg → bygg → test → lær → juster → dokumenter → bygg videre. Brukertestene skal eksplisitt kunne utløse endringer i UX og KI-instruksjoner. v20.6 prioriterer navigasjon/hierarki, engangs brukertest, adminstyrt testperiode, personvernbekreftelse og bedre kildekodekommentarer.
+Planen følger fortsatt mønsteret planlegg → bygg → test → lær → juster → dokumenter → bygg videre. Brukertestene skal eksplisitt kunne utløse endringer i UX og KI-instruksjoner. Neste iterasjon prioriterer navigasjon/hierarki, engangs brukertest, adminstyrt testperiode, personvernbekreftelse, tydeligere kildekodekommentarer og forbedringer av KI-svar basert på testfunn.
 
+
+
+## Kanalvalg etter brukertest
+Innen ett år skal det vurderes om erfaringene fra webapplikasjonen tilsier at en egen mobilapp bør utvikles, særlig for brukere som primært eller bare har tilgang til mobil.

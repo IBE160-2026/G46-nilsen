@@ -13,7 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.5.0";
+const appVersion = process.env.APP_VERSION || "20.7.0";
 const contactEmail = "cecilie.c.nilsen@himolde.no";
 
 app.disable("x-powered-by");
@@ -745,7 +745,7 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   let storageReady=true;
   const probe=await supabaseAdmin.from('benchmark_results').select('id,source_pages').limit(1);
   if(probe.error) storageReady=false;
-  res.json({version:'20.5.0',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+  res.json({version:'20.7.0',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
 });
 
 app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{

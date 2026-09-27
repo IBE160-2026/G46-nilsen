@@ -188,7 +188,7 @@ SUPABASE_URL=https://ditt-prosjekt.supabase.co
 SUPABASE_PUBLISHABLE_KEY=din_publishable_key
 SUPABASE_SECRET_KEY=din_secret_key
 
-APP_VERSION=20.6.0
+APP_VERSION=20.7.0
 ```
 
 `.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.
@@ -275,20 +275,47 @@ Automatiske tester brukes som støtte. KI-svar må fortsatt vurderes manuelt for
 
 ## Viktige filer
 
+### BMAD-dokumentasjon
+
 | Fil | Innhold |
 |---|---|
-| `product-brief.md` | Kort beskrivelse av behov, mål, plan og avgrensning |
-| `README.md` | Denne filen |
-| `CHANGELOG.md` | Utviklingshistorikk og endringer mellom versjoner |
+| `product-brief.md` | Behov, mål, kompleksitet, avgrensning og videre retning |
+| `PRD.md` | Produktkrav og funksjonelle/ikke-funksjonelle krav |
+| `UX-DESIGN-BMAD.md` | UX-prinsipper, arbeidsflyt og brukergrensesnitt |
+| `ARCHITECTURE-BMAD.md` | Teknisk arkitektur, sikkerhet, KI-lag og drift |
+| `EPICS-AND-STORIES-BMAD.md` | Epics og user stories |
+| `IMPLEMENTATION-PLAN-BMAD.md` | Iterativ plan for bygging, testing og videre forbedring |
+
+### KI, testing og faggrunnlag
+
+| Fil | Innhold |
+|---|---|
 | `AI-SYSTEMPROMPT.md` | Regler og føringer for KI-en |
 | `AI-RESPONSE-CONTRACT.md` | Forventet struktur på KI-svar |
 | `AI-TESTPLAN.md` | Plan og kriterier for KI-testing |
-| `SOURCEBANK.md` / `SOURCEBANK.json` | Kurert fag- og kildebank |
-| `FAGGRUNNLAG-FRAVAER.md` | Faglig grunnlag for temaet fravær |
-| `server.js` | Server, API-ruter og KI-integrasjon |
+| `SOURCEBANK.md` / `SOURCEBANK.json` | Kurert fag- og kildebank på tvers av temaene |
+| `FAGGRUNNLAG-ALKOHOL-RUS.md` | Alkohol og rus |
+| `FAGGRUNNLAG-FRAVAER.md` | Fravær, arbeidsevne og tilrettelegging |
+| `FAGGRUNNLAG-PRESTASJON-UTVIKLING.md` | Prestasjon og utvikling |
+| `FAGGRUNNLAG-LONN-UTVIKLING.md` | Lønn og utvikling |
+| `FAGGRUNNLAG-SAMARBEID-KOMMUNIKASJON.md` | Samarbeid og kommunikasjon |
+| `FAGGRUNNLAG-AVSLUTNING-ARBEIDSFORHOLD.md` | Avslutning av arbeidsforhold |
+| `FAGGRUNNLAG-SIKKERHET-ANSVAR.md` | Sikkerhet, vold og trusler |
+| `FAGGRUNNLAG-LIVSSITUASJONER.md` | Livssituasjoner og arbeidsrelatert tilrettelegging |
+| `FAGGRUNNLAG-MOBBING-TRAKASSERING.md` | Mobbing, trakassering og varsling |
+
+`SOURCEBANK.md` og `SOURCEBANK.json` er den felles kuraterte kildebanken som binder faggrunnlaget på tvers av alle hovedtemaene.
+
+### Kode og drift
+
+| Fil | Innhold |
+|---|---|
+| `server.js` | Server, API-ruter, personverngateway og KI-integrasjon |
 | `app.js` | Hovedlogikk i brukergrensesnittet |
-| `styles.css` | Visuell utforming |
-| `SUPABASE-SETUP.sql` | Oppsett for Supabase |
+| `index.html` | Struktur og hovedvisninger |
+| `styles.css` | Visuell utforming og temaer |
+| `SUPABASE-SETUP.sql` | Grunnoppsett for Supabase |
+| `CHANGELOG.md` | Utviklingshistorikk |
 
 ## Tema og brukergrensesnitt
 

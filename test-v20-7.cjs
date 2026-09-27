@@ -1,0 +1,20 @@
+const assert=require('assert');
+const fs=require('fs');
+const path=require('path');
+const root=__dirname;
+const read=f=>fs.readFileSync(path.join(root,f),'utf8');
+const pkg=JSON.parse(read('package.json'));
+assert.strictEqual(pkg.version,'20.7.0');
+const html=read('index.html'), css=read('styles.css'), app=read('app.js'), brief=read('product-brief.md'), readme=read('README.md');
+assert(app.includes("button.dataset.view === 'help'"),'Hjelp-nav mangler handler');
+assert(app.includes('cleanStoredSituationText'),'Historikkrensing for Få råd mangler');
+assert(css.includes('Chevron til venstre'),'Chevron-justering mangler');
+assert(css.includes('translateY(-36px)'),'Simulatorlogo er ikke flyttet videre opp');
+assert(brief.includes('innen ett år'),'Product Brief mangler ettårsvisjon');
+assert(brief.toLowerCase().includes('mobilapplikasjon'),'Product Brief mangler mobilapp-vurdering');
+assert(!brief.includes('Oppdatering v20.5'),'Versjonsnotat står fortsatt i Product Brief');
+assert(readme.includes('ARCHITECTURE-BMAD.md') && readme.includes('UX-DESIGN-BMAD.md') && readme.includes('EPICS-AND-STORIES-BMAD.md'),'README fremhever ikke BMAD-filene');
+assert(readme.includes('FAGGRUNNLAG-MOBBING-TRAKASSERING.md'),'README mangler mobbing/trakassering faggrunnlag');
+
+['FAGGRUNNLAG-ALKOHOL-RUS.md','FAGGRUNNLAG-FRAVAER.md','FAGGRUNNLAG-PRESTASJON-UTVIKLING.md','FAGGRUNNLAG-LONN-UTVIKLING.md','FAGGRUNNLAG-SAMARBEID-KOMMUNIKASJON.md','FAGGRUNNLAG-AVSLUTNING-ARBEIDSFORHOLD.md','FAGGRUNNLAG-SIKKERHET-ANSVAR.md','FAGGRUNNLAG-LIVSSITUASJONER.md','FAGGRUNNLAG-MOBBING-TRAKASSERING.md'].forEach(f=>assert(fs.existsSync(path.join(root,f)),`Mangler ${f}`));
+console.log('v20.7 checks OK');

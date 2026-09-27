@@ -47,6 +47,8 @@ De viktigste forskjellene skal være:
 
 Fortrinnet ligger ikke i en egen språkmodell, men i kombinasjonen av domenespesifikk brukerflyt, personvern, simulering og systematisk kvalitetstesting.
 
+Prosjektet dekker ni hovedtemaer og 56 undertemaer. Testgrunnlaget skal ha minst to faste KI-scenarioer per undertema, totalt 112 saker. Regelverksnære og høyrisiko temaer skal ha egne kildetester. Modellaget skal kunne sammenligne flere leverandører og modeller, inkludert gratis, rimelige og premium-alternativer, uten at resten av applikasjonen må bygges om.
+
 ## Who This Serves
 
 Primærbrukeren er en leder med personalansvar som står foran en krevende medarbeidersamtale og trenger praktisk støtte raskt. Brukeren trenger ikke være ekspert på HR, arbeidsrett eller KI. Løsningen skal være forståelig uten opplæring og hjelpe lederen fra en ustrukturert situasjonsbeskrivelse til en tydeligere plan for samtalen.
@@ -57,7 +59,7 @@ Sekundære brukere er HR-funksjoner, lederutviklere og virksomheter som ønsker 
 
 ## Success Criteria
 
-Første versjon regnes som vellykket når følgende kriterier er oppfylt:
+Prosjektet regnes som vellykket når følgende kriterier er oppfylt:
 
 - minst 90 % av representative brukertester kan gjennomføres uten hjelp til navigasjon eller forklaring av hovedflyten
 - brukertestere vurderer støtten som relevant og konkret i minst 80 % av testscenarioene
@@ -79,7 +81,7 @@ Testing skal heller ikke bare brukes til å vurdere om funksjonene virker, men o
 
 ## Scope
 
-### In scope for første versjon
+### In scope
 
 Første versjon skal være en fungerende webbasert prototype for krevende medarbeidersamtaler. Den skal dekke ni hovedtemaer med tilhørende undertemaer og gi strukturert KI-støtte før og under forberedelsen av samtalen. Den skal inkludere oppfølging i dialogform, samtalesimulering, bruker-eid historikk, personvernkontroll før KI-kall, rollebasert administrasjon, fag- og kildegrunnlag, kontrollert web search der dette er relevant, rapportering av KI-svar og tekniske feil samt test- og benchmarkfunksjoner for kvalitet, kostnad og kildebruk.
 
@@ -91,13 +93,15 @@ Arkitekturen skal være modulær nok til at KI-leverandør og kunnskapskilde kan
 
 ### Explicitly out of scope
 
-Første versjon skal ikke være et HR-system, personalsystem, journalsystem eller saksbehandlingssystem. Den skal ikke fatte beslutninger om medarbeidere, gjøre automatiserte personalvurderinger, stille diagnoser, gi bindende juridiske råd eller erstatte HR, juridisk bistand, bedriftshelsetjeneste eller lederens eget ansvar.
+Løsningen skal ikke være et HR-system, personalsystem, journalsystem eller saksbehandlingssystem. Den skal ikke fatte beslutninger om medarbeidere, gjøre automatiserte personalvurderinger, stille diagnoser, gi bindende juridiske råd eller erstatte HR, juridisk bistand, bedriftshelsetjeneste eller lederens eget ansvar.
 
-Løsningen skal ikke trene eller finjustere en egen språkmodell på brukernes samtaler. Brukerinnhold skal heller ikke brukes som skjult treningsdata. Full integrasjon mot virksomhetens HR-systemer, automatisk dokumentasjon i personalmapper og produksjonsklar utrulling i klassifiserte/lukkede nettverk ligger utenfor første versjon.
+Løsningen skal ikke trene eller finjustere en egen språkmodell på brukernes samtaler. Brukerinnhold skal heller ikke brukes som skjult treningsdata. Full integrasjon mot virksomhetens HR-systemer, automatisk dokumentasjon i personalmapper og produksjonsklar utrulling i klassifiserte/lukkede nettverk ligger utenfor prosjektets avgrensning.
 
 ## Vision
 
-Hvis Samtalestøtte lykkes, skal løsningen i løpet av to til tre år kunne utvikles fra en prototype til en fleksibel plattform for ansvarlig KI-basert lederstøtte og praktisk samtaletrening.
+Hvis Samtalestøtte lykkes, skal løsningen innen ett år kunne videreutvikles fra prototype til et mer modent verktøy for ansvarlig KI-basert lederstøtte og praktisk samtaletrening.
+
+Innen samme periode bør det vurderes om løsningen også skal tilbys som egen mobilapplikasjon. Mange brukere benytter i dag mobiltelefon som primær eller eneste digitale enhet, og erfaringer fra brukertesting av webapplikasjonen bør brukes til å vurdere om en app vil gi bedre tilgjengelighet, mobil arbeidsflyt og bruk i situasjoner der PC ikke er tilgjengelig.
 
 Den nettbaserte versjonen kan videreutvikles med en større kuratert kunnskapsbank, bedre kildehåndtering og virksomhetsspesifikke regler og dokumenter. Data om hvilke eksterne kilder som faktisk brukes, skal kunne brukes til å identifisere hvilke dokumenter og nettsider som bør inngå i en lokal SOURCEBANK/RAG-løsning. På denne måten kan kunnskapsgrunnlaget gradvis flyttes fra åpne nettsøk til kontrollerte og kvalitetssikrede kilder.
 
@@ -108,12 +112,3 @@ Dersom løsningen etter hvert viser seg å ha reell nytte og etterspørsel, kan 
 Samtidig utvikler KI-markedet seg svært raskt. Modeller som i dag er kostbare kan senere bli billigere, og rimeligere eller gratis modeller kan etter hvert bli gode nok til å dekke hele eller deler av behovet. Samtalestøtte skal derfor ikke bygges rundt en forutsetning om at en bestemt betalt modell alltid er nødvendig. Fleksibelt modellvalg og provider-uavhengig arkitektur skal gjøre det mulig å redusere kostnader eller tilby gratisnivåer dersom teknologiutviklingen gjør dette forsvarlig.
 
 På lengre sikt kan løsningen bli et verktøy både for individuell lederstøtte og systematisk ledertrening, hvor simuleringer, kvalitetssikret kunnskap og kontrollerte tilbakemeldingssløyfer gjør det mulig å øve på krevende samtaler uten at KI-en overtar beslutningsansvaret. Målet er ikke å erstatte menneskelig ledelse, men å gjøre ledere bedre forberedt når samtalene faktisk må tas.
-
-
-## Oppdatering v20.5 – faglig bredde, brukertest og modellvalg
-
-Prosjektets temastruktur utvides med et niende hovedtema, **Mobbing og trakassering**, fordi dette har egne krav til ivaretakelse, varsling, faktaundersøkelse og nøytralitet som ikke dekkes godt nok av vanlig konflikt/samarbeid. I forsvarssektoren knyttes temaet også til MOST (mobbing og seksuell trakassering), men menyen bruker et sivilt og selvforklarende navn. Under **Fravær og oppfølging** samles tilrettelegging og arbeidsevne som ett tydelig undertema, og **Vold og trusler** legges under Sikkerhet.
-
-Den faste KI-testbanken økes fra 94 til **112 saker**, fortsatt minimum to saker per undertema. Regelverksnære og høyrisiko temaer får egne kildetester. OpenRouter tas inn som alternativ provider for å kunne sammenligne gratis, rimelige og premium-modeller uten å låse løsningen til én leverandør.
-
-Brukertesten bygges inn som en kort undersøkelse på omtrent to minutter. Den måler forståelighet, navigasjon, relevans, konkret nytte, simulatorverdi, personvernforståelse og sannsynlighet for reell bruk. Hovedflyt uten hjelp skal fortsatt vurderes gjennom observasjon i tillegg til selvrapport.

@@ -112,7 +112,7 @@ Begrunnelsen er å beholde en tydelig app-følelse samtidig som hovedinnholdet h
 
 ## 5. Overordnet layout
 
-Desktop-layout skal være hovedprioritet i første versjon.
+Desktop-layout er utgangspunkt for prototypen, men løsningen skal være responsiv og testbar på mobil.
 
 Grunnstruktur:
 
@@ -323,11 +323,11 @@ Løsningen skal så langt som praktisk mulig følge grunnleggende tilgjengelighe
 
 ## 16. Responsive prinsipper
 
-Desktop er hovedplattform i V1. Designet skal likevel unngå unødvendige låsninger som gjør senere mobiltilpasning vanskelig.
+Desktop er hovedplattform for prototypen, men designet skal unngå låsninger som gjør mobil bruk vanskelig.
 
 Ved mindre skjermbredde skal sidebar kunne komprimeres, kort kunne legges under hverandre, tekstfelt fortsatt være brukbare og dialoger tilpasses skjermbredden.
 
-Full mobiloptimalisering er ikke et hovedkrav i første versjon.
+Innen ett år bør det vurderes om en egen mobilapp gir bedre tilgjengelighet for brukere som primært eller bare bruker mobil.
 
 ---
 
@@ -439,5 +439,5 @@ Den tekniske kompleksiteten – KI, personvern, database, modellvalg, kostnadsm�
 - Godkjent snakkeboblegeometri fra v19.12.3 skal ikke endres.
 
 ## v20.6 – UX-læring og brukertest
-Brukertesting behandles som en kilde til nye krav. Observasjoner og svar kan avdekke behov for endringer i navigasjon, visuelt hierarki, begreper, kontrast, KI-formuleringer og arbeidsflyt. Admin- og Innstillinger-seksjoner skal derfor være sammenleggbare med tydelig chevron, sekundærsider får mindre overskrifter, hovedtemaene organiseres 3 × 3 på desktop, og brukertesten bruker kompakte radiovalg.
+Brukertesting behandles som en kilde til nye krav. Observasjoner og svar kan avdekke behov for endringer i navigasjon, visuelt hierarki, begreper, kontrast, KI-formuleringer og arbeidsflyt. Admin- og Innstillinger-seksjoner skal derfor være sammenleggbare med tydelig chevron til venstre for teksten, sideoverskrifter kan være tydelige (omtrent 32–40 px på desktop), underoverskrifter skal ha lavere visuell vekt, hovedtemaene organiseres 3 × 3 på desktop, og brukertesten bruker kompakte radiovalg.
 

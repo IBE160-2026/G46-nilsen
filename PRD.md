@@ -1029,7 +1029,7 @@ Mulig videreutvikling:
 - virksomhetsspesifikk admin
 - bedre analyse av kvalitet over tid
 - avansert simulering med flere reaksjonsprofiler
-- mobiltilpasning
+- responsiv mobiltilpasning og vurdering av egen mobilapp innen ett år
 - tilgjengelighetsforbedringer
 - integrasjoner mot interne systemer der dette er juridisk og teknisk forsvarlig
 - kommersiell tjeneste dersom reell etterspørsel og kostnadsgrunnlag tilsier det
@@ -1087,10 +1087,12 @@ Admin skal kunne opprette engangsinvitasjoner med rolle `user`, `editor` eller `
 ### NFR-20.5-1 Testmiljø
 README og testinstruks skal opplyse om at Render-testmiljøet kan gå i dvale og at første innlasting derfor kan ta ekstra tid.
 
-## v20.6 – presisering etter iterativ utvikling og brukertestforberedelse
+## Presisering etter iterativ utvikling og brukertestforberedelse
 - Brukertesting skal også brukes til å avdekke nye UX- og KI-kvalitetsbehov, ikke bare validere eksisterende løsning.
 - Brukertest kan slås av/på av admin; én konto kan levere ett strukturert svar, mens svarinnholdet lagres separat fra deltakermarkøren.
 - Før førstegangsbruk skal brukeren bekrefte at personverninformasjonen er lest og forstått; dette er en informasjonsbekreftelse, ikke et generelt GDPR-samtykke.
 - Hjelp-siden skal samle kort brukerveiledning og kuraterte faglenker fra autoritative kilder.
+- Chevron skal vises til venstre for teksten på sammenleggbare seksjoner.
+- Kontakt og personvernvalg skal samles logisk under Innstillinger, mens egne sider brukes til henholdsvis kontaktflyt og personverninformasjon.
 - Sekundærsider og Admin skal bruke progressiv visning/kollaps for lavere visuell belastning.
 

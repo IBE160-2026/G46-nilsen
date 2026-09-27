@@ -43,7 +43,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.6.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "20.7.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 const clientErrorLog = [];
@@ -1205,7 +1205,7 @@ function renderAiGuidance(guidance) {
     ['Spørsmål som passer denne saken', list(guidance.questions)],
     ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
-    ['HR / regelverk', escapeHtml(guidance.legal_hr_note || '')],
+    ['HR / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>')],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
     ['Videre oppfølging', list(guidance.next_steps)],
     ['Dokumentert grunnlag', evidence]
@@ -1765,6 +1765,13 @@ function buildContinuationReply(question) {
 }
 
 
+function cleanStoredSituationText(text) {
+  let value = String(text || '').replace(/\r/g, '').trim();
+  // Enkel bakoverkompatibilitet: enkelte eldre lagringer kunne få med knappeteksten «Få råd».
+  value = value.replace(/^(?:Få råd\s*)+/i, '').trim();
+  return value;
+}
+
 function cleanStoredConversationText(text, role='assistant') {
   let value = String(text || '').replace(/\r/g, '').trim();
 
@@ -2110,6 +2117,15 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
     }
     if (button.dataset.view === 'contact') {
       openInfoView('contact');
+    }
+    if (button.dataset.view === 'help') {
+      infoReturnView=Object.entries(views).find(([,el])=>el.classList.contains('active-view'))?.[0]||'home';
+      closeProfileMenu();
+      setBreadcrumb('Hjelp');
+      showView('help');
+    }
+    if (button.dataset.view === 'survey') {
+      openSurvey();
     }
     if (button.dataset.view === 'admin') {
       openAdmin();
@@ -2589,7 +2605,7 @@ function renderHistoryPrivacyReview(item, target='guidance') {
 function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
   if(!item)return; loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
-  document.querySelector('#situation').value=item.situation||''; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
+  document.querySelector('#situation').value=cleanStoredSituationText(item.situation||''); autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
   const thread=document.querySelector('#conversation-thread');
   thread.innerHTML='';
@@ -2876,6 +2892,7 @@ document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth()
 document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
+document.querySelectorAll('[data-open-help]').forEach(b=>b.addEventListener('click',()=>{infoReturnView='settings';setBreadcrumb('Hjelp');showView('help');}));
 document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>openAiFeedback('main-guidance'));
 

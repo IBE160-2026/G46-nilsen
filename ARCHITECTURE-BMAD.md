@@ -770,3 +770,7 @@ Dagens publiserte testmiljø kjører på Render. Gratis testhosting kan gå i dv
 ## v20.6 – evaluering og personvernmarkører
 Brukertestsvar lagres uten bruker-ID. En separat deltakertabell med kun bruker-ID og tidspunkt hindrer dobbel innsending uten å koble identiteten til svarinnholdet. Personvernbekreftelse lagres separat som tidspunkt per konto. Brukertest kan aktiveres/deaktiveres via app-innstilling uten kodeendring eller sletting av eksisterende data.
 
+
+
+## Klientstrategi og mulig mobilapp
+Webklienten er referanseklient i prototypen. API- og tjenestelag skal holdes tilstrekkelig separert fra brukergrensesnittet til at en egen mobilapp kan vurderes innen ett år uten å bygge om kjernefunksjonene for autentisering, personvern, KI-routing og datatilgang.

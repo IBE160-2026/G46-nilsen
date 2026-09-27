@@ -1989,3 +1989,74 @@ html[data-theme="dark"] .simulation-bottom-cta span{color:#b9d3da}
 
 /* Mobbing/trakassering forventer et separat, seriøst temabilde med dette filnavnet. */
 .topic-hero[data-topic-id="mobbing-trakassering"] img{object-position:center 42%}
+
+
+/* ==================================================
+   v20.7 – FINJUSTERING AV HIERARKI, HANDLINGER OG ACCORDIONS
+   Bevisst samlet nederst slik at det er lett å finne og endre manuelt.
+   ================================================== */
+
+/* Sideoverskrifter skal fortsatt være tydelige: ca. 32–40 px på desktop. */
+.compact-utility-header .utility-title-row h1,
+.compact-utility-header>div>h1,
+#help-view .content-header h1{
+  font-size:clamp(2rem,2.7vw,2.5rem);
+  letter-spacing:-.03em;
+}
+
+/* Underoverskrifter er roligere, men fortsatt tydelige. */
+.utility-accordion-body h2{font-size:clamp(1.25rem,1.55vw,1.4rem)}
+.utility-accordion>summary,.admin-panel>summary,.admin-content-section>summary{
+  font-size:1.18rem;
+  justify-content:flex-start;
+  gap:9px;
+}
+
+/* Chevron til venstre for teksten på sammenleggbare seksjoner. */
+.utility-accordion>summary::after,.admin-panel>summary::after,.admin-content-section>summary::after{content:none!important}
+.utility-accordion>summary::before,.admin-panel>summary::before,.admin-content-section>summary::before{
+  content:"›";
+  font-size:1.35rem;
+  line-height:1;
+  flex:0 0 auto;
+  transition:transform .18s ease;
+  color:var(--muted);
+}
+.utility-accordion[open]>summary::before,.admin-panel[open]>summary::before,.admin-content-section[open]>summary::before{transform:rotate(90deg)}
+
+/* Midlertidig øvelse: samme kompakte plassering som Midlertidig samtale. */
+.simulation-temporary-option{
+  width:max-content;
+  max-width:min(100%,560px);
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  align-items:center;
+  justify-content:start;
+  column-gap:16px;
+  margin:10px 0 0;
+  padding:8px 2px;
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--border);
+  border-radius:0;
+}
+.simulation-temporary-option .switch-control{justify-self:start}
+
+/* Samtalehandlinger: samme høyde/radius og mer konsekvent visuell rytme. */
+#result-new-conversation,#bottom-new-conversation,#open-simulation,#open-simulation-bottom,
+#simulation-new-conversation,#retry-simulation,#continue-form .primary-button{
+  min-height:50px;
+  padding:0 20px;
+  border-radius:18px;
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+}
+
+/* Simulatorlogo: litt lenger opp, kun i simulatoren. */
+.simulation-logo-crop{transform:translateY(-36px)}
+
+/* Kontakt er sekundær funksjon og holdes kompakt. */
+#contact-view .compact-report-form{padding:15px 18px}
+#contact-view .compact-report-form h2{font-size:1.1rem}
+#contact-view .contact-compact-row{padding-top:2px}

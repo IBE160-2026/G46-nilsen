@@ -1,5 +1,24 @@
 # CHANGELOG – Samtalestøtte
 
+## v20.7.0 – finjustering, Product Brief og navigasjon
+
+- Product Brief er spisset uten å gjøres lengre: intern versjonslogg er fjernet, kompleksiteten i KI, simulering, personvern, kilder, modelltesting og kostnad er tydeligere, og visjonen er endret til innen ett år.
+- Product Brief omtaler vurdering av egen mobilapp basert på brukertesting og bruksmønster.
+- BMAD-dokumentene er oppdatert med samme retning.
+- Hjelp-knappen er koblet til Hjelp-siden.
+- Hjelp og kontakt er også tilgjengelig fra Innstillinger, og Kontakt er fjernet fra hovedmenyen for å redusere menybelastning.
+- Chevron på sammenleggbare seksjoner flyttes til venstre for teksten.
+- Sideoverskrifter justeres tilbake til ca. 32–40 px på desktop, mens underoverskrifter holdes mindre.
+- Midlertidig øvelse får samme kompakte plassering som Midlertidig samtale.
+- Samtalehandlingene får mer konsistent høyde og radius.
+- Simulatorlogoen flyttes ytterligere opp uten å endre andre logoer.
+- Eldre historikk med feilaktig «Få råd»-prefiks renses ved innlasting.
+- HR / regelverk instrueres til å gi korte, situasjonsspesifikke punkter fremfor standardtekst.
+- README fremhever hele BMAD-kjeden og faggrunnlaget på tvers av temaene.
+- Alle ni hovedtemaer har nå en egen `FAGGRUNNLAG-*`-fil, i tillegg til felles `SOURCEBANK`.
+
+---
+
 ## v20.6.0 – UX-opprydding, personvern og styrt brukertest
 
 - Nytt realistisk, nedtonet petrolfarget temabilde for **Mobbing og trakassering** er koblet til temaet som `topic-mobbing-trakassering.png`.

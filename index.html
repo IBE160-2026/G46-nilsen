@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
-  <link rel="stylesheet" href="styles.css?v=20.6.0" />
+  <link rel="stylesheet" href="styles.css?v=20.7.0" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -43,10 +43,6 @@
           <button class="nav-item" data-view="about" type="button">
             <span class="nav-glyph" id="nav-about-icon"></span>
             <span class="nav-label">Om</span>
-          </button>
-          <button class="nav-item" data-view="contact" type="button">
-            <span class="nav-glyph" id="nav-contact-icon"></span>
-            <span class="nav-label">Kontakt</span>
           </button>
           <button class="nav-item" data-view="survey" type="button">
             <span class="nav-glyph">✓</span>
@@ -527,6 +523,13 @@
             <button class="secondary-button" type="button" data-open-legal="terms">Bruksvilkår</button>
           </div></div>
         </details>
+        <details class="settings-card utility-accordion">
+          <summary>Hjelp og kontakt</summary>
+          <div class="utility-accordion-body"><div class="settings-account-actions">
+            <button class="secondary-button" type="button" data-open-info="contact">Kontakt og rapporter feil</button>
+            <button class="secondary-button" type="button" data-open-help>Hjelp og faglige ressurser</button>
+          </div></div>
+        </details>
       </section>
 
       <!-- SAMTALEHISTORIKK -->
@@ -589,7 +592,7 @@
           <section class="settings-card about-section"><h2>Personvern og ansvarlig bruk</h2><p>Brukeren skal ikke legge inn navn eller andre unødvendige opplysninger som kan identifisere virkelige personer. Personvernkontrollene reduserer risikoen for at identifiserende informasjon sendes videre, men kan ikke garantere at alle slike opplysninger oppdages.</p></section>
           <section class="settings-card about-section"><h2>Om prosjektet</h2><p>Samtalestøtte er utviklet som del av en prosjektoppgave ved Høgskolen i Molde. Studenten har hatt ansvar for behovsforståelse, krav, faglig retning, innhold og produktvalg. ChatGPT fra OpenAI er brukt som støtte i blant annet idéutvikling, programmering, dokumentasjon, testing og kvalitetssikring.</p><p><strong>Status:</strong> Betaversjon – under utvikling og testing.</p></section>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">20.6.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.7.0</strong></p>
         </div>
       </section>
 
@@ -652,7 +655,7 @@
           <h2>Rapporter feil eller gi tilbakemelding</h2>
           <div class="compact-form-grid"><label>Hva gjelder det?<select id="report-category"><option>Teknisk feil</option><option>Uklart eller dårlig KI-svar</option><option>Feil eller manglende kilde</option><option>Personvern</option><option>Forslag til forbedring</option><option>Annet spørsmål</option></select></label><label>Beskriv kort hva som skjedde<textarea id="report-description" rows="4" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea></label></div>
           <label class="report-log-option"><input id="report-include-log" type="checkbox" checked><span>Ta med teknisk logg <small>Ingen samtaletekst tas med automatisk.</small></span></label>
-          <div class="report-meta" id="report-meta">Versjon 20.6.0</div>
+          <div class="report-meta" id="report-meta">Versjon 20.7.0</div>
           <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
           <div class="auth-message" id="report-message" aria-live="polite"></div>
         </form>
@@ -666,8 +669,8 @@
         <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><h1>Hjelp og faglige ressurser</h1><p>Kort brukerveiledning og utvalgte offentlige kilder som kan være relevante når du trenger mer informasjon.</p></div></div>
         <div class="help-grid">
           <details class="settings-card utility-accordion"><summary>Slik bruker du Samtalestøtte</summary><div class="utility-accordion-body"><ol><li>Velg et tema eller beskriv situasjonen med egne ord.</li><li>Unngå navn og identifiserende opplysninger.</li><li>Bruk KI-rådene som støtte, ikke som fasit.</li><li>Øv gjerne i samtalesimuleringen.</li><li>Ved alvorlige eller formelle saker: følg virksomhetens rutiner og involver riktig fagstøtte.</li></ol></div></details>
-          <details class="settings-card utility-accordion"><summary>Arbeidsmiljø, mobbing og trakassering</summary><div class="utility-accordion-body resource-links"><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – trakassering</a><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/" target="_blank" rel="noopener">Arbeidstilsynet – mobbing</a><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – seksuell trakassering</a></div></details>
-          <details class="settings-card utility-accordion"><summary>Fravær og tilrettelegging</summary><div class="utility-accordion-body resource-links"><a href="https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver" target="_blank" rel="noopener">NAV – samtalestøtte for arbeidsgiver</a><a href="https://www.arbeidstilsynet.no/arbeidsforhold/tilrettelegging/" target="_blank" rel="noopener">Arbeidstilsynet – tilrettelegging</a></div></details>
+          <details class="settings-card utility-accordion"><summary>Arbeidsmiljø, mobbing og trakassering</summary><div class="utility-accordion-body resource-links"><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – trakassering</a><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/" target="_blank" rel="noopener">Arbeidstilsynet – mobbing</a><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – seksuell trakassering</a><a href="https://www.ffi.no/publikasjoner/arkiv/mobbing-og-seksuell-trakassering-i-forsvaret-i-fma-og-ved-ffi-resultater-fra-en-sporreundersokelse-i-2024" target="_blank" rel="noopener">FFI – MOST 2024</a></div></details>
+          <details class="settings-card utility-accordion"><summary>Fravær, tilrettelegging og rus</summary><div class="utility-accordion-body resource-links"><a href="https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver" target="_blank" rel="noopener">NAV – samtalestøtte for arbeidsgiver</a><a href="https://www.arbeidstilsynet.no/arbeidsforhold/tilrettelegging/" target="_blank" rel="noopener">Arbeidstilsynet – tilrettelegging</a><a href="https://www.akan.no/bekymret-for-en-ansatt" target="_blank" rel="noopener">Akan – bekymret for en ansatt</a></div></details>
           <details class="settings-card utility-accordion"><summary>Sikkerhet og regelverk</summary><div class="utility-accordion-body resource-links"><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/vold-og-trusler/" target="_blank" rel="noopener">Arbeidstilsynet – vold og trusler</a><a href="https://lovdata.no/dokument/NL/lov/2005-06-17-62" target="_blank" rel="noopener">Lovdata – arbeidsmiljøloven</a><a href="https://ldo.no/" target="_blank" rel="noopener">Likestillings- og diskrimineringsombudet</a></div></details>
         </div>
       </section>

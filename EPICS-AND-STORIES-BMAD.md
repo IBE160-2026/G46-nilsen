@@ -737,3 +737,11 @@ En story er ferdig når:
 - Som bruker kan jeg åpne Hjelp med kort veiledning og kuraterte faglenker.
 - Som admin kan jeg finne funksjoner raskt fordi hovedseksjonene er kollapset som standard.
 
+
+
+## Story – navigasjon og sammenleggbare seksjoner
+- Som bruker vil jeg se en tydelig chevron til venstre for sammenleggbare overskrifter slik at det er lett å forstå hva som kan åpnes.
+- Som bruker vil jeg finne Hjelp og Kontakt fra en ryddig innstillingsstruktur uten unødvendig menybelastning.
+
+## Story – kanalvalg
+- Som produkteier vil jeg innen ett år kunne vurdere behovet for egen mobilapp basert på brukertesting og faktisk bruk.
