@@ -816,6 +816,7 @@ Krav:
     code:error?.code || null
   });
 }
+});
 
 app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
   let q=supabaseAdmin.from('benchmark_results').select('id,run_id,case_id,topic_id,topic,subtopic,variant,model,response_text,input_tokens,output_tokens,estimated_cost_usd,web_search_count,web_search_queries,source_domains,source_pages,latency_ms,created_at').order('created_at',{ascending:false}).limit(300);
