@@ -972,14 +972,17 @@ html[data-theme="dark"] .brand-logo {
     grid-template-columns: 84px 1fr;
   }
 
-  .sidebar {
-    position: sticky;
-    top: 0;
-    height: 100vh;
-    border-right: 1px solid var(--border);
-    border-bottom: 0;
-    padding: 12px 8px;
-  }
+.sidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  border-right: 1px solid var(--border);
+  border-bottom: 0;
+  padding: 12px 8px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-gutter: stable;
+}
 
   .sidebar:not(.sidebar-collapsed) {
     padding: 14px 12px;
