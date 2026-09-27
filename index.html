@@ -241,14 +241,15 @@
 
           <div id="privacy-check" class="privacy-check" role="status" aria-live="polite" hidden></div>
           <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
-          <label class="temporary-chat-option" id="temporary-chat-option" hidden>
-            <span class="temporary-chat-copy"><strong>Midlertidig samtale</strong><small>Slå på hvis denne samtalen ikke skal lagres i historikken.</small></span>
-            <span class="switch-control">
-              <input type="checkbox" id="temporary-chat" />
-              <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
-            </span>
-          </label>
         </form>
+
+        <label class="temporary-chat-option" id="temporary-chat-option" hidden>
+          <span class="temporary-chat-copy"><strong>Midlertidig samtale</strong><small>Slå på hvis denne samtalen ikke skal lagres i historikken.</small></span>
+          <span class="switch-control">
+            <input type="checkbox" id="temporary-chat" />
+            <span class="switch-track" aria-hidden="true"><span class="switch-thumb"></span></span>
+          </span>
+        </label>
 
         <div id="ai-thinking" class="ai-thinking" role="status" aria-live="polite" hidden>
           <span class="thinking-spinner" aria-hidden="true"></span>
@@ -361,7 +362,7 @@
             <p>Velg inngangen som passer. Du kan øve helt selv eller be om KI-støtte underveis.</p>
           </div>
           <div class="simulation-launch-grid two-options">
-            <button class="simulation-launch-card featured" id="simulation-new-direct" type="button">
+            <button class="simulation-launch-card" id="simulation-new-direct" type="button">
               <strong>Start en ny simulering</strong>
               <span>Beskriv situasjonen kort og gå rett til øvelsen.</span>
             </button>
@@ -673,6 +674,18 @@
           <details class="settings-card utility-accordion"><summary>Arbeidsmiljø, mobbing og trakassering</summary><div class="utility-accordion-body resource-links"><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – trakassering</a><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/" target="_blank" rel="noopener">Arbeidstilsynet – mobbing</a><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – seksuell trakassering</a><a href="https://www.ffi.no/publikasjoner/arkiv/mobbing-og-seksuell-trakassering-i-forsvaret-i-fma-og-ved-ffi-resultater-fra-en-sporreundersokelse-i-2024" target="_blank" rel="noopener">FFI – MOST 2024</a></div></details>
           <details class="settings-card utility-accordion"><summary>Fravær, tilrettelegging og rus</summary><div class="utility-accordion-body resource-links"><a href="https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver" target="_blank" rel="noopener">NAV – samtalestøtte for arbeidsgiver</a><a href="https://www.arbeidstilsynet.no/arbeidsforhold/tilrettelegging/" target="_blank" rel="noopener">Arbeidstilsynet – tilrettelegging</a><a href="https://www.akan.no/bekymret-for-en-ansatt" target="_blank" rel="noopener">Akan – bekymret for en ansatt</a></div></details>
           <details class="settings-card utility-accordion"><summary>Sikkerhet og regelverk</summary><div class="utility-accordion-body resource-links"><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/vold-og-trusler/" target="_blank" rel="noopener">Arbeidstilsynet – vold og trusler</a><a href="https://lovdata.no/dokument/NL/lov/2005-06-17-62" target="_blank" rel="noopener">Lovdata – arbeidsmiljøloven</a><a href="https://ldo.no/" target="_blank" rel="noopener">Likestillings- og diskrimineringsombudet</a></div></details>
+          <details class="settings-card utility-accordion"><summary>Andre relevante fagsider</summary><div class="utility-accordion-body resource-links">
+            <a href="https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/forberedelse-til-mote" target="_blank" rel="noopener">Statens arbeidsgiverportal – forberedelse til krevende samtaler</a>
+            <a href="https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/gjennomforing-av-mote" target="_blank" rel="noopener">Statens arbeidsgiverportal – gjennomføring av møte</a>
+            <a href="https://www.helsedirektoratet.no/forebygging-diagnose-og-behandling/forebygging-og-levevaner/motiverende-intervju-mi/motiverende-intervju-som-metode" target="_blank" rel="noopener">Helsedirektoratet – motiverende intervju og samtaleteknikk</a>
+            <a href="https://www.bi.no/forskning/business-review/articles/2022/05/god-ledelse-fordrer-god-relasjon/" target="_blank" rel="noopener">BI – relasjonsledelse og leder–medarbeider-relasjonen</a>
+            <a href="https://www.bi.no/forskning/business-review/articles/2026/01/ledelse-som-virker--helt-konkret/" target="_blank" rel="noopener">BI – konkrete råd om relasjonsorientert ledelse</a>
+            <a href="https://www.bi.no/forskning/business-review/articles/2026/01/medarbeidere-og-tilbakemeldinger/" target="_blank" rel="noopener">BI – tilbakemeldinger og feedback</a>
+            <a href="https://stami.no/vare-tjenester/medarbeiderundersokelsen-i-staten-must/temaomrader-i-must/" target="_blank" rel="noopener">STAMI – psykologisk trygghet og arbeidsmiljø</a>
+            <a href="https://www.arbeidstilsynet.no/arbeidsmiljo/organisatorisk-arbeidsmiljo/personalsaker/" target="_blank" rel="noopener">Arbeidstilsynet – håndtering av krevende personalsaker og konflikter</a>
+            <a href="https://www.arbeidstilsynet.no/arbeidsmiljo/arbeidsrelaterte-psykiske-plager/" target="_blank" rel="noopener">Arbeidstilsynet – emosjonelle krav og psykososialt arbeidsmiljø</a>
+            <a href="https://arbeidsgiver.dfo.no/omstilling-og-endringsledelse/endringsledelse/hvordan-lede-i-endring/snu-motstand-til-motivasjon" target="_blank" rel="noopener">Statens arbeidsgiverportal – møte motstand og reaksjoner</a>
+          </div></details>
         </div>
       </section>
 

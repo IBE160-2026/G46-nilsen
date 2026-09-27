@@ -24,7 +24,7 @@ const svgIcons = {
   exitDoor: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4.5 20V4h9v16"></path><path d="M10 12h10"></path><path d="m17 9 3 3-3 3"></path></svg>`,
   shieldCheck: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>`,
   homeHeart: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13v-9.5"></path><path d="M12 17s-3-1.8-3-4a1.8 1.8 0 0 1 3-1.3 1.8 1.8 0 0 1 3 1.3c0 2.2-3 4-3 4Z"></path></svg>`,
-  harassment: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="M8.5 9.5h7M8.5 13h5"></path></svg>`,
+  harassment: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 11V6.5a1.25 1.25 0 0 1 2.5 0V10"></path><path d="M11 10V5.5a1.25 1.25 0 0 1 2.5 0V10"></path><path d="M13.5 10V6.5a1.25 1.25 0 0 1 2.5 0V12"></path><path d="M16 11.5V9a1.25 1.25 0 0 1 2.5 0v5.2c0 3.8-2.6 6.3-6.3 6.3h-.4c-2.5 0-4.2-1.1-5.4-3.1L4.8 14.8a1.35 1.35 0 0 1 2.2-1.55L8.5 15V11Z"></path></svg>`,
   more: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 12h.01"></path><path d="M12 12h.01"></path><path d="M18 12h.01"></path></svg>`
 };
 
@@ -197,7 +197,7 @@ const topics = [
     id: 'mobbing-trakassering',
     title: 'Mobbing og trakassering',
     iconKey: 'harassment',
-    image: 'topic-mobbing-trakassering.png',
+    image: './topic-mobbing-trakassering.png',
     imageAlt: 'Profesjonell samtale om arbeidsmiljø, grenser og trygghet',
     description: 'Støtte til varsomme og ryddige samtaler om mobbing, trakassering, utestenging og uønsket seksuell oppmerksomhet. Verktøyet skal ikke avgjøre skyld, men hjelpe lederen å lytte, ivareta involverte og følge riktig prosess.',
     representations: ['Mobbing og utestenging', 'Trakassering og seksuell oppmerksomhet', 'Varsling og forsvarlig oppfølging'],
@@ -323,6 +323,8 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
         if (field.type !== 'checkbox' && field.type !== 'radio') field.value = '';
       });
     }
+    const temporaryChat = document.querySelector('#temporary-chat');
+    if (temporaryChat) temporaryChat.checked = false;
   }
 
   const privacy = document.querySelector('#privacy-check');

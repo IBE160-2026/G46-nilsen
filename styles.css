@@ -2121,3 +2121,28 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
 @media(max-width:720px){
   .conversation-utility-bar{justify-content:flex-start}
 }
+
+
+/* ==================================================
+   v20.10 – konsistent simulator, historikk-toggle og fagressurser
+   ================================================== */
+
+/* Startkortene i Simulering skal være visuelt identiske. */
+.simulation-launch-grid.two-options .simulation-launch-card,
+.simulation-launch-grid.two-options .simulation-launch-card.featured{
+  background:var(--surface)!important;
+  border:1px solid var(--border)!important;
+  box-shadow:0 7px 20px rgba(18,55,53,.04)!important;
+}
+
+/* Samme overskriftsstørrelse på alle sammenleggbare seksjoner. Innstillinger er fasit. */
+.utility-accordion>summary,
+.admin-panel>summary,
+.admin-content-section>summary{
+  font-size:1.18rem!important;
+  font-weight:800!important;
+  line-height:1.35!important;
+}
+
+/* Historiske støttesamtaler beholder samme Midlertidig samtale-komponent. */
+#guidance-view.history-loaded-mode #temporary-chat-option{display:flex!important;}

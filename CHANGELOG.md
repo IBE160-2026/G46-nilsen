@@ -1,3 +1,19 @@
+# v20.10.0 – konsistens i simulering, historikk og fagressurser
+
+## UI og historikk
+- De to startkortene i Samtalesimulering bruker nå samme kortstil.
+- «Midlertidig samtale» er samme komponent i nye og gjenåpnede støttesamtaler og ligger fortsatt rett under relevant innhold til venstre.
+- Accordion-overskrifter i Innstillinger, Admin og Hjelp bruker samme typografi.
+
+## Tema og fagressurser
+- `topic-mobbing-trakassering.png` er lagt til i serverens offentlige ressursliste, slik at bildet faktisk kan lastes i nettleseren.
+- Hjelp har fått seksjonen «Andre relevante fagsider» med kuraterte ressurser om krevende samtaler, motiverende intervju, relasjonsorientert ledelse og håndtering av motstand.
+
+## Testing
+- Ny `test-v20-10.cjs` kontrollerer alle punktene over.
+
+---
+
 # v20.9.0 – samlet retting av meny, overskrifter og samtaleflyt
 
 - Gjenopprettet ut/inn-pilen som eneste kontroll for å åpne/lukke sidemenyen; hamburgerikonet fra v20.8 er fjernet.

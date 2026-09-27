@@ -188,7 +188,7 @@ SUPABASE_URL=https://ditt-prosjekt.supabase.co
 SUPABASE_PUBLISHABLE_KEY=din_publishable_key
 SUPABASE_SECRET_KEY=din_secret_key
 
-APP_VERSION=20.9.0
+APP_VERSION=20.10.0
 ```
 
 `.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.
@@ -366,6 +366,15 @@ Ikke legg API-nøkler i Git, README, frontendkode eller chat. Admin kan velge `O
 ## v20.8 – releaseopprydding
 Åpen sidemeny er uendret. I lukket tilstand bruker menyknappen et kompakt menyikon plassert på topplinjen. Eldre versjonsspesifikke README-filer og UI-regresjonstester er fjernet fra releasepakken; aktiv dokumentasjon, migreringer og sikkerhets-/funksjonstester er beholdt.
 
+
+
+## v20.10 – konsistens i simulering, historikk og fagressurser
+
+- Gjør de to startkortene i Samtalesimulering visuelt identiske.
+- Gjenbruker samme «Midlertidig samtale»-toggle også når en lagret støttesamtale åpnes igjen.
+- Standardiserer skriftstørrelse, vekt og linjehøyde på accordion-overskrifter i Innstillinger, Admin og Hjelp.
+- Gjør `topic-mobbing-trakassering.png` eksplisitt tilgjengelig som offentlig frontend-ressurs og bruker en eksplisitt relativ filsti.
+- Legger til «Andre relevante fagsider» med ressurser om samtaleteknikk, motiverende intervju, relasjonen mellom leder og medarbeider og håndtering av motstand.
 
 ## v20.9 – samlet UI-retting
 
