@@ -354,28 +354,3 @@ Ikke legg API-nøkler i Git, README, frontendkode eller chat. Admin kan velge `O
 ### Kort tekst til testbrukere
 
 **Takk for at du vil teste Samtalestøtte!** Test gjerne vanlig samtalestøtte og simulering. Unngå navn og andre opplysninger som kan identifisere virkelige personer. Når du føler at du har testet nok, finner du en kort brukertest i appen; den tar omtrent 2 minutter. Testserveren kan være i dvale etter inaktivitet, så første innlasting kan ta litt ekstra tid.
-
-
-## v20.6 – UX og brukertest
-- Brukertest kan slås av/på fra Admin og begrenses til én innsending per konto.
-- Hjelp-side samler kort brukerveiledning og autoritative faglenker.
-- `index.html`, `styles.css` og nye v20.6-regler er kommentert slik at sentrale områder er enklere å finne manuelt.
-- Temabilde for **Mobbing og trakassering** er inkludert som `topic-mobbing-trakassering.png` og brukes av temaet i appen.
-
-
-## v20.8 – releaseopprydding
-Åpen sidemeny er uendret. I lukket tilstand bruker menyknappen et kompakt menyikon plassert på topplinjen. Eldre versjonsspesifikke README-filer og UI-regresjonstester er fjernet fra releasepakken; aktiv dokumentasjon, migreringer og sikkerhets-/funksjonstester er beholdt.
-
-
-
-## v20.10 – konsistens i simulering, historikk og fagressurser
-
-- Gjør de to startkortene i Samtalesimulering visuelt identiske.
-- Gjenbruker samme «Midlertidig samtale»-toggle også når en lagret støttesamtale åpnes igjen.
-- Standardiserer skriftstørrelse, vekt og linjehøyde på accordion-overskrifter i Innstillinger, Admin og Hjelp.
-- Gjør `topic-mobbing-trakassering.png` eksplisitt tilgjengelig som offentlig frontend-ressurs og bruker en eksplisitt relativ filsti.
-- Legger til «Andre relevante fagsider» med ressurser om samtaleteknikk, motiverende intervju, relasjonen mellom leder og medarbeider og håndtering av motstand.
-
-## v20.9 – samlet UI-retting
-
-Denne versjonen samler tidligere avtalte UI-rettinger: opprinnelig ut/inn-pil for sidemenyen, riktig topp-logo i minimert hybridmodus, side-spesifikke ikoner ved overskrifter når menyen er minimert, lukkede accordions som standard, venstreplassert midlertidig-toggle, ryddigere handlinger under samtaleforslaget og egen visning for gjenåpnede historikksamtaler.
