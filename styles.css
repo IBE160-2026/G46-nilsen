@@ -4129,7 +4129,7 @@ html[data-theme="dark"] .simulation-privacy-link:hover {
 }
 
 .utility-header-copy p {
-  margin-top: 10px;
+  margin: 2px 0 0;
 }
 
 #about-view .about-purpose,
@@ -5990,18 +5990,6 @@ html[data-theme="dark"] .simulation-bottom-cta span {
   content: none !important;
 }
 
-.utility-accordion>summary::before,.admin-panel>summary::before,.admin-content-section>summary::before {
-  content: "›";
-  font-size: 1.35rem;
-  line-height: 1;
-  flex: 0 0 auto;
-  transition: transform .18s ease;
-  color: var(--muted);
-}
-
-.utility-accordion[open]>summary::before,.admin-panel[open]>summary::before,.admin-content-section[open]>summary::before {
-  transform: rotate(90deg);
-}
 
 .simulation-temporary-option {
   width: max-content;
