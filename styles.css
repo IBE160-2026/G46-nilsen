@@ -3125,7 +3125,7 @@ textarea[aria-invalid="true"] {
 
 .simulation-hub-hero h1 {
   margin: 6px 0 10px;
-  font-size: clamp(2rem,4vw,3.2rem);
+  font-size: clamp(1.9rem,2.7vw,3rem);
   line-height: 1.05;
 }
 
@@ -6174,7 +6174,7 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
   margin: 0;
   position: relative;
   z-index: 2;
-  transform: translate(-5px, -67px) !important;
+  transform: translate(-5px, -80px) !important;
 }
 
 .utility-title-row .utility-page-logo {
