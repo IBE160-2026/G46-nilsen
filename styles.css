@@ -1936,7 +1936,7 @@ html[data-theme="hybrid"] .sidebar .brand-button::after{
 
 /* Hybrid bruker samme lyse hovedlogo som mørkt tema. */
 html[data-theme="hybrid"] .sidebar .brand-logo{content:url("logo-light.png") !important;filter:drop-shadow(0 8px 16px rgba(0,0,0,.24)) !important}
-html[data-theme="hybrid"] .topbar-brand-logo{content:url("logo-light.png")}
+html[data-theme="hybrid"] .topbar-brand-logo{content:url("logo.png")}
 
 /* Sekundærsider: roligere typografisk hierarki. */
 .compact-utility-header .utility-title-row h1,.compact-utility-header>div>h1{font-size:clamp(1.65rem,2.1vw,2rem);letter-spacing:-.025em}
@@ -2062,20 +2062,62 @@ html[data-theme="dark"] .simulation-bottom-cta span{color:#b9d3da}
 #contact-view .contact-compact-row{padding-top:2px}
 
 
-/* v20.8 – lukket meny: kompakt menyikon på samme topplinje som topptekst/logo.
-   Åpen meny og eksisterende pil beholdes uendret. */
-.sidebar-toggle-menu-icon{display:none;font-size:1.18rem;line-height:1;font-weight:800;letter-spacing:-.08em}
-.sidebar.sidebar-collapsed .sidebar-toggle-arrow{display:none}
-.sidebar.sidebar-collapsed .sidebar-toggle-menu-icon{display:inline-flex;align-items:center;justify-content:center}
-.sidebar.sidebar-collapsed .sidebar-toggle{
-  top:24px;
-  right:-44px;
-  width:40px;
-  height:40px;
-  border:1px solid var(--border);
-  border-radius:12px;
-  box-shadow:0 4px 14px rgba(23,92,108,.12);
+
+
+/* ==================================================
+   v20.9 – samlet retting av minimert meny, handlingsflyt og historikk
+   ================================================== */
+
+/* Behold den opprinnelige ut/inn-pilen som eneste kontroll for sidemenyen. */
+.sidebar-toggle-arrow{display:inline-flex!important;align-items:center;justify-content:center}
+.sidebar.sidebar-collapsed .sidebar-toggle-arrow{display:inline-flex!important;transform:rotate(180deg) translateY(1px)}
+
+/* I minimert meny brukes samme topp-logo i hybrid som i lyst tema. */
+html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo{content:url("logo.png")!important;filter:none!important}
+
+/* Sideikon ved overskriften: skjult med åpen meny, synlig med minimert meny. */
+.collapsed-page-icon{display:none;width:34px;height:34px;flex:0 0 34px;align-items:center;justify-content:center;border-radius:11px;background:linear-gradient(180deg,var(--accent-soft),var(--accent-soft-2));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--accent) 16%,transparent);color:var(--accent)}
+.collapsed-page-icon svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.collapsed-page-icon-text{font-size:1.15rem;font-weight:900}
+.app-shell.sidebar-collapsed-layout .utility-title-row .utility-page-brand,
+.app-shell.sidebar-collapsed-layout .utility-title-row .admin-letter-logo{display:none!important}
+.app-shell.sidebar-collapsed-layout .utility-title-row .collapsed-page-icon{display:inline-flex}
+.app-shell.sidebar-collapsed-layout .utility-title-row{align-items:center}
+.app-shell.sidebar-collapsed-layout .utility-title-row h1{margin:0}
+
+/* Midlertidig samtale/øvelse: bryteren ligger alltid rett under teksten, helt til venstre. */
+.temporary-chat-option,
+.simulation-temporary-option{
+  display:flex!important;
+  flex-direction:column!important;
+  align-items:flex-start!important;
+  justify-content:flex-start!important;
+  gap:7px!important;
+  width:max-content;
+  max-width:min(100%,560px);
+  margin:10px 0 0;
+  padding:8px 2px;
+  background:transparent;
+  border:0;
+  border-top:1px solid var(--border);
+  border-radius:0;
 }
-@media (max-width:980px){
-  .sidebar.sidebar-collapsed .sidebar-toggle{top:18px;right:-42px;width:38px;height:38px;border-radius:11px}
+.temporary-chat-option .switch-control,
+.simulation-temporary-option .switch-control{align-self:flex-start!important;justify-self:start!important;margin:0}
+
+/* Handlingene brukes etter at selve samtaleforslaget er lest. */
+.conversation-utility-bar{justify-content:flex-end;margin:16px 0 18px;gap:8px}
+.compact-action-button{min-height:40px!important;padding:0 14px!important;border-radius:13px!important;font-size:.9rem!important}
+
+/* Øv-knappen er tydelig primærhandling, uten duplisert CTA nederst. */
+#open-simulation{min-height:48px;padding:0 20px;border-radius:16px;font-weight:800}
+
+/* Lagret samtale vises som informasjon, ikke som et aktivt inndatafelt. */
+.history-loaded-situation{margin:0 0 18px;padding:14px 16px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2)}
+.history-loaded-situation p{margin:6px 0 0;line-height:1.55;white-space:pre-wrap;color:var(--text)}
+#guidance-view.history-loaded-mode .privacy-banner.strong,
+#guidance-view.history-loaded-mode #situation-form{display:none!important}
+
+@media(max-width:720px){
+  .conversation-utility-bar{justify-content:flex-start}
 }

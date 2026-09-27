@@ -188,7 +188,7 @@ SUPABASE_URL=https://ditt-prosjekt.supabase.co
 SUPABASE_PUBLISHABLE_KEY=din_publishable_key
 SUPABASE_SECRET_KEY=din_secret_key
 
-APP_VERSION=20.7.0
+APP_VERSION=20.9.0
 ```
 
 `.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.
@@ -365,3 +365,8 @@ Ikke legg API-nøkler i Git, README, frontendkode eller chat. Admin kan velge `O
 
 ## v20.8 – releaseopprydding
 Åpen sidemeny er uendret. I lukket tilstand bruker menyknappen et kompakt menyikon plassert på topplinjen. Eldre versjonsspesifikke README-filer og UI-regresjonstester er fjernet fra releasepakken; aktiv dokumentasjon, migreringer og sikkerhets-/funksjonstester er beholdt.
+
+
+## v20.9 – samlet UI-retting
+
+Denne versjonen samler tidligere avtalte UI-rettinger: opprinnelig ut/inn-pil for sidemenyen, riktig topp-logo i minimert hybridmodus, side-spesifikke ikoner ved overskrifter når menyen er minimert, lukkede accordions som standard, venstreplassert midlertidig-toggle, ryddigere handlinger under samtaleforslaget og egen visning for gjenåpnede historikksamtaler.

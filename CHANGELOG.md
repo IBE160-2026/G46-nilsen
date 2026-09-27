@@ -1,3 +1,15 @@
+# v20.9.0 – samlet retting av meny, overskrifter og samtaleflyt
+
+- Gjenopprettet ut/inn-pilen som eneste kontroll for å åpne/lukke sidemenyen; hamburgerikonet fra v20.8 er fjernet.
+- Minimert hybridmodus bruker samme topp-logo som lyst tema, mens logoen i åpen hybridmeny er uendret.
+- Når sidemenyen er minimert, erstattes logoen ved sekundære sideoverskrifter av side-spesifikt ikon på samme linje som overskriften.
+- Innstillinger, Admin og Hjelp åpner med alle sammenleggbare seksjoner lukket.
+- «Midlertidig samtale» og «Midlertidig øvelse» har bryteren rett under teksten, helt til venstre.
+- «Rapporter svar» og «Ny samtale» er flyttet under selve samtaleforslaget og gjort mer kompakte.
+- Duplisert nederste «Ny samtale»/«Øv på samtalen»-rad er fjernet; simulatorens primær-CTA beholdes tydelig.
+- Gjenåpnet historikksamtale viser situasjonen som et lesbart sammendrag i stedet for et aktivt inputfelt med «Få råd»-knapp.
+- `product-brief.md` er oppdatert til den avtalte korte originalversjonen.
+
 # v20.8.0 – meny og filopprydding
 
 - Åpen sidemeny er beholdt helt uendret.

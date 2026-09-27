@@ -43,7 +43,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.7.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "20.9.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 const clientErrorLog = [];
@@ -248,6 +248,19 @@ function renderStaticIcons() {
   setSvg('nav-contact-icon', svgIcons.contact);
   const adminIcon=document.querySelector('#nav-admin-icon'); if(adminIcon) adminIcon.textContent='A';
   setSvg('sidebar-message-icon', svgIcons.team);
+
+  const pageIconMap = {
+    settings: svgIcons.settings,
+    history: svgIcons.history,
+    about: svgIcons.about,
+    contact: svgIcons.contact,
+    privacy: svgIcons.shieldCheck,
+    terms: svgIcons.scales
+  };
+  document.querySelectorAll('.collapsed-page-icon[data-page-icon]').forEach(icon => {
+    const key = icon.dataset.pageIcon;
+    if (pageIconMap[key]) icon.innerHTML = pageIconMap[key];
+  });
 }
 
 function setBreadcrumb(text) {
@@ -277,11 +290,28 @@ function showView(name) {
   updateNavState(name);
   const topNew = document.querySelector('#new-conversation-button');
   if (topNew) topNew.hidden = name === 'home';
+
+  // Sekundærsider med accordion skal alltid åpne ryddig, med alle seksjoner lukket.
+  if (['settings', 'admin', 'help'].includes(name)) {
+    views[name].querySelectorAll('details[open]').forEach(detail => { detail.open = false; });
+  }
+
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 
+function setHistoryLoadedGuidanceMode(active, situation = '') {
+  const view = document.querySelector('#guidance-view');
+  const summary = document.querySelector('#history-loaded-situation');
+  const text = document.querySelector('#history-loaded-situation-text');
+  if (!view || !summary || !text) return;
+  view.classList.toggle('history-loaded-mode', Boolean(active));
+  summary.hidden = !active;
+  text.textContent = active ? String(situation || '').trim() : '';
+}
+
 function clearGuidanceSession({ clearInputs = true } = {}) {
+  setHistoryLoadedGuidanceMode(false);
   lastAiAnalysis = null;
   lastAiGuidance = null;
   if (clearInputs) { currentConversationId = null; conversationDirty = false; }
@@ -2605,7 +2635,8 @@ function renderHistoryPrivacyReview(item, target='guidance') {
 function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
   if(!item)return; loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
-  document.querySelector('#situation').value=cleanStoredSituationText(item.situation||''); autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
+  const storedSituation = cleanStoredSituationText(item.situation||'');
+  document.querySelector('#situation').value=storedSituation; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
   const thread=document.querySelector('#conversation-thread');
   thread.innerHTML='';
@@ -2627,6 +2658,7 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
     simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'simulation'); return;
   }
   simulationSource='current';
+  setHistoryLoadedGuidanceMode(true, storedSituation);
   setBreadcrumb('Lagret samtale'); showView('guidance');
   if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'guidance');
 }

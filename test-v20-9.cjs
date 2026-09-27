@@ -1,0 +1,20 @@
+const fs = require('fs');
+const assert = require('assert');
+const html = fs.readFileSync('index.html','utf8');
+const css = fs.readFileSync('styles.css','utf8');
+const app = fs.readFileSync('app.js','utf8');
+const pkg = JSON.parse(fs.readFileSync('package.json','utf8'));
+
+assert(!html.includes('sidebar-toggle-menu-icon'), 'Hamburgerikon skal være fjernet');
+assert(html.includes('sidebar-toggle-arrow'), 'Ut/inn-pilen skal finnes');
+assert(css.includes('html[data-theme="hybrid"] .topbar-brand-logo{content:url("logo.png")}'), 'Hybrid topp-logo skal bruke logo.png');
+assert(css.includes('.app-shell.sidebar-collapsed-layout .utility-title-row .collapsed-page-icon{display:inline-flex}'), 'Sideikon skal vises ved minimert meny');
+assert(html.includes('data-page-icon="settings"') && html.includes('data-page-icon="about"') && html.includes('data-page-icon="help"') && html.includes('data-page-icon="admin"'), 'Sekundærsider skal ha egne ikoner');
+assert(!html.includes('<details class="settings-card utility-accordion" open>'), 'Innstillinger skal ikke åpne Utseende automatisk');
+assert(app.includes("['settings', 'admin', 'help'].includes(name)"), 'Accordion-sider skal nullstilles lukket');
+assert(css.includes('flex-direction:column!important') && css.includes('align-items:flex-start!important'), 'Midlertidig-toggle skal ligge under teksten til venstre');
+assert(html.indexOf('id="structured-guidance"') < html.indexOf('id="report-from-conversation"'), 'Rapporter/Ny samtale skal ligge etter samtaleforslaget');
+assert(!html.includes('id="bottom-new-conversation"') && !html.includes('id="open-simulation-bottom"'), 'Dupliserte nederste handlinger skal være fjernet');
+assert(html.includes('id="history-loaded-situation"') && app.includes('setHistoryLoadedGuidanceMode(true, storedSituation)'), 'Historikk skal ha egen lesemodus');
+assert(pkg.version === '20.9.0', 'Pakken skal være v20.9.0');
+console.log('v20.9: alle avtalte UI-regler er kontrollert.');
