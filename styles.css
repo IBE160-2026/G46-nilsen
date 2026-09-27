@@ -2187,4 +2187,4 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
   padding:18px 20px;
 }
 
-#admin-view .settings-card.admin-panel{padding:18px 20px!important;min-height:0!important}
+#admin-view .admin-grid{display:block!important;width:100%!important;max-width:none!important}#admin-view .admin-grid>.settings-card.admin-panel{width:100%!important;max-width:none!important;margin-top:14px!important;padding:18px 20px!important;min-height:0!important}#admin-view .admin-panel>summary{min-height:0!important;padding:0!important;font-size:1rem!important;font-weight:600!important;line-height:1.3!important}
