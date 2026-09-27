@@ -188,7 +188,7 @@ SUPABASE_URL=https://ditt-prosjekt.supabase.co
 SUPABASE_PUBLISHABLE_KEY=din_publishable_key
 SUPABASE_SECRET_KEY=din_secret_key
 
-APP_VERSION=20.10.0
+APP_VERSION=20.10.3
 ```
 
 `.env` skal ikke legges i GitHub. Den er derfor tatt med i `.gitignore`.

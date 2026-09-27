@@ -1,3 +1,19 @@
+# v20.10.3 – konsekvente sidehoder og roligere accordions
+
+- Admin, Hjelp og Brukertest viser nå samme prosjektlogo ved overskriften når sidemenyen er åpen.
+- Ved minimert sidemeny brukes sideikon som før, men større og litt høyere for bedre balanse mot overskriften.
+- Accordion-overskrifter i Innstillinger, Admin og Hjelp følger den roligere typografien fra Om-siden.
+- Alle sammenleggbare bokser er fortsatt lukket som standard.
+
+# v20.10.2 – Admin visuelt lik Innstillinger
+
+- Hovedkortene i Admin bruker nå samme bredde som Innstillinger.
+- Samme avstand mellom accordion-kortene.
+- Samme padding, høyde, skriftstørrelse, fontvekt og linjehøyde i overskriftene.
+- Fjernet Admin-spesifikk minimumshøyde som gjorde boksene høyere.
+
+---
+
 # v20.10.0 – konsistens i simulering, historikk og fagressurser
 
 ## UI og historikk

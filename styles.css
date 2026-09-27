@@ -2146,3 +2146,72 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
 
 /* Historiske støttesamtaler beholder samme Midlertidig samtale-komponent. */
 #guidance-view.history-loaded-mode #temporary-chat-option{display:flex!important;}
+
+/* ==================================================
+   v20.10.2 – Admin skal ha samme accordion-geometri som Innstillinger
+   Innstillinger er fasit for bredde, avstand, høyde, padding og typografi.
+   ================================================== */
+#admin-view .admin-grid{
+  max-width:980px;
+  gap:0;
+}
+#admin-view .admin-grid > .settings-card.admin-panel{
+  max-width:980px;
+  margin-top:14px;
+  padding:18px 20px;
+}
+#admin-view .admin-grid > .admin-panel > summary{
+  min-height:0;
+  font-size:1.18rem!important;
+  font-weight:800!important;
+  line-height:1.35!important;
+  padding:0;
+}
+
+/* ==================================================
+   v20.10.3 – konsekvent toppidentitet og roligere utility-accordions
+   Om-siden er visuell fasit for typografi. Alle details forblir lukket som standard.
+   ================================================== */
+
+/* Standard prosjektlogo ved sideoverskriften når sidemenyen er åpen. */
+#admin-view .utility-title-row .utility-page-brand,
+#survey-view .utility-title-row .utility-page-brand,
+#help-view .utility-title-row .utility-page-brand{
+  display:block;
+  margin:0;
+}
+#admin-view .utility-title-row .utility-page-logo,
+#survey-view .utility-title-row .utility-page-logo,
+#help-view .utility-title-row .utility-page-logo{
+  width:78px;
+  max-width:none;
+}
+
+/* Når sidemenyen er minimert skjules logoen og sideikonet vises – større og litt høyere. */
+.app-shell.sidebar-collapsed-layout .utility-title-row .utility-page-brand{display:none!important}
+.collapsed-page-icon{
+  width:42px!important;
+  height:42px!important;
+  flex-basis:42px!important;
+  border-radius:13px!important;
+  transform:translateY(-4px);
+}
+.collapsed-page-icon svg{width:24px!important;height:24px!important}
+.collapsed-page-icon-text{font-size:1.35rem!important}
+
+/* Om-siden er fasit: roligere skrift i sammenleggbare bokser. */
+.utility-accordion>summary,
+.admin-panel>summary,
+.admin-content-section>summary{
+  font-size:1.18rem!important;
+  font-weight:700!important;
+  line-height:1.3!important;
+  letter-spacing:normal!important;
+}
+
+/* Behold samme kompakte kortgeometri og alle seksjoner lukket ved innlasting. */
+.settings-card.utility-accordion,
+.settings-card.admin-panel{
+  margin-top:14px;
+  padding:18px 20px;
+}
