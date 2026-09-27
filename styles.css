@@ -139,7 +139,7 @@ h1,h2,h3,p {
 
 .nav {
   display: grid;
-  gap: 6px;
+  gap: 4px;
 }
 
 .nav-item {
@@ -148,7 +148,7 @@ h1,h2,h3,p {
   grid-template-columns: 38px 1fr auto;
   gap: 9px;
   align-items: center;
-  padding: 10px 9px;
+  padding: 8px 9px;
   border: 0;
   border-radius: 14px;
   background: transparent;
