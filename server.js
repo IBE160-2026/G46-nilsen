@@ -115,6 +115,8 @@ const client = apiKey ? new OpenAI({ apiKey }) : null;
 const openRouterClient = openRouterApiKey ? new OpenAI({
   apiKey: openRouterApiKey,
   baseURL: "https://openrouter.ai/api/v1",
+  timeout: 90000,
+  maxRetries: 0,
   defaultHeaders: {
     "HTTP-Referer": process.env.APP_BASE_URL || "https://samtalestotte.onrender.com",
     "X-Title": "Samtalestøtte"
