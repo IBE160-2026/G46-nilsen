@@ -2186,3 +2186,5 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
   margin-top:14px;
   padding:18px 20px;
 }
+
+#admin-view .settings-card.admin-panel{padding:18px 20px!important;min-height:0!important}
