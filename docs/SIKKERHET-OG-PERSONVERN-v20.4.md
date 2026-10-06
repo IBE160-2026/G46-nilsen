@@ -231,7 +231,7 @@ Ingen webapplikasjon kan garanteres å være uten sårbarheter. v20.4 reduserer 
 
 ## 18. Kontroll før deploy
 
-1. Kjør `V20-4-SUPABASE-MIGRATION.sql` i Supabase.
+1. Kjør `database/migrations/V20-4-SUPABASE-MIGRATION.sql` i Supabase.
 2. Kontroller at `APP_BASE_URL` på Render er satt til den faktiske HTTPS-adressen.
 3. Kontroller at `NODE_ENV=production` i produksjon.
 4. Kontroller at `SUPABASE_SECRET_KEY` og `OPENAI_API_KEY` bare finnes som Render-secrets/miljøvariabler.
@@ -239,3 +239,4 @@ Ingen webapplikasjon kan garanteres å være uten sårbarheter. v20.4 reduserer 
 6. Kjør `node test-privacy.js`.
 7. Test login, passordreset, historikk, kontoeksport og kontosletting med en testbruker.
 8. Kontroller i nettleserens Network-panel at API-responser har sikkerhetsheaderne.
+

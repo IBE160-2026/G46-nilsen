@@ -84,7 +84,7 @@ Brukeren kan også beskrive situasjonen med egne ord dersom den ikke passer natu
 
 ## Admin og redigerbart innhold
 
-Fra v20.0 støtter Samtalestøtte tre roller: bruker, redaktør og admin. Redaktør kan endre utvalgte grensesnitttekster fra adminvisningen, mens admin i tillegg kan tildele og fjerne roller. Rettighetene håndheves på serveren. Redigerte tekster lagres i Supabase-tabellen `content_overrides`. Kjør `V20-SUPABASE-MIGRATION.sql` én gang før funksjonen tas i bruk.
+Fra v20.0 støtter Samtalestøtte tre roller: bruker, redaktør og admin. Redaktør kan endre utvalgte grensesnitttekster fra adminvisningen, mens admin i tillegg kan tildele og fjerne roller. Rettighetene håndheves på serveren. Redigerte tekster lagres i Supabase-tabellen `content_overrides`. Kjør `database/migrations/V20-SUPABASE-MIGRATION.sql` én gang før funksjonen tas i bruk.
 
 ## Samtalesimulering
 
@@ -117,7 +117,7 @@ Løsningen bruker nødvendig lokal lagring og sesjonsinformasjon til blant annet
 
 ## Sikkerhet i v20.4
 
-v20.4 inneholder blant annet server-side personverngateway, rate limiting, same-origin-kontroll, sikkerhetsheadere, begrenset offentlig filtilgang, anonymisert KI-/kildelogging, automatisk retensjon og kontoeksport. Se `SIKKERHET-OG-PERSONVERN-v20.4.md` og kjør `V20-4-SUPABASE-MIGRATION.sql` før versjonen tas i bruk.
+v20.4 inneholder blant annet server-side personverngateway, rate limiting, same-origin-kontroll, sikkerhetsheadere, begrenset offentlig filtilgang, anonymisert KI-/kildelogging, automatisk retensjon og kontoeksport. Se `SIKKERHET-OG-PERSONVERN-v20.4.md` og kjør `database/migrations/V20-4-SUPABASE-MIGRATION.sql` før versjonen tas i bruk.
 
 ## KI og faglig sikkerhet
 
@@ -314,7 +314,7 @@ Automatiske tester brukes som støtte. KI-svar må fortsatt vurderes manuelt for
 | `app.js` | Hovedlogikk i brukergrensesnittet |
 | `index.html` | Struktur og hovedvisninger |
 | `styles.css` | Visuell utforming og temaer |
-| `SUPABASE-SETUP.sql` | Grunnoppsett for Supabase |
+| `database/SUPABASE-SETUP.sql` | Grunnoppsett for Supabase |
 | `CHANGELOG.md` | Utviklingshistorikk |
 
 ## Tema og brukergrensesnitt
@@ -334,4 +334,5 @@ Kontakt: **cecilie.c.nilsen@himolde.no**
 Før eventuell ordinær publisering skal løsningen blant annet gjennom mer brukertesting. Det skal også vurderes hvilken KI-modell som gir best balanse mellom kvalitet, sikkerhet, responstid og kostnad.
 
 Dette er fortsatt en prototype, og funksjoner og utforming kan derfor endres etter testing.
+
 

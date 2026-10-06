@@ -105,7 +105,7 @@
 - «Øv på samtalen» er gjort tydeligere og gjentas nederst i veiledningen.
 - Admin-logo i innholdsvisningen flyttes lokalt 8 px ned; godkjent snakkeboblegeometri er urørt.
 - README og BMAD-dokumentasjon er oppdatert med Render cold-start, vurderingstilgang, ny taksonomi, brukertest og provider-uavhengighet.
-- Ny migrering: `V20-5-SUPABASE-MIGRATION.sql`.
+- Ny migrering: `database/migrations/V20-5-SUPABASE-MIGRATION.sql`.
 
 ## v20.4.0 – sikkerhet og personvern
 - Server-side personverngateway utvidet til å dekke navn, fødselsdata, adresse og øvrige sentrale direkte identifikatorer i tillegg til eksisterende sjekker.
@@ -133,7 +133,7 @@
 - Ekte benchmark er begrenset til maks $5 og har standardbudsjett $2; den reserverer margin før hvert nytt kall og kan stoppes manuelt.
 - Testtrafikk merkes separat (`is_test`) og holdes utenfor vanlig kostnadsoversikt som standard.
 - Websøkets faste verktøykostnad er nå inkludert i nye kostnadsestimater ($0,01 per søk ved gjeldende OpenAI-pris 26.09.2026), i tillegg til tokenkostnad.
-- Ny migrering: `V20-3-SUPABASE-MIGRATION.sql`.
+- Ny migrering: `database/migrations/V20-3-SUPABASE-MIGRATION.sql`.
 
 ## v20.2 – modellstyring, kostnad, kildebruk og bedre rapportering
 
@@ -1256,3 +1256,4 @@ Fra og med neste versjon skal følgende alltid gjøres:
 4. Kontroller at minst første og siste historiske versjon fortsatt finnes før pakking.
 5. `CHANGELOG.md` skal inngå i samme Git-commit som versjonen den dokumenterer.
 6. Ved generering av ny ZIP skal den oppdaterte, komplette changelog-filen være kilden – aldri en lagret eldre mal.
+

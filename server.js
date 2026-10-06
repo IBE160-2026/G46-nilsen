@@ -637,7 +637,7 @@ app.put("/api/admin/content", requireContentEditor, async (req, res) => {
     console.error("Kunne ikke lagre redigerbart innhold:", error);
     return res.status(missing ? 503 : 500).json({
       error: missing ? "CONTENT_TABLE_MISSING" : "CONTENT_SAVE_FAILED",
-      message: missing ? "Kjør V20-SUPABASE-MIGRATION.sql i Supabase før innholdsredigering tas i bruk." : "Kunne ikke lagre innholdet."
+      message: missing ? "Kjør database/migrations/V20-SUPABASE-MIGRATION.sql i Supabase før innholdsredigering tas i bruk." : "Kunne ikke lagre innholdet."
     });
   }
   res.json({ ok: true, saved: entries.length });
@@ -686,13 +686,13 @@ app.post("/api/ai-feedback", requireUser, async (req, res) => {
   }
   const row = { user_id:req.user.id, category, comment, surface, conversation_id:req.body?.conversationId || null, topic_id:String(req.body?.topicId || '').slice(0,100) || null, subtopic:String(req.body?.subtopic || '').slice(0,200) || null, include_conversation:includeConversation, conversation_snapshot:conversationSnapshot };
   const { error } = await supabaseAdmin.from('ai_response_feedback').insert(row);
-  if (error) { const missing=/ai_response_feedback|conversation_snapshot|include_conversation|relation .* does not exist/i.test(String(error.message||'')); return res.status(missing?503:500).json({error:missing?'FEEDBACK_TABLE_MISSING':'FEEDBACK_SAVE_FAILED',message:missing?'Kjør V20-2-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke lagre tilbakemeldingen.'}); }
+  if (error) { const missing=/ai_response_feedback|conversation_snapshot|include_conversation|relation .* does not exist/i.test(String(error.message||'')); return res.status(missing?503:500).json({error:missing?'FEEDBACK_TABLE_MISSING':'FEEDBACK_SAVE_FAILED',message:missing?'Kjør database/migrations/V20-2-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke lagre tilbakemeldingen.'}); }
   res.json({ok:true});
 });
 
 app.get("/api/admin/ai-feedback", requireAdmin, async (_req,res)=>{
   const { data,error }=await supabaseAdmin.from('ai_response_feedback').select('id,category,comment,surface,include_conversation,conversation_snapshot,created_at').order('created_at',{ascending:false}).limit(100);
-  if(error){const missing=/ai_response_feedback|relation .* does not exist/i.test(String(error.message||''));return res.status(missing?503:500).json({error:'FEEDBACK_LOAD_FAILED',message:missing?'Kjør V20-2-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke hente tilbakemeldinger.'});}
+  if(error){const missing=/ai_response_feedback|relation .* does not exist/i.test(String(error.message||''));return res.status(missing?503:500).json({error:'FEEDBACK_LOAD_FAILED',message:missing?'Kjør database/migrations/V20-2-SUPABASE-MIGRATION.sql i Supabase først.':'Kunne ikke hente tilbakemeldinger.'});}
   res.json({items:data||[]});
 });
 
@@ -705,7 +705,7 @@ app.put('/api/admin/ai-settings', requireAdmin, async (req,res)=>{
   const modelId = String(req.body?.model || '');
   if (!AI_MODELS[modelId]) return res.status(400).json({error:'INVALID_MODEL',message:'Ugyldig KI-modell.'});
   const { error } = await supabaseAdmin.from('app_settings').upsert({ key:'ai_model', value:{model:modelId}, updated_at:new Date().toISOString(), updated_by:req.user.id });
-  if (error) return res.status(500).json({error:'MODEL_SAVE_FAILED',message:'Kunne ikke lagre modellvalget. Kjør V20-2-SUPABASE-MIGRATION.sql først.'});
+  if (error) return res.status(500).json({error:'MODEL_SAVE_FAILED',message:'Kunne ikke lagre modellvalget. Kjør database/migrations/V20-2-SUPABASE-MIGRATION.sql først.'});
   activeModelCache={value:modelId,expiresAt:Date.now()+30000};
   res.json({ok:true,activeModel:modelId});
 });
@@ -720,7 +720,7 @@ app.get('/api/admin/ai-usage', requireAdmin, async (req,res)=>{
     extended=false;
     result=await supabaseAdmin.from('ai_usage_log').select('function_name,model,input_tokens,output_tokens,total_tokens,estimated_cost_usd,web_search_used,web_search_queries,source_domains,created_at').gte('created_at',since).order('created_at',{ascending:false}).limit(2000);
   }
-  if(result.error) return res.status(500).json({error:'USAGE_LOAD_FAILED',message:'Kunne ikke hente KI-bruk. Kjør V20-2-SUPABASE-MIGRATION.sql først.'});
+  if(result.error) return res.status(500).json({error:'USAGE_LOAD_FAILED',message:'Kunne ikke hente KI-bruk. Kjør database/migrations/V20-2-SUPABASE-MIGRATION.sql først.'});
   rows=(result.data||[]).map(r=>extended?r:{...r,is_test:false,web_search_call_count:r.web_search_used?1:0});
   if(!includeTests) rows=rows.filter(r=>!r.is_test);
   const now=Date.now();
@@ -800,7 +800,7 @@ Krav:
     const latencyMs=Date.now()-started; const usage=response.__samtalestotteUsage||{}; const web=usage.web||extractWebSearchMeta(response);
     const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id};
     const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
-    if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
+    if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør database/migrations/V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
     res.json({ok:true,id:save.data?.id,...row});
  }catch(error){
   console.error("Benchmark-feil:", {
@@ -829,7 +829,7 @@ app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
   let q=supabaseAdmin.from('benchmark_results').select('id,run_id,case_id,topic_id,topic,subtopic,variant,model,response_text,input_tokens,output_tokens,estimated_cost_usd,web_search_count,web_search_queries,source_domains,source_pages,latency_ms,created_at').order('created_at',{ascending:false}).limit(300);
   const runId=String(req.query.runId||'').trim(); if(runId) q=q.eq('run_id',runId);
   const {data,error}=await q;
-  if(error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Kjør V20-3-SUPABASE-MIGRATION.sql i Supabase først.'});
+  if(error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Kjør database/migrations/V20-3-SUPABASE-MIGRATION.sql i Supabase først.'});
   res.json({items:data||[]});
 });
 
@@ -854,13 +854,13 @@ app.post("/api/survey", requireUser, async (req,res)=>{
   const privacyFindings=serverPrivacyFindings(`${row.improvement_text} ${row.most_useful_text}`).filter(x=>SERVER_HARD_PRIVACY_TYPES.has(x.type));
   if(privacyFindings.length)return res.status(400).json({error:'PRIVACY_REVIEW_REQUIRED',message:'Fjern navn eller andre tydelige personopplysninger fra friteksten.'});
   const mark=await supabaseAdmin.from('survey_participation').insert({user_id:req.user.id});
-  if(mark.error){if(/duplicate|unique/i.test(String(mark.error.message||'')))return res.status(409).json({error:'SURVEY_ALREADY_COMPLETED',message:'Du har allerede sendt inn brukertesten. Dersom du har flere tilbakemeldinger, bruk kontaktskjemaet.'});return res.status(503).json({error:'SURVEY_SCHEMA_MISSING',message:'Kjør V20-6-SUPABASE-MIGRATION.sql i Supabase først.'});}
+  if(mark.error){if(/duplicate|unique/i.test(String(mark.error.message||'')))return res.status(409).json({error:'SURVEY_ALREADY_COMPLETED',message:'Du har allerede sendt inn brukertesten. Dersom du har flere tilbakemeldinger, bruk kontaktskjemaet.'});return res.status(503).json({error:'SURVEY_SCHEMA_MISSING',message:'Kjør database/migrations/V20-6-SUPABASE-MIGRATION.sql i Supabase først.'});}
   const saved=await supabaseAdmin.from('survey_responses').insert(row);
   if(saved.error){await supabaseAdmin.from('survey_participation').delete().eq('user_id',req.user.id);return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kunne ikke lagre brukertesten.'});}
   res.json({ok:true});
 });
 app.get("/api/admin/survey", requireAdmin, async (_req,res)=>{
-  const {data,error}=await supabaseAdmin.from('survey_responses').select('*').order('created_at',{ascending:false}).limit(500); if(error)return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kjør V20-5-SUPABASE-MIGRATION.sql i Supabase først.'}); const rows=data||[];
+  const {data,error}=await supabaseAdmin.from('survey_responses').select('*').order('created_at',{ascending:false}).limit(500); if(error)return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kjør database/migrations/V20-5-SUPABASE-MIGRATION.sql i Supabase først.'}); const rows=data||[];
   const avg=k=>{const vals=rows.map(x=>Number(x[k])).filter(n=>Number.isFinite(n)); return vals.length?vals.reduce((a,b)=>a+b,0)/vals.length:null;};
   res.json({count:rows.length,averages:{usability:avg('usability'),navigation:avg('navigation'),aiRelevance:avg('ai_relevance'),practicalUsefulness:avg('practical_usefulness'),simulation:avg('simulation'),privacy:avg('privacy'),wouldUse:avg('would_use')},responses:rows.slice(0,100).map(x=>({created_at:x.created_at,improvement_text:x.improvement_text,most_useful_text:x.most_useful_text}))});
 });
@@ -874,7 +874,7 @@ app.post("/api/admin/invites", requireAdmin, async (req,res)=>{
   const role=String(req.body?.role||'user').toLowerCase(); if(!VALID_ROLES.has(role))return res.status(400).json({error:'INVALID_ROLE',message:'Ugyldig rolle.'});
   const expiresAt=new Date(req.body?.expiresAt||'2026-12-31T23:59:59+01:00'); if(Number.isNaN(expiresAt.getTime())||expiresAt<=new Date())return res.status(400).json({error:'INVALID_EXPIRY',message:'Velg en gyldig fremtidig utløpsdato.'});
   const code=crypto.randomBytes(18).toString('base64url'); const codeHash=hashInvite(code); const {error}=await supabaseAdmin.from('invites').insert({code_hash:codeHash,role,expires_at:expiresAt.toISOString()});
-  if(error)return res.status(503).json({error:'INVITE_SCHEMA_MISSING',message:'Kunne ikke opprette rollebasert invitasjon. Kjør V20-5-SUPABASE-MIGRATION.sql først.'});
+  if(error)return res.status(503).json({error:'INVITE_SCHEMA_MISSING',message:'Kunne ikke opprette rollebasert invitasjon. Kjør database/migrations/V20-5-SUPABASE-MIGRATION.sql først.'});
   const base=(process.env.APP_BASE_URL||`${req.protocol}://${req.get('host')}`).replace(/\/$/,''); res.status(201).json({url:`${base}/?invite=${code}`,role,expiresAt:expiresAt.toISOString()});
 });
 
@@ -1764,6 +1764,7 @@ app.listen(port, () => {
   console.log(`Samtalestøtte kjører på http://localhost:${port}`);
   console.log(hasAnyAiClient() ? `KI aktivert (standard ${defaultModel}; admin kan overstyre)` : "KI er ikke aktivert: sett OPENAI_API_KEY eller OPENROUTER_API_KEY i .env");
 });
+
 
 
 
