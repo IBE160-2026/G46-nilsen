@@ -133,7 +133,7 @@ const AI_MODELS = {
   "google/gemma-4-26b-a4b-it:free": { label: "Gemma 4 26B A4B (OpenRouter)", tier: "Gratis · fast modell", provider:"openrouter", inputPerMillion: 0, outputPerMillion: 0 }
 };
 const WEB_SEARCH_CALL_USD = 0.01; // OpenAI web search: $10 / 1000 calls (2026-09).
-const benchmarkCasePath = path.join(__dirname, "BENCHMARK-CASES.json");
+const benchmarkCasePath = path.join(__dirname, "data/BENCHMARK-CASES.json");
 let benchmarkCases = [];
 try {
   benchmarkCases = JSON.parse(fs.readFileSync(benchmarkCasePath, "utf8")).cases || [];
@@ -1190,7 +1190,7 @@ app.delete("/api/account", requireUser, async (req, res) => {
 });
 
 const systemPrompt = fs.readFileSync(path.join(__dirname, "docs/ai/AI-SYSTEMPROMPT.md"), "utf8");
-const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "SOURCEBANK.json"), "utf8"));
+const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/SOURCEBANK.json"), "utf8"));
 const sourceIds = sourceBank.sources.map(source => source.id);
 
 function selectRelevantSources(analysis = {}, situation = "") {
@@ -1764,6 +1764,8 @@ app.listen(port, () => {
   console.log(`Samtalestøtte kjører på http://localhost:${port}`);
   console.log(hasAnyAiClient() ? `KI aktivert (standard ${defaultModel}; admin kan overstyre)` : "KI er ikke aktivert: sett OPENAI_API_KEY eller OPENROUTER_API_KEY i .env");
 });
+
+
 
 
 

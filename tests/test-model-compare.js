@@ -14,7 +14,7 @@ if (!process.env.OPENAI_API_KEY) {
   process.exit(1);
 }
 
-const allCases = JSON.parse(fs.readFileSync(path.join(__dirname, "../AI-STRESS-CASES.json"), "utf8"));
+const allCases = JSON.parse(fs.readFileSync(path.join(__dirname, "cases/AI-STRESS-CASES.json"), "utf8"));
 const quickIds = ["ST-RUS-02", "ST-PERF-04", "ST-TERM-03", "ST-CAREER-01", "ST-LIFE-02"];
 const fullIds = [
   ...quickIds,
@@ -68,7 +68,7 @@ async function runModel(model, port) {
   const stderrRef = { value: "" };
   const server = spawn(process.execPath, [path.join(__dirname, "../server.js")], {
     cwd: __dirname,
-    env: { ...process.env, PORT: String(port), OPENAI_MODEL: model },
+    env: { ...process.env, PORT: String(port), OPENAI_MODEL: model, NODE_ENV: "test", TEST_AUTH_BYPASS: "1" },
     stdio: ["ignore", "pipe", "pipe"]
   });
   server.stderr.on("data", d => { stderrRef.value += d.toString(); });
@@ -172,4 +172,6 @@ console.log("\nFerdig. Ikke åpne fasiten først.");
 console.log(`Blindrapport: ${reportPath}`);
 console.log(`Fasit:       ${keyPath}`);
 console.log(`Rådata:      ${rawPath}\n`);
+
+
 

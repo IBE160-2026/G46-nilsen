@@ -7,7 +7,7 @@ import dotenv from "dotenv";
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const allCases = JSON.parse(fs.readFileSync(path.join(__dirname, "../AI-STRESS-CASES.json"), "utf8"));
+const allCases = JSON.parse(fs.readFileSync(path.join(__dirname, "cases/AI-STRESS-CASES.json"), "utf8"));
 const fullRun = process.argv.includes("--all");
 const problemRun = process.argv.includes("--problems");
 const quickIds = ["ST-RUS-01","ST-RUS-02","ST-PERF-01","ST-PERF-02","ST-TERM-01","ST-TERM-03","ST-CONF-02","ST-CAREER-01"];
@@ -240,5 +240,6 @@ console.log("\nFerdig.");
 console.log(`OK: ${counts.OK || 0} | Bør sjekkes: ${counts["BØR SJEKKES"] || 0} | Kritisk avvik: ${counts["KRITISK AVVIK"] || 0} | Teknisk feil: ${counts["TEKNISK FEIL"] || 0}`);
 console.log(`Rapport: ${mdPath}`);
 console.log(`Detaljer: ${jsonPath}\n`);
+
 
 
