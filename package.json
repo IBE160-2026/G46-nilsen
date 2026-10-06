@@ -15,9 +15,11 @@
     "invite": "node create-invite.js",
     "test-simulation": "node tests/test-simulation.js",
     "test-simulation:live": "node tests/test-simulation-ai.js",
-    "test-simulation:v19.4": "node tests/test-simulation-v19-4.js",
     "test-history-hotfix": "node tests/test-history-hotfix.cjs",
-    "test-bubble-cleanup": "node tests/test-bubble-cleanup.cjs"
+    "test-bubble-cleanup": "node tests/test-bubble-cleanup.cjs",
+    "test-server-privacy": "node tests/test-server-privacy.cjs",
+    "test-ui-regression": "node tests/test-ui-regression.cjs",
+    "test-model-compare": "node tests/test-model-compare.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
