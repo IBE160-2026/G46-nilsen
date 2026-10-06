@@ -15,16 +15,9 @@
     "invite": "node create-invite.js",
     "test-simulation": "node test-simulation.js",
     "test-simulation:live": "node test-simulation-ai.js",
-    "test-simulation:v19.2": "node test-simulation-v19-2.js",
-    "test-simulation:v19.2:live": "node test-simulation-ai-v19-2.js",
-    "test-simulation:v19.3": "node test-simulation-v19-3.js",
     "test-simulation:v19.4": "node test-simulation-v19-4.js",
     "test-history-hotfix": "node test-history-hotfix.cjs",
-    "test-bubble-cleanup": "node test-bubble-cleanup.cjs",
-    "test-v20.8": "node test-v20-8.cjs",
-    "test-v20.9": "node test-v20-9.cjs",
-    "test-v20.10": "node test-v20-10.cjs",
-    "test-v20.10.2": "node test-v20-10-2.cjs"
+    "test-bubble-cleanup": "node test-bubble-cleanup.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
