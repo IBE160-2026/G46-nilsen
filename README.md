@@ -134,8 +134,8 @@ Prosjektet inneholder en fagbank og egne regler for hvordan KI-en skal svare. Se
 - `AI-SYSTEMPROMPT.md`
 - `AI-RESPONSE-CONTRACT.md`
 - `SOURCEBANK.md`
-- `FAGGRUNNLAG-FRAVAER.md`
-- `FAGGRUNNLAG-MOBBING-TRAKASSERING.md`
+- `docs/faggrunnlag/FAGGRUNNLAG-FRAVAER.md`
+- `docs/faggrunnlag/FAGGRUNNLAG-MOBBING-TRAKASSERING.md`
 
 ## Teknologi
 
@@ -294,15 +294,15 @@ Automatiske tester brukes som støtte. KI-svar må fortsatt vurderes manuelt for
 | `AI-RESPONSE-CONTRACT.md` | Forventet struktur på KI-svar |
 | `AI-TESTPLAN.md` | Plan og kriterier for KI-testing |
 | `SOURCEBANK.md` / `SOURCEBANK.json` | Kurert fag- og kildebank på tvers av temaene |
-| `FAGGRUNNLAG-ALKOHOL-RUS.md` | Alkohol og rus |
-| `FAGGRUNNLAG-FRAVAER.md` | Fravær, arbeidsevne og tilrettelegging |
-| `FAGGRUNNLAG-PRESTASJON-UTVIKLING.md` | Prestasjon og utvikling |
-| `FAGGRUNNLAG-LONN-UTVIKLING.md` | Lønn og utvikling |
-| `FAGGRUNNLAG-SAMARBEID-KOMMUNIKASJON.md` | Samarbeid og kommunikasjon |
-| `FAGGRUNNLAG-AVSLUTNING-ARBEIDSFORHOLD.md` | Avslutning av arbeidsforhold |
-| `FAGGRUNNLAG-SIKKERHET-ANSVAR.md` | Sikkerhet, vold og trusler |
-| `FAGGRUNNLAG-LIVSSITUASJONER.md` | Livssituasjoner og arbeidsrelatert tilrettelegging |
-| `FAGGRUNNLAG-MOBBING-TRAKASSERING.md` | Mobbing, trakassering og varsling |
+| `docs/faggrunnlag/FAGGRUNNLAG-ALKOHOL-RUS.md` | Alkohol og rus |
+| `docs/faggrunnlag/FAGGRUNNLAG-FRAVAER.md` | Fravær, arbeidsevne og tilrettelegging |
+| `docs/faggrunnlag/FAGGRUNNLAG-PRESTASJON-UTVIKLING.md` | Prestasjon og utvikling |
+| `docs/faggrunnlag/FAGGRUNNLAG-LONN-UTVIKLING.md` | Lønn og utvikling |
+| `docs/faggrunnlag/FAGGRUNNLAG-SAMARBEID-KOMMUNIKASJON.md` | Samarbeid og kommunikasjon |
+| `docs/faggrunnlag/FAGGRUNNLAG-AVSLUTNING-ARBEIDSFORHOLD.md` | Avslutning av arbeidsforhold |
+| `docs/faggrunnlag/FAGGRUNNLAG-SIKKERHET-ANSVAR.md` | Sikkerhet, vold og trusler |
+| `docs/faggrunnlag/FAGGRUNNLAG-LIVSSITUASJONER.md` | Livssituasjoner og arbeidsrelatert tilrettelegging |
+| `docs/faggrunnlag/FAGGRUNNLAG-MOBBING-TRAKASSERING.md` | Mobbing, trakassering og varsling |
 
 `SOURCEBANK.md` og `SOURCEBANK.json` er den felles kuraterte kildebanken som binder faggrunnlaget på tvers av alle hovedtemaene.
 
@@ -334,5 +334,6 @@ Kontakt: **cecilie.c.nilsen@himolde.no**
 Før eventuell ordinær publisering skal løsningen blant annet gjennom mer brukertesting. Det skal også vurderes hvilken KI-modell som gir best balanse mellom kvalitet, sikkerhet, responstid og kostnad.
 
 Dette er fortsatt en prototype, og funksjoner og utforming kan derfor endres etter testing.
+
 
 

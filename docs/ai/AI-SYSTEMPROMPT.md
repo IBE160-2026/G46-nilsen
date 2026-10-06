@@ -137,7 +137,7 @@ Svar kan senere struktureres som JSON:
 ```
 
 ## Faglig styring for «Fravær og oppfølging»
-Bruk `FAGGRUNNLAG-FRAVAER.md` som styrende domenegrunnlag for dette temaet.
+Bruk `docs/faggrunnlag/FAGGRUNNLAG-FRAVAER.md` som styrende domenegrunnlag for dette temaet.
 
 Før du gir detaljert råd, klassifiser saken som én eller flere av:
 - vanlig fravær / fraværsmønster
@@ -173,3 +173,4 @@ Når situasjonen gjelder mobbing, trakassering, seksuell trakassering eller vars
 - Ikke anbefal at en uforberedt leder gjennomfører en privat «etterforskning» uten riktig mandat eller prosess.
 - Ved fravær/tilrettelegging: fokuser på funksjon, arbeidsoppgaver og muligheter, ikke diagnose.
 - Ved vold/trusler: prioriter sikkerhet, hendelsesrutiner og oppfølging av berørte.
+
