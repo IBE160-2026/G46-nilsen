@@ -53,7 +53,7 @@ const topics = [
     id: 'alkohol-rus',
     title: 'Alkohol og rus',
     iconKey: 'glassOff',
-    image: 'topic-alkohol-rus.png',
+    image: 'assets/images/topics/topic-alkohol-rus.png',
     imageAlt: 'Alvorlig, men rolig samtale mellom kvinnelig leder og kvinnelig medarbeider i et moderne møterom',
     description: 'Støtte til samtaler der observasjoner, bekymring, påvirkning eller sikkerhet gjør det nødvendig å ta opp alkohol eller rus på en tydelig og respektfull måte.',
     representations: ['Bekymring og endret fungering', 'Påvirkning eller sikkerhet', 'Oppfølging og tilbakekomst'],
@@ -71,7 +71,7 @@ const topics = [
     id: 'fravaer-oppfolging',
     title: 'Fravær og oppfølging',
     iconKey: 'calendarClock',
-    image: 'topic-fravaer-oppfolging.png',
+    image: 'assets/images/topics/topic-fravaer-oppfolging.png',
     imageAlt: 'Oppfølgingssamtale mellom leder og medarbeider i et lyst kontormiljø',
     description: 'Støtte til gode samtaler om sykefravær, oppmøte, planlagt fravær, tilbakekomst, arbeidsevne og tilrettelegging – med fokus på arbeidssituasjonen fremfor diagnose.',
     representations: ['Fravær og oppmøte', 'Sykefravær og tilbakekomst', 'Tilrettelegging og arbeidsevne'],
@@ -89,7 +89,7 @@ const topics = [
     id: 'prestasjon-utvikling',
     title: 'Prestasjon og utvikling',
     iconKey: 'trendUp',
-    image: 'topic-prestasjon-utvikling.png',
+    image: 'assets/images/topics/topic-prestasjon-utvikling.png',
     imageAlt: 'Utviklingssamtale med fokus på mål og fremgang ved et skrivebord',
     description: 'Støtte til samtaler om forventninger, kvalitet, mål, kompetanse og utvikling når arbeidshverdagen ikke fungerer helt som ønsket.',
     representations: ['Mål og leveranser', 'Kvalitet og ansvar', 'Kompetanse og utvikling'],
@@ -107,7 +107,7 @@ const topics = [
     id: 'lonn-utvikling',
     title: 'Lønn og utvikling',
     iconKey: 'coinsUp',
-    image: 'topic-lonn-utvikling.png',
+    image: 'assets/images/topics/topic-lonn-utvikling.png',
     imageAlt: 'Positiv samtale om lønn, utvikling og forventninger i et moderne kontor',
     description: 'Støtte til ryddige samtaler om lønn, forventninger, ansvar, utviklingsmuligheter og hvordan virksomhetens rammer kan forklares tydelig.',
     representations: ['Lønnsforventninger', 'Nye oppgaver og ansvar', 'Utvikling og muligheter'],
@@ -124,7 +124,7 @@ const topics = [
     id: 'samarbeid-kommunikasjon',
     title: 'Samarbeid og kommunikasjon',
     iconKey: 'chatPeople',
-    image: 'topic-samarbeid-kommunikasjon.png',
+    image: 'assets/images/topics/topic-samarbeid-kommunikasjon.png',
     imageAlt: 'Flere kolleger samarbeider rundt en laptop i et moderne kontor',
     description: 'Støtte til samtaler som skal styrke kommunikasjon, tillit, rolleforståelse og samspill når samarbeidet har blitt krevende.',
     representations: ['Kommunikasjon og tone', 'Uenighet og tillit', 'Roller og samspill i team'],
@@ -142,7 +142,7 @@ const topics = [
     id: 'avslutning-arbeidsforhold',
     title: 'Avslutning av arbeidsforhold',
     iconKey: 'exitDoor',
-    image: 'topic-avslutning-arbeidsforhold.png',
+    image: 'assets/images/topics/topic-avslutning-arbeidsforhold.png',
     imageAlt: 'Alvorlig og profesjonell samtale om avslutning av arbeidsforhold',
     description: 'Støtte til tydelige og respektfulle samtaler når arbeidsforholdet kan være på vei mot en avslutning eller saken krever en mer formell videre prosess.',
     representations: ['Prøvetid og tidligere oppfølging', 'Endrede behov eller rolle', 'Samtale før videre prosess'],
@@ -160,7 +160,7 @@ const topics = [
     id: 'sikkerhet-ansvar',
     title: 'Sikkerhet og ansvar',
     iconKey: 'shieldCheck',
-    image: 'topic-sikkerhet-ansvar.png',
+    image: 'assets/images/topics/topic-sikkerhet-ansvar.png',
     imageAlt: 'Sikkerhetsmøte med planer, sikkerhetsutstyr og tydelig dialog',
     description: 'Støtte til samtaler om sikker praksis, rutiner, risiko, avvik og ansvar – med mål om læring, tydelighet og tryggere arbeid.',
     representations: ['Rutiner og etterlevelse', 'Avvik og hendelser', 'Risiko, ansvar og læring'],
@@ -179,7 +179,7 @@ const topics = [
     id: 'livssituasjoner',
     title: 'Livssituasjoner',
     iconKey: 'homeHeart',
-    image: 'topic-livssituasjoner.png',
+    image: 'assets/images/topics/topic-livssituasjoner.png',
     imageAlt: 'Omsorgsfull samtale der en medarbeider sitter med hodet bøyd og blir lyttet til',
     description: 'Støtte til omsorgsfulle og profesjonelle samtaler når personlige belastninger, omsorgsansvar, sorg eller andre livssituasjoner påvirker arbeidshverdagen.',
     representations: ['Familie og omsorg', 'Sorg, stress og belastning', 'Støtte og hensiktsmessige grenser'],
@@ -197,7 +197,7 @@ const topics = [
     id: 'mobbing-trakassering',
     title: 'Mobbing og trakassering',
     iconKey: 'harassment',
-    image: './topic-mobbing-trakassering.png',
+    image: 'assets/images/topics/topic-mobbing-trakassering.png',
     imageAlt: 'Profesjonell samtale om arbeidsmiljø, grenser og trygghet',
     description: 'Støtte til varsomme og ryddige samtaler om mobbing, trakassering, utestenging og uønsket seksuell oppmerksomhet. Verktøyet skal ikke avgjøre skyld, men hjelpe lederen å lytte, ivareta involverte og følge riktig prosess.',
     representations: ['Mobbing og utestenging', 'Trakassering og seksuell oppmerksomhet', 'Varsling og forsvarlig oppfølging'],
@@ -453,7 +453,7 @@ function openTopic(topic, preservedSituation = '') {
 
   const topicHeroImage = document.querySelector('.topic-hero-visual img');
   if (topicHeroImage) {
-    topicHeroImage.src = topic.image || 'hero-conversation-exact.png';
+    topicHeroImage.src = topic.image || 'assets/images/hero-conversation-exact.png';
     topicHeroImage.alt = topic.imageAlt || `Illustrasjon for temaet ${topic.title}`;
   }
 
@@ -3278,14 +3278,14 @@ function renderSimulationThread() {
   const turns = simulationTurns.map(turn => {
     const leader = turn.role === 'leader';
     return `<div class="simulation-bubble-row ${leader ? 'leader-row' : 'employee-row'}">
-      ${leader ? '' : '<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div>'}
+      ${leader ? '' : '<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="assets/images/profile-ai.png" alt="" /></div>'}
       <div class="simulation-bubble ${leader ? 'leader-bubble' : 'employee-bubble'}">
         ${speechBubbleMarkup(leader ? 'right' : 'left')}
         <span>${leader ? 'Du · leder' : 'Medarbeider · KI'}</span>
         <p>${escapeHtml(turn.text)}</p>
         ${leader ? '' : `<button type="button" class="ai-report-link" data-report-ai-response="simulation" data-turn-index="${simulationTurns.indexOf(turn)}">Rapporter svar</button>`}
       </div>
-      ${leader ? '<div class="simulation-avatar leader-avatar" aria-hidden="true"><img src="profile-human.png" alt="" /></div>' : ''}
+      ${leader ? '<div class="simulation-avatar leader-avatar" aria-hidden="true"><img src="assets/images/profile-human.png" alt="" /></div>' : ''}
     </div>`;
   }).join('');
   thread.innerHTML = intro + turns;
@@ -3341,7 +3341,7 @@ async function submitSimulationTurn(text) {
   const thread = document.querySelector('#simulation-thread');
   const waiting = document.createElement('div');
   waiting.className = 'simulation-bubble-row employee-row simulation-waiting';
-  waiting.innerHTML = `<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble">${speechBubbleMarkup('left')}<span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>`;
+  waiting.innerHTML = `<div class="simulation-avatar employee-avatar" aria-hidden="true"><img src="assets/images/profile-ai.png" alt="" /></div><div class="simulation-bubble employee-bubble">${speechBubbleMarkup('left')}<span>Medarbeider · KI</span><div class="conversation-thinking"><span class="thinking-spinner" aria-hidden="true"></span><p>Tenker …</p></div></div>`;
   thread.appendChild(waiting);
   queueSpeechBubbleRefresh();
   waiting.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

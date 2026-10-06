@@ -929,7 +929,7 @@ textarea:focus {
 }
 
 html[data-theme="dark"] .brand-logo {
-  content: url("logo-light.png");
+  content: url("assets/images/logo-light.png");
   filter: drop-shadow(0 8px 16px rgba(0,0,0,.35));
 }
 
@@ -3405,7 +3405,7 @@ textarea[aria-invalid="true"] {
 }
 
 html[data-theme="dark"] .nav-logo-glyph img {
-  content: url("logo-light.png");
+  content: url("assets/images/logo-light.png");
 }
 
 .simulation-logo-crop {
@@ -3425,7 +3425,7 @@ html[data-theme="dark"] .nav-logo-glyph img {
 }
 
 html[data-theme="dark"] .simulation-logo-crop img {
-  content: url("logo-light.png");
+  content: url("assets/images/logo-light.png");
 }
 
 .privacy-banner,.privacy-check,.simulation-safety-note {
@@ -3519,7 +3519,7 @@ html[data-theme="dark"] .privacy-check.warning,html[data-theme="dark"] .privacy-
 }
 
 html[data-theme="dark"] .nav-logo-glyph img {
-  content: url("profile-ai-light.png");
+  content: url("assets/images/profile-ai-light.png");
 }
 
 .simulation-logo-crop {
@@ -3540,7 +3540,7 @@ html[data-theme="dark"] .nav-logo-glyph img {
 }
 
 html[data-theme="dark"] .simulation-logo-crop img {
-  content: url("logo-symbol-light.png");
+  content: url("assets/images/logo-symbol-light.png");
   filter: drop-shadow(0 16px 30px rgba(0,0,0,.30));
 }
 
@@ -3573,11 +3573,11 @@ html[data-theme="dark"] .simulation-logo-crop img {
 }
 
 html[data-theme="dark"] .employee-avatar img {
-  content: url("profile-ai-light.png");
+  content: url("assets/images/profile-ai-light.png");
 }
 
 html[data-theme="dark"] .leader-avatar img {
-  content: url("profile-human-light.png");
+  content: url("assets/images/profile-human-light.png");
 }
 
 .simulation-bubble span,.simulation-bubble p {
@@ -3671,7 +3671,7 @@ html[data-theme="dark"] .privacy-check.ok span {
 }
 
 html[data-theme="dark"] .simulation-entry-icon img {
-  content: url("logo-symbol-light.png");
+  content: url("assets/images/logo-symbol-light.png");
 }
 
 .simulation-entry-copy h3 {
@@ -3717,7 +3717,7 @@ html[data-theme="dark"] .simulation-entry-icon img {
 }
 
 html[data-theme="dark"] .simulation-status-logo img {
-  content: url("logo-symbol-light.png");
+  content: url("assets/images/logo-symbol-light.png");
 }
 
 .simulation-expand {
@@ -4055,7 +4055,7 @@ html[data-theme="dark"] .legal-note {
 }
 
 html[data-theme="dark"] .utility-page-logo {
-  content: url("logo-symbol-light.png");
+  content: url("assets/images/logo-symbol-light.png");
 }
 
 .simulation-expand,.simulation-end-top,.simulation-privacy-link {
@@ -4302,7 +4302,7 @@ html[data-theme="hybrid"] .sidebar {
 }
 
 html[data-theme="hybrid"] .sidebar .brand-logo {
-  content: url("logo-light.png");
+  content: url("assets/images/logo-light.png");
   filter: none;
 }
 
@@ -4327,7 +4327,7 @@ html[data-theme="hybrid"] .sidebar .nav-glyph {
 }
 
 html[data-theme="hybrid"] .sidebar .nav-logo-glyph img {
-  content: url("profile-ai-light.png");
+  content: url("assets/images/profile-ai-light.png");
 }
 
 html[data-theme="hybrid"] .sidebar .sidebar-message {
@@ -4644,8 +4644,8 @@ html[data-theme="hybrid"] .sidebar .brand-button::after {
     rgba(194,238,233,.34) 30%,
     rgba(170,226,220,.18) 58%,
     rgba(170,226,220,0) 78%);
-  -webkit-mask: url("logo-light.png") left center/contain no-repeat;
-  mask: url("logo-light.png") left center/contain no-repeat;
+  -webkit-mask: url("assets/images/logo-light.png") left center/contain no-repeat;
+  mask: url("assets/images/logo-light.png") left center/contain no-repeat;
   mix-blend-mode: screen;
 }
 
@@ -5545,7 +5545,7 @@ html[data-theme="dark"] .conversation-user {
 }
 
 html[data-theme="hybrid"] .sidebar .brand-logo {
-  content: url("logo.png") !important;
+  content: url("assets/images/logo.png") !important;
   filter: none !important;
 }
 
@@ -5681,12 +5681,12 @@ html[data-theme="hybrid"] .sidebar .brand-button::after {
 }
 
 html[data-theme="hybrid"] .sidebar .brand-logo {
-  content: url("logo-light.png") !important;
+  content: url("assets/images/logo-light.png") !important;
   filter: drop-shadow(0 8px 16px rgba(0,0,0,.24)) !important;
 }
 
 html[data-theme="hybrid"] .topbar-brand-logo {
-  content: url("logo.png");
+  content: url("assets/images/logo.png");
 }
 
 .compact-utility-header .utility-title-row h1,.compact-utility-header>div>h1 {
@@ -6067,7 +6067,7 @@ html[data-theme="dark"] .simulation-bottom-cta span {
 }
 
 html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo {
-  content: url("logo.png") !important;
+  content: url("assets/images/logo.png") !important;
   filter: none !important;
 }
 
@@ -6188,7 +6188,7 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
 }
 
 html[data-theme="dark"] .utility-page-logo {
-  content: url("logo-symbol-light.png");
+  content: url("assets/images/logo-symbol-light.png");
 }
 
 .collapsed-page-icon {
