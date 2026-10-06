@@ -571,6 +571,11 @@ async function resolveSession(req, res = null) {
 }
 
 async function requireUser(req, res, next) {
+  if (process.env.NODE_ENV === "test" && process.env.TEST_AUTH_BYPASS === "1") {
+    req.user = { id: "test-user", email: "test@example.com" };
+    req.supabase = null;
+    return next();
+  }
   try {
     const cookies = parseCookies(req);
     const hasAccess = Boolean(cookies[ACCESS_COOKIE]);
@@ -1184,7 +1189,7 @@ app.delete("/api/account", requireUser, async (req, res) => {
   res.json({ ok: true });
 });
 
-const systemPrompt = fs.readFileSync(path.join(__dirname, "AI-SYSTEMPROMPT.md"), "utf8");
+const systemPrompt = fs.readFileSync(path.join(__dirname, "docs/ai/AI-SYSTEMPROMPT.md"), "utf8");
 const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "SOURCEBANK.json"), "utf8"));
 const sourceIds = sourceBank.sources.map(source => source.id);
 
@@ -1759,3 +1764,7 @@ app.listen(port, () => {
   console.log(`Samtalestøtte kjører på http://localhost:${port}`);
   console.log(hasAnyAiClient() ? `KI aktivert (standard ${defaultModel}; admin kan overstyre)` : "KI er ikke aktivert: sett OPENAI_API_KEY eller OPENROUTER_API_KEY i .env");
 });
+
+
+
+

@@ -27,7 +27,7 @@ console.log("");
 
 const server = spawn(process.execPath, [path.join(__dirname, "server.js")], {
   cwd: __dirname,
-  env: { ...process.env, PORT: String(port) },
+  env: { ...process.env, PORT: String(port), NODE_ENV: "test", TEST_AUTH_BYPASS: "1" },
   stdio: ["ignore", "pipe", "pipe"]
 });
 
@@ -141,3 +141,5 @@ console.log("\nFerdig.");
 console.log(`OK: ${counts.OK || 0} | Bør sjekkes: ${counts["BØR SJEKKES"] || 0} | Kritisk avvik: ${counts["KRITISK AVVIK"] || 0}`);
 console.log(`Rapport: ${mdPath}`);
 console.log(`Detaljer: ${jsonPath}\n`);
+
+
