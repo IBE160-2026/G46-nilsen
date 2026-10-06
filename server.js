@@ -89,13 +89,13 @@ app.use("/api", generalApiLimiter);
 
 // Server kun eksplisitt offentlige frontend-filer. SQL, .env, tester og dokumentasjon er ikke web-tilgjengelige.
 const publicAssetNames = new Set([
-  "index.html", "app.js", "styles.css", "topic.ico", "snakkeboble.svg",
-  "logo.png", "logo-light.png", "logo-symbol.png", "logo-symbol-light.png",
-  "profile-ai.png", "profile-ai-light.png", "profile-human.png", "profile-human-light.png",
-  "hero-conversation-exact.png",
-  "topic-alkohol-rus.png", "topic-avslutning-arbeidsforhold.png", "topic-fravaer-oppfolging.png",
-  "topic-livssituasjoner.png", "topic-lonn-utvikling.png", "topic-prestasjon-utvikling.png",
-  "topic-samarbeid-kommunikasjon.png", "topic-sikkerhet-ansvar.png", "topic-mobbing-trakassering.png"
+  "index.html", "app.js", "styles.css", "topic.ico", "assets/images/snakkeboble.svg",
+  "assets/images/logo.png", "assets/images/logo-light.png", "assets/images/logo-symbol.png", "assets/images/logo-symbol-light.png",
+  "assets/images/profile-ai.png", "assets/images/profile-ai-light.png", "assets/images/profile-human.png", "assets/images/profile-human-light.png",
+  "assets/images/hero-conversation-exact.png",
+  "assets/images/topics/topic-alkohol-rus.png", "assets/images/topics/topic-avslutning-arbeidsforhold.png", "assets/images/topics/topic-fravaer-oppfolging.png",
+  "assets/images/topics/topic-livssituasjoner.png", "assets/images/topics/topic-lonn-utvikling.png", "assets/images/topics/topic-prestasjon-utvikling.png",
+  "assets/images/topics/topic-samarbeid-kommunikasjon.png", "assets/images/topics/topic-sikkerhet-ansvar.png", "assets/images/topics/topic-mobbing-trakassering.png"
 ]);
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
 app.get("/:asset", (req, res, next) => {

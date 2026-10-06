@@ -26,9 +26,9 @@ assert(css.includes('.utility-accordion>summary,\n.admin-panel>summary,\n.admin-
 assert(css.includes('font-size:1.18rem!important;'));
 
 // 4: mobbingbildet bruker riktig fil og er eksponert av serveren.
-assert(js.includes("image: './topic-mobbing-trakassering.png'"));
-assert(server.includes('"topic-mobbing-trakassering.png"'));
-assert(fs.existsSync('topic-mobbing-trakassering.png'));
+assert(js.includes("image: 'assets/images/topics/topic-mobbing-trakassering.png'"));
+assert(server.includes('"assets/images/topics/topic-mobbing-trakassering.png"'));
+assert(fs.existsSync('assets/images/topics/topic-mobbing-trakassering.png'));
 
 // 5: nye fagressurser finnes samlet under egen seksjon.
 assert(html.includes('<summary>Andre relevante fagsider</summary>'));
