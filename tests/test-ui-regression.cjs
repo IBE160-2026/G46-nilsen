@@ -14,3 +14,5 @@ assert(css.includes('transform:translateY(-4px)'), 'Minimert ikon er ikke hevet'
 assert(css.includes('font-weight:700!important'), 'Accordion-overskrifter er ikke tonet ned');
 assert(!/<details[^>]*\sopen(?:\s|>|=)/.test(html), 'En eller flere details er åpne som standard');
 console.log('v20.10.3 UI-kontroll: OK');
+
+

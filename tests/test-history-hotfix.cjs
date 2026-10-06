@@ -17,3 +17,5 @@ assert(app.includes("function speechBubblePath(width, bodyHeight)"));
 assert(!app.includes("speech-tail-fixed"));
 
 console.log('Historikk/samtale-hotfix OK');
+
+

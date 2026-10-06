@@ -1,7 +1,7 @@
 import fs from "node:fs";
 
 const baseUrl = process.env.SIMULATION_TEST_URL || "http://localhost:3000";
-const cases = JSON.parse(fs.readFileSync("SIMULATION-TEST-CASES.json", "utf8"));
+const cases = JSON.parse(fs.readFileSync("tests/SIMULATION-TEST-CASES.json", "utf8"));
 const metaPhrases = [/som medarbeider/i,/i denne øvelsen/i,/rollespill/i,/som KI/i,/jeg kan hjelpe deg som leder/i];
 const coachPhrases = [/du bør/i,/jeg anbefaler at du/i,/som leder kan du/i,/et godt spørsmål er/i];
 
@@ -46,3 +46,4 @@ const out=`test-results/simulation-live-${new Date().toISOString().replace(/[:.]
 fs.writeFileSync(out,lines.join("\n"));
 console.log(`\nRapport: ${out}`);
 if(failed) process.exitCode=2; else if(flagged) process.exitCode=1;
+

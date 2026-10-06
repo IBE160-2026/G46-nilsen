@@ -30,3 +30,5 @@ for(const [text,type] of cases){
 for(const t of ['email','phone','birthdate','identifier','name','address','gendered_language']) assert(hard.has(t),`${t} skal være hard blokkering`);
 for(const t of ['age','family_details','unique_role','workplace_detail']) assert(!hard.has(t),`${t} skal være rådgivende, ikke hard blokkering`);
 console.log('v20.4 server privacy: OK');
+
+

@@ -1,9 +1,9 @@
 import fs from "node:fs";
 
-const app = fs.readFileSync("app.js", "utf8");
-const server = fs.readFileSync("server.js", "utf8");
-const html = fs.readFileSync("index.html", "utf8");
-const css = fs.readFileSync("styles.css", "utf8");
+const app = fs.readFileSync('app.js', "utf8");
+const server = fs.readFileSync('server.js', "utf8");
+const html = fs.readFileSync('index.html', "utf8");
+const css = fs.readFileSync('styles.css', "utf8");
 
 const checks = [
   ["UI har Øv på samtalen", html.includes("Øv på samtalen")],
@@ -29,7 +29,7 @@ const checks = [
   ["Historikk inkluderer simulation", server.includes("simulation: body.simulation")],
   ["Snakkeboble-stiler finnes", css.includes(".simulation-bubble")],
   ["Visuelt simulatornav finnes", css.includes(".simulation-hub-hero")],
-  ["Live testsett finnes", fs.existsSync("SIMULATION-TEST-CASES.json") && fs.existsSync("test-simulation-ai.js")],
+  ["Live testsett finnes", fs.existsSync("tests/SIMULATION-TEST-CASES.json") && fs.existsSync("tests/test-simulation-ai.js")],
 ];
 
 let failed = 0;
@@ -39,3 +39,6 @@ for (const [name, ok] of checks) {
 }
 console.log(`\n${checks.length - failed}/${checks.length} kontroller OK`);
 if (failed) process.exit(1);
+
+
+

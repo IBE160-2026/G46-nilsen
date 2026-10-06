@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import vm from 'node:vm';
 
-const source = fs.readFileSync(new URL('./app.js', import.meta.url), 'utf8');
+const source = fs.readFileSync(new URL('../app.js', import.meta.url), 'utf8');
 const start = source.indexOf('const COMMON_GIVEN_NAMES');
 const end = source.indexOf('function applyPrivacyFix', start);
 if (start < 0 || end < 0) throw new Error('Fant ikke personvernfunksjonene i app.js');
@@ -81,3 +81,4 @@ if (failures) {
   process.exit(1);
 }
 console.log(`\nAlle ${nameCases.length + privacyCases.length + 3} personverntester OK.`);
+
