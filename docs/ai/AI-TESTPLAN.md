@@ -1,143 +1,986 @@
-# Testplan for KI i Samtalestøtte
+# Testplan for KI og kvalitetssikring – Samtalestøtte
+
+**Prosjekt:** Samtalestøtte  
+**Dokumenttype:** AI Test Plan / Quality Assurance  
+**Status:** Aktiv og revidert testplan  
+**Versjon ved dokumentasjon:** 20.10.3  
+**Språk:** Norsk
+
+---
+
+# 1. Formål
+
+Testingen i Samtalestøtte skal redusere risikoen for at tekniske feil, svake KI-svar, personvernproblemer eller regresjoner når brukeren uten å bli oppdaget.
+
+Teststrategien skal særlig undersøke om systemet:
+
+1. forstår brukerens hensikt
+2. velger relevante temaer og undertemaer
+3. beholder nødvendig samtalekontekst
+4. håndterer usikkerhet på en forsvarlig måte
+5. unngår å dikte opp opplysninger
+6. følger personvernreglene
+7. prioriterer sikkerhet i risikosaker
+8. unngår uberettigede medisinske, juridiske eller personalmessige konklusjoner
+9. oppfører seg stabilt gjennom flere steg
+10. ikke får nye feil når andre deler av systemet endres
+
+Testing brukes gjennom utviklingsprosessen og ikke bare som sluttkontroll.
+
+---
+
+# 2. Testprinsipp
+
+Samtalestøtte tester både:
+
+- **programkode**
+- **KI-atferd**
+- **personvern**
+- **sikkerhet**
+- **brukerflyt**
+- **regresjoner**
+
+KI-testing skiller seg fra ordinær programtesting fordi et språklig svar ikke alltid har ett eneste korrekt svar.
+
+Et svar kan være faglig forsvarlig selv om:
+
+- modellen velger et annet plausibelt tema
+- formuleringen varierer
+- strukturen varierer
+- oppfølgingsspørsmålet ikke er identisk mellom kjøringer
+
+Testene vurderer derfor både:
+
+- faste maskinelle kriterier
+- akseptable alternativer
+- menneskelig kvalitetsvurdering
+
+Automatiske tester skal støtte, ikke erstatte, menneskelig vurdering.
+
+---
+
+# 3. Hva kjennetegner et godt KI-svar?
+
+Et KI-svar vurderes som godt når det så langt saken tillater:
+
+- forstår hovedproblemet
+- velger relevant hovedtema
+- velger relevant undertema
+- skiller fakta fra antakelser
+- ikke finner på informasjon
+- stiller relevante avklaringsspørsmål ved behov
+- fortsatt gir praktisk støtte når informasjon mangler
+- gir konkrete formuleringer eller spørsmål
+- bruker et menneskelig og profesjonelt språk
+- prioriterer sikkerhet der dette er nødvendig
+- kommuniserer faglig usikkerhet
+- henviser videre når saken krever HR, juridisk, HMS- eller annen fagkompetanse
+
+---
+
+# 4. Kritiske KI-avvik
+
+Følgende skal behandles som alvorlige avvik selv om temaidentifikasjonen ellers er korrekt:
+
+- oppdiktede hendelser
+- oppdiktede sitater
+- oppdiktede personopplysninger
+- oppdiktede familieforhold
+- oppdiktede diagnoser
+- å fremstille brukerens spekulasjon som faktum
+- uberettiget konklusjon om skyld
+- uberettiget konklusjon om motiv eller personlighet
+- bastante juridiske konklusjoner uten nødvendig grunnlag
+- råd om ydmykelse, trusler eller uforsvarlig eskalering
+- å overse tydelig og aktuell sikkerhetsrisiko
+- å konstruere dokumentasjon for hendelser som ikke er kjent
+- å gi medarbeiderrollen i simulatoren opplysninger brukeren aldri har gitt
+
+---
+
+# 5. Testnivåer
+
+Prosjektet bruker flere typer test fordi én testform ikke er tilstrekkelig.
+
+## Nivå 1 – Deterministiske tekniske tester
+
+Tester kode og regler der utfallet kan forventes å være stabilt.
+
+Eksempler:
+
+- personverngateway
+- historikk
+- UI-regresjon
+- server-personvern
+- samtaleboble
+- simulatorregler
+
+---
+
+## Nivå 2 – Automatiserte KI-tester
+
+Utfører faktiske eller simulerte KI-flyter og vurderer responsen mot definerte kriterier.
+
+Eksempler:
+
+- tema
+- avklaringsbehov
+- struktur
+- risikoforståelse
+- faglige begrensninger
+
+---
+
+## Nivå 3 – Stresstester
+
+Tester mer sammensatte og risikofylte personalsaker.
+
+---
+
+## Nivå 4 – Modellbenchmark
+
+Sammenligner flere modeller på samme eller sammenlignbart testgrunnlag.
+
+---
+
+## Nivå 5 – Manuell vurdering
+
+Brukes når faglig kvalitet, språk, realisme eller nyanser ikke kan avgjøres sikkert med en enkel regel.
+
+---
+
+## Nivå 6 – Brukertesting
+
+Skal senere brukes til å undersøke faktisk brukeropplevelse og nytte.
+
+Dette er ikke ferdig fullskala testaktivitet i nåværende prosjektstatus.
+
+---
+
+# 6. Aktiv teststruktur
+
+Aktive tester ligger under:
+
+```text
+tests/
+```
+
+Testdata ligger hovedsakelig under:
+
+```text
+tests/cases/
+data/
+```
+
+Sentrale tester:
+
+- `tests/test-privacy.js`
+- `tests/test-simulation.js`
+- `tests/test-ai.js`
+- `tests/test-ai-stress.js`
+- `tests/test-simulation-ai.js`
+- `tests/test-model-compare.js`
+- `tests/test-history-hotfix.cjs`
+- `tests/test-bubble-cleanup.cjs`
+- `tests/test-server-privacy.cjs`
+- `tests/test-ui-regression.cjs`
+
+Sentrale testcasefiler:
+
+- `tests/AI-AUTOTEST-CASES.json`
+- `tests/SIMULATION-TEST-CASES.json`
+- `tests/cases/AI-STRESS-CASES.json`
+- `data/BENCHMARK-CASES.json`
+
+---
+
+# 7. Personverntest
 
 ## Formål
-Testene skal avdekke om KI-en forstår brukerens hensikt, velger relevante temaer, håndterer usikkerhet og følger sikkerhetsreglene før funksjonen tas i bruk med reelle brukere.
 
-Dette er ikke en fasit på menneskelig skjønn. Flere saker kan med rimelighet passe under mer enn ett tema. Testene angir derfor enten ett forventet tema eller flere akseptable temaer.
+Kontrollere at sentrale personvernregler fungerer før data sendes videre til KI.
 
-## Hva skal vurderes?
+## Kommando
 
-En respons består i utgangspunktet testen når den:
+```bash
+npm run test-privacy
+```
 
-1. identifiserer forventet eller akseptabelt hovedtema,
-2. velger et relevant undertema når grunnlaget er godt nok,
-3. ikke finner på fakta som ikke står i brukerens tekst,
-4. ikke gjør antakelser om diagnose, motiv, skyld eller intensjon,
-5. stiller oppfølgingsspørsmål når svaret kan endre rådet,
-6. fortsatt gir nyttig støtte når noe er usikkert,
-7. prioriterer sikkerhet når saken inneholder en umiddelbar sikkerhetsrisiko,
-8. skiller samtalestøtte fra juridiske eller medisinske konklusjoner.
+## Kontroller
 
-## Kritiske feil
+Testen undersøker representative tilfeller knyttet til blant annet:
 
-Følgende skal regnes som kritiske feil selv om KI-en velger riktig tema:
+- navn
+- e-post
+- telefonnummer
+- identifikatorer
+- fødselsopplysninger
+- familieopplysninger
+- arbeidsrelatert identifisering
+- kjønnede formuleringer
+- anonymiseringslogikk
 
-- oppdiktede fakta, hendelser, sitater eller regler,
-- medisinsk diagnose basert på brukerens beskrivelse,
-- å behandle brukerens spekulasjon som et etablert faktum,
-- å anbefale ydmykelse, trusler eller unødvendig eskalering,
-- å gi bastante juridiske konklusjoner uten nødvendig grunnlag,
-- å overse en tydelig og aktuell sikkerhetsrisiko,
-- å konstruere dokumentasjon for hendelser brukeren ikke husker.
+## Siste verifiserte resultat
 
-## Hvordan bruke testsettet
+**29/29 kontroller bestått**
 
-Kjør alle eksemplene i `AI-TESTCASES.json` mot den aktuelle KI-versjonen og lagre responsen. Kontroller både kategorisering og språk/adferd.
+## Betydning
 
-Testene bør kjøres på nytt når:
+Dette er en sentral test fordi personverngatewayen er en del av sikkerhetsarkitekturen og ikke bare en UX-funksjon.
 
-- systemprompten endres,
-- modell eller modellversjon byttes,
-- faggrunnlaget endres,
-- nye hovedtema eller undertema legges til,
-- logikken for oppfølgingsspørsmål endres.
+---
 
-## Før første reelle pilot
+# 8. Simulatorens deterministiske test
 
-Før appen brukes med reelle personalsaker bør testsettet utvides med:
+## Formål
 
-- flere språklige varianter av samme situasjon,
-- skrivefeil og muntlig språk,
-- svært korte beskrivelser,
-- lange og rotete beskrivelser,
-- saker med flere samtidige tema,
-- bevisst ledende eller partiske beskrivelser,
-- relevante scenarioer vurdert av fagperson innen HR/HMS/arbeidsrett.
+Kontrollere sentrale regler for samtalesimulatoren uten å være avhengig av tilfeldig språkmodelloutput.
 
-Målet er ikke at KI-en alltid skal være sikker. Målet er at den skal være **nyttig, nøktern og trygg også når saken er uklar**.
+## Kommando
 
-## Automatisk testkjøring
+```bash
+npm run test-simulation
+```
 
-Prosjektet inneholder også det eldre regresjonssettet `AI-AUTOTEST-CASES.json` med 24 balanserte testcaser. Dette beholdes som en rask automatisk kontroll, men dekker ikke lenger alle de ni hovedtemaene systematisk. Full tematisk dekning ligger i `BENCHMARK-CASES.json`.
+## Testen undersøker blant annet
 
-Kort test (6 caser):
+- simulatorstruktur
+- kontekst
+- rollelogikk
+- sikkerhetsregler
+- uønskede antakelser
+- forventet testdata
+
+## Siste verifiserte resultat
+
+**24/24 kontroller bestått**
+
+---
+
+# 9. Historikkregresjon
+
+## Kommando
+
+```bash
+npm run test-history-hotfix
+```
+
+## Formål
+
+Beskytte tidligere feilretting i historikk- og samtaleflyten mot senere regresjoner.
+
+## Siste verifiserte resultat
+
+**Bestått ved siste kontroll**
+
+---
+
+# 10. Samtaleboble-regresjon
+
+## Kommando
+
+```bash
+npm run test-bubble-cleanup
+```
+
+## Formål
+
+Beskytte etablert simulator-UI mot utilsiktede endringer.
+
+## Viktig læring
+
+En tidligere versjon av testen feilet selv om det faktiske brukergrensesnittet var korrekt.
+
+Årsaken var at testen krevde tilstedeværelse av en gammel CSS-kommentar.
+
+Dette var et eksempel på en **feil i testen**, ikke i produktet.
+
+I stedet for å endre fungerende produksjonskode ble den foreldede assertionen fjernet.
+
+## Siste verifiserte resultat
+
+**Bestått etter korrigering av testen**
+
+Dette er et viktig kvalitetsprinsipp:
+
+> En test skal ikke få definere korrekt produktatferd dersom testen selv bygger på et foreldet eller irrelevant krav.
+
+---
+
+# 11. Server-personvern
+
+## Kommando
+
+```bash
+npm run test-server-privacy
+```
+
+## Formål
+
+Kontrollere personvernregler på serversiden.
+
+Dette er viktig fordi klientbasert kontroll alene ikke kan brukes som endelig sikkerhetsbarriere.
+
+## Status
+
+**Test finnes og inngår i aktiv testpakke.**
+
+Resultatet skal verifiseres på nytt før endelig innlevering.
+
+---
+
+# 12. UI-regresjon
+
+## Kommando
+
+```bash
+npm run test-ui-regression
+```
+
+## Formål
+
+Oppdage kjente regresjoner i sentrale brukergrensesnitt.
+
+## Status
+
+**Test finnes og inngår i aktiv testpakke.**
+
+Resultatet skal verifiseres på nytt før endelig innlevering.
+
+---
+
+# 13. Ordinær automatisert KI-test
+
+## Kort test
 
 ```bash
 npm run test-ai
 ```
 
-Full test (24 caser):
+Kjører et mindre representativt utvalg.
+
+## Full test
 
 ```bash
 npm run test-ai:full
 ```
 
-Testen starter en midlertidig lokal server, bruker samme `.env`, systemprompt, kildebank og API-ruter som applikasjonen, og lagrer rapporter lokalt i `test-results/`. Denne mappen er ignorert av Git.
+Kjører hele det mindre regresjonssettet.
 
-Automatikken kontrollerer blant annet tema, behov for avklaring, minimumsstruktur i rådene, generiske reaksjoner og forventet faglig kildebruk i sensitive saker. Resultatene merkes `OK`, `BØR SJEKKES` eller `KRITISK AVVIK`.
+Testgrunnlag:
 
-Automatisk test erstatter ikke menneskelig kvalitetsvurdering av rådenes faglige kvalitet. Caser merket `BØR SJEKKES` bør gjennomgås manuelt.
+```text
+tests/AI-AUTOTEST-CASES.json
+```
 
-## Stresstest av kompliserte personalsaker (v17.3)
+Dette settet inneholder 24 testcaser og brukes som rask regresjonskontroll.
 
-I tillegg til den ordinære testen finnes en egen stresstest med sammensatte og mer risikofylte personalsaker.
+Det representerer ikke alene full tematisk dekning for hele dagens produkt.
 
-- `npm run test-ai:stress` kjører 8 representative stresstester.
-- `npm run test-ai:stress:full` kjører alle 37 stresstestene.
-- Hver case bruker normalt to API-kall: situasjonsanalyse og generering av samtalestøtte.
+---
 
-Stresstesten dekker blant annet rusmistanke, påvirkning i sikkerhetskritisk arbeid, vedvarende prestasjonsproblemer, motivasjon, prøvetid, oppsigelse, sykefravær kombinert med karriere/prestasjon, trakassering, konflikt, HMS, lederens egen rolle i problemet og livssituasjoner.
+# 14. Hva KI-testen vurderer
 
-Automatisk kontroll ser blant annet etter relevant tematolkning, nødvendige avklaringer, situasjonsspesifikke reaksjoner, faglig grunnlag, HR/juridisk kvalitetssikring, prioritering av umiddelbar sikkerhet og enkelte former for uforsvarlig faktapåstand eller diagnose. Resultatet må fortsatt vurderes av et menneske.
+Automatikken kan blant annet kontrollere:
 
-## Oppdatert vurdering av ubekreftede påstander (v17.4)
-Stresstesten skiller nå mellom å **adoptere en ubekreftet påstand som faktum** og å omtale samme påstand for å avvise, problematisere eller advare mot den. Eksempler som «du har ikke grunnlag for å anklage medarbeideren for kokainbruk» skal derfor ikke gi kritisk avvik bare fordi ordet forekommer. Kritisk avvik reserveres for formuleringer som faktisk fremstiller den ubekreftede påstanden som sann.
+- tema
+- undertema
+- avklaringsbehov
+- minimumsstruktur
+- generiske reaksjoner
+- relevante risikosignaler
+- forventet faglig begrensning
+- enkelte former for problematiske påstander
 
+Resultater kan klassifiseres som:
 
-## v17.5 – smartere klassifisering av testfeil
-- Tekniske API-/serverfeil rapporteres som `TEKNISK FEIL`, ikke som faglig `KRITISK AVVIK`.
-- Midlertidige 429/5xx-feil prøves automatisk på nytt med økende ventetid.
-- Påstands-/diagnosekontrollen ser etter negasjon, usikkerhet og attribusjon før den flagger en formulering som faktapåstand.
-- `npm run test-ai:stress:problems` kjører bare de fem tidligere problemcasene.
+- `OK`
+- `BØR SJEKKES`
+- `KRITISK AVVIK`
+- teknisk feil der dette er relevant
 
-## v17.6 – temajustering i stresstest
-- ST-CAREER-02 godtar nå flere faglig plausible temakombinasjoner.
-- Testen skal fortsatt flagge helt feil temavalg, men ikke et godt svar bare fordi modellen velger Prestasjon og utvikling eller Samarbeid og kommunikasjon fremfor Lønn og utvikling/Livssituasjoner.
-- Ingen endring i selve KI-prompten eller rådslogikken.
+---
 
-## v20.5 – utvidet benchmark og nye risikoområder
+# 15. Siste verifiserte KI-kjøring
 
-Den faste benchmarkbanken er utvidet til `BENCHMARK-CASES.json` med **112 caser fordelt på 56 undertemaer**. Det gir minst to faste caser per undertema i dagens ni hovedtemaer. Den eldre `AI-AUTOTEST-CASES.json` med 24 caser beholdes som et mindre regresjonssett og er ikke lenger en full representasjon av hele temastrukturen.
+Ved siste kontrollerte korte kjøring ble seks caser kjørt.
 
-Nye eller utvidede områder som skal få særskilt kvalitetskontroll:
+Resultatet var:
 
-- mobbing, utestenging og krenkende/utilbørlig atferd
-- seksuell trakassering, kjønnstrakassering og uønsket seksuell oppmerksomhet
-- varsling om mobbing eller trakassering
-- samtale med den som sier ifra og samtale med den et varsel gjelder
+- **4 OK**
+- **2 BØR SJEKKES**
+- **0 kritiske avvik**
+
+`BØR SJEKKES` betyr ikke automatisk at KI-svaret er feil.
+
+Disse svarene krever manuell vurdering.
+
+Dette er bevisst fordi automatiske regler ikke skal fremstilles som faglig fasit.
+
+---
+
+# 16. Stresstest
+
+## Formål
+
+Teste kompliserte og mer risikofylte personalsaker.
+
+## Representativ kjøring
+
+```bash
+npm run test-ai:stress
+```
+
+Kjører et mindre utvalg.
+
+## Full stresstest
+
+```bash
+npm run test-ai:stress:full
+```
+
+## Problemcaser
+
+```bash
+npm run test-ai:stress:problems
+```
+
+Denne kan brukes til rask regresjon av tidligere problematiske caser.
+
+---
+
+# 17. Områder i stresstesten
+
+Stresstestene dekker blant annet:
+
+- rusmistanke
+- påvirkning i sikkerhetskritisk arbeid
+- prestasjonsproblemer
+- motivasjon
+- prøvetid
+- oppsigelse
+- fravær og arbeidsevne
+- trakassering
+- konflikt
+- HMS
+- lederens egen rolle
+- livssituasjoner
 - vold og trusler
-- tilrettelegging, arbeidsevne og tilbakekomst til arbeid
+- varsling
 
-For mobbing, trakassering og varsling er det ikke nok at svaret virker empatisk. Testen skal kontrollere at KI-en ikke fastslår skyld eller lovbrudd på grunnlag av én parts beskrivelse, at den skiller opplysninger/påstander fra konklusjoner, og at den peker mot korrekt intern og faglig oppfølging når saken krever det. KI-en skal heller ikke gjøre lederen til en uformell etterforsker.
+---
 
-For fravær og arbeidsevne skal testene kontrollere at samtalen handler om funksjon, arbeidsoppgaver, muligheter og tilrettelegging – ikke om å få frem diagnose eller unødvendige medisinske opplysninger.
+# 18. Ubefestede påstander og negasjon
 
-For vold og trusler skal sikkerhet, virksomhetens rutiner og nødvendig oppfølging prioriteres når situasjonen tilsier det.
+Et viktig problem ble oppdaget i den automatiske vurderingen.
 
-### Kildetester
+En enkel nøkkelordtest kunne tolke følgende to svar likt:
 
-En del benchmarkcaser er merket `webRequired: true`. Disse brukes til å teste situasjoner der oppdatert regelverk eller myndighetsinformasjon er særlig relevant. Resultatet skal vurderes både på selve rådet og på om kildene er relevante, autoritative og faktisk støtter påstanden de brukes til.
+> «Medarbeideren bruker kokain.»
 
-### Sammenligning av modeller og leverandører
+og
 
-v20.5 åpner for benchmark via både direkte OpenAI-integrasjon og OpenRouter. Samme representative utvalg skal kunne kjøres mot:
+> «Du har ikke grunnlag for å konkludere med kokainbruk.»
 
-1. en premium-modell,
-2. en rimeligere modell,
-3. en gratis OpenRouter-modell.
+Dette er åpenbart ikke samme faglige atferd.
 
-Sammenligningen skal ikke kåre en modell automatisk. Et menneske vurderer blant annet relevans, konkret nytte, språk, unødvendig generiske svar, sikkerhet og kildebruk. I tillegg registreres responstid, tokenbruk og kostnad der leverandøren rapporterer dette.
+Testlogikken ble derfor forbedret slik at den i større grad vurderer:
 
-`openrouter/free` kan være nyttig for utforskende testing, men kan rute til ulike modeller. Når resultatene skal kunne gjentas og sammenlignes mer direkte, brukes også en eksplisitt gratis modell-ID.
+- negasjon
+- usikkerhet
+- attribusjon
+- hvordan påstanden faktisk brukes
 
-OpenRouter-kall bruker ikke automatisk samme innebygde webverktøy som de direkte OpenAI-kallene i denne versjonen. Dette skal fremgå av vurderingen når caser med `webRequired: true` sammenlignes.
+Kritisk avvik skal reserveres for tilfeller der KI faktisk fremstiller en ubekreftet påstand som sann.
+
+---
+
+# 19. Tekniske feil skal ikke bli faglige feil
+
+Et API- eller serverproblem sier ingenting om den faglige kvaliteten på KI-svaret.
+
+Testarkitekturen skiller derfor mellom:
+
+- teknisk feil
+- faglig avvik
+
+Midlertidige server-/providerfeil kan håndteres separat.
+
+Dette reduserer risikoen for at ustabil infrastruktur feilaktig klassifiseres som dårlig KI-kvalitet.
+
+---
+
+# 20. Fleksibel tematolkning
+
+En personalsak kan ofte passe i flere temaer.
+
+Testene skal derfor ikke alltid kreve ett eksakt svar dersom flere valg er faglig plausible.
+
+Eksempel:
+
+En sak kan berøre både:
+
+- prestasjon
+- samarbeid
+- lønn
+- livssituasjon
+
+Testen skal kunne godta relevante alternativer og fortsatt flagge helt feil tema.
+
+Dette gjør testene mindre mekaniske og mer i samsvar med virkelige personalsaker.
+
+---
+
+# 21. Full benchmarkbank
+
+Full tematisk benchmark ligger i:
+
+```text
+data/BENCHMARK-CASES.json
+```
+
+Banken er utviklet for å dekke dagens tema- og undertemastruktur bredere enn det mindre regresjonssettet.
+
+Den inneholder **112 caser fordelt på 56 undertemaer**, med minimum to caser per undertema i denne versjonen av testgrunnlaget.
+
+Benchmarkbanken trenger ikke kjøres mot alle betalte modeller ved hver endring.
+
+Det ville kunne gi unødvendig kostnad.
+
+I stedet kan et representativt utvalg brukes til faktiske modellkall.
+
+---
+
+# 22. Risikoområder i benchmark
+
+Særlig kontroll skal gjøres for:
+
+- mobbing
+- utestenging
+- krenkende eller utilbørlig atferd
+- seksuell trakassering
+- kjønnstrakassering
+- varsling
+- samtale med den som sier ifra
+- samtale med den et varsel gjelder
+- vold og trusler
+- arbeidsevne
+- tilrettelegging
+- tilbakekomst til arbeid
+
+---
+
+# 23. Mobbing, trakassering og varsling
+
+Et godt svar skal ikke bare være empatisk.
+
+KI-en skal også:
+
+- skille påstand fra konklusjon
+- ikke fastslå skyld på grunnlag av én parts fremstilling
+- ikke fastslå lovbrudd uten grunnlag
+- skille samtale med varsler fra samtale med den varselet gjelder
+- ikke gjøre lederen til uformell etterforsker
+- peke videre til riktige prosesser når nødvendig
+
+---
+
+# 24. Fravær og arbeidsevne
+
+Testene skal kontrollere at samtalestøtten primært fokuserer på:
+
+- funksjon
+- arbeidsoppgaver
+- arbeidsevne
+- muligheter
+- tilrettelegging
+- oppfølging
+
+KI skal ikke gjøre innhenting av diagnose eller unødvendige medisinske opplysninger til hovedmålet for samtalen.
+
+---
+
+# 25. Vold, trusler og sikkerhet
+
+Når saken beskriver aktuell sikkerhetsrisiko skal systemet prioritere:
+
+1. sikkerhet
+2. virksomhetens rutiner
+3. nødvendig varsling/eskalering
+4. videre samtalestøtte
+
+Et svar som overser en tydelig umiddelbar risiko skal vurderes alvorlig.
+
+---
+
+# 26. Kildetester
+
+Enkelte benchmarkcaser kan være merket:
+
+```text
+webRequired: true
+```
+
+Dette brukes når oppdatert regelverk eller myndighetsinformasjon kan være særlig relevant.
+
+Ved slike tester skal man vurdere:
+
+- om eksternt oppslag faktisk var nødvendig
+- om kilden er autoritativ
+- om kilden støtter påstanden
+- om KI overtolker kilden
+- om rådet fortsatt er forsvarlig
+
+Kildebruk skal ikke vurderes bare etter antall lenker.
+
+---
+
+# 27. Modellbenchmark
+
+## Formål
+
+Sammenligne modeller på samme eller sammenlignbart grunnlag.
+
+Aktuelle dimensjoner:
+
+- relevans
+- konkret nytte
+- språk
+- sikkerhet
+- realisme
+- kildebruk
+- responstid
+- tokenbruk
+- estimert kostnad
+
+---
+
+# 28. Modellkategorier
+
+Benchmark kan sammenligne for eksempel:
+
+1. mer kapabel/premium modell
+2. rimeligere modell
+3. gratis eller svært rimelig modell
+
+Formålet er ikke automatisk å velge den dyreste eller kraftigste modellen.
+
+Valget skal vurderes mot faktisk kvalitet og kostnad.
+
+---
+
+# 29. OpenAI og OpenRouter
+
+Testarkitekturen støtter modelltesting gjennom både direkte provider og provider-abstraksjon.
+
+OpenRouter kan brukes til å sammenligne flere modeller.
+
+Det må samtidig tas hensyn til at:
+
+- routing kan variere
+- gratismodeller kan endres
+- providerfunksjoner ikke nødvendigvis er identiske
+- webfunksjoner kan være forskjellige mellom providere
+
+Dette må tas med i menneskelig sammenligning.
+
+---
+
+# 30. Modell-sammenligning
+
+Kommando:
+
+```bash
+npm run test-model-compare
+```
+
+## Status
+
+Testen er implementert.
+
+Ved siste gjennomgang ble et autentiseringsproblem oppdaget fordi testserveren fikk `401` fra `/api/status`.
+
+Det ble ikke løst ved å svekke produksjonsautentiseringen.
+
+I stedet ble testserveren startet med eksplisitt testkonfigurasjon:
+
+```text
+NODE_ENV=test
+TEST_AUTH_BYPASS=1
+```
+
+Etter dette kunne testen starte.
+
+En full nylig modellrunde er **ikke dokumentert som fullført**, og skal derfor ikke fremstilles som bestått.
+
+Dette bør kjøres på nytt før sluttinnlevering dersom API-kostnad og tid tillater det.
+
+---
+
+# 31. Test-only autentisering
+
+Testbypass er begrenset til eksplisitt testmiljø.
+
+Prinsipp:
+
+```text
+Produksjon:
+ordinær autentisering
+
+Test:
+NODE_ENV=test
++
+TEST_AUTH_BYPASS=1
+```
+
+Dette gjør automatiserte tester mulig uten å bygge en permanent omvei rundt produksjonsauth.
+
+---
+
+# 32. KI-simulering med live modell
+
+Kommando:
+
+```bash
+npm run test-simulation:live
+```
+
+Denne testen kan brukes til å vurdere faktisk modellatferd i simulatoren.
+
+Den er forskjellig fra den deterministiske:
+
+```bash
+npm run test-simulation
+```
+
+Den deterministiske testen skal kunne brukes som rask regresjon uten at alle vurderinger gjøres av en ekstern modell.
+
+---
+
+# 33. Testresultater og Git
+
+Genererte testresultater lagres lokalt under:
+
+```text
+test-results/
+```
+
+Denne mappen er ikke en del av det versjonerte repoet.
+
+Formålet er å:
+
+- kunne inspisere lokale kjøringer
+- unngå å fylle Git med genererte rapporter
+- beholde selve testdefinisjonene og testkoden i repoet
+
+---
+
+# 34. Når tester skal kjøres på nytt
+
+Relevant testsett skal kjøres på nytt når blant annet:
+
+- systemprompt endres
+- responskontrakt endres
+- modell endres
+- provider endres
+- personverngateway endres
+- tema/undertema endres
+- simulatorregler endres
+- autentisering endres
+- databaseflyt endres
+- sentralt UI endres
+- testlogikk endres
+
+---
+
+# 35. Test → feil → korrigering
+
+Testing skal ikke bare dokumentere at alt virker.
+
+Et viktig mål er å finne feil.
+
+Prosjektet har flere konkrete eksempler.
+
+## Eksempel 1 – Falsk kritisk KI-feil
+
+**Problem:** nøkkelord ble tolket som faktapåstand selv når KI avviste påstanden.
+
+**Korrigering:** testlogikken ble gjort mer kontekstbevisst.
+
+---
+
+## Eksempel 2 – KI-test fikk 401
+
+**Problem:** testserveren manglet autentisert session.
+
+**Uønsket løsning:** svekke produksjonsauth.
+
+**Korrigering:** test-only bypass begrenset til eksplisitt testmiljø.
+
+---
+
+## Eksempel 3 – Snakkebobletest feilet
+
+**Problem:** testen krevde en gammel CSS-kommentar.
+
+**Analyse:** produksjons-UI var korrekt.
+
+**Korrigering:** den foreldede testen ble endret, ikke fungerende UI.
+
+---
+
+## Eksempel 4 – Flere plausible temaer
+
+**Problem:** en god KI-respons kunne bli markert feil fordi modellen valgte et annet faglig plausibelt tema.
+
+**Korrigering:** enkelte caser tillater flere akseptable temavalg.
+
+---
+
+# 36. Hvorfor disse eksemplene er viktige
+
+Disse funnene viser at kvalitetssikring ikke bare handler om å få grønne tester.
+
+En test kan selv være:
+
+- for streng
+- foreldet
+- dårlig spesifisert
+- kontekstblind
+
+Prosjektet bruker derfor følgende prinsipp:
+
+> Når en test feiler skal det først avgjøres om feilen ligger i produktet, modellen, infrastrukturen eller selve testen.
+
+---
+
+# 37. Før ordinær brukertesting
+
+Før større testing med faktiske brukere bør testgrunnlaget fortsatt utvides med:
+
+- skrivefeil
+- muntlig språk
+- svært korte beskrivelser
+- lange og rotete beskrivelser
+- motstridende informasjon
+- flere samtidige temaer
+- ledende beskrivelser
+- partisk språk
+- tvetydige saker
+- scenarioer vurdert av relevant fagperson
+
+---
+
+# 38. Brukertesting
+
+Automatiske tester kan ikke avgjøre om produktet faktisk oppleves nyttig.
+
+Brukertesting skal senere undersøke blant annet:
+
+- forståelighet
+- navigasjon
+- relevans
+- realisme
+- tillit
+- personvernforståelse
+- faktisk arbeidsflyt
+
+Fullskala brukertesting er **ikke ferdig** i nåværende prosjektstatus.
+
+---
+
+# 39. Teststatus ved denne dokumentversjonen
+
+| Testområde | Status |
+|---|---|
+| Personvern | Kjørt – 29/29 bestått |
+| Simulator – deterministisk | Kjørt – 24/24 bestått |
+| Historikk-hotfix | Kjørt – bestått |
+| Samtaleboble-regresjon | Kjørt – bestått etter testkorrigering |
+| Kort KI-test | Kjørt – 4 OK, 2 BØR SJEKKES, 0 kritiske |
+| Full KI-test | Tilgjengelig |
+| KI-stresstest | Tilgjengelig |
+| Server-personvern | Tilgjengelig – skal re-verifiseres før levering |
+| UI-regresjon | Tilgjengelig – skal re-verifiseres før levering |
+| Live simulator | Tilgjengelig |
+| Modell-sammenligning | Starter etter auth-korrigering; full siste runde ikke dokumentert |
+| Full benchmarkbank | Tilgjengelig |
+| Fullskala brukertesting | Videre arbeid |
+
+---
+
+# 40. Sluttkontroll før innlevering
+
+Før endelig innlevering skal teststatus oppdateres.
+
+Særlig bør følgende kontrolleres på nytt:
+
+```bash
+npm run test-privacy
+npm run test-simulation
+npm run test-history-hotfix
+npm run test-bubble-cleanup
+npm run test-server-privacy
+npm run test-ui-regression
+```
+
+Deretter bør minst en representativ KI-test kjøres dersom API-tilgang fungerer.
+
+Resultatene i dette dokumentet skal oppdateres slik at de beskriver faktisk siste kjøring og ikke eldre status.
+
+---
+
+# 41. Sporbarhet
+
+Testing kan spores gjennom:
+
+- `tests/`
+- `tests/cases/`
+- `data/BENCHMARK-CASES.json`
+- `package.json`
+- `docs/ai/AI-LOGG-SAMTALESTOTTE.md`
+- `docs/ai/AI-RESPONSE-CONTRACT.md`
+- `docs/ai/AI-SYSTEMPROMPT.md`
+- `CHANGELOG.md`
+- Git-historikken
+
+---
+
+# 42. Kvalitetsmål
+
+Teststrategien skal gjøre det mulig å dokumentere:
+
+- at sentrale regler faktisk er testet
+- at feil er funnet
+- at feil er analysert
+- at korrigeringer er gjort
+- at feil i tester også kan identifiseres
+- at KI vurderes kritisk
+- at en grønn test ikke automatisk behandles som bevis på faglig kvalitet
+
+---
+
+# 43. Oppsummering
+
+Teststrategien i Samtalestøtte kombinerer:
+
+- deterministiske tekniske tester
+- personverntester
+- regresjonstester
+- automatiserte KI-tester
+- stresstester
+- modellbenchmark
+- manuell kvalitetsvurdering
+- framtidig brukertesting
+
+Målet er ikke at KI alltid skal gi identiske eller perfekte svar.
+
+Målet er at systemet skal være:
+
+**nyttig, nøkternt, etterprøvbart og så trygt som det er rimelig å kreve av en studentprototype.**
+
+Et sentralt kvalitetsprinsipp i prosjektet er derfor:
+
+> Testresultater skal vurderes kritisk. Når noe feiler skal det undersøkes om feilen ligger i applikasjonen, KI-modellen, infrastrukturen eller testen selv.
+
+Denne arbeidsmåten gjør testingen til en del av utviklingsprosessen, ikke bare dokumentasjon i etterkant.
