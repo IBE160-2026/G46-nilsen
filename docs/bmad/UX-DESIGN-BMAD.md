@@ -902,6 +902,54 @@ Dette siste punktet er særlig viktig i KI-assistert utvikling.
 
 ---
 
+# Tillegg: Faglig transparens og kilder
+
+Samtalestøtte skal ikke kreve at brukeren stoler blindt på KI-genererte råd.
+
+Når faglig grunnlag er relevant, skal brukergrensesnittet så langt som mulig gjøre det enkelt å:
+
+- se at rådet har faglig forankring
+- se relevante kilder eller faggrunnlag
+- åpne kilder selv
+- gå videre til relevante fagsider
+- skille mellom generell KI-veiledning og informasjon som bygger på konkrete kilder
+
+Kildeinformasjon skal presenteres uten å overbelaste hovedsvaret.
+
+Det primære samtalerådet skal fortsatt være lett å lese, mens mer detaljert faggrunnlag kan gjøres tilgjengelig gjennom for eksempel:
+
+- lenker
+- sammenleggbare kildeområder
+- «Les mer»
+- relevante fagsider
+
+Ved sensitive eller regelstyrte spørsmål er transparens særlig viktig.
+
+Dette gjelder blant annet:
+
+- arbeidsrettslige forhold
+- sykefravær og tilrettelegging
+- varsling
+- mobbing og trakassering
+- vold og trusler
+- HMS og sikkerhet
+
+Brukeren skal kunne undersøke grunnlaget selv før viktige beslutninger tas.
+
+## UX-prinsipp
+
+Kilder skal ikke brukes som dekorasjon eller autoritetsmarkør.
+
+En kilde skal bare vises som støtte for et råd når den faktisk er relevant for påstanden eller vurderingen.
+
+Det skal være tydelig forskjell mellom:
+
+1. konkret kildeinformasjon
+2. faglig forankret veiledning
+3. KI-ens egen syntese eller formulering
+
+Målet er etterprøvbarhet uten at brukergrensesnittet blir unødvendig tungt.
+
 # 36. Oppsummering
 
 UX-målet for Samtalestøtte er å skjule unødvendig teknisk kompleksitet og gjøre en krevende lederoppgave mer oversiktlig.

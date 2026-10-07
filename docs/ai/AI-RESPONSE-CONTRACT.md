@@ -822,6 +822,48 @@ Responskontrakten kan spores mot:
 
 ---
 
+# Tillegg: Faglig transparens i KI-svaret
+
+Når et KI-svar bygger på konkret faggrunnlag eller eksterne kilder, skal responsen gjøre det mulig for applikasjonen å vise dette til brukeren.
+
+KI skal skille mellom:
+
+- konkret informasjon hentet fra en kilde
+- råd som er faglig forankret i en eller flere kilder
+- modellens egen sammenstilling og formulering
+
+KI skal ikke fremstille modellens egen syntese som et direkte utsagn fra en kilde.
+
+Dersom en konkret kilde brukes som støtte for en viktig påstand, skal responsen så langt teknisk mulig inneholde tilstrekkelig informasjon til at brukeren kan undersøke kilden selv.
+
+Aktuell kildeinformasjon kan omfatte:
+
+- tittel
+- organisasjon eller forfatter
+- URL
+- type kilde
+- kort beskrivelse av hva kilden brukes til
+
+Eksempel:
+
+```json
+{
+  "sources": [
+    {
+      "title": "Relevant fag- eller myndighetskilde",
+      "publisher": "Kildeorganisasjon",
+      "url": "https://...",
+      "purpose": "Støtter informasjonen om arbeidsgivers oppfølging."
+    }
+  ]
+}
+```
+
+Kilder skal ikke legges til bare for å få svaret til å fremstå mer troverdig.
+
+Dersom ingen konkret kilde ligger til grunn for et råd, skal systemet ikke konstruere en referanse.
+
+
 # 32. Oppsummering
 
 Responskontrakten skal gjøre KI-atferden i Samtalestøtte mer forutsigbar og etterprøvbar.
