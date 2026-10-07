@@ -2100,16 +2100,27 @@ function setSidebarCollapsed(collapsed) {
   toggle.setAttribute('title', collapsed ? 'Vis sidemeny' : 'Skjul sidemeny');
 }
 
+const sidebarNarrowQuery = window.matchMedia('(max-width: 1100px)');
+
 function applySidebarState() {
-  const collapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
-  setSidebarCollapsed(collapsed);
+  const storedCollapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
+
+  if (sidebarNarrowQuery.matches) {
+    setSidebarCollapsed(true);
+    return;
+  }
+
+  setSidebarCollapsed(storedCollapsed);
 }
 
 function toggleSidebar() {
   const sidebar = document.querySelector('#sidebar');
   const collapsed = !sidebar.classList.contains('sidebar-collapsed');
   setSidebarCollapsed(collapsed);
-  localStorage.setItem('samtalestotte-sidebar', collapsed ? 'collapsed' : 'expanded');
+
+  if (!sidebarNarrowQuery.matches) {
+    localStorage.setItem('samtalestotte-sidebar', collapsed ? 'collapsed' : 'expanded');
+  }
 }
 
 renderStaticIcons();
@@ -3539,8 +3550,13 @@ const inviteFromUrl=new URLSearchParams(location.search).get('invite');
 loadPublicConfig();
 loadContentOverrides();
 
-window.addEventListener('resize', () => {
-  if (!localStorage.getItem('samtalestotte-sidebar')) applySidebarState();
+sidebarNarrowQuery.addEventListener('change', event => {
+  if (event.matches) {
+    setSidebarCollapsed(true);
+  } else {
+    const storedCollapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
+    setSidebarCollapsed(storedCollapsed);
+  }
 });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
   if ((localStorage.getItem('samtalestotte-theme') || 'hybrid') === 'system') applyTheme('system');

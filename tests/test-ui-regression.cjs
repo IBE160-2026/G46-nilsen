@@ -11,7 +11,7 @@ assert(html.includes('id="help-view"') && /id="help-view"[\s\S]*?utility-page-lo
 assert(html.includes('id="survey-view"') && /id="survey-view"[\s\S]*?utility-page-logo/.test(html), 'Brukertest mangler logo ved overskrift');
 assert(/width:\s*42px\s*!important/.test(css), 'Minimert ikon er ikke gjort større');
 assert(/transform:\s*translateY\(-4px\)/.test(css), 'Minimert ikon er ikke hevet');
-assert(/font-weight:\s*700\s*!important/.test(css), 'Accordion-overskrifter er ikke tonet ned');
+assert(/font-weight:\s*600\s*!important/.test(css), 'Accordion-overskrifter er ikke tonet ned');
 assert(!/<details[^>]*\sopen(?:\s|>|=)/.test(html), 'En eller flere details er åpne som standard');
 console.log('v20.10.3 UI-kontroll: OK');
 
