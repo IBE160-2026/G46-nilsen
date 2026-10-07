@@ -1,1098 +1,1009 @@
-# Product Requirements Document (PRD) – Samtalestøtte
+# Product Requirements Document – Samtalestøtte
 
 **Prosjekt:** Samtalestøtte  
-**Dokumenttype:** Product Requirements Document (PRD)  
+**Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
-**Status:** Planlagt produktkrav for første versjon  
-**Språk:** Norsk  
+**Status:** Revidert PRD med leveransestatus  
+**Versjon ved dokumentasjon:** 20.10.3  
+**Språk:** Norsk
 
 ---
 
-## 1. Formål
+# 1. Formål
 
-Samtalestøtte skal utvikles som en KI-basert webapplikasjon for ledere som skal forberede, gjennomføre, øve på og reflektere over krevende medarbeidersamtaler.
+Samtalestøtte er en KI-basert webapplikasjon for ledere som skal forberede og øve på krevende samtaler med medarbeidere.
 
-Løsningen skal gi praktisk støtte uten å overta lederens ansvar. Den skal hjelpe brukeren med å strukturere en samtale, finne gode spørsmål og formuleringer, forstå mulige reaksjoner og øve i en simulert dialog med en KI-styrt medarbeider.
+Løsningen skal gi praktisk støtte til:
 
-Produktet skal samtidig ha tydelige grenser for personvern, sikkerhet, kildebruk og menneskelig beslutningsansvar.
+- å strukturere situasjonen
+- forberede samtalen
+- finne relevante spørsmål og formuleringer
+- vurdere mulige reaksjoner
+- øve gjennom samtalesimulering
+- reflektere over videre oppfølging
 
----
+KI skal støtte lederens vurderinger, ikke overta beslutningsansvaret.
 
-## 2. Bakgrunn og produktbegrunnelse
+Produktet skal derfor kombinere praktisk KI-støtte med tydelige grenser for:
 
-Prosjektet bygger på et praktisk behov: krevende medarbeidersamtaler er en vanlig del av lederrollen, men mange ledere får lite praktisk trening før de må håndtere slike situasjoner selv.
-
-Samtalestøtte skal derfor ikke bare levere generelle KI-svar. Produktet skal gi en strukturert prosess som kombinerer forberedelse, KI-veiledning, simulering, oppfølging, refleksjon, personvern og faglig kildebruk.
-
-Flere valg i løsningen er direkte knyttet til denne konteksten:
-
-- **Innlogging** er nødvendig fordi historikk og innstillinger skal tilhøre én bruker, og fordi sensitive arbeidsrelaterte data ikke skal være tilgjengelige for andre.
-- **Rollebasert tilgang** er nødvendig fordi administratorer og redaktører skal kunne vedlikeholde produktet uten å få samme funksjoner som ordinære brukere.
-- **Kostnadsmåling** er nødvendig fordi høyere KI-kvalitet ofte innebærer høyere API-kostnad. Modellvalg skal derfor vurderes ut fra både kvalitet og økonomi.
-- **Modellbenchmark** er nødvendig fordi det ikke kan antas at den dyreste modellen alltid gir nok merverdi til å forsvare kostnaden.
-- **Personverngateway** er nødvendig fordi brukere kan skrive om virkelige medarbeidere og sensitive arbeidsforhold.
-- **Kildeovervåking** er nødvendig for å forstå hvilke nettsider og dokumenter systemet faktisk bruker, og for å kunne bygge en framtidig lokal kunnskapsbank.
-- **Provider-uavhengig arkitektur** er nødvendig fordi teknologi, pris og tilgjengelighet i KI-markedet endrer seg raskt.
+- personvern
+- sikkerhet
+- faglig usikkerhet
+- juridiske og HR-relaterte vurderinger
+- menneskelig ansvar
 
 ---
 
-## 3. Produktmål
+# 2. Produktproblem
 
-Samtalestøtte skal:
+Krevende medarbeidersamtaler er en vanlig del av lederrollen, men mange ledere får begrenset praktisk trening før situasjonene oppstår.
 
-- gjøre det enklere for ledere å forberede krevende samtaler
-- gi strukturert og konkret KI-støtte fremfor generelle chatbot-svar
-- tilby dynamisk samtalesimulering
-- redusere risikoen for at identifiserende personopplysninger sendes til ekstern KI
-- gi brukeren kontroll over egen historikk
-- gjøre KI-kvalitet, kostnad og kildebruk målbar
-- støtte flere KI-modeller uten at resten av applikasjonen må bygges om
-- kunne videreutvikles til bruk i lukkede nettverk uten internettilgang
-- kunne bruke en lokal kunnskapsbank/RAG i stedet for åpne nettsøk
+Eksisterende generelle KI-verktøy kan gi hjelp, men mangler ofte:
+
+- struktur for lederens arbeidsflyt
+- relevant faglig kontekst
+- personvernbeskyttelse før KI-kall
+- simulering av selve samtalen
+- tydelige begrensninger mot diagnoser, skyld og bastante konklusjoner
+- systematisk kvalitetssikring
+
+Samtalestøtte skal derfor være et domenespesifikt støtteverktøy fremfor en generell chatbot.
 
 ---
 
-## 4. Ikke-mål
+# 3. Produktmål
 
-Første versjon skal ikke:
+Produktet skal:
+
+1. gjøre det enklere å forberede krevende medarbeidersamtaler
+2. gi konkret og situasjonstilpasset KI-støtte
+3. redusere risikoen for deling av identifiserende informasjon
+4. tilby praktisk samtaletrening
+5. støtte flere relevante samtaletemaer
+6. gi innloggede brukere tilgang til egen historikk
+7. støtte kvalitetssikring av KI gjennom testing og modellvurdering
+8. kunne videreutvikles uten å være låst til én enkelt KI-provider
+
+---
+
+# 4. Ikke-mål
+
+Samtalestøtte skal ikke:
 
 - være et HR-system
 - være et personalsystem eller journalsystem
 - lagre formelle personalsaker
 - ta beslutninger om medarbeidere
-- automatisere oppsigelser, advarsler eller andre personalvedtak
+- automatisere oppsigelser eller andre personalvedtak
 - stille medisinske eller psykologiske diagnoser
 - fastslå motiv, skyld eller sannhet i konflikter
-- erstatte HR, juridisk bistand, bedriftshelsetjeneste eller lederens skjønn
-- trene eller finjustere en egen språkmodell på brukerdata
-- bruke samtaler som skjult treningsgrunnlag
-- integreres direkte i personalmapper eller HR-systemer i første versjon
-- kreve produksjonsklar utrulling i et klassifisert/lukket nettverk
+- erstatte HR, jurist, bedriftshelsetjeneste eller lederens eget skjønn
+- trene egen språkmodell på brukerdata
+- bruke brukerens samtaler som skjult treningsgrunnlag
+- være ferdig produksjonsløsning for klassifiserte eller lukkede nettverk
 
 ---
 
-## 5. Brukergrupper
+# 5. Primærbruker
 
-### 5.1 Primærbruker
-
-Ledere med personalansvar som står foran en krevende samtale med en medarbeider.
+Primærbrukeren er en leder som står foran en krevende samtale med en medarbeider.
 
 Typiske behov:
 
-- få struktur på en uoversiktlig situasjon
-- finne et tydelig mål for samtalen
+- forstå hva som er kjernen i situasjonen
+- finne mål for samtalen
 - formulere en god åpning
-- finne relevante spørsmål
+- stille relevante spørsmål
 - forberede seg på reaksjoner
-- øve før samtalen
-- reflektere etter samtalen
-- få støtte raskt uten omfattende opplæring
+- øve på samtalen
+- reflektere før eller etter samtalen
 
-### 5.2 Sekundærbrukere
+Sekundære brukergrupper kan være:
 
-- HR-funksjoner
+- HR
 - lederutviklere
-- virksomheter som ønsker mer konsistent samtalestøtte
-- organisasjoner med lukkede nettverk eller begrenset internettilgang
-- administratorer/redaktører som vedlikeholder innhold og systemoppsett
+- redaktører
+- systemadministratorer
 
 ---
 
-## 6. Hovedtemaer
+# 6. Hovedtemaer
 
-Første versjon skal støtte disse ni hovedtemaene:
+Leveransen støtter ni hovedtemaer:
 
 1. Alkohol og rus
-2. Fravær
-3. Prestasjon
-4. Lønn
-5. Samarbeid
-6. Oppsigelse / avslutning av arbeidsforhold
-7. Sikkerhet
+2. Fravær og oppfølging
+3. Prestasjon og utvikling
+4. Lønn og utvikling
+5. Samarbeid og kommunikasjon
+6. Avslutning av arbeidsforhold
+7. Sikkerhet og ansvar
 8. Livssituasjoner
 9. Mobbing og trakassering
 
-Hvert hovedtema skal ha undertemaer. Undertemaene skal fungere som kontekst for KI-en, ikke som et rigid regelverk.
+Hvert tema kan ha undertemaer som brukes som kontekst for KI-en.
 
-Dersom brukerens beskrivelse allerede gjør tema og undertema tilstrekkelig tydelig, skal systemet kunne foreslå begge direkte og la brukeren korrigere valget.
+Brukeren skal ikke være låst til en rigid menystruktur dersom situasjonen beskrives bedre med egne ord.
 
 ---
 
-## 7. Prioritering
+# 7. Kravstatus
 
-Kravene klassifiseres som:
+Denne PRD-en skiller mellom:
 
-- **MUST** – nødvendig for første fungerende leveranse
-- **SHOULD** – viktig og ønsket i første versjon dersom tid tillater
-- **COULD** – videreutvikling eller sekundær funksjonalitet
+- **IMPLEMENTERT** – finnes i dagens prototype
+- **DELVIS** – deler finnes, men området er ikke fullt ferdigstilt
+- **VIDERE ARBEID** – planlagt eller ønsket videreutvikling
+
+Dette er gjort for å skille tydelig mellom faktisk leveranse og framtidig ambisjon.
 
 ---
 
 # 8. Funksjonelle krav
 
-## 8.1 Autentisering og brukerkonto
+## FR-01 – Situasjonsbeskrivelse
 
-### Begrunnelse
+**Status:** IMPLEMENTERT
 
-Innlogging er et personvern- og tilgangskrav, ikke bare en komfortfunksjon. Løsningen skal lagre brukerens egne samtaler og innstillinger, og det må derfor finnes en sikker mekanisme som knytter data til riktig bruker. Innlogging gjør det også mulig å tilby sletting og eksport av egne data og å skille ordinære brukere fra editor- og adminroller.
+Brukeren skal kunne beskrive en krevende situasjon i fritekst.
 
-### MUST
+Systemet skal kunne bruke teksten som kontekst for videre KI-støtte.
 
-- Brukere skal kunne logge inn sikkert.
-- Registrering skal kun være mulig via gyldig invitasjon.
-- Sesjonen skal kunne beholdes mellom sideoppdateringer.
-- Innlogget bruker skal bare ha tilgang til egne samtaler.
-- Bruker skal kunne logge ut.
-- Bruker skal kunne be om tilbakestilling av passord.
-- Bruker skal kunne slette egen konto.
-- Bruker skal kunne eksportere egne data.
+Brukeren skal ikke måtte fylle ut et omfattende HR-skjema før KI-en kan hjelpe.
 
-### SHOULD
+### Akseptansekriterier
 
-- Admin-kontoer bør kunne sikres med ekstra autentiseringskrav/MFA der infrastrukturen støtter det.
+- bruker kan skrive situasjonen i hovedfeltet
+- teksten kan analyseres av KI
+- relevant kontekst videreføres i samtalen
+- ny samtale starter uten gammel samtalekontekst
+
+### Spor i repoet
+
+- `app.js`
+- `server.js`
 
 ---
 
-## 8.2 Roller og tilgang
+## FR-02 – Tema og undertema
 
-Systemet skal støtte tre roller:
+**Status:** IMPLEMENTERT
+
+Systemet skal støtte de ni definerte hovedtemaene og tilhørende undertemaer.
+
+KI kan foreslå relevant tema ut fra brukerens tekst.
+
+Brukeren skal kunne korrigere eller velge tema selv.
+
+### Spor
+
+- `app.js`
+- `index.html`
+- `docs/faggrunnlag/`
+
+---
+
+## FR-03 – KI-basert hovedveiledning
+
+**Status:** IMPLEMENTERT
+
+KI-veiledningen skal kunne gi støtte til:
+
+- mål for samtalen
+- struktur
+- mulig åpning
+- relevante spørsmål
+- mulige reaksjoner
+- hvordan reaksjoner kan møtes
+- videre oppfølging
+
+Svarene skal være praktiske og menneskelig formulert.
+
+KI skal være tilbakeholden med bastante HR-, juridiske og psykologiske konklusjoner.
+
+### Spor
+
+- `server.js`
+- `docs/ai/AI-SYSTEMPROMPT.md`
+- `docs/ai/AI-RESPONSE-CONTRACT.md`
+
+---
+
+## FR-04 – Oppfølgingsdialog
+
+**Status:** IMPLEMENTERT
+
+Brukeren skal kunne fortsette dialogen med KI etter første veiledning.
+
+### Krav
+
+- relevant kontekst beholdes
+- unødvendig repetisjon begrenses
+- KI kan gi konkrete formuleringseksempler
+- nye brukerinnspill skal passere personvernkontroll
+
+### Spor
+
+- `app.js`
+- `server.js`
+
+---
+
+## FR-05 – Samtalesimulering
+
+**Status:** IMPLEMENTERT
+
+Systemet skal tilby en egen simulator der KI spiller medarbeider.
+
+Simulatoren skal:
+
+- bruke situasjonen som kontekst
+- reagere på lederens formuleringer
+- opprettholde dialog over flere meldinger
+- kunne uttrykke ulike realistiske reaksjoner
+- unngå oppdiktede diagnoser og personopplysninger
+- la brukeren avslutte øvelsen
+- støtte refleksjon etterpå
+
+### Testbevis
+
+- `tests/test-simulation.js`
+- siste kontroll: **24/24 kontroller bestått**
+
+---
+
+## FR-06 – Personverngateway
+
+**Status:** IMPLEMENTERT
+
+Alle sentrale tekstfelt som kan føre til KI-kall skal passere personvernkontroll.
+
+Kontrollen skal finnes både:
+
+1. i klienten for rask tilbakemelding
+2. på serveren som siste sikkerhetsbarriere
+
+### Kontrollen skal blant annet kunne reagere på
+
+- navn
+- e-postadresse
+- telefonnummer
+- identifikatorer
+- fødselsopplysninger
+- direkte familieopplysninger
+- konkret arbeidssted eller unik rolle der dette kan øke identifiserbarheten
+- kjønnede formuleringer der nøytralisering er relevant
+
+### Prinsipp
+
+**Anonymiser identitet, ikke nødvendig kontekst.**
+
+Systemet skal ikke love full anonymitet.
+
+### Testbevis
+
+- `tests/test-privacy.js`
+- siste kontroll: **29/29 kontroller bestått**
+
+---
+
+## FR-07 – Autentisering
+
+**Status:** IMPLEMENTERT
+
+Systemet skal ha brukerkontoer og lukket registrering.
+
+### Krav
+
+- bruker kan logge inn
+- bruker kan logge ut
+- registrering krever gyldig invitasjon
+- sesjon kan beholdes mellom sideoppdateringer
+- innlogget bruker skal ikke kunne lese andre brukeres historikk
+
+### Spor
+
+- `server.js`
+- Supabase-oppsett
+- `database/`
+
+---
+
+## FR-08 – Engangsinvitasjoner
+
+**Status:** IMPLEMENTERT
+
+Nye kontoer opprettes gjennom engangsinvitasjoner.
+
+Invitasjoner kan brukes til kontrollert tilgang til beta- og vurderingsmiljø.
+
+### Spor
+
+- `create-invite.js`
+- adminfunksjoner
+- serverlogikk
+
+---
+
+## FR-09 – Historikk
+
+**Status:** IMPLEMENTERT
+
+Innlogget bruker skal kunne:
+
+- se tidligere samtaler
+- åpne en tidligere samtale
+- lese eller fortsette relevante samtaler
+- slette egen historikk
+
+Historikk skal være knyttet til riktig bruker.
+
+### Testbevis
+
+- `tests/test-history-hotfix.cjs`
+
+---
+
+## FR-10 – Rapportering av KI-svar
+
+**Status:** IMPLEMENTERT
+
+Brukeren skal kunne rapportere et KI-svar som oppleves problematisk.
+
+Rapporteringen kan inneholde:
+
+- type problem
+- kommentar
+- teknisk referanse
+- modell
+- tidspunkt
+
+Samtaleinnhold skal ikke inkluderes automatisk.
+
+---
+
+## FR-11 – Roller
+
+**Status:** IMPLEMENTERT
+
+Systemet støtter tre roller:
 
 - `user`
 - `editor`
 - `admin`
 
-### MUST
+### User
 
-**User**
-- bruke samtalestøtte
-- bruke simulering
-- se/slette egen historikk
-- rapportere dårlige KI-svar
-- rapportere tekniske feil
+Kan bruke ordinære brukerfunksjoner.
 
-**Editor**
-- ha samme rettigheter som user
-- kunne redigere godkjent innhold
-- ikke kunne tildele adminrolle
+### Editor
 
-**Admin**
-- ha samme rettigheter som editor
-- administrere roller
-- administrere KI-modell
-- se systemstatistikk
-- se rapporterte KI-svar
-- se teknisk logging der dette er relevant
-- se kilde-/weboppslagsstatistikk
+Kan i tillegg redigere godkjent innhold.
 
-Rollebeskyttelse skal håndheves på serveren, ikke bare i brukergrensesnittet.
+### Admin
+
+Kan i tillegg administrere sentrale systemfunksjoner.
+
+Kritiske rettigheter skal valideres server-side.
 
 ---
 
-## 8.3 Situasjonsbeskrivelse
+## FR-12 – Admin
 
-### MUST
+**Status:** IMPLEMENTERT
 
-Brukeren skal kunne beskrive situasjonen med få tekstfelt.
+Adminområdet skal gi tilgang til relevante drifts- og kvalitetsfunksjoner.
 
-Systemet skal:
+Dette omfatter blant annet:
 
-1. gjennomføre personvernsjekk
-2. analysere teksten
-3. foreslå hovedtema og undertema
-4. la brukeren endre forslag
-5. bruke beskrivelsen som kontekst for videre veiledning
+- roller
+- innholdsredigering
+- modellvalg
+- benchmark
+- kostnadsinformasjon
+- rapporterte KI-svar
+- kilde-/systeminformasjon
 
-Systemet skal ikke kreve at brukeren først navigerer manuelt gjennom flere menyer dersom KI-en allerede har identifisert relevant tema og undertema med tilstrekkelig sikkerhet.
-
----
-
-## 8.4 Temaidentifikasjon
-
-### MUST
-
-KI-en skal kunne foreslå:
-
-- hovedtema
-- undertema
-
-Ved lav sikkerhet skal brukeren få flere relevante alternativer.
-
-Ved middels/høy sikkerhet skal systemet kunne gå direkte til foreslått undertema.
-
-Brukeren skal alltid kunne overstyre KI-ens forslag.
+Store adminområder skal kunne minimeres for å redusere visuell belastning.
 
 ---
 
-## 8.5 Hovedveiledning
+## FR-13 – Modellvalg
 
-### MUST
+**Status:** IMPLEMENTERT I PROTOTYPEFORM
 
-Veiledningen skal kunne inneholde:
+Systemet skal ikke være permanent låst til én KI-modell.
 
-- forslag til mål med samtalen
-- forslag til struktur
-- formulering av åpning
-- relevante spørsmål
-- forhold lederen bør være oppmerksom på
-- mulige reaksjoner fra medarbeideren
-- forslag til hvordan reaksjoner kan møtes
-- forslag til neste steg
-- tydelig avgrensning når saken krever HR/juridisk/faglig bistand
+Admin skal kunne velge mellom støttede modeller.
 
-Svarene skal være:
+Arkitekturen skal støtte flere providere.
 
-- konkrete
-- korte nok til praktisk bruk
-- menneskelig formulert
-- ikke-diagnostiserende
-- ikke-beslutningstagende
+### Støttede prinsipper
+
+- OpenAI
+- OpenRouter
+- modellkonfigurasjon via server
+
+### Spor
+
+- `server.js`
+- adminlogikk
+- `data/BENCHMARK-CASES.json`
 
 ---
 
-## 8.6 Oppfølgingsdialog
+## FR-14 – Modellbenchmark
 
-### MUST
+**Status:** IMPLEMENTERT I PROTOTYPE/TESTFORM
 
-Brukeren skal kunne fortsette samtalen med KI-en etter hovedveiledningen.
+Prosjektet skal kunne sammenligne KI-modeller på et felles testgrunnlag.
 
-Oppfølgingen skal:
+Aktuelle vurderingsområder:
 
-- beholde relevant kontekst
-- unngå unødvendig repetisjon
-- svare kortere enn hovedveiledningen
-- kunne gi formuleringseksempler
-- kunne stille nødvendige avklaringsspørsmål
+- kvalitet
+- situasjonsforståelse
+- relevans
+- responstid
+- tokenbruk
+- kostnad
 
-Alle nye brukerinnspill skal passere samme personverngateway før KI-kall.
+Systemet inneholder også blind modell-sammenligning.
 
----
+### Spor
 
-## 8.7 Samtalesimulering
-
-### MUST
-
-Systemet skal ha en egen simulering der KI-en spiller medarbeideren.
-
-Simulatoren skal:
-
-- bruke valgt tema/undertema og situasjonsbeskrivelse som kontekst
-- reagere dynamisk på lederens formuleringer
-- opprettholde samtalekontekst gjennom flere meldinger
-- kunne uttrykke realistiske reaksjoner som usikkerhet, motstand, frustrasjon, sorg, taushet eller samarbeid
-- ikke bli karikert eller unødvendig dramatisk
-- ikke gi fasitsvar til lederen mens den spiller medarbeider
-- la brukeren avslutte øvelsen
-- støtte refleksjon etterpå
-
-### SHOULD
-
-Etter simuleringen bør brukeren kunne få en kort refleksjon over:
-
-- hva som fungerte
-- hva som kunne vært formulert annerledes
-- alternative formuleringer
-- mulig neste steg
+- `tests/test-model-compare.js`
+- benchmarklogikk i app/server
+- `data/BENCHMARK-CASES.json`
 
 ---
 
-## 8.8 Historikk
+## FR-15 – Automatisert KI-testing
 
-### MUST
+**Status:** IMPLEMENTERT
 
-Brukeren skal kunne:
+Prosjektet skal ha automatiserte testoppsett for KI-svar.
 
-- se tidligere samtaler
-- åpne en tidligere samtale
-- fortsette eller lese den
-- slette én samtale
-- slette all egen historikk
+Dette omfatter:
 
-Historikken skal være bruker-eid og beskyttet med databasepolicy/RLS.
+- kort KI-test
+- full KI-test
+- stresstest
+- problemcaser
+- simulator-live-test
+- modell-sammenligning
 
-Gamle samtaler skal også kunne gjennomgå personvernsjekk ved åpning.
+### Spor
 
----
+- `tests/test-ai.js`
+- `tests/test-ai-stress.js`
+- `tests/test-simulation-ai.js`
+- `tests/test-model-compare.js`
+- `tests/cases/`
 
-## 8.9 Personverngateway
-
-### MUST
-
-Alle tekstfelt som kan føre til KI-kall skal gå gjennom samme personvernlogikk.
-
-Kontrollen skal skje:
-
-1. i brukergrensesnittet for umiddelbar tilbakemelding
-2. på serveren som endelig sikkerhetsbarriere
-
-Kontrollen skal minst håndtere:
-
-- navn
-- e-post
-- telefonnummer
-- fødselsdato
-- alder der den kan bidra til identifisering
-- person-/ansattnummer
-- adresse
-- arbeidssted/unik rolle der dette kan identifisere person
-- direkte familieopplysninger
-- kjønnet språk der det ikke er nødvendig
-
-Prinsipp:
-
-> Anonymiser identitet, ikke nødvendig kontekst.
-
-Systemet skal ikke love full anonymisering. Det skal kommunisere at kontrollen reduserer identifiserbarhet, men ikke kan garantere at en person aldri kan gjenkjennes indirekte.
+Automatisert vurdering skal brukes som støtte og ikke erstatte manuell vurdering av KI-kvalitet.
 
 ---
 
-## 8.10 Rapportering av KI-svar
+## FR-16 – Faggrunnlag
 
-### MUST
+**Status:** IMPLEMENTERT
 
-Brukeren skal kunne velge **Rapporter svar** under KI-svar.
+Produktet skal ha dokumentert faglig grunnlag.
 
-Rapporten skal kunne inneholde:
+Dette finnes som:
 
-- type problem
-- valgfri kommentar
-- teknisk referanse
-- hvilken del av appen svaret kom fra
-- modell
-- tidspunkt
+- felles SOURCEBANK
+- temaspecifikke faggrunnlag
+- KI-regler for faglig usikkerhet
 
-Kategorier kan være:
+### Spor
 
-- misforstod situasjonen
-- faglig tvilsomt
-- for generelt
-- irrelevant
-- urealistisk
-- ignorerte tidligere kontekst
-- annet
-
-### MUST
-
-Valget **Legg ved samtalen** skal være av som standard.
-
-Dersom brukeren velger dette:
-
-- personvernsjekk skal kjøres først
-- bruker skal forstå at samtaleinnhold sendes med rapporten
+- `docs/SOURCEBANK.md`
+- `data/SOURCEBANK.json`
+- `docs/faggrunnlag/`
 
 ---
 
-## 8.11 Teknisk feilrapportering
+## FR-17 – Brukertesting
 
-### SHOULD
+**Status:** DELVIS / VIDERE ARBEID
 
-Brukeren bør kunne rapportere tekniske feil.
+Produktet skal kunne brukertestes systematisk.
 
-Teknisk rapport kan automatisk inneholde:
+Brukertesting skal undersøke blant annet:
 
-- appversjon
-- tidspunkt
-- side/funksjon
-- feilkode
-- nettlesertype
-- endpoint/action
+- om hovedflyten forstås
+- om navigasjonen er tydelig
+- om KI-svar oppleves relevante
+- om simulatoren oppleves realistisk
+- om personverninformasjonen forstås
 
-Samtaletekst skal ikke inkluderes automatisk.
+Fullskala brukertesting er ikke definert som ferdig leveransekrav.
+
+Resultater fra brukertesting kan brukes til videre revisjon av krav og UX.
+
+---
+
+## FR-18 – Web- og kildeanalyse
+
+**Status:** DELVIS / PROTOTYPE
+
+Systemet har funksjoner og arkitektur knyttet til kilde- og webbruk.
+
+Målet er å kunne analysere hvilke kilder som brukes uten å bygge brukerprofiler eller lagre unødvendig samtaleinnhold.
+
+Videre utvikling av dette området er mulig.
 
 ---
 
 # 9. KI-krav
 
-## 9.1 Modellarkitektur
+## AI-01 – Fakta og antakelser
 
-### Begrunnelse
+**Status:** IMPLEMENTERT SOM KI-REGEL
 
-De mest kapable språkmodellene er ofte også dyrere i bruk. Samtidig utvikler KI-markedet seg raskt, og pris/kvalitet-forholdet kan endre seg betydelig i løpet av prosjektets levetid. Systemet skal derfor ikke låses til én modell.
+KI skal skille mellom:
 
-### MUST
-
-Systemet skal bruke eksisterende språkmodeller via API.
-
-Applikasjonen skal ikke være hardkodet til én enkelt modell.
-
-Admin skal kunne velge mellom støttede modeller uten kodeendring eller ny deploy.
+- informasjon brukeren faktisk har oppgitt
+- mulige tolkninger
+- antakelser
+- informasjon som mangler
 
 ---
 
-## 9.2 Modellbenchmark
+## AI-02 – Ingen oppdiktede diagnoser
 
-### Begrunnelse
+**Status:** IMPLEMENTERT OG TESTET
 
-Prosjektet skal ikke anta at den kraftigste eller dyreste modellen automatisk er det beste valget. Samme testgrunnlag skal brukes til å sammenligne kvalitet, stabilitet, responstid, kildebruk og kostnad.
+KI skal ikke dikte opp medisinske eller psykologiske diagnoser.
 
-### MUST
-
-Systemet skal kunne sammenligne minst tre KI-modeller på samme testgrunnlag.
-
-For hver kjøring skal følgende kunne registreres:
-
-- modell
-- input tokens
-- output tokens
-- estimert kostnad
-- responstid
-- antall weboppslag
-- søkestrenger
-- brukte domener/kilder
-- eventuelle feil
-- svartekst i benchmarkmodus
-
-Testtrafikk skal merkes separat fra ordinær brukertrafikk.
-
-### MUST
-
-Benchmark skal ha:
-
-- synlig kostnadsestimat
-- hard budsjettgrense
-- mulighet til å stoppe kjøring
-- mulighet til å ekskludere testtrafikk fra vanlig kostnadsstatistikk
+Dette gjelder også simulatoren.
 
 ---
 
-## 9.3 Testbank
+## AI-03 – Ingen oppdiktet skyld eller motiv
 
-### MUST
+**Status:** IMPLEMENTERT SOM KI-REGEL
 
-Hvert undertema skal ha minst to faste testsaker.
+KI skal ikke fastslå:
 
-Med 56 undertemaer innebærer dette minst:
+- skyld
+- motiv
+- personlighet
+- sannheten i en konflikt
 
-**112 testsaker**
-
-Testbanken skal dekke:
-
-- typiske saker
-- vanskelige/tvetydige saker
-- personvern
-- temaidentifikasjon
-- tilfeller som ikke krever web
-- tilfeller som bør kreve web
-- ulike nivåer av sensitivitet
-
-Ikke alle 112 saker må kjøres mot alle betalte modeller i hver benchmarkrunde. Et representativt delutvalg skal brukes til ekte modellbenchmark for å holde testkostnaden under kontroll.
+uten tilstrekkelig grunnlag.
 
 ---
 
-## 9.4 Web search og kildebruk
+## AI-04 – HR og juridiske spørsmål
 
-### SHOULD
+**Status:** IMPLEMENTERT SOM KI-REGEL
 
-KI-en skal kunne bruke kontrollerte weboppslag når oppdatert eller presis ekstern informasjon er nødvendig.
-
-Systemet skal kunne registrere:
-
-- søkestreng
-- tidspunkt
-- modell
-- hovedtema
-- undertema
-- domene
-- sidetittel
-- full URL
-- om web search ble brukt
-
-### MUST
-
-Web-/kildeloggen skal ikke lagre:
-
-- samtaletekst
-- direkte identifiserende personopplysninger
-- bruker-ID dersom dette ikke er nødvendig
-
-Formålet er systemanalyse og utvikling av framtidig SOURCEBANK, ikke overvåking av enkeltbrukere.
+KI skal være tydelig på usikkerhet og anbefale relevant faglig bistand når situasjonen krever det.
 
 ---
 
-# 10. Testing og evaluering
+## AI-05 – Kontekst
 
-Testing skal gjennomføres på flere nivåer.
+**Status:** IMPLEMENTERT
 
-## 10.1 Automatiserte tekniske tester
-
-### MUST
-
-Det skal utvikles tester for:
-
-- syntaks/regresjon
-- autentisering
-- tilgangskontroll
-- personverngateway
-- historikk
-- kritiske adminfunksjoner
-- benchmarklogikk
+KI skal beholde nødvendig samtalekontekst, men ny samtale skal ikke arve uvedkommende tidligere kontekst.
 
 ---
 
-## 10.2 KI-testing
+## AI-06 – Modelluavhengighet
 
-### MUST
+**Status:** IMPLEMENTERT I PROTOTYPEFORM
 
-Det skal finnes minst 112 faste testscenarioer, med minimum to per undertema.
-
-Formålet er å teste:
-
-- temaforståelse
-- undertemaforståelse
-- kvalitet på veiledning
-- stabilitet
-- personvern
-- web search
-- kildebruk
-- responstid
-- tokenbruk
-- estimert kostnad
-
-Et representativt delutvalg skal kjøres mot minst tre ekte KI-modeller.
+KI-laget skal støtte at modell/provider kan endres uten at hele applikasjonen bygges om.
 
 ---
 
-## 10.3 Vanlig brukertesting
+# 10. Ikke-funksjonelle krav
 
-### SHOULD
+## NFR-01 – Sikkerhet
 
-Det planlegges **8–12 ordinære brukertester**.
+**Status:** IMPLEMENTERT PÅ PROTOTYPENIVÅ
 
-Så langt det er praktisk mulig bør flere testpersoner ha:
-
-- ledererfaring
-- personalansvar
-- HR-/lederutviklingsbakgrunn
-
-Brukertestingen skal undersøke:
-
-- om hovedflyten forstås uten forklaring
-- om tema- og undertemavalg oppleves naturlig
-- om rådene er relevante og konkrete
-- om simuleringen oppleves realistisk og nyttig
-- om personvernvarsler forstås
-- om historikk og navigasjon er intuitive
-- om brukerne opplever løsningen som et supplement til eget skjønn, ikke som beslutningsmyndighet
-
-### Mål
-
-- minst 90 % skal kunne gjennomføre hovedflyten uten hjelp
-- minst 80 % skal vurdere samtalestøtten som relevant og konkret
-
----
-
-## 10.4 Kostnadstesting
-
-### MUST
-
-Prosjektet skal bruke testingen til å estimere reell driftskostnad.
-
-Det skal kunne måles:
-
-- kostnad per KI-kall
-- kostnad per testscenario
-- kostnad per komplett brukerforløp
-- kostnadsforskjell mellom modeller
-- kostnad knyttet til web search der dette er relevant
-
-Dette skal brukes som grunnlag for modellvalg og framtidig produktmodell.
-
----
-
-# 11. SOURCEBANK og kunnskapsgrunnlag
-
-## 11.1 Første versjon
-
-### MUST
-
-Systemet skal ha et dokumentert fag- og kildegrunnlag som kan brukes til:
-
-- systemprompt
-- faglige begrensninger
-- råd om kildebruk
-- kontroll av høyrisikotemaer
-
-## 11.2 Videre utvikling
-
-### SHOULD
-
-Kildebruk fra reelle og syntetiske tester skal kunne analyseres for å identifisere:
-
-- mest brukte domener
-- mest brukte sider
-- mest brukte søketemaer
-
-Dette skal brukes som beslutningsgrunnlag for hvilke kilder som bør inngå i lokal SOURCEBANK/RAG.
-
----
-
-# 12. Offline / lukket intranett
-
-## 12.1 Arkitekturkrav
-
-### MUST
-
-Systemarkitekturen skal dokumenteres slik at eksterne tjenester kan erstattes.
-
-Nettversjon:
-
-```text
-Bruker
-→ Samtalestøtte frontend
-→ Node/Express backend
-→ ekstern KI
-→ Supabase
-→ eventuelt web search
-```
-
-Lukket variant:
-
-```text
-Bruker
-→ Samtalestøtte
-→ intern applikasjonsserver
-→ intern KI-modell
-→ intern database
-→ lokal SOURCEBANK/RAG
-→ ingen internettilgang
-```
-
-## 12.2 Krav til lukket variant
-
-### SHOULD
-
-Arkitekturen skal støtte at:
-
-- ekstern OpenAI-lignende API erstattes av intern endpoint
-- intern modell kan eksponeres via OpenAI-kompatibelt API, vLLM, Ollama eller intern REST
-- ekstern database kan erstattes med intern PostgreSQL eller tilsvarende
-- autentisering kan flyttes til intern identitetsløsning
-- web search kan deaktiveres fullstendig
-- lokale dokumenter kan brukes som kunnskapsgrunnlag
-- eksterne fonter, CDN-er og andre nettavhengigheter kan fjernes
-
-Full utrulling i lukket produksjonsmiljø er utenfor V1.
-
----
-
-# 13. Admin
-
-## 13.1 Admin-dashboard
-
-### MUST
-
-Admin skal kunne:
-
-- se systemstatus
-- administrere roller
-- redigere godkjent innhold
-- velge aktiv KI-modell
-- se kostnads-/tokenstatistikk
-- se benchmarkresultater
-- se rapporterte KI-svar
-- se kilde-/weboppslagsstatistikk
-
-### MUST
-
-Seksjonen **Rediger innhold** skal være sammenleggbar og minimert som standard.
-
----
-
-## 13.2 Innholdsredigering
-
-### SHOULD
-
-Admin/editor skal kunne redigere:
-
-- overskrifter
-- beskrivelser
-- hjelpetekster
-- knappeetiketter
-- tomtilstander
-- personverntekst
-- simulatorbeskrivelser
-- tema- og undertematekster
-
-Teknisk/systemkritisk tekst skal holdes adskilt fra ordinært redigerbart innhold.
-
-### MUST
-
-Lagring skal kreve eksplisitt bekreftelse.
-
-Systemet skal vise:
-
-- ulagrede endringer
-- deaktivert lagreknapp når ingenting er endret
-- bekreftelsesdialog før publisering
-
----
-
-# 14. Ikke-funksjonelle krav
-
-## 14.1 Sikkerhet
-
-### MUST
-
-Systemet skal ha:
+Systemet skal blant annet bruke:
 
 - server-side tilgangskontroll
-- RLS/databaseregler
-- HttpOnly session cookies
-- Secure cookies i produksjon
-- SameSite-beskyttelse
+- databasepolicy/RLS
+- sikre sessions/cookies
 - rate limiting
-- same-origin-kontroll for muterende kall
+- same-origin-kontroll
 - sikkerhetsheadere
-- CSP
-- HSTS i produksjon
-- begrenset statisk filservering
-- ingen hemmelige nøkler i frontend
-- ingen detaljerte debugmeldinger til sluttbruker
+- begrenset offentlig filtilgang
 - server-side personverngateway
-- begrenset logging av sensitiv informasjon
+- API-nøkler utenfor frontend
+
+### Dokumentasjon
+
+`docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
 
 ---
 
-## 14.2 Personvern
+## NFR-02 – Personvern
 
-### MUST
+**Status:** IMPLEMENTERT
 
-Systemet skal følge prinsipper om:
+Produktet skal følge prinsipper om:
 
 - dataminimering
 - formålsbegrensning
-- minst mulig lagring
+- minst mulig unødvendig logging
 - bruker-eid historikk
-- eksplisitt valg ved deling av samtale med feedback
-- begrenset lagringstid for tekniske logger
-- separasjon mellom brukerdata og kildeanalyse
+- frivillig deling av samtaleinnhold
+- separasjon mellom brukerdata og teknisk analyse
 
 ---
 
-## 14.3 Lagringstid
+## NFR-03 – Brukervennlighet
 
-### SHOULD
+**Status:** IMPLEMENTERT MED VIDERE FORBEDRINGSMULIGHET
 
-Følgende retningslinjer skal støttes:
+Løsningen skal ha:
 
-- samtalehistorikk: til bruker sletter den eller kontoen
-- detaljerte KI-logger: begrenset periode
-- web-/kildelogger: detaljert periode, deretter aggregert/anonymisert statistikk
-- feedback med samtalevedlegg: kortere lagringstid enn generell feedback
+- tydelig navigasjon
+- konsekvente komponenter
+- forståelige tilbakemeldinger
+- lys/mørk/hybrid visning
+- responsiv utforming
+- minst mulig unødvendig teknisk språk
 
----
-
-## 14.4 Ytelse
-
-### SHOULD
-
-Vanlige brukerhandlinger skal oppleves responsive.
-
-KI-kall skal vise tydelig lastestatus.
-
-Feil skal håndteres uten at bruker mister hele arbeidsflyten.
+UX er iterativt forbedret gjennom prosjektet.
 
 ---
 
-## 14.5 Tilgjengelighet og UX
+## NFR-04 – Feilhåndtering
 
-### SHOULD
+**Status:** IMPLEMENTERT
 
-Løsningen skal:
+Tekniske feil skal så langt som mulig håndteres uten at brukerflyten kollapser.
 
-- være forståelig uten opplæring
-- bruke konsistente komponenter
-- ha tydelig navigasjon
-- ha lys/mørk/hybrid visning
-- ha god kontrast
-- støtte tastaturbruk
-- bruke tydelige varsler og tilbakemeldinger
-- unngå unødvendig teknisk språk i brukerflaten
+Sluttbruker skal ikke eksponeres for unødvendig tekniske debugdetaljer.
 
 ---
 
-# 15. Data og lagring
+## NFR-05 – Vedlikeholdbarhet
 
-## 15.1 Brukerdata
+**Status:** IMPLEMENTERT SOM ARKITEKTURMÅL
 
-Kan omfatte:
+Kode, dokumentasjon, tester og ressurser skal holdes logisk adskilt.
 
-- brukerprofil
-- rolle
-- innstillinger
-- samtalehistorikk
-- rapportert feedback
+Repoet er organisert i:
 
-## 15.2 Teknisk data
-
-Kan omfatte:
-
-- modell
-- tokenbruk
-- estimert kostnad
-- responstid
-- teknisk feiltype
-- web search metadata
-
-Teknisk logging skal ikke brukes til å rekonstruere brukerens personalsaker.
+- `assets/`
+- `data/`
+- `database/`
+- `docs/`
+- `tests/`
 
 ---
 
-# 16. Økonomisk bærekraft og produktmodell
+# 11. Testing og kvalitetssikring
 
-## 16.1 Bakgrunn
+## T-01 – Personvern
 
-KI-tjenester, database og hosting kan medføre løpende kostnader. De beste modellene i en gitt periode kan også være blant de dyreste. Produktet må derfor kunne dokumentere kostnadene før en eventuell kommersiell videreføring.
+**Status:** BESTÅTT
 
-## 16.2 Kostnadsmodell
+Kommando:
 
-### MUST
+```bash
+npm run test-privacy
+```
 
-Systemet skal kunne måle eller estimere:
+Siste kontroll:
 
-- tokenkostnad per KI-kall
-- samlet KI-kostnad per periode
-- kostnad per testscenario
-- kostnad per typisk brukerforløp
-- forskjell mellom ulike KI-modeller
-- kostnad ved web search
-- database- og hostingkostnader som del av totalbildet der disse blir relevante
-
-## 16.3 Mulig betalingsmodell
-
-### COULD
-
-Dersom løsningen viser seg å ha reell etterspørsel, kan en senere versjon tilbys som:
-
-- abonnement
-- virksomhetslisens
-- betalt premiumversjon
-- gratis basisversjon med betalte utvidelser
-
-Formålet med betaling skal først og fremst være å dekke løpende kostnader til KI, database, hosting, drift og videreutvikling.
-
-## 16.4 Teknologiutvikling
-
-Produktstrategien skal ta høyde for at KI-markedet endres raskt.
-
-Det er mulig at:
-
-- dagens dyre modeller blir betydelig billigere
-- rimeligere modeller får samme eller bedre kvalitet
-- gratis eller lokale modeller blir gode nok for hele eller deler av løsningen
-
-Produktet skal derfor ikke bygges rundt en forutsetning om at en bestemt betalt modell alltid må brukes.
-
-Provider-uavhengig arkitektur og adminstyrt modellvalg skal gjøre det mulig å redusere kostnader dersom teknologiutviklingen tillater det.
+**29/29 bestått**
 
 ---
 
-# 17. Suksessmåling
+## T-02 – Samtalesimulering
 
-Første versjon skal evalueres på:
+**Status:** BESTÅTT
 
-### Brukeropplevelse
+Kommando:
 
-- 8–12 planlagte ordinære brukertester
-- minst 90 % gjennomfører hovedflyten uten hjelp
-- minst 80 % vurderer veiledningen som relevant og konkret
+```bash
+npm run test-simulation
+```
 
-### Testdekning
+Siste kontroll:
 
-- minst 112 faste KI-testsaker
-- minst 2 per undertema
-- automatiserte personvern- og regresjonstester
-
-### KI-kvalitet
-
-- minst tre modeller kan sammenlignes
-- tokenbruk, kostnad og responstid kan måles
-- kildebruk kan analyseres
-
-### Personvern og sikkerhet
-
-- direkte KI-kall skal ikke kunne omgå serverens personverngateway
-- brukere skal ikke kunne lese andres historikk
-- samtaletekst skal ikke lagres i tekniske kildelogger
-- adminfunksjoner skal være server-beskyttet
-
-### Arkitektur
-
-- systemet skal dokumentere hvordan ekstern KI/web kan erstattes med intern KI/lokal kunnskapsbank
-
-### Økonomi
-
-- prosjektet skal kunne estimere kostnad per typisk brukerforløp
-- kostnadsforskjeller mellom modellene skal være dokumentert
-- modellvalg skal kunne begrunnes i både kvalitet og kostnad
+**24/24 bestått**
 
 ---
 
-# 18. Akseptansekriterier for V1
+## T-03 – Server-personvern
 
-V1 kan regnes som ferdig når:
+**Status:** IMPLEMENTERT
 
-1. innlogging og rollemodell fungerer
-2. alle ni hovedtemaer fungerer
-3. undertemaer brukes som KI-kontekst
-4. situasjon kan beskrives og analyseres
-5. KI kan gi strukturert hovedveiledning
-6. oppfølgingsdialog fungerer
-7. samtalesimulering fungerer
-8. historikk fungerer og er brukerbeskyttet
-9. personvernkontroll fungerer både klient- og server-side
-10. rapportering av KI-svar fungerer
-11. admin kan administrere innhold og modellvalg
-12. benchmark kan sammenligne modeller
-13. testbank inneholder minimum to saker per undertema
-14. token-, kostnads- og kildebruk kan måles
-15. sikkerhetstiltak er dokumentert og testet
-16. arkitektur for lukket/offline drift er dokumentert
-17. kritiske automatiserte tester består
-18. minst én ordinær brukertestrunde er gjennomført eller planlagt med dokumentert testopplegg
-19. kostnad per representativt KI-forløp kan estimeres
+```bash
+npm run test-server-privacy
+```
 
 ---
 
-# 19. Risikoer og avhengigheter
+## T-04 – UI-regresjon
 
-## 19.1 KI-kvalitet
+**Status:** IMPLEMENTERT
 
-Språkmodeller kan gi feil, inkonsistente eller for bastante svar.
+```bash
+npm run test-ui-regression
+```
+
+---
+
+## T-05 – Historikk
+
+**Status:** BESTÅTT VED SISTE KONTROLL
+
+```bash
+npm run test-history-hotfix
+```
+
+---
+
+## T-06 – Samtaleboble-regresjon
+
+**Status:** BESTÅTT VED SISTE KONTROLL
+
+```bash
+npm run test-bubble-cleanup
+```
+
+En tidligere versjon av testen feilet fordi den kontrollerte en foreldet CSS-kommentar fremfor faktisk funksjonalitet.
+
+Testen ble korrigert fremfor å endre fungerende produksjonskode.
+
+---
+
+## T-07 – KI-tester
+
+**Status:** IMPLEMENTERT
+
+```bash
+npm run test-ai
+npm run test-ai:full
+npm run test-ai:stress
+npm run test-ai:stress:full
+npm run test-ai:stress:problems
+```
+
+KI-testene gjør faktiske modellkall og krever API-konfigurasjon.
+
+---
+
+## T-08 – Modell-sammenligning
+
+**Status:** IMPLEMENTERT
+
+```bash
+npm run test-model-compare
+```
+
+Testen støtter blind sammenligning av KI-modeller.
+
+---
+
+# 12. Akseptansekriterier for levert prototype
+
+Leveransen anses som funksjonelt komplett som prosjektprototype når følgende er oppfylt:
+
+1. appen kan startes og brukes
+2. innlogging fungerer
+3. lukket registrering fungerer
+4. ni hovedtemaer er tilgjengelige
+5. situasjonsbeskrivelse kan analyseres
+6. KI gir strukturert samtalestøtte
+7. oppfølgingsdialog fungerer
+8. personverngateway beskytter sentrale KI-flyter
+9. samtalesimulering fungerer
+10. historikk er tilgjengelig for innlogget bruker
+11. rollemodell finnes
+12. adminfunksjoner finnes
+13. KI-modell kan konfigureres
+14. automatiserte tester finnes
+15. sentrale personvern- og simulator-tester består
+16. dokumentasjon gjør løsning og prosess etterprøvbar
+
+---
+
+# 13. Status ved levering
+
+| Område | Status | Bevis |
+|---|---|---|
+| Webapplikasjon | Implementert | `app.js`, `index.html`, `server.js` |
+| KI-veiledning | Implementert | server + systemprompt |
+| 9 hovedtemaer | Implementert | app + faggrunnlag |
+| Personverngateway | Implementert/testet | 29/29 tester |
+| Simulator | Implementert/testet | 24/24 tester |
+| Autentisering | Implementert | Supabase/server |
+| Historikk | Implementert | Supabase/regresjonstest |
+| Roller | Implementert | app/server |
+| Admin | Implementert | app/server |
+| Modellvalg | Implementert i prototypeform | admin/server |
+| Benchmark | Prototype/testform | benchmarkfiler |
+| KI-testing | Implementert | `tests/` |
+| Faggrunnlag | Implementert | `docs/faggrunnlag/` |
+| SOURCEBANK | Implementert | `docs/`, `data/` |
+| Brukertesting | Delvis/videre arbeid | testopplegg |
+| Web/kildeanalyse | Delvis/prototype | server/admin |
+| Lukket/offline løsning | Videre arbeid | arkitekturdokumentasjon |
+
+---
+
+# 14. Kjente avgrensninger
+
+Leveransen er en prototype og har derfor bevisste avgrensninger.
+
+Blant annet:
+
+- full produksjonsherding er ikke gjennomført
+- fullskala brukertesting gjenstår
+- lukket/offline løsning er ikke implementert
+- modellbenchmark er et test- og prototypeområde
+- enkelte admin- og analysefunksjoner kan videreutvikles
+- KI-kvalitet kan aldri garanteres fullt ut gjennom automatiserte regler
+
+Disse områdene skal ikke fremstilles som ferdige krav i dagens leveranse.
+
+---
+
+# 15. Risikoer
+
+## R-01 – KI kan gi svake eller feilaktige svar
 
 Tiltak:
 
-- tydelig systemprompt
-- faglig kildegrunnlag
-- avgrensninger
-- modellbenchmark
+- systemprompt
+- responskontrakt
+- faggrunnlag
+- testcaser
+- menneskelig ansvar
 - rapporteringsfunksjon
-- menneskelig ansvar beholdes
 
-## 19.2 Personvern
+---
 
-Brukere kan skrive identifiserende eller sensitive opplysninger.
+## R-02 – Personopplysninger kan bli skrevet inn
 
 Tiltak:
 
 - klientkontroll
 - serverkontroll
-- anonymiseringshjelp
+- anonymisering
+- tydelig informasjon
 - dataminimering
-- begrenset logging
-- tydelig personverninformasjon
 
-## 19.3 Kostnad
+---
 
-KI- og webkall kan gi uforutsigbare kostnader.
+## R-03 – KI-testing kan gi falske resultater
 
 Tiltak:
 
-- tokenmåling
-- kostnadslogging
-- modellvalg
-- benchmark med budsjettgrense
-- bruk av billigere modeller der kvaliteten er tilstrekkelig
+- manuell vurdering
+- kontekstbevisste tester
+- regresjonstesting av selve testlogikken
 
-## 19.4 Leverandøravhengighet
+---
 
-Ekstern KI, database eller hosting kan endre pris eller tilgjengelighet.
+## R-04 – Eksterne tjenester kan endre seg
 
 Tiltak:
 
-- provider-uavhengig arkitektur
-- dokumentert intern KI-variant
-- lokal SOURCEBANK/RAG som framtidig alternativ
+- provider-abstraksjon
+- konfigurerbart modellvalg
+- dokumentert framtidig lokal arkitektur
 
-## 19.5 Omfang
+---
 
-Prosjektet har høy kompleksitet og kan bli for stort.
+## R-05 – Prosjektomfang kan bli for stort
 
 Tiltak:
 
-- MUST/SHOULD/COULD-prioritering
-- tydelig Scope
-- eksplisitt out-of-scope
+- tydelig avgrensning
+- skille mellom levert og framtidig funksjonalitet
 - modulær utvikling
-- faste akseptansekriterier
+- prioritering
+- dokumentert endringskontroll
 
 ---
 
-# 20. Videre arbeid etter V1
+# 16. Videre arbeid
 
-Mulig videreutvikling:
+Følgende er eksplisitt videre arbeid og ikke nødvendige ferdigkrav for dagens leveranse:
 
+- større ordinær brukertest
+- ytterligere tilgjengelighetstesting
+- videre benchmarking av KI-modeller
+- videre kildeanalyse
 - lokal RAG/kunnskapsbank
-- automatisert kildekuratering
 - intern KI-modell
-- intern autentisering
-- organisasjonsspesifikke fagregler
-- virksomhetsspesifikk admin
-- bedre analyse av kvalitet over tid
-- avansert simulering med flere reaksjonsprofiler
-- responsiv mobiltilpasning og vurdering av egen mobilapp innen ett år
-- tilgjengelighetsforbedringer
-- integrasjoner mot interne systemer der dette er juridisk og teknisk forsvarlig
-- kommersiell tjeneste dersom reell etterspørsel og kostnadsgrunnlag tilsier det
-- gratis eller rimeligere nivå dersom framtidige KI-modeller gjør dette mulig
+- intern database/autentisering
+- full lukket nettverksvariant
+- ytterligere mobiltilpasning eller egen mobilapp
+- videre sikkerhetsherding før eventuell ordinær produksjonsbruk
 
 ---
 
-# 21. Oppsummering
+# 17. Sporbarhet mot øvrig dokumentasjon
 
-Samtalestøtte skal utvikles som et domenespesifikt KI-system for praktisk lederstøtte, ikke som en generell chatbot.
+Denne PRD-en skal leses sammen med:
 
-V1 kombinerer:
+## Produkt og utvikling
 
-- strukturert samtaleveiledning
-- tema- og undertemaforståelse
-- dynamisk KI-simulering
-- historikk
-- autentisering og roller
+- `product-brief.md`
+- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
+- `docs/bmad/ARCHITECTURE-BMAD.md`
+- `docs/bmad/UX-DESIGN-BMAD.md`
+- `docs/bmad/EPICS-AND-STORIES-BMAD.md`
+
+## KI
+
+- `docs/ai/AI-LOGG-SAMTALESTOTTE.md`
+- `docs/ai/AI-SYSTEMPROMPT.md`
+- `docs/ai/AI-RESPONSE-CONTRACT.md`
+- `docs/ai/AI-TESTPLAN.md`
+
+## Sikkerhet og faglig grunnlag
+
+- `docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
+- `docs/SOURCEBANK.md`
+- `data/SOURCEBANK.json`
+- `docs/faggrunnlag/`
+
+## Testing
+
+- `tests/`
+- `tests/cases/`
+
+## Historikk
+
+- `CHANGELOG.md`
+- Git commit-historikken
+
+---
+
+# 18. Endringskontroll
+
+Når et nytt krav vurderes, skal følgende spørsmål stilles:
+
+1. Hvilket problem løser det?
+2. Er det nødvendig for levert prototype?
+3. Påvirker det personvern?
+4. Påvirker det sikkerhet?
+5. Påvirker det KI-atferd?
+6. Krever det nye tester?
+7. Påvirker det eksisterende brukerflyt?
+8. Krever det endring i PRD, arkitektur eller UX?
+9. Er det implementert, delvis implementert eller videre arbeid?
+
+Dette skal redusere risikoen for at nye KI-genererte forslag automatisk blir lagt inn i produktet uten vurdering.
+
+---
+
+# 19. Oppsummering
+
+Samtalestøtte er levert som en omfattende KI-basert prototype for lederstøtte ved krevende medarbeidersamtaler.
+
+Kjerneleveransen består av:
+
+- strukturert samtalestøtte
+- ni hovedtemaer
+- oppfølgingsdialog
 - personverngateway
-- sikkerhetsarkitektur
-- fag- og kildegrunnlag
-- web search
-- kildeovervåking
-- modellbenchmark
-- token- og kostnadsmåling
-- administrasjon
-- automatisert testing
-- ordinær brukertesting
-- dokumentert overgang til intern KI og lokal kunnskapsbank
-- vurdering av økonomisk bærekraft og framtidig produktmodell
+- samtalesimulator
+- autentisering
+- historikk
+- roller og admin
+- faglig kildegrunnlag
+- automatiserte tester
+- KI-testing og modellvurdering
 
-Kompleksiteten skal håndteres gjennom tydelig avgrensning, kravprioritering, måling og systematisk testing.
+Produktet er utviklet iterativt.
 
+PRD-en beskriver derfor både hva som faktisk er levert og hvilke områder som er eksplisitt videre arbeid.
 
-## v20.5 – tilleggskrav
-
-### FR-20.5-1 Mobbing og trakassering
-Systemet skal ha et eget hovedtema for mobbing og trakassering med undertemaer for mobbing, utestenging/utfrysing, krenkende eller utilbørlig atferd, seksuell trakassering, kjønnstrakassering/uønsket seksuell oppmerksomhet, varsling, samtale med den som sier ifra og samtale med den varselet gjelder. KI-en skal ikke avgjøre skyld eller fastslå at trakassering har skjedd uten tilstrekkelig grunnlag.
-
-### FR-20.5-2 Fravær og sikkerhet
-Fravær skal omfatte tydelig støtte for tilrettelegging og arbeidsevne med fokus på funksjon og arbeid, ikke diagnose. Sikkerhet skal omfatte vold og trusler.
-
-### FR-20.5-3 Fagbank og testbank
-Fagbanken skal bruke flere faste, autoritative sider for mobbing, trakassering, varsling, sykefravær/tilrettelegging og vold/trusler. Testbanken skal dekke alle 56 undertemaer med minst to saker per undertema, totalt 112 faste saker i v20.5.
-
-### FR-20.5-4 OpenRouter
-KI-laget skal kunne bruke både direkte OpenAI og OpenRouter gjennom server-side nøkler. OpenRouter skal minst støtte `openrouter/free` og én fast gratis modell for reproduserbar sammenligning. Faktisk modell fra router-responsen skal logges når tilgjengelig.
-
-### FR-20.5-5 Kort brukertest
-Innloggede testbrukere skal kunne sende en kort, strukturert undersøkelse uten KI-kall. Svarene skal ikke lagres sammen med samtaletekst eller brukeridentitet. Admin skal kunne se aggregert resultat og fritekstforslag.
-
-### FR-20.5-6 Vurderingstilgang
-Admin skal kunne opprette engangsinvitasjoner med rolle `user`, `editor` eller `admin` og utløpsdato. Admininvitasjoner skal kreve eksplisitt bekreftelse i UI.
-
-### NFR-20.5-1 Testmiljø
-README og testinstruks skal opplyse om at Render-testmiljøet kan gå i dvale og at første innlasting derfor kan ta ekstra tid.
-
-## Presisering etter iterativ utvikling og brukertestforberedelse
-- Brukertesting skal også brukes til å avdekke nye UX- og KI-kvalitetsbehov, ikke bare validere eksisterende løsning.
-- Brukertest kan slås av/på av admin; én konto kan levere ett strukturert svar, mens svarinnholdet lagres separat fra deltakermarkøren.
-- Før førstegangsbruk skal brukeren bekrefte at personverninformasjonen er lest og forstått; dette er en informasjonsbekreftelse, ikke et generelt GDPR-samtykke.
-- Hjelp-siden skal samle kort brukerveiledning og kuraterte faglenker fra autoritative kilder.
-- Chevron skal vises til venstre for teksten på sammenleggbare seksjoner.
-- Kontakt og personvernvalg skal samles logisk under Innstillinger, mens egne sider brukes til henholdsvis kontaktflyt og personverninformasjon.
-- Sekundærsider og Admin skal bruke progressiv visning/kollaps for lavere visuell belastning.
-
+Dette skillet er viktig for at krav, kode, tester og dokumentasjon skal kunne sammenlignes direkte uten at framtidige ambisjoner framstår som ferdig funksjonalitet.
