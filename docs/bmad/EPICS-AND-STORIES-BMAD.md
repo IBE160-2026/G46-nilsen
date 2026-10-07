@@ -3,223 +3,289 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Epics & User Stories  
 **Rammeverk:** BMAD  
-**Status:** Planlagt implementeringsstruktur  
-**Språk:** Norsk  
+**Status:** Revidert med faktisk leveransestatus  
+**Versjon ved dokumentasjon:** 20.10.3  
+**Språk:** Norsk
 
 ---
 
-## 1. Formål
+# 1. Formål
 
-Dette dokumentet deler Samtalestøtte opp i større utviklingsområder (epics) og konkrete user stories.
+Dette dokumentet bryter Samtalestøtte ned i større utviklingsområder (epics) og konkrete user stories.
 
-Hver story skal ha tydelige akseptansekriterier slik at det er mulig å avgjøre om funksjonen er ferdig.
+Dokumentet er revidert etter iterativ utvikling og viser derfor både:
+
+- hva som faktisk er implementert
+- hva som er delvis/prototypebasert
+- hva som er videre arbeid
+
+Målet er å gjøre sammenhengen mellom:
+
+**behov → story → implementasjon → test → leveransestatus**
+
+tydelig og etterprøvbar.
 
 ---
 
-# Epic 1 – Grunnstruktur og navigasjon
+# 2. Statuskategorier
+
+Stories merkes med:
+
+- **IMPLEMENTERT** – finnes i levert prototype
+- **IMPLEMENTERT OG TESTET** – finnes og har eksplisitt testbevis
+- **PROTOTYPE/DELVIS** – deler finnes, men området er ikke ferdig produksjonsfunksjon
+- **VIDERE ARBEID** – planlagt, men ikke del av ferdig leveranse
+
+---
+
+# Epic 1 – Grunnstruktur og brukeropplevelse
 
 ## Story 1.1 – Hovedlayout
 
-**Som bruker** vil jeg ha en tydelig og rolig hovedlayout slik at jeg raskt forstår hvor jeg skal navigere.
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg ha en tydelig hovedlayout slik at jeg raskt forstår hvor jeg skal navigere.
 
 ### Akseptansekriterier
 
-- sidebar finnes
+- sidemeny finnes
 - hovedinnhold er tydelig separert
-- hybridmodus fungerer
-- logo vises korrekt
-- hovednavigasjon er tilgjengelig
-- layout fungerer på desktop
+- navigasjon er konsistent
+- logo brukes konsekvent
+- layout fungerer på relevante skjermstørrelser
+
+### Spor
+
+- `index.html`
+- `styles.css`
+- `app.js`
 
 ---
 
-## Story 1.2 – Temaoversikt
+## Story 1.2 – Lys, mørk og hybrid visning
 
-**Som leder** vil jeg se hovedtemaene slik at jeg kan starte fra et område som passer situasjonen.
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg kunne bruke en visning som passer situasjonen min.
 
 ### Akseptansekriterier
 
-- ni hovedtemaer vises
-- hvert tema er tydelig navngitt
-- hvert tema kan åpnes
-- visuell stil er konsistent
+- lys visning fungerer
+- mørk visning fungerer
+- hybridvisning fungerer
+- sentrale komponenter forblir lesbare
 
 ---
 
-# Epic 2 – Autentisering og tilgang
+## Story 1.3 – Sammenleggbare seksjoner
 
-## Story 2.1 – Innlogging
+**Status:** IMPLEMENTERT
 
-**Som bruker** vil jeg logge inn slik at mine samtaler og innstillinger bare er tilgjengelige for meg.
+**Som bruker** vil jeg kunne åpne og lukke innholdsseksjoner slik at grensesnittet ikke oppleves overfylt.
 
 ### Akseptansekriterier
 
-- gyldig bruker kan logge inn
-- feil innlogging gir generisk feilmelding
-- sesjon lagres sikkert
-- bruker forblir innlogget ved refresh
+- sammenleggbare områder er visuelt forståelige
+- chevron/indikator viser at innhold kan åpnes
+- sekundære sider bruker progressiv visning der dette er hensiktsmessig
 
 ---
 
-## Story 2.2 – Invitasjonsbasert registrering
+# Epic 2 – Temaer og situasjonsforståelse
 
-**Som administrator** vil jeg begrense registrering slik at bare inviterte brukere kan opprette konto.
+## Story 2.1 – Hovedtemaer
+
+**Status:** IMPLEMENTERT
+
+**Som leder** vil jeg kunne orientere meg gjennom relevante samtaletemaer.
 
 ### Akseptansekriterier
 
-- registrering krever gyldig token
-- ugyldig token avvises
-- token kan bare brukes én gang
+Ni hovedtemaer finnes:
+
+1. Alkohol og rus
+2. Fravær og oppfølging
+3. Prestasjon og utvikling
+4. Lønn og utvikling
+5. Samarbeid og kommunikasjon
+6. Avslutning av arbeidsforhold
+7. Sikkerhet og ansvar
+8. Livssituasjoner
+9. Mobbing og trakassering
+
+### Spor
+
+- `app.js`
+- `index.html`
+- `docs/faggrunnlag/`
 
 ---
 
-## Story 2.3 – Roller
+## Story 2.2 – Situasjon i egne ord
 
-**Som administrator** vil jeg skille user, editor og admin slik at brukere bare får nødvendige rettigheter.
+**Status:** IMPLEMENTERT
+
+**Som leder** vil jeg beskrive situasjonen med egne ord slik at jeg slipper omfattende skjemaer.
 
 ### Akseptansekriterier
 
-- user finnes
-- editor finnes
-- admin finnes
-- rolle sjekkes server-side
+- fritekstfelt finnes
+- få obligatoriske felt
+- personvernkontroll kjøres
+- teksten kan brukes som KI-kontekst
+
+---
+
+## Story 2.3 – Temaidentifikasjon
+
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg få forslag til relevant tema og undertema.
+
+### Akseptansekriterier
+
+- KI kan foreslå tema
+- KI kan foreslå undertema
+- bruker kan korrigere forslag
+- løsningen kan gå videre uten unødvendige mellomsteg
 
 ---
 
 # Epic 3 – Personvern
 
-## Story 3.1 – Personvernsjekk i frontend
+## Story 3.1 – Personvernsjekk i klient
 
-**Som bruker** vil jeg få beskjed hvis jeg skriver identifiserende informasjon slik at jeg kan endre teksten før den sendes.
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg få beskjed dersom teksten kan identifisere en person.
 
 ### Akseptansekriterier
 
-- navn kan oppdages
-- e-post kan oppdages
-- telefon kan oppdages
-- fødselsdata kan oppdages
-- adresse kan oppdages
-- kjønnet språk kan oppdages
+Kontrollen kan reagere på blant annet:
+
+- navn
+- e-post
+- telefon
+- fødselsopplysninger
+- identifikatorer
+- relevante familieopplysninger
+- mulig identifiserende arbeidsinformasjon
 
 ---
 
 ## Story 3.2 – Server-side personverngateway
 
-**Som systemeier** vil jeg at serveren kontrollerer teksten slik at frontend ikke kan omgås.
+**Status:** IMPLEMENTERT OG TESTET
+
+**Som systemeier** vil jeg at serveren kontrollerer tekst før KI-kall slik at frontend ikke er eneste sikkerhetsbarriere.
 
 ### Akseptansekriterier
 
-- alle KI-endepunkter bruker samme gateway
-- brudd stopper KI-kall
-- ingen bypass via direkte API
+- sentrale KI-flyter går gjennom serverkontroll
+- personvernbrudd kan stoppe KI-kall
+- kontrollen kan ikke omgås bare ved å manipulere klientkode
+
+### Testbevis
+
+`tests/test-privacy.js`
+
+Siste kontroll:
+
+**29/29 bestått**
 
 ---
 
 ## Story 3.3 – Personvernhjelp
 
-**Som bruker** vil jeg få hjelp til å rette teksten slik at jeg slipper å formulere alt på nytt.
+**Status:** IMPLEMENTERT
 
-### Akseptansekriterier
+**Som bruker** vil jeg få hjelp til å generalisere teksten uten å miste nødvendig kontekst.
 
-- systemet viser hva som er oppdaget
-- «Fiks personvern» finnes
-- nødvendig kontekst beholdes
+### Prinsipp
 
----
-
-# Epic 4 – Situasjonsanalyse
-
-## Story 4.1 – Beskriv situasjon
-
-**Som leder** vil jeg beskrive situasjonen med egne ord slik at jeg slipper å navigere gjennom mange skjemaer.
-
-### Akseptansekriterier
-
-- tekstfelt finnes
-- få obligatoriske felt
-- personvern sjekkes
-- teksten kan sendes til analyse
+> Anonymiser identitet, ikke nødvendig kontekst.
 
 ---
 
-## Story 4.2 – Finn hovedtema
+# Epic 4 – KI-basert samtalestøtte
 
-**Som bruker** vil jeg få forslag til hovedtema slik at systemet kan hjelpe meg videre.
+## Story 4.1 – Hovedveiledning
 
-### Akseptansekriterier
+**Status:** IMPLEMENTERT
 
-- KI returnerer hovedtema
-- forslag vises
-- bruker kan endre
+**Som leder** vil jeg få strukturert støtte slik at jeg kan forberede samtalen.
 
----
-
-## Story 4.3 – Finn undertema
-
-**Som bruker** vil jeg få forslag til undertema slik at veiledningen får riktig kontekst.
-
-### Akseptansekriterier
-
-- undertema returneres
-- høy sikkerhet kan gå direkte videre
-- lav sikkerhet viser alternativer
-- bruker kan overstyre
-
----
-
-# Epic 5 – Samtaleveiledning
-
-## Story 5.1 – Generer hovedveiledning
-
-**Som leder** vil jeg få strukturert veiledning slik at jeg kan forberede samtalen bedre.
-
-### Akseptansekriterier
-
-Svar kan inneholde:
+### Veiledningen kan inneholde
 
 - mål
 - struktur
 - åpning
-- spørsmål
-- reaksjoner
-- neste steg
+- relevante spørsmål
+- mulige reaksjoner
+- hvordan reaksjoner kan møtes
+- videre steg
+
+### Spor
+
+- `server.js`
+- `docs/ai/AI-SYSTEMPROMPT.md`
+- `docs/ai/AI-RESPONSE-CONTRACT.md`
 
 ---
 
-## Story 5.2 – Begrensninger
+## Story 4.2 – Faglige begrensninger
 
-**Som bruker** vil jeg vite når systemet ikke bør gi et bastant råd.
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg at KI-en skal være forsiktig der den ikke har grunnlag for bastante konklusjoner.
 
 ### Akseptansekriterier
 
-- ingen diagnose
-- ingen skyldkonklusjon
+- ingen oppdiktede diagnoser
+- ingen automatiske skyldkonklusjoner
 - ingen automatisk HR-beslutning
-- eskalering anbefales ved behov
+- faglig eller juridisk bistand anbefales når relevant
+- usikkerhet kommuniseres tydelig
 
 ---
 
-# Epic 6 – Oppfølgingsdialog
+# Epic 5 – Oppfølgingsdialog
 
-## Story 6.1 – Fortsett samtalen
+## Story 5.1 – Fortsett samtalen
 
-**Som bruker** vil jeg stille oppfølgingsspørsmål slik at jeg kan utforske situasjonen videre.
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg kunne stille oppfølgingsspørsmål.
 
 ### Akseptansekriterier
 
-- tidligere kontekst beholdes
-- nytt input personvernsjekkes
-- svar er kortere enn hovedveiledning
-- Enter sender
-- Shift+Enter lager linjeskift
+- relevant kontekst beholdes
+- nye innspill personvernsjekkes
+- svar kan bygge på tidligere dialog
+- unødvendig repetisjon begrenses
 
 ---
 
-# Epic 7 – Samtalesimulering
+## Story 5.2 – Ny samtale uten gammel kontekst
 
-## Story 7.1 – Start simulering
+**Status:** IMPLEMENTERT
 
-**Som leder** vil jeg starte en øvelse slik at jeg kan trene før den virkelige samtalen.
+**Som bruker** vil jeg at en ny samtale starter rent.
+
+### Akseptansekriterier
+
+- gammel sak skal ikke lekke inn i ny sak
+- relevant samtaletilstand nullstilles
+
+---
+
+# Epic 6 – Samtalesimulering
+
+## Story 6.1 – Start simulering
+
+**Status:** IMPLEMENTERT
+
+**Som leder** vil jeg øve på samtalen før den gjennomføres.
 
 ### Akseptansekriterier
 
@@ -229,131 +295,204 @@ Svar kan inneholde:
 
 ---
 
-## Story 7.2 – Dynamisk medarbeiderrolle
+## Story 6.2 – Realistisk medarbeiderrolle
 
-**Som bruker** vil jeg at KI-en reagerer realistisk slik at øvelsen føles nyttig.
+**Status:** IMPLEMENTERT OG TESTET
+
+**Som bruker** vil jeg at medarbeideren reagerer realistisk uten å dikte opp vesentlige fakta.
 
 ### Akseptansekriterier
 
-KI kan uttrykke:
+KI kan uttrykke eksempelvis:
 
 - motstand
 - frustrasjon
+- usikkerhet
 - sorg
 - taushet
-- usikkerhet
 - samarbeid
 
----
+KI skal ikke automatisk dikte opp:
 
-## Story 7.3 – Samtalekontekst
-
-**Som bruker** vil jeg at simulatoren husker dialogen slik at svarene henger sammen.
-
-### Akseptansekriterier
-
-- tidligere meldinger brukes
-- KI ignorerer ikke sentral kontekst
-- dialogen er sammenhengende
+- diagnose
+- familieforhold
+- hendelser
+- motiv
 
 ---
 
-## Story 7.4 – Refleksjon etter simulering
+## Story 6.3 – Samtalekontekst
 
-**Som bruker** vil jeg få kort refleksjon slik at jeg kan lære av øvelsen.
+**Status:** IMPLEMENTERT OG TESTET
 
-### Akseptansekriterier
+**Som bruker** vil jeg at dialogen skal henge sammen over flere meldinger.
 
-- hva fungerte
-- hva kunne forbedres
+### Testbevis
+
+`tests/test-simulation.js`
+
+Siste kontroll:
+
+**24/24 bestått**
+
+---
+
+## Story 6.4 – Refleksjon
+
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg kunne reflektere over hvordan samtalen gikk.
+
+Refleksjon kan omfatte:
+
+- hva som fungerte
 - alternative formuleringer
+- hva som kunne gjøres annerledes
 - neste steg
 
 ---
 
-# Epic 8 – Historikk
+# Epic 7 – Autentisering
 
-## Story 8.1 – Lagre samtale
+## Story 7.1 – Innlogging
 
-**Som bruker** vil jeg lagre arbeid slik at jeg kan finne tilbake til det senere.
+**Status:** IMPLEMENTERT
 
-### Akseptansekriterier
-
-- samtale lagres
-- tema lagres
-- undertema lagres
-- bruker-ID kobles riktig
-
----
-
-## Story 8.2 – Åpne historikk
-
-**Som bruker** vil jeg åpne tidligere arbeid.
+**Som bruker** vil jeg logge inn slik at mine data tilhører meg.
 
 ### Akseptansekriterier
 
-- bare egne samtaler vises
-- samtale kan åpnes
-- personvernsjekk kan kjøres ved åpning
+- gyldig bruker kan logge inn
+- ugyldig innlogging avvises
+- session beholdes
+- logout fungerer
 
 ---
 
-## Story 8.3 – Slette historikk
+## Story 7.2 – Lukket registrering
 
-**Som bruker** vil jeg slette egne data.
+**Status:** IMPLEMENTERT
+
+**Som systemeier** vil jeg kontrollere hvem som kan opprette konto.
 
 ### Akseptansekriterier
 
-- én samtale kan slettes
-- all historikk kan slettes
+- registrering krever invitasjon
+- ugyldig invitasjon avvises
+- invitasjon kan ha begrenset levetid
+- invitasjonen gir definert rolle
 
 ---
 
-# Epic 9 – Feedback
+# Epic 8 – Roller og tilgang
 
-## Story 9.1 – Rapporter KI-svar
+## Story 8.1 – User, editor og admin
 
-**Som bruker** vil jeg rapportere et dårlig svar slik at systemet kan forbedres.
+**Status:** IMPLEMENTERT
+
+**Som administrator** vil jeg skille brukerroller slik at personer kun får nødvendige rettigheter.
+
+Roller:
+
+- `user`
+- `editor`
+- `admin`
 
 ### Akseptansekriterier
 
-- kategori kan velges
-- kommentar er valgfri
-- kilde/funksjon registreres
-- samtale er ikke vedlagt som standard
+- rollene finnes
+- kritisk tilgang sjekkes server-side
+- frontend alene avgjør ikke rettighet
 
 ---
 
-## Story 9.2 – Legg ved samtalen
+# Epic 9 – Historikk
 
-**Som bruker** vil jeg frivillig kunne legge ved samtalen slik at problemet kan undersøkes bedre.
+## Story 9.1 – Lagre samtale
+
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg kunne lagre samtalen og finne den igjen.
+
+---
+
+## Story 9.2 – Åpne egen historikk
+
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg bare se mine egne samtaler.
+
+### Akseptansekriterier
+
+- brukerdata knyttes til riktig konto
+- andre brukeres historie skal ikke være tilgjengelig
+- RLS/serverkontroll brukes
+
+---
+
+## Story 9.3 – Slette historikk
+
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg kunne slette egne samtaledata.
+
+---
+
+## Testbevis
+
+`tests/test-history-hotfix.cjs`
+
+---
+
+# Epic 10 – Feedback og feilrapportering
+
+## Story 10.1 – Rapporter KI-svar
+
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg rapportere et problematisk KI-svar.
+
+### Rapport kan inneholde
+
+- kategori
+- kommentar
+- modell
+- tidspunkt
+- teknisk referanse
+
+Samtaleinnhold skal ikke legges ved automatisk.
+
+---
+
+## Story 10.2 – Frivillig samtalevedlegg
+
+**Status:** IMPLEMENTERT
+
+**Som bruker** vil jeg aktivt kunne velge om samtalen skal følge med en rapport.
 
 ### Akseptansekriterier
 
 - opt-in
 - av som standard
-- personvernsjekk før innsending
+- personvernkontroll før innsending
 
 ---
 
-# Epic 10 – Teknisk feilrapportering
+## Story 10.3 – Teknisk feilrapportering
 
-## Story 10.1 – Rapporter feil
+**Status:** IMPLEMENTERT / PROTOTYPE
 
-**Som bruker** vil jeg rapportere teknisk feil uten å måtte forstå tekniske detaljer.
+**Som bruker** vil jeg kunne rapportere teknisk feil uten å måtte forstå tekniske detaljer.
 
-### Akseptansekriterier
-
-Rapport kan inneholde:
+Teknisk metadata kan omfatte:
 
 - versjon
 - tidspunkt
-- side
-- feilkode
+- side/funksjon
+- feilkategori
 - nettleser
-- endpoint
 
-Samtaletekst legges ikke ved automatisk.
+Samtaletekst skal ikke automatisk inkluderes.
 
 ---
 
@@ -361,387 +500,576 @@ Samtaletekst legges ikke ved automatisk.
 
 ## Story 11.1 – Admin-dashboard
 
-**Som admin** vil jeg ha én oversikt over systemfunksjoner.
+**Status:** IMPLEMENTERT
 
-### Akseptansekriterier
+**Som administrator** vil jeg ha tilgang til relevante drifts- og kvalitetsfunksjoner.
+
+Området kan omfatte:
 
 - roller
 - innhold
 - modeller
-- kostnader
 - benchmark
-- feedback
-- kildebruk
+- KI-feedback
+- kostnadsinformasjon
+- kilde-/systeminformasjon
 
 ---
 
-## Story 11.2 – Sammenleggbare seksjoner
+## Story 11.2 – Sammenleggbare adminseksjoner
 
-**Som admin** vil jeg kunne minimere seksjoner slik at siden ikke blir visuelt overfylt.
+**Status:** IMPLEMENTERT
+
+**Som administrator** vil jeg kunne minimere store seksjoner.
 
 ### Akseptansekriterier
 
-- seksjoner kan utvides/minimeres
-- Rediger innhold er lukket som standard
+- seksjoner kan åpnes og lukkes
+- `Rediger innhold` er lukket som standard
+- adminområdet skal ikke bli visuelt unødvendig tungt
 
 ---
 
-## Story 11.3 – Rediger innhold
+## Story 11.3 – Redigerbart innhold
 
-**Som editor/admin** vil jeg kunne endre synlig tekst uten kodeendring.
+**Status:** IMPLEMENTERT
 
-### Akseptansekriterier
-
-- innhold kan redigeres
-- ulagrede endringer vises
-- lagring krever bekreftelse
+**Som editor eller admin** vil jeg kunne endre godkjent innhold uten å endre kildekode.
 
 ---
 
-# Epic 12 – Modellvalg
+# Epic 12 – Modell- og providerstyring
 
 ## Story 12.1 – Velg KI-modell
 
-**Som admin** vil jeg bytte modell slik at jeg kan balansere kvalitet og kostnad.
+**Status:** IMPLEMENTERT I PROTOTYPEFORM
+
+**Som administrator** vil jeg kunne velge støttet KI-modell uten å endre applikasjonskoden.
 
 ### Akseptansekriterier
 
-- støttede modeller vises
-- aktiv modell vises
-- modell lagres i database
-- redeploy er ikke nødvendig
+- støttede modeller finnes
+- aktiv modell kan velges
+- modellvalg håndteres på server/database-nivå
 
 ---
 
-# Epic 13 – Kostnadslogging
+## Story 12.2 – Flere providere
 
-## Story 13.1 – Registrer tokenbruk
+**Status:** IMPLEMENTERT I PROTOTYPEFORM
 
-**Som systemeier** vil jeg registrere tokenbruk slik at kostnad kan beregnes.
+**Som systemeier** vil jeg redusere avhengigheten av én KI-leverandør.
 
-### Akseptansekriterier
+Aktuelle providere:
 
-- input tokens lagres
-- output tokens lagres
-- modell lagres
-- estimert kostnad beregnes
+- OpenAI
+- OpenRouter
+
+Dette gjør det også enklere å vurdere intern KI senere.
 
 ---
 
-## Story 13.2 – Kostnadsoversikt
+# Epic 13 – KI-testing
 
-**Som admin** vil jeg se kostnad over tid.
+## Story 13.1 – Automatisk KI-test
 
-### Akseptansekriterier
+**Status:** IMPLEMENTERT
 
-- 24 timer
-- 7 dager
-- 30 dager
-- modellfordeling
-- funksjonsfordeling
+**Som systemeier** vil jeg teste KI-svar systematisk.
+
+### Spor
+
+- `tests/test-ai.js`
+- `tests/test-ai-stress.js`
+- `tests/cases/`
+
+---
+
+## Story 13.2 – Stresstest
+
+**Status:** IMPLEMENTERT
+
+**Som systemeier** vil jeg teste krevende personalsaker slik at svakheter kan oppdages.
+
+---
+
+## Story 13.3 – Test selve testlogikken
+
+**Status:** IMPLEMENTERT SOM ARBEIDSMÅTE
+
+**Som systemeier** vil jeg kunne korrigere tester som gir falske resultater.
+
+Et konkret eksempel var tester som reagerte på problematiske nøkkelord selv når KI-en faktisk avviste påstanden.
+
+Dette førte til mer kontekstbevisst testlogikk.
 
 ---
 
 # Epic 14 – Modellbenchmark
 
-## Story 14.1 – Fast testbank
+## Story 14.1 – Faste benchmark-caser
 
-**Som systemeier** vil jeg ha faste testsaker slik at modeller kan sammenlignes på likt grunnlag.
+**Status:** PROTOTYPE/TESTFORM
 
-### Akseptansekriterier
+**Som systemeier** vil jeg bruke samme testgrunnlag på flere modeller.
 
-- minst 56 undertemaer
-- minst 2 tester per undertema
-- minst 112 saker totalt
+### Spor
 
----
-
-## Story 14.2 – Kjør benchmark
-
-**Som admin** vil jeg kjøre samme testsak mot flere modeller.
-
-### Akseptansekriterier
-
-- minst 3 modeller
-- samme input
-- samme rammer
-- resultater lagres
+- `data/BENCHMARK-CASES.json`
 
 ---
 
-## Story 14.3 – Budsjettgrense
+## Story 14.2 – Sammenlign modeller
 
-**Som admin** vil jeg sette kostnadsgrense slik at testing ikke blir unødvendig dyr.
+**Status:** PROTOTYPE/TESTFORM
 
-### Akseptansekriterier
+**Som systemeier** vil jeg kunne sammenligne modeller på:
 
-- kostnadsestimat før start
-- hard grense
-- automatisk stopp
-- manuell stopp
+- kvalitet
+- responstid
+- kostnad
+- tokenbruk
+- stabilitet
 
----
+### Spor
 
-# Epic 15 – Web search og kildebruk
-
-## Story 15.1 – Gjør weboppslag
-
-**Som KI-system** vil jeg hente oppdatert informasjon når dette er nødvendig.
-
-### Akseptansekriterier
-
-- web search kan aktiveres
-- ikke alle saker må søke
+`tests/test-model-compare.js`
 
 ---
 
-## Story 15.2 – Logg kildebruk
+## Story 14.3 – Blind sammenligning
 
-**Som admin** vil jeg se hvilke kilder som brukes slik at vi kan vurdere SOURCEBANK.
+**Status:** IMPLEMENTERT I TESTFORM
 
-### Akseptansekriterier
+**Som evaluator** vil jeg kunne vurdere svar uten at modellnavnet påvirker vurderingen.
 
-- søkestreng
-- domene
-- sidetittel
-- URL
+---
+
+# Epic 15 – Kostnad og teknisk måling
+
+## Story 15.1 – Token- og kostnadsdata
+
+**Status:** PROTOTYPE/TESTFORM
+
+**Som systemeier** vil jeg kunne vurdere KI-kostnad slik at modellvalg ikke bare baseres på kvalitet.
+
+Aktuelle data:
+
+- modell
+- input/output tokens
+- estimert kostnad
+- responstid
+
+---
+
+## Story 15.2 – Kostnad som beslutningsgrunnlag
+
+**Status:** PROTOTYPE/VIDERE ANALYSE
+
+**Som produkteier** vil jeg kunne sammenligne kostnad og kvalitet mellom modeller.
+
+Full økonomisk produktmodell er ikke del av dagens leveranse.
+
+---
+
+# Epic 16 – SOURCEBANK og faggrunnlag
+
+## Story 16.1 – Dokumentert fagbank
+
+**Status:** IMPLEMENTERT
+
+**Som systemeier** vil jeg ha et dokumentert faggrunnlag.
+
+### Spor
+
+- `docs/SOURCEBANK.md`
+- `data/SOURCEBANK.json`
+- `docs/faggrunnlag/`
+
+---
+
+## Story 16.2 – Temaorientert faggrunnlag
+
+**Status:** IMPLEMENTERT
+
+**Som systemeier** vil jeg ha egne faggrunnlag for hovedtemaene slik at KI-styringen kan bygge på relevant kontekst.
+
+---
+
+# Epic 17 – Web- og kildeanalyse
+
+## Story 17.1 – Kontrollert webbruk
+
+**Status:** DELVIS / PROTOTYPE
+
+**Som systemeier** vil jeg kunne hente oppdatert ekstern informasjon når det er nødvendig.
+
+Dette skal ikke forstås som at alle svar alltid bruker web.
+
+---
+
+## Story 17.2 – Kildeanalyse
+
+**Status:** DELVIS / PROTOTYPE
+
+**Som administrator** vil jeg kunne analysere hvilke kilder systemet bruker.
+
+Mulig metadata:
+
 - modell
 - tema
-- undertema
+- domene
+- URL
 - tidspunkt
 
 ---
 
-## Story 15.3 – Ingen brukerprofilering
+## Story 17.3 – Ingen brukerprofilering
 
-**Som bruker** vil jeg at kildeanalysen ikke skal brukes til å overvåke meg.
+**Status:** ARKITEKTURKRAV
+
+**Som bruker** vil jeg at teknisk kildeanalyse ikke brukes til å rekonstruere personalsaken min.
 
 ### Akseptansekriterier
 
-- ingen samtaletekst i logg
-- ingen direkte bruker-ID i kildeanalyse
+- samtaletekst lagres ikke automatisk i slik analyse
+- direkte identitet skal unngås der den ikke er nødvendig
 
 ---
 
-# Epic 16 – SOURCEBANK
+# Epic 18 – Sikkerhet
 
-## Story 16.1 – Dokumentert kildebank
+## Story 18.1 – Sikre sessions
 
-**Som systemeier** vil jeg ha en kildebank slik at KI-en har et tydelig faglig grunnlag.
+**Status:** IMPLEMENTERT
 
-### Akseptansekriterier
-
-- kilder dokumenteres
-- tema-relevans kan beskrives
-- faglige begrensninger finnes
-
----
-
-## Story 16.2 – Kandidater til offline-kunnskapsbank
-
-**Som systemeier** vil jeg analysere webbruk slik at ofte brukte kilder kan lagres lokalt senere.
-
-### Akseptansekriterier
-
-- mest brukte domener
-- mest brukte sider
-- mest brukte søketemaer
-
----
-
-# Epic 17 – Sikkerhet
-
-## Story 17.1 – Sikre cookies
-
-**Som systemeier** vil jeg sikre sesjoner.
-
-### Akseptansekriterier
+### Krav
 
 - HttpOnly
-- Secure
+- Secure i produksjon
 - SameSite
+- server-side verifisering
 
 ---
 
-## Story 17.2 – Rate limiting
+## Story 18.2 – Rate limiting
 
-**Som systemeier** vil jeg hindre misbruk.
+**Status:** IMPLEMENTERT
 
-### Akseptansekriterier
+**Som systemeier** vil jeg redusere misbruk og kostnadsangrep.
 
-- login
-- registrering
-- reset
-- KI-kall
+---
+
+## Story 18.3 – Hemmeligheter server-side
+
+**Status:** IMPLEMENTERT
+
+**Som systemeier** vil jeg hindre at KI- eller databasehemmeligheter eksponeres i frontend.
+
+---
+
+## Story 18.4 – Begrenset statisk eksponering
+
+**Status:** IMPLEMENTERT PÅ PROTOTYPENIVÅ
+
+Serverkode, tester, SQL-filer og hemmeligheter skal ikke eksponeres som ordinære frontendressurser.
+
+---
+
+# Epic 19 – Testbar autentisering
+
+## Story 19.1 – Automatiserte tester uten å svekke produksjonsauth
+
+**Status:** IMPLEMENTERT
+
+**Som utvikler** vil jeg kunne kjøre automatiserte servertester uten å fjerne ordinær autentisering.
+
+### Bakgrunn
+
+Automatiserte tester fikk `401` på autentiserte endepunkter.
+
+Å svekke produksjonsautentiseringen ble avvist.
+
+### Valgt løsning
+
+Test-only bypass aktiveres kun når:
+
+```text
+NODE_ENV=test
+TEST_AUTH_BYPASS=1
+```
+
+### Resultat
+
+- tester kan kjøre
+- produksjonsauth beholdes
+
+Dette er et konkret eksempel på kritisk vurdering av en teknisk løsning.
+
+---
+
+# Epic 20 – UI-regresjon
+
+## Story 20.1 – Beskytt etablerte UI-komponenter
+
+**Status:** IMPLEMENTERT SOM TEST-/ARBEIDSPRAKSIS
+
+**Som produkteier** vil jeg unngå at nye KI-genererte endringer ødelegger godkjent design.
+
+### Viktige komponenter
+
+- logo
+- samtalebobler
+- sidemeny
+- adminseksjoner
+- tema- og overskriftsstruktur
+
+---
+
+## Story 20.2 – Korriger feil test fremfor fungerende kode
+
+**Status:** GJENNOMFØRT
+
+En samtalebobletest feilet fordi den krevde en gammel CSS-kommentar.
+
+Produksjonskoden fungerte.
+
+Den foreldede testen ble derfor korrigert i stedet for å endre fungerende UI.
+
+### Spor
+
+`tests/test-bubble-cleanup.cjs`
+
+---
+
+# Epic 21 – Brukertesting
+
+## Story 21.1 – Test hovedflyten med brukere
+
+**Status:** DELVIS / VIDERE ARBEID
+
+**Som produkteier** vil jeg få reelle brukere til å prøve løsningen slik at problemer som automatiserte tester ikke finner kan avdekkes.
+
+Aktuelle områder:
+
+- navigasjon
+- samtaleflyt
+- KI-kvalitet
+- simulator
+- personvernforståelse
+- historikk
+
+---
+
+## Story 21.2 – Strukturert testfeedback
+
+**Status:** IMPLEMENTERT/PROTOTYPE
+
+Testbrukere kan gi strukturert tilbakemelding.
+
+Fullskala brukertesting er fortsatt videre arbeid.
+
+---
+
+# Epic 22 – Repo og leveranse
+
+## Story 22.1 – Ryddig prosjektstruktur
+
+**Status:** IMPLEMENTERT
+
+**Som evaluator** vil jeg forstå repoet raskt.
+
+Struktur:
+
+- `assets/`
+- `data/`
+- `database/`
+- `docs/`
+- `tests/`
+
+Gamle og overflødige filer er ryddet bort, mens Git-historikken er beholdt.
+
+---
+
+## Story 22.2 – Kjørbar README
+
+**Status:** IMPLEMENTERT
+
+**Som evaluator** vil jeg kunne følge README for å forstå og kjøre prosjektet.
+
+### Spor
+
+`README.md`
+
+---
+
+## Story 22.3 – Sporbar utviklingshistorikk
+
+**Status:** IMPLEMENTERT
+
+**Som evaluator** vil jeg kunne følge utviklingen gjennom Git.
+
+Git-historikken viser blant annet:
+
+- tidlige prototyper
+- personvernendringer
+- KI-integrasjon
+- testing
+- simulator
+- autentisering
+- admin
 - benchmark
+- BMAD
+- feilrettinger
+- revert
+- sluttkvalitetssikring
+
+Tidlige versjoner ble utviklet før prosjektet var koblet til Git/GitHub og ble senere lagt inn i repository.
 
 ---
 
-## Story 17.3 – Sikker statisk servering
+# Epic 23 – Framtidig lukket/offline løsning
 
-**Som systemeier** vil jeg bare eksponere nødvendige frontendfiler.
+## Story 23.1 – Intern KI
 
-### Akseptansekriterier
+**Status:** VIDERE ARBEID
 
-- serverkode ikke offentlig
-- SQL ikke offentlig
-- tester ikke offentlig
-- hemmeligheter ikke offentlig
+**Som virksomhet** vil jeg på sikt kunne bruke intern KI uten ekstern API.
 
 ---
 
-# Epic 18 – Lukket intranett
+## Story 23.2 – Intern database og identitet
 
-## Story 18.1 – Provider-uavhengig KI-lag
+**Status:** VIDERE ARBEID
 
-**Som virksomhet** vil jeg kunne bruke intern KI slik at løsningen kan brukes uten ekstern API.
+En framtidig variant kan bruke:
 
-### Akseptansekriterier
-
-- KI-lag kan byttes
-- intern endpoint støttes
-- resten av appen krever minimale endringer
+- intern PostgreSQL
+- intern identitetsløsning
+- SSO
 
 ---
 
-## Story 18.2 – Intern database
+## Story 23.3 – Lokal kunnskapsbank/RAG
 
-**Som virksomhet** vil jeg kunne bruke intern database.
+**Status:** VIDERE ARBEID
 
-### Akseptansekriterier
+En framtidig lukket variant kan bruke lokale godkjente dokumenter i stedet for ekstern webtilgang.
 
-- datamodell kan flyttes
-- PostgreSQL-lignende løsning støttes
-
----
-
-## Story 18.3 – Lokal kunnskapsbank
-
-**Som virksomhet** vil jeg bruke lokale kilder uten internett.
-
-### Akseptansekriterier
-
-- web search kan slås av
-- lokal RAG kan brukes
-- godkjente interne dokumenter kan brukes
+Dette er ikke del av dagens implementerte leveranse.
 
 ---
 
-# Epic 19 – Brukertesting
+# 24. Definition of Done
 
-## Story 19.1 – UX-test
+En story regnes som ferdig når relevante krav er oppfylt.
 
-**Som produkteier** vil jeg teste løsningen med reelle brukere slik at vi kan forbedre brukeropplevelsen.
-
-### Akseptansekriterier
-
-- 8–12 planlagte brukertester
-- realistiske oppgaver
-- observasjon dokumenteres
-- funn prioriteres
-
----
-
-## Story 19.2 – Mål for brukertest
-
-### Akseptansekriterier
-
-- minst 90 % fullfører hovedflyten uten hjelp
-- minst 80 % vurderer støtten som relevant og konkret
-
----
-
-# Epic 20 – Økonomisk bærekraft
-
-## Story 20.1 – Estimer brukerforløp
-
-**Som produkteier** vil jeg vite hva en typisk bruker koster slik at framtidig drift kan vurderes.
-
-### Akseptansekriterier
-
-- KI-kostnad estimeres
-- webkostnad estimeres
-- typisk forløp kan summeres
-
----
-
-## Story 20.2 – Vurdere betalingsmodell
-
-**Som produkteier** vil jeg kunne vurdere abonnement/lisens dersom løsningen får reell bruk.
-
-### Akseptansekriterier
-
-- kostnadsgrunnlag finnes
-- betalingsmodell er ikke nødvendig i V1
-- gratis/rimelig framtidig modell er mulig
-
----
-
-# 21. Foreslått implementeringsrekkefølge
-
-1. grunnstruktur og layout
-2. autentisering
-3. roller
-4. personvern
-5. tema/undertema
-6. hovedveiledning
-7. oppfølgingsdialog
-8. simulering
-9. historikk
-10. feedback
-11. admin
-12. modellvalg
-13. kostnadslogging
-14. benchmark
-15. web search/kilder
-16. SOURCEBANK
-17. sikkerhetsherding
-18. brukertesting
-19. intranettarkitektur
-20. økonomisk evaluering
-
----
-
-# 22. Definition of Done
-
-En story er ferdig når:
+For implementerte stories skal følgende vurderes:
 
 - funksjonen virker
-- akseptansekriteriene er oppfylt
+- akseptansekriteriene er vurdert
 - relevant personvern er vurdert
 - relevant sikkerhet er vurdert
-- funksjonen er testet
-- ingen kritiske regresjoner er oppdaget
+- funksjonen er testet på egnet nivå
+- kjente kritiske regresjoner er håndtert
 - dokumentasjon er oppdatert
+- status i BMAD-dokumentasjonen samsvarer med faktisk leveranse
 
+Ikke alle stories krever samme type test.
 
-## Epic 21 – Mobbing, trakassering og varsling
-- Som leder vil jeg kunne velge et eget tema for mobbing og trakassering.
-- Som leder vil jeg få støtte som skiller påstand, undersøkelse og konklusjon.
-- Som leder vil jeg få ulike råd når jeg snakker med den som sier ifra og den det varsles om.
-- Som produkteier vil jeg ha faste myndighets- og forskningskilder, inkludert relevant MOST-kunnskap for forsvarssektoren.
+Eksempel:
 
-## Epic 22 – Brukertest og evaluering
-- Som testbruker vil jeg kunne gi en kort tilbakemelding på omtrent to minutter.
-- Som admin vil jeg se aggregert resultat uten at svarene kobles til samtaletekst eller brukeridentitet.
-- Som evaluator vil jeg kunne få en tidsbegrenset engangsinvitasjon med riktig rolle.
+- ren UX-story kan kreve visuell/manuell kontroll
+- personverngateway krever automatiserte tester
+- KI-kvalitet krever både automatiserte og menneskelige vurderinger
 
-## Epic 23 – Provider-uavhengig modellbenchmark
-- Som admin vil jeg kunne velge OpenAI- eller OpenRouter-modeller uten ny deploy.
-- Som prosjekteier vil jeg sammenligne gratis, rimelige og premium-modeller på de samme 112 testcasene.
+---
 
-## v20.6 – nye stories
-- Som testbruker kan jeg bare levere brukertesten én gang og henvises til Kontakt ved flere innspill.
-- Som admin kan jeg slå brukertestskjemaet av/på uten å slette svar.
-- Som bruker får jeg en tydelig førstegangsbekreftelse på personverninformasjonen.
-- Som bruker kan jeg åpne Hjelp med kort veiledning og kuraterte faglenker.
-- Som admin kan jeg finne funksjoner raskt fordi hovedseksjonene er kollapset som standard.
+# 25. Sporbarhetsmatrise
 
+| Epic | Status | Viktigste bevis |
+|---|---|---|
+| 1 UX/layout | Implementert | `index.html`, `styles.css`, `app.js` |
+| 2 Tema/situasjon | Implementert | app + faggrunnlag |
+| 3 Personvern | Implementert/testet | `tests/test-privacy.js` |
+| 4 KI-veiledning | Implementert | server + KI-dokumentasjon |
+| 5 Oppfølging | Implementert | app/server |
+| 6 Simulator | Implementert/testet | `tests/test-simulation.js` |
+| 7 Autentisering | Implementert | Supabase/server |
+| 8 Roller | Implementert | server/admin |
+| 9 Historikk | Implementert | Supabase + regresjonstest |
+| 10 Feedback | Implementert | app/server |
+| 11 Admin | Implementert | app/server |
+| 12 Modell/provider | Prototype | server/admin |
+| 13 KI-testing | Implementert | `tests/` |
+| 14 Benchmark | Prototype/test | benchmarkdata/tests |
+| 15 Kostnad | Prototype/test | modell-/benchmarklogikk |
+| 16 SOURCEBANK | Implementert | `docs/`, `data/` |
+| 17 Web/kilde | Delvis/prototype | server/admin |
+| 18 Sikkerhet | Implementert på prototypenivå | server + sikkerhetsdokument |
+| 19 Test-auth | Implementert | server + tester |
+| 20 UI-regresjon | Implementert | regresjonstester |
+| 21 Brukertesting | Delvis | testopplegg |
+| 22 Repo/leveranse | Implementert | README/Git |
+| 23 Lukket løsning | Videre arbeid | arkitekturdokument |
 
+---
 
-## Story – navigasjon og sammenleggbare seksjoner
-- Som bruker vil jeg se en tydelig chevron til venstre for sammenleggbare overskrifter slik at det er lett å forstå hva som kan åpnes.
-- Som bruker vil jeg finne Hjelp og Kontakt fra en ryddig innstillingsstruktur uten unødvendig menybelastning.
+# 26. Sammenheng med BMAD
 
-## Story – kanalvalg
-- Som produkteier vil jeg innen ett år kunne vurdere behovet for egen mobilapp basert på brukertesting og faktisk bruk.
+Stories skal leses sammen med:
+
+- `product-brief.md`
+- `docs/bmad/PRD.md`
+- `docs/bmad/ARCHITECTURE-BMAD.md`
+- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
+- `docs/bmad/UX-DESIGN-BMAD.md`
+
+KI-utvikling:
+
+- `docs/ai/AI-LOGG-SAMTALESTOTTE.md`
+
+Testing:
+
+- `docs/ai/AI-TESTPLAN.md`
+- `tests/`
+
+Historisk utvikling:
+
+- `CHANGELOG.md`
+- Git commit-historikken
+
+---
+
+# 27. Oppsummering
+
+Epics og stories viser hvordan Samtalestøtte har utviklet seg fra en enkel prototype til en betydelig mer kompleks KI-applikasjon.
+
+Kjernefunksjonene som er implementert omfatter:
+
+- situasjonsanalyse
+- samtalestøtte
+- personverngateway
+- simulator
+- autentisering
+- historikk
+- roller
+- admin
+- faggrunnlag
+- KI-testing
+- modell-/providerarbeid
+
+Prosjektet har også prototypeområder knyttet til:
+
+- benchmark
+- kostnadsanalyse
+- kildeanalyse
+
+Og eksplisitt framtidig arbeid knyttet til:
+
+- større brukertesting
+- lokal RAG
+- intern KI
+- lukket nettverk
+
+Denne statusdelingen gjør at dokumentet kan sammenlignes direkte med kode, tester og faktisk levert applikasjon uten at framtidige ambisjoner framstår som ferdig implementert funksjonalitet.
