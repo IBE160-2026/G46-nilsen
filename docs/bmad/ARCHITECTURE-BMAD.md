@@ -3,641 +3,874 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Architecture Document  
 **Rammeverk:** BMAD  
-**Status:** Planlagt arkitektur for første versjon  
-**Språk:** Norsk  
+**Status:** Revidert arkitektur med faktisk leveransestatus  
+**Versjon ved dokumentasjon:** 20.10.3  
+**Språk:** Norsk
 
 ---
 
-## 1. Formål
+# 1. Formål
 
-Dette dokumentet beskriver den planlagte tekniske arkitekturen for Samtalestøtte.
+Dette dokumentet beskriver den tekniske arkitekturen i den leverte Samtalestøtte-prototypen.
 
-Målet er å gjøre løsningen:
+Dokumentet skiller mellom:
+
+- **nåværende implementert arkitektur**
+- **delvis/prototypebasert funksjonalitet**
+- **framtidig målarkitektur**
+
+Målet er å gjøre det tydelig hvordan løsningen faktisk er bygget, hvilke sikkerhets- og personvernvalg som er gjort, hvordan komponentene kommuniserer, og hvilke deler som kan videreutvikles senere.
+
+Arkitekturen er utviklet iterativt og har blitt endret etter:
+
+- testing
+- tekniske feil
+- KI-evaluering
+- personvernvurderinger
+- sikkerhetsgjennomgang
+- brukerflyt
+- kostnadsvurdering
+- nye produktbehov
+
+---
+
+# 2. Arkitekturmål
+
+Arkitekturen skal støtte en KI-basert applikasjon som er:
 
 - sikker
-- modulær
+- personvernbevisst
 - testbar
-- kostnadskontrollerbar
-- personvernvennlig
-- enkel å videreutvikle
-- uavhengig av én bestemt KI-leverandør
-- mulig å tilpasse til lukket intranett uten internettilgang
+- forståelig
+- mulig å videreutvikle
+- mulig å feilsøke
+- ikke unødvendig låst til én KI-modell
+- egnet som prototype for framtidig intern/lukket løsning
 
-Arkitekturen skal støtte både dagens nettbaserte prototype og en framtidig intern variant.
+Den viktigste arkitekturregelen er:
 
----
-
-# 2. Arkitekturprinsipper
-
-## 2.1 Tydelig separasjon mellom lag
-
-Løsningen skal deles i tydelige lag:
-
-1. frontend
-2. applikasjonsserver
-3. autentisering/database
-4. KI-integrasjon
-5. kilde-/web-lag
-6. sikkerhet/personvern
-7. admin og observability
-
-Dette reduserer kobling mellom komponentene og gjør det enklere å bytte leverandører senere.
+> Sensitive nøkler, tilgangskontroll og sentrale sikkerhetsbeslutninger skal ligge på serversiden.
 
 ---
 
-## 2.2 Provider-uavhengighet
+# 3. Arkitekturstatus
 
-KI-leverandøren skal ikke være hardkodet inn i hele applikasjonen.
-
-Applikasjonen skal bruke et abstraksjonslag slik at følgende kan byttes:
-
-- ekstern KI-modell
-- intern KI-modell
-- OpenAI-kompatibelt API
-- intern REST-tjeneste
-- lokal modellserver
-
-Samme prinsipp gjelder database og kunnskapskilder.
-
----
-
-## 2.3 Privacy by design
-
-Personvern skal være en del av arkitekturen, ikke et tillegg.
-
-Det innebærer:
-
-- personvernsjekk før KI-kall
-- minst mulig logging av brukerinnhold
-- bruker-eid historikk
-- separasjon mellom brukerdata og teknisk analyse
-- server-side kontroll i tillegg til frontend-kontroll
-- eksplisitt samtykke før samtalevedlegg deles i feedback
+| Område | Status |
+|---|---|
+| Frontend | Implementert |
+| Node/Express backend | Implementert |
+| Supabase Auth | Implementert |
+| PostgreSQL/Supabase data | Implementert |
+| Rollemodell | Implementert |
+| Personverngateway | Implementert og testet |
+| KI-integrasjon | Implementert |
+| Samtalesimulator | Implementert og testet |
+| Historikk | Implementert |
+| Admin | Implementert |
+| Flere KI-modeller | Implementert i prototypeform |
+| OpenRouter/providerlag | Implementert i prototypeform |
+| Benchmark | Prototype/testform |
+| Kostnads-/tokenanalyse | Prototype/testform |
+| Web-/kildeanalyse | Delvis/prototype |
+| Lokal RAG | Framtidig arbeid |
+| Intern KI | Framtidig arbeid |
+| Lukket nettverk | Framtidig målarkitektur |
 
 ---
 
-# 3. Hovedarkitektur – nettversjon
+# 4. Overordnet arkitektur
+
+Den leverte nettversjonen består av fire sentrale hovedlag:
 
 ```text
-┌──────────────────────────┐
-│        Nettleser         │
-│  HTML / CSS / JavaScript │
-└─────────────┬────────────┘
-              │ HTTPS
-              ▼
-┌──────────────────────────┐
-│    Node / Express API    │
-│                          │
-│ - autentisering          │
-│ - personverngateway      │
-│ - KI-routing             │
-│ - admin-endepunkter      │
-│ - logging                │
-│ - kostnadsberegning      │
-└──────┬────────┬──────────┘
-       │        │
-       │        ├───────────────────────────┐
-       │                                    │
-       ▼                                    ▼
-┌───────────────┐                  ┌──────────────────┐
-│   Supabase    │                  │   KI-leverandør │
-│               │                  │                  │
-│ Auth          │                  │ Luna/Terra/Sol   │
-│ PostgreSQL    │                  │ eller annen LLM  │
-│ RLS           │                  │                  │
-└──────┬────────┘                  └────────┬─────────┘
-       │                                    │
-       │                                    ▼
-       │                           ┌──────────────────┐
-       │                           │   Web search     │
-       │                           │  ved behov       │
-       │                           └──────────────────┘
-       │
-       ▼
-┌──────────────────────────┐
-│ Samtalehistorikk, roller │
-│ feedback, admininnhold,  │
-│ logger og benchmark      │
-└──────────────────────────┘
+Bruker / nettleser
+        │
+        ▼
+Frontend
+HTML / CSS / JavaScript
+        │
+        │ HTTPS / API
+        ▼
+Node.js / Express
+Applikasjonsserver
+        │
+        ├──────────────► KI-provider
+        │                OpenAI / OpenRouter
+        │
+        ▼
+Supabase
+Auth + PostgreSQL + RLS
+```
+
+Applikasjonsserveren fungerer som sikkerhets- og kontrollpunkt mellom frontend og eksterne tjenester.
+
+Frontend skal ikke kommunisere direkte med hemmelige KI-nøkler eller Supabase service credentials.
+
+---
+
+# 5. Arkitekturprinsipper
+
+## 5.1 Serveren er tillitsgrensen
+
+Frontend regnes ikke som et tilstrekkelig sikkerhetslag.
+
+Serveren skal derfor håndtere:
+
+- autentisering
+- autorisering
+- rollevalidering
+- personverngateway
+- KI-routing
+- hemmelige nøkler
+- modellvalg
+- sikkerhetskontroller
+- relevante adminfunksjoner
+
+Dette gjør at en bruker ikke skal kunne omgå kritiske regler bare ved å endre JavaScript i nettleseren.
+
+---
+
+## 5.2 Privacy by design
+
+Personvern er en del av arkitekturen, ikke bare en tekst i brukergrensesnittet.
+
+Arkitekturen skal redusere risiko gjennom:
+
+- personvernsjekk før KI-kall
+- server-side kontroll
+- klientbasert forhåndsvarsling
+- dataminimering
+- minst mulig logging av samtaleinnhold
+- bruker-eid historikk
+- separasjon mellom brukerdata og teknisk analyse
+
+Prinsippet er:
+
+> Anonymiser identitet, ikke nødvendig kontekst.
+
+---
+
+## 5.3 Defense in depth
+
+Sikkerhet baseres ikke på ett enkelt tiltak.
+
+Flere lag skal virke sammen:
+
+```text
+brukerinput
+→ klientkontroll
+→ autentisering
+→ servervalidering
+→ personverngateway
+→ autorisasjon
+→ KI/provider
+→ kontrollert svar
 ```
 
 ---
 
-# 4. Frontend
+## 5.4 Provider-uavhengighet
 
-Frontend skal levere hele brukeropplevelsen.
+KI-integrasjonen skal ikke spre provider-spesifikk logikk gjennom hele applikasjonen.
 
-Teknologi:
+Serveren skal fungere som et mellomlag mellom produktlogikken og KI-leverandøren.
+
+Dette gjør det mulig å:
+
+- bytte modell
+- sammenligne modeller
+- bruke OpenAI
+- bruke OpenRouter
+- senere koble til intern KI
+
+Provider-uavhengigheten er delvis implementert og er også et framtidig arkitekturmål.
+
+---
+
+# 6. Frontend
+
+## Teknologi
+
+Frontend bruker:
 
 - HTML
 - CSS
 - JavaScript
 
-Ansvar:
+Sentrale filer:
+
+- `index.html`
+- `styles.css`
+- `app.js`
+
+## Ansvar
+
+Frontend håndterer blant annet:
 
 - navigasjon
-- tema/undertema
+- hovedtemaer og undertemaer
 - situasjonsinput
 - personvernfeedback
-- hovedveiledning
+- visning av KI-svar
 - oppfølgingsdialog
 - simulator
 - historikk
-- admin
-- benchmarkvisning
-- kostnadsvisning
-
-Frontend skal ikke inneholde:
-
-- service role-nøkler
-- KI-API-nøkler
-- sensitive databasehemmeligheter
-
----
-
-# 5. Applikasjonsserver
-
-Backend skal kjøre på Node.js med Express.
-
-Ansvar:
-
-- autentiserte API-kall
-- session/cookie-håndtering
-- rollevalidering
-- personverngateway
-- KI-kall
-- modellvalg
-- benchmarklogikk
-- web search logging
-- kostnadsberegning
-- feilhåndtering
-- adminendepunkter
-- sikkerhetsheadere
-- rate limiting
-
-Serveren skal være eneste lag som kan kommunisere med hemmelige nøkler og eksterne KI-tjenester.
-
----
-
-# 6. Database og autentisering
-
-Supabase brukes i nettversjonen.
-
-Komponenter:
-
-- Supabase Auth
-- PostgreSQL
-- Row Level Security
-- database-tabeller
-- rolle- og tilgangsdata
-
-Data kan omfatte:
-
-- brukerprofiler
-- roller
-- historikk
+- adminvisninger
 - innstillinger
-- feedback
-- redigerbart innhold
+- UI-tilstand
+
+## Frontend skal ikke inneholde
+
+- OpenAI API-nøkkel
+- OpenRouter API-nøkkel
+- Supabase service role key
+- andre serverhemmeligheter
+
+---
+
+# 7. Applikasjonsserver
+
+Backend kjører Node.js og Express.
+
+Sentral fil:
+
+`server.js`
+
+## Ansvar
+
+Serveren håndterer:
+
+- autentisering
+- session/cookies
+- rollevalidering
+- API-endepunkter
+- personverngateway
+- KI-integrasjon
 - modellvalg
-- benchmarkresultater
-- teknisk KI-bruksdata
-- kilde-/webmetadata
+- historikkoperasjoner
+- adminfunksjoner
+- benchmarklogikk
+- kostnads-/tokeninformasjon
+- feilbehandling
+- rate limiting
+- sikkerhetsheadere
+- origin-kontroll
+- databasekommunikasjon
+
+Serveren er dermed applikasjonens viktigste kontrollpunkt.
 
 ---
 
-# 7. Datamodell – prinsipper
+# 8. KI-dataflyt
 
-## 7.1 Brukerdata
+En typisk KI-forespørsel følger denne flyten:
 
-Brukerdata skal være direkte knyttet til bruker-ID der dette er nødvendig.
+```text
+Bruker skriver tekst
+        │
+        ▼
+Frontend personvernkontroll
+        │
+        ▼
+API-kall til server
+        │
+        ▼
+Autentisering / tilgangssjekk
+        │
+        ▼
+Server-side personverngateway
+        │
+        ▼
+Kontekst bygges
+        │
+        ▼
+Modell/provider velges
+        │
+        ▼
+KI-kall
+        │
+        ▼
+Svar mottas
+        │
+        ▼
+Svar returneres til frontend
+```
 
-Eksempler:
-
-- profil
-- samtalehistorikk
-- egne innstillinger
-
-## 7.2 Teknisk analyse
-
-Teknisk analyse skal så langt som mulig være frikoblet fra identifiserbar bruker.
-
-Eksempler:
-
-- tokenbruk
-- estimert kostnad
-- web search metadata
-- kildebruk
-- benchmarkdata
-
-Formålet er å analysere systemet, ikke enkeltbrukeren.
+Dette er et viktig arkitekturvalg fordi personvernkontrollen dermed ikke bare er avhengig av klientkode.
 
 ---
 
-# 8. KI-integrasjon
+# 9. Personverngateway
 
-KI-laget skal være modulært.
+## Status
 
-Det skal kunne motta:
+**Implementert og automatisert testet.**
 
-- systemprompt
+Personverngatewayen skal redusere risikoen for at identifiserende informasjon sendes videre til KI.
+
+Kontrollen håndterer blant annet:
+
+- navn
+- e-post
+- telefonnummer
+- fødselsopplysninger
+- identifikatorer
+- direkte familieopplysninger
+- mulig identifiserende arbeidsinformasjon
+- kjønnede formuleringer der nøytralisering er relevant
+
+## Arkitekturmønster
+
+```text
+Input
+→ klientkontroll
+→ serverkontroll
+→ KI
+```
+
+Klientkontrollen gir brukerfeedback.
+
+Serverkontrollen er den endelige barrieren før KI-kall.
+
+## Testbevis
+
+`tests/test-privacy.js`
+
+Siste kontroll:
+
+**29/29 kontroller bestått**
+
+---
+
+# 10. KI-integrasjon
+
+## Status
+
+**Implementert.**
+
+KI-laget mottar kontekst som kan omfatte:
+
+- systeminstruks
 - situasjonsbeskrivelse
-- hovedtema
+- tema
 - undertema
-- relevant historikk
-- SOURCEBANK-kontekst
+- samtalekontekst
 - simulatorrolle
+- relevant faglig kontekst
 
-KI-laget skal kunne returnere:
+KI-laget brukes til:
 
-- strukturert veiledning
-- oppfølgingssvar
-- simulatorsvar
-- tema/undertema
-- kildebruk
-- tokenbruk
-- teknisk metadata
+- situasjonsforståelse
+- hovedveiledning
+- oppfølgingsdialog
+- temaidentifikasjon
+- simulering
 
 ---
 
-# 9. Modellvalg
+# 11. KI-regler og responskontrakt
 
-Admin skal kunne velge mellom støttede modeller.
+KI-atferd er ikke kun styrt gjennom kode.
 
-Aktivt modellvalg skal ligge i konfigurasjon/database og leses av serveren.
+Prosjektet bruker også eksplisitte instruksjoner og dokumenterte regler.
+
+Sentrale dokumenter:
+
+- `docs/ai/AI-SYSTEMPROMPT.md`
+- `docs/ai/AI-RESPONSE-CONTRACT.md`
+- `docs/ai/SAMTALEPARTNER-MODELL.md`
+
+Disse brukes til å styre blant annet:
+
+- tone
+- forsiktighet
+- faglig avgrensning
+- diagnoser
+- skyld
+- spekulasjon
+- simulering
+- bruk av manglende informasjon
+
+Dette er viktig fordi KI-systemets arkitektur består av både programkode og modellstyring.
+
+---
+
+# 12. Modell- og providerarkitektur
+
+## Status
+
+**Implementert i prototypeform.**
+
+Serveren støtter konfigurerbare KI-modeller.
+
+Providerlaget er utviklet for å redusere koblingen mellom applikasjonen og én enkelt leverandør.
+
+Aktuelle providere:
+
+- OpenAI
+- OpenRouter
+
+Hemmeligheter lagres kun server-side:
+
+- `OPENAI_API_KEY`
+- `OPENROUTER_API_KEY`
+
+## Formål
 
 Dette gjør det mulig å:
 
-- bytte modell uten redeploy
-- teste billigere modell
-- bruke sterkere modell ved behov
-- sammenligne kvalitet og kostnad
+- teste ulike modeller
+- sammenligne kvalitet
+- sammenligne responstid
+- sammenligne kostnad
+- redusere provider-lock-in
 
 ---
 
-# 10. Modellbenchmark
+# 13. Autentisering
 
-Benchmark skal kjøre samme testsak mot flere modeller.
+## Status
 
-For hver kjøring lagres:
+**Implementert.**
 
-- case-id
-- modell
-- svar
-- tokens
-- estimert kostnad
-- responstid
-- web search
-- søkestrenger
-- kilder
-- eventuelle feil
+Supabase brukes til autentisering.
 
-Benchmarktrafikk skal merkes separat fra vanlig brukertrafikk.
+Autentiseringsarkitekturen støtter blant annet:
 
----
+- innlogging
+- utlogging
+- session
+- lukket registrering
+- invitasjoner
+- brukere
+- roller
 
-# 11. Web search og kildeovervåking
+Frontend skal ikke selv avgjøre om en bruker har adminrettigheter.
 
-KI skal kunne gjøre weboppslag når oppdatert eller presis informasjon er nødvendig.
-
-Logg kan inneholde:
-
-- søkestreng
-- modell
-- tema
-- undertema
-- domene
-- sidetittel
-- URL
-- tidspunkt
-
-Loggen skal ikke inneholde:
-
-- samtaletekst
-- personnavn
-- direkte brukeridentitet der dette ikke er nødvendig
-
-Formålet er:
-
-- kvalitetskontroll
-- identifisering av ofte brukte kilder
-- utvikling av SOURCEBANK
-- grunnlag for offline-modus
+Rollebeskyttelse skal kontrolleres server-side.
 
 ---
 
-# 12. SOURCEBANK
+# 14. Sessions og cookies
 
-SOURCEBANK skal være det dokumenterte faglige grunnlaget for løsningen.
+Sessions skal bruke sikre cookie-prinsipper.
 
-Første nivå:
-
-- manuelle kilder
-- tema-relevante regler
-- faglig avgrensning
-- lenker og veiledning
-
-Videre nivå:
-
-- dokumenter delt i tekstbiter
-- embeddings
-- lokal søkemotor
-- RAG
-
----
-
-# 13. Lukket intranett – målarkitektur
-
-```text
-┌─────────────────────────────┐
-│     Intern klient / PC      │
-└──────────────┬──────────────┘
-               │
-               ▼
-┌─────────────────────────────┐
-│ Intern Samtalestøtte-server │
-│ Node / tilsvarende          │
-└───────┬─────────┬───────────┘
-        │         │
-        │         ├────────────────────┐
-        │                              │
-        ▼                              ▼
-┌──────────────┐              ┌───────────────────┐
-│ Intern DB    │              │ Intern KI-modell  │
-│ PostgreSQL   │              │ vLLM/Ollama/API   │
-└──────┬───────┘              └────────┬──────────┘
-       │                               │
-       ▼                               ▼
-┌──────────────┐              ┌───────────────────┐
-│ Intern auth  │              │ Lokal SOURCEBANK  │
-│ / SSO        │              │ / RAG             │
-└──────────────┘              └───────────────────┘
-
-Ingen internettilgang nødvendig
-```
-
----
-
-# 14. Intern KI
-
-Lukket variant skal kunne bruke:
-
-- OpenAI-kompatibelt internt API
-- vLLM
-- Ollama
-- intern REST-tjeneste
-- annen virksomhetsgodkjent modellserver
-
-Målet er å gjøre KI-integrasjonen utskiftbar uten å endre hele appen.
-
----
-
-# 15. Lokal RAG / kunnskapsbank
-
-I lukket miljø skal web search erstattes av lokale kilder.
-
-Flyt:
-
-```text
-brukerinput
-→ personverngateway
-→ intern KI
-→ lokalt oppslag
-→ relevante tekstutdrag
-→ KI-svar
-```
-
-Lokale kilder kan være:
-
-- HR-rutiner
-- interne prosedyrer
-- arbeidsrettslige veiledere
-- sikkerhetsregler
-- lederhåndbøker
-- godkjente eksterne kilder som er importert lokalt
-
----
-
-# 16. Sikkerhetsarkitektur
-
-Sikkerhet skal bygges i flere lag.
-
-## 16.1 Klient
-
-- personvernvarsling
-- inputvalidering
-- ingen hemmelige nøkler
-- minimal teknisk informasjon
-
-## 16.2 Server
-
-- autentisering
-- autorisering
-- role checks
-- privacy gateway
-- rate limiting
-- origin-kontroll
-- sikkerhetsheadere
-- logging uten sensitiv tekst
-
-## 16.3 Database
-
-- RLS
-- minst nødvendige rettigheter
-- separate adminroller
-- kontroll på service role
-- slettestrategi
-
----
-
-# 17. Sessions og cookies
-
-Sessions skal bruke sikre cookies.
-
-Krav:
+Relevant konfigurasjon omfatter:
 
 - HttpOnly
 - Secure i produksjon
 - SameSite
+- server-side validering
 - kontrollert levetid
-- server-side verifisering
+
+Formålet er å redusere risikoen for at autentiseringsinformasjon blir tilgjengelig for klientkode eller misbrukes på tvers av nettsteder.
 
 ---
 
-# 18. Rate limiting
+# 15. Roller og autorisasjon
 
-Rate limits skal beskytte:
+Systemet støtter:
 
-- login
-- registrering
-- passordreset
-- KI-kall
+- `user`
+- `editor`
+- `admin`
+
+## User
+
+Ordinære brukerfunksjoner.
+
+## Editor
+
+Kan i tillegg redigere godkjent innhold.
+
+## Admin
+
+Har tilgang til utvidede drifts- og kvalitetsfunksjoner.
+
+## Arkitekturregel
+
+Tilgang skal ikke sikres bare ved å skjule knapper i frontend.
+
+Sensitive endepunkter skal validere rolle på serveren.
+
+---
+
+# 16. Database
+
+## Teknologi
+
+Supabase PostgreSQL.
+
+Databasefiler og migreringer ligger under:
+
+`database/`
+
+## Dataområder kan omfatte
+
+- brukerdata
+- roller
+- samtalehistorikk
+- innstillinger
+- feedback
+- innhold
+- appinnstillinger
+- modellkonfigurasjon
+- test-/benchmarkdata
+
+---
+
+# 17. Row Level Security
+
+RLS brukes som et ekstra datalag for tilgangskontroll.
+
+Hovedprinsipp:
+
+> Brukeren skal ikke kunne lese eller endre en annen brukers personlige data bare fordi klienten kjenner en ID.
+
+RLS kombineres med server-side validering.
+
+Dette gir flere lag med beskyttelse.
+
+---
+
+# 18. Historikkarkitektur
+
+## Status
+
+**Implementert.**
+
+Samtalehistorikk knyttes til riktig bruker.
+
+Typisk dataflyt:
+
+```text
+innlogget bruker
+→ server
+→ autentisering
+→ Supabase
+→ RLS
+→ brukerens samtaler
+```
+
+Historikk skal ikke være en global samling samtaler.
+
+## Testbevis
+
+`tests/test-history-hotfix.cjs`
+
+---
+
+# 19. Samtalesimulator
+
+## Status
+
+**Implementert og testet.**
+
+Simulatoren bruker samme grunnarkitektur som øvrige KI-funksjoner:
+
+```text
+brukermelding
+→ personvernkontroll
+→ server
+→ simulatorinstruks
+→ KI
+→ simulatorsvar
+```
+
+KI spiller medarbeiderrollen.
+
+Simulatorreglene skal redusere risikoen for:
+
+- oppdiktede diagnoser
+- oppdiktede familieforhold
+- unødvendig dramatikk
+- fasitsvar til lederen
+
+## Testbevis
+
+`tests/test-simulation.js`
+
+Siste kontroll:
+
+**24/24 kontroller bestått**
+
+---
+
+# 20. Adminarkitektur
+
+## Status
+
+**Implementert.**
+
+Adminområdet bruker samme applikasjon, men tilgang til kritiske funksjoner er rollebeskyttet.
+
+Admin kan brukes til blant annet:
+
+- rolleadministrasjon
+- innholdsredigering
+- modellvalg
 - benchmark
+- KI-feedback
+- relevant systeminformasjon
 
-Dette reduserer risiko for:
+Store adminseksjoner bruker progressiv visning for å redusere visuell kompleksitet.
+
+---
+
+# 21. Faggrunnlag og SOURCEBANK
+
+## Status
+
+**Implementert som dokumentert kildegrunnlag.**
+
+Samtalestøtte har en dokumentert SOURCEBANK.
+
+Sentrale filer:
+
+- `docs/SOURCEBANK.md`
+- `data/SOURCEBANK.json`
+- `docs/faggrunnlag/`
+
+Faggrunnlaget brukes til:
+
+- systeminstruksjoner
+- faglige avgrensninger
+- temaorientering
+- kildevalg
+
+Dette er ikke en full lokal RAG-løsning.
+
+---
+
+# 22. Web- og kildearkitektur
+
+## Status
+
+**Delvis / prototype.**
+
+Prosjektet har funksjoner og arkitektur for kilde-/webrelatert analyse.
+
+Målet er å kunne registrere relevant teknisk metadata uten å lagre selve personalsaken.
+
+Mulig teknisk metadata:
+
+- modell
+- tidspunkt
+- tema
+- domene
+- URL
+- kildebruk
+
+Samtaletekst skal ikke automatisk brukes som teknisk kildeanalyse.
+
+Full kildeobservability er ikke definert som ferdig produksjonsfunksjon.
+
+---
+
+# 23. Benchmarkarkitektur
+
+## Status
+
+**Prototype/testform.**
+
+Benchmarkfunksjonaliteten brukes til å sammenligne modeller på samme eller sammenlignbart testgrunnlag.
+
+Aktuelle måleområder:
+
+- modell
+- svar
+- responstid
+- tokenbruk
+- kostnad
+- feil
+- kvalitet
+
+Benchmarkdata skal behandles separat fra ordinær brukertrafikk der dette er relevant.
+
+Sentrale spor:
+
+- `data/BENCHMARK-CASES.json`
+- `tests/test-model-compare.js`
+- benchmarklogikk i app/server
+
+---
+
+# 24. Testarkitektur
+
+Testing er en del av arkitekturen, ikke bare en sluttaktivitet.
+
+Aktive tester ligger under:
+
+`tests/`
+
+Eksempler:
+
+- `tests/test-privacy.js`
+- `tests/test-simulation.js`
+- `tests/test-ai.js`
+- `tests/test-ai-stress.js`
+- `tests/test-simulation-ai.js`
+- `tests/test-model-compare.js`
+- `tests/test-history-hotfix.cjs`
+- `tests/test-bubble-cleanup.cjs`
+- `tests/test-server-privacy.cjs`
+- `tests/test-ui-regression.cjs`
+
+---
+
+# 25. Testmiljø og autentisering
+
+Automatiserte serverbaserte tester støtte på et konkret arkitekturproblem:
+
+Testserveren fikk `401` på autentiserte endepunkter.
+
+En mulig løsning ville vært å svekke autentisering generelt.
+
+Dette ble avvist.
+
+I stedet bruker serveren en eksplisitt test-only bypass som bare kan aktiveres når:
+
+```text
+NODE_ENV=test
+TEST_AUTH_BYPASS=1
+```
+
+Dette gjør at testene kan kjøres uten å redusere sikkerheten i produksjonsmodus.
+
+Dette er et eksempel på hvordan testbarhet er bygget inn uten å kompromittere ordinær tilgangskontroll.
+
+---
+
+# 26. Sikkerhetsarkitektur
+
+Sikkerheten er delt i flere lag.
+
+## Klient
+
+- personvernvarsling
+- inputvalidering
+- ingen hemmelige nøkler
+- begrenset teknisk feildetalj
+
+## Server
+
+- autentisering
+- autorisering
+- rollevalidering
+- personverngateway
+- rate limiting
+- same-origin-kontroll
+- sikkerhetsheadere
+- feilbehandling
+- KI-nøkler server-side
+
+## Database
+
+- RLS
+- minst nødvendige rettigheter
+- separate roller
+- kontrollert bruk av service credentials
+
+---
+
+# 27. Rate limiting
+
+Rate limiting brukes for å redusere risiko knyttet til:
 
 - brute force
 - misbruk
-- kostnadsangrep
-- uønsket trafikk
+- automatiserte angrep
+- unødvendige KI-kostnader
+
+Særlig relevante områder er:
+
+- innlogging
+- registrering
+- KI-kall
+- benchmark
+- passordrelaterte endepunkter
 
 ---
 
-# 19. Feilhåndtering
+# 28. Feilhåndtering
 
-Bruker skal få:
+Sluttbrukeren skal få forståelige feil.
 
-- forståelig feilmelding
-- ingen intern stack trace
-- ingen leverandørhemmeligheter
-- ingen API-detaljer
+Frontend skal ikke vise:
 
-Serveren kan logge:
+- stack trace
+- API-hemmeligheter
+- interne credentials
+- unødvendige leverandørdetaljer
 
-- feilkode
-- endpoint
+Tekniske logger kan inneholde:
+
 - tidspunkt
+- endpoint
+- feilkode
 - teknisk kategori
 
-Samtaletekst skal ikke logges automatisk.
+Samtaletekst skal ikke automatisk logges som teknisk feildata.
 
 ---
 
-# 20. Hosting – nettversjon
+# 29. Observability og kostnad
 
-Planlagt nettarkitektur:
+## Status
 
-- Render: Node/Express
-- Supabase: Auth + PostgreSQL
-- OpenAI eller annen API-basert KI
-- web search via KI-laget
+**Prototype/testform.**
 
-Fordeler:
+Systemet har arkitektur for å kunne registrere tekniske data som:
 
-- rask utrulling
-- enkel testing
-- lav inngangskostnad
-- egnet for prototype
-
-Begrensninger:
-
-- ekstern avhengighet
-- kostnader
-- nettverkskrav
-- ikke egnet for alle lukkede miljøer
-
----
-
-# 21. Observability og kostnad
-
-Systemet skal måle:
-
-- tokenbruk
 - modell
-- kostnad
+- tokenbruk
+- estimert kostnad
 - responstid
-- web search
-- feilkoder
+- feil
 
-Dette brukes til:
+Formålet er:
 
 - modellvalg
-- økonomisk analyse
-- feilsøking
+- debugging
 - benchmark
-- produktstrategi
+- kostnadsvurdering
+
+Full produksjonsobservability er ikke et krav for dagens leveranse.
 
 ---
 
-# 22. Økonomisk arkitektur
+# 30. Hosting
 
-Kostnadsdata skal være en del av teknisk arkitektur.
+## Status
 
-Komponenter med mulig kostnad:
+**Implementert for prototype.**
 
-- KI-kall
-- web search
-- database
-- hosting
-- lagring
-- trafikk
+Nettversjonen bruker:
 
-Systemet skal gjøre det mulig å vurdere:
+- Render for Node/Express
+- Supabase for Auth/PostgreSQL
+- ekstern KI-provider
 
-- kostnad per bruker
-- kostnad per scenario
-- kostnad per modell
-- skaleringskostnad
+Dette er valgt fordi det gir:
 
----
+- enkel deploy
+- rask testing
+- lav terskel for prototype
+- GitHub-basert arbeidsflyt
 
-# 23. Skalering
+## Begrensning
 
-Hvis bruken øker skal arkitekturen kunne skaleres ved å:
+Prototypehosting kan ha begrensninger som:
 
-- øke backend-kapasitet
-- oppgradere database
-- bruke caching
-- redusere unødvendige KI-kall
-- bytte til billigere modell
-- bruke lokal RAG
-- dele opp tjenester ved behov
+- dvale ved inaktivitet
+- treg første oppstart
+- ekstern tjenesteavhengighet
+
+Dette regnes som prototypebegrensning og ikke som ønsket produksjonsytelse.
 
 ---
 
-# 24. Tilgjengelighet uten nett
-
-Full offline-klient er ikke V1.
-
-Arkitekturen skal likevel ikke være unødvendig avhengig av:
-
-- eksterne fonter
-- CDN
-- tredjepartsbilder
-- dynamiske webressurser
-
-Dette gjør senere intranettversjon enklere.
-
----
-
-# 25. Tekniske risikoer
-
-## KI-leverandør endres
-
-Tiltak:
-- abstraksjonslag
-- modellkonfigurasjon
-
-## Prisøkning
-
-Tiltak:
-- kostnadslogging
-- modellbytte
-- lokal modell
-
-## Databasevekst
-
-Tiltak:
-- retention
-- sletting
-- aggregert logging
-
-## Web search endres
-
-Tiltak:
-- SOURCEBANK
-- lokal RAG
-
-## Sensitive brukerdata
-
-Tiltak:
-- privacy gateway
-- minimert logging
-- RLS
-
----
-
-# 26. Teknologistack
+# 31. Teknologistack
 
 ## Frontend
 
@@ -650,7 +883,7 @@ Tiltak:
 - Node.js
 - Express
 
-## Database/Auth
+## Database og autentisering
 
 - Supabase
 - PostgreSQL
@@ -659,8 +892,9 @@ Tiltak:
 
 ## KI
 
-- API-basert språkmodell
-- flere støttede modeller
+- API-baserte språkmodeller
+- OpenAI
+- OpenRouter
 
 ## Hosting
 
@@ -673,15 +907,16 @@ Tiltak:
 
 ---
 
-# 27. Arkitekturvalg og begrunnelser
+# 32. Begrunnelse for teknologivalg
 
-## Node/Express
+## Node.js / Express
 
 Valgt fordi:
 
-- JavaScript kan brukes på både frontend og backend
-- enkel API-integrasjon
-- godt egnet for studentprosjekt og webapplikasjon
+- samme språk kan brukes i frontend og backend
+- enkel API-utvikling
+- godt egnet til webprototype
+- enkelt å integrere eksterne KI-tjenester
 
 ## Supabase
 
@@ -691,6 +926,7 @@ Valgt fordi:
 - PostgreSQL
 - RLS
 - rask prototypeutvikling
+- god støtte for brukerbaserte data
 
 ## Render
 
@@ -698,79 +934,306 @@ Valgt fordi:
 
 - enkel deploy
 - GitHub-integrasjon
-- egnet for Node
+- egnet for Node-applikasjon
+- praktisk testmiljø
 
 ## Flere KI-modeller
 
 Valgt fordi:
 
-- kvalitet og pris varierer
-- leverandørmarkedet endres raskt
-- reduserer lock-in
+- kvalitet varierer
+- pris varierer
+- modellmarkedet endres raskt
+- lock-in reduseres
 
 ---
 
-# 28. Mål for arkitekturen
+# 33. Arkitekturvalg som ble endret gjennom utviklingen
 
-Arkitekturen skal gjøre det mulig å svare ja på følgende:
+Arkitekturen ble ikke bestemt fullstendig før første kode.
 
-- Kan vi bytte KI-modell uten å bygge hele løsningen på nytt?
-- Kan vi skille brukerdata fra teknisk analyse?
-- Kan vi beskytte historikk per bruker?
-- Kan vi måle kostnad?
-- Kan vi se kildebruk?
-- Kan vi kjøre løsningen uten web search?
-- Kan vi flytte den til intern KI senere?
-- Kan vi erstatte ekstern database med intern database?
-- Kan vi bruke lokal kunnskapsbank?
-- Kan vi teste komponentene uavhengig?
+Flere valg oppstod gjennom testing.
+
+## Personvern
+
+**Tidligere:** sterkere avhengighet av klientkontroll.
+
+**Problem:** frontend alene er ikke tilstrekkelig sikkerhetsbarriere.
+
+**Endring:** server-side personverngateway.
 
 ---
 
-# 29. Oppsummering
+## Autentisering
 
-Samtalestøttes arkitektur skal støtte en avansert KI-applikasjon uten å låse produktet til én leverandør.
+**Problem:** KI- og testflyt måtte fungere sammen med lukket innlogging.
 
-Nettversjonen skal bruke:
+**Endring:** autentisering og sessions ble gradvis strammet inn og korrigert.
 
-- frontend
-- Node/Express
-- Supabase
-- ekstern KI
-- kontrollert web search
+---
 
-En framtidig lukket versjon skal kunne bruke:
+## Database
 
-- intern server
-- intern database
-- intern autentisering
-- intern KI
+**Problem:** KI-generert databaseoppsett fungerte ikke nødvendigvis korrekt i faktisk drift.
+
+**Endring:** konkrete rettigheter og migreringer ble justert etter testing.
+
+---
+
+## Simulator
+
+**Problem:** språkmodellen kunne fylle inn opplysninger brukeren aldri hadde gitt.
+
+**Endring:** strengere simulatorregler og egne automatiserte tester.
+
+---
+
+## Testarkitektur
+
+**Problem:** automatiserte tester ble stoppet av ordinær auth.
+
+**Avvist løsning:** svekke produksjonsauth.
+
+**Valgt løsning:** eksplisitt test-only bypass.
+
+---
+
+## Providerarkitektur
+
+**Tidligere:** sterkere kobling til én provider.
+
+**Endring:** modell- og providerlaget ble utvidet slik at flere modeller kunne testes og sammenlignes.
+
+---
+
+# 34. Arkitekturrisikoer
+
+## KI-leverandør endrer pris eller API
+
+Tiltak:
+
+- providerabstraksjon
+- modellkonfigurasjon
+- flere modellalternativer
+
+---
+
+## KI gir feil svar
+
+Tiltak:
+
+- systemprompt
+- responskontrakt
+- faggrunnlag
+- tester
+- menneskelig ansvar
+
+---
+
+## Sensitive data sendes inn
+
+Tiltak:
+
+- klientkontroll
+- serverkontroll
+- dataminimering
+- anonymiseringshjelp
+
+---
+
+## Databasefeil eller tilgangsfeil
+
+Tiltak:
+
+- server-side validering
+- RLS
+- migreringer
+- testing
+
+---
+
+## Prosjektet blir for komplekst
+
+Tiltak:
+
+- tydelige lag
+- dokumentasjon
+- tester
+- avgrensning mellom nåværende og framtidig arkitektur
+
+---
+
+# 35. Kjente arkitekturbegrensninger
+
+Den leverte løsningen er en prototype.
+
+Følgende er derfor ikke fullført som produksjonsarkitektur:
+
+- full skaleringsarkitektur
+- full produksjonsobservability
 - lokal RAG
-- ingen internettilgang
+- intern KI
+- intern SSO
+- full offline-klient
+- full produksjonsherding
+- omfattende lasttesting
+- høytilgjengelig infrastruktur
 
-Arkitekturen skal kombinere:
+Disse områdene skal ikke fremstilles som implementert funksjonalitet.
 
-- sikkerhet
-- personvern
-- KI-fleksibilitet
-- kostnadskontroll
-- observability
+---
+
+# 36. Framtidig målarkitektur – lukket nettverk
+
+En framtidig intern variant kan bygges slik:
+
+```text
+Intern klient
+      │
+      ▼
+Samtalestøtte
+intern applikasjonsserver
+      │
+      ├─────────────► Intern KI
+      │
+      ▼
+Intern database
+      │
+      ▼
+Lokal kunnskapsbank / RAG
+```
+
+I denne varianten kan eksterne komponenter erstattes:
+
+| Nettprototype | Mulig intern variant |
+|---|---|
+| OpenAI/OpenRouter | intern LLM |
+| Supabase | intern PostgreSQL |
+| Supabase Auth | intern identitetsløsning/SSO |
+| webkilder | lokal kunnskapsbank |
+| Render | intern applikasjonsserver |
+
+Dette er en **målarkitektur**, ikke en del av dagens implementerte leveranse.
+
+---
+
+# 37. Lokal RAG – framtidig arkitektur
+
+En mulig framtidig kunnskapsflyt:
+
+```text
+brukerinput
+→ personverngateway
+→ dokumentoppslag
+→ relevante godkjente tekstutdrag
+→ intern KI
+→ svar
+```
+
+Mulige lokale kilder:
+
+- interne HR-rutiner
+- lederhåndbøker
+- sikkerhetsprosedyrer
+- arbeidsrettslige veiledere
+- virksomhetsgodkjente dokumenter
+
+Dette er ikke implementert i dagens leveranse.
+
+---
+
+# 38. Testbarhet og sporbarhet
+
+Arkitekturen skal være mulig å kontrollere gjennom konkrete repo-spor.
+
+| Arkitekturområde | Bevis |
+|---|---|
+| Frontend | `app.js`, `index.html`, `styles.css` |
+| Server | `server.js` |
+| Database | `database/` |
+| Personvern | `tests/test-privacy.js` |
+| Simulator | `tests/test-simulation.js` |
+| Historikk | `tests/test-history-hotfix.cjs` |
+| Server-personvern | `tests/test-server-privacy.cjs` |
+| UI-regresjon | `tests/test-ui-regression.cjs` |
+| KI-testing | `tests/test-ai.js` |
+| KI-stresstest | `tests/test-ai-stress.js` |
+| Modelltesting | `tests/test-model-compare.js` |
+| Faggrunnlag | `docs/faggrunnlag/` |
+| KI-styring | `docs/ai/` |
+| Kilder | `docs/SOURCEBANK.md`, `data/SOURCEBANK.json` |
+
+---
+
+# 39. Sammenheng med øvrige BMAD-dokumenter
+
+Arkitekturen skal leses sammen med:
+
+- `product-brief.md`
+- `docs/bmad/PRD.md`
+- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
+- `docs/bmad/UX-DESIGN-BMAD.md`
+- `docs/bmad/EPICS-AND-STORIES-BMAD.md`
+
+KI-prosess:
+
+- `docs/ai/AI-LOGG-SAMTALESTOTTE.md`
+
+Sikkerhet:
+
+- `docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
+
+Testing:
+
+- `docs/ai/AI-TESTPLAN.md`
+- `tests/`
+
+---
+
+# 40. Arkitekturens kvalitetskriterier
+
+Arkitekturen vurderes som vellykket dersom det kan svares ja på følgende:
+
+1. Kan frontend kjøres uten at hemmelige KI-nøkler eksponeres?
+2. Valideres kritisk tilgang server-side?
+3. Går sentrale KI-input gjennom server-side personverngateway?
+4. Er brukerhistorikk beskyttet per bruker?
+5. Kan KI-modell endres uten å bygge hele løsningen på nytt?
+6. Kan sentrale sikkerhets- og personvernregler testes?
+7. Er testing mulig uten å svekke produksjonsauth?
+8. Er tekniske data skilt fra unødvendig samtaleinnhold?
+9. Er dagens arkitektur tydelig skilt fra framtidig offlinearkitektur?
+10. Kan sensor finne konkrete kode- eller testspor for sentrale arkitekturvalg?
+
+---
+
+# 41. Oppsummering
+
+Samtalestøtte er bygget som en lagdelt KI-basert webapplikasjon.
+
+Den leverte arkitekturen består hovedsakelig av:
+
+```text
+Frontend
+→ Node/Express
+→ sikkerhet/personvern
+→ KI/provider
+→ Supabase
+```
+
+De viktigste arkitekturvalgene er:
+
+- server-side kontroll
+- privacy by design
+- flere sikkerhetslag
+- brukerbeskyttet data
+- KI-regler i tillegg til programkode
 - testbarhet
-- framtidig offline/intranett-støtte
+- provider-uavhengighet
+- tydelig skille mellom faktisk leveranse og framtidig arkitektur
 
+Arkitekturen har blitt utviklet iterativt og endret som følge av testing og feilretting.
 
-## v20.5 – providerlag, brukertest og testmiljø
+Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, men den arkitekturen prosjektet faktisk har utviklet fram til versjon 20.10.3.
 
-KI-arkitekturen utvides fra én direkte OpenAI-klient til et providerlag der modellmetadata bestemmer om kallet går direkte til OpenAI eller via OpenRouter. Begge nøkler leses kun server-side (`OPENAI_API_KEY` / `OPENROUTER_API_KEY`). OpenRouter brukes via OpenAI-kompatibelt API og gjør det mulig å benchmarke gratis og betalte modeller gjennom samme applikasjonsflyt. Provider-uavhengigheten støtter også den langsiktige planen om intern KI på lukket nett.
-
-Brukertestdata lagres i en separat `survey_responses`-tabell uten kobling til samtaler eller bruker-ID. Invitasjoner utvides med rolle og utløpsdato. Dette er bevisste skiller mellom produktbruk, evaluering og identitet.
-
-Dagens publiserte testmiljø kjører på Render. Gratis testhosting kan gå i dvale ved inaktivitet og gi treg første innlasting. Dette er en prototypebegrensning, ikke et ytelsesmål for produksjon eller lukket intranett.
-
-## v20.6 – evaluering og personvernmarkører
-Brukertestsvar lagres uten bruker-ID. En separat deltakertabell med kun bruker-ID og tidspunkt hindrer dobbel innsending uten å koble identiteten til svarinnholdet. Personvernbekreftelse lagres separat som tidspunkt per konto. Brukertest kan aktiveres/deaktiveres via app-innstilling uten kodeendring eller sletting av eksisterende data.
-
-
-
-## Klientstrategi og mulig mobilapp
-Webklienten er referanseklient i prototypen. API- og tjenestelag skal holdes tilstrekkelig separert fra brukergrensesnittet til at en egen mobilapp kan vurderes innen ett år uten å bygge om kjernefunksjonene for autentisering, personvern, KI-routing og datatilgang.
+Framtidige mål som intern KI, lokal RAG og lukket nettverk er dokumentert separat og fremstilles ikke som ferdige deler av dagens leveranse.
