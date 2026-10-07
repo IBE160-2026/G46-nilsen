@@ -1,353 +1,966 @@
 # AI-logg – Samtalestøtte
 
-## Formål og avgrensning
+## 1. Formål
 
-Denne loggen dokumenterer hvordan generativ KI (ChatGPT/OpenAI) er brukt i utviklingen av **Samtalestøtte**. Den er rekonstruert fra tilgjengelig prosjekt- og samtalehistorikk, inkludert tidligere ChatGPT-samtaler og prosjektets versjonslogg.
+Denne loggen dokumenterer hvordan generativ KI, hovedsakelig ChatGPT/OpenAI, er brukt i utviklingen av **Samtalestøtte**.
 
-Loggen er **ikke en ordrett utskrift av alle promptene**. Målet er å gi en kort og ærlig oversikt over hva studenten ba om hjelp til, hva KI foreslo eller produserte, hva som ble misforstått eller måtte korrigeres, og hvordan løsningen utviklet seg. Der detaljene ikke kan gjenfinnes sikkert i samtalehistorikken, beskrives kun det som kan dokumenteres fra prosjektets versjonshistorikk.
+Formålet er å synliggjøre utviklingsprosessen, ikke bare sluttproduktet. Loggen viser derfor:
 
-Studenten har gjennom hele prosjektet tatt beslutninger om behov, faglig retning, funksjoner, design og hva som skulle beholdes eller forkastes. ChatGPT er brukt som idépartner, programmeringsassistent, teststøtte, dokumentasjonsstøtte og kvalitetssikringsverktøy.
+- hvilke behov og problemer jeg tok opp med KI
+- hvilke forslag KI kom med
+- hvilke forslag jeg valgte å bruke
+- hvilke forslag jeg avviste eller endret
+- feil og svakheter jeg oppdaget gjennom testing
+- hvordan krav og løsninger ble justert underveis
+- hvordan KI ble brukt til programmering, testing, dokumentasjon og kvalitetssikring
+
+Loggen er rekonstruert fra tilgjengelig ChatGPT-historikk, prosjektfiler, versjonslogg og Git-historikk. Den er **ikke en ordrett utskrift av alle prompts eller samtaler**.
+
+Der jeg ikke kan dokumentere nøyaktig ordlyd fra en tidligere KI-dialog, beskriver jeg derfor hensikten og resultatet i stedet for å konstruere en prompt i ettertid.
 
 ---
+
+# 2. Hvordan KI ble brukt
+
+ChatGPT har hatt flere roller gjennom prosjektet:
+
+1. **Idé- og sparringspartner**
+   - drøfting av problem og målgruppe
+   - valg av funksjoner
+   - brukerflyt og UX
+   - vurdering av avgrensninger
+
+2. **Programmeringsassistent**
+   - HTML, CSS og JavaScript
+   - Node.js/Express
+   - OpenAI-integrasjon
+   - Supabase
+   - OpenRouter
+   - autentisering og roller
+
+3. **Test- og feilsøkingspartner**
+   - testcaser
+   - regresjonstester
+   - personverntester
+   - KI-testing
+   - feilsøking av API, Supabase og autentisering
+
+4. **Dokumentasjonsstøtte**
+   - Product Brief
+   - PRD
+   - arkitektur
+   - UX
+   - epics/stories
+   - implementeringsplan
+   - README
+   - testplaner
+
+5. **Kvalitetssikringsverktøy**
+   - kontroll av personvern
+   - vurdering av KI-svar
+   - identifisering av risiko
+   - gjennomgang av repo og testoppsett
+   - sammenligning av KI-modeller
+
+KI har ikke hatt myndighet til å bestemme hva produktet skulle være. Jeg har selv bestemt mål, funksjoner, designretning, faglige begrensninger og hva som skulle godkjennes eller forkastes.
+
+---
+
+# 3. Arbeidsmåte
+
+Utviklingen har ikke vært lineær.
+
+Den typiske arbeidsformen har vært:
+
+**behov → prompt/dialog → forslag → implementering → testing → feil eller svakhet → nytt krav → korrigering → ny test**
+
+Etter hvert ble dette også en eksplisitt regel i samarbeidet med KI: større endringer skulle ikke bygges videre før jeg hadde vurdert resultatet og gitt klarsignal.
+
+Det har vært viktig fordi KI flere ganger:
+
+- endret mer kode enn jeg ba om
+- misforsto designkrav
+- foreslo løsninger som fungerte teknisk, men ikke passet produktet
+- laget for generiske KI-svar
+- laget tester som ga falske positive eller falske negative
+- foreslo personvernregler som var for aggressive
+- laget UI-endringer som brøt tidligere godkjent design
+
+Disse situasjonene førte til nye og mer presise krav.
+
+---
+
+# 4. Tidlig produktutvikling – v1–v5
 
 ## v1 – Første fungerende prototype
 
-**Studentens behov:** Jeg ønsket å gå fra Product Brief til en faktisk fungerende prototype med temaer for vanskelige medarbeidersamtaler, sidemeny og enkel navigasjon.
+### Behov
 
-**KI-bruk:** ChatGPT foreslo og laget første prototype i HTML, CSS og JavaScript med åtte hovedtemaer, undertemaer, lys/mørk/systemtema og personvernpåminnelser.
+Jeg ønsket å gå fra Product Brief til en fungerende prototype for ledere som skal forberede krevende medarbeidersamtaler.
 
-**Korrigering/læring:** Første utkast ble raskt vurdert visuelt av meg. Jeg likte retningen, men pekte tidlig på layoutproblemer og at løsningen måtte videreutvikles iterativt.
+Løsningen skulle blant annet ha:
 
----
+- hovedtemaer
+- undertemaer
+- enkel navigasjon
+- sidemeny
+- grunnleggende personverninformasjon
 
-## v2 – Forenklet inndata og tydeligere design
+### KI-bidrag
 
-**Studentens behov:** Jeg stilte spørsmål ved hvorfor brukeren skulle fylle ut mange felt og ønsket en enklere løsning.
+ChatGPT hjalp med første struktur i HTML, CSS og JavaScript.
 
-**KI-bruk:** ChatGPT foreslo å samle mesteparten av inndataen i ett stort situasjonsfelt, beholde tema/undertema som kontekst og la KI stille oppfølgingsspørsmål ved behov. Logo og temakort ble også videreutviklet.
+Det første utkastet hadde åtte hovedtemaer og en mer skjemabasert brukerflyt.
 
-**Korrigering/læring:** Dette var et viktig produktvalg der dialog med KI førte til en enklere brukerflyt enn den første skjemabaserte løsningen.
+### Min vurdering
 
----
+Jeg vurderte prototypen visuelt og funksjonelt og identifiserte tidlig problemer med:
 
-## v3 – Temabilder og tydeligere temasider
+- for mange felt
+- for mye skjema
+- layout
+- visuell hierarki
+- hvor intuitiv løsningen var
 
-**Studentens behov:** Jeg ønsket mer visuell identitet og at temaene skulle føles som egne sider, ikke bare som tekst i et skjema.
+### Endring
 
-**KI-bruk:** ChatGPT hjalp med struktur for temasider og integrasjon av temabilder.
-
-**Korrigering/læring:** Flere visuelle elementer ble senere justert eller byttet fordi de ikke passet ønsket stil. Det ble tydelig at generert design måtte vurderes manuelt og ikke bare aksepteres.
-
----
-
-## v4 – Sikkerhetsregler for KI
-
-**Studentens behov:** Jeg ønsket at KI ikke skulle finne på diagnoser, motiv, skyld eller andre sikre konklusjoner i personalsaker.
-
-**KI-bruk:** ChatGPT foreslo eksplisitte regler for hva KI ikke skulle gjøre, blant annet å skille fakta fra antakelser og være forsiktig med HR- og juridiske forhold.
-
-**Korrigering/læring:** Dette ble starten på et mer systematisk arbeid med AI-sikkerhet, ikke bare funksjonalitet.
+I stedet for å låse løsningen til første KI-utkast fortsatte utviklingen iterativt.
 
 ---
 
-## v5 – Dynamisk støtte ved usikkerhet
+## v2 – Færre inputfelt
 
-**Studentens behov:** Jeg ønsket at løsningen skulle være nyttig selv om lederen ikke hadde full informasjon.
+### Problem
 
-**KI-bruk:** ChatGPT foreslo at KI skulle kunne gi støtte under usikkerhet, men uten å fylle kunnskapshull med oppdiktede fakta.
+Første løsning krevde for mye informasjon fra brukeren før KI kunne hjelpe.
 
-**Korrigering/læring:** Fokus flyttet seg fra statiske råd til situasjonstilpasset veiledning.
+### Dialog med KI
+
+Jeg utfordret behovet for alle feltene og ønsket en enklere arbeidsflyt.
+
+KI foreslo å samle hovedinformasjonen i ett større situasjonsfelt, samtidig som tema og undertema ga kontekst.
+
+### Beslutning
+
+Dette ble valgt.
+
+KI skulle heller stille avklaringsspørsmål ved behov enn at brukeren måtte fylle ut et omfattende skjema på forhånd.
+
+### Læring
+
+Dette var et tidlig eksempel på at prosjektet beveget seg bort fra et klassisk HR-skjema og mot en samtalepartner.
 
 ---
+
+## v3 – Temasider og visuell identitet
+
+Jeg ønsket at hovedtemaene skulle føles som egne områder i løsningen.
+
+ChatGPT hjalp med struktur og integrasjon av temabilder.
+
+Flere av KI-forslagene ble senere justert eller byttet fordi de ikke traff ønsket stil.
+
+Dette viste tidlig at generert design måtte vurderes manuelt.
+
+---
+
+## v4–v5 – Regler for trygg KI
+
+### Problem
+
+I personalsaker kan det være problematisk dersom KI presenterer antakelser som fakta.
+
+### Krav fra meg
+
+KI skulle blant annet ikke:
+
+- dikte opp diagnoser
+- fastslå motiv
+- fastslå skyld
+- tillegge medarbeideren personlighetstrekk uten grunnlag
+- fremstille usikre juridiske vurderinger som sikre fakta
+
+### Resultat
+
+ChatGPT bidro til eksplisitte sikkerhetsregler og skillet mellom:
+
+- fakta brukeren faktisk har oppgitt
+- antakelser
+- områder som krever mer informasjon
+
+Dette utviklet seg senere til systemprompt og responskontrakt.
+
+---
+
+# 5. Fra generisk KI til systematisk KI-styring – v6–v10
 
 ## v6 – Første systematiske KI-testing
 
-**Studentens behov:** Jeg ønsket å finne ut om KI-svarene faktisk var gode nok og trygge.
+Jeg ønsket ikke bare å kontrollere om API-et svarte, men om svarene faktisk var gode.
 
-**KI-bruk:** ChatGPT hjalp med å lage testscenarier og struktur for systematisk testing.
+ChatGPT hjalp med å lage representative testscenarier.
 
-**Korrigering/læring:** Det ble tydelig at en fungerende KI-integrasjon ikke var nok; svarene måtte testes på representative og vanskelige personalsaker.
+Testene viste at teknisk fungerende KI ikke nødvendigvis betyr faglig god KI.
+
+Dette førte til sterkere fokus på:
+
+- relevans
+- sikkerhet
+- nyansering
+- hallusinasjoner
+- praktisk anvendbarhet
 
 ---
 
 ## v7 – To-trinns forståelse
 
-**Studentens behov:** Jeg ønsket mindre generiske svar og færre unødvendige spørsmål.
+### Problem
 
-**KI-bruk:** ChatGPT foreslo en todelt logikk: først forstå situasjonen, deretter avgjøre hvilke avklaringer og hvilken støtte som var relevant.
+KI kunne svare for generisk eller stille spørsmål som ikke var nødvendige.
 
-**Korrigering/læring:** Dette reduserte gjentakelser og la grunnlag for senere mer presis temaklassifisering.
+### Forslag
+
+ChatGPT foreslo å skille mellom:
+
+1. forståelse av situasjonen
+2. behov for avklaringer og støtte
+
+### Resultat
+
+Dette reduserte unødvendige spørsmål og ga bedre grunnlag for temasortering og veiledning.
 
 ---
 
 ## v8 – Samtalepartner fremfor skjema
 
-**Studentens behov:** Jeg ønsket at løsningen skulle oppleves mer som en samtalepartner og mindre som et HR-skjema.
+Jeg ønsket et mindre mekanisk verktøy.
 
-**KI-bruk:** ChatGPT foreslo en mer dialogbasert flyt der brukeren skriver naturlig og KI følger opp.
+KI ble derfor i større grad brukt som samtalepartner, der brukeren kunne uttrykke situasjonen naturlig.
 
-**Korrigering/læring:** Produktretningen ble tydeligere: KI skulle støtte refleksjon og samtaleforberedelse, ikke bare fylle ut felter.
-
----
-
-## v9 – Raske svaralternativer
-
-**Studentens behov:** Jeg ønsket mindre skrivearbeid i avklaringsdialogen.
-
-**KI-bruk:** ChatGPT foreslo klikkbare svaralternativer kombinert med mulighet for fritekst.
-
-**Korrigering/læring:** Senere måtte flere av disse elementene justeres visuelt fordi knapper og svaralternativer fikk ulik størrelse og hierarki.
+Dette var et viktig produktvalg og påvirket senere både grensesnitt og KI-arkitektur.
 
 ---
 
-## v10 – Samtalekontekst og videre dialog
+## v9–v10 – Hurtigsvar og kontekst
 
-**Studentens behov:** Jeg ønsket at brukeren skulle kunne fortsette samtalen uten at KI mistet hva saken handlet om.
+ChatGPT hjalp med:
 
-**KI-bruk:** ChatGPT hjalp med logikk for å videreføre kontekst mellom spørsmål og svar og samtidig starte rent ved «Ny samtale».
+- klikkbare svaralternativer
+- videre KI-dialog
+- lagring av kontekst gjennom samtalen
 
-**Korrigering/læring:** Kontekst viste seg å være krevende; senere versjoner måtte rette tilfeller der gammel tekst eller knappeinnhold ble med videre.
+Testing viste samtidig problemer med:
 
----
+- ujevn størrelse på svaralternativer
+- feil visuell prioritet
+- gammel tekst som kunne følge med til ny samtale
+- elementer som ble liggende igjen i inputfelt
 
-## v11 – Første ekte KI-integrasjon
-
-**Studentens behov:** Jeg ønsket å gå fra prototype til reelle KI-kall.
-
-**KI-bruk:** ChatGPT hjalp med serverside-integrasjon mot OpenAI API. API-nøkkel ble holdt utenfor frontend. KI-en analyserte fakta/antakelser, dilemma, tema og stilte inntil noen få avklaringsspørsmål.
-
-**Korrigering/læring:** I denne fasen var ikke hele rådgivningsløpet KI-generert ennå. Integrasjonen ble utvidet stegvis i senere versjoner.
-
----
-
-## v12 – Personvern før KI-kall
-
-**Studentens behov:** Jeg ønsket at løsningen skulle oppdage navn, alder og andre identifiserende detaljer før teksten ble sendt til KI.
-
-**KI-bruk:** ChatGPT hjalp med lokal personvernsjekk, auto-utvidende tekstfelt, tydelig ventestatus og mer tolerant temasøk.
-
-**Korrigering/læring:** Første personvernregler ble for strenge enkelte steder og måtte senere gjøres mer kontekstbevisste.
+Disse problemene ble senere rettet gjennom flere regresjoner.
 
 ---
 
-## v13 – Mer kontekstbevisst personvern
+# 6. Reell KI-integrasjon og personvern – v11–v16
 
-**Studentens behov:** Jeg ønsket at personvernkontrollen ikke skulle fjerne relevant informasjon unødvendig.
+## v11 – OpenAI på serversiden
 
-**KI-bruk:** ChatGPT foreslo skille mellom klare identifikatorer og situasjonsrelevant kontekst som kunne generaliseres.
+ChatGPT hjalp med overgangen fra prototype til faktiske KI-kall.
 
-**Korrigering/læring:** Dette utviklet seg senere til prinsippet: **«Anonymiser identitet, ikke nødvendig kontekst.»**
+API-nøkkelen ble lagt på serveren og ikke i frontend.
 
----
-
-## v14 – Ett hovedfelt og personvernjustering
-
-**Studentens behov:** Jeg ønsket å holde fast ved ett hovedfelt og redusere friksjon fra personvernkontrollen.
-
-**KI-bruk:** ChatGPT hjalp med å tilpasse personvernlogikken til ett-feltsløsningen.
-
-**Korrigering/læring:** Flere falske positiver viste at regelbasert personvernsjekk måtte testes mot naturlig norsk språk.
+Dette var et bevisst sikkerhetsvalg.
 
 ---
 
-## v15 – KI-diagnostikk
+## v12–v14 – Personvern før KI-kall
 
-**Studentens behov:** Jeg trengte å forstå om feil skyldtes appen, API-et, modellen eller konfigurasjonen.
+### Behov
 
-**KI-bruk:** ChatGPT foreslo og hjalp med mer teknisk diagnostikk rundt KI-kall og feilhåndtering.
+Jeg ønsket å redusere risikoen for at brukeren sendte identifiserende informasjon til KI.
 
-**Korrigering/læring:** Dette gjorde det mulig å skille funksjonsfeil fra kvaliteten på selve KI-svaret.
+### Første løsning
 
----
+ChatGPT hjalp med regler for blant annet:
 
-## v16 – Full KI-veiledning
+- navn
+- alder
+- kontaktopplysninger
+- identifikatorer
 
-**Studentens behov:** Jeg ønsket at KI skulle gi hele samtalestøtten, ikke bare første analyse.
+### Problem
 
-**KI-bruk:** ChatGPT hjalp med å utvide KI-svarene til åpning av samtalen, spørsmål, mulige reaksjoner, håndtering, oppfølging og relevante HR-/juridiske varsler.
+De første reglene var for aggressive og stoppet også relevant kontekst.
 
-**Korrigering/læring:** Senere så jeg at de juridiske/HR-relaterte tekstene kunne bli for standardiserte. Dette ble tatt opp igjen i v20-serien.
+### Korrigering
 
----
+Jeg krevde et tydeligere skille mellom identitet og nødvendig situasjonsinformasjon.
 
-## v17 – Fagbank og faglig forankring
+Dette utviklet seg til prinsippet:
 
-**Studentens behov:** Jeg ønsket at rådene skulle kunne knyttes til faglige kilder og ikke bare være genererte formuleringer.
+> **Anonymiser identitet, ikke nødvendig kontekst.**
 
-**KI-bruk:** ChatGPT hjalp med å etablere en fag- og kildebank og med å presentere «faglig grunnlag» uten å gjøre hovedsvaret for akademisk.
+Senere personverntester viste også behov for å skille mellom eksempelvis:
 
-**Korrigering/læring:** Kildebanken ble senere utvidet betydelig, og jeg stilte stadig strengere krav til hvilke kilder som skulle brukes.
+- konkret arbeidssted
+- generell bransje
+- unik stilling
+- vanlig rollebeskrivelse
+- konkrete familieopplysninger
+- generell familiesituasjon
 
----
-
-## v17.2–v17.5 – Automatiserte KI-tester og stresstesting
-
-**Studentens behov:** Jeg ønsket å teste krevende personalsaker systematisk og finne farlige eller svake svar.
-
-**KI-bruk:** ChatGPT hjalp med hurtigtester, fulltester og problemtester, inkludert saker om rus, fravær, konflikt, sikkerhet, lønn og avslutning.
-
-**Korrigering/læring:** Testlogikken ga noen falske treff når KI faktisk avviste en problematisk påstand. Testene måtte derfor gjøres mer kontekstbevisste.
-
----
-
-## v17.8–v17.10 – Personvern, temaforståelse og større fagbank
-
-**Studentens behov:** Jeg ønsket bedre navnedeteksjon, raskere temaflyt og et sterkere faglig grunnlag.
-
-**KI-bruk:** ChatGPT hjalp med å forbedre navne-/kontekstdeteksjon, foreslå tema og undertema samtidig og utvide fagbanken med blant annet relasjonell ledelse, LMX, psykologisk trygghet, motivasjon, feedback og konfliktteori.
-
-**Korrigering/læring:** Jeg krevde at fagbanken skulle være kuratert, men samtidig ikke låse KI til en statisk liste dersom oppdatert og troverdig informasjon var nødvendig.
+Dette ble gradvis forbedret gjennom testing.
 
 ---
 
-## v18.1 – Supabase, autentisering og historikk
+## v15–v16 – Diagnostikk og full samtalestøtte
 
-**Studentens behov:** Jeg ønsket ekte brukerkontoer, sikker historikk og lukket registrering.
+ChatGPT hjalp med bedre diagnostikk rundt KI-kall slik at jeg kunne skille mellom:
 
-**KI-bruk:** ChatGPT hjalp med migrering fra lokal lagring til Supabase Auth og database, RLS-regler og engangsinvitasjoner.
+- feil i appen
+- API-feil
+- modellfeil
+- konfigurasjonsfeil
+- svak kvalitet på selve KI-svaret
 
-**Korrigering/læring:** Rettigheter i Supabase måtte feilsøkes manuelt. Blant annet krevde samtalelagring en konkret `GRANT`-retting. Dette er et eksempel på at KI-generert oppsett måtte testes i faktisk drift.
+KI-veiledningen ble deretter utvidet fra en innledende analyse til blant annet:
 
----
+- mulig åpning
+- spørsmål
+- reaksjoner
+- håndtering
+- oppfølging
+- HR-/juridiske varsler
 
-## v18.2–v18.3 – Kontakt, feilrapportering og brukerflyt
-
-**Studentens behov:** Jeg ønsket bedre støtte for testbrukere, flere innganger til ny samtale og mulighet for midlertidige samtaler.
-
-**KI-bruk:** ChatGPT hjalp med Om-side, Kontakt, feilrapportering, «Midlertidig samtale» og UX-forbedringer.
-
-**Korrigering/læring:** Flere plasseringer av samme handling skapte senere visuell inkonsistens. Jeg har flere ganger måttet påpeke at knapper med samme funksjon må se like ut.
-
----
-
-## v19.0–v19.1 – Samtalesimulering
-
-**Studentens behov:** Jeg ønsket en øvelsesmodus der KI spiller medarbeider og lederen kan trene før den virkelige samtalen.
-
-**KI-bruk:** ChatGPT foreslo simulatorstruktur, treningsmoduser, reaksjonsstiler, refleksjon etterpå og senere en egen simulator-modul med live-tester.
-
-**Korrigering/læring:** Automatiske tester godkjente enkelte svar som jeg manuelt oppfattet som for oppdiktede eller unaturlige. Dette førte til strengere simulatorregler og flere testcaser.
+Jeg oppdaget senere at enkelte HR- og juridiske råd kunne bli for standardiserte. Dette ble derfor videre bearbeidet.
 
 ---
 
-## v19.2–v19.4 – Simulatorens språk, identitet og UX
+# 7. Faglig forankring og KI-testing – v17-serien
 
-**Studentens behov:** Jeg ønsket tydeligere forskjell på treningsmoduser og mer realistiske reaksjoner.
+## Fag- og kildebank
 
-**KI-bruk:** ChatGPT hjalp med «Hold deg til saken», «Utfordre meg», «Overrask meg», følelsesmessige reaksjoner, avatarer og samtalebobler.
+Jeg ønsket at KI-svarene skulle bygge på mer enn generell språkmodellkunnskap.
 
-**Korrigering/læring:** Jeg måtte korrigere flere forslag fordi reaksjonene ble for polerte eller fordi visuelle endringer ikke traff ønsket uttrykk. Boblegeometrien ble etter hvert låst for å unngå nye utilsiktede endringer.
+ChatGPT hjalp med struktur for:
 
----
+- SOURCEBANK
+- faggrunnlag
+- temaspesifikke kilder
 
-## v19.5–v19.12 – Personvern og omfattende UX-finjustering
+Jeg stilte senere strengere krav til:
 
-**Studentens behov:** Jeg ønsket mer konsekvent mørk/hybrid visning, bedre personvern, tydeligere navigasjon, riktige logoer/ikoner og mindre visuell støy.
-
-**KI-bruk:** ChatGPT foreslo og implementerte en rekke små UX-, tema-, personvern- og simulatorjusteringer.
-
-**Korrigering/læring:** Dette er perioden med flest designkorrigeringer. Jeg måtte flere ganger presisere at eksisterende logoer/bilder ikke skulle overskrives, at godkjent boblegeometri ikke skulle endres, og at KI ikke skulle lage nye versjoner før jeg uttrykkelig sa «go/kjør». Enkelte tidligere KI-endringer gjorde for store inngrep eller endret mer enn jeg hadde bedt om.
-
----
-
-## v20.0 – Admin, roller og samlet personvern
-
-**Studentens behov:** Jeg ønsket en administrasjonsdel med roller og redigerbart innhold, samtidig som personvernet skulle gjelde alle KI-felt.
-
-**KI-bruk:** ChatGPT hjalp med rollemodell, admin/redaktør, Supabase-lagring av innhold og en server-side personvernbarriere.
-
-**Korrigering/læring:** Det ble viktig å skille mellom hva som kan løses teknisk og hva som fortsatt krever organisatoriske rutiner og menneskelig ansvar.
+- troverdige kilder
+- relevans
+- oppdatering
+- at KI ikke skulle late som en kilde sa mer enn den faktisk gjorde
 
 ---
 
-## v20.1–v20.2 – Modellstyring, rapportering, kostnad og kildebruk
+## Automatiserte KI-tester
 
-**Studentens behov:** Jeg ønsket å kunne bytte KI-modell uten deploy, sammenligne kostnad/kvalitet og se hvilke kilder som faktisk brukes.
+Det ble utviklet:
 
-**KI-bruk:** ChatGPT hjalp med modellstyring, token-/kostnadslogging, rapportering av KI-svar og logging av web-/kildebruk uten å lagre selve samtaleteksten i tekniske logger.
+- korte KI-tester
+- fulltester
+- stresstester
+- tester av tidligere problemcaser
 
-**Korrigering/læring:** Jeg var tydelig på at kildeovervåking ikke skulle kunne brukes til profilering av enkeltbrukere.
+### Viktig feil funnet
 
----
+Noen automatiske tester tolket et ord eller uttrykk isolert og markerte et svar som problematisk selv når KI faktisk **avviste** den problematiske påstanden.
 
-## v20.3–v20.4 – Dokumentasjon, arkitektur og videre sikkerhetsarbeid
+Dette var et eksempel på at selve testen kunne være feil.
 
-**Studentens behov:** Jeg ønsket bedre BMAD-dokumentasjon, tydeligere sikkerhetsarkitektur og en plan for mulig lukket/offline bruk.
+Testlogikken måtte derfor bli mer kontekstbevisst.
 
-**KI-bruk:** ChatGPT hjalp med PRD, UX-, arkitektur-, epics- og implementasjonsdokumenter samt beskrivelser av provider-uavhengig arkitektur, intern KI og lokal kunnskapsbank/RAG.
+### Læring
 
-**Korrigering/læring:** Jeg ønsket at dokumentasjonen skulle være ærlig om at utviklingen var iterativ, ikke fremstille prosjektet som om alt var planlagt lineært fra starten.
-
----
-
-## v20.5 – Nye temaer, OpenRouter og brukertest
-
-**Studentens behov:** Jeg ønsket faglig bredere tematikk, spesielt mobbing/seksuell trakassering, tilrettelegging/arbeidsevne og vold/trusler. Jeg ønsket også å teste gratis, rimelige og dyrere KI-modeller og bygge inn brukertest.
-
-**KI-bruk:** ChatGPT foreslo utvidelse til ni hovedtemaer, større testbank, OpenRouter som alternativ provider og en kort brukerundersøkelse.
-
-**Korrigering/læring:** Jeg påpekte at mobbing/seksuell trakassering måtte ha riktig språk, ikon og bilde, og at systemet ikke skulle trekke konklusjon om skyld eller at trakassering faktisk hadde skjedd bare fordi det var meldt.
+Automatisert KI-testing kan støtte vurderingen, men kan ikke erstatte manuell kvalitetsvurdering.
 
 ---
 
-## v20.6 – Personvern, Hjelp og brukertest
+# 8. Supabase og autentisering – v18
 
-**Studentens behov:** Jeg ønsket førstegangs personverninformasjon, Hjelp/faglige ressurser, bedre survey-håndtering og flere UX-rettinger.
+## Behov
 
-**KI-bruk:** ChatGPT hjalp med videre BMAD/Product Brief-oppdateringer, survey-logikk, admin-invitasjoner og nytt temabilde for mobbing/trakassering.
+Jeg ønsket:
 
-**Korrigering/læring:** Flere ting ble ikke koblet riktig eller ble bare delvis gjennomført. Hjelp-knappen manglet klikk-handler, enkelte knapper var fortsatt inkonsistente, «Midlertidig øvelse» fikk feil plassering og overskrifter ble redusert mer enn ønsket. Jeg oppdaget dette ved egen testing og krevde korrigering.
+- ekte brukerkontoer
+- lukket registrering
+- sikker historikk
+- tilgangskontroll
+
+### KI-bidrag
+
+ChatGPT hjalp med:
+
+- Supabase Auth
+- database
+- RLS
+- invitasjoner
+- lagring av historikk
+
+### Konkret problem
+
+KI-generert databaseoppsett fungerte ikke fullt ut i faktisk drift.
+
+Samtalelagringen krevde blant annet en konkret `GRANT`-retting.
+
+Dette ble oppdaget gjennom praktisk testing.
+
+### Betydning
+
+Dette var et tydelig eksempel på at KI-generert konfigurasjon ikke kunne aksepteres uten verifikasjon i faktisk miljø.
 
 ---
 
-## v20.7 – Finjustering og Product Brief
+# 9. Samtalesimulator – v19
 
-**Studentens behov:** Jeg ønsket at Product Brief tydeligere skulle vise KI-kompleksiteten uten å bli lengre, at framtidsperspektivet skulle være innen ett år, og at mobilapp skulle vurderes. Jeg ønsket også moderate overskrifter, venstreplasserte chevrons og bedre README-struktur.
+## v19.0–v19.1 – Første simulator
 
-**KI-bruk:** ChatGPT omskrev Product Brief, oppdaterte BMAD-dokumenter og gjorde flere UI-/dokumentasjonsendringer.
+Jeg ønsket å gå fra bare samtaleforberedelse til faktisk øving.
 
-**Korrigering/læring:** Etterpå fant jeg fortsatt flere inkonsistenser: knapper i tidligere samtaler var ulike, sideoverskrifter var ikke helt samordnet, temaikonet for mobbing/seksuell trakassering var ikke endret som avtalt, profilmenyen hadde unødvendig «Rapporter feil», og logo-/ikonlogikken ved åpen/lukket sidemeny måtte presiseres på nytt.
+KI skulle spille medarbeider.
+
+ChatGPT hjalp med:
+
+- simulatorstruktur
+- treningsmoduser
+- reaksjonsstiler
+- hjelp underveis
+- refleksjon etter øvelse
+- automatiserte tester
+
+### Feil oppdaget
+
+Noen KI-genererte medarbeidersvar inneholdt detaljer eller reaksjoner som ikke var godt nok forankret i situasjonen.
+
+Automatiske tester godkjente også enkelte svar jeg manuelt vurderte som unaturlige.
+
+### Korrigering
+
+Simulatorreglene ble skjerpet for å hindre:
+
+- oppdiktede diagnoser
+- oppdiktet familieinformasjon
+- overdreven psykologisering
+- kunstig eller for polert språk
 
 ---
 
-## Videre endringer identifisert etter v20.7
+## v19.2–v19.12 – UX og visuell kontroll
 
-I den pågående gjennomgangen har jeg sammen med ChatGPT identifisert flere forbedringer som skal vurderes før neste bygg:
+Dette var perioden med flest iterative designjusteringer.
 
-- alle sammenleggbare seksjoner skal være lukket som standard
-- «Midlertidig øvelse» skal ha samme kompakte plassering som «Midlertidig samtale»
-- handlingsknapper som «Ny samtale», «Øv på samtalen», «Fortsett/Spør videre» skal ha tydeligere og mer konsekvent hierarki
-- hovedoverskrift på forside og temasider skal følge samme responsive størrelsesregel
-- ved åpen sidemeny kan Samtalestøtte-logo vises ved sideoverskriften; ved lukket sidemeny skal sidens ikon vises på samme linje som overskriften
-- Admin-siden skal følge samme visuelle system som øvrige menysider
-- profilmenyen skal ikke inneholde «Rapporter feil»; dette hører hjemme på Kontakt/feilrapportering
-- det bør vurderes flere tverrgående fagsider, blant annet samtaleteknikk, relasjonsledelse, feedback/prestasjon, lønnssamtaler og konflikt/samarbeid
-- faggrunnlaget for mobbing og seksuell trakassering bør balanseres slik at det ikke blir uforholdsmessig dominert av seksuell trakassering
+ChatGPT hjalp med blant annet:
+
+- samtalebobler
+- profilbilder
+- avatarer
+- temaer
+- sidemeny
+- knapper
+- responsivitet
+- simulatorflyt
+
+### Problem
+
+KI gjorde flere ganger større visuelle endringer enn jeg hadde bedt om.
+
+Eksempler:
+
+- eksisterende logoer ble foreslått erstattet
+- godkjent boblegeometri ble endret
+- knapper med samme funksjon fikk ulik utforming
+- overskrifter fikk ulik størrelse
+- ikoner havnet feil
+
+### Ny arbeidsregel
+
+Jeg begynte derfor å kreve at:
+
+- eksisterende godkjente elementer ikke skulle endres uten avtale
+- KI ikke skulle bygge nye versjoner før jeg sa «go/kjør»
+- godkjent geometri og layout skulle behandles som låst
+
+Dette er et konkret eksempel på at KI-bruken ble mer styrt etter erfaring med tidligere feil.
 
 ---
 
-## Oppsummering av hvordan KI er brukt
+# 10. Admin, roller og kontroll – v20.0–v20.4
 
-ChatGPT har vært brukt til:
+## Roller
 
-- idéutvikling og drøfting av produktvalg
-- forslag til brukerflyt og UX
-- generering og redigering av HTML, CSS, JavaScript og Node.js-kode
-- integrasjon mot OpenAI, Supabase og senere OpenRouter
-- utforming av systemprompt, svarstruktur og sikkerhetsregler
-- personvernlogikk og testscenarier
-- utvikling av samtalesimulator og testregime
-- feilsøking av kode, API-kall, Render og Supabase
-- fag- og kildebank, med manuell vurdering og senere krav om mer kuraterte kilder
-- benchmarkoppsett for modellkvalitet, responstid og kostnad
-- BMAD-dokumentasjon, README, Product Brief og refleksjonsnotater
-- forslag til design, ikoner og bilder
-- kvalitetssikring og regresjonstester
+Jeg ønsket:
 
-KI har ikke vært brukt som en autonom utvikler som har tatt endelige produktbeslutninger. Mange forslag er blitt forkastet, endret eller korrigert etter min testing og vurdering. Flere misforståelser har ført til nye krav, blant annet regelen om at nye appversjoner ikke skal bygges før jeg uttrykkelig sier «go/kjør», at eksisterende logoer og bilder ikke skal overskrives, og at godkjente visuelle komponenter ikke skal endres uten at det er avtalt.
+- bruker
+- redaktør
+- admin
 
-Prosessen har derfor i praksis vært:
+ChatGPT hjalp med rollemodell og server-side tilgangskontroll.
 
-**planlegg → bygg → test → oppdag feil eller svakheter → korriger krav → bygg videre → dokumenter**
+Jeg ønsket spesielt at kritiske rettigheter ikke bare skulle skjules i grensesnittet, men håndheves på serveren.
 
-Dette gir et mer korrekt bilde av KI-bruken enn å fremstille prosjektet som en lineær prosess der ChatGPT leverte ferdige løsninger som ble brukt uendret.
+---
+
+## Personvern i alle KI-felt
+
+Jeg stilte krav om at personvernbarrieren skulle gjelde på tvers av KI-funksjoner og ikke bare hovedsamtalen.
+
+Dette førte til server-side kontroll i tillegg til klientkontroll.
+
+---
+
+## Modellstyring og kostnad
+
+Jeg ønsket å kunne sammenligne modeller på:
+
+- kvalitet
+- responstid
+- kostnad
+
+ChatGPT hjalp med modellvalg og logging.
+
+Jeg stilte samtidig krav om at teknisk logging ikke skulle bli brukerprofilering eller automatisk lagring av sensitive samtaler.
+
+---
+
+# 11. BMAD og arkitektur – v20.3–v20.7
+
+ChatGPT ble brukt til å strukturere prosjektet gjennom:
+
+- Product Brief
+- PRD
+- UX-design
+- arkitektur
+- epics og stories
+- implementeringsplan
+
+Jeg var samtidig opptatt av at dokumentasjonen ikke skulle fremstille prosjektet som mer lineært enn det faktisk hadde vært.
+
+Prosjektet ble utviklet eksperimentelt og iterativt, og BMAD-dokumentene ble brukt til å samle og tydeliggjøre retningen etter hvert som produktet ble mer komplekst.
+
+---
+
+## Endringer i Product Brief
+
+Jeg ba blant annet om at:
+
+- kompleksiteten skulle beskrives realistisk
+- briefen skulle være kort nok
+- summary skulle fungere som elevator pitch
+- videre arbeid skulle ha et realistisk tidsperspektiv
+
+Dette førte til flere iterasjoner i stedet for én KI-generert sluttekst.
+
+---
+
+# 12. Nye temaer og videre kvalitetssikring – v20.5–v20.7
+
+Prosjektet ble utvidet til ni hovedtemaer.
+
+Jeg var spesielt opptatt av språk og faglig balanse innen:
+
+- mobbing
+- seksuell trakassering
+- vold og trusler
+- tilrettelegging
+- arbeidsevne
+
+Jeg korrigerte blant annet KI når språk kunne implisere at trakassering faktisk hadde skjedd før situasjonen var avklart.
+
+Dette følger samme prinsipp som ellers i prosjektet:
+
+**KI skal ikke trekke sikre konklusjoner som ikke er støttet av brukerens informasjon.**
+
+---
+
+# 13. Sluttføring og regresjonsarbeid – v20.8–v20.10.3
+
+Denne fasen handlet i stor grad om kvalitetssikring og opprydding fremfor nye hovedfunksjoner.
+
+## Repo-struktur
+
+Ved gjennomgang av repoet ble det tydelig at mange historiske filer og testversjoner gjorde strukturen vanskeligere å forstå.
+
+Sammen med ChatGPT gikk jeg systematisk gjennom:
+
+- dokumentasjon
+- bilder
+- testfiler
+- migreringer
+- arkivfiler
+- runtime-data
+- README
+- package scripts
+
+### Endringer
+
+Blant annet ble:
+
+- dokumentasjon flyttet til `docs/`
+- BMAD-dokumenter samlet under `docs/bmad/`
+- KI-dokumentasjon samlet under `docs/ai/`
+- faggrunnlag samlet under `docs/faggrunnlag/`
+- bilder samlet under `assets/images/`
+- temabilder samlet under `assets/images/topics/`
+- Supabase-filer samlet under `database/`
+- tester samlet under `tests/`
+- testdata samlet under `tests/cases/`
+- runtime-data samlet under `data/`
+- gamle historiske tester og arkivkopier fjernet fra aktivt repo
+
+Alle berørte stier ble kontrollert og oppdatert.
+
+Dette var ikke bare kosmetisk opprydding. Flytting av filer avdekket flere steder der kode og tester hadde implisitte avhengigheter til gammel mappestruktur.
+
+---
+
+## Testserver og autentisering
+
+Etter flytting og opprydding feilet en KI-test gjentatte ganger med:
+
+`401 GET /api/status`
+
+### Analyse
+
+Serveren krevde autentisering også når den automatiserte testen startet sin egen server.
+
+Det ville vært feil å fjerne autentiseringskravet fra selve appen.
+
+### Løsning
+
+I stedet ble det laget en eksplisitt test-bypass som bare aktiveres når:
+
+- `NODE_ENV=test`
+- `TEST_AUTH_BYPASS=1`
+
+Dette gjorde det mulig å automatisere tester uten å svekke autentisering i ordinær drift.
+
+Samme problem ble senere oppdaget i modell-sammenligningstesten og korrigert på samme måte.
+
+### Læring
+
+Dette var et konkret eksempel på forskjellen mellom:
+
+- å «få testen til å virke»
+- å rette testen uten å svekke produksjonssikkerheten
+
+---
+
+## Personverntester
+
+Ved sluttkontroll ble personvernreglene testet mot 29 automatiserte caser.
+
+Resultat:
+
+**29/29 kontroller OK**
+
+Testene omfattet blant annet:
+
+- navn
+- familieopplysninger
+- alder
+- graviditetsdetaljer
+- konkret arbeidssted
+- unik rolle
+- kjønnede formuleringer
+- anonymisering
+
+Eksempel:
+
+En tekst som beskrev konkrete døtre på bestemte alderstrinn ble generalisert til at medarbeideren har flere barn i småskolealder.
+
+Dette viser at personvernarbeidet ikke bare handler om blokkering, men om å bevare nødvendig kontekst når det er mulig.
+
+---
+
+## Simulatortester
+
+Simulatoren ble ved sluttkontroll testet med 24 automatiserte kontroller.
+
+Resultat:
+
+**24/24 kontroller OK**
+
+Testene kontrollerte blant annet:
+
+- simulatorvisning
+- navigasjon
+- direkte simulering
+- personvernkontroll
+- midlertidig øvelse
+- API-endepunkter
+- forbud mot oppdiktet diagnose
+- forbud mot oppdiktet familie
+- feedback
+- historikk
+- samtalebobler
+
+---
+
+## Foreldet regresjonstest oppdaget
+
+En eldre test for samtaleboblene feilet.
+
+Første mistanke var at den aktive CSS-implementasjonen var ødelagt.
+
+Ved gjennomgang viste det seg i stedet at testen krevde at en gammel kommentar med versjonsnummer skulle finnes i CSS:
+
+`v19.12.3 – ENESTE aktive snakkebobleimplementasjon`
+
+Den faktiske `.speech-bubble-shape`-implementasjonen eksisterte fortsatt og var i orden.
+
+### Beslutning
+
+Jeg valgte ikke å endre appen for å tilfredsstille en foreldet test.
+
+I stedet ble den meningsløse kontrollen av kommentartekst fjernet fra testen.
+
+Regresjonstesten besto deretter.
+
+### Læring
+
+Dette er et eksempel på kritisk bruk av automatiserte tester:
+
+**En test som feiler betyr ikke automatisk at produktkoden er feil. Selve testen må også vurderes.**
+
+---
+
+# 14. Modelltesting
+
+Prosjektet inneholder også støtte for sammenligning av ulike KI-modeller.
+
+Modelltestingen vurderer blant annet:
+
+- situasjonsforståelse
+- konkrete råd
+- nyansering og risiko
+- samtaleformuleringer
+- faglig relevans
+- responstid
+- kostnad
+
+Blind sammenligning brukes for å redusere risikoen for at kjennskap til modellnavnet påvirker vurderingen.
+
+Modelltester gjør faktiske API-kall og tar derfor betydelig lengre tid enn lokale regresjonstester.
+
+---
+
+# 15. Eksempler på kritisk KI-styring
+
+Følgende eksempler oppsummerer situasjoner der KI-forslag **ikke** bare ble akseptert:
+
+## Eksempel 1 – For mange inputfelt
+
+**KI/første løsning:** Flere strukturerte felter.
+
+**Min vurdering:** For tungvint.
+
+**Endring:** Ett hovedfelt og oppfølgingsspørsmål ved behov.
+
+---
+
+## Eksempel 2 – Personvernregler for strenge
+
+**Første løsning:** Fjernet eller blokkerte for mye kontekst.
+
+**Min vurdering:** Nyttig informasjon gikk tapt.
+
+**Endring:** Prinsippet «Anonymiser identitet, ikke nødvendig kontekst».
+
+---
+
+## Eksempel 3 – Supabase fungerte ikke i drift
+
+**KI-generert oppsett:** Databaseregler og lagring.
+
+**Problem:** Lagring feilet.
+
+**Analyse:** Manglende database-rettighet.
+
+**Endring:** Konkret `GRANT`-retting.
+
+---
+
+## Eksempel 4 – Simulator fant på informasjon
+
+**KI-svar:** Kunne legge til detaljer som ikke var oppgitt.
+
+**Min vurdering:** For lite realistisk og potensielt misvisende.
+
+**Endring:** Strengere simulatorregler og flere tester.
+
+---
+
+## Eksempel 5 – Automatisk KI-test ga feil vurdering
+
+**Test:** Markerte enkelte svar som problematiske ut fra nøkkelord.
+
+**Min vurdering:** Modellen hadde egentlig avvist den problematiske påstanden.
+
+**Endring:** Testlogikken ble mer kontekstbevisst.
+
+---
+
+## Eksempel 6 – KI endret godkjent design
+
+**KI-endring:** Endret logo, boblegeometri eller andre komponenter samtidig med en annen oppgave.
+
+**Min vurdering:** Endringen gikk utenfor bestillingen.
+
+**Endring:** Godkjente komponenter ble låst og nye versjoner skulle ikke bygges uten eksplisitt «go».
+
+---
+
+## Eksempel 7 – Test feilet, men appen var riktig
+
+**Feil:** `test-bubble-cleanup` feilet.
+
+**Analyse:** Testen lette etter en gammel CSS-kommentar.
+
+**Beslutning:** Ikke endre fungerende appkode for å gjøre en foreldet test grønn.
+
+**Endring:** Testen ble gjort relevant for faktisk implementasjon.
+
+---
+
+## Eksempel 8 – KI-test stoppet på autentisering
+
+**Feil:** Testserver fikk 401 på `/api/status`.
+
+**Mulig enkel løsning:** Fjerne auth på endepunktet.
+
+**Min vurdering:** Ville svekket sikkerheten.
+
+**Endring:** Test-only autentiseringsbypass bundet til testmiljø.
+
+---
+
+# 16. Kvalitetssikring av KI-generert kode
+
+KI-generert kode er ikke vurdert som korrekt bare fordi den kjører.
+
+Jeg har brukt flere former for kontroll:
+
+- manuell testing i nettleser
+- visuell kontroll
+- automatiserte regresjonstester
+- personverntester
+- simulatortester
+- KI-testsett
+- stresstester
+- modell-sammenligning
+- gjennomgang av serverlogger
+- Supabase-testing
+- Render-testing
+- Git-diff og kontroll av endrede filer
+
+Ved større endringer har jeg flere ganger stoppet videre utvikling når resultatet ikke samsvarte med bestillingen.
+
+---
+
+# 17. Dokumentasjon og sporbarhet
+
+Denne loggen må ses sammen med resten av repoet.
+
+## Produkt og plan
+
+- `product-brief.md`
+- `docs/bmad/PRD.md`
+- `docs/bmad/ARCHITECTURE-BMAD.md`
+- `docs/bmad/UX-DESIGN-BMAD.md`
+- `docs/bmad/EPICS-AND-STORIES-BMAD.md`
+- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
+
+## KI
+
+- `docs/ai/AI-SYSTEMPROMPT.md`
+- `docs/ai/AI-RESPONSE-CONTRACT.md`
+- `docs/ai/AI-TESTPLAN.md`
+- `docs/ai/SAMTALEPARTNER-MODELL.md`
+
+## Sikkerhet og faggrunnlag
+
+- `docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
+- `docs/SOURCEBANK.md`
+- `data/SOURCEBANK.json`
+- `docs/faggrunnlag/`
+
+## Tester
+
+- `tests/`
+
+## Utviklingshistorikk
+
+- `CHANGELOG.md`
+- Git commit-historikken
+
+Versjonsnumrene i denne loggen viser utviklingsfasene. Git-historikken er den autoritative kilden til når konkrete kodeendringer ble gjennomført.
+
+---
+
+# 18. Begrensninger ved AI-loggen
+
+Denne loggen er laget for å dokumentere en faktisk utviklingsprosess, ikke for å rekonstruere en kunstig perfekt prosess i ettertid.
+
+Derfor er det viktig å presisere:
+
+- ikke alle KI-prompts er lagret ordrett
+- mange utviklingsøkter besto av lange dialoger og gjentatte små korrigeringer
+- noen designvalg ble endret flere ganger
+- enkelte tester og løsninger ble senere forkastet
+- noen BMAD-dokumenter ble oppdatert etter hvert som prosjektet utviklet seg
+- prosjektet har vært mer iterativt enn lineært
+
+Jeg mener dette gir et mer korrekt bilde av KI-assistert utvikling enn å fremstille det som om én prompt førte direkte til én ferdig løsning.
+
+---
+
+# 19. Hva jeg har lært om KI-assistert utvikling
+
+Arbeidet med Samtalestøtte har vist at det å bruke KI til programmering ikke først og fremst handler om å få KI til å produsere mest mulig kode.
+
+Det viktigste har vært å kunne:
+
+- formulere problemet presist
+- kontrollere hva KI faktisk endrer
+- oppdage når et forslag er teknisk riktig, men produktmessig feil
+- teste løsningen
+- stille strengere krav etter feil
+- forstå konsekvensene av sikkerhets- og personvernvalg
+- skille feil i produktet fra feil i testene
+- unngå at KI fortsetter å endre allerede godkjente deler
+- dokumentere hvorfor en løsning ble valgt
+
+Et mønster gjennom hele prosjektet har vært at de beste resultatene kom når jeg ikke bare ba KI om en løsning, men vurderte resultatet kritisk og brukte feilene til å forbedre neste krav.
+
+---
+
+# 20. Oppsummering
+
+ChatGPT har vært brukt omfattende gjennom hele Samtalestøtte-prosjektet, men ikke som en autonom utvikler.
+
+KI har hjulpet med:
+
+- idéutvikling
+- UX
+- kode
+- API-integrasjon
+- Supabase
+- personvern
+- sikkerhet
+- tester
+- feilsøking
+- faggrunnlag
+- modelltesting
+- BMAD
+- dokumentasjon
+
+Samtidig har en betydelig del av utviklingsarbeidet bestått i å kontrollere, korrigere eller avvise KI-forslag.
+
+Prosessen kan oppsummeres slik:
+
+**planlegg → spesifiser → bygg med KI → test → vurder kritisk → identifiser svakhet → presiser krav → korriger → test igjen → dokumenter**
+
+Det er denne iterative kontrollen av KI, mer enn selve kodegenereringen, som har vært den viktigste delen av utviklingsprosessen.
