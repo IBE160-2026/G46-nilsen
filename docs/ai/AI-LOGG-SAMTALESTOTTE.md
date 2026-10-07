@@ -122,6 +122,14 @@ Jeg vurderte prototypen visuelt og funksjonelt og identifiserte tidlig problemer
 - visuell hierarki
 - hvor intuitiv løsningen var
 
+### Merknad om Git-historikken
+
+Utviklingen av Samtalestøtte startet før prosjektet var koblet til Git/GitHub. De tidlige versjonene ble derfor utviklet og lagret lokalt før de senere ble lagt inn i Git-repositoriet. Dette forklarer hvorfor mange av de tidlige versjonscommitene har datoer konsentrert rundt 23.–27. september 2026, selv om selve utviklingsarbeidet og KI-dialogene hadde startet tidligere.
+
+Etter at Git/GitHub kom på plass, ble Git brukt fortløpende til versjonskontroll, testing, feilretting, dokumentasjon og videreutvikling. Commit-datoene for de tidligste versjonene viser derfor tidspunktet de ble lagt inn i Git, ikke nødvendigvis tidspunktet hele utviklingsarbeidet bak hver versjon ble utført.
+
+Git-historikken er ikke omskrevet i ettertid for å gi inntrykk av en annen tidslinje.
+
 ### Endring
 
 I stedet for å låse løsningen til første KI-utkast fortsatte utviklingen iterativt.
