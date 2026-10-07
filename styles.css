@@ -1854,7 +1854,8 @@ textarea[aria-invalid="true"] {
 
 .situation-input-shell {
   position: relative;
-  display: block;
+  display: grid;
+  gap: 10px;
 }
 
 .situation-input-shell textarea {
@@ -1862,15 +1863,14 @@ textarea[aria-invalid="true"] {
   width: 100%;
   min-height: 104px;
   max-height: 240px;
-  padding: 14px 14px 58px 14px;
+  padding: 14px;
   resize: none;
   overflow-y: hidden;
 }
 
 .in-field-submit {
-  position: absolute;
-  left: 10px;
-  bottom: 10px;
+  position: static;
+  justify-self: start;
   min-height: 38px;
   padding: 10px 16px;
   margin: 0 !important;
@@ -1878,7 +1878,7 @@ textarea[aria-invalid="true"] {
   box-shadow: 0 8px 18px color-mix(in srgb,var(--accent) 24%,transparent);
   font-weight: 800;
   white-space: nowrap;
-  z-index: 2;
+  z-index: auto;
 }
 
 .privacy-submit-note {
@@ -1907,18 +1907,6 @@ textarea[aria-invalid="true"] {
   line-height: 1.35;
 }
 
-@media (max-width:640px) {
-  .situation-input-shell textarea {
-    padding-right: 14px;
-    padding-bottom: 60px;
-  }
-
-  .in-field-submit {
-    left: 8px;
-    bottom: 8px;
-  }
-
-}
 
 .button-icon {
   width: 18px;
@@ -6164,10 +6152,12 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
   gap: 12px;
   flex-wrap: nowrap;
   overflow: visible;
+  min-width: 0;
 }
 
 .utility-title-row h1 {
   margin: 0;
+  min-width: 0;
 }
 
 .utility-title-row .utility-page-brand {
@@ -6274,19 +6264,77 @@ html[data-theme="dark"] .utility-page-logo {
   display: flex !important;
 }
 
-@media (max-width: 760px) {
+/* ==========================================================
+   RESPONSIV FASIT
+   Desktop beholdes. Mellombredde og mobil går over til normal
+   dokumentflyt for logoer, overskrifter og handlingsknapper.
+   ========================================================== */
+
+@media (max-width: 1100px) {
   .utility-title-row {
-    gap: 9px;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
   }
 
   .utility-title-row .utility-page-brand {
-    transform: translate(-3px, -47px) !important;
+    height: auto;
+    transform: none !important;
   }
 
   .utility-title-row .utility-page-logo {
-    width: 88px !important;
+    width: 92px !important;
+    max-width: 100% !important;
   }
 
+  .utility-header-copy,
+  .utility-title-row > div {
+    min-width: 0;
+  }
+}
+
+@media (max-width: 760px) {
+  .utility-title-row {
+    align-items: center;
+    gap: 9px;
+  }
+
+  .utility-title-row .utility-page-logo {
+    width: 72px !important;
+  }
+
+  .utility-title-row h1 {
+    font-size: clamp(1.65rem, 7vw, 2.2rem);
+    overflow-wrap: anywhere;
+  }
+
+  .settings-card.utility-accordion,
+  .settings-card.admin-panel,
+  #admin-view .admin-grid > .settings-card.admin-panel {
+    padding: 16px !important;
+  }
+
+  .in-field-submit {
+    width: 100%;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 520px) {
+  .utility-title-row {
+    gap: 8px;
+  }
+
+  .utility-title-row .utility-page-logo {
+    width: 60px !important;
+  }
+
+  .utility-title-row h1 {
+    font-size: clamp(1.5rem, 8vw, 1.9rem);
+  }
+}
+
+/* Lav skjermhøyde: komprimer sidemenyen uten å skjule navigasjon. */
 @media (max-height: 760px) {
   .sidebar {
     padding-top: 8px;
