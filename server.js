@@ -13,8 +13,8 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.10.2";
-const contactEmail = "cecilie.c.nilsen@himolde.no";
+const appVersion = process.env.APP_VERSION || "20.10.3";
+const contactEmail = process.env.CONTACT_EMAIL || "";
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
@@ -462,7 +462,7 @@ const VALID_ROLES = new Set(["user", "editor", "admin"]);
 const EDITABLE_CONTENT_KEY_PATTERN = /^(?:home|topic|guidance|simulation|history|settings|about|contact|privacy|terms)\.[a-z0-9._-]{1,160}$/i;
 
 const bootstrapAdminEmails = new Set(
-  String(process.env.ADMIN_EMAILS || contactEmail || "")
+  String(process.env.ADMIN_EMAILS || "")
     .split(",")
     .map(value => normalizeEmail(value))
     .filter(Boolean)
@@ -752,7 +752,7 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   let storageReady=true;
   const probe=await supabaseAdmin.from('benchmark_results').select('id,source_pages').limit(1);
   if(probe.error) storageReady=false;
-  res.json({version:'20.10.2',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+  res.json({version:'20.10.3',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
 });
 
 app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
@@ -1336,7 +1336,7 @@ const guidanceSchema = {
 
 const SERVER_COMMON_GIVEN_NAMES = new Set(`Kine Gro Reidun Cecilie Trude Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild Bente Berit Britt Brit Gerd Grete Gry Jorunn Jorun Randi Rita Siv Sissel Tone Torill Tove Unni Vigdis Wenche Åsebjørg Elisabeth Elise Ellen Eva Else Gunn Gunhild Ingeborg Kjersti Merete Mette Renate Solfrid Therese Trude Vibeke Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein Alf Arild Bjarne Dag Einar Erlend Finn Frank Harald Helge Ivar Kjell Kjetil Leif Magne Odd Ove Roar Roy Steinar Svein Terje Tom Tommy Trygve Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria Giulia Giorgia Francesca Alessandra Martina Chiara Federica Marco Luca Matteo Lorenzo Alessandro Andrea Giovanni Giuseppe Antonio Stefano Davide Chloe Chloé Emily Olivia Amelia Charlotte Sophie Jessica Rebecca Rachel Megan Lauren Hannah Grace Alice Lucy Eleanor George James William Harry Oliver Jack Charlie Thomas Edward Henry Samuel Alexander Daniel Michael Matthew Joshua Emma Sophie Anna Lena Laura Julia Sarah Lisa Katharina Hannah Marie Johanna Lea Leon Lukas Luca Finn Felix Paul Jonas Elias Noah Ben Benjamin Maximilian Alexander Niklas Élodie Camille Manon Juliette Claire Pauline Amélie Cécile Celine Céline Lucie Margaux Louise Marie Jean Pierre Julien Nicolas Antoine François Philippe Alexandre Thomas Agnieszka Katarzyna Anna Ewa Joanna Magdalena Natalia Aleksandra Marta Piotr Jakub Mateusz Michał Michal Tomasz Krzysztof Paweł Pawel Łukasz Lukasz Anastasia Ekaterina Elena Irina Natalia Olga Svetlana Tatiana Ivan Dmitri Dmitry Alexei Sergey Sergei Nikolai Mikhail Priya Pooja Anjali Neha Aditi Riya Kavya Aarav Arjun Rahul Rohit Vikram Raj Amit Anil Deepak Sanjay Wei Li Ming Jun Chen Ling Mei Xia Yu Yuki Haruka Sakura Aiko Mei Kenji Hiroshi Takashi Akira Satoshi Minjun Jihoon Jisoo Seojun Hyunwoo Minji Yuna Nguyen Minh Linh Lan Anh Trang Huy Phuong Phương Mai Tuan Tuấn Kwame Kofi Ama Akosua Chinedu Ngozi Adaeze Amina Nia Zuri Tendai Thabo Sipho Lerato`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
 const SERVER_NAME_FALSE_POSITIVES = new Set(`Jeg Vi Det Den Dette En Et Når Hvis På I Som Med Men Og Eller For Til Fra Av Etter Før Under Over Ikke Ja Nei Usikker Person Personen Vedkommende Hen Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen Oppfølging Tilrettelegging Mandag Tirsdag Onsdag Torsdag Fredag Lørdag Søndag Januar Februar Mars April Mai Juni Juli August September Oktober November Desember`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
-const SERVER_AMBIGUOUS_GIVEN_NAMES = new Set(`per liv live line ben even`.split(/\s+/).filter(Boolean));
+const SERVER_AMBIGUOUS_GIVEN_NAMES = new Set(`per liv live line ben even dag finn tone odd gro siv bjørn rune`.split(/\s+/).filter(Boolean));
 const SERVER_HARD_PRIVACY_TYPES = new Set(["email", "phone", "birthdate", "identifier", "name", "address", "gendered_language"]);
 
 function serverNormalizeNameToken(value) { return String(value || "").toLocaleLowerCase("nb-NO"); }

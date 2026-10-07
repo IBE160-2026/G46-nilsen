@@ -43,7 +43,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.9.0", contactEmail: "cecilie.c.nilsen@himolde.no" };
+let publicConfig = { appVersion: "20.10.3", contactEmail: "" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 const clientErrorLog = [];
@@ -541,7 +541,7 @@ Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen O
 // Fornavn som også kan være vanlige ord i arbeidsrelatert tekst.
 // Disse krever tydelig personkontekst dersom de er skrevet med liten bokstav.
 const AMBIGUOUS_GIVEN_NAMES = new Set(`
-per liv live line ben even
+per liv live line ben even dag finn tone odd gro siv bjørn rune
 `.split(/\s+/).filter(Boolean));
 
 function normalizeNameToken(value) {
