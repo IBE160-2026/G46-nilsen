@@ -1,8 +1,14 @@
+# Lokale miljøvariabler og hemmeligheter
 .env
+
+# Installerte avhengigheter
 node_modules/
+
+# Operativsystemfiler
 .DS_Store
 
 # Lokale KI-testrapporter
 test-results/
-data/*.json
+
+# Midlertidige runtime-filer
 data/*.tmp
