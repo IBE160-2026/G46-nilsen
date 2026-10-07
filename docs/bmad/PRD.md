@@ -984,6 +984,7 @@ Dette skal redusere risikoen for at nye KI-genererte forslag automatisk blir lag
 
 ---
 
+
 # 19. Oppsummering
 
 Samtalestøtte er levert som en omfattende KI-basert prototype for lederstøtte ved krevende medarbeidersamtaler.
@@ -1007,3 +1008,71 @@ Produktet er utviklet iterativt.
 PRD-en beskriver derfor både hva som faktisk er levert og hvilke områder som er eksplisitt videre arbeid.
 
 Dette skillet er viktig for at krav, kode, tester og dokumentasjon skal kunne sammenlignes direkte uten at framtidige ambisjoner framstår som ferdig funksjonalitet.
+
+
+# Tillegg – faglig transparens og brukerinnsyn
+
+## Produktkrav: Etterprøvbart faggrunnlag
+
+**Status:** IMPLEMENTERT / DELVIS VIDEREUTVIKLING
+
+Samtalestøtte skal ikke være en svart boks der brukeren må stole blindt på KI-genererte råd.
+
+Når faglig grunnlag er relevant for et råd, skal løsningen så langt som mulig gjøre det mulig for brukeren å:
+
+- se at rådet har faglig forankring
+- se relevante kilder eller faggrunnlag
+- åpne relevante fagtekster eller fagsider
+- følge lenker til autoritative eksterne kilder når slike brukes
+- undersøke grunnlaget selv før viktige beslutninger tas
+
+Dette er særlig viktig ved spørsmål om:
+
+- lovverk og formelle personalprosesser
+- sykefravær og tilrettelegging
+- varsling
+- mobbing og trakassering
+- vold og trusler
+- HMS og sikkerhet
+
+## Krav til KI og kildebruk
+
+Systemet skal skille mellom:
+
+1. konkret informasjon fra en kilde
+2. faglig forankret veiledning
+3. KI-modellens egen sammenstilling eller formulering
+
+KI skal ikke fremstille modellens egen syntese som et direkte utsagn fra en kilde.
+
+Kilder skal bare presenteres som støtte når de faktisk er relevante for påstanden eller rådet.
+
+Systemet skal ikke konstruere eller finne på kilder dersom konkret kildegrunnlag ikke er tilgjengelig.
+
+## Brukeropplevelse
+
+Faggrunnlag skal være tilgjengelig uten å gjøre hovedveiledningen unødvendig tung.
+
+Aktuelle løsninger kan være:
+
+- kildehenvisninger i eller under KI-svaret
+- «Les mer»
+- sammenleggbare kildeområder
+- relevante fagsider
+- lenker til myndighetskilder eller annet faggrunnlag
+
+Brukeren skal kunne velge hvor mye faglig detalj som ønskes.
+
+## Sporbarhet
+
+Kravet støttes av:
+
+- `docs/faggrunnlag/`
+- `docs/SOURCEBANK.md`
+- `data/SOURCEBANK.json`
+- `docs/ai/AI-SYSTEMPROMPT.md`
+- `docs/ai/AI-RESPONSE-CONTRACT.md`
+- `docs/ai/SAMTALEPARTNER-MODELL.md`
+- `docs/bmad/UX-DESIGN-BMAD.md`
+
+Prinsippet er at KI-støtte skal være **etterprøvbar**, ikke bare overbevisende formulert.
