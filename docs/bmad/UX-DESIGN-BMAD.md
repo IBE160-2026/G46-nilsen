@@ -3,236 +3,565 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
-**Status:** Planlagt brukeropplevelse for første versjon  
+**Status:** Revidert UX-spesifikasjon med faktisk leveransestatus  
+**Versjon ved dokumentasjon:** 20.10.3  
 **Språk:** Norsk
 
 ---
 
-## 1. Formål
+# 1. Formål
 
-UX-designet for Samtalestøtte skal gjøre en kompleks og potensielt sensitiv oppgave enkel å forstå og trygg å bruke.
+Samtalestøtte skal gjøre en kompleks og potensielt sensitiv oppgave enkel å forstå og trygg å bruke.
 
-Brukeren skal kunne gå fra en krevende og ofte ustrukturert arbeidssituasjon til en tydelig plan for samtalen uten å måtte forstå hvordan KI, databaser, personvernkontroll eller kildebruk fungerer teknisk.
+Brukeren skal kunne gå fra en ustrukturert arbeidssituasjon til konkret forberedelse og samtaletrening uten å måtte forstå:
 
-Designet skal derfor prioritere ro, tydelighet, lav visuell belastning, forutsigbar navigasjon, konsistent språk, få valg om gangen, tydelig tilbakemelding fra systemet, høy opplevd kontroll og personvern som en naturlig del av arbeidsflyten.
+- KI-arkitektur
+- databaser
+- modellvalg
+- personverngateway
+- autentiseringsmekanismer
+- teknisk logging
 
-Løsningen skal oppleves som et spesialisert arbeidsverktøy for ledere, ikke som en generell chatbot.
+UX-en skal derfor redusere opplevd kompleksitet selv om systemet teknisk er omfattende.
+
+Produktet skal oppleves som:
+
+- rolig
+- profesjonelt
+- menneskelig
+- forutsigbart
+- trygt
+- spesialisert for lederstøtte
+
+Det skal ikke oppleves som en generell chatbot.
 
 ---
 
-## 2. UX-prinsipper
+# 2. UX-status
 
-### 2.1 Rolig og konsistent visuelt uttrykk
+| Område | Status |
+|---|---|
+| Hovedlayout | Implementert |
+| Sidemeny | Implementert |
+| Temaoversikt | Implementert |
+| Lys modus | Implementert |
+| Mørk modus | Implementert |
+| Hybridmodus | Implementert |
+| Situasjonsflyt | Implementert |
+| KI-veiledning | Implementert |
+| Oppfølgingsdialog | Implementert |
+| Samtalesimulator | Implementert |
+| Personvernfeedback | Implementert |
+| Historikk | Implementert |
+| Admin | Implementert |
+| Sammenleggbare seksjoner | Implementert |
+| Responsiv tilpasning | Implementert på prototypenivå |
+| Full tilgjengelighetsvalidering | Videre arbeid |
+| Fullskala brukertesting | Videre arbeid |
 
-Samtalestøtte skal bruke en begrenset og gjennomgående fargepalett. Mange sterke eller konkurrerende farger kan gjøre grensesnittet visuelt urolig og gjøre det vanskeligere å se hva som er viktig. Derfor skal hovedfarger, bakgrunnsfarger, kort, illustrasjoner, ikoner og bilder holdes innenfor samme visuelle tema.
+---
 
-Illustrasjoner og bilder skal så langt som mulig bruke beslektede nyanser og uttrykk, slik at siden oppleves som én helhet fremfor en samling enkeltstående elementer.
+# 3. UX-prinsipper
 
-Farger skal brukes funksjonelt:
+## 3.1 Rolig visuelt uttrykk
 
-- hovedfarge for identitet og viktige handlinger
-- nøytrale bakgrunner for arbeidsflater
-- diskrete kontrastfarger for navigasjon og status
-- varselsfarger bare når brukeren faktisk trenger oppmerksomhet
+Samtalestøtte brukes i situasjoner som kan være krevende for brukeren.
 
-Farge skal ikke brukes bare for dekorasjon dersom det svekker oversikten.
+Designet skal derfor redusere visuell uro.
 
-### 2.2 Visuelt hierarki
+Det innebærer:
 
-Brukeren skal raskt kunne forstå hvor de er, hva de skal gjøre nå, hva som er viktigst, hva som er valgfritt og hvor de går videre.
+- begrenset fargepalett
+- rolige bakgrunner
+- få konkurrerende elementer
+- tydelig luft mellom komponenter
+- moderat bruk av visuelle effekter
+- konsekvent bruk av ikoner og illustrasjoner
 
-Hierarkiet skal skapes med tydelige overskrifter, avstand og gruppering, kort og seksjoner, begrenset bruk av farger, konsistente knappestiler, størrelse og vekt på tekst og plassering av primære handlinger.
+Farge skal brukes funksjonelt, ikke bare dekorativt.
 
-Primære handlinger skal være tydelige uten at hele skjermbildet fylles med konkurrerende knapper.
+---
 
-### 2.3 Progressiv kompleksitet
+## 3.2 Tydelig visuelt hierarki
 
-Brukeren skal ikke presenteres for alle funksjoner samtidig. Løsningen skal vise det som er nødvendig i den aktuelle delen av arbeidsflyten, og mer avanserte funksjoner skal kunne åpnes ved behov.
+Brukeren skal raskt forstå:
+
+1. hvor de er
+2. hva hovedoppgaven er
+3. hva neste handling er
+4. hva som er valgfritt
+5. hvordan de går videre
+
+Dette støttes gjennom:
+
+- overskriftsnivåer
+- avstand
+- kort
+- seksjoner
+- knappestiler
+- plassering
+- typografi
+
+Primære handlinger skal være tydelige uten at hele siden består av konkurrerende knapper.
+
+---
+
+## 3.3 Progressiv kompleksitet
+
+Brukeren skal ikke eksponeres for hele systemets kompleksitet samtidig.
+
+Avanserte funksjoner skal vises først når de er relevante.
 
 Eksempler:
 
-- Admin-seksjonen **Rediger innhold** skal være minimert som standard.
-- Avanserte modell- og kostnadsdata skal ligge i Admin, ikke i hovedflyten.
-- Personvernforklaringer skal være tydelige, men ikke dominere siden dersom ingen problemer er oppdaget.
-- Undertemaer skal hjelpe brukeren videre, men ikke skape unødvendige ekstra steg dersom KI-en allerede har identifisert riktig kontekst.
-
-### 2.4 Gjenkjennelighet fremfor læring
-
-Komponenter som gjør samme jobb skal se og oppføre seg likt. Samme knappetype skal brukes for tilsvarende handlinger, samme visuelle form for personvernstatus, samme mønster for bekreftelsesdialoger og samme kortstruktur der funksjonene er sammenlignbare.
-
-Brukeren skal ikke måtte lære en ny måte å bruke systemet på fra side til side.
-
-### 2.5 Menneskelig språk
-
-Tekst i grensesnittet skal være profesjonell, men menneskelig. Språket skal være tydelig, unngå unødvendig teknisk terminologi, unngå å stemple medarbeideren negativt og beskrive situasjoner nøytralt.
-
-Tema og undertema skal derfor så langt som mulig formuleres nøytralt. Eksempler er «motivasjon» fremfor «manglende motivasjon», «kvalitet og prioritering» fremfor «dårlig kvalitet» og «livssituasjoner» fremfor kategorier som kan oppleves som problemstempling.
+- Admin-seksjoner kan åpnes ved behov.
+- `Rediger innhold` er lukket som standard.
+- Modell- og kostnadsinformasjon ligger i Admin.
+- Personvernstatus vises uten å dominere hovedoppgaven.
+- Undertemaer skal ikke skape ekstra steg dersom KI-en allerede har identifisert relevant kontekst.
 
 ---
 
-## 3. Visuell identitet
+## 3.4 Konsistens
 
-### 3.1 Logo
+Samme type funksjon skal så langt som mulig ha samme:
 
-Samtalestøttes logo skal symbolisere dialog mellom menneske og KI. Logoen består av en oval snakkeboble, en menneskelig profil, en diskret KI-profil og et visuelt markert element i snakkeboblens hale.
+- visuelle form
+- knappestil
+- ikonlogikk
+- kortstruktur
+- spacing
+- bekreftelsesmønster
+- overskriftsnivå
 
-Logoen skal brukes uten visuelle filtre som endrer originalens farger eller lysstyrke. I hybridvisning skal original `logo.png` brukes.
-
-### 3.2 Fargebruk
-
-Hoveduttrykket skal bruke en rolig palett med mørk petrol/blågrønne toner kombinert med lyse arbeidsflater.
-
-Begrunnelsen er å skape et profesjonelt uttrykk, redusere visuell støy, støtte tydelig kontrast mellom navigasjon og innhold, gi en rolig ramme rundt sensitive temaer og skape sammenheng mellom app, illustrasjoner og ikoner.
-
-Fargepaletten skal brukes konsekvent på tvers av sidebar, kort, knapper, illustrasjoner, ikoner, meldingsbobler, statusfelt og temaillustrasjoner.
-
-### 3.3 Bilder og illustrasjoner
-
-Illustrasjoner skal ikke ha tilfeldig stil eller store variasjoner i fargetemperatur og metning. De skal bruke et beslektet visuelt uttrykk, holde seg innenfor samme fargefamilie, støtte temaet uten å dominere og bidra til gjenkjennelse.
-
-Målet er at illustrasjonene skal støtte navigasjon og stemning, ikke konkurrere med teksten.
-
-### 3.4 Typografi
-
-Typografien skal prioritere lesbarhet. Det skal være tydelig forskjell mellom hovedoverskrift, seksjonsoverskrift, brødtekst, hjelpetekst, status og knappetekst. Det skal unngås unødvendig mange skriftstørrelser og vekter.
+Brukeren skal ikke måtte lære grensesnittet på nytt fra side til side.
 
 ---
 
-## 4. Temaer og visningsmoduser
+## 3.5 Menneskelig språk
 
-Løsningen skal støtte lys modus, mørk modus og hybridmodus.
+Språket skal være:
 
-### 4.1 Hybridmodus
+- profesjonelt
+- tydelig
+- menneskelig
+- nøytralt
+- ikke-dømmende
 
-Hybridmodus er hoveduttrykket. Denne kombinerer mørk sidebar med lys hovedflate og gir tydelig visuell separasjon mellom navigasjon og arbeid.
+Temaer og undertemaer skal ikke fremstille medarbeidere som en samling problemer.
 
-Begrunnelsen er å beholde en tydelig app-følelse samtidig som hovedinnholdet har en lys og lesbar arbeidsflate.
+Eksempler:
+
+- `motivasjon` fremfor `manglende motivasjon`
+- `kvalitet og prioritering` fremfor `dårlig kvalitet`
+- `livssituasjoner` fremfor mer stemplende kategorier
 
 ---
 
-## 5. Overordnet layout
+# 4. Visuell identitet
 
-Desktop-layout er utgangspunkt for prototypen, men løsningen skal være responsiv og testbar på mobil.
+## 4.1 Logo
 
-Grunnstruktur:
+Logoen symboliserer dialog mellom menneske og KI.
+
+Den består av:
+
+- oval samtaleboble
+- menneskelig profil
+- diskret KI-profil
+- markert element i halen
+
+Logoen skal brukes uten filtre eller tilfeldig fargeendring.
+
+Original logo brukes i hybridvisning.
+
+---
+
+## 4.2 Farger
+
+Hoveduttrykket bruker mørke petrol/blågrønne toner kombinert med lyse arbeidsflater.
+
+Formålet er:
+
+- ro
+- profesjonalitet
+- kontrast
+- tydelig navigasjon
+- sammenheng mellom UI og illustrasjoner
+
+Varselsfarger skal reserveres for situasjoner som faktisk trenger oppmerksomhet.
+
+---
+
+## 4.3 Illustrasjoner
+
+Temaillustrasjoner skal:
+
+- ha beslektet stil
+- bruke beslektet fargetemperatur
+- støtte temaet
+- ikke dominere teksten
+- bidra til gjenkjennelse
+
+Illustrasjoner skal ikke oppleves som tilfeldige enkeltbilder.
+
+---
+
+## 4.4 Typografi
+
+Typografien skal gjøre hierarkiet tydelig.
+
+Det skal være forskjell mellom:
+
+- hovedoverskrift
+- seksjonsoverskrift
+- underoverskrift
+- brødtekst
+- hjelpetekst
+- status
+- knappetekst
+
+Unødvendig mange størrelser og vekter skal unngås.
+
+---
+
+# 5. Visningsmoduser
+
+Produktet støtter:
+
+- lys modus
+- mørk modus
+- hybridmodus
+
+## Hybridmodus
+
+Hybridmodus er hoveduttrykket.
+
+Den kombinerer:
+
+- mørk sidemeny
+- lys arbeidsflate
+
+Dette gir tydelig separasjon mellom navigasjon og innhold samtidig som teksttunge områder forblir lyse og lesbare.
+
+---
+
+# 6. Overordnet layout
+
+Desktop er referanseplattform for prototypen.
+
+Grunnstrukturen er:
 
 ```text
-┌────────────────────┬────────────────────────────────────┐
-│                    │                                    │
-│     SIDEBAR        │           HOVEDINNHOLD             │
-│                    │                                    │
-│ Logo               │ Overskrift                         │
-│ Navigasjon         │ Arbeidsflate                       │
-│                    │                                    │
-└────────────────────┴────────────────────────────────────┘
+┌──────────────────────┬─────────────────────────────────┐
+│                      │                                 │
+│      SIDEMENY        │          HOVEDINNHOLD           │
+│                      │                                 │
+│ Logo                 │ Overskrift                      │
+│ Navigasjon           │ Arbeidsflate                    │
+│                      │                                 │
+└──────────────────────┴─────────────────────────────────┘
 ```
 
-Sidebar brukes til hovednavigasjon, historikk, simulator, admin for autoriserte brukere, innstillinger, personvern, kontakt og informasjon om løsningen.
+Sidemenyen brukes til navigasjon.
 
-Hovedområdet skal ha god luft og tydelig fokus på én oppgave om gangen.
-
----
-
-## 6. Hovedbrukerflyt
-
-### 6.1 Start
-
-Brukeren skal raskt forstå hva løsningen gjør. Startflaten skal tilby to naturlige innganger: velg et tema eller beskriv situasjonen med egne ord.
-
-Brukeren skal ikke tvinges til å forstå tema-strukturen før vedkommende kan begynne.
-
-### 6.2 Situasjonsbeskrivelse
-
-Tekstfeltet skal være stort nok til at brukeren kan beskrive situasjonen naturlig, ha tydelig eksempel/hjelpetekst, minne brukeren om ikke å bruke navn eller unødvendige identifikatorer og gi personvernfeedback før innsending.
-
-Når KI-en har analysert situasjonen, skal systemet foreslå hovedtema og undertema. Brukeren skal kunne endre dette enkelt.
-
-### 6.3 Tema og undertema
-
-Klikk på hovedtema skal åpne en egen side eller arbeidsflate med undertemaer.
-
-Undertemaer skal være tydelig navngitt, ha korte forklaringer ved behov, være visuelt konsistente og inkludere mulighet for «Annet».
-
-Dersom KI-en allerede har identifisert både hovedtema og undertema med høy nok sikkerhet, skal brukeren kunne føres direkte videre uten et unødvendig ekstra valg.
+Hovedområdet skal fokusere på én hovedoppgave om gangen.
 
 ---
 
-## 7. Veiledningsvisning
+# 7. Sidemeny
 
-Veiledningen skal presenteres strukturert og ikke som én lang KI-tekst. Aktuelle seksjoner kan være mål for samtalen, før samtalen, forslag til åpning, spørsmål, mulige reaksjoner, hvordan reaksjonene kan møtes og neste steg.
+## Åpen meny
 
-Svarene skal ha korte avsnitt og tydelige overskrifter.
+Når menyen er åpen:
 
-Brukeren skal kunne fortsette samtalen, stille oppfølgingsspørsmål, rapportere et dårlig svar og gå videre til simulering dersom dette er relevant.
+- eksisterende struktur beholdes
+- logo vises
+- tekstetiketter vises
+- bruker skal raskt forstå funksjonene
+
+## Lukket meny
+
+Når menyen er minimert:
+
+- menyknappen vises som ikon
+- ikonene skal ligge visuelt på linje med tilhørende overskrift
+- samme ikonlogikk brukes konsekvent
+- logo/ikon skal fortsatt være gjenkjennelig
+
+Målet er å spare horisontal plass uten å miste navigasjonsforståelse.
 
 ---
 
-## 8. Oppfølgingsdialog
+# 8. Hovedside
 
-Oppfølgingsdialogen skal ligne en samtale, men ikke føles som en separat tilfeldig chatbot. Den skal visuelt være koblet til hovedveiledningen.
+Brukeren skal raskt forstå hva Samtalestøtte brukes til.
 
-KI-svar skal være kortere enn hovedsvaret. Enter skal sende melding, mens Shift + Enter skal lage ny linje. Brukeren skal tydelig kunne se hvem som har skrevet hva.
+Hovedsiden skal gi naturlige innganger til arbeidet:
+
+- velg et tema
+- beskriv situasjonen med egne ord
+
+Brukeren skal ikke måtte forstå hele temaarkitekturen før arbeidet kan begynne.
 
 ---
 
-## 9. Samtalesimulering
+# 9. Temaoversikt
 
-### 9.1 Formål
+Hovedtemaene skal presenteres med:
 
-Simulatoren skal gi brukeren et trygt sted å øve på formuleringer før den virkelige samtalen. Simulatoren skal føles som en separat treningsmodus, men bruke samme visuelle språk som resten av Samtalestøtte.
+- konsistent kortstruktur
+- tydelig navn
+- relevant illustrasjon
+- konsekvent spacing
+- tydelig klikkbarhet
 
-### 9.2 Roller
+Ni hovedtemaer skal vises uten at siden oppleves visuelt overfylt.
 
-KI spiller medarbeideren og brukeren spiller lederen. Dette skal være visuelt tydelig gjennom avatarer, plassering, meldingsbobler og etiketter ved behov.
+På desktop kan temaene organiseres i en 3 × 3-struktur når skjermbredden tillater det.
 
-### 9.3 Meldingsbobler
+---
 
-Meldingsboblene skal bruke samme godkjente geometri gjennom hele simulatoren. Venstre og høyre boble skal være speilvendte varianter av samme grunnform. Forskjellen skal hovedsakelig ligge i side, farge og avsender.
+# 10. Tema- og undertemasider
 
-Formen skal ikke endres mellom meldinger.
+Når et hovedtema åpnes skal brukeren få:
 
-### 9.4 Avatarer
+- tydelig temaoverskrift
+- relevante undertemaer
+- enkel navigasjon videre
+- mulighet for `Annet` der det er relevant
 
-Avatar og meldingsboble skal plasseres slik at halen visuelt peker naturlig mot riktig person. Avstand mellom profil og boble skal være konsistent gjennom hele simuleringen.
+Undertemaene skal:
 
-### 9.5 Personvern i simulator
+- være forståelige
+- bruke nøytralt språk
+- ikke fungere som en katalog over feil ved medarbeideren
 
-Personvernkontrollen skal alltid være synlig, men diskret.
+---
 
-Normal tilstand:
+# 11. Situasjonsbeskrivelse
+
+Situasjonen skal normalt kunne beskrives i ett eller få tekstfelt.
+
+Dette er et bevisst UX-valg.
+
+Formålet er å redusere terskelen for å komme i gang og la KI bidra til struktureringen.
+
+Tekstfeltet skal:
+
+- være stort nok for naturlig tekst
+- ha tydelig hjelpetekst
+- minne om personvern
+- gi personvernfeedback før KI-kall
+
+---
+
+# 12. Personvern som brukeropplevelse
+
+Personvern skal være synlig i arbeidsflyten.
+
+Brukeren skal forstå:
+
+- at teksten kontrolleres
+- hvorfor identifiserende informasjon bør fjernes
+- hva som eventuelt er oppdaget
+- hva brukeren kan gjøre videre
+
+Normal status skal være diskret.
+
+Ved funn skal brukeren få hjelp, ikke bare blokkering.
+
+Eksempel på normal status:
 
 **Personvernsjekk**  
 Ingen tydelige personopplysninger er oppdaget i teksten.
 
-Ved funn skal boksen vise hva som er oppdaget, hvorfor dette bør endres og handlingen «Fiks personvern».
+Ved funn skal systemet kunne vise:
 
-Ingen tom varselboks skal vises.
+- hva som er oppdaget
+- hvorfor det bør endres
+- handling for å rette teksten
 
----
-
-## 10. Historikk
-
-Historikk skal gjøre det enkelt å finne tilbake til tidligere arbeid. Brukeren skal kunne se tema, undertema, dato, samtaletype og kort identifikasjon av samtalen uten å eksponere sensitiv tekst unødvendig.
-
-Historikk skal ikke fremstå som et journalsystem.
-
-Brukeren skal enkelt kunne åpne, slette og slette all historikk.
+Tomme varselbokser skal unngås.
 
 ---
 
-## 11. Personvern som UX
+# 13. KI-veiledning
 
-Personvern skal ikke bare eksistere i bakgrunnen som teknisk kontroll. Brukeren skal forstå hvorfor personopplysninger ikke bør legges inn, hva systemet har oppdaget, hva som kan gjøres med teksten og når tekst sendes videre til KI.
+KI-veiledningen skal ikke fremstå som én lang tekstvegg.
 
-Personvernvarsler skal være tydelige uten å skremme brukeren unødvendig. Normal status skal kommunisere at kontrollen er gjennomført. Ved problemer skal systemet hjelpe brukeren med å rette teksten, ikke bare blokkere den.
+Innholdet skal deles inn i relevante seksjoner som for eksempel:
+
+- mål for samtalen
+- før samtalen
+- forslag til åpning
+- spørsmål
+- mulige reaksjoner
+- hvordan reaksjoner kan møtes
+- neste steg
+
+Korte avsnitt og tydelige overskrifter skal gjøre innholdet skannbart.
 
 ---
 
-## 12. Admin UX
+# 14. Primære handlinger etter KI-veiledning
 
-Admin skal være funksjonell fremfor dekorativ. Siden vil kunne inneholde mange funksjoner og skal derfor bruke sammenleggbare seksjoner.
+Etter hovedveiledningen skal brukeren enkelt kunne:
 
-Eksempel:
+- fortsette dialogen
+- rapportere et svar
+- starte ny samtale
+- gå videre til simulering når relevant
+
+Viktige handlinger skal ligge på logiske steder og ikke tvinge brukeren til å lete gjennom siden.
+
+---
+
+# 15. Oppfølgingsdialog
+
+Oppfølgingsdialogen skal visuelt høre sammen med hovedveiledningen.
+
+Den skal ikke oppleves som en tilfeldig separat chatbot.
+
+Brukeren skal tydelig se:
+
+- egne meldinger
+- KI-svar
+- hvor ny melding skrives
+
+Der det er relevant:
+
+- Enter sender
+- Shift+Enter lager ny linje
+
+KI-svar i oppfølgingsdialogen bør normalt være kortere enn hovedveiledningen.
+
+---
+
+# 16. Samtalesimulator
+
+## Formål
+
+Simulatoren gir brukeren et sted å øve før den virkelige samtalen.
+
+Den skal være en tydelig treningsmodus, men fortsatt visuelt tilhøre samme produkt.
+
+---
+
+## Roller
+
+Brukeren spiller lederen.
+
+KI spiller medarbeideren.
+
+Rollene skal være tydelige gjennom:
+
+- sideplassering
+- avatar
+- meldingsboble
+- eventuell etikett
+
+---
+
+## Meldingsbobler
+
+Meldingsboblene skal bruke konsistent geometri.
+
+Venstre og høyre variant skal være speilvendte versjoner av samme visuelle prinsipp.
+
+Forskjellen skal primært være:
+
+- plassering
+- farge
+- avsender
+
+Godkjent boblegeometri skal ikke endres tilfeldig av senere KI-genererte UI-endringer.
+
+---
+
+## Avatarer
+
+Avatar og boble skal plasseres slik at:
+
+- boblehalen peker naturlig mot avsender
+- avstanden mellom avatar og melding er konsistent
+- rollene er lett å forstå
+
+---
+
+## Simulator-CTA
+
+Handlingen for å starte simulering skal være tydelig nok til at brukeren oppdager den.
+
+Der det er hensiktsmessig kan handlingen vises både:
+
+- nær hovedveiledningen
+- etter relevant innhold
+
+Dette reduserer behovet for å skrolle tilbake for å finne neste steg.
+
+---
+
+# 17. Historikk
+
+Historikk skal hjelpe brukeren å finne tilbake til tidligere arbeid.
+
+Den skal ikke se ut som et journalsystem.
+
+Visningen kan inneholde:
+
+- tema
+- undertema
+- dato
+- type samtale
+- kort identifikasjon
+
+Unødvendig sensitiv tekst skal ikke vises i oversikten.
+
+Brukeren skal kunne:
+
+- åpne
+- slette
+- administrere egen historikk
+
+---
+
+# 18. Innstillinger
+
+Innstillinger skal samle relevante personlige valg på ett logisk sted.
+
+Dette kan inkludere:
+
+- visningsvalg
+- personverninformasjon
+- kontakt
+- andre brukerinnstillinger
+
+Sekundære funksjoner skal ikke belaste hovednavigasjonen unødvendig.
+
+---
+
+# 19. Hjelp
+
+Hjelpesiden skal være enkel å skanne.
+
+Den kan inneholde:
+
+- kort brukerveiledning
+- forklaring av sentrale funksjoner
+- kuraterte faglige ressurser
+
+Sammenleggbare seksjoner skal bruke samme visuelle mønster som andre tilsvarende sider.
+
+---
+
+# 20. Admin UX
+
+Adminområdet inneholder mange funksjoner og skal derfor prioritere oversikt fremfor dekorasjon.
+
+Store områder skal bruke progressiv visning.
+
+Eksempler:
 
 ```text
 ▶ Rediger innhold
@@ -240,19 +569,28 @@ Eksempel:
 ▶ Kostnad og tokenbruk
 ▶ Modellbenchmark
 ▶ Rapporterte svar
-▶ Weboppslag og kildebruk
+▶ Kildebruk
 ▶ Roller og brukere
 ```
 
-**Rediger innhold skal være minimert som standard.**
+`Rediger innhold` skal være lukket som standard.
 
-Bare den seksjonen administratoren arbeider med skal behøve å være åpen.
+Bare relevante seksjoner skal behøve å være åpne samtidig.
 
-### 12.1 Innholdsredigering
+---
 
-Systemet skal vise hvilke tekster som er redigerbare, om det finnes ulagrede endringer, tydelig lagreknapp og bekreftelsesdialog før publisering.
+# 21. Admin – innholdsredigering
 
-Bekreftelsesdialog:
+Admin/editor skal forstå:
+
+- hva som kan redigeres
+- om det finnes ulagrede endringer
+- hva lagreknappen gjør
+- når endringen blir synlig
+
+Lagring av relevante endringer skal bruke tydelig bekreftelse.
+
+Eksempel:
 
 > Er du sikker på at du vil lagre endringene? Endringene blir synlige for brukerne med en gang.
 
@@ -261,183 +599,328 @@ Handlinger:
 - Avbryt
 - Lagre endringer
 
-### 12.2 Modellvalg
+---
 
-Admin skal kunne se aktiv modell, tilgjengelige modeller, enkel beskrivelse av kostnad/kvalitetsnivå og eventuell advarsel ved valg av dyrere modell.
+# 22. Admin – modellvalg
 
-Modellvalg skal være et kontrollert valg fra liste, ikke et fritt tekstfelt.
+Modellvalg skal være et kontrollert valg.
 
-### 12.3 Kostnad og tokenbruk
+Admin skal kunne se:
 
-Kostnadsdata skal presenteres på en måte som er forståelig uten teknisk ekspertise. Aktuelle visninger er siste 24 timer, 7 dager og 30 dager, antall KI-kall, tokenbruk, estimert kostnad, fordeling på funksjon og modell.
+- aktiv modell
+- tilgjengelige modeller
+- relevant kvalitets-/kostnadsinformasjon
 
-Målet er å gjøre økonomisk konsekvens synlig, ikke å overbelaste administrator med rådata.
-
-### 12.4 Weboppslag og kildebruk
-
-Admin skal kunne se søkestreng, modell, tema/undertema, domene, sidetittel, URL og tidspunkt.
-
-Oversikten skal brukes til å identifisere mest brukte kilder, gjentatte søk og kandidater til SOURCEBANK/RAG. Den skal ikke vise hvem som gjorde oppslaget eller gjengi brukerens samtaletekst.
+Modellvalg skal ikke baseres på et tilfeldig fritekstfelt dersom systemet allerede kjenner modellene.
 
 ---
 
-## 13. Benchmark UX
+# 23. Admin – avansert informasjon
 
-Benchmark skal gjøre sammenligning enkel. Samme testsak skal kunne vises side om side for flere modeller.
+Kostnad, modelltesting og kildeinformasjon er avanserte funksjoner.
 
-```text
-TESTSAK
-────────────────────────────────────────────
-LUNA        TERRA        SOL
-Svar        Svar         Svar
-Tokens      Tokens       Tokens
-Kostnad     Kostnad      Kostnad
-Tid         Tid          Tid
-Web         Web          Web
-Kilder      Kilder       Kilder
-```
+De skal ikke dominere hovedproduktet.
 
-Brukeren skal kunne se kostnadsestimat før teststart, sette budsjettgrense, stoppe testen, se fremdrift, åpne detaljer per testsak og se faktiske weboppslag.
+I Admin kan de presenteres med:
 
-Testdata skal være tydelig merket som testtrafikk.
+- tydelige seksjonsoverskrifter
+- kort forklaring
+- progressiv visning
+- sammenleggbare områder
+
+Dette følger prinsippet om progressiv kompleksitet.
 
 ---
 
-## 14. Feedback og feilrapportering
+# 24. Feedback og feilrapportering
 
-Det skal skilles visuelt og språklig mellom **Rapporter svar** og **Rapporter feil**.
+Det skal skilles tydelig mellom:
 
-Rapporter svar brukes når KI-svaret er irrelevant, faglig tvilsomt, urealistisk, for generelt eller misforstår kontekst.
+## Rapporter svar
 
-Rapporter feil brukes når noe teknisk ikke virker.
+Brukes når KI-svaret for eksempel er:
 
-Dette skillet skal redusere risikoen for at brukeren må forstå tekniske kategorier.
+- irrelevant
+- faglig tvilsomt
+- urealistisk
+- for generelt
+- basert på misforstått kontekst
 
----
+## Rapporter feil
 
-## 15. Tilgjengelighet
+Brukes når noe teknisk ikke virker.
 
-Løsningen skal så langt som praktisk mulig følge grunnleggende tilgjengelighetsprinsipper. Det innebærer blant annet tilstrekkelig kontrast, at tekst ikke er avhengig av farge alene, tydelig fokus ved tastaturnavigasjon, forståelige knappeetiketter, passende tekststørrelse, god luft mellom interaktive elementer, støtte for Enter/Shift + Enter der det er relevant og semantiske overskrifter.
-
----
-
-## 16. Responsive prinsipper
-
-Desktop er hovedplattform for prototypen, men designet skal unngå låsninger som gjør mobil bruk vanskelig.
-
-Ved mindre skjermbredde skal sidebar kunne komprimeres, kort kunne legges under hverandre, tekstfelt fortsatt være brukbare og dialoger tilpasses skjermbredden.
-
-Innen ett år bør det vurderes om en egen mobilapp gir bedre tilgjengelighet for brukere som primært eller bare bruker mobil.
+Brukeren skal ikke måtte forstå utviklerterminologi for å velge riktig.
 
 ---
 
-## 17. UX-testing
+# 25. Responsive prinsipper
 
-Det planlegges **8–12 ordinære brukertester**.
+Desktop er referanseplattform for prototypen.
 
-Testpersonene skal få realistiske oppgaver, eksempelvis:
+Ved mindre skjermbredde skal designet så langt som mulig:
 
-1. Forbered en prestasjonssamtale.
-2. Beskriv en situasjon og bruk KI-forslaget til tema.
-3. Finn relevante formuleringer.
-4. Start en simulering.
-5. Skriv inn informasjon som bør utløse personvernvarsel.
-6. Finn tilbake til en tidligere samtale.
-7. Rapporter et lite nyttig KI-svar.
+- komprimere sidemeny
+- legge kort under hverandre
+- beholde lesbare tekstfelt
+- tilpasse modaler/dialoger
+- unngå horisontal scrolling
 
-Det skal observeres om brukeren finner frem uten forklaring, hvor brukeren stopper opp, om begrepene forstås, om personvernvarsler gir mening, om simuleringen føles intuitiv, om den visuelle strukturen oppleves rolig eller overveldende og om brukeren forstår forskjellen mellom KI-råd og menneskelig beslutningsansvar.
+Responsivitet er implementert på prototypenivå og kan videreutvikles.
 
-Mål:
-
-- minst 90 % skal kunne gjennomføre hovedflyten uten hjelp
-- minst 80 % skal vurdere veiledningen som relevant og konkret
+En egen mobilapp er ikke del av dagens leveranse.
 
 ---
 
-## 18. Designvalg og begrunnelser
+# 26. Tilgjengelighet
 
-### Begrenset fargepalett
+Produktet skal så langt som praktisk mulig støtte grunnleggende tilgjengelighetsprinsipper.
 
-**Valg:** Få hovedfarger og beslektede nyanser.  
-**Begrunnelse:** Reduserer visuell støy og skaper et mer konsistent arbeidsmiljø.
+Dette inkluderer:
 
-### Bilder i samme stil og fargetema
+- tilstrekkelig kontrast
+- ikke bruke farge som eneste informasjonsbærer
+- forståelige etiketter
+- logiske overskriftsnivåer
+- hensiktsmessig tekststørrelse
+- luft mellom interaktive elementer
+- tastaturbruk der det er relevant
 
-**Valg:** Temaillustrasjoner skal bruke beslektede farger og uttrykk.  
-**Begrunnelse:** Hindrer at illustrasjonene konkurrerer om oppmerksomheten og gjør løsningen visuelt sammenhengende.
-
-### Mørk sidebar + lys arbeidsflate
-
-**Valg:** Hybridmodus som hovedvisning.  
-**Begrunnelse:** Gir tydelig navigasjonsområde samtidig som teksttunge arbeidsflater forblir lyse og lesbare.
-
-### Få tekstfelt
-
-**Valg:** Situasjonen skal normalt beskrives i ett eller få felt.  
-**Begrunnelse:** Reduserer terskelen for å komme i gang og lar KI-en hjelpe med struktureringen i stedet for at brukeren må fylle ut et omfattende skjema.
-
-### Nøytrale temaformuleringer
-
-**Valg:** Unngå en meny som fremstår som en katalog over feil ved medarbeidere.  
-**Begrunnelse:** Språket skal støtte refleksjon fremfor å forhåndsdømme situasjonen.
-
-### Personvern i arbeidsflyten
-
-**Valg:** Personvernsjekk skjer før KI-kall og vises i selve grensesnittet.  
-**Begrunnelse:** Brukeren skal forstå hva som skjer og få hjelp til å redusere identifiserende informasjon før data sendes videre.
-
-### Sammenleggbare adminseksjoner
-
-**Valg:** Store adminområder skal kunne minimeres.  
-**Begrunnelse:** Admin inneholder mange avanserte funksjoner. Sammenlegging reduserer visuell kompleksitet og gjør siden lettere å navigere.
-
-### Separat simulator
-
-**Valg:** Samtalesimulering har en tydelig egen modus.  
-**Begrunnelse:** Vanlig veiledning og rollespill har forskjellige mål. Tydelig separasjon reduserer risikoen for at brukeren blander rådgivning fra KI med replikkene til den simulerte medarbeideren.
+Full WCAG-validering er ikke definert som ferdig leveransekrav og er videre arbeid.
 
 ---
 
-## 19. Design som skal unngås
+# 27. UX-regresjon
+
+KI-assistert utvikling kan utilsiktet endre allerede godkjent UI.
+
+Derfor er følgende et eksplisitt UX-prinsipp:
+
+> En ny endring skal ikke automatisk få endre en allerede godkjent komponent dersom dette ikke er en del av oppgaven.
+
+Særlig beskyttede komponenter har vært:
+
+- logo
+- snakkebobler
+- sidemeny
+- overskriftsstruktur
+- adminlayout
+
+---
+
+# 28. Eksempel på UX-korrigering gjennom testing
+
+En regresjonstest for samtaleboblen feilet.
+
+Ved gjennomgang viste det seg at:
+
+- produksjonsutseendet var korrekt
+- testen krevde en foreldet CSS-kommentar
+
+Det ville vært feil å endre fungerende UI for å tilfredsstille en dårlig test.
+
+Testen ble derfor korrigert.
+
+Dette illustrerer at også testene må vurderes kritisk.
+
+### Spor
+
+`tests/test-bubble-cleanup.cjs`
+
+---
+
+# 29. UX-valg og begrunnelser
+
+## Begrenset fargepalett
+
+**Valg:** få hovedfarger.
+
+**Begrunnelse:** reduserer visuell støy.
+
+---
+
+## Hybridvisning
+
+**Valg:** mørk navigasjon + lys arbeidsflate.
+
+**Begrunnelse:** skiller navigasjon fra innhold og beholder lesbarhet.
+
+---
+
+## Få tekstfelt
+
+**Valg:** situasjonen beskrives normalt i ett eller få felt.
+
+**Begrunnelse:** reduserer terskelen for å starte.
+
+---
+
+## Nøytrale temaformuleringer
+
+**Valg:** ikke beskrive medarbeideren gjennom negative merkelapper.
+
+**Begrunnelse:** støtter refleksjon og reduserer forhåndsdømming.
+
+---
+
+## Personvern i arbeidsflyten
+
+**Valg:** personvern vises før KI-kall.
+
+**Begrunnelse:** gjør personvern forståelig og handlingsrettet.
+
+---
+
+## Sammenleggbare seksjoner
+
+**Valg:** avanserte sider bruker progressiv visning.
+
+**Begrunnelse:** reduserer kognitiv og visuell belastning.
+
+---
+
+## Separat simulator
+
+**Valg:** rollespill har tydelig egen modus.
+
+**Begrunnelse:** brukeren skal ikke blande rådgivning fra KI med replikkene til den simulerte medarbeideren.
+
+---
+
+# 30. Design som skal unngås
 
 Samtalestøtte skal unngå:
 
 - mange konkurrerende farger
-- tilfeldig variasjon mellom illustrasjoner
+- inkonsistente komponenter
+- tilfeldig illustrasjonsstil
 - lange ustrukturerte KI-svar
-- for mange knapper på samme nivå
+- for mange like sterke handlinger
 - tomme varselbokser
 - skjult personverninformasjon
 - unødvendig teknisk språk
-- flere ulike løsninger på samme type brukerhandling
-- animasjoner som distraherer fra innholdet
+- inkonsekvente sammenleggbare seksjoner
 - funksjoner som ser klikkbare ut uten å være det
-- adminflater der alt er ekspandert samtidig
+- adminflater der alt står åpent samtidig
+- KI-genererte endringer av godkjent design uten eksplisitt behov
 
 ---
 
-## 20. Oppsummering
+# 31. Brukertesting
 
-UX-designet skal gjøre Samtalestøtte rolig, forståelig og forutsigbar til tross for at systemet teknisk er komplekst.
+## Status
 
-Den visuelle utformingen skal være konsistent i farger, nyanser, illustrasjoner, kort, knapper, dialoger, meldingsbobler og typografi.
+**Delvis / videre arbeid**
+
+Fullskala brukertesting er ikke ferdig.
+
+Planlagt testing skal blant annet undersøke:
+
+- om hovedflyten forstås
+- om temaene er intuitive
+- om KI-støtten oppleves relevant
+- om simulatoren er forståelig
+- om personvernvarsler gir mening
+- om historikk er lett å bruke
+- om brukeren finner sentrale funksjoner
+
+Tidligere konkrete prosentmål skal behandles som evalueringsmål, ikke som dokumenterte resultater før testene faktisk er gjennomført.
+
+---
+
+# 32. UX-sporbarhet
+
+| UX-område | Spor |
+|---|---|
+| Hovedlayout | `index.html`, `styles.css` |
+| Navigasjon | `app.js`, `styles.css` |
+| Temaoversikt | `app.js`, `index.html` |
+| Personvernfeedback | `app.js`, `server.js` |
+| Simulator | `app.js`, `styles.css` |
+| Historikk | `app.js` |
+| Admin | `app.js`, `styles.css` |
+| UI-regresjon | `tests/test-ui-regression.cjs` |
+| Samtaleboble | `tests/test-bubble-cleanup.cjs` |
+| UX-BMAD | dette dokumentet |
+| Prosessendringer | `docs/ai/AI-LOGG-SAMTALESTOTTE.md` |
+| Historikk | Git + `CHANGELOG.md` |
+
+---
+
+# 33. Kjente UX-begrensninger
+
+Den leverte løsningen er en prototype.
+
+Følgende kan fortsatt forbedres:
+
+- full tilgjengelighetstesting
+- omfattende mobiltesting
+- fullskala brukertesting
+- detaljert måling av brukerflyt
+- ytterligere responsiv finjustering
+- videre kvalitetssikring på ulike nettlesere og skjermstørrelser
+
+Disse områdene skal ikke fremstilles som ferdige dersom de ikke er verifisert.
+
+---
+
+# 34. Forhold til øvrige BMAD-dokumenter
+
+UX-spesifikasjonen skal leses sammen med:
+
+- `product-brief.md`
+- `docs/bmad/PRD.md`
+- `docs/bmad/ARCHITECTURE-BMAD.md`
+- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
+- `docs/bmad/EPICS-AND-STORIES-BMAD.md`
+
+Prosess og KI-styring:
+
+- `docs/ai/AI-LOGG-SAMTALESTOTTE.md`
+
+Testing:
+
+- `tests/`
+
+---
+
+# 35. UX-kriterier ved videre utvikling
+
+Ved nye endringer skal følgende vurderes:
+
+1. Gjør endringen hovedoppgaven lettere?
+2. Øker den visuell kompleksitet?
+3. Er samme mønster brukt andre steder?
+4. Påvirkes eksisterende godkjent UI?
+5. Påvirkes personvernforståelsen?
+6. Påvirkes navigasjonen?
+7. Krever endringen responsiv kontroll?
+8. Krever den ny regresjonstest?
+9. Er endringen observert behov eller bare et KI-forslag?
+
+Dette siste punktet er særlig viktig i KI-assistert utvikling.
+
+---
+
+# 36. Oppsummering
+
+UX-målet for Samtalestøtte er å skjule unødvendig teknisk kompleksitet og gjøre en krevende lederoppgave mer oversiktlig.
 
 Brukeren skal først og fremst oppleve:
 
-> «Jeg skjønner hva jeg skal gjøre, jeg har kontroll, og verktøyet hjelper meg gjennom en vanskelig oppgave.»
+> «Jeg forstår hva jeg skal gjøre, jeg har kontroll, og verktøyet hjelper meg gjennom en vanskelig oppgave.»
 
-Den tekniske kompleksiteten – KI, personvern, database, modellvalg, kostnadsmåling og kildebruk – skal i størst mulig grad håndteres av systemet uten å skape tilsvarende kompleksitet i brukeropplevelsen.
+Den visuelle og funksjonelle UX-en bygger derfor på:
 
+- rolig visuelt uttrykk
+- tydelig hierarki
+- progressiv kompleksitet
+- menneskelig språk
+- nøytrale formuleringer
+- tydelig personvern
+- konsistente komponenter
+- tydelig simulatorrolle
+- kontrollert adminflate
+- beskyttelse mot UI-regresjoner
 
-## v20.5 – UX-tillegg
-
-- Hovedsiden utvides til ni temaer uten å introdusere flere fargefamilier; samme begrensede palett og illustrasjonsstil beholdes for å redusere visuelt rot.
-- **Mobbing og trakassering** presenteres med nøytralt, selvforklarende språk. Forkortelsen MOST brukes bare som forklarende fagkontekst, ikke som menynavn.
-- Kort brukertest får egen inngang **Gi tilbakemelding** og åpnes i hovedinnholdet, ikke i en trang modal. Den skal kunne besvares på omtrent to minutter.
-- «Øv på samtalen» får sterkere kontrast, og samme handling gjentas nederst etter veiledning slik at brukeren ikke må skrolle tilbake.
-- Adminlogo i innholdsvisningen flyttes kun lokalt ca. 8 px ned; global logogeometri skal ikke endres.
-- Godkjent snakkeboblegeometri fra v19.12.3 skal ikke endres.
-
-## v20.6 – UX-læring og brukertest
-Brukertesting behandles som en kilde til nye krav. Observasjoner og svar kan avdekke behov for endringer i navigasjon, visuelt hierarki, begreper, kontrast, KI-formuleringer og arbeidsflyt. Admin- og Innstillinger-seksjoner skal derfor være sammenleggbare med tydelig chevron til venstre for teksten, sideoverskrifter kan være tydelige (omtrent 32–40 px på desktop), underoverskrifter skal ha lavere visuell vekt, hovedtemaene organiseres 3 × 3 på desktop, og brukertesten bruker kompakte radiovalg.
-
+UX-spesifikasjonen beskriver den faktiske prototypen ved versjon 20.10.3, samtidig som ikke-verifiserte områder som full tilgjengelighet og fullskala brukertesting er eksplisitt markert som videre arbeid.
