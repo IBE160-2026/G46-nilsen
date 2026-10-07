@@ -1,636 +1,94 @@
 {
-  "version": 3,
-  "description": "Kurert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken er et førstevalg og kvalitetsanker, ikke en lukket liste; supplerende troverdige kilder kan brukes ved behov.",
+  "version": 4,
+  "description": "Kuratert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken kombinerer empirisk samtaleforskning, organisasjons- og ledelsespsykologi, norsk arbeidslivsforskning, faglige rammeverk og autoritative myndighets-/lovkilder. Den lokale banken er førstevalg og kvalitetsanker; oppdaterte eksterne kilder kan supplere ved behov.",
   "sources": [
     {
-      "id": "NAV_SYKEFRAVAER_OPPFOLGING",
-      "type": "myndighet",
-      "title": "Slik følger du opp sykmeldte",
-      "author": "NAV",
-      "year": 2026,
-      "url": "https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte",
-      "topics": [
-        "Fravær og oppfølging"
-      ],
-      "principles": [
-        "Fokuser på arbeidsoppgaver, muligheter og tilrettelegging fremfor diagnose.",
-        "Oppfølgingsplan skal normalt utarbeides innen 4 uker og dialogmøte 1 holdes innen 7 uker når vilkårene er oppfylt."
-      ],
-      "use_when": [
-        "sykmelding",
-        "langvarig fravær",
-        "tilbakekomst",
-        "tilrettelegging"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AML_4_6_TILRETTELEGGING",
-      "type": "lovverk",
-      "title": "Arbeidsmiljøloven § 4-6 – tilrettelegging ved redusert arbeidsevne",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A74-6",
-      "topics": [
-        "Fravær og oppfølging",
-        "Livssituasjoner"
-      ],
-      "principles": [
-        "Arbeidsgiver skal så langt det er mulig iverksette nødvendige tiltak for at arbeidstaker med redusert arbeidsevne kan beholde eller få passende arbeid."
-      ],
-      "use_when": [
-        "redusert arbeidsevne",
-        "tilrettelegging",
-        "tilbakekomst"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "LDL_29_ARBEIDSFORHOLD",
-      "type": "lovverk",
-      "title": "Likestillings- og diskrimineringsloven § 29 – diskrimineringsforbudet i arbeidsforhold",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/dokument/NL/lov/2017-06-16-51/%C2%A730",
-      "topics": [
-        "Lønn og utvikling",
-        "Prestasjon og utvikling",
-        "Avslutning av arbeidsforhold",
-        "Fravær og oppfølging"
-      ],
-      "principles": [
-        "Diskrimineringsforbudet gjelder blant annet ansettelse, omplassering, forfremmelse, opplæring, lønns- og arbeidsvilkår og opphør."
-      ],
-      "use_when": [
-        "forfremmelse",
-        "opprykk",
-        "lønn",
-        "opphør",
-        "mulig diskriminering"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "LDL_34_LIKELONN",
-      "type": "lovverk",
-      "title": "Likestillings- og diskrimineringsloven § 34 – lik lønn for arbeid av lik verdi",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/nav/lov/2017-06-16-51/%C2%A734",
-      "topics": [
-        "Lønn og utvikling"
-      ],
-      "principles": [
-        "Kvinner og menn i samme virksomhet skal ha lik lønn for samme arbeid eller arbeid av lik verdi."
-      ],
-      "use_when": [
-        "lønnsforskjeller",
-        "likelønn"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AML_15_1_DROFTING",
-      "type": "lovverk",
-      "title": "Arbeidsmiljøloven § 15-1 – drøfting før beslutning om oppsigelse",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/nav/lov/2005-06-17-62/kap15/%C2%A715-6",
-      "topics": [
-        "Avslutning av arbeidsforhold"
-      ],
-      "principles": [
-        "Før arbeidsgiver beslutter oppsigelse skal spørsmålet så langt det er praktisk mulig drøftes med arbeidstaker, og eventuelt tillitsvalgt dersom arbeidstaker ønsker det."
-      ],
-      "use_when": [
-        "oppsigelse",
-        "drøftelsesmøte",
-        "formell prosess"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AML_15_7_SAKLIG_OPPSIGELSE",
-      "type": "lovverk",
-      "title": "Arbeidsmiljøloven § 15-7 – vern mot usaklig oppsigelse",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/nav/lov/2005-06-17-62/kap15",
-      "topics": [
-        "Avslutning av arbeidsforhold"
-      ],
-      "principles": [
-        "Oppsigelse må være saklig begrunnet i virksomhetens, arbeidsgivers eller arbeidstakers forhold."
-      ],
-      "use_when": [
-        "oppsigelse",
-        "nedbemanning",
-        "prestasjon",
-        "mislighold"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AT_OPPSIGELSE",
-      "type": "myndighet",
-      "title": "Oppsigelse",
-      "author": "Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/oppsigelse/",
-      "topics": [
-        "Avslutning av arbeidsforhold",
-        "Fravær og oppfølging"
-      ],
-      "principles": [
-        "Arbeidsgiver bør kvalitetssikre saklig grunn og følge drøftings- og formkrav før oppsigelse.",
-        "Sykdom har et særskilt oppsigelsesvern det første året av sykefraværet."
-      ],
-      "use_when": [
-        "oppsigelse",
-        "sykefravær og oppsigelse"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AML_4_3_PSYKOSOSIALT",
-      "type": "lovverk",
-      "title": "Arbeidsmiljøloven § 4-3 – krav til det psykososiale arbeidsmiljøet",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/nav/lov/2005-06-17-62/kap4",
+      "id": "DEDREU_WEINGART_2003_CONFLICT",
+      "type": "fagfellevurdert meta-analyse",
+      "title": "Task versus relationship conflict, team performance, and team member satisfaction: A meta-analysis",
+      "author": "Carsten K. W. De Dreu & Laurie R. Weingart",
+      "year": 2003,
+      "doi": "10.1037/0021-9010.88.4.741",
+      "url": "https://doi.org/10.1037/0021-9010.88.4.741",
       "topics": [
         "Samarbeid og kommunikasjon",
-        "Sikkerhet og ansvar",
-        "Livssituasjoner"
+        "Prestasjon og utvikling"
       ],
       "principles": [
-        "Arbeidet skal organiseres og gjennomføres slik at det psykososiale arbeidsmiljøet er fullt forsvarlig.",
-        "Uklare krav, emosjonelle belastninger, tidspress og mangel på støtte er relevante psykososiale faktorer."
+        "Relasjonskonflikt har tydelige negative sammenhenger med teamytelse og tilfredshet.",
+        "Også sakskonflikt kan ha negative sammenhenger; konflikt skal derfor ikke romantiseres som automatisk konstruktiv."
       ],
       "use_when": [
         "konflikt",
-        "arbeidsbelastning",
-        "rolleuklarhet",
-        "støtte",
-        "trakassering"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AT_TRAKASSERING",
-      "type": "myndighet",
-      "title": "Trakassering",
-      "author": "Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/",
-      "topics": [
-        "Samarbeid og kommunikasjon",
-        "Sikkerhet og ansvar",
-        "Mobbing og trakassering"
-      ],
-      "principles": [
-        "Arbeidsgiver skal undersøke påstander om trakassering og følge opp involverte.",
-        "Konflikt og trakassering er ikke det samme; faktagrunnlaget må undersøkes før konklusjoner trekkes."
-      ],
-      "use_when": [
-        "trakassering",
-        "mobbing",
-        "utilbørlig opptreden",
-        "varsling"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AT_PSYKOSOSIALT_2026",
-      "type": "myndighet",
-      "title": "Psykososialt arbeidsmiljø",
-      "author": "Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/psykososialt-arbeidsmiljo/",
-      "topics": [
-        "Samarbeid og kommunikasjon",
-        "Prestasjon og utvikling",
-        "Livssituasjoner",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Arbeidsgiver må arbeide systematisk med psykososial risiko og involvere arbeidstakere og representanter.",
-        "Tydelige forventninger, støtte og medvirkning er sentrale arbeidsmiljøfaktorer."
-      ],
-      "use_when": [
-        "rolleuklarhet",
-        "arbeidsmengde",
-        "emosjonelle krav",
-        "støtte",
+        "sakskonflikt",
+        "relasjonskonflikt",
+        "uenighet",
+        "team",
         "samarbeid"
       ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
     },
     {
-      "id": "AKAN_NODVENDIG_SAMTALE",
-      "type": "faglig veileder",
-      "title": "Hvordan snakke med en ansatt om rus- og spillproblematikk?",
-      "author": "Akan kompetansesenter",
-      "year": 2026,
-      "url": "https://www.akan.no/bekymret-for-en-ansatt",
-      "topics": [
-        "Alkohol og rus"
-      ],
-      "principles": [
-        "Bygg bekymringssamtalen på konkrete observasjoner og fakta uten å påstå hva problemet er.",
-        "Målet med første samtale er ikke å få en innrømmelse, men å formidle bekymring og åpne for dialog."
-      ],
-      "use_when": [
-        "alkohol",
-        "rus",
-        "spill",
-        "bekymring",
-        "endret fungering"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "EDMONDSON_1999_PSYCH_SAFETY",
-      "type": "fagfellevurdert forskning",
-      "title": "Psychological Safety and Learning Behavior in Work Teams",
-      "author": "Amy Edmondson",
-      "year": 1999,
-      "doi": "10.2307/2666999",
-      "url": "https://doi.org/10.2307/2666999",
-      "topics": [
-        "Samarbeid og kommunikasjon",
-        "Prestasjon og utvikling",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Psykologisk trygghet handler om en delt opplevelse av at det er trygt å ta mellommenneskelig risiko, som å stille spørsmål, innrømme feil og si fra.",
-        "Lederatferd og kontekst kan støtte læringsatferd i team."
-      ],
-      "use_when": [
-        "feedback",
-        "feil",
-        "læring",
-        "team",
-        "å si fra"
-      ],
-      "authority": "research"
-    },
-    {
-      "id": "GRAEN_UHLBIEN_1995_LMX",
-      "type": "fagfellevurdert forskning",
-      "title": "Relationship-based approach to leadership: Development of leader-member exchange (LMX) theory of leadership over 25 years",
-      "author": "George B. Graen & Mary Uhl-Bien",
-      "year": 1995,
-      "doi": "10.1016/1048-9843(95)90036-5",
-      "url": "https://doi.org/10.1016/1048-9843(95)90036-5",
-      "topics": [
-        "Samarbeid og kommunikasjon",
-        "Prestasjon og utvikling",
-        "Livssituasjoner"
-      ],
-      "principles": [
-        "Ledelse kan forstås som kvaliteten på relasjonen og utvekslingen mellom leder og medarbeider, ikke bare som individuelle lederegenskaper."
-      ],
-      "use_when": [
-        "tillit",
-        "relasjon",
-        "dialog",
-        "leder-medarbeider"
-      ],
-      "authority": "research"
-    },
-    {
-      "id": "MILLER_ROLLNICK_MI_META",
-      "type": "fagfellevurdert forskning",
-      "title": "The efficacy of motivational interviewing: a meta-analysis of controlled clinical trials",
-      "author": "Burke, Arkowitz & Menchola",
-      "year": 2003,
-      "doi": "10.1037/0022-006X.71.5.843",
-      "url": "https://doi.org/10.1037/0022-006X.71.5.843",
-      "topics": [
-        "Alkohol og rus",
-        "Prestasjon og utvikling",
-        "Livssituasjoner"
-      ],
-      "principles": [
-        "Motiverende intervju bygger på samarbeid, utforsking av ambivalens og støtte til personens egen motivasjon fremfor konfrontasjon."
-      ],
-      "use_when": [
-        "ambivalens",
-        "motivasjon",
-        "endring",
-        "rus"
-      ],
-      "authority": "research",
-      "note": "Overfør prinsippene med varsomhet til ledersamtaler; forskningen er primært klinisk."
-    },
-    {
-      "id": "FOR_GRUNNSYN_LEDELSE_2020",
-      "type": "faglig rammeverk",
-      "title": "Forsvarets grunnsyn på ledelse",
-      "author": "Forsvaret",
-      "year": 2020,
-      "url": "https://www.forsvaret.no/soldater-og-ansatte/regelverk/Forsvarets-grunnsyn-ledelse.pdf",
-      "topics": [
-        "Prestasjon og utvikling",
-        "Samarbeid og kommunikasjon",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Oppdragsbasert og intensjonsbasert ledelse vektlegger tydelig hensikt, tillit, ansvar og handlingsrom.",
-        "Effektiv lederatferd balanserer oppdragsfokus, samspill og utvikling og må tilpasses situasjonen."
-      ],
-      "use_when": [
-        "intensjon",
-        "handlingsrom",
-        "ansvar",
-        "utvikling",
-        "tillit"
-      ],
-      "authority": "framework"
-    },
-    {
-      "id": "FOR_VEILEDNING_LED2403",
-      "type": "faglig rammeverk",
-      "title": "Veiledning som praktisk fundament for ledelse",
-      "author": "Forsvaret",
-      "year": 2026,
-      "url": "https://www.forsvaret.no/utdanning/emner/LED2403/2026-V%C3%85R",
+      "id": "DEHAAN_NILSSON_2023_COACHING",
+      "type": "fagfellevurdert meta-analyse",
+      "title": "What Can We Know about the Effectiveness of Coaching? A Meta-Analysis Based Only on Randomized Controlled Trials",
+      "author": "Erik de Haan & Viktor O. Nilsson",
+      "year": 2023,
+      "doi": "10.5465/amle.2022.0107",
+      "url": "https://doi.org/10.5465/amle.2022.0107",
       "topics": [
         "Prestasjon og utvikling",
         "Samarbeid og kommunikasjon"
       ],
       "principles": [
-        "Veiledning kan utvikle medarbeidere og støtte læring, ansvar og samhandling.",
-        "Oppdragsbasert ledelse forutsetter tillit, forståelse og effektiv kommunikasjon mellom nivåer."
+        "Workplace og executive coaching viste samlet positiv effekt på leder- og personrelaterte utfall i randomiserte studier.",
+        "Coachingprinsipper kan støtte refleksjon, målutforsking og utvikling fremfor at lederen alltid serverer løsningen."
       ],
       "use_when": [
+        "coaching",
         "veiledning",
+        "refleksjon",
         "utvikling",
-        "læring",
-        "intensjonsbasert ledelse"
+        "mål",
+        "åpne spørsmål"
       ],
-      "authority": "framework"
+      "authority": "high",
+      "note": "Meta-analyse av 37 randomiserte studier, 39 utvalg og 2 528 deltakere. Forfatterne rapporterer også tegn til publikasjonsbias.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
     },
     {
-      "id": "SPURKELAND_RELASJONSLEDELSE",
-      "type": "fagbok / rammeverk",
-      "title": "Relasjonsledelse, 5. utgave",
-      "author": "Jan Spurkeland",
+      "id": "LISTENING_META_2024",
+      "type": "fagfellevurdert meta-analyse",
+      "title": "A Meta-analytic Systematic Review and Theory of the Effects of Perceived Listening on Work Outcomes",
+      "author": "Kluger, Lehmann, Aguinis, Itzchakov, Gordoni, Zyberaj, Bakaç mfl.",
       "year": 2024,
-      "url": "https://www.universitetsforlaget.no/relasjonsledelse-3",
+      "doi": "10.1007/s10869-023-09897-5",
+      "url": "https://doi.org/10.1007/s10869-023-09897-5",
       "topics": [
         "Samarbeid og kommunikasjon",
         "Prestasjon og utvikling",
         "Livssituasjoner"
       ],
       "principles": [
-        "Relasjonsorientert ledelse vektlegger dialog, kommunikasjon, tillit og kvaliteten i relasjonen mellom leder og medarbeider.",
-        "Den balanserte og likeverdige samtalen brukes som et praktisk lederverktøy."
+        "Opplevd lytting har en tydelig positiv sammenheng med arbeidsrelaterte utfall, særlig relasjonskvalitet.",
+        "Lytting kan støtte forståelse, relasjon og konstruktiv dialog før råd eller konklusjoner gis."
       ],
       "use_when": [
-        "relasjonsledelse",
+        "aktiv lytting",
+        "lytting",
         "dialog",
-        "tillit",
-        "kommunikasjon",
-        "relasjon"
+        "relasjon",
+        "uenighet",
+        "vanskelig samtale",
+        "perspektivtaking"
       ],
-      "authority": "framework",
-      "note": "Fagbok og praktisk rammeverk, ikke en fagfellevurdert enkeltstudie."
-    },
-    {
-      "id": "COLQUITT_2001_JUSTICE",
-      "type": "fagfellevurdert forskning",
-      "title": "Justice at the millennium: a meta-analytic review of 25 years of organizational justice research",
-      "author": "Colquitt, Conlon, Wesson, Porter & Ng",
-      "year": 2001,
-      "doi": "10.1037/0021-9010.86.3.425",
-      "url": "https://doi.org/10.1037/0021-9010.86.3.425",
-      "topics": [
-        "Lønn og utvikling",
-        "Prestasjon og utvikling",
-        "Avslutning av arbeidsforhold",
-        "Samarbeid og kommunikasjon"
-      ],
-      "principles": [
-        "Opplevelser av rettferdighet omfatter blant annet fordeling, prosedyrer, mellommenneskelig behandling og informasjon.",
-        "Hvordan beslutninger forklares og prosessen oppleves kan ha betydning utover selve utfallet."
-      ],
-      "use_when": [
-        "rettferdighet",
-        "lønn",
-        "forfremmelse",
-        "beslutning",
-        "prosess",
-        "oppsigelse"
-      ],
-      "authority": "research"
-    },
-    {
-      "id": "AKAN_MODELLEN",
-      "type": "faglig veiledning",
-      "title": "Akan-modellen",
-      "author": "Akan kompetansesenter",
-      "year": 2026,
-      "url": "https://www.akan.no/kortforklart-akan-modellen",
-      "topics": [
-        "Alkohol og rus",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Tidlig innsats, tydelige rammer og støtte bør sees i sammenheng.",
-        "Bekymringer bør tas opp på grunnlag av konkrete observasjoner og arbeidsmessige konsekvenser."
-      ],
-      "use_when": [
-        "alkohol",
-        "rus",
-        "spill",
-        "bekymring",
-        "påvirket",
-        "policy",
-        "akan"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AKAN_POLICY",
-      "type": "faglig veiledning",
-      "title": "Hvordan kan arbeidsplassen forebygge rus- og spillproblematikk?",
-      "author": "Akan kompetansesenter",
-      "year": 2026,
-      "url": "https://www.akan.no/rusmiddelpolicykjoreregler",
-      "topics": [
-        "Alkohol og rus",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "En kjent policy gir forutsigbarhet om hva som gjelder og hvordan bekymringer og brudd håndteres."
-      ],
-      "use_when": [
-        "rusmiddelpolicy",
-        "kjøreregler",
-        "jobbfest",
-        "sikkerhet",
-        "brudd",
-        "påvirkning"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "ILO_ALCOHOL_DRUG_WORK",
-      "type": "faglig rammeverk",
-      "title": "Management of alcohol- and drug-related issues in the workplace",
-      "author": "International Labour Organization",
-      "year": 1996,
-      "url": "https://www.ilo.org/publications/management-alcohol-and-drug-related-issues-workplace",
-      "topics": [
-        "Alkohol og rus",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Arbeidsplassen bør kombinere forebygging, tydelige prosedyrer, støtte og rehabilitering ved rusrelaterte utfordringer."
-      ],
-      "use_when": [
-        "alkohol",
-        "rus",
-        "rehabilitering",
-        "policy",
-        "arbeidsplass",
-        "sikkerhet"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AT_TILRETTELEGGING",
-      "type": "myndighet",
-      "title": "Tilrettelegging av arbeidet",
-      "author": "Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/tilrettelegging/",
-      "topics": [
-        "Fravær og oppfølging",
-        "Livssituasjoner",
-        "Prestasjon og utvikling"
-      ],
-      "principles": [
-        "Tilrettelegging kan gjelde organisering, oppgaver, arbeidstid og andre arbeidsforhold.",
-        "Arbeidsevne og arbeidsfunksjon kan drøftes uten å kreve private medisinske detaljer."
-      ],
-      "use_when": [
-        "tilrettelegging",
-        "arbeidsevne",
-        "kapasitet",
-        "livsfase",
-        "redusert arbeidsevne",
-        "tilbakekomst"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "NAV_PSYKISK_HELSE_ARBEIDSGIVER",
-      "type": "myndighet",
-      "title": "Ansatte som sliter psykisk",
-      "author": "NAV",
-      "year": 2026,
-      "url": "https://www.nav.no/arbeidsgiver/psykiske-helseproblemer",
-      "topics": [
-        "Livssituasjoner",
-        "Fravær og oppfølging",
-        "Prestasjon og utvikling"
-      ],
-      "principles": [
-        "Leder kan vise omsorg, spørre om arbeidssituasjonen og lytte uten å opptre som behandler.",
-        "Fokus bør være på arbeid, funksjon, støtte og eventuell tilrettelegging fremfor diagnose."
-      ],
-      "use_when": [
-        "nedstemt",
-        "psykisk",
-        "stress",
-        "belastning",
-        "tilbaketrukket",
-        "livssituasjon",
-        "arbeidsevne"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "WHO_MENTAL_HEALTH_WORK_2022",
-      "type": "faglig rammeverk",
-      "title": "Guidelines on mental health at work",
-      "author": "World Health Organization",
-      "year": 2022,
-      "url": "https://www.who.int/publications-detail-redirect/9789240053052",
-      "topics": [
-        "Livssituasjoner",
-        "Fravær og oppfølging",
-        "Prestasjon og utvikling"
-      ],
-      "principles": [
-        "Arbeidsrettede tiltak bør støtte psykisk helse, deltakelse i arbeid og trygg tilbakeføring.",
-        "Lederopplæring og organisatoriske tiltak inngår i evidensbaserte anbefalinger."
-      ],
-      "use_when": [
-        "psykisk helse",
-        "stress",
-        "angst",
-        "depresjon",
-        "tilbakeføring",
-        "return to work",
-        "lederstøtte"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "KLUGER_DENISI_1996_FEEDBACK",
-      "type": "fagfellevurdert forskning",
-      "title": "The effects of feedback interventions on performance: A historical review, a meta-analysis, and a preliminary feedback intervention theory",
-      "author": "Avraham N. Kluger & Angelo DeNisi",
-      "year": 1996,
-      "url": "https://doi.org/10.1037/0033-2909.119.2.254",
-      "doi": "10.1037/0033-2909.119.2.254",
-      "topics": [
-        "Prestasjon og utvikling",
-        "Samarbeid og kommunikasjon"
-      ],
-      "principles": [
-        "Tilbakemelding virker ikke automatisk positivt; innretning mot oppgave og læring er viktig."
-      ],
-      "use_when": [
-        "feedback",
-        "tilbakemelding",
-        "prestasjon",
-        "kvalitet",
-        "feil",
-        "utvikling"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "DECI_OLAFSEN_RYAN_2017_SDT",
-      "type": "fagfellevurdert forskning",
-      "title": "Self-Determination Theory in Work Organizations: The State of a Science",
-      "author": "Edward L. Deci, Anja H. Olafsen & Richard M. Ryan",
-      "year": 2017,
-      "url": "https://doi.org/10.1146/annurev-orgpsych-032516-113108",
-      "doi": "10.1146/annurev-orgpsych-032516-113108",
-      "topics": [
-        "Prestasjon og utvikling",
-        "Lønn og utvikling",
-        "Livssituasjoner"
-      ],
-      "principles": [
-        "Autonomi, kompetanse og tilhørighet er sentrale for kvalitativ motivasjon, prestasjon og velvære."
-      ],
-      "use_when": [
-        "motivasjon",
-        "autonomi",
-        "mestring",
-        "kompetanse",
-        "tilhørighet",
-        "belønning",
-        "lønn"
-      ],
-      "authority": "high"
+      "authority": "high",
+      "note": "Systematisk review og meta-analyse basert på 664 effektstørrelser og 400 020 observasjoner.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
     },
     {
       "id": "BAKKER_DEMEROUTI_2007_JDR",
@@ -658,7 +116,151 @@
         "engasjement",
         "motivasjon"
       ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "BURKE_ARKOWITZ_MENCHOLA_2003_MI",
+      "type": "fagfellevurdert forskning",
+      "title": "The efficacy of motivational interviewing: a meta-analysis of controlled clinical trials",
+      "author": "Burke, Arkowitz & Menchola",
+      "year": 2003,
+      "doi": "10.1037/0022-006X.71.5.843",
+      "url": "https://doi.org/10.1037/0022-006X.71.5.843",
+      "topics": [
+        "Alkohol og rus",
+        "Prestasjon og utvikling",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Motiverende intervju bygger på samarbeid, utforsking av ambivalens og støtte til personens egen motivasjon fremfor konfrontasjon."
+      ],
+      "use_when": [
+        "ambivalens",
+        "motivasjon",
+        "endring",
+        "rus"
+      ],
+      "authority": "research",
+      "note": "Meta-analysen er klinisk/endringsorientert. Bruk relevante samtaleprinsipper med varsomhet i ledersamtaler; Samtalestøtte skal ikke fremstille ordinær lederdialog som terapi eller fullverdig motiverende intervju.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "COLQUITT_2001_JUSTICE",
+      "type": "fagfellevurdert forskning",
+      "title": "Justice at the millennium: a meta-analytic review of 25 years of organizational justice research",
+      "author": "Colquitt, Conlon, Wesson, Porter & Ng",
+      "year": 2001,
+      "doi": "10.1037/0021-9010.86.3.425",
+      "url": "https://doi.org/10.1037/0021-9010.86.3.425",
+      "topics": [
+        "Lønn og utvikling",
+        "Prestasjon og utvikling",
+        "Avslutning av arbeidsforhold",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Opplevelser av rettferdighet omfatter blant annet fordeling, prosedyrer, mellommenneskelig behandling og informasjon.",
+        "Hvordan beslutninger forklares og prosessen oppleves kan ha betydning utover selve utfallet."
+      ],
+      "use_when": [
+        "rettferdighet",
+        "lønn",
+        "forfremmelse",
+        "beslutning",
+        "prosess",
+        "oppsigelse"
+      ],
+      "authority": "research",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "DECI_OLAFSEN_RYAN_2017_SDT",
+      "type": "fagfellevurdert forskning",
+      "title": "Self-Determination Theory in Work Organizations: The State of a Science",
+      "author": "Edward L. Deci, Anja H. Olafsen & Richard M. Ryan",
+      "year": 2017,
+      "url": "https://doi.org/10.1146/annurev-orgpsych-032516-113108",
+      "doi": "10.1146/annurev-orgpsych-032516-113108",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Lønn og utvikling",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Autonomi, kompetanse og tilhørighet er sentrale for kvalitativ motivasjon, prestasjon og velvære."
+      ],
+      "use_when": [
+        "motivasjon",
+        "autonomi",
+        "mestring",
+        "kompetanse",
+        "tilhørighet",
+        "belønning",
+        "lønn"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "DYSVIK_KUVAAS_2011_AUTONOMY",
+      "type": "fagfellevurdert forskning",
+      "title": "Intrinsic motivation as a moderator on the relationship between perceived job autonomy and work performance",
+      "author": "Anders Dysvik & Bård Kuvaas",
+      "year": 2011,
+      "doi": "10.1080/13594321003590630",
+      "url": "https://doi.org/10.1080/13594321003590630",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Sammenhengen mellom jobbautonomi og arbeidsprestasjon er ikke nødvendigvis lik for alle.",
+        "Indre motivasjon påvirker hvordan autonomi henger sammen med arbeidskvalitet."
+      ],
+      "use_when": [
+        "autonomi",
+        "indre motivasjon",
+        "prestasjon",
+        "handlingsrom",
+        "arbeidskvalitet"
+      ],
+      "authority": "high",
+      "note": "To norske utvalg med totalt 302 ansatte fra serviceorganisasjoner.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "EDMONDSON_1999_PSYCH_SAFETY",
+      "type": "fagfellevurdert forskning",
+      "title": "Psychological Safety and Learning Behavior in Work Teams",
+      "author": "Amy Edmondson",
+      "year": 1999,
+      "doi": "10.2307/2666999",
+      "url": "https://doi.org/10.2307/2666999",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Psykologisk trygghet handler om en delt opplevelse av at det er trygt å ta mellommenneskelig risiko, som å stille spørsmål, innrømme feil og si fra.",
+        "Lederatferd og kontekst kan støtte læringsatferd i team."
+      ],
+      "use_when": [
+        "feedback",
+        "feil",
+        "læring",
+        "team",
+        "å si fra"
+      ],
+      "authority": "research",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
     },
     {
       "id": "FRAZIER_2017_PSYCH_SAFETY_META",
@@ -685,7 +287,213 @@
         "læring",
         "varsling"
       ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "GRAEN_UHLBIEN_1995_LMX",
+      "type": "fagfellevurdert forskning",
+      "title": "Relationship-based approach to leadership: Development of leader-member exchange (LMX) theory of leadership over 25 years",
+      "author": "George B. Graen & Mary Uhl-Bien",
+      "year": 1995,
+      "doi": "10.1016/1048-9843(95)90036-5",
+      "url": "https://doi.org/10.1016/1048-9843(95)90036-5",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Ledelse kan forstås som kvaliteten på relasjonen og utvekslingen mellom leder og medarbeider, ikke bare som individuelle lederegenskaper."
+      ],
+      "use_when": [
+        "tillit",
+        "relasjon",
+        "dialog",
+        "leder-medarbeider"
+      ],
+      "authority": "research",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "KLUGER_DENISI_1996_FEEDBACK",
+      "type": "fagfellevurdert forskning",
+      "title": "The effects of feedback interventions on performance: A historical review, a meta-analysis, and a preliminary feedback intervention theory",
+      "author": "Avraham N. Kluger & Angelo DeNisi",
+      "year": 1996,
+      "url": "https://doi.org/10.1037/0033-2909.119.2.254",
+      "doi": "10.1037/0033-2909.119.2.254",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Tilbakemelding virker ikke automatisk positivt; innretning mot oppgave og læring er viktig."
+      ],
+      "use_when": [
+        "feedback",
+        "tilbakemelding",
+        "prestasjon",
+        "kvalitet",
+        "feil",
+        "utvikling"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "KUVAAS_2011_FEEDBACK",
+      "type": "fagfellevurdert forskning",
+      "title": "The interactive role of performance appraisal reactions and regular feedback",
+      "author": "Bård Kuvaas",
+      "year": 2011,
+      "doi": "10.1108/02683941111102164",
+      "url": "https://doi.org/10.1108/02683941111102164",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Medarbeiderens reaksjon på prestasjonsvurdering og regelmessig feedback er relevant for hvordan vurderingsprosesser virker.",
+        "Feedback bør forstås som en løpende dialog og ikke bare som en enkeltstående vurdering."
+      ],
+      "use_when": [
+        "feedback",
+        "prestasjonssamtale",
+        "tilbakemelding",
+        "oppfølging",
+        "forventningsavklaring"
+      ],
+      "authority": "high",
+      "note": "Empirisk studie med 803 medarbeidere fra tre norske organisasjoner.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "KUVAAS_BUCH_DYSVIK_HAEREM_2012_LMX",
+      "type": "fagfellevurdert forskning",
+      "title": "Economic and social leader-member exchange relationships and follower performance",
+      "author": "Bård Kuvaas, Robert Buch, Anders Dysvik & Thorvald Haerem",
+      "year": 2012,
+      "doi": "10.1016/j.leaqua.2011.12.013",
+      "url": "https://doi.org/10.1016/j.leaqua.2011.12.013",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Sosiale og mer økonomisk/transaksjonelle leder-medarbeider-relasjoner kan ha ulik sammenheng med prestasjon og organisatorisk medborgerskap.",
+        "Tillit, støtte og gjensidighet er relevante perspektiver når leder-medarbeider-relasjonen vurderes."
+      ],
+      "use_when": [
+        "leder-medarbeider-relasjon",
+        "LMX",
+        "tillit",
+        "støtte",
+        "gjensidighet",
+        "prestasjon",
+        "relasjon"
+      ],
+      "authority": "high",
+      "note": "Empirisk studie med 552 medarbeidere og 78 ledere.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "KUVAAS_BUCH_WEIBEL_DYSVIK_NERSTAD_2017",
+      "type": "fagfellevurdert forskning",
+      "title": "Do intrinsic and extrinsic motivation relate differently to employee outcomes?",
+      "author": "Bård Kuvaas, Robert Buch, Antoinette Weibel, Anders Dysvik & Christina G. L. Nerstad",
+      "year": 2017,
+      "doi": "10.1016/j.joep.2017.05.004",
+      "url": "https://doi.org/10.1016/j.joep.2017.05.004",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Lønn og utvikling",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Indre og ytre motivasjon bør ikke behandles som det samme fenomenet.",
+        "Indre motivasjon var gjennomgående forbundet med positive arbeidsutfall, mens ytre motivasjon viste et annet og mindre gunstig mønster."
+      ],
+      "use_when": [
+        "indre motivasjon",
+        "ytre motivasjon",
+        "belønning",
+        "kontroll",
+        "prestasjon",
+        "lønn",
+        "arbeidsmotivasjon"
+      ],
+      "authority": "high",
+      "note": "Tre arbeidslivsstudier på tvers av ulike bransjer, inkludert norske utvalg.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "OLAFSEN_HALVARI_FOREST_DECI_2015",
+      "type": "fagfellevurdert forskning",
+      "title": "Show them the money? The role of pay, managerial need support, and justice in a self-determination theory model of intrinsic work motivation",
+      "author": "Anja H. Olafsen, Hallgeir Halvari, Jacques Forest & Edward L. Deci",
+      "year": 2015,
+      "doi": "10.1111/sjop.12211",
+      "url": "https://doi.org/10.1111/sjop.12211",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Lønn og utvikling",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Lederstøtte for grunnleggende psykologiske behov var viktig for behovstilfredsstillelse og indre arbeidsmotivasjon.",
+        "Lønn alene bør ikke brukes som en enkel forklaring eller løsning på motivasjonsutfordringer."
+      ],
+      "use_when": [
+        "motivasjon",
+        "lønn",
+        "autonomi",
+        "kompetanse",
+        "tilhørighet",
+        "lederstøtte",
+        "rettferdighet"
+      ],
+      "authority": "high",
+      "note": "Norsk arbeidslivsstudie med 166 ansatte i banksektoren.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "OLAFSEN_HALVARI_FROLUND_2021",
+      "type": "fagfellevurdert forskning",
+      "title": "The Basic Psychological Need Satisfaction and Need Frustration at Work Scale: A Validation Study",
+      "author": "Anja Hagen Olafsen, Hallgeir Halvari & Claus Wiemann Frølund",
+      "year": 2021,
+      "doi": "10.3389/fpsyg.2021.697306",
+      "url": "https://doi.org/10.3389/fpsyg.2021.697306",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Autonomi, kompetanse og tilhørighet er relevante dimensjoner for behovstilfredsstillelse og behovsfrustrasjon i arbeidslivet.",
+        "Behovsdimensjonene kan brukes som refleksjonsperspektiver, ikke som diagnostiske kategorier."
+      ],
+      "use_when": [
+        "autonomi",
+        "kompetanse",
+        "tilhørighet",
+        "behovstilfredsstillelse",
+        "behovsfrustrasjon",
+        "motivasjon",
+        "arbeidsmiljø"
+      ],
+      "authority": "high",
+      "note": "Valideringsstudie med tre norske og ett engelskspråklig utvalg.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
     },
     {
       "id": "ONEILL_2013_TEAM_CONFLICT_META",
@@ -710,7 +518,393 @@
         "prosesskonflikt",
         "relasjonskonflikt"
       ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "WEGER_CASTLE_EMMETT_2010_ACTIVE_LISTENING",
+      "type": "fagfellevurdert forskning",
+      "title": "Active Listening in Peer Interviews: The Influence of Message Paraphrasing on Perceptions of Listening Skill",
+      "author": "Harry Weger Jr., Gina R. Castle & Melissa C. Emmett",
+      "year": 2010,
+      "doi": "10.1080/10904010903466311",
+      "url": "https://doi.org/10.1080/10904010903466311",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Aktiv lytting innebærer mer enn å være stille; parafrasering og respons på budskapet kan bidra til opplevelsen av å bli lyttet til.",
+        "Lytteteknikker bør brukes naturlig og situasjonstilpasset, ikke mekanisk."
+      ],
+      "use_when": [
+        "aktiv lytting",
+        "parafrasering",
+        "oppsummering",
+        "åpne spørsmål",
+        "samtaleteknikk"
+      ],
+      "authority": "research",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "FFI_MOST_2024",
+      "type": "forskning",
+      "title": "Mobbing og seksuell trakassering i Forsvaret, FMA og FFI – MOST 2024",
+      "author": "Forsvarets forskningsinstitutt",
+      "year": 2025,
+      "url": "https://www.ffi.no/publikasjoner/arkiv/mobbing-og-seksuell-trakassering-i-forsvaret-i-fma-og-ved-ffi-resultater-fra-en-sporreundersokelse-i-2024",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "MOST gir sektorspesifikt kunnskapsgrunnlag om mobbing, seksuell trakassering og kjennskap/tillit til varslingssystemet i forsvarssektoren."
+      ],
+      "use_when": [
+        "MOST",
+        "Forsvaret",
+        "mobbing",
+        "seksuell trakassering"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "FOR_GRUNNSYN_LEDELSE_2020",
+      "type": "faglig rammeverk",
+      "title": "Forsvarets grunnsyn på ledelse",
+      "author": "Forsvaret",
+      "year": 2020,
+      "url": "https://www.forsvaret.no/soldater-og-ansatte/regelverk/Forsvarets-grunnsyn-ledelse.pdf",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Oppdragsbasert og intensjonsbasert ledelse vektlegger tydelig hensikt, tillit, ansvar og handlingsrom.",
+        "Effektiv lederatferd balanserer oppdragsfokus, samspill og utvikling og må tilpasses situasjonen."
+      ],
+      "use_when": [
+        "intensjon",
+        "handlingsrom",
+        "ansvar",
+        "utvikling",
+        "tillit"
+      ],
+      "authority": "framework",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "FOR_VEILEDNING_LED2403",
+      "type": "faglig rammeverk",
+      "title": "Veiledning som praktisk fundament for ledelse",
+      "author": "Forsvaret",
+      "year": 2026,
+      "url": "https://www.forsvaret.no/utdanning/emner/LED2403/2026-V%C3%85R",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon"
+      ],
+      "principles": [
+        "Veiledning kan utvikle medarbeidere og støtte læring, ansvar og samhandling.",
+        "Oppdragsbasert ledelse forutsetter tillit, forståelse og effektiv kommunikasjon mellom nivåer."
+      ],
+      "use_when": [
+        "veiledning",
+        "utvikling",
+        "læring",
+        "intensjonsbasert ledelse"
+      ],
+      "authority": "framework",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "ILO_ALCOHOL_DRUG_WORK",
+      "type": "faglig rammeverk",
+      "title": "Management of alcohol- and drug-related issues in the workplace",
+      "author": "International Labour Organization",
+      "year": 1996,
+      "url": "https://www.ilo.org/publications/management-alcohol-and-drug-related-issues-workplace",
+      "topics": [
+        "Alkohol og rus",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Arbeidsplassen bør kombinere forebygging, tydelige prosedyrer, støtte og rehabilitering ved rusrelaterte utfordringer."
+      ],
+      "use_when": [
+        "alkohol",
+        "rus",
+        "rehabilitering",
+        "policy",
+        "arbeidsplass",
+        "sikkerhet"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "SPURKELAND_RELASJONSLEDELSE",
+      "type": "fagbok / rammeverk",
+      "title": "Relasjonsledelse, 5. utgave",
+      "author": "Jan Spurkeland",
+      "year": 2024,
+      "url": "https://www.universitetsforlaget.no/relasjonsledelse-3",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Relasjonsorientert ledelse vektlegger dialog, kommunikasjon, tillit og kvaliteten i relasjonen mellom leder og medarbeider.",
+        "Den balanserte og likeverdige samtalen brukes som et praktisk lederverktøy."
+      ],
+      "use_when": [
+        "relasjonsledelse",
+        "dialog",
+        "tillit",
+        "kommunikasjon",
+        "relasjon"
+      ],
+      "authority": "framework",
+      "note": "Fagbok og praktisk rammeverk, ikke en fagfellevurdert enkeltstudie.",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "WHO_MENTAL_HEALTH_WORK_2022",
+      "type": "faglig rammeverk",
+      "title": "Guidelines on mental health at work",
+      "author": "World Health Organization",
+      "year": 2022,
+      "url": "https://www.who.int/publications-detail-redirect/9789240053052",
+      "topics": [
+        "Livssituasjoner",
+        "Fravær og oppfølging",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Arbeidsrettede tiltak bør støtte psykisk helse, deltakelse i arbeid og trygg tilbakeføring.",
+        "Lederopplæring og organisatoriske tiltak inngår i evidensbaserte anbefalinger."
+      ],
+      "use_when": [
+        "psykisk helse",
+        "stress",
+        "angst",
+        "depresjon",
+        "tilbakeføring",
+        "return to work",
+        "lederstøtte"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "AKAN_MODELLEN",
+      "type": "faglig veiledning",
+      "title": "Akan-modellen",
+      "author": "Akan kompetansesenter",
+      "year": 2026,
+      "url": "https://www.akan.no/kortforklart-akan-modellen",
+      "topics": [
+        "Alkohol og rus",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Tidlig innsats, tydelige rammer og støtte bør sees i sammenheng.",
+        "Bekymringer bør tas opp på grunnlag av konkrete observasjoner og arbeidsmessige konsekvenser."
+      ],
+      "use_when": [
+        "alkohol",
+        "rus",
+        "spill",
+        "bekymring",
+        "påvirket",
+        "policy",
+        "akan"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AKAN_NODVENDIG_SAMTALE",
+      "type": "faglig veileder",
+      "title": "Hvordan snakke med en ansatt om rus- og spillproblematikk?",
+      "author": "Akan kompetansesenter",
+      "year": 2026,
+      "url": "https://www.akan.no/bekymret-for-en-ansatt",
+      "topics": [
+        "Alkohol og rus"
+      ],
+      "principles": [
+        "Bygg bekymringssamtalen på konkrete observasjoner og fakta uten å påstå hva problemet er.",
+        "Målet med første samtale er ikke å få en innrømmelse, men å formidle bekymring og åpne for dialog."
+      ],
+      "use_when": [
+        "alkohol",
+        "rus",
+        "spill",
+        "bekymring",
+        "endret fungering"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": false
+    },
+    {
+      "id": "AKAN_POLICY",
+      "type": "faglig veiledning",
+      "title": "Hvordan kan arbeidsplassen forebygge rus- og spillproblematikk?",
+      "author": "Akan kompetansesenter",
+      "year": 2026,
+      "url": "https://www.akan.no/rusmiddelpolicykjoreregler",
+      "topics": [
+        "Alkohol og rus",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "En kjent policy gir forutsigbarhet om hva som gjelder og hvordan bekymringer og brudd håndteres."
+      ],
+      "use_when": [
+        "rusmiddelpolicy",
+        "kjøreregler",
+        "jobbfest",
+        "sikkerhet",
+        "brudd",
+        "påvirkning"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "LDO_SETTESTREK",
+      "type": "fagveileder",
+      "title": "Sammen setter vi strek for seksuell trakassering",
+      "author": "Likestillings- og diskrimineringsombudet / Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://ldo.no/settestrek/",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Forebygging krever tydelige rammer, risikovurdering, rutiner og opplæring."
+      ],
+      "use_when": [
+        "forebygging",
+        "seksuell trakassering",
+        "arbeidsmiljø"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_LONN",
+      "type": "myndighet",
+      "title": "Lønn",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/lonn/",
+      "topics": [
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Lønn og vilkår må forstås i lys av arbeidsavtale, eventuelle tariffavtaler og gjeldende regelverk."
+      ],
+      "use_when": [
+        "lønn",
+        "lønnssamtale",
+        "lønnsøkning",
+        "prestasjonlønn",
+        "tariff"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_MOBBING",
+      "type": "myndighet",
+      "title": "Mobbing",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Mobbing beskrives som gjentatte negative handlinger over tid der personen opplever det vanskelig å forsvare seg.",
+        "Arbeidsgiver skal forebygge og håndtere mobbing og ivareta de involverte."
+      ],
+      "use_when": [
+        "mobbing",
+        "utestenging",
+        "utfrysing"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_OPPSIGELSE",
+      "type": "myndighet",
+      "title": "Oppsigelse",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/oppsigelse/",
+      "topics": [
+        "Avslutning av arbeidsforhold",
+        "Fravær og oppfølging"
+      ],
+      "principles": [
+        "Arbeidsgiver bør kvalitetssikre saklig grunn og følge drøftings- og formkrav før oppsigelse.",
+        "Sykdom har et særskilt oppsigelsesvern det første året av sykefraværet."
+      ],
+      "use_when": [
+        "oppsigelse",
+        "sykefravær og oppsigelse"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_PSYKOSOSIALT_2026",
+      "type": "myndighet",
+      "title": "Psykososialt arbeidsmiljø",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/psykososialt-arbeidsmiljo/",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Livssituasjoner",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Arbeidsgiver må arbeide systematisk med psykososial risiko og involvere arbeidstakere og representanter.",
+        "Tydelige forventninger, støtte og medvirkning er sentrale arbeidsmiljøfaktorer."
+      ],
+      "use_when": [
+        "rolleuklarhet",
+        "arbeidsmengde",
+        "emosjonelle krav",
+        "støtte",
+        "samarbeid"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
     },
     {
       "id": "AT_RISIKOVURDERING",
@@ -733,7 +927,111 @@
         "HMS",
         "avvik"
       ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_SEKSUELL_TRAKASSERING",
+      "type": "myndighet",
+      "title": "Seksuell trakassering",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Seksuell trakassering kan være fysisk, verbal eller ikke-verbal og kan bestå av én alvorlig hendelse.",
+        "Arbeidsgiver har plikt til å forebygge, undersøke påstander og følge opp involverte."
+      ],
+      "use_when": [
+        "seksuell trakassering",
+        "uønsket seksuell oppmerksomhet",
+        "kjønnstrakassering"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_TILRETTELEGGING",
+      "type": "myndighet",
+      "title": "Tilrettelegging av arbeidet",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/tilrettelegging/",
+      "topics": [
+        "Fravær og oppfølging",
+        "Livssituasjoner",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Tilrettelegging kan gjelde organisering, oppgaver, arbeidstid og andre arbeidsforhold.",
+        "Arbeidsevne og arbeidsfunksjon kan drøftes uten å kreve private medisinske detaljer."
+      ],
+      "use_when": [
+        "tilrettelegging",
+        "arbeidsevne",
+        "kapasitet",
+        "livsfase",
+        "redusert arbeidsevne",
+        "tilbakekomst"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_TRAKASSERING",
+      "type": "myndighet",
+      "title": "Trakassering",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Sikkerhet og ansvar",
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Arbeidsgiver skal undersøke påstander om trakassering og følge opp involverte.",
+        "Konflikt og trakassering er ikke det samme; faktagrunnlaget må undersøkes før konklusjoner trekkes."
+      ],
+      "use_when": [
+        "trakassering",
+        "mobbing",
+        "utilbørlig opptreden",
+        "varsling"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_VARSLING_ROLLER",
+      "type": "myndighet",
+      "title": "Ansvar, rettigheter og roller i varslingssaker",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/varsling/ansvar-rettigheter-og-roller/",
+      "topics": [
+        "Mobbing og trakassering",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Varsler har vern mot gjengjeldelse.",
+        "Den det varsles om har partsrettigheter og saken må håndteres uten forhåndskonklusjon."
+      ],
+      "use_when": [
+        "varsling",
+        "gjengjeldelse",
+        "samtale med varsler",
+        "samtale med den det varsles om"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
     },
     {
       "id": "AT_VOLD_TRUSLER",
@@ -757,226 +1055,38 @@
         "sikkerhet",
         "hendelse"
       ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
     },
     {
-      "id": "AT_LONN",
+      "id": "NAV_PSYKISK_HELSE_ARBEIDSGIVER",
       "type": "myndighet",
-      "title": "Lønn",
-      "author": "Arbeidstilsynet",
+      "title": "Ansatte som sliter psykisk",
+      "author": "NAV",
       "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/lonn/",
+      "url": "https://www.nav.no/arbeidsgiver/psykiske-helseproblemer",
       "topics": [
-        "Lønn og utvikling"
+        "Livssituasjoner",
+        "Fravær og oppfølging",
+        "Prestasjon og utvikling"
       ],
       "principles": [
-        "Lønn og vilkår må forstås i lys av arbeidsavtale, eventuelle tariffavtaler og gjeldende regelverk."
+        "Leder kan vise omsorg, spørre om arbeidssituasjonen og lytte uten å opptre som behandler.",
+        "Fokus bør være på arbeid, funksjon, støtte og eventuell tilrettelegging fremfor diagnose."
       ],
       "use_when": [
-        "lønn",
-        "lønnssamtale",
-        "lønnsøkning",
-        "prestasjonlønn",
-        "tariff"
+        "nedstemt",
+        "psykisk",
+        "stress",
+        "belastning",
+        "tilbaketrukket",
+        "livssituasjon",
+        "arbeidsevne"
       ],
-      "authority": "high"
-    },
-    {
-      "id": "COLQUITT_2001_JUSTICE_META",
-      "type": "fagfellevurdert forskning",
-      "title": "Justice at the millennium: A meta-analytic review of 25 years of organizational justice research",
-      "author": "Jason A. Colquitt mfl.",
-      "year": 2001,
-      "url": "https://doi.org/10.1037/0021-9010.86.3.425",
-      "doi": "10.1037/0021-9010.86.3.425",
-      "topics": [
-        "Lønn og utvikling",
-        "Avslutning av arbeidsforhold",
-        "Prestasjon og utvikling",
-        "Samarbeid og kommunikasjon"
-      ],
-      "principles": [
-        "Fordelings-, prosedyre-, mellommenneskelig og informasjonsmessig rettferdighet har betydning for hvordan beslutninger oppleves."
-      ],
-      "use_when": [
-        "rettferdighet",
-        "lønn",
-        "forfremmelse",
-        "oppsigelse",
-        "prosess",
-        "begrunnelse",
-        "ulik behandling"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AT_MOBBING",
-      "type": "myndighet",
-      "title": "Mobbing",
-      "author": "Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/",
-      "topics": [
-        "Mobbing og trakassering"
-      ],
-      "principles": [
-        "Mobbing beskrives som gjentatte negative handlinger over tid der personen opplever det vanskelig å forsvare seg.",
-        "Arbeidsgiver skal forebygge og håndtere mobbing og ivareta de involverte."
-      ],
-      "use_when": [
-        "mobbing",
-        "utestenging",
-        "utfrysing"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AT_SEKSUELL_TRAKASSERING",
-      "type": "myndighet",
-      "title": "Seksuell trakassering",
-      "author": "Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/",
-      "topics": [
-        "Mobbing og trakassering"
-      ],
-      "principles": [
-        "Seksuell trakassering kan være fysisk, verbal eller ikke-verbal og kan bestå av én alvorlig hendelse.",
-        "Arbeidsgiver har plikt til å forebygge, undersøke påstander og følge opp involverte."
-      ],
-      "use_when": [
-        "seksuell trakassering",
-        "uønsket seksuell oppmerksomhet",
-        "kjønnstrakassering"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AT_VARSLING_ROLLER",
-      "type": "myndighet",
-      "title": "Ansvar, rettigheter og roller i varslingssaker",
-      "author": "Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/varsling/ansvar-rettigheter-og-roller/",
-      "topics": [
-        "Mobbing og trakassering",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Varsler har vern mot gjengjeldelse.",
-        "Den det varsles om har partsrettigheter og saken må håndteres uten forhåndskonklusjon."
-      ],
-      "use_when": [
-        "varsling",
-        "gjengjeldelse",
-        "samtale med varsler",
-        "samtale med den det varsles om"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "AML_2A_VARSLING",
-      "type": "lovverk",
-      "title": "Arbeidsmiljøloven kapittel 2 A – varsling",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A72a-1",
-      "topics": [
-        "Mobbing og trakassering",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Arbeidsgiver skal sørge for at varsel innen rimelig tid blir tilstrekkelig undersøkt.",
-        "Gjengjeldelse mot arbeidstaker som varsler i samsvar med loven er forbudt."
-      ],
-      "use_when": [
-        "varsling",
-        "aktivitetsplikt",
-        "gjengjeldelse"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "LDO_SETTESTREK",
-      "type": "fagveileder",
-      "title": "Sammen setter vi strek for seksuell trakassering",
-      "author": "Likestillings- og diskrimineringsombudet / Arbeidstilsynet",
-      "year": 2026,
-      "url": "https://ldo.no/settestrek/",
-      "topics": [
-        "Mobbing og trakassering"
-      ],
-      "principles": [
-        "Forebygging krever tydelige rammer, risikovurdering, rutiner og opplæring."
-      ],
-      "use_when": [
-        "forebygging",
-        "seksuell trakassering",
-        "arbeidsmiljø"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "LDL_13_TRAKASSERING",
-      "type": "lovverk",
-      "title": "Likestillings- og diskrimineringsloven – forbud mot trakassering",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/dokument/NL/lov/2017-06-16-51",
-      "topics": [
-        "Mobbing og trakassering"
-      ],
-      "principles": [
-        "Likestillings- og diskrimineringsloven forbyr trakassering og seksuell trakassering."
-      ],
-      "use_when": [
-        "trakassering",
-        "seksuell trakassering",
-        "diskriminering"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "LDL_26_AKTIVITETSPLIKT",
-      "type": "lovverk",
-      "title": "Likestillings- og diskrimineringsloven § 26 – arbeidsgivers aktivitetsplikt",
-      "author": "Lovdata",
-      "year": 2026,
-      "url": "https://lovdata.no/nav/lov/2017-06-16-51/kap4",
-      "topics": [
-        "Mobbing og trakassering",
-        "Lønn og utvikling"
-      ],
-      "principles": [
-        "Arbeidsgivere skal arbeide aktivt, målrettet og planmessig for likestilling og søke å hindre trakassering, seksuell trakassering og kjønnsbasert vold."
-      ],
-      "use_when": [
-        "forebygging",
-        "aktivitetsplikt",
-        "kjønnstrakassering"
-      ],
-      "authority": "high"
-    },
-    {
-      "id": "FFI_MOST_2024",
-      "type": "forskning",
-      "title": "Mobbing og seksuell trakassering i Forsvaret, FMA og FFI – MOST 2024",
-      "author": "Forsvarets forskningsinstitutt",
-      "year": 2025,
-      "url": "https://www.ffi.no/publikasjoner/arkiv/mobbing-og-seksuell-trakassering-i-forsvaret-i-fma-og-ved-ffi-resultater-fra-en-sporreundersokelse-i-2024",
-      "topics": [
-        "Mobbing og trakassering"
-      ],
-      "principles": [
-        "MOST gir sektorspesifikt kunnskapsgrunnlag om mobbing, seksuell trakassering og kjennskap/tillit til varslingssystemet i forsvarssektoren."
-      ],
-      "use_when": [
-        "MOST",
-        "Forsvaret",
-        "mobbing",
-        "seksuell trakassering"
-      ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
     },
     {
       "id": "NAV_SAMTALESTOTTE_ARBEIDSGIVER",
@@ -998,7 +1108,245 @@
         "arbeidsevne",
         "oppfølging"
       ],
-      "authority": "high"
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "NAV_SYKEFRAVAER_OPPFOLGING",
+      "type": "myndighet",
+      "title": "Slik følger du opp sykmeldte",
+      "author": "NAV",
+      "year": 2026,
+      "url": "https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte",
+      "topics": [
+        "Fravær og oppfølging"
+      ],
+      "principles": [
+        "Fokuser på arbeidsoppgaver, muligheter og tilrettelegging fremfor diagnose.",
+        "Oppfølgingsplan skal normalt utarbeides innen 4 uker og dialogmøte 1 holdes innen 7 uker når vilkårene er oppfylt."
+      ],
+      "use_when": [
+        "sykmelding",
+        "langvarig fravær",
+        "tilbakekomst",
+        "tilrettelegging"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AML_15_1_DROFTING",
+      "type": "lovverk",
+      "title": "Arbeidsmiljøloven § 15-1 – drøfting før beslutning om oppsigelse",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A715-1",
+      "topics": [
+        "Avslutning av arbeidsforhold"
+      ],
+      "principles": [
+        "Før arbeidsgiver beslutter oppsigelse skal spørsmålet så langt det er praktisk mulig drøftes med arbeidstaker, og eventuelt tillitsvalgt dersom arbeidstaker ønsker det."
+      ],
+      "use_when": [
+        "oppsigelse",
+        "drøftelsesmøte",
+        "formell prosess"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AML_15_7_SAKLIG_OPPSIGELSE",
+      "type": "lovverk",
+      "title": "Arbeidsmiljøloven § 15-7 – vern mot usaklig oppsigelse",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A715-7",
+      "topics": [
+        "Avslutning av arbeidsforhold"
+      ],
+      "principles": [
+        "Oppsigelse må være saklig begrunnet i virksomhetens, arbeidsgivers eller arbeidstakers forhold."
+      ],
+      "use_when": [
+        "oppsigelse",
+        "nedbemanning",
+        "prestasjon",
+        "mislighold"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AML_2A_VARSLING",
+      "type": "lovverk",
+      "title": "Arbeidsmiljøloven kapittel 2 A – varsling",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A72a-1",
+      "topics": [
+        "Mobbing og trakassering",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Arbeidsgiver skal sørge for at varsel innen rimelig tid blir tilstrekkelig undersøkt.",
+        "Gjengjeldelse mot arbeidstaker som varsler i samsvar med loven er forbudt."
+      ],
+      "use_when": [
+        "varsling",
+        "aktivitetsplikt",
+        "gjengjeldelse"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AML_4_3_PSYKOSOSIALT",
+      "type": "lovverk",
+      "title": "Arbeidsmiljøloven § 4-3 – krav til det psykososiale arbeidsmiljøet",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A74-3",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Sikkerhet og ansvar",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Arbeidet skal organiseres og gjennomføres slik at det psykososiale arbeidsmiljøet er fullt forsvarlig.",
+        "Uklare krav, emosjonelle belastninger, tidspress og mangel på støtte er relevante psykososiale faktorer."
+      ],
+      "use_when": [
+        "konflikt",
+        "arbeidsbelastning",
+        "rolleuklarhet",
+        "støtte",
+        "trakassering"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "AML_4_6_TILRETTELEGGING",
+      "type": "lovverk",
+      "title": "Arbeidsmiljøloven § 4-6 – tilrettelegging ved redusert arbeidsevne",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A74-6",
+      "topics": [
+        "Fravær og oppfølging",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Arbeidsgiver skal så langt det er mulig iverksette nødvendige tiltak for at arbeidstaker med redusert arbeidsevne kan beholde eller få passende arbeid."
+      ],
+      "use_when": [
+        "redusert arbeidsevne",
+        "tilrettelegging",
+        "tilbakekomst"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "LDL_13_TRAKASSERING",
+      "type": "lovverk",
+      "title": "Likestillings- og diskrimineringsloven – forbud mot trakassering",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/dokument/NL/lov/2017-06-16-51",
+      "topics": [
+        "Mobbing og trakassering"
+      ],
+      "principles": [
+        "Likestillings- og diskrimineringsloven forbyr trakassering og seksuell trakassering."
+      ],
+      "use_when": [
+        "trakassering",
+        "seksuell trakassering",
+        "diskriminering"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "LDL_26_AKTIVITETSPLIKT",
+      "type": "lovverk",
+      "title": "Likestillings- og diskrimineringsloven § 26 – arbeidsgivers aktivitetsplikt",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/nav/lov/2017-06-16-51/kap4",
+      "topics": [
+        "Mobbing og trakassering",
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Arbeidsgivere skal arbeide aktivt, målrettet og planmessig for likestilling og søke å hindre trakassering, seksuell trakassering og kjønnsbasert vold."
+      ],
+      "use_when": [
+        "forebygging",
+        "aktivitetsplikt",
+        "kjønnstrakassering"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "LDL_29_ARBEIDSFORHOLD",
+      "type": "lovverk",
+      "title": "Likestillings- og diskrimineringsloven § 29 – diskrimineringsforbudet i arbeidsforhold",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/lov/2017-06-16-51/%C2%A729",
+      "topics": [
+        "Lønn og utvikling",
+        "Prestasjon og utvikling",
+        "Avslutning av arbeidsforhold",
+        "Fravær og oppfølging"
+      ],
+      "principles": [
+        "Diskrimineringsforbudet gjelder blant annet ansettelse, omplassering, forfremmelse, opplæring, lønns- og arbeidsvilkår og opphør."
+      ],
+      "use_when": [
+        "forfremmelse",
+        "opprykk",
+        "lønn",
+        "opphør",
+        "mulig diskriminering"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
+    },
+    {
+      "id": "LDL_34_LIKELONN",
+      "type": "lovverk",
+      "title": "Likestillings- og diskrimineringsloven § 34 – lik lønn for arbeid av lik verdi",
+      "author": "Lovdata",
+      "year": 2026,
+      "url": "https://lovdata.no/nav/lov/2017-06-16-51/%C2%A734",
+      "topics": [
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Kvinner og menn i samme virksomhet skal ha lik lønn for samme arbeid eller arbeid av lik verdi."
+      ],
+      "use_when": [
+        "lønnsforskjeller",
+        "likelønn"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-07",
+      "time_sensitive": true
     }
   ]
 }
