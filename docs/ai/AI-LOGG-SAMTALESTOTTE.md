@@ -1072,3 +1072,17 @@ Alle ni hovedtemaer var representert.
 Resultatet dokumenterer at modellen i denne kjøringen oppfylte de maskinelle fasitkravene for tema, struktur, sikkerhets-/kvalitetskontroller og eksplisitte forbud mot enkelte uforsvarlige konklusjoner.
 
 Det ble bevisst ikke konkludert med at dette alene beviser full faglig kvalitet. Golden-testen kombineres med menneskelig fasit, ordinær KI-test, stresstest, benchmark og brukertesting for å redusere risikoen for at én testmetode blir behandlet som fasit for hele produktet.
+
+
+---
+
+## 2026-10-14 – Manuell golden-gjennomgang avdekket rapporteringshull
+
+Første golden-kjøring ga automatisk **9/9 OK**. Deretter ble rapporten kontrollert manuelt mot den eksplisitte menneskelige fasiten.
+
+To læringspunkter kom frem:
+
+1. Rapporten viste ikke hele KI-svaret. Den viste hovedsakelig situasjonsforståelse, åpning og kilder, mens fasiten også krevde vurdering av spørsmål, reaksjoner, HR/juridisk merknad og neste steg. Rapportgeneratoren ble derfor utvidet slik at en menneskelig kontroll faktisk kan etterprøve hele fasiten.
+2. I fraværscasen la KI-åpningen til at fraværet hadde «gjort det vanskeligere å planlegge og følge opp arbeidet». Denne konsekvensen var ikke oppgitt i casen. Det ble vurdert som et manuelt **BØR SJEKKES**-punkt, ikke et kritisk avvik. Funnet viser hvorfor maskinell 9/9 ikke skal behandles som full faglig fasit.
+
+Automatisk resultat og menneskelig vurdering holdes derfor eksplisitt adskilt.

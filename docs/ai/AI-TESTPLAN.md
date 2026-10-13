@@ -1056,3 +1056,25 @@ Resultat:
 Golden KI-kjøring mot GPT-5.6 Luna: **9/9 OK**.
 
 Dette viser at alle ni representative hovedtema-caser besto de maskinelle fasitkravene i denne kjøringen. Resultatet skal ikke tolkes som bevis på at alle mulige KI-svar er faglig korrekte; den eksplisitte menneskelige fasiten og bredere testbanker brukes fortsatt for videre kvalitetsvurdering.
+
+
+---
+
+# Rapportkrav for manuell golden-vurdering
+
+Golden-rapporten skal vise nok av KI-svaret til at en person faktisk kan kontrollere `MÅ`, `BØR` og kritiske feil.
+
+Rapporten inkluderer derfor:
+
+- kort situasjonsforståelse
+- avklaringsspørsmål og forbehold
+- samtaleåpning
+- konkrete spørsmål
+- mulige reaksjoner og foreslått lederrespons
+- oppmerksomhetspunkter
+- sjekk før møtet
+- HR/juridisk merknad
+- neste steg
+- kilder
+
+Dette ble lagt til etter manuell gjennomgang av første golden-rapport. Den første rapporten viste bare åpning og kilder og var derfor ikke tilstrekkelig til å etterprøve hele den menneskelige fasiten.
