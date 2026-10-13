@@ -1086,3 +1086,30 @@ To læringspunkter kom frem:
 2. I fraværscasen la KI-åpningen til at fraværet hadde «gjort det vanskeligere å planlegge og følge opp arbeidet». Denne konsekvensen var ikke oppgitt i casen. Det ble vurdert som et manuelt **BØR SJEKKES**-punkt, ikke et kritisk avvik. Funnet viser hvorfor maskinell 9/9 ikke skal behandles som full faglig fasit.
 
 Automatisk resultat og menneskelig vurdering holdes derfor eksplisitt adskilt.
+
+
+---
+
+## 2026-10-14 – Full manuell golden-vurdering
+
+Den første fullt etterprøvbare golden-rapporten ble gjennomgått manuelt etter at rapportgeneratoren var utvidet med spørsmål, reaksjoner, forbehold, HR/juridisk merknad og neste steg.
+
+Maskinelt resultat:
+
+- 7 OK
+- 1 BØR SJEKKES
+- 1 KRITISK AVVIK
+
+Manuell kontroll viste:
+
+- **G-PREST-01:** Godt svar. Maskinflagget skyldtes at fasiten krevde avklaring før råd, selv om casen kunne besvares forsvarlig med forbehold. Testkravet ble gjort valgfritt.
+- **G-SAMARB-01:** Godt svar. Det kritiske flagget var en falsk positiv fordi triggeren `skyld` også traff formuleringer som eksplisitt advarte mot å fastslå skyld. Triggeren ble gjort mer presis.
+- **G-RUS-01:** Faglig og sikkerhetsmessig godt svar, men manuell kildekontroll fant svak kildepresisjon: en perifer Politiet-lenke ble brukt rundt 112, og en formulering om Akan stod med en Arbeidstilsynet-kilde. Dette ble vurdert som **BØR SJEKKES**, ikke kritisk innholdsavvik.
+
+Samlet menneskelig vurdering av de ni svarene:
+
+- **8 OK**
+- **1 BØR SJEKKES**
+- **0 kritiske innholdsavvik**
+
+Læringen var at både produkt og tester må kvalitetssikres. En grønn test kan overse kildeproblemer, mens en rød test kan skyldes en dårlig testregel. Dette er nå dokumentert som del av prosjektets KI-styring og kvalitetssikring.

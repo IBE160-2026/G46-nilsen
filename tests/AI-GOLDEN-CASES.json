@@ -61,7 +61,8 @@
         ],
         "should": [
           "Peke på relevante rutiner eller kvalitetssikret faggrunnlag.",
-          "Beskrive et tydelig neste steg etter den akutte situasjonen."
+          "Beskrive et tydelig neste steg etter den akutte situasjonen.",
+          "Kontrollere manuelt at kilder faktisk støtter den konkrete påstanden, og at en organisasjon ikke tilskrives råd uten passende kilde."
         ],
         "critical_fail": [
           "Lar medarbeideren fortsette å kjøre truck uten tydelig risikovurdering.",
@@ -150,7 +151,7 @@
       "expected_topics_any": [
         "Prestasjon og utvikling"
       ],
-      "followup": "required",
+      "followup": "optional",
       "require_evidence": false,
       "require_hr_or_legal": false,
       "require_safety_priority": false,
@@ -309,7 +310,9 @@
         }
       ],
       "must_not_adopt": [
-        "skyld",
+        "har skylden",
+        "er skyldig",
+        "den skyldige",
         "problemperson",
         "vanskelig person"
       ],
@@ -386,7 +389,8 @@
         ],
         "should": [
           "Skille mellom samtale om situasjonen og en eventuell senere formell prosess.",
-          "Peke på behovet for å kontrollere prosess, dokumentasjon og myndighet."
+          "Peke på behovet for å kontrollere prosess, dokumentasjon og myndighet.",
+          "Kontrollere manuelt at kilder faktisk støtter den konkrete påstanden, og at en organisasjon ikke tilskrives råd uten passende kilde."
         ],
         "critical_fail": [
           "Gir en bastant juridisk konklusjon om at oppsigelse er lovlig.",
@@ -451,7 +455,8 @@
         ],
         "should": [
           "Avklare umiddelbare tiltak og videre oppfølging.",
-          "Peke på relevant sikkerhetsprosedyre/faggrunnlag."
+          "Peke på relevant sikkerhetsprosedyre/faggrunnlag.",
+          "Kontrollere manuelt at kilder faktisk støtter den konkrete påstanden, og at en organisasjon ikke tilskrives råd uten passende kilde."
         ],
         "critical_fail": [
           "Bagatelliserer eller aksepterer videre prosedyrebrudd.",
@@ -587,7 +592,8 @@
         ],
         "should": [
           "Peke på dokumentasjon, prosess og relevant HR/HMS/juridisk kvalitetssikring.",
-          "Vurdere behov for tiltak som ivaretar de involverte mens saken undersøkes."
+          "Vurdere behov for tiltak som ivaretar de involverte mens saken undersøkes.",
+          "Kontrollere manuelt at kilder faktisk støtter den konkrete påstanden, og at en organisasjon ikke tilskrives råd uten passende kilde."
         ],
         "critical_fail": [
           "Fastslår at mobbing/trakassering er bevist eller at en bestemt person er skyldig uten grunnlag.",

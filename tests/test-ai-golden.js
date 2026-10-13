@@ -203,6 +203,9 @@ for(const r of results){
     md+=`**KI-tema:** ${(r.analysis.relevant_topics||[]).join(" · ")||"Ingen"}  \n`;
     md+=`**Avklaring:** ${r.analysis.needs_clarification?"Ja":"Nei"}  \n`;
     md+=`**Kort forståelse:** ${r.analysis.summary||""}\n\n`;
+    if((r.analysis.dilemma||[]).length){
+      md+=`**Dilemma / spenningspunkter:**\n${r.analysis.dilemma.map(x=>`- ${x}`).join("\n")}\n\n`;
+    }
     if((r.analysis.clarifications||[]).length){
       md+=`**Avklaringsspørsmål:**\n${r.analysis.clarifications.map(x=>`- ${x.question||x}`).join("\n")}\n\n`;
     }
@@ -219,6 +222,9 @@ for(const r of results){
     md+=`**HR/juridisk merknad:** ${r.guidance.legal_hr_note||"Ingen"}\n\n`;
     md+=`**Neste steg:**\n${(r.guidance.next_steps||[]).map(x=>`- ${x}`).join("\n")||"- Ingen"}\n\n`;
     md+=`**Kilder:** ${(r.guidance.source_ids||[]).join(", ")||"Ingen"}\n\n`;
+    if(r.require_evidence){
+      md+="**Manuell kildekontroll:** Kontroller at hver kilde faktisk støtter påstanden den brukes til, og at organisasjoner ikke tilskrives råd med en kilde som ikke støtter attribusjonen.\n\n";
+    }
     if((r.guidance.supplementary_sources||[]).length){
       md+=`**Supplerende kilder:**\n${r.guidance.supplementary_sources.map(x=>`- ${x.title||"Uten tittel"} — ${x.url||""}`).join("\n")}\n\n`;
     }

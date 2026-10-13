@@ -1078,3 +1078,34 @@ Rapporten inkluderer derfor:
 - kilder
 
 Dette ble lagt til etter manuell gjennomgang av første golden-rapport. Den første rapporten viste bare åpning og kilder og var derfor ikke tilstrekkelig til å etterprøve hele den menneskelige fasiten.
+
+
+---
+
+## Manuell vurdering av golden-kjøring 00:40
+
+Den utvidede golden-rapporten viste maskinelt:
+
+- 7 OK
+- 1 BØR SJEKKES
+- 1 KRITISK AVVIK
+- 0 tekniske feil
+
+Manuell gjennomgang viste at de to maskinelle flaggene ikke representerte tilsvarende produktfeil:
+
+- **G-PREST-01:** Svaret oppfylte MÅ/BØR-fasiten, men testen krevde at analysefasen måtte stoppe for et avklaringsspørsmål. Casen kan forsvarlig besvares med konkrete råd og forbehold, så `followup` ble endret fra `required` til `optional`.
+- **G-SAMARB-01:** Testen flagget ordet `skyld` som kritisk selv om svaret eksplisitt sa at skyld ikke skulle fastslås. Triggeren var for bred og ble erstattet med mer konkrete uforsvarlige formuleringer.
+
+Manuell vurdering av selve KI-svarene:
+
+- 8 caser: **OK**
+- 1 case: **BØR SJEKKES**
+- 0 caser: kritisk innholdsavvik
+
+Casen som bør sjekkes er **G-RUS-01**, ikke på grunn av sikkerhetsrådene, men på grunn av kildepresisjon. Rapporten inneholdt eksempler der en kilde var tematisk perifer, og der en organisasjonsattribusjon ikke var støttet av kilden som stod ved påstanden.
+
+Dette førte til et nytt eksplisitt kvalitetskriterium:
+
+> Det er ikke nok at et svar har kilder. Kilden må faktisk støtte den konkrete påstanden og attribusjonen.
+
+Runtime-instruksen og golden-fasiten ble derfor strammet inn for kildepresisjon.
