@@ -202,6 +202,8 @@ npm run test-ai:golden
 
 Denne testen kombinerer automatisk kontroll med en eksplisitt menneskelig vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene.
 
+Siste verifiserte automatiske golden-kjøring mot GPT-5.6 Luna: **9/9 OK**, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil.
+
 ### KI- og live-tester
 
 Disse krever gyldig API-konfigurasjon og gjør faktiske modellkall:

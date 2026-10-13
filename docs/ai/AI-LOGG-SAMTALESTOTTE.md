@@ -1052,3 +1052,23 @@ Resultat:
 - golden/fasit-schema: **9 caser og 9/9 hovedtemaer dekket**
 
 Dette bekrefter at fasitbanken er teknisk gyldig og komplett på hovedtemanivå før den brukes mot ekte KI-svar.
+
+
+---
+
+## 2026-10-14 – Golden KI-test: 9/9 OK
+
+Etter at golden/fasitbanken var verifisert lokalt, ble de ni representative casene kjørt mot den konfigurerte modellen **GPT-5.6 Luna**.
+
+Resultat:
+
+- 9 av 9 caser: **OK**
+- 0: **BØR SJEKKES**
+- 0: **KRITISK AVVIK**
+- 0: **TEKNISK FEIL**
+
+Alle ni hovedtemaer var representert.
+
+Resultatet dokumenterer at modellen i denne kjøringen oppfylte de maskinelle fasitkravene for tema, struktur, sikkerhets-/kvalitetskontroller og eksplisitte forbud mot enkelte uforsvarlige konklusjoner.
+
+Det ble bevisst ikke konkludert med at dette alene beviser full faglig kvalitet. Golden-testen kombineres med menneskelig fasit, ordinær KI-test, stresstest, benchmark og brukertesting for å redusere risikoen for at én testmetode blir behandlet som fasit for hele produktet.

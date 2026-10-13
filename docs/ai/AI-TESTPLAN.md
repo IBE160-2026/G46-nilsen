@@ -1034,3 +1034,25 @@ Verifisert resultat:
 - Golden/fasit-schema: **9/9 hovedtemaer dekket**
 
 Denne kjøringen krever ingen eksterne KI-kall.
+
+
+---
+
+# Verifisering 2026-10-14 – Golden KI-test
+
+Den fasitbaserte KI-testen ble kjørt mot **GPT-5.6 Luna** med:
+
+```bash
+npm run test-ai:golden
+```
+
+Resultat:
+
+- **OK: 9**
+- **Bør sjekkes: 0**
+- **Kritisk avvik: 0**
+- **Teknisk feil: 0**
+
+Golden KI-kjøring mot GPT-5.6 Luna: **9/9 OK**.
+
+Dette viser at alle ni representative hovedtema-caser besto de maskinelle fasitkravene i denne kjøringen. Resultatet skal ikke tolkes som bevis på at alle mulige KI-svar er faglig korrekte; den eksplisitte menneskelige fasiten og bredere testbanker brukes fortsatt for videre kvalitetsvurdering.
