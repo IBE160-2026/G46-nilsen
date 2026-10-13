@@ -127,7 +127,17 @@ Migreringer ligger i:
 
 ### Lokale tester
 
-Disse gjør ikke eksterne KI-kall:
+Disse er deterministiske og gjør ikke eksterne KI-kall. De kan kjøres uten OpenAI- eller OpenRouter-nøkkel.
+
+Kjør hele den lokale testpakken med én kommando:
+
+```bash
+npm test
+```
+
+`npm test` er alias for `npm run test-local` og kjører de sentrale deterministiske regresjonstestene sekvensielt.
+
+Testene kan også kjøres enkeltvis:
 
 ```bash
 npm run test-privacy
@@ -138,12 +148,29 @@ npm run test-history-hotfix
 npm run test-bubble-cleanup
 ```
 
-Ved siste kontroll besto blant annet:
+Ved siste dokumenterte kontroll besto blant annet:
 
 - personverntester: 29/29
 - simuleringstester: 24/24
 - historikk-regresjonstest
 - snakkeboble-regresjonstest
+
+Personverntestsettet er senere utvidet med regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Oppdatert samlet testresultat dokumenteres etter ny full kjøring.
+
+### Sporbarhet fra krav til test
+
+Sentrale krav i `docs/bmad/PRD.md` har direkte testspor:
+
+| Krav | Testbevis |
+|---|---|
+| FR-05 Samtalesimulering | `tests/test-simulation.js` |
+| FR-06 Personverngateway – klient | `tests/test-privacy.js` |
+| FR-06 Personverngateway – server | `tests/test-server-privacy.cjs` |
+| FR-09 Historikk | `tests/test-history-hotfix.cjs` |
+| UI-regresjon | `tests/test-ui-regression.cjs` |
+| Simulator-UI/regresjon | `tests/test-bubble-cleanup.cjs` |
+
+Dette gjør det mulig å følge sentrale krav fra PRD til konkret testbevis uten eksterne KI-kall.
 
 ### KI- og live-tester
 

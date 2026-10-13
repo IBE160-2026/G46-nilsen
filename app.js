@@ -573,8 +573,10 @@ function findLikelyGivenName(source) {
     if (!AMBIGUOUS_GIVEN_NAMES.has(normalized)) return token;
 
     const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const personUse = new RegExp(`(?:\\b(?:heter|med|til|fra|hos|snakket\\s+med|møte\\s+med)\\s+${escaped}\\b|\\b${escaped}\\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\\b)`, 'iu');
-    if (personUse.test(text)) return token;
+    const relationUse = new RegExp(`\\b(?:heter|med|til|fra|hos|snakket\\s+med|møte\\s+med)\\s+${escaped}\\b`, 'iu');
+    const subjectUse = /^[\\p{Lu}]/u.test(token) &&
+      new RegExp(`\\b${escaped}\\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\\b`, 'u').test(text);
+    if (relationUse.test(text) || subjectUse) return token;
   }
 
   // 3. Ukjente navn kan fortsatt oppdages i tydelig personkontekst, men vi bruker ikke

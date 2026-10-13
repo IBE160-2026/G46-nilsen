@@ -27,6 +27,16 @@ for(const [text,type] of cases){
   const got=findings(text).map(x=>x.type);
   assert(got.includes(type),`${type} ikke oppdaget i: ${text}; fikk ${got.join(',')}`);
 }
+const ambiguousNameCases=[
+  ['Dette skjer hver dag.',false],
+  ['Hver dag har vi møte.',false],
+  ['Dag har kommet for sent.',true],
+  ['Jeg snakket med Dag i går.',true]
+];
+for(const [text,expectedName] of ambiguousNameCases){
+  const got=findings(text).map(x=>x.type);
+  assert.strictEqual(got.includes('name'),expectedName,`Tvetydig navn feil i: ${text}; fikk ${got.join(',') || 'ingen'}`);
+}
 for(const t of ['email','phone','birthdate','identifier','name','address','gendered_language']) assert(hard.has(t),`${t} skal være hard blokkering`);
 for(const t of ['age','family_details','unique_role','workplace_detail']) assert(!hard.has(t),`${t} skal være rådgivende, ikke hard blokkering`);
 console.log('v20.4 server privacy: OK');

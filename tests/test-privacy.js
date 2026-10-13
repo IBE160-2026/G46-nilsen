@@ -24,6 +24,10 @@ const nameCases = [
   ['Jeg snakket med Cecilie som ønsker et møte.', 'Cecilie'],
   ['per uke har vi to møter.', null],
   ['Jeg snakket med per som ønsker et møte.', 'per'],
+  ['Dette skjer hver dag.', null],
+  ['Hver dag har vi møte.', null],
+  ['Dag har kommet for sent.', 'Dag'],
+  ['Jeg snakket med Dag i går.', 'Dag'],
 ];
 
 const privacyCases = [
