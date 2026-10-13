@@ -146,6 +146,7 @@ npm run test-server-privacy
 npm run test-ui-regression
 npm run test-history-hotfix
 npm run test-bubble-cleanup
+npm run test-clipboard
 ```
 
 Ved siste dokumenterte kontroll besto blant annet:
@@ -169,6 +170,7 @@ Sentrale krav i `docs/bmad/PRD.md` har direkte testspor:
 | FR-09 Historikk | `tests/test-history-hotfix.cjs` |
 | UI-regresjon | `tests/test-ui-regression.cjs` |
 | Simulator-UI/regresjon | `tests/test-bubble-cleanup.cjs` |
+| Clipboard/kopieringsfunksjoner | `tests/test-clipboard.cjs` |
 
 Dette gjør det mulig å følge sentrale krav fra PRD til konkret testbevis uten eksterne KI-kall.
 
