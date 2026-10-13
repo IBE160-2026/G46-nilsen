@@ -1113,3 +1113,18 @@ Samlet menneskelig vurdering av de ni svarene:
 - **0 kritiske innholdsavvik**
 
 Læringen var at både produkt og tester må kvalitetssikres. En grønn test kan overse kildeproblemer, mens en rød test kan skyldes en dårlig testregel. Dette er nå dokumentert som del av prosjektets KI-styring og kvalitetssikring.
+
+
+---
+
+## 2026-10-14 – Temadekning var grønn, men én case testet feil tema
+
+Etter kilde- og fasitkalibreringen ga golden-testen **9/9 OK**. Manuell kontroll fant likevel en testdesign-svakhet:
+
+`G-LIV-01` var merket som **Livssituasjoner**, men selve situasjonen beskrev bare en sliten medarbeider med flere feil og ukjent årsak. Modellen klassifiserte derfor saken som **Sikkerhet og ansvar / Prestasjon og utvikling**.
+
+Testen hadde tidligere lov til å bestå på `Prestasjon og utvikling`, og kunne derfor gi et misvisende inntrykk av at alle ni hovedtemaer var verifisert.
+
+Casen ble endret slik at medarbeideren eksplisitt har opplyst om en krevende livssituasjon uten å dele private detaljer, og forventet tema ble strammet til kun **Livssituasjoner**.
+
+Dette dokumenterer at også grønn testdekning må kontrolleres semantisk: en test kan være teknisk bestått og likevel ikke bevise det den hevder å teste.

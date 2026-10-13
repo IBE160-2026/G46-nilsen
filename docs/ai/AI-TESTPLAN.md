@@ -1109,3 +1109,21 @@ Dette førte til et nytt eksplisitt kvalitetskriterium:
 > Det er ikke nok at et svar har kilder. Kilden må faktisk støtte den konkrete påstanden og attribusjonen.
 
 Runtime-instruksen og golden-fasiten ble derfor strammet inn for kildepresisjon.
+
+
+---
+
+## Kalibrering av temadekning – Livssituasjoner
+
+En senere golden-kjøring viste 9/9 maskinelt OK, men manuell gjennomgang avdekket at `G-LIV-01` ble klassifisert som **Sikkerhet og ansvar / Prestasjon og utvikling**, ikke som **Livssituasjoner**.
+
+Casen var for tvetydig: «svært sliten og flere feil» kan naturlig høre hjemme under prestasjon eller sikkerhet dersom ingen faktisk livssituasjon er oppgitt.
+
+For å gjøre 9/9-temadekningen reell ble testen endret slik at:
+
+- medarbeideren selv har opplyst at hen står i en krevende livssituasjon
+- private detaljer fortsatt ikke oppgis
+- testen forventer eksplisitt temaet `Livssituasjoner`
+- fasiten beholder krav om personvern, ikke-diagnostisering og arbeidsrelatert støtte
+
+Dette er en endring i testdesign, ikke en retting av produksjonslogikken.

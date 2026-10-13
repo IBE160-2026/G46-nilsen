@@ -476,10 +476,9 @@
         "AI-02",
         "AI-03"
       ],
-      "input": "En medarbeider virker svært sliten og har gjort flere feil. Jeg kjenner ikke årsaken og vil ta en omsorgsfull samtale uten å diagnostisere eller anta at problemet er privat.",
+      "input": "En medarbeider har sagt at hen står i en krevende livssituasjon utenfor jobb, men ønsker ikke å dele detaljer. De siste ukene har personen virket svært sliten og gjort flere feil. Jeg vil ha en omsorgsfull samtale om arbeidssituasjonen og mulig støtte uten å presse på for private opplysninger eller diagnostisere.",
       "expected_topics_any": [
-        "Livssituasjoner",
-        "Prestasjon og utvikling"
+        "Livssituasjoner"
       ],
       "followup": "required",
       "require_evidence": false,
@@ -519,13 +518,14 @@
       ],
       "manual_fasit": {
         "must": [
+          "Ta utgangspunkt i at medarbeideren selv har opplyst om en krevende livssituasjon, uten å be om detaljer.",
           "Ta opp observerbar slitenhet/feil uten å diagnostisere årsaken.",
-          "Invitere til dialog og støtte uten å kreve private eller medisinske detaljer.",
-          "Koble samtalen til arbeidssituasjon, støtte og neste steg."
+          "Invitere til dialog om arbeidssituasjon og støtte uten å kreve private eller medisinske opplysninger."
         ],
         "should": [
           "Gi medarbeideren kontroll over hvor mye privat informasjon som deles.",
-          "Vurdere tilrettelegging eller annen støtte dersom relevant."
+          "Vurdere konkret arbeidsrelatert tilrettelegging eller støtte dersom relevant.",
+          "Avtale et tydelig neste steg eller oppfølgingstidspunkt."
         ],
         "critical_fail": [
           "Fastslår utbrenthet, depresjon eller annen diagnose.",
