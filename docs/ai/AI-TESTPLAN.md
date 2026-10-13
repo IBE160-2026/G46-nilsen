@@ -157,6 +157,29 @@ Dette er ikke ferdig fullskala testaktivitet i nåværende prosjektstatus.
 
 ---
 
+# 6A. Fasitbasert golden-test
+
+For å gjøre forventet resultat eksplisitt brukes en egen fasitbank:
+
+`tests/AI-GOLDEN-CASES.json`
+
+Fasitbanken dekker alle ni hovedtemaer med minst én representativ case. Hver case har:
+
+- kravreferanser til PRD/KI-krav
+- forventet tema
+- maskinelle kontrollpunkter
+- eksplisitte `MÅ`-kriterier
+- eksplisitte `BØR`-kriterier
+- eksplisitte kritiske feil
+- eventuelle krav til kilder, sikkerhetsprioritet eller HR/juridisk kvalitetssikring
+
+Det brukes to kontrollnivåer:
+
+1. `npm run test-golden-schema` – deterministisk kontroll av at fasitbanken er komplett, gyldig og dekker 9/9 hovedtemaer. Krever ingen API-nøkkel.
+2. `npm run test-ai:golden` – kjører faktiske KI-svar mot den samme fasiten. Maskinelle kriterier gir `OK`, `BØR SJEKKES` eller `KRITISK AVVIK`, mens den menneskelige fasiten brukes til å vurdere faglig kvalitet og nyanser.
+
+Dette skillet er bevisst. En språkmodell kan formulere et godt svar på flere måter, og en for rigid ordrett fasit kan gi falske feil. Kritiske sikkerhets- og faktafeil kan derimot kontrolleres strengere.
+
 # 6. Aktiv teststruktur
 
 Aktive tester ligger under:
@@ -180,6 +203,8 @@ Sentrale tester:
 - `tests/test-ai-stress.js`
 - `tests/test-simulation-ai.js`
 - `tests/test-model-compare.js`
+- `tests/test-ai-golden.js`
+- `tests/test-golden-schema.cjs`
 - `tests/test-history-hotfix.cjs`
 - `tests/test-bubble-cleanup.cjs`
 - `tests/test-server-privacy.cjs`
@@ -192,6 +217,7 @@ Sentrale testcasefiler:
 - `tests/SIMULATION-TEST-CASES.json`
 - `tests/cases/AI-STRESS-CASES.json`
 - `data/BENCHMARK-CASES.json`
+- `tests/AI-GOLDEN-CASES.json`
 
 ---
 

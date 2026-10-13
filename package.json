@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "npm run test-local",
-    "test-local": "npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard",
+    "test-local": "npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-golden-schema",
     "test-ai": "node tests/test-ai.js",
     "test-ai:full": "node tests/test-ai.js --all",
     "test-ai:stress": "node tests/test-ai-stress.js",
@@ -22,7 +22,9 @@
     "test-server-privacy": "node tests/test-server-privacy.cjs",
     "test-ui-regression": "node tests/test-ui-regression.cjs",
     "test-model-compare": "node tests/test-model-compare.js",
-    "test-clipboard": "node tests/test-clipboard.cjs"
+    "test-clipboard": "node tests/test-clipboard.cjs",
+    "test-golden-schema": "node tests/test-golden-schema.cjs",
+    "test-ai:golden": "node tests/test-ai-golden.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",

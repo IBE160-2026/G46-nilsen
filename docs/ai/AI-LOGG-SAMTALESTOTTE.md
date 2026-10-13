@@ -999,3 +999,36 @@ Verifisert resultat:
 - clipboard-regresjon: **bestått**
 
 Dette dokumenterer en komplett kjede fra testfunn til årsaksanalyse, korrigering og ny regresjonsverifisering.
+
+
+---
+
+## 2026-10-13 – Fasitbasert KI-testing og kravsporbarhet
+
+Testoppsettet ble gjennomgått med mål om å gjøre forventede resultater tydeligere og mer etterprøvbare.
+
+Gjennomgangen viste at:
+
+- eksisterende KI-tester allerede kontrollerte tema, avklaringsbehov, struktur og enkelte sikkerhetskrav
+- stresstestene hadde sterkere eksplisitte forventninger enn den ordinære KI-testen
+- den ordinære KI-testbanken dekket åtte hovedtemaer, mens produktet nå har ni
+- benchmarkbanken hadde 112 faste saker og dekket alle ni temaer
+
+Tiltak:
+
+1. Den ordinære KI-testbanken ble utvidet med tre caser for **Mobbing og trakassering**.
+2. En egen golden/fasit-bank ble opprettet med minst én representativ case per hovedtema.
+3. Hver golden case ble koblet til konkrete FR-/AI-krav.
+4. Fasiten skiller mellom:
+   - maskinelle kontrollpunkter
+   - hva et godt svar **må** inneholde
+   - hva det **bør** inneholde
+   - hva som regnes som **kritisk feil**
+5. En lokal `test-golden-schema` ble lagt til for å kontrollere fasitbanken og 9/9 temadekning uten API-kostnad.
+6. En `test-ai:golden` ble lagt til for ekte KI-kjøring mot samme fasit.
+
+Bevisst valg:
+
+Det ble ikke laget en ordrett «riktig tekst»-fasit. Språkmodeller kan formulere faglig gode svar på flere måter. For rigide nøkkelordstester kan derfor teste selve formuleringen i stedet for kravet. Kritiske feil, sikkerhet, tema og andre konkrete kriterier kontrolleres automatisk, mens faglig kvalitet vurderes mot en eksplisitt menneskelig fasit.
+
+Dette styrker sporbarheten fra **krav → testcase → forventet resultat → KI-svar → vurdering**.

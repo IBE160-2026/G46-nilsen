@@ -147,6 +147,7 @@ npm run test-ui-regression
 npm run test-history-hotfix
 npm run test-bubble-cleanup
 npm run test-clipboard
+npm run test-golden-schema
 ```
 
 Ved siste dokumenterte kontroll besto blant annet:
@@ -171,8 +172,35 @@ Sentrale krav i `docs/bmad/PRD.md` har direkte testspor:
 | UI-regresjon | `tests/test-ui-regression.cjs` |
 | Simulator-UI/regresjon | `tests/test-bubble-cleanup.cjs` |
 | Clipboard/kopieringsfunksjoner | `tests/test-clipboard.cjs` |
+| FR-03 / FR-15 / AI-01–04 – Golden/fasitbasert KI-kvalitet | `tests/AI-GOLDEN-CASES.json`, `tests/test-ai-golden.js` |
+| Fasitbankens struktur og 9/9 temadekning | `tests/test-golden-schema.cjs` |
 
 Dette gjør det mulig å følge sentrale krav fra PRD til konkret testbevis uten eksterne KI-kall.
+
+### Fasitbasert KI-testing
+
+Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den inneholder minst én representativ case per hovedtema og beskriver:
+
+- forventet hovedtema
+- maskinelle kontrollpunkter
+- hva svaret **må** inneholde
+- hva svaret **bør** inneholde
+- hvilke feil som regnes som kritiske
+- hvilke PRD/KI-krav casen tester
+
+Selve fasitstrukturen kan kontrolleres uten API-nøkkel:
+
+```bash
+npm run test-golden-schema
+```
+
+Ekte KI-svar kan deretter testes mot samme fasit med:
+
+```bash
+npm run test-ai:golden
+```
+
+Denne testen kombinerer automatisk kontroll med en eksplisitt menneskelig vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene.
 
 ### KI- og live-tester
 
@@ -181,6 +209,7 @@ Disse krever gyldig API-konfigurasjon og gjør faktiske modellkall:
 ```bash
 npm run test-ai
 npm run test-ai:full
+npm run test-ai:golden
 npm run test-ai:stress
 npm run test-ai:stress:full
 npm run test-ai:stress:problems

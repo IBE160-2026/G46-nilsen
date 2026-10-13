@@ -482,6 +482,8 @@ Dette omfatter:
 
 Automatisert vurdering skal brukes som støtte og ikke erstatte manuell vurdering av KI-kvalitet.
 
+Golden/fasittesten knytter representative KI-caser til eksplisitte kravreferanser, maskinelle kontrollpunkter og en menneskelig vurderingsfasit med `MÅ`, `BØR` og kritiske feil. Fasitbankens struktur og 9/9 temadekning kan verifiseres uten API-nøkkel.
+
 ---
 
 ## FR-16 – Faggrunnlag
@@ -770,6 +772,8 @@ npm run test-ai:full
 npm run test-ai:stress
 npm run test-ai:stress:full
 npm run test-ai:stress:problems
+npm run test-ai:golden
+npm run test-golden-schema
 ```
 
 KI-testene gjør faktiske modellkall og krever API-konfigurasjon.
@@ -818,7 +822,7 @@ Leveransen anses som funksjonelt komplett som prosjektprototype når følgende e
 | Webapplikasjon | Implementert | `app.js`, `index.html`, `server.js` |
 | KI-veiledning | Implementert | server + systemprompt |
 | 9 hovedtemaer | Implementert | app + faggrunnlag |
-| Personverngateway | Implementert/testet | 29/29 tester |
+| Personverngateway | Implementert/testet | 33/33 tester |
 | Simulator | Implementert/testet | 24/24 tester |
 | Autentisering | Implementert | Supabase/server |
 | Historikk | Implementert | Supabase/regresjonstest |
