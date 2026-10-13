@@ -157,7 +157,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - historikk-regresjonstest
 - snakkeboble-regresjonstest
 
-Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen.
+Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.
 
 ### Sporbarhet fra krav til test
 

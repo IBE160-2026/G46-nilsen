@@ -1032,3 +1032,23 @@ Bevisst valg:
 Det ble ikke laget en ordrett «riktig tekst»-fasit. Språkmodeller kan formulere faglig gode svar på flere måter. For rigide nøkkelordstester kan derfor teste selve formuleringen i stedet for kravet. Kritiske feil, sikkerhet, tema og andre konkrete kriterier kontrolleres automatisk, mens faglig kvalitet vurderes mot en eksplisitt menneskelig fasit.
 
 Dette styrker sporbarheten fra **krav → testcase → forventet resultat → KI-svar → vurdering**.
+
+
+---
+
+## 2026-10-14 – Lokal verifisering av fasitbanken
+
+Etter at golden/fasitbanken og kravsporbarheten var lagt inn, ble hele den deterministiske testpakken kjørt på nytt.
+
+Resultat:
+
+- personvern: **33/33**
+- samtalesimulering: **24/24**
+- server-personvern: **bestått**
+- UI-regresjon: **bestått**
+- historikk-regresjon: **bestått**
+- snakkeboble-regresjon: **bestått**
+- clipboard-regresjon: **bestått**
+- golden/fasit-schema: **9 caser og 9/9 hovedtemaer dekket**
+
+Dette bekrefter at fasitbanken er teknisk gyldig og komplett på hovedtemanivå før den brukes mot ekte KI-svar.

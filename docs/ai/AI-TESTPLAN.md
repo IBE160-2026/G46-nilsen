@@ -1011,3 +1011,26 @@ Et sentralt kvalitetsprinsipp i prosjektet er derfor:
 > Testresultater skal vurderes kritisk. Når noe feiler skal det undersøkes om feilen ligger i applikasjonen, KI-modellen, infrastrukturen eller testen selv.
 
 Denne arbeidsmåten gjør testingen til en del av utviklingsprosessen, ikke bare dokumentasjon i etterkant.
+
+---
+
+# Verifisering 2026-10-14
+
+Etter innføring av fasitbasert KI-testing ble hele den lokale testpakken kjørt med:
+
+```bash
+npm test
+```
+
+Verifisert resultat:
+
+- personvern: **33/33**
+- samtalesimulering: **24/24**
+- server-personvern: **bestått**
+- UI-regresjon: **bestått**
+- historikk-regresjon: **bestått**
+- snakkeboble-regresjon: **bestått**
+- clipboard-regresjon: **bestått**
+- Golden/fasit-schema: **9/9 hovedtemaer dekket**
+
+Denne kjøringen krever ingen eksterne KI-kall.
