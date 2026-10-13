@@ -1355,7 +1355,7 @@ function serverFindLikelyGivenName(source) {
     if (!SERVER_AMBIGUOUS_GIVEN_NAMES.has(normalized)) return token;
     const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
     const relationUse = new RegExp(`\\b(?:heter|med|til|fra|hos|snakket\\s+med|møte\\s+med)\\s+${escaped}\\b`, "iu");
-    const subjectUse = /^[\\p{Lu}]/u.test(token) &&
+    const subjectUse = /^\p{Lu}/u.test(token) &&
       new RegExp(`\\b${escaped}\\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\\b`, "u").test(text);
     if (relationUse.test(text) || subjectUse) return token;
   }
