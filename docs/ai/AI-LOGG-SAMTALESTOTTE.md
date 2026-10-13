@@ -972,3 +972,30 @@ Prosessen kan oppsummeres slik:
 **planlegg → spesifiser → bygg med KI → test → vurder kritisk → identifiser svakhet → presiser krav → korriger → test igjen → dokumenter**
 
 Det er denne iterative kontrollen av KI, mer enn selve kodegenereringen, som har vært den viktigste delen av utviklingsprosessen.
+
+---
+
+## 2026-10-13 – Utvidet lokal regresjonstest og personvernverifisering
+
+Personverntestene ble utvidet med regresjonscaser for tvetydige navn og vanlige ord, blant annet skillet mellom:
+
+- `Dette skjer hver dag.` → skal ikke tolkes som navn
+- `Hver dag har vi møte.` → skal ikke tolkes som navn
+- `Dag har kommet for sent.` → skal tolkes som navnet Dag
+- `Jeg snakket med Dag i går.` → skal tolkes som navnet Dag
+
+Første kjøring avdekket en feil i regexen som skulle kontrollere stor forbokstav i tvetydige navn. Feilen ble rettet i både klient- og serverlogikken, mens regresjonstestene ble beholdt.
+
+Etter retting ble hele den lokale deterministiske testpakken kjørt med `npm test`.
+
+Verifisert resultat:
+
+- personvern: **33/33**
+- samtalesimulering: **24/24**
+- server-personvern: **bestått**
+- UI-regresjon: **bestått**
+- historikk-regresjon: **bestått**
+- snakkeboble-regresjon: **bestått**
+- clipboard-regresjon: **bestått**
+
+Dette dokumenterer en komplett kjede fra testfunn til årsaksanalyse, korrigering og ny regresjonsverifisering.

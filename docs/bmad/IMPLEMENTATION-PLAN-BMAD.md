@@ -285,7 +285,7 @@ Sentrale tester:
 
 Ved siste kontroll:
 
-**29/29 kontroller OK**
+**33/33 kontroller OK**
 
 ---
 

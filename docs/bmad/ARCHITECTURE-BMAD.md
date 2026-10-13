@@ -338,7 +338,7 @@ Serverkontrollen er den endelige barrieren før KI-kall.
 
 Siste kontroll:
 
-**29/29 kontroller bestått**
+**33/33 kontroller bestått**
 
 ---
 

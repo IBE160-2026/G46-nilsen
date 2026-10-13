@@ -184,6 +184,7 @@ Sentrale tester:
 - `tests/test-bubble-cleanup.cjs`
 - `tests/test-server-privacy.cjs`
 - `tests/test-ui-regression.cjs`
+- `tests/test-clipboard.cjs`
 
 Sentrale testcasefiler:
 
@@ -222,7 +223,7 @@ Testen undersøker representative tilfeller knyttet til blant annet:
 
 ## Siste verifiserte resultat
 
-**29/29 kontroller bestått**
+**33/33 kontroller bestått**
 
 ## Betydning
 
@@ -893,7 +894,7 @@ Fullskala brukertesting er **ikke ferdig** i nåværende prosjektstatus.
 
 | Testområde | Status |
 |---|---|
-| Personvern | Kjørt – 29/29 bestått |
+| Personvern | Kjørt – 33/33 bestått |
 | Simulator – deterministisk | Kjørt – 24/24 bestått |
 | Historikk-hotfix | Kjørt – bestått |
 | Samtaleboble-regresjon | Kjørt – bestått etter testkorrigering |

@@ -151,12 +151,12 @@ npm run test-clipboard
 
 Ved siste dokumenterte kontroll besto blant annet:
 
-- personverntester: 29/29
+- personverntester: 33/33
 - simuleringstester: 24/24
 - historikk-regresjonstest
 - snakkeboble-regresjonstest
 
-Personverntestsettet er senere utvidet med regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Oppdatert samlet testresultat dokumenteres etter ny full kjøring.
+Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen.
 
 ### Sporbarhet fra krav til test
 

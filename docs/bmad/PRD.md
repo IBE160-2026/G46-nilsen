@@ -283,7 +283,7 @@ Systemet skal ikke love full anonymitet.
 ### Testbevis
 
 - `tests/test-privacy.js`
-- siste kontroll: **29/29 kontroller bestått**
+- siste kontroll: **33/33 kontroller bestått**
 
 ---
 
@@ -696,7 +696,7 @@ npm run test-privacy
 
 Siste kontroll:
 
-**29/29 bestått**
+**33/33 bestått**
 
 ---
 

@@ -191,7 +191,7 @@ Kontrollen kan reagere på blant annet:
 
 Siste kontroll:
 
-**29/29 bestått**
+**33/33 bestått**
 
 ---
 
