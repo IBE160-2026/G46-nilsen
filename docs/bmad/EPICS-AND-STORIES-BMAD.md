@@ -1052,6 +1052,34 @@ Denne matrisen er en navigasjonshjelp. Detaljerte krav og statuser ligger fortsa
 
 ---
 
+
+## 25.2 Full PRD-kravdekning
+
+| PRD-krav | Epic/Story | Leveransestatus | Viktigste bevis |
+|---|---|---|---|
+| FR-01 Situasjonsbeskrivelse | Epic 2 / Story 2.2 | Implementert | `app.js`, `server.js` |
+| FR-02 Tema og undertema | Epic 2 / Story 2.1–2.3 | Implementert | app, 9 temaer, faggrunnlag |
+| FR-03 KI-basert hovedveiledning | Epic 4 | Implementert | `server.js`, KI-dokumentasjon, golden-test |
+| FR-04 Oppfølgingsdialog | Epic 5 | Implementert | app/server |
+| FR-05 Samtalesimulering | Epic 6 | Implementert/testet | `tests/test-simulation.js` – 24/24 |
+| FR-06 Personverngateway | Epic 3 | Implementert/testet | `tests/test-privacy.js` – 33/33, `tests/test-server-privacy.cjs` |
+| FR-07 Autentisering | Epic 7 / Story 7.1 | Implementert | Supabase/server |
+| FR-08 Engangsinvitasjoner | Epic 7 / Story 7.2 | Implementert | `create-invite.js`, server/admin |
+| FR-09 Historikk | Epic 9 | Implementert/testet | Supabase, `tests/test-history-hotfix.cjs` |
+| FR-10 Rapportering av KI-svar | Epic 10 | Implementert | app/server |
+| FR-11 Roller | Epic 8 | Implementert | server-side rollevalidering |
+| FR-12 Admin | Epic 11 | Implementert | app/server/admin |
+| FR-13 Modellvalg | Epic 12 | Prototypeform | provider-/modelllogikk i `server.js` |
+| FR-14 Modellbenchmark | Epic 14 | Prototype/testform | 112 benchmark-caser, `tests/test-model-compare.js`; full fler-modell-kjøring ikke dokumentert |
+| FR-15 Automatisert KI-testing | Epic 13 | Implementert/testet | KI-/stress-/golden-tester; siste golden 9/9 |
+| FR-16 Faggrunnlag | Epic 16 | Implementert | `docs/faggrunnlag/`, SOURCEBANK |
+| FR-17 Brukertesting | Epic 21 | Delvis/videre arbeid | testopplegg og feedbackfunksjon; fullskala test gjenstår |
+| FR-18 Web- og kildeanalyse | Epic 17 | Delvis/prototype | server/admin, kildelogging og SOURCEBANK |
+
+Alle funksjonelle PRD-krav er dermed knyttet til minst ett Epic/Story-område og et konkret implementasjons-, dokumentasjons- eller testspor. Statuskolonnen er bevisst brukt for å unngå at prototype- eller viderearbeid fremstilles som ferdig produksjonsfunksjonalitet.
+
+---
+
 # 26. Sammenheng med BMAD
 
 Stories skal leses sammen med:
