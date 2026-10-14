@@ -1148,3 +1148,36 @@ Det ble samtidig lagt til en lokal regresjonstest som eksplisitt kontrollerer at
 - flerdelte kritiske fraser fortsatt kan fanges
 
 Læringen er at testkoden selv må behandles som produksjonskritisk kvalitetssikringskode: et rødt automatisk flagg skal etterprøves før produktlogikken endres.
+
+
+---
+
+## 2026-10-14 – Endelig golden-verifisering: 9/9 etter testkalibrering
+
+Etter flere runder med både automatisk og manuell vurdering ble golden-testen kjørt på nytt etter at følgende svakheter var rettet:
+
+- falske positive i kritiske triggere
+- for rigid krav om avklaringssteg i én prestasjonscase
+- mangelfull rapportering for menneskelig kontroll
+- svak kildepresisjon i én høyrisikocase
+- en Livssituasjoner-case som tidligere kunne bestå uten å bli klassifisert som Livssituasjoner
+- delstrengsmatching der `lat` kunne treffes inne i `arbeidsrelatert`
+
+Siste kjøring mot **GPT-5.6 Luna** ga:
+
+- 9/9 **OK**
+- 0 **BØR SJEKKES**
+- 0 **KRITISK AVVIK**
+- 0 **TEKNISK FEIL**
+
+`G-LIV-01` besto som **Livssituasjoner**.
+
+Denne sluttkjøringen er viktig fordi 9/9-resultatet ikke bare er et resultat av å gjøre testen mindre streng. Testopplegget ble samtidig gjort mer presist:
+
+- falske positive ble fjernet
+- temadekning ble strengere
+- kildepresisjon ble lagt inn som eksplisitt vurderingspunkt
+- kritiske triggere ble gjort mer robuste
+- menneskelig fasit ble beholdt ved siden av automatikken
+
+Prosessen viser forskjellen mellom å optimalisere for grønn test og å forbedre testens validitet.

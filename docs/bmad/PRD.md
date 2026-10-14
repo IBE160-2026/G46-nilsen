@@ -778,7 +778,7 @@ npm run test-golden-schema
 
 KI-testene gjør faktiske modellkall og krever API-konfigurasjon.
 
-Siste verifiserte golden/fasittest: **9/9 OK mot GPT-5.6 Luna**, med 0 kritiske avvik og 0 tekniske feil.
+Siste verifiserte golden/fasittest etter testkalibrering: **9/9 OK mot GPT-5.6 Luna**, med 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil. Alle ni hovedtemaer er eksplisitt representert i fasitbanken.
 
 ---
 

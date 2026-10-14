@@ -1127,3 +1127,30 @@ For å gjøre 9/9-temadekningen reell ble testen endret slik at:
 - fasiten beholder krav om personvern, ikke-diagnostisering og arbeidsrelatert støtte
 
 Dette er en endring i testdesign, ikke en retting av produksjonslogikken.
+
+
+---
+
+## Endelig verifisert golden-kjøring – 14.10.2026 kl. 21:51
+
+Etter følgende kalibreringer:
+
+- full rapport for menneskelig etterprøving
+- mer presis kildebruk
+- korrigert falsk positiv på `skyld`
+- valgfritt avklaringssteg der råd kan gis forsvarlig uten stopp
+- tematisk entydig `Livssituasjoner`-case
+- helords-/frasematching i kritiske triggere slik at `lat` ikke treffes inne i `arbeidsrelatert`
+
+ble `npm run test-ai:golden` kjørt på nytt mot **GPT-5.6 Luna**.
+
+Resultat:
+
+- **OK: 9**
+- **BØR SJEKKES: 0**
+- **KRITISK AVVIK: 0**
+- **TEKNISK FEIL: 0**
+
+Alle ni hovedtemaer besto sine representative golden-caser, inkludert at `G-LIV-01` ble vurdert som **Livssituasjoner**.
+
+Dette er siste verifiserte golden-resultat i prosjektet per 14.10.2026.
