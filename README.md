@@ -6,15 +6,34 @@ Målet er ikke at KI skal ta beslutninger for lederen, men å støtte forberedel
 
 ## Rask tilgang for vurdering
 
+### Anbefalt sensorløp
+
+**1. Test full funksjonalitet i nettleseren**
+
 Publisert testversjon:
 
 `https://samtalestotte.onrender.com`
 
-Den publiserte testversjonen anbefales ved vurdering av full funksjonalitet, fordi den allerede er konfigurert med prosjektets valgte KI-modell, Supabase og servermiljø.
+Den publiserte testversjonen anbefales ved vurdering av selve produktet. Den er allerede konfigurert med prosjektets KI-modell, Supabase og servermiljø, og krever derfor ikke lokal installasjon eller sensorens egen API-nøkkel.
 
 Tilgang til den lukkede testversjonen gis separat sammen med innleveringen.
 
 Render kan gå i dvale ved inaktivitet, så første oppstart kan ta litt ekstra tid.
+
+**2. Kontroller kode og deterministiske tester lokalt**
+
+Sensor kan klone repoet, installere avhengigheter og kjøre:
+
+```bash
+npm install
+npm test
+```
+
+`npm test` krever ikke OpenAI-/OpenRouter-nøkkel og gjør ingen eksterne KI-kall. Det er derfor ikke nødvendig å opprette en fungerende `.env` bare for å kontrollere den lokale regresjonspakken.
+
+**3. Ekte KI-kall lokalt er valgfritt**
+
+Bare dersom sensor ønsker å kjøre de faktiske live KI-testene lokalt, for eksempel `npm run test-ai:golden`, kreves egen gyldig API-konfigurasjon. De siste verifiserte golden-resultatene er dokumentert i repoet.
 
 ## Kjernefunksjoner
 
@@ -148,6 +167,7 @@ npm run test-history-hotfix
 npm run test-bubble-cleanup
 npm run test-clipboard
 npm run test-golden-schema
+npm run test-golden-utils
 ```
 
 Ved siste dokumenterte kontroll besto blant annet:
@@ -156,6 +176,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - simuleringstester: 24/24
 - historikk-regresjonstest
 - snakkeboble-regresjonstest
+- golden matcher-regresjonstest
 
 Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.
 
