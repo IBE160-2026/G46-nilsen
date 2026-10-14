@@ -196,10 +196,11 @@ Ved siste dokumenterte kontroll besto blant annet:
 - golden matcher-regresjonstest
 - syntakskontroll av hovedkode
 - lokal sensor-demo-regresjon: bestått
-- produksjonsserverens offentlige frontend-assets kontrolleres med egen integrasjonstest
-- repo-struktur/kjørbarhet kontrolleres gjennom egne regresjonstester
+- produksjonsserverens offentlige frontend-assets: bestått
+- repo-struktur/kjørbarhet: bestått
+- package-lock-konsistens: bestått
 
-Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.
+Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele `npm test`-pakken ble verifisert grønn etter den kontrollerte modulariseringen, asset-rettingen, UU-endringene og package-lock/repo-kontrollene. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.
 
 ### Sporbarhet fra krav til test
 
