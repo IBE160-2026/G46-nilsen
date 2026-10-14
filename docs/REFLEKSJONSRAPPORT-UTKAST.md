@@ -227,7 +227,9 @@ Det skjedde både i produksjonskode og i testkode. Regex-feilen i personvernet e
 
 KI kan også gjøre prosjektet større enn nødvendig. Når det er lett å legge til funksjoner, er det også lett å miste kontroll over scope. Flere deler av Samtalestøtte, særlig admin, benchmark og logging, ble mer omfattende enn de første versjonene.
 
-En tredje ulempe er at høy utviklingshastighet kan skape teknisk gjeld. Dagens løsning fungerer, men `app.js`, `server.js` og `styles.css` er store filer. I sluttfasen valgte jeg derfor en begrenset modularisering i stedet for en full omskriving: statiske klientdata ble flyttet til `src/client-data.js`, serverens temakontrakt til `src/server/topic-contracts.js` og KI-skjemaene til `src/server/ai-schemas.js`. Dette reduserte `app.js` fra omtrent 3605 til 3411 linjer og `server.js` fra omtrent 1776 til 1600 linjer. Filene er fortsatt store, og særlig CSS bør modulariseres videre i en produksjonsmodning, men jeg vurderte en større sen refaktorering som høyere regresjonsrisiko enn gevinst før levering.
+En tredje ulempe er at høy utviklingshastighet kan skape teknisk gjeld. I Samtalestøtte gjaldt dette først og fremst at `app.js` og `server.js` samlet mange ansvar. I sluttfasen valgte jeg derfor en begrenset modularisering i stedet for en full omskriving: statiske klientdata ble flyttet til `src/client-data.js`, serverens temakontrakt til `src/server/topic-contracts.js` og KI-skjemaene til `src/server/ai-schemas.js`. Dette reduserte `app.js` fra omtrent 3605 til 3411 linjer og `server.js` fra omtrent 1776 til 1600 linjer.
+
+`styles.css` har også et høyt fysisk linjetall, men dette skyldes i stor grad at filen tidligere ble formattert mer lesbart med egenskaper på egne linjer. Jeg vurderer derfor ikke linjetallet alene som teknisk gjeld. Å komprimere CSS-en tilbake til én eller få linjer ville gjort kildekoden vanskeligere å lese uten å forbedre arkitekturen.
 
 ### 5.3 Hvordan prosjektet ville vært uten KI
 
@@ -280,7 +282,7 @@ For det andre skaper KI-kall løpende kostnader. Det gjør tokenbruk og modellva
 
 For det tredje kan bruk av web og eksterne tjenester være uegnet i lukkede eller sikkerhetskritiske miljøer. Dette er grunnen til at prosjektet dokumenterer en framtidig retning med intern KI, intern database og lokal kunnskapsbank/RAG. Denne arkitekturen er ikke implementert i dagens leveranse, og det er viktig å være tydelig på forskjellen mellom en framtidig arkitektur og funksjonalitet som faktisk finnes.
 
-Til slutt viser prosjektet at KI-assistert utvikling kan produsere mye kode raskt, men at vedlikeholdbarhet må håndteres aktivt. Store filer og tett koblet logikk er et reelt resultat av rask iterasjon. En framtidig videreutvikling bør derfor prioritere modularisering før funksjonsomfanget økes ytterligere.
+Til slutt viser prosjektet at KI-assistert utvikling kan produsere mye kode raskt, men at vedlikeholdbarhet må håndteres aktivt. Det relevante spørsmålet er ikke bare hvor mange fysiske linjer en fil har, men hvor mange ansvar og avhengigheter som er samlet i samme modul. En framtidig videreutvikling bør derfor prioritere videre separasjon av ansvar der det faktisk reduserer kobling og gjør endringer tryggere.
 
 ---
 
