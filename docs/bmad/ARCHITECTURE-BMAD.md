@@ -1073,8 +1073,8 @@ Den leverte løsningen er en prototype.
 
 En kjent vedlikeholdbarhetsbegrensning er at hovedfrontend, server og stilark fortsatt er relativt store filer. Ved siste kontroll var omtrentlige størrelser:
 
-- `app.js`: ca. 3600 linjer
-- `server.js`: ca. 1800 linjer
+- `app.js`: ca. 3410 linjer etter uttrekk av statiske klientdata
+- `server.js`: ca. 1600 linjer etter uttrekk av tema-/KI-kontrakter
 - `styles.css`: ca. 6450 linjer
 - `index.html`: ca. 900 linjer
 
@@ -1282,3 +1282,23 @@ Ruten ble endret til å kontrollere hele request-pathen mot samme eksplisitte al
 - nested bilder under `assets/images/` kan faktisk nås
 
 Dette kontrolleres av `tests/test-public-assets.cjs`, som starter produksjonsserveren i testmiljø og verifiserer både tillatte og blokkerte filer.
+
+
+## Kontrollert sluttmodularisering
+
+I sluttfasen ble den dokumenterte vedlikeholdbarhetsgjelden redusert uten å gjennomføre en stor omskriving.
+
+Følgende ansvar ble flyttet ut:
+
+- `src/client-data.js`: statiske SVG-ikoner og tema-/undertemakatalog for frontend
+- `src/server/topic-contracts.js`: serverens temakatalog og klassifiseringsschema
+- `src/server/ai-schemas.js`: strukturskjema for analyse og veiledning
+
+Resultat:
+
+- `app.js` ble redusert fra ca. 3605 til ca. 3411 linjer
+- `server.js` ble redusert fra ca. 1776 til ca. 1600 linjer
+
+Autentisering, databaseflyt og levende UI-state ble bevisst ikke flyttet i denne sluttfasen. Målet var å redusere ansvar i hovedfilene med lav regresjonsrisiko, ikke å maksimere antall moduler rett før levering.
+
+Samtidig ble produksjonsserverens håndtering av nested frontend-assets korrigert og dekket med en egen integrasjonstest.
