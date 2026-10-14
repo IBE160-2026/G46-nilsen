@@ -305,6 +305,8 @@ Samtalestotte/
 │   ├── bmad/
 │   └── faggrunnlag/
 ├── scripts/
+├── src/
+│   └── client-data.js
 ├── tests/
 │   └── cases/
 ├── app.js
@@ -318,7 +320,7 @@ Samtalestotte/
 └── README.md
 ```
 
-Hovedkoden ligger i rotmappen, mens dokumentasjon, tester, bilder og databasefiler er skilt ut i egne mapper.
+Hovedkoden ligger i rotmappen, mens dokumentasjon, tester, bilder og databasefiler er skilt ut i egne mapper. Klientens tema-/ikondata ligger separat i `src/client-data.js`, slik at `app.js` i større grad inneholder faktisk bruker- og tilstandslogikk.
 
 ## Kontakt
 
