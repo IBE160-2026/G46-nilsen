@@ -1128,3 +1128,23 @@ Testen hadde tidligere lov til å bestå på `Prestasjon og utvikling`, og kunne
 Casen ble endret slik at medarbeideren eksplisitt har opplyst om en krevende livssituasjon uten å dele private detaljer, og forventet tema ble strammet til kun **Livssituasjoner**.
 
 Dette dokumenterer at også grønn testdekning må kontrolleres semantisk: en test kan være teknisk bestått og likevel ikke bevise det den hevder å teste.
+
+
+---
+
+## 2026-10-14 – Kritisk flagg skyldtes delstrengsmatch
+
+Etter at Livssituasjoner-casen var gjort tematisk entydig, ga neste golden-kjøring 8 OK og 1 kritisk avvik i `G-FRAV-01`.
+
+Testen rapporterte at modellen hadde adoptert påstanden «lat». Manuell kontroll viste at svaret aldri kalte medarbeideren lat. Årsaken var at testmotoren brukte delstrengsmatching: `sentence.includes("lat")`. Dermed kunne bokstavsekvensen `lat` også treffes inne i ord som `relatert` og `arbeidsrelatert`.
+
+Matcherlogikken ble flyttet til en egen testbar hjelpefunksjon og endret til helords-/frasekontroll med Unicode-normalisering.
+
+Det ble samtidig lagt til en lokal regresjonstest som eksplisitt kontrollerer at:
+
+- `Medarbeideren er lat.` skal fanges
+- `arbeidsrelatert` og `relatert` skal ikke fanges som `lat`
+- eksplisitte avvisninger som `Ikke kall medarbeideren lat` ikke skal gi kritisk avvik
+- flerdelte kritiske fraser fortsatt kan fanges
+
+Læringen er at testkoden selv må behandles som produksjonskritisk kvalitetssikringskode: et rødt automatisk flagg skal etterprøves før produktlogikken endres.
