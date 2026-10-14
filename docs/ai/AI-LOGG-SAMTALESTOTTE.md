@@ -1218,3 +1218,16 @@ Alle tester besto, inkludert de nye kontrollene for:
 - package-lock-konsistens
 
 Dette var et eksplisitt stoppunkt: videre refaktorering ble ikke prioritert fordi de største lavrisiko-forbedringene var gjennomført og regresjonspakken var grønn. Videre oppdeling av særlig CSS og gjenværende hovedfiler vurderes som framtidig produksjonsmodning, ikke nødvendig leveransearbeid.
+
+
+---
+
+## 2026-10-15 – Korrigering av linjetall som kvalitetsmål
+
+I sluttvurderingen ble `styles.css` først omtalt som teknisk gjeld fordi filen hadde rundt 6450 fysiske linjer.
+
+Dette ble korrigert etter ny gjennomgang. Det høye linjetallet skyldes i stor grad formattering som tidligere ble gjort for å gjøre CSS-en lettere å finne frem i og lese. Samme CSS kunne teknisk komprimeres til svært få linjer uten at arkitekturen ble bedre.
+
+Læring: fysisk linjetall er et svakt kvalitetsmål alene. Vedlikeholdbarhet bør heller vurderes ut fra ansvar, kobling, duplisering, testbarhet og hvor lett en endring kan gjøres uten sideeffekter.
+
+Derfor ble den kontrollerte modulariseringen beholdt for `app.js` og `server.js`, mens CSS-en ikke ble minifisert bare for å få et lavere linjetall.
