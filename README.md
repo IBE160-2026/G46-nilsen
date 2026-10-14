@@ -20,18 +20,31 @@ Tilgang til den lukkede testversjonen gis separat sammen med innleveringen.
 
 Render kan gå i dvale ved inaktivitet, så første oppstart kan ta litt ekstra tid.
 
-**2. Kontroller kode og deterministiske tester lokalt**
+**2. Kjør appen lokalt uten nøkler eller ekstern infrastruktur**
 
-Sensor kan klone repoet, installere avhengigheter og kjøre:
+Etter `npm install` kan sensor starte en separat lokal demomodus:
 
 ```bash
-npm install
+npm run demo
+```
+
+Åpne deretter:
+
+```text
+http://127.0.0.1:3000
+```
+
+Demomodus bruker samme frontend som produktet, men erstatter Supabase og ekte KI-kall med deterministiske mock-svar og midlertidig minnehistorikk. Den krever ingen `.env`, ingen API-nøkkel, ingen betalt konto og ingen ekstern database. Den er laget for kjørbarhet og vurdering – **ikke** for å dokumentere kvaliteten på den ekte KI-en.
+
+**3. Kontroller deterministiske tester lokalt**
+
+```bash
 npm test
 ```
 
-`npm test` krever ikke OpenAI-/OpenRouter-nøkkel og gjør ingen eksterne KI-kall. Det er derfor ikke nødvendig å opprette en fungerende `.env` bare for å kontrollere den lokale regresjonspakken.
+`npm test` krever ikke OpenAI-/OpenRouter-nøkkel og gjør ingen eksterne KI-kall. Testpakken inkluderer også en regresjonstest som starter den lokale sensordemoen og kontrollerer kjerneendepunktene.
 
-**3. Ekte KI-kall lokalt er valgfritt**
+**4. Ekte KI-kall lokalt er valgfritt**
 
 Bare dersom sensor ønsker å kjøre de faktiske live KI-testene lokalt, for eksempel `npm run test-ai:golden`, kreves egen gyldig API-konfigurasjon. De siste verifiserte golden-resultatene er dokumentert i repoet.
 
@@ -154,7 +167,7 @@ Kjør hele den lokale testpakken med én kommando:
 npm test
 ```
 
-`npm test` er alias for `npm run test-local` og kjører de sentrale deterministiske regresjonstestene sekvensielt.
+`npm test` er alias for `npm run test-local` og kjører de sentrale deterministiske regresjonstestene sekvensielt. `tests/test-sensor-demo.cjs` kontrollerer at `scripts/sensor-demo.js` kan starte uten hemmeligheter og levere mock-svar for kjerneflyten.
 
 Testene kan også kjøres enkeltvis:
 
@@ -168,6 +181,7 @@ npm run test-bubble-cleanup
 npm run test-clipboard
 npm run test-golden-schema
 npm run test-golden-utils
+npm run test-sensor-demo
 ```
 
 Ved siste dokumenterte kontroll besto blant annet:

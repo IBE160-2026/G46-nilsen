@@ -983,6 +983,19 @@ Dette bevarte produksjonssikkerheten samtidig som automatiserte tester kunne kj�
 
 ---
 
+# 22.1 Lokal sensordemo
+
+For å gjøre leveransen etterprøvbar uten studentens hemmeligheter eller eksterne tjenester er det lagt til en isolert lokal demomodus.
+
+- `npm run demo` starter samme frontend med deterministiske mock-svar
+- ingen `.env`, Supabase eller KI-nøkkel er nødvendig
+- `tests/test-sensor-demo.cjs` verifiserer oppstart, demo-bruker, analyse, veiledning, historikk og simulator
+- produksjonsserveren er uendret
+
+Demomodus er et vurderings- og testverktøy, ikke en erstatning for ekte KI-testing.
+
+---
+
 # 23. Status ved levering
 
 Ved levering er hoveddelen av produktet implementert.

@@ -1244,3 +1244,19 @@ Arkitekturen har blitt utviklet iterativt og endret som følge av testing og fei
 Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, men den arkitekturen prosjektet faktisk har utviklet fram til versjon 20.10.3.
 
 Framtidige mål som intern KI, lokal RAG og lukket nettverk er dokumentert separat og fremstilles ikke som ferdige deler av dagens leveranse.
+
+# 39. Sensor-demo og kjørbarhet uten eksterne tjenester
+
+Produksjonsarkitekturen bruker Supabase og ekstern KI-provider. For at repoet samtidig skal kunne vurderes lokalt uten studentens nøkler, betalte kontoer eller egen infrastruktur, finnes en separat test-/demoadapter:
+
+- `scripts/sensor-demo.js`
+- startes med `npm run demo`
+- bruker samme `index.html`, `app.js`, `styles.css` og bildeassets som hovedproduktet
+- emulerer autentisering, historikk og sentrale KI-endepunkter i minnet
+- returnerer eksplisitt deterministiske mock-svar
+- gjør ingen eksterne KI- eller databasekall
+- endrer ikke produksjonsserveren eller produksjonsautentiseringen
+
+Demomodus skal derfor brukes til å kontrollere brukerflyt og lokal kjørbarhet. Den skal ikke brukes som bevis på faglig kvalitet i de ekte KI-svarene; dette dokumenteres gjennom live KI-tester, golden/fasit og publisert testversjon.
+
+Regresjonstest: `tests/test-sensor-demo.cjs`.
