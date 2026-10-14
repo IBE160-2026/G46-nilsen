@@ -172,6 +172,7 @@ npm test
 Testene kan også kjøres enkeltvis:
 
 ```bash
+npm run test-syntax
 npm run test-privacy
 npm run test-simulation
 npm run test-server-privacy
@@ -182,6 +183,7 @@ npm run test-clipboard
 npm run test-golden-schema
 npm run test-golden-utils
 npm run test-sensor-demo
+npm run test-repo-structure
 ```
 
 Ved siste dokumenterte kontroll besto blant annet:
@@ -191,6 +193,8 @@ Ved siste dokumenterte kontroll besto blant annet:
 - historikk-regresjonstest
 - snakkeboble-regresjonstest
 - golden matcher-regresjonstest
+- syntakskontroll av hovedkode
+- repo-struktur/kjørbarhet kontrolleres gjennom egne regresjonstester
 
 Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.
 

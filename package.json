@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "npm run test-local",
-    "test-local": "npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-golden-schema && npm run test-golden-utils && npm run test-sensor-demo",
+    "test-local": "npm run test-syntax && npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-golden-schema && npm run test-golden-utils && npm run test-sensor-demo && npm run test-repo-structure",
     "test-ai": "node tests/test-ai.js",
     "test-ai:full": "node tests/test-ai.js --all",
     "test-ai:stress": "node tests/test-ai-stress.js",
@@ -27,7 +27,9 @@
     "test-ai:golden": "node tests/test-ai-golden.js",
     "test-golden-utils": "node tests/test-golden-utils.js",
     "demo": "node scripts/sensor-demo.js",
-    "test-sensor-demo": "node tests/test-sensor-demo.cjs"
+    "test-sensor-demo": "node tests/test-sensor-demo.cjs",
+    "test-syntax": "node --check app.js && node --check server.js && node --check scripts/create-invite.js && node --check scripts/sensor-demo.js",
+    "test-repo-structure": "node tests/test-repo-structure.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
