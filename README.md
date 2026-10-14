@@ -283,6 +283,7 @@ Samtalestotte/
 │   ├── ai/
 │   ├── bmad/
 │   └── faggrunnlag/
+├── scripts/
 ├── tests/
 │   └── cases/
 ├── app.js

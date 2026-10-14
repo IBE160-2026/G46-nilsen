@@ -319,7 +319,7 @@ Invitasjoner kan brukes til kontrollert tilgang til beta- og vurderingsmiljø.
 
 ### Spor
 
-- `create-invite.js`
+- `scripts/create-invite.js`
 - adminfunksjoner
 - serverlogikk
 

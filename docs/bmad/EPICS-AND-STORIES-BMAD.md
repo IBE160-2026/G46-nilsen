@@ -1064,7 +1064,7 @@ Denne matrisen er en navigasjonshjelp. Detaljerte krav og statuser ligger fortsa
 | FR-05 Samtalesimulering | Epic 6 | Implementert/testet | `tests/test-simulation.js` – 24/24 |
 | FR-06 Personverngateway | Epic 3 | Implementert/testet | `tests/test-privacy.js` – 33/33, `tests/test-server-privacy.cjs` |
 | FR-07 Autentisering | Epic 7 / Story 7.1 | Implementert | Supabase/server |
-| FR-08 Engangsinvitasjoner | Epic 7 / Story 7.2 | Implementert | `create-invite.js`, server/admin |
+| FR-08 Engangsinvitasjoner | Epic 7 / Story 7.2 | Implementert | `scripts/create-invite.js`, server/admin |
 | FR-09 Historikk | Epic 9 | Implementert/testet | Supabase, `tests/test-history-hotfix.cjs` |
 | FR-10 Rapportering av KI-svar | Epic 10 | Implementert | app/server |
 | FR-11 Roller | Epic 8 | Implementert | server-side rollevalidering |
