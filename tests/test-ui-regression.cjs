@@ -33,3 +33,6 @@ if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk 
 assert(/styles\.css\?v=20\.10\.3/.test(html), "CSS cache-versjon er ikke 20.10.3");
 assert(/id=["']about-app-version["']>20\.10\.3</.test(html), "Fallback-appversjon i Om-siden er ikke 20.10.3");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
+
+assert(/id=["']report-meta["']>Versjon 20\.10\.3</.test(html), "Fallback-versjon i Kontakt er ikke 20.10.3");
+if (!process.exitCode) console.log("Kontakt-versjon: OK");
