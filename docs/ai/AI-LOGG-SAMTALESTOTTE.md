@@ -1200,3 +1200,21 @@ Dette reduserte størrelsen på `app.js` og `server.js` uten å flytte autentise
 Under samme gjennomgang ble det oppdaget at produksjonsserverens eksplisitte asset-allowlist inneholdt nested bilder, mens ruten som serverte filer bare håndterte ett path-segment. Dette ble rettet uten å åpne en generell statisk mappe. En ny integrasjonstest kontrollerer at tillatte frontend-assets kan hentes, samtidig som `.env`, dokumentasjon og interne servermoduler forblir utilgjengelige.
 
 Læring: kodekvalitet bør forbedres med målrettede endringer og testbevis, ikke ved å refaktorere mest mulig rett før levering.
+
+
+---
+
+## 2026-10-15 – Full regresjon grønn etter modularisering
+
+Etter den kontrollerte modulariseringen og rettingen av serverens nested asset-rute ble hele `npm test`-pakken kjørt på nytt.
+
+Alle tester besto, inkludert de nye kontrollene for:
+
+- klientmodulens innlastingsrekkefølge
+- offentlige frontend-assets
+- blokkering av interne filer
+- lokal sensordemo
+- repo-struktur
+- package-lock-konsistens
+
+Dette var et eksplisitt stoppunkt: videre refaktorering ble ikke prioritert fordi de største lavrisiko-forbedringene var gjennomført og regresjonspakken var grønn. Videre oppdeling av særlig CSS og gjenværende hovedfiler vurderes som framtidig produksjonsmodning, ikke nødvendig leveransearbeid.
