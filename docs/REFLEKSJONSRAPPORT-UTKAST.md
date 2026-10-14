@@ -197,6 +197,8 @@ Derfor er det lagt til en separat `npm run demo`-modus med deterministiske mock-
 
 Dette er bevisst skilt fra ekte KI-testing. En mock-demo viser kjørbarhet og grensesnitt, men sier ingenting om den faktiske språkmodellens kvalitet.
 
+Under sluttgjennomgangen av kjørbarhet oppdaget jeg også en konkret serverfeil: allowlisten inneholdt bilder under `assets/images/`, men serverruten var utformet for ett path-segment. I stedet for å anta at deployen oppførte seg riktig, ble ruten korrigert og det ble laget en integrasjonstest som starter den ekte serveren i testmodus og kontrollerer både tillatte frontend-assets og at interne filer fortsatt er blokkert. Dette ble et nytt eksempel på at arkitekturgjennomgang kan avdekke reelle funksjonsfeil, ikke bare kodeestetikk.
+
 ---
 
 ## 5. Kritisk vurdering av KI-bruken
@@ -225,7 +227,7 @@ Det skjedde både i produksjonskode og i testkode. Regex-feilen i personvernet e
 
 KI kan også gjøre prosjektet større enn nødvendig. Når det er lett å legge til funksjoner, er det også lett å miste kontroll over scope. Flere deler av Samtalestøtte, særlig admin, benchmark og logging, ble mer omfattende enn de første versjonene.
 
-En tredje ulempe er at høy utviklingshastighet kan skape teknisk gjeld. Dagens løsning fungerer, men `app.js`, `server.js` og `styles.css` er store filer. En mer moden produksjonsløsning burde vært splittet i mindre moduler. Jeg har valgt å dokumentere dette som en kjent begrensning i stedet for å gjennomføre en stor refaktorering rett før levering og risikere nye regresjoner.
+En tredje ulempe er at høy utviklingshastighet kan skape teknisk gjeld. Dagens løsning fungerer, men `app.js`, `server.js` og `styles.css` er store filer. I sluttfasen valgte jeg derfor en begrenset modularisering i stedet for en full omskriving: statiske klientdata ble flyttet til `src/client-data.js`, serverens temakontrakt til `src/server/topic-contracts.js` og KI-skjemaene til `src/server/ai-schemas.js`. Dette reduserte `app.js` fra omtrent 3605 til 3411 linjer og `server.js` fra omtrent 1776 til 1600 linjer. Filene er fortsatt store, og særlig CSS bør modulariseres videre i en produksjonsmodning, men jeg vurderte en større sen refaktorering som høyere regresjonsrisiko enn gevinst før levering.
 
 ### 5.3 Hvordan prosjektet ville vært uten KI
 
