@@ -1,8 +1,13 @@
-const fs = require("node:fs");
+const { execFileSync } = require("node:child_process");
 const path = require("node:path");
 const assert = require("node:assert/strict");
 
 const root = path.resolve(__dirname, "..");
+const tracked = execFileSync("git", ["ls-files"], { cwd: root, encoding: "utf8" })
+  .split(/\r?\n/)
+  .map(line => line.trim())
+  .filter(Boolean);
+
 const allowedRootFiles = new Set([
   ".env.example",
   ".gitignore",
@@ -18,38 +23,26 @@ const allowedRootFiles = new Set([
 ]);
 const allowedRootDirs = new Set(["assets", "data", "database", "docs", "scripts", "tests"]);
 
-const entries = fs.readdirSync(root, { withFileTypes: true });
-const unexpected = entries
-  .filter(entry => {
-    if (entry.name === ".git") return false;
-    return entry.isDirectory()
-      ? !allowedRootDirs.has(entry.name)
-      : !allowedRootFiles.has(entry.name);
-  })
-  .map(entry => entry.name);
+const trackedRootItems = [...new Set(tracked.map(file => file.split("/")[0]))].sort();
+const unexpected = trackedRootItems.filter(item =>
+  !allowedRootFiles.has(item) && !allowedRootDirs.has(item)
+);
+assert.deepEqual(unexpected, [], `Uventede/løse elementer spores i repo-roten: ${unexpected.join(", ")}`);
 
-assert.deepEqual(unexpected, [], `Uventede/løse elementer i rotmappen: ${unexpected.join(", ")}`);
+const forbiddenTracked = tracked.filter(file =>
+  /(^|\/)\.env$/i.test(file) ||
+  /(^|\/)\.env\.(?!example$)[^/]+$/i.test(file) ||
+  /(^|\/)node_modules\//i.test(file) ||
+  /(^|\/)(?:dist|build|coverage)\//i.test(file) ||
+  /\.(?:zip|bak|tmp)$/i.test(file) ||
+  /~$/i.test(file)
+);
+assert.deepEqual(forbiddenTracked, [], `Forbudte genererte/hemmelige filer spores i Git: ${forbiddenTracked.join(", ")}`);
 
-const forbiddenPatterns = [
-  /^\.env$/i,
-  /^\.env\.(?!example$).+/i,
-  /\.zip$/i,
-  /\.bak$/i,
-  /\.tmp$/i,
-  /~$/,
-  /(?:^|[-_. ])(?:backup|copy|kopi)(?:[-_. ]|$)/i,
-  /^test[-_.]/i
-];
+const looseRootTests = tracked.filter(file => !file.includes("/") && /^test[-_.]/i.test(file));
+assert.deepEqual(looseRootTests, [], `Løse testfiler i rotmappen: ${looseRootTests.join(", ")}`);
 
-for (const entry of entries) {
-  if (entry.name === ".git") continue;
-  assert(
-    !forbiddenPatterns.some(pattern => pattern.test(entry.name)),
-    `Mistenkelig rotfil/-mappe: ${entry.name}`
-  );
-}
-
-const gitignore = fs.readFileSync(path.join(root, ".gitignore"), "utf8");
+const gitignore = require("node:fs").readFileSync(path.join(root, ".gitignore"), "utf8");
 for (const required of [".env", "node_modules"]) {
   assert(gitignore.includes(required), `.gitignore mangler regel for ${required}`);
 }
