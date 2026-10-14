@@ -673,7 +673,7 @@ Full kildeobservability er ikke definert som ferdig produksjonsfunksjon.
 
 **Prototype/testform.**
 
-Benchmarkfunksjonaliteten brukes til å sammenligne modeller på samme eller sammenlignbart testgrunnlag.
+Benchmarkfunksjonaliteten er bygget for å kunne sammenligne modeller på samme eller sammenlignbart testgrunnlag. Arkitekturen og testverktøyet er implementert i prototype/testform, men en full fler-modell-benchmark er ikke dokumentert som gjennomført.
 
 Aktuelle måleområder:
 
@@ -711,10 +711,14 @@ Eksempler:
 - `tests/test-ai-stress.js`
 - `tests/test-simulation-ai.js`
 - `tests/test-model-compare.js`
+- `tests/test-ai-golden.js`
+- `tests/test-golden-schema.cjs`
+- `tests/test-golden-utils.js`
 - `tests/test-history-hotfix.cjs`
 - `tests/test-bubble-cleanup.cjs`
 - `tests/test-server-privacy.cjs`
 - `tests/test-ui-regression.cjs`
+- `tests/test-clipboard.cjs`
 
 ---
 
@@ -1151,13 +1155,16 @@ Arkitekturen skal være mulig å kontrollere gjennom konkrete repo-spor.
 | Frontend | `app.js`, `index.html`, `styles.css` |
 | Server | `server.js` |
 | Database | `database/` |
-| Personvern | `tests/test-privacy.js` |
+| Personvern – klient | `tests/test-privacy.js` |
+| Personvern – server | `tests/test-server-privacy.cjs` |
 | Simulator | `tests/test-simulation.js` |
 | Historikk | `tests/test-history-hotfix.cjs` |
 | Server-personvern | `tests/test-server-privacy.cjs` |
 | UI-regresjon | `tests/test-ui-regression.cjs` |
 | KI-testing | `tests/test-ai.js` |
 | KI-stresstest | `tests/test-ai-stress.js` |
+| Golden/fasit | `tests/AI-GOLDEN-CASES.json`, `tests/test-ai-golden.js` |
+| Golden struktur/matcher | `tests/test-golden-schema.cjs`, `tests/test-golden-utils.js` |
 | Modelltesting | `tests/test-model-compare.js` |
 | Faggrunnlag | `docs/faggrunnlag/` |
 | KI-styring | `docs/ai/` |

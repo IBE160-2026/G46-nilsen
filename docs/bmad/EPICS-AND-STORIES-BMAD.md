@@ -581,7 +581,13 @@ Dette gjør det også enklere å vurdere intern KI senere.
 
 - `tests/test-ai.js`
 - `tests/test-ai-stress.js`
+- `tests/test-ai-golden.js`
+- `tests/AI-GOLDEN-CASES.json`
+- `tests/test-golden-schema.cjs`
+- `tests/test-golden-utils.js`
 - `tests/cases/`
+
+Siste verifiserte golden-kjøring mot GPT-5.6 Luna: **9/9 OK**, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil.
 
 ---
 
@@ -599,9 +605,14 @@ Dette gjør det også enklere å vurdere intern KI senere.
 
 **Som systemeier** vil jeg kunne korrigere tester som gir falske resultater.
 
-Et konkret eksempel var tester som reagerte på problematiske nøkkelord selv når KI-en faktisk avviste påstanden.
+Konkrete eksempler:
 
-Dette førte til mer kontekstbevisst testlogikk.
+- `skyld` ga falsk kritisk treff selv når KI-en eksplisitt avviste skyldkonklusjon
+- `lat` ble feilaktig funnet som delstreng i `arbeidsrelatert`
+- en grønn Livssituasjoner-case viste seg semantisk å teste prestasjon/sikkerhet mer enn Livssituasjoner
+- en rapport viste ikke nok av KI-svaret til at menneskelig fasit kunne etterprøves
+
+Dette førte til mer kontekstbevisst testlogikk, helords-/frasematching, strengere temadekning og bedre rapportering for manuell vurdering.
 
 ---
 
@@ -634,6 +645,8 @@ Dette førte til mer kontekstbevisst testlogikk.
 ### Spor
 
 `tests/test-model-compare.js`
+
+Verktøyet er implementert, men full fler-modell-sammenligning er ikke dokumentert som gjennomført.
 
 ---
 
@@ -1012,6 +1025,30 @@ Eksempel:
 | 21 Brukertesting | Delvis | testopplegg |
 | 22 Repo/leveranse | Implementert | README/Git |
 | 23 Lukket løsning | Videre arbeid | arkitekturdokument |
+
+---
+
+
+## 25.1 End-to-end-sporbarhet
+
+Tabellen viser den røde tråden fra produktbehov via krav og arkitektur til implementasjon/test.
+
+| Produktbehov | PRD | Arkitektur | Epic/Story | Implementasjon / testbevis |
+|---|---|---|---|---|
+| Situasjonsbasert KI-støtte | FR-01, FR-03, AI-01 | 8, 10, 11 | Epic 2, Epic 4 | `app.js`, `server.js`, `tests/test-ai.js`, golden-test |
+| Personvern før KI-kall | FR-06, NFR-02 | 9, 26 | Epic 3 | `tests/test-privacy.js`, `tests/test-server-privacy.cjs` |
+| Samtaletrening | FR-05, AI-02, AI-03 | 19 | Epic 6 | simulator i app/server, `tests/test-simulation.js` |
+| Innlogging og egen historikk | FR-07, FR-09 | 13, 16–18 | Epic 7, Epic 9 | Supabase/server, `tests/test-history-hotfix.cjs` |
+| Rollebasert administrasjon | FR-11, FR-12 | 15, 20 | Epic 8, Epic 11 | app/server/adminlogikk |
+| Flere modeller/provider | FR-13, AI-06 | 12 | Epic 12 | modellabstraksjon i `server.js` |
+| Systematisk KI-kvalitet | FR-15, AI-01–04 | 24, 25 | Epic 13 | KI-/stress-/golden-tester, 9/9 siste golden |
+| Modellbenchmark | FR-14 | 23 | Epic 14 | `data/BENCHMARK-CASES.json`, `tests/test-model-compare.js` – prototype/testform |
+| Faglig grunnlag og kilder | FR-16, FR-18 | 21, 22 | Epic 16, Epic 17 | `data/SOURCEBANK.json`, `docs/faggrunnlag/`, serverlogikk |
+| Sikkerhetsherding | NFR-01, NFR-04 | 26–30 | Epic 18, Epic 19 | rate limit, headers, same-origin, test-auth, sikkerhetsdokument |
+| Sensor-kjørbar leveranse | NFR-05 | 24, 30, 38 | Epic 22 | README, `npm test`, publisert testversjon |
+| Lukket/offline retning | videre mål | 35–37 | Epic 23 | dokumentert framtidig arkitektur, ikke implementert |
+
+Denne matrisen er en navigasjonshjelp. Detaljerte krav og statuser ligger fortsatt i PRD og de enkelte Epic/Story-seksjonene.
 
 ---
 

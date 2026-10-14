@@ -531,6 +531,8 @@ Teste KI-svar systematisk og ikke bare manuelt.
 - stresstester
 - problemcaser
 - simulator-live-tester
+- golden/fasitbasert KI-test
+- golden schema- og matcherregresjon
 - modell-sammenligning
 - testdata
 
@@ -544,6 +546,9 @@ Prosjektet inneholder blant annet:
 - `npm run test-ai:stress:full`
 - `npm run test-ai:stress:problems`
 - `npm run test-simulation:live`
+- `npm run test-golden-schema`
+- `npm run test-golden-utils`
+- `npm run test-ai:golden`
 - `npm run test-model-compare`
 
 ## Iterativ læring
@@ -554,7 +559,7 @@ Eksempel:
 
 Enkelte KI-tester kunne markere et svar som problematisk på bakgrunn av et nøkkelord selv når modellen faktisk avviste den problematiske påstanden.
 
-Dette førte til mer kontekstbevisst testlogikk.
+Dette førte til mer kontekstbevisst testlogikk. Senere golden-kjøringer ga også konkrete regresjoner for falske treff på `skyld`, delstrengstreffet `lat` i `arbeidsrelatert`, og en Livssituasjoner-case som teknisk var grønn uten å teste temaet presist nok.
 
 Et annet eksempel var automatiserte testservere som fikk `401` på `/api/status`.
 
@@ -621,6 +626,8 @@ Blind sammenligning brukes for å redusere påvirkning fra kjennskap til modelln
 ## Status ved levering
 
 **Gjennomført i prototype/testform.**
+
+Benchmarkdata, modellkjøring og blind evalueringsflyt er implementert som verktøy. En full fler-modell-benchmark er ikke dokumentert som gjennomført, og leveransen skal derfor ikke fremstille dette som et ferdig sammenligningsresultat.
 
 ---
 
@@ -991,8 +998,8 @@ Ved levering er hoveddelen av produktet implementert.
 | Simulator | Gjennomført/testet | `tests/test-simulation.js` |
 | Roller/admin | Gjennomført | app/server |
 | Modellstyring | Gjennomført | modell-/adminlogikk |
-| KI-testing | Gjennomført | `tests/` |
-| Benchmark | Prototype/testform | benchmarklogikk/data |
+| KI-testing | Gjennomført | `tests/`, inkl. golden/fasit og matcherregresjon |
+| Benchmark | Prototype/testform – full fler-modell-kjøring ikke dokumentert | benchmarklogikk/data |
 | SOURCEBANK | Gjennomført | `docs/`, `data/` |
 | Sikkerhetsherding | Gjennomført på prototypenivå | sikkerhetsdokumentasjon |
 | Brukertesting | Påbegynt/videre arbeid | dokumentasjon/app |

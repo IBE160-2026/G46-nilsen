@@ -447,7 +447,9 @@ Aktuelle vurderingsområder:
 - tokenbruk
 - kostnad
 
-Systemet inneholder også blind modell-sammenligning.
+Systemet inneholder også støtte for blind modell-sammenligning.
+
+Selve benchmarkverktøyet og testgrunnlaget er implementert i prototype/testform. En full fler-modell-benchmark er ikke dokumentert som gjennomført og skal derfor ikke fremstilles som et ferdig evalueringsresultat.
 
 ### Spor
 
@@ -478,6 +480,10 @@ Dette omfatter:
 - `tests/test-ai-stress.js`
 - `tests/test-simulation-ai.js`
 - `tests/test-model-compare.js`
+- `tests/test-ai-golden.js`
+- `tests/test-golden-schema.cjs`
+- `tests/test-golden-utils.js`
+- `tests/AI-GOLDEN-CASES.json`
 - `tests/cases/`
 
 Automatisert vurdering skal brukes som støtte og ikke erstatte manuell vurdering av KI-kvalitet.
