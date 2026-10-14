@@ -113,6 +113,7 @@ app.get("/", (_req, res) => res.sendFile(path.join(root, "index.html")));
 for (const filename of ["app.js", "styles.css"]) {
   app.get(`/${filename}`, (_req, res) => res.sendFile(path.join(root, filename)));
 }
+app.get("/src/client-data.js", (_req, res) => res.sendFile(path.join(root, "src/client-data.js")));
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
 
 app.get("/api/public-config", (_req, res) => res.json({
