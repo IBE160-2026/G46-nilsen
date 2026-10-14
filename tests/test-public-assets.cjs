@@ -43,6 +43,7 @@ async function waitForServer() {
     const assets = [
       "/app.js",
       "/styles.css",
+      "/src/client-data.js",
       "/assets/images/logo.png",
       "/assets/images/logo-symbol.png",
       "/assets/images/topics/topic-livssituasjoner.png"
