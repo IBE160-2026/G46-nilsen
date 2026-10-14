@@ -6,7 +6,7 @@
 **Student-ID:** [fyll inn]  
 **Gruppestørrelse:** 1  
 **Status:** Utkast til individuell refleksjonsrapport  
-**Ordantall:** ca. 3512 ord (Markdown-ordtelling, før eventuell sluttredigering)
+**Ordantall:** ca. 4121 ord (Markdown-ordtelling, før eventuell sluttredigering)
 
 ---
 
@@ -34,7 +34,11 @@ I starten var arbeidet mer utforskende. Jeg beskrev ønsket funksjon eller visue
 
 Jeg begynte derfor å jobbe mer eksplisitt med krav og avgrensninger. Godkjente designvalg skulle ikke endres uten at jeg ba om det. Større endringer skulle stoppes etter implementering slik at jeg kunne teste og godkjenne før neste steg. Dette var en viktig endring i min egen rolle. Jeg gikk gradvis fra å være en bruker som ba KI om å «lage noe» til å styre en utviklingsprosess med tydeligere krav, kontrollpunkter og regresjonstester.
 
+Dette henger tett sammen med skillet i pensum mellom enkel «vibe programming» og mer styrt agentisk utvikling. Etter hvert ble ikke enkeltprompten det viktigste. Det viktigste ble hvilken kontekst KI-en fikk: krav, eksisterende arkitektur, låste designvalg, testresultater og hva som uttrykkelig ikke skulle endres. Jeg opplevde derfor context engineering som mer treffende for arbeidsmåten enn bare prompt engineering.
+
 BMAD ble brukt for å strukturere produktutviklingen. Product Brief beskrev problemet, målgruppen, løsningen og ambisjonsnivået. PRD konkretiserte funksjonelle og ikke-funksjonelle krav. Arkitekturdokumentet beskrev hvordan frontend, backend, KI, database og eksterne tjenester hang sammen. Epics og Stories gjorde det mulig å knytte funksjoner til konkrete leveranser. Implementeringsplanen ble brukt til å dokumentere hvordan prosjektet faktisk utviklet seg, inkludert avvik fra opprinnelig plan.
+
+Dette ga meg i praksis den artefaktkjeden pensum legger opp til: ideen skulle ikke hoppe direkte til kode, men kunne følges gjennom planleggingsdokumentene frem til implementasjon og test. Mot slutten ble denne koblingen gjort enda tydeligere gjennom sporbarhetsmatriser fra behov og PRD-krav til arkitektur, Epic/Story, kode og testbevis.
 
 Mot slutten ble det også laget eksplisitt sporbarhet fra behov og PRD-krav til arkitektur, Epic/Story, implementasjon og testbevis. Dette var viktig fordi planleggingsdokumentasjon har liten verdi dersom den ikke kan kobles til det produktet som faktisk er levert.
 
@@ -42,7 +46,7 @@ Mot slutten ble det også laget eksplisitt sporbarhet fra behov og PRD-krav til 
 
 Siden jeg var alene på gruppen, hadde jeg ingen tradisjonell arbeidsdeling mellom gruppemedlemmer. Det gjorde noen ting enklere, fordi jeg ikke måtte koordinere beslutninger med andre. Samtidig betydde det at jeg heller ikke hadde en annen student som kunne oppdage svakheter i løsningene mine eller utfordre vurderingene mine.
 
-Jeg brukte derfor dokumentasjon og testing som en form for strukturert motstand mot egne antakelser. Git-historikken, AI-loggen, testplanene og regresjonstestene ble viktige fordi de tvang meg til å gjøre endringer etterprøvbare.
+Jeg brukte derfor dokumentasjon og testing som en form for strukturert motstand mot egne antakelser. Git-historikken, AI-loggen, testplanene og regresjonstestene ble viktige fordi de tvang meg til å gjøre endringer etterprøvbare. Dette samsvarer godt med pensumets framstilling av Git som mer enn bare lagring av kode i en agentisk arbeidsflyt: når KI kan gjøre store endringer raskt, blir versjonskontroll også et sikkerhetsnett for å inspisere, avgrense og eventuelt reversere endringer.
 
 Jeg brukte i hovedsak én aktiv branch, `master`, og små commits fremfor en omfattende Pull Request-prosess. Det er en svakhet sammenlignet med en gruppebasert arbeidsflyt med branches, code review og PR-er, men samtidig et bevisst pragmatisk valg for et soloprosjekt. Jeg forsøkte å kompensere for manglende peer review gjennom hyppige tester, dokumenterte beslutninger og eksplisitt gjennomgang av KI-genererte endringer.
 
@@ -63,9 +67,11 @@ Det er likevel viktig å skille mellom at KI skrev mye av koden og at KI bestemt
 
 Et tydelig eksempel er utviklingen av personvernløsningen. KI kunne generere regler som oppdaget navn og andre identifikatorer, men de første variantene ble for aggressive. De kunne stoppe relevant kontekst eller tolke vanlige ord som personnavn. Jeg måtte derfor presisere prinsippet: **anonymiser identitet, ikke nødvendig kontekst**.
 
+Her ble prompt engineering alene for snevert som forklaring. For å få et stabilt resultat måtte KI-en få mer enn en formulert bestilling: eksisterende regler, tidligere feil, konkrete regresjonscaser og ønsket balanse mellom personvern og bevart kontekst måtte følge oppgaven. Det gjorde kvaliteten på konteksten rundt oppgaven minst like viktig som selve prompten.
+
 Et annet eksempel er designarbeidet. KI kunne raskt produsere visuelle endringer, men endret noen ganger mer enn jeg hadde bedt om. Det førte til at jeg begynte å formulere tydeligere regler om hva som var «låst» design og hva som kunne endres.
 
-Dette samsvarer med en sentral erfaring fra agentisk utvikling: utviklerens jobb flyttes delvis fra å skrive hver kodelinje selv til å formulere gode krav, inspisere endringer, teste resultatet og avgjøre om løsningen faktisk er riktig. Git fikk derfor en rolle som sikkerhetsmekanisme, fordi små commits gjorde det mulig å se hva som var endret og gå tilbake dersom en KI-endring skapte problemer.
+Dette samsvarer med en sentral erfaring fra agentisk utvikling: utviklerens jobb flyttes delvis fra å skrive hver kodelinje selv til å formulere gode krav, inspisere endringer, teste resultatet og avgjøre om løsningen faktisk er riktig. Pensum beskriver også editorens rolle i en agentisk arbeidsflyt som mer orientert mot gjennomgang av diffs, tester og agentens endringer enn bare manuell skriving av kode. Det stemmer godt med hvordan min egen arbeidsform utviklet seg. Git fikk derfor en rolle som sikkerhetsmekanisme, fordi små commits gjorde det mulig å se hva som var endret og gå tilbake dersom en KI-endring skapte problemer.
 
 ### 2.4 Teknologi og verktøy
 
@@ -221,7 +227,7 @@ KI gjorde det også lettere å utforske flere alternativer. Jeg kunne be om en l
 
 ### 5.2 Ulemper og risiko
 
-Den viktigste ulempen er at KI kan produsere feil som ser plausible ut.
+Den viktigste ulempen er at KI kan produsere feil som ser plausible ut. Det gjør code review og testing til en nødvendig del av KI-bruken, ikke et valgfritt siste steg. Dette passer direkte med pensumets egen plassering av code review og quality som en del av utviklingssyklusen etter implementering.
 
 Det skjedde både i produksjonskode og i testkode. Regex-feilen i personvernet er et godt eksempel. Et annet er golden-testen som feilaktig tolket `lat` inne i `arbeidsrelatert` som en kritisk karakteristikk av medarbeideren.
 
@@ -253,6 +259,23 @@ Når KI skriver koden, blir det enda viktigere å kunne:
 - dokumentere hvorfor løsningen ble valgt
 
 Det viktigste læringsutbyttet i prosjektet har derfor ikke vært å lære flest mulig syntaksdetaljer. Det har vært å lære å styre et KI-assistert utviklingsløp på en måte som gir et etterprøvbart produkt.
+
+
+### 5.5 Forholdet mellom pensum og min faktiske arbeidsmåte
+
+I ettertid ser jeg en tydelig utvikling fra en mer intuitiv KI-bruk til en arbeidsmåte som ligner den agentiske prosessen beskrevet i pensum.
+
+I starten var arbeidsmåten nærmere «beskriv ønsket resultat og se hva KI lager». Etter hvert ble arbeidet mer strukturert rundt:
+
+- **context engineering:** gi KI relevant prosjektkontekst, tidligere beslutninger, testresultater og avgrensninger
+- **prompt engineering:** formulere konkrete og kontrollerbare endringsoppgaver
+- **BMAD:** holde sammen problem, krav, arkitektur, Epics/Stories og implementasjon
+- **Git:** bruke små commits og historikk som kontroll- og sikkerhetsmekanisme
+- **code review og testing:** behandle KI-generert kode som et forslag som må verifiseres
+
+Det mest interessante er at jeg ikke lærte dette bare ved å lese om metodene. Behovet ble tydelig gjennom konkrete feil. Personvernregexen, foreldede tester, golden-testens falske positive og min egen regresjon under sluttmodulariseringen tvang frem en mer disiplinert arbeidsform.
+
+På den måten ble teorien mest nyttig når den kunne forklare erfaringer jeg allerede hadde fått i prosjektet.
 
 ---
 
