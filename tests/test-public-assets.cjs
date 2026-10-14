@@ -63,6 +63,9 @@ async function waitForServer() {
     const docs = await fetch(`http://127.0.0.1:${port}/docs/bmad/PRD.md`);
     if (docs.status !== 404) throw new Error("Dokumentasjon skal ikke kunne serveres som offentlig asset");
 
+    const serverModule = await fetch(`http://127.0.0.1:${port}/src/server/ai-schemas.js`);
+    if (serverModule.status !== 404) throw new Error("Interne servermoduler skal ikke kunne serveres offentlig");
+
     console.log("Offentlige frontend-assets: OK");
   } finally {
     child.kill("SIGTERM");
