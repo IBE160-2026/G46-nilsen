@@ -306,7 +306,10 @@ Samtalestotte/
 │   └── faggrunnlag/
 ├── scripts/
 ├── src/
-│   └── client-data.js
+│   ├── client-data.js
+│   └── server/
+│       ├── topic-contracts.js
+│       └── ai-schemas.js
 ├── tests/
 │   └── cases/
 ├── app.js
@@ -320,7 +323,7 @@ Samtalestotte/
 └── README.md
 ```
 
-Hovedkoden ligger i rotmappen, mens dokumentasjon, tester, bilder og databasefiler er skilt ut i egne mapper. Klientens tema-/ikondata ligger separat i `src/client-data.js`, slik at `app.js` i større grad inneholder faktisk bruker- og tilstandslogikk.
+Hovedkoden ligger i rotmappen, mens dokumentasjon, tester, bilder og databasefiler er skilt ut i egne mapper. Klientens tema-/ikondata ligger separat i `src/client-data.js`, slik at `app.js` i større grad inneholder faktisk bruker- og tilstandslogikk. Tilsvarende ligger serverens tema-/KI-kontrakter i `src/server/`, mens autentisering, database- og API-flyt fortsatt ligger samlet i `server.js`.
 
 ## Kontakt
 
