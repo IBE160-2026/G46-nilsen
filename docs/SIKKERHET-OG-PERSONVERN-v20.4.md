@@ -235,8 +235,9 @@ Ingen webapplikasjon kan garanteres å være uten sårbarheter. v20.4 reduserer 
 2. Kontroller at `APP_BASE_URL` på Render er satt til den faktiske HTTPS-adressen.
 3. Kontroller at `NODE_ENV=production` i produksjon.
 4. Kontroller at `SUPABASE_SECRET_KEY` og `OPENAI_API_KEY` bare finnes som Render-secrets/miljøvariabler.
-5. Kjør `node test-v20-4-security.cjs`.
-6. Kjør `node test-privacy.js`.
-7. Test login, passordreset, historikk, kontoeksport og kontosletting med en testbruker.
-8. Kontroller i nettleserens Network-panel at API-responser har sikkerhetsheaderne.
+5. Kjør `npm run test-server-privacy` for server-side personvern/sikkerhetsregresjon.
+6. Kjør `npm run test-privacy` for klient-/personverngatewayen.
+7. Kjør gjerne hele den deterministiske regresjonspakken med `npm test`.
+8. Test login, passordreset, historikk, kontoeksport og kontosletting med en testbruker.
+9. Kontroller i nettleserens Network-panel at API-responser har sikkerhetsheaderne.
 
