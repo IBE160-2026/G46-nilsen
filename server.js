@@ -7,6 +7,7 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
+import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 
 dotenv.config();
 
@@ -1115,6 +1116,7 @@ app.delete("/api/account", requireUser, async (req, res) => {
 const systemPrompt = fs.readFileSync(path.join(__dirname, "docs/ai/AI-SYSTEMPROMPT.md"), "utf8");
 const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/SOURCEBANK.json"), "utf8"));
 const sourceIds = sourceBank.sources.map(source => source.id);
+const guidanceSchema = createGuidanceSchema(sourceIds);
 
 function selectRelevantSources(analysis = {}, situation = "") {
   const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
@@ -1155,107 +1157,6 @@ function webSourceUrls(response) {
   }
   return urls;
 }
-
-const analysisSchema = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    confidence: { type: "string", enum: ["low", "medium", "high"] },
-    summary: { type: "string" },
-    facts: { type: "array", items: { type: "string" }, maxItems: 6 },
-    dilemma: { type: "array", items: { type: "string" }, maxItems: 4 },
-    relevant_topics: {
-      type: "array",
-      maxItems: 2,
-      items: {
-        type: "string",
-        enum: [
-          "Alkohol og rus",
-          "Fravær og oppfølging",
-          "Prestasjon og utvikling",
-          "Lønn og utvikling",
-          "Samarbeid og kommunikasjon",
-          "Avslutning av arbeidsforhold",
-          "Sikkerhet og ansvar",
-          "Livssituasjoner",
-          "Mobbing og trakassering"
-        ]
-      }
-    },
-    uncertainties: { type: "array", items: { type: "string" }, maxItems: 4 },
-    cautions: { type: "array", items: { type: "string" }, maxItems: 3 },
-    needs_clarification: { type: "boolean" },
-    clarifications: {
-      type: "array",
-      maxItems: 3,
-      items: {
-        type: "object",
-        additionalProperties: false,
-        properties: {
-          id: { type: "string" },
-          question: { type: "string" },
-          options: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 5 },
-          allow_custom: { type: "boolean" },
-          custom_label: { type: "string" },
-          multi_select: { type: "boolean" }
-        },
-        required: ["id", "question", "options", "allow_custom", "custom_label", "multi_select"]
-      }
-    }
-  },
-  required: [
-    "confidence",
-    "summary",
-    "facts",
-    "dilemma",
-    "relevant_topics",
-    "uncertainties",
-    "cautions",
-    "needs_clarification",
-    "clarifications"
-  ]
-};
-
-
-const guidanceSchema = {
-  type: "object",
-  additionalProperties: false,
-  properties: {
-    opening: { type: "string" },
-    questions: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 5 },
-    reactions: {
-      type: "array", minItems: 2, maxItems: 4,
-      items: {
-        type: "object", additionalProperties: false,
-        properties: {
-          reaction: { type: "string" },
-          why_plausible: { type: "string" },
-          leader_response: { type: "string" }
-        },
-        required: ["reaction", "why_plausible", "leader_response"]
-      }
-    },
-    attention: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 5 },
-    check_before_meeting: { type: "array", items: { type: "string" }, maxItems: 5 },
-    legal_hr_note: { type: "string" },
-    source_ids: { type: "array", maxItems: 4, items: { type: "string", enum: sourceIds } },
-    supplementary_sources: {
-      type: "array", maxItems: 2,
-      items: {
-        type: "object", additionalProperties: false,
-        properties: {
-          title: { type: "string" }, author: { type: "string" }, year: { type: "string" },
-          type: { type: "string" }, url: { type: "string" }
-        },
-        required: ["title", "author", "year", "type", "url"]
-      }
-    },
-    next_steps: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 4 }
-  },
-  required: ["opening", "questions", "reactions", "attention", "check_before_meeting", "legal_hr_note", "source_ids", "supplementary_sources", "next_steps"]
-};
-
-
 
 const SERVER_COMMON_GIVEN_NAMES = new Set(`Kine Gro Reidun Cecilie Trude Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild Bente Berit Britt Brit Gerd Grete Gry Jorunn Jorun Randi Rita Siv Sissel Tone Torill Tove Unni Vigdis Wenche Åsebjørg Elisabeth Elise Ellen Eva Else Gunn Gunhild Ingeborg Kjersti Merete Mette Renate Solfrid Therese Trude Vibeke Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein Alf Arild Bjarne Dag Einar Erlend Finn Frank Harald Helge Ivar Kjell Kjetil Leif Magne Odd Ove Roar Roy Steinar Svein Terje Tom Tommy Trygve Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria Giulia Giorgia Francesca Alessandra Martina Chiara Federica Marco Luca Matteo Lorenzo Alessandro Andrea Giovanni Giuseppe Antonio Stefano Davide Chloe Chloé Emily Olivia Amelia Charlotte Sophie Jessica Rebecca Rachel Megan Lauren Hannah Grace Alice Lucy Eleanor George James William Harry Oliver Jack Charlie Thomas Edward Henry Samuel Alexander Daniel Michael Matthew Joshua Emma Sophie Anna Lena Laura Julia Sarah Lisa Katharina Hannah Marie Johanna Lea Leon Lukas Luca Finn Felix Paul Jonas Elias Noah Ben Benjamin Maximilian Alexander Niklas Élodie Camille Manon Juliette Claire Pauline Amélie Cécile Celine Céline Lucie Margaux Louise Marie Jean Pierre Julien Nicolas Antoine François Philippe Alexandre Thomas Agnieszka Katarzyna Anna Ewa Joanna Magdalena Natalia Aleksandra Marta Piotr Jakub Mateusz Michał Michal Tomasz Krzysztof Paweł Pawel Łukasz Lukasz Anastasia Ekaterina Elena Irina Natalia Olga Svetlana Tatiana Ivan Dmitri Dmitry Alexei Sergey Sergei Nikolai Mikhail Priya Pooja Anjali Neha Aditi Riya Kavya Aarav Arjun Rahul Rohit Vikram Raj Amit Anil Deepak Sanjay Wei Li Ming Jun Chen Ling Mei Xia Yu Yuki Haruka Sakura Aiko Mei Kenji Hiroshi Takashi Akira Satoshi Minjun Jihoon Jisoo Seojun Hyunwoo Minji Yuna Nguyen Minh Linh Lan Anh Trang Huy Phuong Phương Mai Tuan Tuấn Kwame Kofi Ama Akosua Chinedu Ngozi Adaeze Amina Nia Zuri Tendai Thabo Sipho Lerato`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
 const SERVER_NAME_FALSE_POSITIVES = new Set(`Jeg Vi Det Den Dette En Et Når Hvis På I Som Med Men Og Eller For Til Fra Av Etter Før Under Over Ikke Ja Nei Usikker Person Personen Vedkommende Hen Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen Oppfølging Tilrettelegging Mandag Tirsdag Onsdag Torsdag Fredag Lørdag Søndag Januar Februar Mars April Mai Juni Juli August September Oktober November Desember`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
