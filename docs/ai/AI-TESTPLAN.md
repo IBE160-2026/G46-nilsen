@@ -927,10 +927,13 @@ Fullskala brukertesting er **ikke ferdig** i nåværende prosjektstatus.
 | Kort KI-test | Kjørt – 4 OK, 2 BØR SJEKKES, 0 kritiske |
 | Full KI-test | Tilgjengelig |
 | KI-stresstest | Tilgjengelig |
-| Server-personvern | Tilgjengelig – skal re-verifiseres før levering |
-| UI-regresjon | Tilgjengelig – skal re-verifiseres før levering |
+| Server-personvern | Kjørt – bestått |
+| UI-regresjon | Kjørt – bestått |
 | Live simulator | Tilgjengelig |
 | Modell-sammenligning | Starter etter auth-korrigering; full siste runde ikke dokumentert |
+| Golden/fasit | Kjørt – 9/9 OK i siste live-kjøring |
+| Golden matcher-regresjon | Kjørt – bestått |
+| Lokal sensordemo | Kjørt – bestått |
 | Full benchmarkbank | Tilgjengelig |
 | Fullskala brukertesting | Videre arbeid |
 
@@ -1154,3 +1157,26 @@ Resultat:
 Alle ni hovedtemaer besto sine representative golden-caser, inkludert at `G-LIV-01` ble vurdert som **Livssituasjoner**.
 
 Dette er siste verifiserte golden-resultat i prosjektet per 14.10.2026.
+
+
+---
+
+# Lokal sluttverifisering – utvidet regresjonspakke
+
+Etter innføring av lokal sensordemo og syntakskontroll ble `npm test` kjørt på nytt.
+
+Bekreftet i denne kjøringen:
+
+- syntakskontroll av `app.js`, `server.js` og scripts: **bestått**
+- personvern: **33/33**
+- simulator: **24/24**
+- server-personvern: **bestått**
+- UI-regresjon: **bestått**
+- historikk: **bestått**
+- snakkeboble: **bestått**
+- clipboard: **bestått**
+- golden-schema: **9/9 temaer**
+- golden matcher-regresjon: **bestått**
+- sensor-demo-regresjon: **bestått**
+
+Repo-strukturtesten ble startet som siste steg i den delte terminalutskriften, men sluttlinjen var ikke med i kopiert output. Repo-strukturen er separat kontrollert og inneholder ingen `.env`, `node_modules`, build/dist, ZIP- eller backupfiler i dagens master. Lokal sluttstatus for akkurat `npm run test-repo-structure` skal derfor ikke påstås før sluttekoden/OK-linjen er sett.

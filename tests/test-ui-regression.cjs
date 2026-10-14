@@ -16,3 +16,16 @@ assert(!/<details[^>]*\sopen(?:\s|>|=)/.test(html), 'En eller flere details er Ã
 console.log('v20.10.3 UI-kontroll: OK');
 
 
+
+
+function assertUi(condition, message) {
+  if (!condition) {
+    console.error("FEIL - " + message);
+    process.exitCode = 1;
+  }
+}
+
+assertUi(/id=["']continue-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: continue-input mangler aria-label");
+assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: direct-simulation-situation mangler aria-label");
+assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
+if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");

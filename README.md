@@ -194,6 +194,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - snakkeboble-regresjonstest
 - golden matcher-regresjonstest
 - syntakskontroll av hovedkode
+- lokal sensor-demo-regresjon: bestått
 - repo-struktur/kjørbarhet kontrolleres gjennom egne regresjonstester
 
 Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.

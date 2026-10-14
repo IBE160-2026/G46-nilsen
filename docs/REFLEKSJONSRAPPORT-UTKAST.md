@@ -372,6 +372,7 @@ Sentrale spor som underbygger refleksjonen:
 - clipboard-regresjon: bestått
 - golden-schema: 9/9 hovedtemaer
 - golden matcher-regresjon: bestått
+- lokal sensor-demo-regresjon: bestått
 - siste verifiserte live golden-kjøring mot GPT-5.6 Luna: 9/9 OK, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil
 
-**Merknad:** Den nye lokale sensordemo-regresjonen er lagt til etter siste fullstendige lokale testkjøring og skal først omtales som «verifisert» etter at `npm test` er kjørt på nytt.
+**Merknad:** Den delte terminalutskriften viste at repo-strukturtesten startet som siste steg, men selve OK-linjen var ikke med i kopien. Repoet er separat kontrollert som ryddig, men lokal `test-repo-structure` bør bekreftes med sluttlinjen før rapporten ferdigstilles.

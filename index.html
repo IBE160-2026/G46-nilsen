@@ -322,7 +322,7 @@
             </div>
             <div id="conversation-thread" class="conversation-thread" aria-live="polite"></div>
             <form id="continue-form" class="continue-form" autocomplete="off">
-              <textarea id="continue-input" rows="2" autocomplete="off" placeholder="Skriv for eksempel: Hva gjør jeg hvis hen sier at dette er urettferdig?"></textarea>
+              <textarea id="continue-input" rows="2" autocomplete="off" aria-label="Spør videre i samtalen" placeholder="Skriv for eksempel: Hva gjør jeg hvis hen sier at dette er urettferdig?"></textarea>
               <button type="submit" class="primary-button">Spør videre</button>
             </form>
           </section>
@@ -378,7 +378,7 @@
               <h3>Hva skal du øve på?</h3>
               <p>Beskriv bare det medarbeideren og lederen trenger for at øvelsen skal gi mening. Unngå navn og andre identifiserende opplysninger.</p>
             </div>
-            <textarea id="direct-simulation-situation" rows="4" placeholder="Eksempel: En medarbeider har hatt flere fraværsperioder det siste året. Jeg vil snakke om hvordan arbeidssituasjonen fungerer og om det er behov for tilrettelegging." required></textarea>
+            <textarea id="direct-simulation-situation" rows="4" aria-label="Beskriv situasjonen du vil øve på" placeholder="Eksempel: En medarbeider har hatt flere fraværsperioder det siste året. Jeg vil snakke om hvordan arbeidssituasjonen fungerer og om det er behov for tilrettelegging." required></textarea>
             <div id="direct-simulation-privacy" class="privacy-check" hidden></div>
             <div class="direct-simulation-actions">
               <button class="secondary-button" id="cancel-direct-simulation" type="button">Avbryt</button>
@@ -458,7 +458,7 @@
                 <div class="simulation-help-result" id="simulation-help-result" hidden></div>
               </div>
               <form id="simulation-form" class="simulation-form" autocomplete="off">
-                <textarea id="simulation-input" rows="2" placeholder="Skriv det du ville sagt …" required></textarea>
+                <textarea id="simulation-input" rows="2" aria-label="Skriv det du vil si i simuleringen" placeholder="Skriv det du ville sagt …" required></textarea>
                 <div class="simulation-input-meta">Enter for å sende · Shift + Enter for linjeskift</div>
                 <div id="simulation-turn-privacy" class="privacy-check simulation-turn-privacy privacy-idle"><strong>Personvernsjekk</strong><span>Ingen tydelige personopplysninger er oppdaget i teksten.</span></div>
                 <div class="simulation-form-actions">
