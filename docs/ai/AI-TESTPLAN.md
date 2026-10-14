@@ -400,7 +400,7 @@ Testgrunnlag:
 tests/AI-AUTOTEST-CASES.json
 ```
 
-Dette settet inneholder 24 testcaser og brukes som rask regresjonskontroll.
+Dette settet inneholder 27 testcaser og brukes som rask regresjonskontroll.
 
 Det representerer ikke alene full tematisk dekning for hele dagens produkt.
 
@@ -786,13 +786,12 @@ Den deterministiske testen skal kunne brukes som rask regresjon uten at alle vur
 
 # 33. Testresultater og Git
 
-Genererte testresultater lagres lokalt under:
+Genererte testresultater lagres lokalt og er ikke en del av det versjonerte repoet. Plasseringen avhenger av testtypen:
 
-```text
-test-results/
-```
+- ordinære/simulator-live rapporter kan ligge i `test-results/`
+- golden/fasit-rapporter ligger i `tests/test-results/`
 
-Denne mappen er ikke en del av det versjonerte repoet.
+Begge er genererte testartefakter og skal ikke behandles som kildekode.
 
 Formålet er å:
 
