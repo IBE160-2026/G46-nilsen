@@ -21,7 +21,7 @@ const allowedRootFiles = new Set([
   "server.js",
   "styles.css"
 ]);
-const allowedRootDirs = new Set(["assets", "data", "database", "docs", "scripts", "tests"]);
+const allowedRootDirs = new Set(["assets", "data", "database", "docs", "scripts", "src", "tests"]);
 
 const trackedRootItems = [...new Set(tracked.map(file => file.split("/")[0]))].sort();
 const unexpected = trackedRootItems.filter(item =>
