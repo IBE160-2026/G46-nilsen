@@ -1178,4 +1178,4 @@ Bekreftet i denne kjøringen:
 - golden matcher-regresjon: **bestått**
 - sensor-demo-regresjon: **bestått**
 
-Repo-strukturtesten ble startet som siste steg i den delte terminalutskriften, men sluttlinjen var ikke med i kopiert output. Repo-strukturen er separat kontrollert og inneholder ingen `.env`, `node_modules`, build/dist, ZIP- eller backupfiler i dagens master. Lokal sluttstatus for akkurat `npm run test-repo-structure` skal derfor ikke påstås før sluttekoden/OK-linjen er sett.
+Etter den påfølgende sluttkjøringen ble også repo-strukturtesten og de nye integrasjonskontrollene verifisert grønne. Hele den deterministiske `npm test`-pakken besto etter modularisering, asset-retting, UU-endringer og package-lock-synkronisering.
