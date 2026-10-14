@@ -1181,3 +1181,22 @@ Denne sluttkjøringen er viktig fordi 9/9-resultatet ikke bare er et resultat av
 - menneskelig fasit ble beholdt ved siden av automatikken
 
 Prosessen viser forskjellen mellom å optimalisere for grønn test og å forbedre testens validitet.
+
+
+---
+
+## 2026-10-14 – Kontrollert modularisering og asset-feil
+
+I en streng sluttgjennomgang ble store hovedfiler identifisert som prosjektets tydeligste kodekvalitetssvakhet.
+
+I stedet for en risikabel totalrefaktorering ble tre rene ansvar flyttet ut:
+
+- statiske klientdata → `src/client-data.js`
+- serverens temakontrakt → `src/server/topic-contracts.js`
+- KI-responsskjemaer → `src/server/ai-schemas.js`
+
+Dette reduserte størrelsen på `app.js` og `server.js` uten å flytte autentisering, databaseflyt eller levende UI-state.
+
+Under samme gjennomgang ble det oppdaget at produksjonsserverens eksplisitte asset-allowlist inneholdt nested bilder, mens ruten som serverte filer bare håndterte ett path-segment. Dette ble rettet uten å åpne en generell statisk mappe. En ny integrasjonstest kontrollerer at tillatte frontend-assets kan hentes, samtidig som `.env`, dokumentasjon og interne servermoduler forblir utilgjengelige.
+
+Læring: kodekvalitet bør forbedres med målrettede endringer og testbevis, ikke ved å refaktorere mest mulig rett før levering.
