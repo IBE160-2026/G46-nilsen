@@ -183,6 +183,7 @@ npm run test-clipboard
 npm run test-golden-schema
 npm run test-golden-utils
 npm run test-sensor-demo
+npm run test-public-assets
 npm run test-repo-structure
 ```
 
@@ -195,6 +196,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - golden matcher-regresjonstest
 - syntakskontroll av hovedkode
 - lokal sensor-demo-regresjon: bestått
+- produksjonsserverens offentlige frontend-assets kontrolleres med egen integrasjonstest
 - repo-struktur/kjørbarhet kontrolleres gjennom egne regresjonstester
 
 Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele den lokale testpakken ble verifisert etter utvidelsen. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.

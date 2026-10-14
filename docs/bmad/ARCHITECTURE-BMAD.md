@@ -1269,3 +1269,16 @@ Produksjonsarkitekturen bruker Supabase og ekstern KI-provider. For at repoet sa
 Demomodus skal derfor brukes til å kontrollere brukerflyt og lokal kjørbarhet. Den skal ikke brukes som bevis på faglig kvalitet i de ekte KI-svarene; dette dokumenteres gjennom live KI-tester, golden/fasit og publisert testversjon.
 
 Regresjonstest: `tests/test-sensor-demo.cjs`.
+
+
+## Nested frontend-assets og eksplisitt allowlist
+
+Sluttkontroll av produksjonsserveren avdekket at allowlisten inneholdt filer under `assets/images/`, mens den opprinnelige Express-ruten bare matchet ett path-segment. Dette kunne gjøre nested assets utilgjengelige fra dagens `server.js`.
+
+Ruten ble endret til å kontrollere hele request-pathen mot samme eksplisitte allowlist. Sikkerhetsprinsippet er dermed beholdt:
+
+- bare eksplisitt godkjente frontendfiler kan serveres
+- `.env`, tester, dokumentasjon og databasefiler er fortsatt ikke offentlig tilgjengelige
+- nested bilder under `assets/images/` kan faktisk nås
+
+Dette kontrolleres av `tests/test-public-assets.cjs`, som starter produksjonsserveren i testmiljø og verifiserer både tillatte og blokkerte filer.

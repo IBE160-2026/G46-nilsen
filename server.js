@@ -98,8 +98,8 @@ const publicAssetNames = new Set([
   "assets/images/topics/topic-samarbeid-kommunikasjon.png", "assets/images/topics/topic-sikkerhet-ansvar.png", "assets/images/topics/topic-mobbing-trakassering.png"
 ]);
 app.get("/", (_req, res) => res.sendFile(path.join(__dirname, "index.html")));
-app.get("/:asset", (req, res, next) => {
-  const asset = String(req.params.asset || "");
+app.use((req, res, next) => {
+  const asset = decodeURIComponent(String(req.path || "").replace(/^\/+/, ""));
   if (!publicAssetNames.has(asset)) return next();
   return res.sendFile(path.join(__dirname, asset));
 });
