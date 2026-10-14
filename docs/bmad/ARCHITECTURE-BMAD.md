@@ -1071,6 +1071,15 @@ Tiltak:
 
 Den leverte løsningen er en prototype.
 
+En kjent vedlikeholdbarhetsbegrensning er at hovedfrontend, server og stilark fortsatt er relativt store filer. Ved siste kontroll var omtrentlige størrelser:
+
+- `app.js`: ca. 3600 linjer
+- `server.js`: ca. 1800 linjer
+- `styles.css`: ca. 6450 linjer
+- `index.html`: ca. 900 linjer
+
+Dette fungerer i dagens prototype og er dekket av regresjonstester, men en videre produksjonsmodning bør splitte ansvar i mindre moduler. En slik sen refaktorering er bevisst ikke gjort rett før levering fordi den ville økt regresjonsrisikoen uten å endre produktverdien.
+
 Følgende er derfor ikke fullført som produksjonsarkitektur:
 
 - full skaleringsarkitektur
