@@ -48,3 +48,12 @@ for (const required of [".env", "node_modules"]) {
 }
 
 console.log("Repo-struktur: OK");
+
+
+const packageJson = JSON.parse(require("node:fs").readFileSync(path.join(root, "package.json"), "utf8"));
+const packageLock = JSON.parse(require("node:fs").readFileSync(path.join(root, "package-lock.json"), "utf8"));
+assert.equal(packageLock.name, packageJson.name, "package-lock.json har annet pakkenavn enn package.json");
+assert.equal(packageLock.version, packageJson.version, "package-lock.json er ikke synkronisert med package.json-versjonen");
+assert.equal(packageLock.packages?.[""]?.version, packageJson.version, "Rotpakken i package-lock.json har feil versjon");
+assert.deepEqual(packageLock.packages?.[""]?.dependencies || {}, packageJson.dependencies || {}, "Rotavhengighetene i package-lock.json er ikke synkronisert");
+console.log("Package-lock-konsistens: OK");
