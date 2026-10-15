@@ -148,3 +148,34 @@ Siste dokumenterte lokale regresjonspakke omfatter blant annet:
 - golden matcher-regresjon: bestått
 
 Disse resultatene brukes som testbevis, men erstatter ikke manuell kvalitetsvurdering av KI-svar.
+
+
+## 15.10.2026 – Teorikobling og videre arbeidsmetode (arbeidsnotat, ikke sluttrapport)
+
+**Bakgrunn:** Forelesningene i IBE160 (særlig 28.09, 06.10 og 08.10) framhever *Context Engineering* som sentral teori. Vi skal bruke teori i selve utviklingsprosessen, ikke bare omtale den i refleksjonsrapporten. Dette er en plan for videre arbeid og en tolkningsramme for tidligere hendelser – ikke påstand om at alle tiltak allerede er implementert.
+
+| Erfaring dokumentert i prosjektet | Relevant fagbegrep | Hva vi bør etterprøve eller dokumentere |
+| --- | --- | --- |
+| KI foreslo/utførte designendringer utenfor bestilt område | Prompt Engineering, avgrensning av agentoppgaver | Konkret bestilling, diff, hvilke elementer skulle forbli uendret, test og korrigering |
+| Lange og sammensatte KI-dialoger kan føre til at tidligere føringer overses eller blandes | Context Engineering, Context Rot, *lost in the middle*, distraktorer | Sammenlign fokuserte oppgaver mot lange økter; dokumenter hva som faktisk forårsaket feilen |
+| Personvernregler kunne stoppe vanlige ord eller nødvendig kontekst | Kravspesifikasjon, kvalitetskontroll og regresjonstesting | Eksempelcase, endret regel og tilhørende personverntest |
+| Golden-test kunne gi falske positive eller grønne resultater på feil premiss | Non-determinisme, evalueringsdesign, menneskelig verifikasjon | Vis både opprinnelig testfeil, årsaksanalyse og regresjonstest |
+| KI-svar kan støtte et råd med en lite relevant kilde | Knowledge cutoff, retrieval, kildepresisjon | Kontroller om kilden faktisk underbygger den konkrete påstanden |
+| KI-genererte endringer kan påvirke fungerende kode | Git, diff-review, regresjonstesting | Avgrens commits, sammenlign endringer og test tilstøtende funksjoner |
+| Lange agentøkter og mye verktøyutdata øker kontekstbruk | Statelessness, tokens, compaction, retrieval | Bruk bare relevante filer, korte oppsummeringer og begrenset verktøyutdata; mål når mulig |
+
+### Arbeidsregler vi vil prøve i videre utvikling
+
+1. Én tydelig avgrenset endring om gangen, med eksplisitt «skal ikke endres».
+2. Les relevante eksisterende prosjektfiler før KI foreslår ny kode. Ikke fyll konteksten med hele repoet hvis bare få filer er relevante.
+3. Ved gjentatte feil: stans, undersøk kode og tidligere instrukser, vurder ny kort agentøkt fremfor å gjenta prompten.
+4. Inspiser diff og kjør målrettede tester; ved større endringer også relevante regresjonstester.
+5. Noter konkrete avvik i eksisterende KI-logg/refleksjonsnotater med dato, kilde (commit/test/prompt der den finnes), årsakshypotese, tiltak og resultat.
+6. Skill mellom dokumenterte feilårsaker og mulige forklaringer. Ikke kall enhver misforståelse «Context Rot».
+7. La BMAD og refleksjonsrapport være levende fram til senere sluttkontroll; oppdater status ut fra faktisk implementasjon og gjennomførte tester.
+
+### Sporbarhet og vurdering
+
+Det er opplyst som en **sannsynlig, ikke bekreftet**, vurderingsform at KI kan lese hele Git-historikken opp mot sensorveiledningen, mens en menneskelig sensor tester appen. Derfor skal dokumentasjonen være lesbar og kontrollerbar for begge, uten å skrive for en tenkt KI-sensor eller pynte på historikken.
+
+Før innlevering: følg den endelige sensorveiledningen, sjekk at README, Product Brief, BMAD, tester og refleksjonsrapport beskriver samme faktiske versjon. Eldre formuleringer som «status ved levering» og «sluttkontroll» skal kontrolleres på nytt; prosjektet er fortsatt under utvikling per 15.10.2026.
