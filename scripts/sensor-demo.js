@@ -29,7 +29,7 @@ const topics = [
   { id:"avslutning-arbeidsforhold", title:"Avslutning av arbeidsforhold", subtopic:"Vurdering før avslutning", words:["oppsigelse","avslutte arbeidsforhold","nedbemanning"] },
   { id:"sikkerhet-ansvar", title:"Sikkerhet og ansvar", subtopic:"Sikkerhetsrutiner og avvik", words:["sikkerhet","hms","risiko","truck","avvik"] },
   { id:"livssituasjoner", title:"Livssituasjoner", subtopic:"Krevende livssituasjon", words:["livssituasjon","familie","omsorg","samlivsbrudd","privat situasjon"] },
-  { id:"mobbing-trakassering", title:"Mobbing og trakassering", subtopic:"Mobbing og utestenging", words:["mobbing","trakassering","nedsettende","utestengt","uønsket seksuell"] }
+  { id:"mobbing-trakassering", title:"Mobbing og trakassering", subtopic:"Uønsket fysisk kontakt og grenseoverskridelser", words:["mobbing","trakassering","nedsettende","utestengt","uønsket seksuell","uønsket fysisk kontakt","tar på meg","stryker meg","berører meg","tar på kroppen","kommer meg unna"] }
 ];
 
 const history = [];
@@ -38,8 +38,10 @@ function inferTopic(text, selectedId = "") {
   const selected = topics.find(topic => topic.id === selectedId);
   if (selected) return selected;
   const q = String(text || "").toLocaleLowerCase("nb-NO");
-  let best = topics[2];
-  let bestScore = -1;
+  // Uten nøkkelordtreff skal demoen ikke velge første tema (alkohol og rus).
+  // Samarbeid er en nøytral fallback i mock-demoen, ikke en faglig klassifisering.
+  let best = topics.find(topic => topic.id === "samarbeid-kommunikasjon");
+  let bestScore = 0;
   for (const topic of topics) {
     const score = topic.words.reduce((sum, word) => sum + (q.includes(word) ? 1 : 0), 0);
     if (score > bestScore) {
