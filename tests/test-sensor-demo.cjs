@@ -48,8 +48,19 @@ async function jsonRequest(url, options) {
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ situation: "En kollega skal hele tiden ta på meg, ikke seksuelt, men stryker meg på ryggen, armene og skuldrene. Jeg liker det ikke og prøver hver gang å komme meg unna. Hvordan skal jeg ta det opp med hen?" })
     });
-    if (!physicalContact.response.ok || physicalContact.payload?.primary_topic_id !== "mobbing-trakassering") {
+    if (!physicalContact.response.ok || physicalContact.payload?.primary_topic_id !== "mobbing-trakassering" || physicalContact.payload?.primary_subtopic !== "Krenkende eller utilbørlig atferd") {
       throw new Error("Demo-temasortering feilet for uønsket fysisk kontakt");
+    }
+
+    const physicalContactVariant = await jsonRequest("/api/classify-topic", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ situation: "En kollega har begynt å bli veldig nærgående på jobb. Vedkommende legger ofte hånden på skulderen min, stryker meg over ryggen og tar meg på armen når vi snakker sammen. Jeg har flere ganger trukket meg unna, men kollegaen fortsetter. Jeg oppfatter ikke dette som seksuelt, men synes det er ubehagelig og gruer meg til å være alene med personen. Hvordan kan jeg ta dette opp på en tydelig måte uten å skape unødvendig konflikt?" })
+    });
+    if (!physicalContactVariant.response.ok ||
+        physicalContactVariant.payload?.primary_topic_id !== "mobbing-trakassering" ||
+        physicalContactVariant.payload?.primary_subtopic !== "Krenkende eller utilbørlig atferd") {
+      throw new Error("Demo-temasortering eller undertema feilet for alternativ beskrivelse av uønsket fysisk kontakt");
     }
 
     const analysis = await jsonRequest("/api/analyze-situation", {
