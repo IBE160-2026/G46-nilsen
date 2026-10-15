@@ -410,14 +410,14 @@ function findLikelyGivenName(source) {
   mandag tirsdag onsdag torsdag fredag lørdag søndag uke uken måned måneden dag dagen år tiden perioden
   dette det den en et jeg vi du de hen han hun noen ingen alle flere mye lite kanskje derfor fordi dersom
   `.split(/\s+/).filter(Boolean));
-  const contextualPattern = /(?:^|[.!?]\s+|\b(?:med|til|fra|hos|om)\s+)([\p{L}][\p{L}'’-]{2,30})\s+(?:er|var|har|hadde|ble|blir|skal|vil|kan|må|sier|sa|jobber|arbeider|ønsker|mener|kommer|møter|trenger|opplever)\b/giu;
+  const contextualPattern = /(?:^|[.!?]\s+|\b(?:med|til|fra|hos)\s+)([\p{L}][\p{L}'’-]{2,30})\s+(?:er|var|har|hadde|ble|blir|skal|vil|kan|må|sier|sa|jobber|arbeider|ønsker|mener|kommer|møter|trenger|opplever)\b/giu;
   for (const match of text.matchAll(contextualPattern)) {
     const candidate = match[1];
     const normalized = normalizeNameToken(candidate);
     if (NAME_FALSE_POSITIVES.has(normalized) || contextualNonNames.has(normalized)) continue;
     if (isKnownGivenName(candidate)) return candidate;
     // Ukjente småbokstav-kandidater flagges bare etter en sterk relasjonspreposisjon, ikke bare fordi et vanlig ord står først i en setning.
-    if (/^(?:med|til|fra|hos|om)\s+/iu.test(match[0]) && /^[\p{L}]{3,16}$/u.test(candidate)) return candidate;
+    if (/^(?:med|til|fra|hos)\s+/iu.test(match[0]) && /^[\p{L}]{3,16}$/u.test(candidate)) return candidate;
   }
 
   return null;
