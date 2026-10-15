@@ -42,6 +42,16 @@ async function jsonRequest(url, options) {
       throw new Error("Demo-bruker mangler");
     }
 
+    // Regresjon: uønsket berøring uten seksuell motivasjon skal ikke bli alkohol/rus.
+    const physicalContact = await jsonRequest("/api/classify-topic", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ situation: "En kollega skal hele tiden ta på meg, ikke seksuelt, men stryker meg på ryggen, armene og skuldrene. Jeg liker det ikke og prøver hver gang å komme meg unna. Hvordan skal jeg ta det opp med hen?" })
+    });
+    if (!physicalContact.response.ok || physicalContact.payload?.primary_topic_id !== "mobbing-trakassering") {
+      throw new Error("Demo-temasortering feilet for uønsket fysisk kontakt");
+    }
+
     const analysis = await jsonRequest("/api/analyze-situation", {
       method: "POST",
       headers: { "content-type": "application/json" },
