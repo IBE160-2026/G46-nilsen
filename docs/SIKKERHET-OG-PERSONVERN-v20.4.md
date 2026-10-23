@@ -241,3 +241,23 @@ Ingen webapplikasjon kan garanteres å være uten sårbarheter. v20.4 reduserer 
 8. Test login, passordreset, historikk, kontoeksport og kontosletting med en testbruker.
 9. Kontroller i nettleserens Network-panel at API-responser har sikkerhetsheaderne.
 
+
+
+## 17. Render-varsel og Node.js-sikkerhetsoppdatering – oktober 2026
+
+Render varslet om eMudhra-sertifikatkompromittering og flere Node.js-sårbarheter som er relevante for tjenester som bruker Node.js og gjør HTTPS-kall til eksterne tjenester.
+
+Samtalestøtte bruker Node.js og kommuniserer over HTTPS med blant annet Supabase og KI-provider. Runtime-kravet ble derfor oppdatert i `package.json` til:
+
+`>=26.12.1 <27`
+
+Begrunnelsen for intervallet er:
+
+- Node 26.12.1 er den første sikkerhetspatchede Node 26-versjonen Render anbefaler for dette varselet.
+- eldre Node 26-versjoner avvises
+- senere patch-/minor-versjoner i Node 26 kan brukes automatisk
+- Node 27 tillates ikke uten en egen kompatibilitetsvurdering
+
+Det ble bevisst valgt et avgrenset versjonsintervall fremfor å fryse applikasjonen til nøyaktig 26.12.1. Dette reduserer risikoen for at senere sikkerhetspatcher i samme hovedversjon krever en ny kodeendring.
+
+Etter endringen skal Render-tjenesten bygges og deployes på nytt slik at både Node-runtime og systemets sertifikatlager oppdateres.

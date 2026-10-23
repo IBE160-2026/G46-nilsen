@@ -1231,3 +1231,38 @@ Dette ble korrigert etter ny gjennomgang. Det høye linjetallet skyldes i stor g
 Læring: fysisk linjetall er et svakt kvalitetsmål alene. Vedlikeholdbarhet bør heller vurderes ut fra ansvar, kobling, duplisering, testbarhet og hvor lett en endring kan gjøres uten sideeffekter.
 
 Derfor ble den kontrollerte modulariseringen beholdt for `app.js` og `server.js`, mens CSS-en ikke ble minifisert bare for å få et lavere linjetall.
+
+
+---
+
+## 2026-10-23 – Render-sikkerhetsvarsel og Node-runtime
+
+Render sendte et sikkerhetsvarsel om eMudhra-sertifikatkompromittering og flere nye Node.js-sårbarheter. Samtalestøtte er relevant fordi løsningen kjører Node.js og gjør utgående HTTPS-kall til eksterne tjenester.
+
+Første vurdering var å låse runtime eksakt til Node 26.12.1. Dette ble revurdert fordi en eksakt pinning også ville hindre automatisk bruk av senere sikkerhetspatcher innen samme hovedversjon.
+
+Endelig løsning:
+
+`package.json -> engines.node = ">=26.12.1 <27"`
+
+Dette valget:
+
+- avviser eldre, ikke-patchede Node 26-versjoner
+- tillater nyere Node 26-sikkerhetsoppdateringer
+- hindrer automatisk hopp til Node 27 uten ny vurdering
+
+Render-dokumentasjonen anbefaler en øvre grense for slike versjonsintervaller, og eksisterende Render-tjenester kan ellers beholde eldre standardversjoner.
+
+`package-lock.json` ble synkronisert med samme runtime-krav. Sikkerhetsdokumentasjonen og README ble oppdatert tilsvarende.
+
+Neste operasjonelle steg er redeploy på Render slik at tjenesten faktisk bygges med oppdatert Node-runtime og sertifikatlager.
+
+### Refleksjon
+
+Dette var et eksempel på at sikkerhetsoppdatering ikke bare betyr «bruk siste versjon». Kravet måtte balansere tre hensyn:
+
+1. være ny nok til å inneholde sikkerhetsfiksen
+2. tillate senere patcher i samme hovedversjon
+3. unngå ukontrollert major-oppgradering som kan gi kompatibilitetsfeil
+
+Valget ble derfor et avgrenset semver-intervall i stedet for en eksakt versjon eller en ubundet `>=26`.

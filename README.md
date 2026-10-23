@@ -83,9 +83,13 @@ Prototypen har ni hovedtemaer:
 
 Prosjektet er utviklet og testet med:
 
-- Node.js 26.7.0
+- Node.js 26.12.1 eller nyere innen Node 26
 - npm 11.19.0
 - Git
+
+### Node-versjon for Render
+
+`package.json` angir `>=26.12.1 <27`. Dette betyr at tjenesten ikke kan bygges med en eldre Node 26-versjon enn sikkerhetsutgaven 26.12.1, samtidig som senere patch-/minor-utgaver innen Node 26 kan brukes uten ny kodeendring.
 
 ### Klon repoet
 
