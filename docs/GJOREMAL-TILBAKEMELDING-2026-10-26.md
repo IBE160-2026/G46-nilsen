@@ -70,14 +70,14 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - Om-siden og bruksvilkårene beskriver relevant kompetanse flerfaglig, ikke bare som HR/jus.
   - UI-regresjonstesten kontrollerer at advarselen fortsatt finnes.
 
-- [ ] **Kjør utvidet golden-bank live**
+- [x] **Kjør utvidet golden-bank live**
   - `npm run test-golden-schema` og hele `npm test` ble kjørt 26.10.2026 og besto etter golden-utvidelsen.
   - Golden-schema: 21 caser · 9/9 hovedtemaer · minst 2 per tema · ekstra risikodekning · provenance dokumentert.
   - Runtime-/retensjonsendringene og repo-strukturendringen er kontrollert; deterministisk teststatus er grønn på nyeste kode.
-  - Gjenstår: `npm run test-ai:golden` med gyldig KI-konfigurasjon.
-  - Gjennomgå alle BØR SJEKKES/KRITISK AVVIK manuelt; ikke endre testen bare for å få grønt.
-  - Oppdater README/testplan med faktisk live-resultat for 21-casersbanken.
-  - Behold skillet mellom maskinelt resultat og faglig/manuell vurdering.
+  - Kjørt 26.10.2026 mot GPT-5.6 Luna.
+  - Resultat: **19 OK · 2 BØR SJEKKES · 0 kritiske avvik · 0 tekniske feil**.
+  - `G-AVSL-03` og `G-SAMARB-02` ble manuelt gjennomgått og vurdert som faglig akseptable; begge var flagget fordi `Avklaring` stod som nei, ikke fordi MÅ-fasiten eller sikkerhetskravene sviktet.
+  - README, testplan og refleksjon dokumenterer faktisk resultat uten å omskrive det til 21/21 maskinelt OK.
 
 ## Prioritet 3 – brief og produktposisjonering
 
@@ -135,10 +135,10 @@ Tilsvarende skal KI-testingen ikke framstilles som ekstern faglig godkjenning. P
   - Repo-strukturtesten ble oppdatert for disse tilsiktede kursfilene og framtidig `.logs/`, og `npm run test-repo-structure` besto deretter.
   - Deterministisk teststatus er grønn før live KI-kjøring.
 
-- [ ] **Kjør 21-casers golden-bank live**
-  - `npm run test-ai:golden`
-  - Gjennomgå alle `BØR SJEKKES` og `KRITISK AVVIK` manuelt.
-  - Skill mellom modellfeil, testfeil og reell faglig uenighet.
+- [x] **Kjør 21-casers golden-bank live**
+  - Kjørt mot GPT-5.6 Luna: **19 OK · 2 BØR SJEKKES · 0 kritisk · 0 teknisk**.
+  - De to gule casene ble manuelt vurdert mot fasiten og akseptert som faglig forsvarlige.
+  - Ingen test eller runtime ble endret bare for å oppnå grønnere resultat.
 
 - [ ] **Deploy nyeste commit til Render**
   - Gjør dette først etter grønn lokal regresjon.
