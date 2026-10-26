@@ -1448,31 +1448,32 @@
       "time_sensitive": false
     },
     {
-      "id": "CIPD_FEEDBACK_2024",
-      "type": "forskningsbasert kunnskapsoppsummering",
-      "title": "Improving feedback to improve performance",
+      "id": "CIPD_PERFORMANCE_FEEDBACK_2022",
+      "type": "evidensgjennomgang",
+      "title": "Performance feedback: An evidence review",
       "author": "CIPD",
-      "year": 2024,
-      "url": "https://www.cipd.org/en/knowledge/bitesize-research/improving-feedback/",
+      "year": 2022,
+      "url": "https://prod.cipd.org/en/knowledge/evidence-reviews/performance-feedback/",
       "topics": [
         "Prestasjon og utvikling",
         "Samarbeid og kommunikasjon",
         "Lønn og utvikling"
       ],
       "principles": [
-        "Feedback fungerer best som en toveis samtale fremfor ren enveiskommunikasjon.",
-        "Lederens lytting og relasjonen påvirker hvordan feedback mottas og brukes.",
-        "Konkret og relevant feedback bør støtte læring og videre utvikling."
+        "Feedback bør være spesifikk, konstruktiv og knyttet til et troverdig og rimelig vurderingsgrunnlag.",
+        "Medarbeideren bør kunne respondere på feedback slik at prosessen blir toveis og konsultativ.",
+        "Opplevd rettferdighet og nytte påvirker hvordan feedback mottas og om den bidrar til forbedring."
       ],
       "use_when": [
         "feedback",
         "prestasjon",
         "utvikling",
         "vanskelig samtale",
-        "lytting",
-        "forventninger"
+        "forventninger",
+        "rettferdighet"
       ],
       "authority": "high",
+      "note": "CIPD evidence review publisert 20.09.2022. Brukes som praktisk evidensoppsummering, ikke som eneste faglige kilde.",
       "last_verified": "2026-10-26",
       "time_sensitive": false
     }
