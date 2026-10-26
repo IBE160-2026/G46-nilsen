@@ -300,6 +300,10 @@ Sikkerhet og personvern:
 
 - `docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
 
+Brukertesting:
+
+- `docs/BRUKERTEST-PLAN.md` – felles pilotopplegg, personvern, tolkning og metodiske begrensninger
+
 Faggrunnlag:
 
 - `docs/faggrunnlag/`
