@@ -32,28 +32,27 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
 
 ## Prioritet 2 – faglig kvalitetssikring av KI
 
-- [ ] **Oppdater AI-TESTPLAN med begrensningene i faglig validering**
-  - Golden-banken dekker 9/9 hovedtemaer, men ikke alle 56 undertemaer.
-  - Fasiten er utviklet i prosjektet og er ikke uavhengig validert av HR-/arbeidsrettsfaglig ekspert.
-  - Dette skal beskrives som en reell metodisk begrensning, ikke skjules.
-  - Skill mellom teknisk/strukturell testing og faglig ekspertvalidering.
+- [x] **Oppdater AI-TESTPLAN med begrensningene i faglig validering**
+  - Testplanen skiller nå eksplisitt mellom teknisk/strukturell/fasitbasert testing og uavhengig faglig ekspertvalidering.
+  - Det står tydelig at fasiten er utviklet i prosjektet og ikke er validert av HR-/arbeidsrettsekspert.
+  - Begrensningen er formulert som en metodisk begrensning og koblet til produktets avgrensede rolle.
+  - Det presiseres at golden-banken ikke er full faglig fasit for alle 56 undertemaer.
 
-- [ ] **Presiser rollen til Samtalestøtte**
-  - Samtalestøtte er et veiledende og støttende verktøy.
-  - Løsningen kan ikke erstatte HR, juridisk bistand, helsepersonell eller annen relevant fagkompetanse i saker som krever dette.
-  - KI-en skal ikke stille diagnoser, fastslå skyld/motiv, gi bindende juridiske råd eller fatte personalbeslutninger.
-  - Manglende ekstern faglig validering må derfor sees sammen med produktets avgrensede rolle, men avgrensningen erstatter ikke behovet for å være åpen om testbegrensningen.
+- [x] **Presiser rollen til Samtalestøtte**
+  - AI-TESTPLAN og product brief beskriver løsningen som veiledende, støttende og treningsrettet.
+  - Det står eksplisitt at løsningen ikke erstatter HR, juridisk bistand, helsepersonell eller annen relevant fagkompetanse.
+  - Begrensningen brukes ikke som erstatning for faglig validering, men som en del av en ærlig risikovurdering.
 
-- [ ] **Utvid golden-testingen på de mest risikable områdene**
-  - Legg til minst 1–2 ekstra caser for **mobbing/trakassering**.
-  - Legg til minst 1–2 ekstra caser for **avslutning av arbeidsforhold**.
-  - Vurder også alkohol/rus dersom tiden tillater det.
-  - Test spesielt at svarene ikke blir bastante, juridisk bindende eller spekulerer i skyld/motiv.
+- [x] **Utvid golden-testingen på de mest risikable områdene**
+  - Golden-banken er utvidet fra 9 til 13 caser.
+  - Mobbing/trakassering har nå tre golden-caser totalt, inkludert uønsket fysisk kontakt og samtale med den et varsel gjelder.
+  - Avslutning av arbeidsforhold har nå tre golden-caser totalt, inkludert prøvetid og nedbemanning.
+  - Schema-testen håndhever minst tre caser for hvert av disse to risikotemaene.
+  - Live-kjøring av de fire nye casene gjenstår før de kan omtales som live-verifisert.
 
-- [ ] **Ikke overdriv hva testene beviser**
-  - Formuler at testene dokumenterer konsistens mot prosjektets definerte fasit og sikkerhetsregler.
-  - Ikke skriv at testene dokumenterer «faglig korrekthet» i betydningen ekspertgodkjenning.
-  - Bruk heller formuleringer som «faglig rammesatt», «kildebasert», «testet mot prosjektets fasit» og «ikke eksternt ekspertvalidert».
+- [x] **Ikke overdriv hva testene beviser**
+  - README og AI-TESTPLAN skiller nå tydelig mellom samsvar med prosjektets fasit/sikkerhetsregler og ekstern ekspertgodkjenning.
+  - Den tidligere 9/9 live-kjøringen er beholdt som dokumentert historisk resultat, men de fire nye casene omtales ikke som live-verifisert før ny kjøring er gjort.
 
 ## Prioritet 3 – brief og produktposisjonering
 
