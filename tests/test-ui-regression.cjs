@@ -39,3 +39,7 @@ if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
 assert(/<script src=["']src\/client-data\.js\?v=20\.10\.3["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.10\.3["']><\/script>/.test(html), "Klientdata lastes ikke før app.js med riktig versjon");
 console.log("Klientmodul-innlasting: OK");
+
+// Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
+assert(html.includes('Veiledning – ikke faglig fasit'), 'Mangler synlig advarsel om at KI-råd ikke er faglig fasit');
+assert(html.includes('KI-råd kan være ufullstendige eller feil') || html.includes('KI-rådene er veiledning, ikke en faglig fasit'), 'Mangler tydelig begrensning om KI-rådenes usikkerhet');
