@@ -407,4 +407,4 @@ Sentrale spor som underbygger refleksjonen:
 - package-lock-konsistens: bestått
 - siste verifiserte live golden-kjøring mot GPT-5.6 Luna: 9/9 OK, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil
 
-**Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt etter den kontrollerte modulariseringen og besto, inkludert UI-regresjon, sensor-demo, offentlige frontend-assets, repo-struktur og package-lock-konsistens.
+**Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt etter den kontrollerte modulariseringen og besto, inkludert UI-regresjon, sensor-demo, offentlige frontend-assets, repo-struktur og package-lock-konsistens. Etter at golden-banken senere ble utvidet til 21 caser og brukeradvarsler/testdokumentasjon ble oppdatert, ble hele pakken kjørt på nytt 26.10.2026 og besto fortsatt. Golden-schemaet verifiserte samtidig 21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert fasitopphav.
