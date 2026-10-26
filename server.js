@@ -327,7 +327,8 @@ const RETENTION = {
   aiUsageDays: 90,
   feedbackAttachmentDays: 90,
   feedbackDays: 365,
-  benchmarkDays: 365
+  benchmarkDays: 365,
+  surveyDays: 365
 };
 let lastRetentionCleanup = 0;
 async function cleanupExpiredData() {
@@ -343,6 +344,8 @@ async function cleanupExpiredData() {
       .lt('created_at', isoDaysAgo(RETENTION.feedbackAttachmentDays));
     await supabaseAdmin.from('ai_response_feedback').delete().lt('created_at', isoDaysAgo(RETENTION.feedbackDays));
     await supabaseAdmin.from('benchmark_results').delete().lt('created_at', isoDaysAgo(RETENTION.benchmarkDays));
+    await supabaseAdmin.from('survey_responses').delete().lt('created_at', isoDaysAgo(RETENTION.surveyDays));
+    await supabaseAdmin.from('survey_participation').delete().lt('completed_at', isoDaysAgo(RETENTION.surveyDays));
   } catch (error) {
     console.warn('[retention] Opprydding kunne ikke fullføres:', error?.message || 'ukjent feil');
   }
