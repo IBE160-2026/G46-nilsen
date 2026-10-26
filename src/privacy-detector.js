@@ -64,10 +64,21 @@
   }
 
   function relationalUnknown(text){
-    const re=new RegExp("\\b(?:" + RELATION + "|" + ROLE + ")\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
-    for(const m of text.matchAll(re)){
+    const strong=new RegExp("\\b(?:snakket\\s+med|møte\\s+med|samtale\\s+med|" + ROLE + ")\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
+    for(const m of text.matchAll(strong)){
       const a=m[1], b=m[2];
       if(!candidateAllowed(a)) continue;
+      if(b && candidateAllowed(b) && (isKnownSurname(b) || looksTitleCased(b))) return a+" "+b;
+      return a;
+    }
+
+    const generic=new RegExp("\\b(?:med|til|fra|hos)\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
+    for(const m of text.matchAll(generic)){
+      const a=m[1], b=m[2];
+      if(!candidateAllowed(a)) continue;
+      const tail=text.slice((m.index||0)+m[0].length);
+      const personAfter=new RegExp("^\\s*(?:som\\s+)?(?:" + ACTION + ")\\b","iu").test(tail);
+      if(!(isKnownGivenName(a) || looksTitleCased(a) || personAfter)) continue;
       if(b && candidateAllowed(b) && (isKnownSurname(b) || looksTitleCased(b))) return a+" "+b;
       return a;
     }
