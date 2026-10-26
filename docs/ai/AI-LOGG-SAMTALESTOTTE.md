@@ -1266,3 +1266,21 @@ Dette var et eksempel på at sikkerhetsoppdatering ikke bare betyr «bruk siste 
 3. unngå ukontrollert major-oppgradering som kan gi kompatibilitetsfeil
 
 Valget ble derfor et avgrenset semver-intervall i stedet for en eksakt versjon eller en ubundet `>=26`.
+
+
+## 2026-10-26 – Node-kravet ble skilt mellom produksjon og sensor
+
+Faglærer verifiserte hele den deterministiske testpakken på Node 23.11 og påpekte at `engines.node = ">=26.12.1 <27"` kunne gjøre lokal oppstart unødvendig streng for sensor.
+
+Den tidligere løsningen blandet sammen to forskjellige behov:
+
+- produksjonen på Render skal bruke en sikkerhetspatchet runtime
+- sensor skal kunne kjøre demo og deterministiske tester uten å måtte installere nøyaktig samme produksjonsruntime
+
+Tiltaket ble derfor endret til:
+
+- `package.json -> engines.node = ">=22 <27"` som kompatibilitetsområde
+- Render beholder `NODE_VERSION=26.12.1` som produksjonskrav
+- README dokumenterer eksplisitt forskjellen mellom lokal kompatibilitet og produksjonssikkerhet
+
+Dette er også et eksempel på at et sikkerhetstiltak kan bli for strengt når samme regel brukes i en annen kontekst enn den opprinnelig var ment for.
