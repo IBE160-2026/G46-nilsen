@@ -855,7 +855,23 @@
   "vakt",
   "vakten",
   "rapport",
-  "rapporten"
+  "rapporten",
+  "møte",
+  "lege",
+  "kunden",
+  "kunde",
+  "brukeren",
+  "bruker",
+  "gruppen",
+  "gruppe",
+  "løsningen",
+  "systemet",
+  "verktøyet",
+  "appen",
+  "meldingen",
+  "fristen",
+  "arbeidsdagen",
+  "turnusen"
 ])
   });
 })(globalThis);
