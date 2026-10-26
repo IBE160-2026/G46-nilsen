@@ -42,3 +42,9 @@ for(const t of ['age','family_details','unique_role','workplace_detail']) assert
 console.log('v20.4 server privacy: OK');
 
 
+
+// Brukertest-retensjon er en del av dataminimeringen.
+assert(/surveyDays:\s*365/.test(source),'Brukertest-retensjon på 365 dager mangler');
+assert(/survey_responses'\)\.delete\(\)\.lt\('created_at',\s*isoDaysAgo\(RETENTION\.surveyDays\)\)/.test(source),'Automatisk sletting av survey_responses mangler');
+assert(/survey_participation'\)\.delete\(\)\.lt\('completed_at',\s*isoDaysAgo\(RETENTION\.surveyDays\)\)/.test(source),'Automatisk sletting av survey_participation mangler');
+console.log('Brukertest-retensjon: OK');
