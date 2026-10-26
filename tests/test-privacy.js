@@ -76,9 +76,12 @@ for (const [text, expected] of nameCases) {
 }
 for (const [text, expectedType] of privacyCases) {
   const findings = sandbox.detectSensitiveInfo(text);
-  const actual = expectedType ? findings.some(item => item.type === expectedType) : findings.length === 0;
+  const types = findings.map(x => x.type);
+  const hasExpected = expectedType ? types.includes(expectedType) : findings.length === 0;
+  const unexpectedName = expectedType !== 'name' && types.includes('name');
+  const actual = hasExpected && !unexpectedName;
   if (!actual) failures += 1;
-  console.log(`${actual ? 'OK' : 'FEIL'} personvern: ${text} -> ${findings.map(x => x.type).join(', ') || 'ingen'}`);
+  console.log(`${actual ? 'OK' : 'FEIL'} personvern: ${text} -> ${types.join(', ') || 'ingen'}${unexpectedName ? ' (uventet navnetreff)' : ''}`);
 }
 
 const fixInput = 'Medarbeideren har to døtre på 7 og 9.';
@@ -90,10 +93,16 @@ console.log(`${fixOk ? 'OK' : 'FEIL'} anonymisering: ${fixInput} -> ${fixed}`);
 
 const workInput='Jeg jobber i Forsvaret og medarbeideren brøt en sikkerhetsrutine.';
 const workFixed=sandbox.autoFixPrivacyText(workInput,sandbox.detectSensitiveInfo(workInput));
-const workOk=workFixed.includes('sikkerhetskritisk virksomhet') && !workFixed.includes('Forsvaret');
+const workOk=workFixed === 'Jeg jobber i en sikkerhetskritisk virksomhet og medarbeideren brøt en sikkerhetsrutine.';
 if(!workOk) failures += 1;
 console.log(`${workOk ? 'OK' : 'FEIL'} arbeidssted-anonymisering: ${workInput} -> ${workFixed}`);
 
+
+const familyNoNameInput='Medarbeideren bor med ektefellen og to barn.';
+const familyNoNameFindings=sandbox.detectSensitiveInfo(familyNoNameInput);
+const familyNoNameOk=familyNoNameFindings.some(x=>x.type==='family_details') && !familyNoNameFindings.some(x=>x.type==='name');
+if(!familyNoNameOk) failures += 1;
+console.log(`${familyNoNameOk ? 'OK' : 'FEIL'} ingen falskt navn i familiecase: ${familyNoNameFindings.map(x=>x.type).join(', ') || 'ingen'}`);
 
 const pronounInput='Hun sier at hennes opplevelse er annerledes.';
 const pronounFixed=sandbox.autoFixPrivacyText(pronounInput,sandbox.detectSensitiveInfo(pronounInput));
@@ -105,5 +114,5 @@ if (failures) {
   console.error(`\n${failures} personverntest(er) feilet.`);
   process.exit(1);
 }
-console.log(`\nAlle ${nameCases.length + privacyCases.length + 3} personverntester OK.`);
+console.log(`\nAlle ${nameCases.length + privacyCases.length + 4} personverntester OK.`);
 
