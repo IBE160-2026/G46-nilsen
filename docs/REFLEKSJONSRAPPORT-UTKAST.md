@@ -339,7 +339,7 @@ Dersom jeg startet prosjektet på nytt, ville jeg etablert Git/GitHub fra først
 
 Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært enklere å splitte `app.js`, `server.js` og `styles.css` gradvis enn å gjøre det etter at filene var blitt store.
 
-Videre ville jeg planlagt brukertesting tidligere. Prosjektet har mange automatiserte tester og mye teknisk kvalitetssikring, men fullskala brukertesting er fortsatt bare påbegynt. For et produkt som først og fremst skal støtte mennesker i vanskelige samtaler, er faktisk brukeropplevelse minst like viktig som tekniske tester.
+Videre ville jeg planlagt brukertesting tidligere. Prosjektet har mange automatiserte tester og mye teknisk kvalitetssikring, mens faktisk brukertesting kom sent. Mot slutten ble det derfor satt opp en liten pilot med ett felles, kort skjema for alle testpersoner. Utvalget er målrettet og lite, med rom for både vanlig helhetsvurdering, UX-blikk og innspill fra personer med relevant leder-/samtaleerfaring. Resultatene skal brukes deskriptivt og kvalitativt, ikke som statistisk dokumentasjon eller ekspertgodkjenning. For et produkt som først og fremst skal støtte mennesker i vanskelige samtaler, er faktisk brukeropplevelse minst like viktig som tekniske tester.
 
 Jeg ville også vært strengere med scope tidligere. Muligheten til å bygge raskt med KI gjorde det fristende å legge til flere funksjoner. Noen av dem ga reell verdi, mens andre først og fremst økte kompleksiteten.
 
@@ -349,7 +349,7 @@ Jeg ville også vært strengere med scope tidligere. Muligheten til å bygge ras
 
 Før Samtalestøtte eventuelt kunne brukes som ordinær virksomhetstjeneste, ville jeg prioritert:
 
-1. mer omfattende brukertesting med faktiske ledere
+1. mer omfattende brukertesting med faktiske ledere og et større, mer variert utvalg
 2. modulering av frontend, server og stilark
 3. formell sikkerhets- og personvernvurdering, inkludert nødvendige organisatoriske avklaringer
 4. videre kontroll av faglige og juridiske kilder
