@@ -1366,3 +1366,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Simulator: 24/24.
 - Server-personvern, UI/UU, historikk, snakkeboble, clipboard, golden matcher, sensor-demo, assets, repo-struktur, package-lock og Node-kompatibilitet: OK.
 - Live golden-kjøring mot faktisk KI gjenstår og skal vurderes separat.
+
+
+## 2026-10-26 – Flerfaglig terminologi i golden-rapport
+
+- Golden-rapporten bruker nå «Faglig/regelverksmerknad» i stedet for «HR/juridisk merknad».
+- Automatisk kontrolltekst omtaler relevant faglig/regelverksmessig kvalitetssikring uten å gjøre HR til universell fasit.
+- Underliggende responsfelt beholdes uendret for å unngå funksjonell regresjon.
