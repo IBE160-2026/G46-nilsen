@@ -4,7 +4,9 @@ Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve p
 
 Målet er ikke at KI skal ta beslutninger for lederen, men å støtte forberedelse, formuleringer, refleksjon og praktisk øvelse.
 
-Det som skiller Samtalestøtte fra en vanlig KI-chat er at brukeren ikke selv må bygge hele prompten, sikkerhetsrammen og arbeidsflyten. Produktet kombinerer ni hovedtemaer og 56 undertemaer med strukturert forberedelse, oppfølging i samme kontekst, dynamisk samtalesimulering, personvernkontroll i klient og server, kuratert faggrunnlag og systematisk KI-testing. Samtalestøtte er dermed utviklet som et domenespesifikt arbeidsverktøy for krevende medarbeidersamtaler, ikke som et generelt chatgrensesnitt.
+Det som skiller Samtalestøtte fra en vanlig KI-chat er at brukeren ikke selv må bygge hele prompten, sikkerhetsrammen og arbeidsflyten. Produktet kombinerer ni hovedtemaer og 56 undertemaer med strukturert forberedelse, oppfølging i samme kontekst, dynamisk samtalesimulering, personvernkontroll i klient og server, kuratert faggrunnlag og systematisk KI-testing.
+
+Kildebruken er også styrt. En kuratert SOURCEBANK med blant annet norske myndighetskilder, regelverk og forskningsbasert kunnskap brukes som førstevalg, mens kontrollert nettsøk fungerer som supplement når kildebanken ikke er tilstrekkelig. Kildetype skal passe til påstanden: lov- og regelverksspørsmål bør forankres i autoritative kilder, mens råd om samtaleteknikk bør bygge på relevant forskning og fagkunnskap. Samtalestøtte er dermed utviklet som et domenespesifikt arbeidsverktøy for krevende medarbeidersamtaler, ikke som et generelt chatgrensesnitt.
 
 ## Rask tilgang for vurdering
 
