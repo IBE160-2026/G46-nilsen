@@ -1431,3 +1431,11 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Statisk gjennomgang avdekket at den nye flerfaglige UI-assertionen refererte til `app` uten at `app.js` var lest inn i testen.
 - `tests/test-ui-regression.cjs` leser nå `app.js` eksplisitt før assertionene kjøres.
 - Dette er en testfeil, ikke en produktfeil, og ble rettet før neste lokale `npm test`.
+
+
+## 2026-10-26 – Automatisk retensjon for brukertestdata
+
+- Lagt til 365 dagers automatisk retensjon for `survey_responses`.
+- Lagt til samme retensjon for `survey_participation`.
+- Server-personverntesten kontrollerer at begge oppryddingsreglene finnes.
+- Personvernerklæring, sikkerhetsdokument og brukertestplan er oppdatert med faktisk retensjon.
