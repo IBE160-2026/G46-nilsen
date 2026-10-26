@@ -120,7 +120,7 @@ const openRouterClient = openRouterApiKey ? new OpenAI({
   timeout: 90000,
   maxRetries: 0,
   defaultHeaders: {
-    "HTTP-Referer": process.env.APP_BASE_URL || "https://samtalestotte.onrender.com",
+    "HTTP-Referer": process.env.APP_BASE_URL || "https://g46-nilsen-samtalestotte.onrender.com",
     "X-Title": "Samtalestøtte"
   }
 }) : null;
