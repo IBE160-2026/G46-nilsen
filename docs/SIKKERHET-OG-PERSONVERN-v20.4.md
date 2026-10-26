@@ -1,6 +1,9 @@
-# Samtalestøtte v20.4 – sikkerhet og personvern
+# Samtalestøtte – sikkerhet og personvern
 
-Dette dokumentet beskriver sikkerhets- og personverntiltakene som er implementert i Samtalestøtte v20.4, hva de beskytter mot, hvilke data som lagres, og hvilke organisatoriske tiltak som fortsatt må avklares før løsningen brukes som ordinær tjeneste i en virksomhet.
+**Opprinnelig etablert:** v20.4  
+**Videreført og oppdatert gjennom:** v20.10.3 / 26.10.2026
+
+Filnavnet beholdes av hensyn til sporbarhet i Git-historikken. Dokumentet beskriver nå både sikkerhets- og personverntiltakene som ble etablert i v20.4 og senere relevante tillegg, blant annet brukertesting og retensjon. Det beskriver hva tiltakene beskytter mot, hvilke data som lagres, og hvilke organisatoriske avklaringer som fortsatt kreves før løsningen eventuelt brukes som ordinær virksomhetstjeneste.
 
 ## 1. Grunnprinsipper
 
