@@ -1464,3 +1464,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Den grønne `npm test`-kjøringen fra 26.10 beholdes som dokumentert historisk verifisering.
 - README, testplan, refleksjon og gjøremålsliste presiserer at senere runtime-/retensjonsendringer krever ny full testkjøring.
 - Prosjektet skal ikke bruke en grønn test fra en eldre commit som bevis for nyeste kode.
+
+
+## 2026-10-26 – Regresjonstest for frakoblet brukertestdata
+
+- Server-personverntesten kontrollerer nå at selve `survey_responses`-raden ikke inneholder `user_id`.
+- Testen kontrollerer samtidig at engangsbegrensningen fortsatt bruker separat `survey_participation`.
+- En senere kodeendring som kobler evalueringen direkte til brukerprofilen skal dermed gi testfeil.
