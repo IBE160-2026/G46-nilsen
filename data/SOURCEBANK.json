@@ -996,9 +996,7 @@
       ],
       "principles": [
         "Arbeidsgiver skal undersøke påstander om trakassering og følge opp involverte.",
-        "Konflikt og trakassering er ikke det samme; faktagrunnlaget må undersøkes før konklusjoner trekkes.",
-        "Påstander om trakassering bør undersøkes før konklusjoner trekkes; involverte parter må følges opp.",
-        "Habilitet, kontradiksjon, dokumentasjon og personvern er sentrale prinsipper i håndteringen."
+        "Konflikt og trakassering er ikke det samme; faktagrunnlaget må undersøkes før konklusjoner trekkes."
       ],
       "use_when": [
         "trakassering",
@@ -1476,6 +1474,41 @@
       "note": "CIPD evidence review publisert 20.09.2022. Brukes som praktisk evidensoppsummering, ikke som eneste faglige kilde.",
       "last_verified": "2026-10-26",
       "time_sensitive": false
+    },
+    {
+      "id": "AT_PERSONALSAKER",
+      "type": "myndighet",
+      "title": "Personalsaker",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/organisatorisk-arbeidsmiljo/personalsaker/",
+      "topics": [
+        "Mobbing og trakassering",
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Avslutning av arbeidsforhold"
+      ],
+      "principles": [
+        "Habilitet er sentralt: den som håndterer saken bør være upartisk og uten egeninteresser i saken.",
+        "Kontradiksjon innebærer at involverte skal få kjenne til relevante opplysninger, beskrive sin versjon og imøtegå påstander.",
+        "Konfidensialitet og personvern krever at sensitive opplysninger bare deles med dem som trenger dem.",
+        "Vurderinger og tiltak bør bygge på forhold som kan dokumenteres."
+      ],
+      "use_when": [
+        "personalsak",
+        "kontradiksjon",
+        "habilitet",
+        "dokumentasjon",
+        "høre begge sider",
+        "varsling",
+        "trakassering",
+        "konflikt",
+        "påstand",
+        "saksbehandling"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-26",
+      "time_sensitive": true
     }
   ]
 }
