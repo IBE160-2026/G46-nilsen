@@ -95,7 +95,7 @@ Konsekvensen av dette designet er:
 - ved kontosletting fjernes deltakelsesmarkeringen gjennom referansen til Auth-brukeren, mens det allerede innsendte svaret blir stående som frakoblet prosjektdata
 - et enkelt svar kan derfor heller ikke slettes på forespørsel ved å slå opp kontoen; det finnes ingen sikker kobling som identifiserer hvilken svarrad som tilhørte brukeren
 
-Dette er valgt for å redusere profilering og kobling mellom konto og evaluering, men innebærer samtidig en avveining mot individuell dataportabilitet/sletting av selve testsvaret.
+Dette er valgt for å redusere profilering og kobling mellom konto og evaluering, men innebærer samtidig en avveining mot individuell dataportabilitet/sletting av selve testsvaret. Både svar og deltakelsesmarkering omfattes av automatisk retensjon på 365 dager.
 
 ## 7. Lagringsbegrensning
 
@@ -108,7 +108,7 @@ v20.4 har automatisk opprydding på serveren:
 | Øvrig feedback | 365 dager |
 | Benchmarkresultater | 365 dager |
 | Samtalehistorikk | til brukeren sletter den eller kontoen |
-| Brukertestsvar | beholdes som prosjektets testgrunnlag til administrativ sletting |
+| Brukertestsvar og deltakelsesmarkering | 365 dager |
 
 Oppryddingen kjøres periodisk når appserveren er aktiv. Den er ment som teknisk sikkerhetsnett; retensjonsreglene må også beskrives i virksomhetens personverndokumentasjon dersom løsningen settes i ordinær drift.
 
