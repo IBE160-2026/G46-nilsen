@@ -1457,3 +1457,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 ## 2026-10-26 – Oppdatert omtrentlig ordantall i refleksjonsutkast
 
 - Refleksjonsutkastets topptekst er oppdatert fra ca. 4121 til ca. 4400 ord etter dagens dokumentasjonstillegg.
+
+
+## 2026-10-26 – Presisert verifiseringsstatus etter nye commits
+
+- Den grønne `npm test`-kjøringen fra 26.10 beholdes som dokumentert historisk verifisering.
+- README, testplan, refleksjon og gjøremålsliste presiserer at senere runtime-/retensjonsendringer krever ny full testkjøring.
+- Prosjektet skal ikke bruke en grønn test fra en eldre commit som bevis for nyeste kode.
