@@ -38,7 +38,7 @@ if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 assert(/id=["']report-meta["']>Versjon 20\.10\.3</.test(html), "Fallback-versjon i Kontakt er ikke 20.10.3");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
-assert(/<script src=["']src\/client-data\.js\?v=20\.10\.3["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.10\.3["']><\/script>/.test(html), "Klientdata lastes ikke før app.js med riktig versjon");
+assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.10\.3["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.10\.3["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.10\.3["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.10\.3["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
 console.log("Klientmodul-innlasting: OK");
 
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
