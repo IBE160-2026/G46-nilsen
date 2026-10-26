@@ -84,7 +84,7 @@ Prototypen har ni hovedtemaer:
 Prosjektet er utviklet og testet med:
 
 - Node.js 26.12.1 eller nyere innen Node 26
-- npm 11.19.0
+- npm 11.x (følger med støttet Node.js-versjon)
 - Git
 
 ### Node-versjon for Render
