@@ -49,4 +49,13 @@ for (const theme of expectedThemes) {
   assert(themes.has(theme), `Fasitbanken mangler hovedtema: ${theme}`);
 }
 
-console.log(`Golden/fasit-schema OK: ${cases.length} caser · ${themes.size}/9 hovedtemaer dekket`);
+const minimumRiskCoverage = {
+  'Mobbing og trakassering': 3,
+  'Avslutning av arbeidsforhold': 3
+};
+for (const [theme, minimum] of Object.entries(minimumRiskCoverage)) {
+  const count = cases.filter(tc => tc.theme === theme).length;
+  assert(count >= minimum, `Fasitbanken må ha minst ${minimum} caser for risikotemaet ${theme}; fant ${count}`);
+}
+
+console.log(`Golden/fasit-schema OK: ${cases.length} caser · ${themes.size}/9 hovedtemaer dekket · ekstra risikodekning verifisert`);
