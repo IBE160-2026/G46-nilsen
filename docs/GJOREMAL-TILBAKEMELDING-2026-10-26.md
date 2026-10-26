@@ -44,15 +44,22 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - Begrensningen brukes ikke som erstatning for faglig validering, men som en del av en ærlig risikovurdering.
 
 - [x] **Utvid golden-testingen på de mest risikable områdene**
-  - Golden-banken er utvidet fra 9 til 13 caser.
-  - Mobbing/trakassering har nå tre golden-caser totalt, inkludert uønsket fysisk kontakt og samtale med den et varsel gjelder.
-  - Avslutning av arbeidsforhold har nå tre golden-caser totalt, inkludert prøvetid og nedbemanning.
-  - Schema-testen håndhever minst tre caser for hvert av disse to risikotemaene.
-  - Live-kjøring av de fire nye casene gjenstår før de kan omtales som live-verifisert.
+  - Golden-banken er utvidet fra 9 til **21 caser**.
+  - Alle ni hovedtemaer har nå minst to caser.
+  - Mobbing/trakassering har fire caser og avslutning av arbeidsforhold har tre.
+  - To anonymiserte/generaliserte arbeidshverdagsdilemmaer er lagt inn: sosial utestenging knyttet til private aktiviteter og avslag på høyere stilling basert på tidligere kommuniserte kriterier.
+  - Schema-testen håndhever både minimumsdekning og dokumentert provenance.
+  - Ny live-kjøring av den utvidede banken gjenstår før de nye casene kan omtales som live-verifisert.
 
 - [x] **Ikke overdriv hva testene beviser**
   - README og AI-TESTPLAN skiller nå tydelig mellom samsvar med prosjektets fasit/sikkerhetsregler og ekstern ekspertgodkjenning.
   - Den tidligere 9/9 live-kjøringen er beholdt som dokumentert historisk resultat, men de fire nye casene omtales ikke som live-verifisert før ny kjøring er gjort.
+
+- [ ] **Kjør utvidet golden-bank live**
+  - Kjør `npm run test-golden-schema` og deretter `npm run test-ai:golden` med gyldig KI-konfigurasjon.
+  - Gjennomgå alle BØR SJEKKES/KRITISK AVVIK manuelt; ikke endre testen bare for å få grønt.
+  - Oppdater README/testplan med faktisk resultat for 21-casersbanken.
+  - Behold skillet mellom maskinelt resultat og faglig/manuell vurdering.
 
 ## Prioritet 3 – brief og produktposisjonering
 
