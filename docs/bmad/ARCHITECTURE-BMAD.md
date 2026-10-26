@@ -516,8 +516,16 @@ Databasefiler og migreringer ligger under:
 - appinnstillinger
 - modellkonfigurasjon
 - test-/benchmarkdata
+- brukertestsvar uten direkte bruker-ID
+- separat deltakelsesmarkering for engangs brukertest
 
 ---
+
+## Brukertest og frakoblet svarlagring
+
+Brukertestsvar lagres i `survey_responses` uten `user_id`. En separat `survey_participation`-tabell markerer kun at en konto har gjennomført testen. Dette gjør det mulig å begrense én innsending per konto uten å lagre en direkte kobling mellom konto og evalueringssvar.
+
+Designet er en personvernavveining: det reduserer kobling/profilering, men betyr også at et enkelt svar ikke senere kan identifiseres sikkert som tilhørende en bestemt konto.
 
 # 17. Row Level Security
 
