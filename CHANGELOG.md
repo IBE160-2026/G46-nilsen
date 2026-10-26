@@ -1382,3 +1382,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Presisert at `survey_responses` ikke inneholder bruker-ID, mens separat `survey_participation` kun markerer at en konto har svart.
 - Beskrevet lite målrettet utvalg som pilot, ikke representativ effektstudie eller ekspertvalidering.
 - Refleksjonsutkastet er oppdatert fra «brukertesting bør gjøres» til at en begrenset pilot nå er satt opp.
+
+
+## 2026-10-26 – Personverninformasjon for brukertest
+
+- Personvernerklæringen beskriver nå eksplisitt hvordan brukertestsvar lagres.
+- Presisert at selve svarene ikke inneholder navn, e-post eller bruker-ID.
+- Forklart at separat deltakelsesmarkering kun brukes for å hindre dobbeltinnsending og ikke inneholder svarene.
+- Lagringsteksten presiserer at et enkelt brukertestsvar ikke kan kobles tilbake til en bestemt konto i ettertid.
+- UI-regresjonstesten kontrollerer at denne informasjonen fortsatt finnes.
