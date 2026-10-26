@@ -16,7 +16,11 @@ Denne rapporten reflekterer over utviklingen av **Samtalestøtte**, en webapplik
 
 Utgangspunktet for prosjektet var et praktisk problem: krevende medarbeidersamtaler krever ofte både tydelighet, skjønn og god kommunikasjon, men ledere får ikke nødvendigvis praktisk trening i hvordan slike samtaler faktisk kan gjennomføres. Målet ble derfor å lage et verktøy som kan hjelpe en leder med å strukturere situasjonen, formulere en åpning, stille gode spørsmål, forberede seg på mulige reaksjoner og øve gjennom en simulert samtale.
 
-En viktig produktidé var at brukeren ikke skulle måtte kunne prompt engineering for å få nyttig støtte. I stedet for å starte med et tomt chatfelt er Samtalestøtte bygget som en domenespesifikk arbeidsflyt: tema og undertema gir kontekst, personvern og sikkerhetsgrenser ligger inne i løsningen, og brukeren kan gå fra forberedelse til oppfølging, simulering og refleksjon uten å bygge opp situasjonen på nytt. Dette ble etter hvert en tydeligere differensiering fra både generelle KI-chatboter, statiske HR-maler og ordinær ledertrening.
+En viktig produktidé var at brukeren ikke skulle måtte kunne prompt engineering for å få nyttig støtte. I stedet for å starte med et tomt chatfelt er Samtalestøtte bygget som en domenespesifikk arbeidsflyt: tema og undertema gir kontekst, personvern og sikkerhetsgrenser ligger inne i løsningen, og brukeren kan gå fra forberedelse til oppfølging, simulering og refleksjon uten å bygge opp situasjonen på nytt.
+
+Et annet bevisst valg var å styre kunnskapsgrunnlaget. Løsningen bruker en kuratert SOURCEBANK som førstevalg, med blant annet myndighetskilder, regelverk og forskningsbasert kunnskap. Kontrollert nettsøk brukes som supplement, ikke som en erstatning for kildekritikk. For meg ble dette en viktig forskjell fra en åpen chatbot: det handler ikke bare om hva modellen kan svare på, men hvilke rammer den må svare innenfor og hvilke kilder som skal prioriteres for ulike typer påstander.
+
+Dette ble etter hvert en tydeligere differensiering fra både generelle KI-chatboter, statiske HR-maler og ordinær ledertrening.
 
 Samtalestøtte er ikke ment å være et HR-system, journalsystem eller beslutningsverktøy. En sentral del av prosjektet har vært å definere hva KI-en **ikke** skal gjøre. Den skal blant annet ikke stille diagnoser, fastslå skyld, anta motiv eller gi sikre juridiske konklusjoner. Den skal støtte lederens refleksjon, ikke erstatte lederens ansvar.
 
