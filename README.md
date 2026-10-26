@@ -12,7 +12,7 @@ Målet er ikke at KI skal ta beslutninger for lederen, men å støtte forberedel
 
 Publisert testversjon:
 
-`https://samtalestotte.onrender.com`
+`https://g46-nilsen-samtalestotte.onrender.com`
 
 Den publiserte testversjonen anbefales ved vurdering av selve produktet. Den er allerede konfigurert med prosjektets KI-modell, Supabase og servermiljø, og krever derfor ikke lokal installasjon eller sensorens egen API-nøkkel.
 
@@ -94,7 +94,7 @@ Prosjektet er utviklet og testet med:
 ### Klon repoet
 
 ```bash
-git clone https://github.com/IBE160-2026/Samtalestotte.git
+git clone https://github.com/IBE160-2026/G46-nilsen.git
 cd Samtalestotte
 ```
 
