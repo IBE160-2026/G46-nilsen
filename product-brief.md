@@ -57,7 +57,7 @@ Personvernkontrollen må finnes både i klient og server. Utfordringen er å red
 
 Simulatoren skal holde en konsistent medarbeiderrolle gjennom flere meldinger og reagere dynamisk på brukerens formuleringer. Samtidig må den styres slik at den ikke diagnostiserer, tillegger personer skjulte motiver eller fremstiller spekulasjoner som fakta.
 
-Prosjektet skal også ha systematisk KI-testing. De 56 undertemaene skal inngå i faste testsituasjoner, og et representativt utvalg skal kunne kjøres mot flere modeller. Dette gjør det mulig å sammenligne blant annet kvalitet, stabilitet, responstid, kostnad og kildebruk.
+Prosjektet skal også ha systematisk KI-testing på flere nivåer. Benchmarkbanken dekker de 56 undertemaene med faste testsituasjoner, mens en mindre golden/fasit-bank brukes til strengere regresjonskontroll av representative og risikoutsatte saker. Et representativt utvalg skal kunne kjøres mot flere modeller for å sammenligne blant annet kvalitet, stabilitet, responstid, kostnad og kildebruk.
 
 Web search skal være kontrollert og sporbar. Systemet skal kunne registrere hvilke eksterne kilder som faktisk brukes, uten at selve personalsamtalen automatisk lagres i denne loggen.
 
@@ -77,7 +77,7 @@ Prosjektet regnes som vellykket når følgende kan etterprøves:
 2. **Brukeren kan fortsette samme arbeidsflyt.** Brukeren kan stille oppfølgingsspørsmål og gå videre til samtalesimulering og refleksjon uten å starte situasjonen på nytt. Simulatorens sentrale funksjoner er dekket av `tests/test-simulation.js` og sensordemoen.
 3. **Innloggede brukere har egen historikk.** Samtaler kan lagres og åpnes igjen, og Supabase Row Level Security begrenser lesing, oppdatering og sletting til den innloggede brukerens egne samtaler. Historikkflyt og regresjoner kontrolleres i testpakken og databaseoppsettet.
 4. **Personvernkontroll finnes både i klient og server.** Definerte typer identifiserende opplysninger skal oppdages før tekst sendes videre til ekstern KI. Dette kontrolleres blant annet av `tests/test-privacy.js` og `tests/test-server-privacy.cjs`.
-5. **Alle ni hovedtemaer er representert i den fasitbaserte KI-testingen.** Golden-banken skal ha minst én representativ case per hovedtema, og strukturen kontrolleres av `tests/test-golden-schema.cjs`. Golden-resultater dokumenterer samsvar med prosjektets definerte fasit og sikkerhetsregler, ikke uavhengig ekspertgodkjenning av faglig innhold.
+5. **Alle ni hovedtemaer er representert med flere caser i den fasitbaserte KI-testingen.** Golden-banken skal ha minst to representative caser per hovedtema og ekstra dekning på definerte høyrisikotemaer. Strukturen kontrolleres av `tests/test-golden-schema.cjs`. Golden-resultater dokumenterer samsvar med prosjektets definerte fasit, kildegrunnlag og sikkerhetsregler, ikke uavhengig ekspertgodkjenning av faglig innhold.
 6. **Kjernefunksjonene kan vurderes uten API-nøkler eller ekstern database.** `npm run demo` skal starte en deterministisk sensordemo, og `npm test` skal kunne kjøres uten eksterne KI-kall. `tests/test-sensor-demo.cjs` kontrollerer den sentrale demo-flyten.
 7. **Utvidet KI-funksjonalitet kan måles separat fra kjernen.** Når live KI er konfigurert, kan systemet registrere modell, responstid, tokenbruk, estimert kostnad og kildebruk. Dette er et tillegg for sammenligning og evaluering, ikke et krav for at kjerneflyten i v1 skal fungere.
 
