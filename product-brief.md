@@ -2,13 +2,11 @@
 
 ## Executive Summary
 
-Samtalestøtte er et KI-basert arbeidsverktøy for ledere som skal forberede, gjennomføre og reflektere over krevende medarbeidersamtaler. Løsningen dekker blant annet fravær, prestasjon, samarbeid, lønn, alkohol og rus, sikkerhet, livssituasjoner, mobbing og trakassering og avslutning av arbeidsforhold.
+Samtalestøtte er et KI-basert arbeidsverktøy for ledere med personalansvar som skal forberede, gjennomføre og reflektere over krevende medarbeidersamtaler. Løsningen samler strukturert veiledning, oppfølgingsdialog, samtalesimulering og refleksjon i én arbeidsflyt, med personvern og menneskelig beslutningsansvar som tydelige rammer.
 
-Produktet skal ikke være en generell chatbot. Brukeren føres gjennom en strukturert arbeidsflyt fra situasjonsforståelse og forberedelse til oppfølging, refleksjon og samtalesimulering. KI-en skal kunne foreslå mål, spørsmål og formuleringer, forberede lederen på mulige reaksjoner og opptre som medarbeider i en treningssamtale.
+Prototypen dekker ni hovedtemaer: fravær, prestasjon, samarbeid, lønn, alkohol og rus, sikkerhet, livssituasjoner, mobbing og trakassering og avslutning av arbeidsforhold. KI-en kan foreslå mål, spørsmål og formuleringer, forberede lederen på mulige reaksjoner og opptre som medarbeider i en treningssamtale.
 
-Utviklingsutfordringen er å få KI-kvalitet, personvern, autentisering, historikk, kildebruk, simulering, modelltesting og kostnadsmåling til å fungere sammen i én løsning. Arkitekturen skal samtidig være leverandøruavhengig slik at eksterne KI-tjenester senere kan erstattes av interne modeller og lokale kunnskapskilder.
-
-Målet er et praktisk lederverktøy der KI styrker forberedelse, trening og refleksjon uten å overta beslutningsansvaret.
+Produktet skal ikke være en generell chatbot eller et automatisert HR-system. Målet er et praktisk lederverktøy som styrker forberedelse, trening og refleksjon uten å overta lederens ansvar eller erstatte relevant fagkompetanse.
 
 ## The Problem
 
@@ -17,6 +15,8 @@ Ledere forventes å håndtere krevende medarbeidersamtaler profesjonelt, men få
 Utfordringen handler blant annet om hvordan samtalen åpnes, hvilke spørsmål som bør stilles, hvordan man holder seg til observerbare forhold, og hvordan man håndterer reaksjoner som sinne, taushet eller avvisning.
 
 I praksis forbereder mange ledere seg alene, søker informasjon på nettet, bruker generelle KI-verktøy eller kontakter HR. Disse alternativene dekker deler av behovet, men gir ikke nødvendigvis en samlet arbeidsflyt for forberedelse, øvelse og refleksjon. Generelle KI-verktøy gir også personvernutfordringer dersom brukeren legger inn identifiserende opplysninger fra reelle personalsaker.
+
+Et typisk behov kan være en ny eller lite erfaren leder som neste dag skal ta opp gjentatt korttidsfravær, prestasjonsproblemer eller en vanskelig samarbeidskonflikt og ikke har HR tilgjengelig der og da. Lederen trenger ikke nødvendigvis en ferdig beslutning, men hjelp til å forberede en ryddig åpning, relevante spørsmål og hva det er viktig å unngå å konkludere med for tidlig.
 
 Samtalestøtte skal derfor kombinere praktisk lederstøtte med tydelige rammer for personvern, sikkerhet, kildebruk og menneskelig ansvar.
 
@@ -41,9 +41,11 @@ KI-en skal ikke diagnostisere medarbeidere, fastslå motiv eller skyld, gi binde
 
 Samtalestøtte er et spesialisert arbeidsverktøy, ikke en generell chatbot med nytt grensesnitt.
 
-Løsningen kombinerer ni hovedtemaer og 56 undertemaer med forberedelse, oppfølging, refleksjon og simulering i samme arbeidsflyt. I tillegg skal den ha personvernkontroll i klient og server, bruker-eid historikk, kontrollert web search, kildehåndtering, rollebasert administrasjon og modelltesting.
+Generelle KI-chatboter er mer fleksible og kan være bedre når brukeren ønsker bred problemløsning på tvers av temaer, men de gir ikke nødvendigvis en fast arbeidsflyt eller de samme innebygde grensene for personalsaker. HR-maler og interne rutiner kan være mer autoritative for virksomhetens egne prosesser og regler, men er ofte statiske og gir begrenset mulighet til å øve på en konkret samtale. Kurs og ledertrening kan gi dypere faglig læring og menneskelig veiledning, men er ikke alltid tilgjengelig akkurat når en vanskelig samtale skal forberedes.
 
-Fortrinnet ligger ikke i å utvikle en egen språkmodell, men i hvordan KI, personvern, simulering, testing og domenespesifikk brukerflyt bygges sammen.
+Samtalestøtte forsøker å fylle rommet mellom disse alternativene. Løsningen kombinerer ni hovedtemaer og 56 undertemaer med forberedelse, oppfølging, refleksjon og simulering i samme arbeidsflyt. I tillegg har prototypen personvernkontroll i klient og server, bruker-eid historikk, kontrollert web search, kildehåndtering, rollebasert administrasjon og modelltesting.
+
+Fortrinnet ligger derfor ikke i å erstatte HR, kurs, fagpersoner eller generelle KI-verktøy, og heller ikke i å utvikle en egen språkmodell. Det ligger i hvordan KI, personvern, simulering, testing og en domenespesifikk brukerflyt er bygget sammen for situasjonen der en leder trenger praktisk støtte før og rundt en krevende samtale.
 
 ## Project Complexity
 
@@ -63,9 +65,9 @@ Kompleksiteten ligger derfor først og fremst i samspillet mellom KI-kvalitet, p
 
 ## Who This Serves
 
-Primærbrukeren er en leder med personalansvar som står foran en krevende medarbeidersamtale og trenger praktisk støtte raskt.
+Primærbrukeren i v1 er en leder med personalansvar som står foran en krevende medarbeidersamtale og trenger praktisk støtte raskt. Behovet kan være særlig tydelig for en ny eller mindre erfaren leder, eller i en liten eller mellomstor virksomhet der HR-støtte ikke er tilgjengelig i øyeblikket, men løsningen er ikke avgrenset til disse situasjonene.
 
-Sekundære brukere kan være HR-funksjoner, lederutviklere og virksomheter som ønsker en mer konsistent og ansvarlig måte å tilby KI-basert samtalestøtte og trening på.
+Sekundære brukere kan på sikt være HR-funksjoner, lederutviklere og virksomheter som ønsker en mer konsistent og ansvarlig måte å tilby KI-basert samtalestøtte og trening på. Disse er ikke en del av kjernebrukeren eller hovedflyten i v1.
 
 ## Success Criteria
 
