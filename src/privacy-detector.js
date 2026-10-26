@@ -11,7 +11,7 @@
 
   const TOKEN = "[\\p{L}][\\p{L}'’\\-]{1,39}";
   const TITLE_TOKEN = "[\\p{Lu}][\\p{L}'’\\-]{1,39}";
-  const PERSON_ACTION = "(?:sier|sa|mener|mente|ønsker|ønsket|kommer|kom|møter|møtte|jobber|arbeider|jobbet|arbeidet|nekter|nektet|hevder|forteller|fortalte|opplever|opplevde|trenger|trengte|ber|ba|klager|klaget|spør|spurte|svarer|svarte|gråter|gråt|smiler|slutter|sluttet|begynner|begynte|forlater|forlot|ankommer|ankom)";
+  const PERSON_ACTION = "(?:sier|sa|mener|mente|ønsker|ønsket|kommer|kom|møter|møtte|jobber|arbeider|jobbet|arbeidet|nekter|nektet|hevder|forteller|fortalte|opplever|opplevde|trenger|trengte|ber|ba|klager|klaget|spør|spurte|svarer|svarte|gråter|gråt|smiler|slutter|sluttet|begynner|begynte|forlater|forlot|ankommer|ankom|er|var|har|hadde|ble|blir|skal|vil|kan|må)";
   const PERSON_AUX = "(?:har\\s+(?:kommet|sagt|vært|jobbet|arbeidet|møtt|nektet|fortalt|klaget|spurt|svart|sluttet|begynt)|er\\s+(?:uenig|enig|syk|frustrert|sint|forsinket|borte|ansatt|leder|medarbeider)|var\\s+(?:uenig|enig|syk|frustrert|sint|forsinket|borte|ansatt|leder|medarbeider))";
   const ACTION = "(?:" + PERSON_ACTION + "|" + PERSON_AUX + ")";
   const ROLE = "(?:medarbeider(?:en)?|kollega(?:en)?|leder(?:en)?|ansatt(?:en)?|personen)";
@@ -35,10 +35,12 @@
 
   function strongContextFor(text, candidate){
     const c=escaped(candidate);
-    const relation=new RegExp("(?:" + RELATION + ")\\s+" + c + "(?=\\s|[.,!?;:]|$)","iu");
-    const role=new RegExp("(?:" + ROLE + ")\\s+" + c + "(?=\\s|[.,!?;:]|$)","iu");
+    const directRelation=new RegExp("\\b(?:snakket\\s+med|møte\\s+med|samtale\\s+med|møtte|ringte|kontaktet)\\s+" + c + "(?=\\s|[.,!?;:]|$)","iu");
+    const genericRelation=new RegExp("\\b(?:med|til|fra|hos)\\s+" + c + "(?=\\s|[.,!?;:]|$)","iu");
     const actionAfter=new RegExp("(?<![\\p{L}\\p{N}_])" + c + "\\s+" + ACTION + "\\b","iu");
-    return relation.test(text) || role.test(text) || actionAfter.test(text);
+    const roleWithAction=new RegExp("\\b" + ROLE + "\\s+" + c + "\\s+" + ACTION + "\\b","iu");
+    return directRelation.test(text) || actionAfter.test(text) || roleWithAction.test(text) ||
+      (genericRelation.test(text) && (looksTitleCased(candidate) || (isKnownGivenName(candidate) && !isAmbiguous(candidate))));
   }
 
   function explicitName(text){
@@ -64,10 +66,21 @@
   }
 
   function relationalUnknown(text){
-    const strong=new RegExp("\\b(?:snakket\\s+med|møte\\s+med|samtale\\s+med|" + ROLE + ")\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
-    for(const m of text.matchAll(strong)){
+    const direct=new RegExp("\\b(?:snakket\\s+med|møte\\s+med|samtale\\s+med|møtte|ringte|kontaktet)\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
+    for(const m of text.matchAll(direct)){
       const a=m[1], b=m[2];
       if(!candidateAllowed(a)) continue;
+      if(b && candidateAllowed(b) && (isKnownSurname(b) || looksTitleCased(b))) return a+" "+b;
+      return a;
+    }
+
+    const roleName=new RegExp("\\b" + ROLE + "\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
+    for(const m of text.matchAll(roleName)){
+      const a=m[1], b=m[2];
+      if(!candidateAllowed(a)) continue;
+      const tail=text.slice((m.index||0)+m[0].length);
+      const personAfter=new RegExp("^\\s*(?:som\\s+)?(?:" + ACTION + ")\\b","iu").test(tail);
+      if(!(looksTitleCased(a) || (isKnownGivenName(a) && personAfter))) continue;
       if(b && candidateAllowed(b) && (isKnownSurname(b) || looksTitleCased(b))) return a+" "+b;
       return a;
     }
@@ -78,7 +91,7 @@
       if(!candidateAllowed(a)) continue;
       const tail=text.slice((m.index||0)+m[0].length);
       const personAfter=new RegExp("^\\s*(?:som\\s+)?(?:" + ACTION + ")\\b","iu").test(tail);
-      if(!(isKnownGivenName(a) || looksTitleCased(a) || personAfter)) continue;
+      if(!(looksTitleCased(a) || (isKnownGivenName(a) && !isAmbiguous(a)) || personAfter)) continue;
       if(b && candidateAllowed(b) && (isKnownSurname(b) || looksTitleCased(b))) return a+" "+b;
       return a;
     }
@@ -108,7 +121,6 @@
     const tokens=text.match(new RegExp("(?<![\\p{L}\\p{N}_])" + TOKEN + "(?![\\p{L}\\p{N}_])","gu")) || [];
     for(const token of tokens){
       if(!isKnownGivenName(token)) continue;
-      if(!isAmbiguous(token)) return token;
       if(strongContextFor(text,token)) return token;
     }
 
