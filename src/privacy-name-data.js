@@ -871,7 +871,16 @@
   "meldingen",
   "fristen",
   "arbeidsdagen",
-  "turnusen"
+  "turnusen",
+  "arbeidsliv",
+  "problemet",
+  "situasjonen",
+  "samtalen",
+  "medarbeideren",
+  "kollegaen",
+  "lederen",
+  "bor",
+  "brøt"
 ])
   });
 })(globalThis);
