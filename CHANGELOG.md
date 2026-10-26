@@ -1275,3 +1275,14 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Beskrevet BMAD som et styringsrammeverk som ble tatt i bruk mens prosjektet allerede var under utvikling, og som deretter strammet inn krav, scope, arkitektur, testing og sporbarhet.
 - Fjernet formuleringer i AI-loggen som kunne gi inntrykk av en mer lineær prosess enn den faktiske.
 - Korrigert branch-beskrivelsen i refleksjonsutkastet til at endelig leveringsgren er `main`.
+
+
+## 2026-10-26 – Faglig testbegrensning og ekstra risikocaser
+
+- AI-TESTPLAN skiller nå eksplisitt mellom teknisk/fasitbasert testing og uavhengig faglig ekspertvalidering.
+- Dokumentert at prosjektets golden-fasit ikke er validert av HR-/arbeidsrettsekspert og derfor ikke kan brukes som bevis på universell faglig korrekthet.
+- Presisert at Samtalestøtte er et veiledende, støttende og treningsrettet verktøy som ikke erstatter relevant fagkompetanse.
+- Utvidet golden-banken fra 9 til 13 caser.
+- Lagt til to ekstra caser for mobbing/trakassering og to ekstra caser for avslutning av arbeidsforhold.
+- Schema-testen krever nå minst tre golden-caser for hvert av de to risikotemaene.
+- README skiller mellom siste verifiserte 9/9 live-kjøring og de fire nye casene som ennå ikke er live-kjørt.
