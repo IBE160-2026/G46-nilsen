@@ -330,6 +330,12 @@ G46-nilsen/
 
 Hovedkoden ligger i rotmappen, mens dokumentasjon, tester, bilder og databasefiler er skilt ut i egne mapper. Klientens tema-/ikondata ligger separat i `src/client-data.js`, slik at `app.js` i større grad inneholder faktisk bruker- og tilstandslogikk. Tilsvarende ligger serverens tema-/KI-kontrakter i `src/server/`, mens autentisering, database- og API-flyt fortsatt ligger samlet i `server.js`.
 
+## Kjent teknisk gjeld
+
+Prototypen fungerer og er dekket av regresjonstester, men hovedfilene er fortsatt store: `app.js` er omtrent 3 400 linjer og `server.js` omtrent 1 600 linjer. En kontrollert sluttmodularisering flyttet statiske klientdata og serverens tema-/KI-kontrakter til `src/`, men autentisering, databaseflyt, API-ruter og mye klienttilstand ligger fortsatt samlet i hovedfilene.
+
+Et naturlig neste steg ved videre produksjonsmodning er å dele disse ansvarene i mindre moduler med tydeligere grenser. En større refaktorering er bevisst ikke gjort rett før innlevering, fordi den ville økt regresjonsrisikoen i en fungerende prototype uten å endre kjerneverdien i produktet. Denne begrensningen er også dokumentert i arkitekturen og refleksjonsrapporten.
+
 ## Kontakt
 
 Prosjektet er utviklet av Cecilie C. Nilsen som del av IBE160 Programmering med KI ved Høgskolen i Molde.
