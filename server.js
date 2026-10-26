@@ -322,7 +322,7 @@ const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
 });
 
-// v20.4: automatisk dataminimering/lagringsbegrensning for tekniske logger.
+// Automatisk dataminimering/lagringsbegrensning for logger, feedback, benchmark og brukertestdata.
 const RETENTION = {
   aiUsageDays: 90,
   feedbackAttachmentDays: 90,
