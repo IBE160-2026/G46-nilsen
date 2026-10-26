@@ -47,3 +47,7 @@ assert(html.includes('KI-råd kan være ufullstendige eller feil') || html.inclu
 // Brukertest-personvern skal være synlig i personvernerklæringen.
 assert(html.includes('Svar i den korte brukertesten lagres separat uten navn, e-post eller bruker-ID'), 'Mangler personverninformasjon om brukertest');
 assert(html.includes('deltakelsesmarkering'), 'Mangler forklaring av separat deltakelsesmarkering');
+
+// Runtime-UI skal ikke fremstille HR som universell fasit.
+assert(app.includes("['Faglig / regelverk'"), 'Mangler flerfaglig overskrift i veiledningen');
+assert(!app.includes("['HR / regelverk'"), 'Gammel HR-sentrert overskrift finnes fortsatt i veiledningen');
