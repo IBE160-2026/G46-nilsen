@@ -180,6 +180,40 @@ Det brukes to kontrollnivåer:
 
 Dette skillet er bevisst. En språkmodell kan formulere et godt svar på flere måter, og en for rigid ordrett fasit kan gi falske feil. Kritiske sikkerhets- og faktafeil kan derimot kontrolleres strengere.
 
+## 6B. Faglig validering – hva testene kan og ikke kan dokumentere
+
+Golden-banken og de øvrige KI-testene er utviklet i prosjektet. De er basert på prosjektets krav, kuraterte faggrunnlag, kildebank, sikkerhetsregler og manuell vurdering, men fasiten er **ikke uavhengig validert av en HR-, arbeidsretts- eller annen domeneekspert**.
+
+Dette er en metodisk begrensning. Testene kan dokumentere at KI-svar:
+
+- følger prosjektets definerte sikkerhets- og kvalitetsregler
+- holder seg til oppgitte fakta og unngår bestemte typer ubegrunnede konklusjoner
+- dekker forventet struktur, tema og sentrale kontrollpunkter
+- er konsistente med prosjektets egen fasit og kuraterte kildegrunnlag
+
+Testene kan **ikke** alene dokumentere at alle råd er faglig korrekte i enhver reell personalsak eller at de tilsvarer en ekstern ekspertvurdering.
+
+Samtalestøtte er derfor avgrenset som et **veiledende, støttende og treningsrettet verktøy**. Løsningen skal bidra til forberedelse, spørsmål, formuleringer, refleksjon og øvelse, men kan ikke erstatte HR, juridisk bistand, helsepersonell eller annen relevant fagkompetanse når saken krever dette. KI-en skal heller ikke stille diagnoser, fastslå skyld eller motiv, gi bindende juridiske råd eller fatte personalbeslutninger.
+
+Denne produktavgrensningen reduserer konsekvensen av at prosjektet ikke har ekstern ekspertvalidering, men den erstatter ikke behovet for å være åpen om begrensningen.
+
+### Dekning i golden-banken
+
+Golden-banken dekker alle ni hovedtemaer, men den er ikke en full faglig fasit for alle 56 undertemaer. Den bredere benchmarkbanken dekker undertemastrukturen med flere testscenarier, mens golden-banken brukes som et mindre, strengere regresjonssett.
+
+Etter faglærers tilbakemelding 26.10.2026 ble golden-banken utvidet fra 9 til 13 caser. De mest risikoutsatte temaene **Mobbing og trakassering** og **Avslutning av arbeidsforhold** har nå tre golden-caser hver. De ekstra casene retter seg særlig mot:
+
+- uønsket fysisk kontakt uten å anta seksuelt motiv
+- samtale med en medarbeider som et varsel gjelder, uten forhåndskonklusjon om skyld
+- prøvetid uten å fremstille dette som automatisk oppsigelsesadgang
+- nedbemanning uten å fremstille et ikke-besluttet utfall som endelig
+
+Schema-testen håndhever denne ekstra risikodekningen deterministisk.
+
+### Videre kvalitetssikring
+
+Dersom løsningen skulle brukes utover studentprototype/treningsformål, bør relevante deler av faggrunnlag, golden-fasit og høyrisikosvar gjennomgås av kvalifisert HR-/arbeidsretts-/HMS-kompetanse før produksjonsbruk.
+
 # 6. Aktiv teststruktur
 
 Aktive tester ligger under:
