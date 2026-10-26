@@ -44,6 +44,8 @@ async function waitForServer() {
       "/app.js",
       "/styles.css",
       "/src/client-data.js",
+      "/src/privacy-name-data.js",
+      "/src/privacy-detector.js",
       "/assets/images/logo.png",
       "/assets/images/logo-symbol.png",
       "/assets/images/topics/topic-livssituasjoner.png"
