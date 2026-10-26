@@ -48,3 +48,16 @@ assert(/surveyDays:\s*365/.test(source),'Brukertest-retensjon på 365 dager mang
 assert(/survey_responses'\)\.delete\(\)\.lt\('created_at',\s*isoDaysAgo\(RETENTION\.surveyDays\)\)/.test(source),'Automatisk sletting av survey_responses mangler');
 assert(/survey_participation'\)\.delete\(\)\.lt\('completed_at',\s*isoDaysAgo\(RETENTION\.surveyDays\)\)/.test(source),'Automatisk sletting av survey_participation mangler');
 console.log('Brukertest-retensjon: OK');
+
+// Brukertestsvar skal ikke lagre user_id sammen med svarene.
+const surveyStart=source.indexOf('app.post("/api/survey"');
+const surveyEnd=source.indexOf('app.get("/api/admin/survey"',surveyStart);
+assert(surveyStart>=0&&surveyEnd>surveyStart,'Fant ikke brukertest-endepunktet');
+const surveyBlock=source.slice(surveyStart,surveyEnd);
+const rowStart=surveyBlock.indexOf('const row=');
+const rowEnd=surveyBlock.indexOf(';',rowStart);
+assert(rowStart>=0&&rowEnd>rowStart,'Fant ikke survey response-row');
+const surveyRowDefinition=surveyBlock.slice(rowStart,rowEnd);
+assert(!/user_id/i.test(surveyRowDefinition),'Brukertestsvar skal ikke lagre user_id');
+assert(/survey_participation'\)\.insert\(\{user_id:req\.user\.id\}\)/.test(surveyBlock),'Separat deltakelsesmarkering mangler');
+console.log('Brukertest uten direkte bruker-ID: OK');
