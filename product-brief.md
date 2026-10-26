@@ -69,11 +69,17 @@ Sekundære brukere kan være HR-funksjoner, lederutviklere og virksomheter som �
 
 ## Success Criteria
 
-Prosjektet regnes som vellykket dersom prototypen demonstrerer at hovedflyten fungerer og kan evalueres systematisk.
+Prosjektet regnes som vellykket når følgende kan etterprøves:
 
-Det innebærer at brukeren kan gå fra situasjonsvalg til KI-støtte og simulering, at innloggede brukere bare får tilgang til egen historikk, og at personvernregler og kritiske funksjoner kan testes.
+1. **Brukeren kan gå fra situasjon til konkret støtte.** Brukeren kan velge eller beskrive en situasjon og få strukturert veiledning med mål, spørsmål og forslag til videre håndtering. Dette kontrolleres blant annet i sensordemoen og KI-testene.
+2. **Brukeren kan fortsette samme arbeidsflyt.** Brukeren kan stille oppfølgingsspørsmål og gå videre til samtalesimulering og refleksjon uten å starte situasjonen på nytt. Simulatorens sentrale funksjoner er dekket av `tests/test-simulation.js` og sensordemoen.
+3. **Innloggede brukere har egen historikk.** Samtaler kan lagres og åpnes igjen, og Supabase Row Level Security begrenser lesing, oppdatering og sletting til den innloggede brukerens egne samtaler. Historikkflyt og regresjoner kontrolleres i testpakken og databaseoppsettet.
+4. **Personvernkontroll finnes både i klient og server.** Definerte typer identifiserende opplysninger skal oppdages før tekst sendes videre til ekstern KI. Dette kontrolleres blant annet av `tests/test-privacy.js` og `tests/test-server-privacy.cjs`.
+5. **Alle ni hovedtemaer er representert i den fasitbaserte KI-testingen.** Golden-banken skal ha minst én representativ case per hovedtema, og strukturen kontrolleres av `tests/test-golden-schema.cjs`. Golden-resultater dokumenterer samsvar med prosjektets definerte fasit og sikkerhetsregler, ikke uavhengig ekspertgodkjenning av faglig innhold.
+6. **Kjernefunksjonene kan vurderes uten API-nøkler eller ekstern database.** `npm run demo` skal starte en deterministisk sensordemo, og `npm test` skal kunne kjøres uten eksterne KI-kall. `tests/test-sensor-demo.cjs` kontrollerer den sentrale demo-flyten.
+7. **Utvidet KI-funksjonalitet kan måles separat fra kjernen.** Når live KI er konfigurert, kan systemet registrere modell, responstid, tokenbruk, estimert kostnad og kildebruk. Dette er et tillegg for sammenligning og evaluering, ikke et krav for at kjerneflyten i v1 skal fungere.
 
-Løsningen skal også kunne sammenligne KI-modeller og registrere responstid, tokenbruk, estimert kostnad og kildebruk.
+Detaljert kobling mellom krav og testfiler finnes i README og `docs/ai/AI-TESTPLAN.md`.
 
 ## Scope
 
