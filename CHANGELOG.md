@@ -1414,3 +1414,13 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Lagt til Arbeidstilsynets side `Personalsaker` som egen SOURCEBANK-kilde.
 - Habilitet, kontradiksjon, konfidensialitet/personvern og dokumentasjon knyttes nå til denne mer presise kilden.
 - Den generelle trakasseringskilden brukes fortsatt for undersøkelses- og oppfølgingsplikten, men bærer ikke alene alle saksbehandlingsprinsippene.
+
+
+## 2026-10-26 – Flerfaglig kvalitetssikring i runtime
+
+- Runtime-prompten bruker ikke lenger HR/jus som standardhenvisning for alle sensitive saker.
+- Kompetanse og kildevalg skal matches til problemet: samtalefag/organisasjonspsykologi, HR/arbeidsliv, arbeidsrett, HMS/BHT eller helse ved behov.
+- Veiledningsoverskriften er endret fra «HR / regelverk» til «Faglig / regelverk».
+- Generell brukerintro anbefaler relevante kilder, virksomhetens rutiner og riktig fagkompetanse fremfor HR som standard.
+- Internt felt `legal_hr_note` beholdes for kompatibilitet; testplanen dokumenterer dette som bevisst teknisk gjeld.
+- UI-regresjon beskytter den nye flerfaglige terminologien.
