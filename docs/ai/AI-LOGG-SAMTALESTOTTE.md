@@ -1284,3 +1284,17 @@ Tiltaket ble derfor endret til:
 - README dokumenterer eksplisitt forskjellen mellom lokal kompatibilitet og produksjonssikkerhet
 
 Dette er også et eksempel på at et sikkerhetstiltak kan bli for strengt når samme regel brukes i en annen kontekst enn den opprinnelig var ment for.
+
+
+## 2026-10-26 – Brukertest som egen valideringslinje
+
+Etter at den tekniske og golden-baserte testingen var blitt omfattende, ble det tydelig at prosjektet fortsatt manglet nok faktisk brukerinnsikt. Det ble derfor satt opp en liten pilotbrukertest med samme korte skjema for alle testpersoner.
+
+Valget om ett felles skjema var bevisst:
+- svarene blir mer sammenlignbare
+- testpersoner med ulik bakgrunn kan fortsatt gi mer spesifikke vurderinger i fritekst
+- utvalget kan inneholde både UX-blikk, helhetsvurdering og relevant leder-/samtaleerfaring uten å late som dette er separate vitenskapelige studier
+
+Personvern ble kontrollert mot faktisk databaseimplementasjon. `survey_responses` lagrer ikke bruker-ID, mens `survey_participation` bare markerer at en konto har sendt inn. Dokumentasjonen ble oppdatert slik at løsningen ikke omtaler svarene som «helt anonyme», men som lagret uten navn eller direkte kobling til konto.
+
+Det ble også eksplisitt dokumentert at et lite, målrettet utvalg ikke er representativt og at positive svar fra personer med relevant bakgrunn ikke automatisk er ekspertvalidering. Målet med piloten er å finne forbedringspunkter, ikke å produsere gode skårer.
