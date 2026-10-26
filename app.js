@@ -321,126 +321,10 @@ function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
 }
 
 
-const COMMON_GIVEN_NAMES = new Set(`
-Kine Gro Reidun Cecilie Trude Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild Bente Berit Britt Brit Gerd Grete Gry Jorunn Jorun Randi Rita Siv Sissel Tone Torill Tove Unni Vigdis Wenche Åsebjørg Elisabeth Elise Ellen Eva Else Gunn Gunhild Ingeborg Kjersti Merete Mette Renate Solfrid Therese Trude Vibeke
-Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein Alf Arild Bjarne Dag Einar Erlend Finn Frank Harald Helge Ivar Kjell Kjetil Leif Magne Odd Ove Roar Roy Steinar Svein Terje Tom Tommy Trygve
-Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam
-Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria
-Giulia Giorgia Francesca Alessandra Martina Chiara Federica Marco Luca Matteo Lorenzo Alessandro Andrea Giovanni Giuseppe Antonio Stefano Davide
-Chloe Chloé Emily Olivia Amelia Charlotte Sophie Jessica Rebecca Rachel Megan Lauren Hannah Grace Alice Lucy Eleanor George James William Harry Oliver Jack Charlie Thomas Edward Henry Samuel Alexander Daniel Michael Matthew Joshua
-Emma Sophie Anna Lena Laura Julia Sarah Lisa Katharina Hannah Marie Johanna Lea Leon Lukas Luca Finn Felix Paul Jonas Elias Noah Ben Benjamin Maximilian Alexander Niklas
-Élodie Camille Manon Juliette Claire Pauline Amélie Cécile Celine Céline Lucie Margaux Louise Marie Jean Pierre Julien Nicolas Antoine François Philippe Alexandre Thomas
-Agnieszka Katarzyna Anna Ewa Joanna Magdalena Natalia Aleksandra Marta Piotr Jakub Mateusz Michał Michal Tomasz Krzysztof Paweł Pawel Łukasz Lukasz
-Anastasia Ekaterina Elena Irina Natalia Olga Svetlana Tatiana Ivan Dmitri Dmitry Alexei Sergey Sergei Nikolai Mikhail
-Priya Pooja Anjali Neha Aditi Riya Kavya Aarav Arjun Rahul Rohit Vikram Raj Amit Anil Deepak Sanjay
-Wei Li Ming Jun Chen Ling Mei Xia Yu Yuki Haruka Sakura Aiko Mei Kenji Hiroshi Takashi Akira Satoshi Minjun Jihoon Jisoo Seojun Hyunwoo Minji Yuna
-Nguyen Minh Linh Lan Anh Trang Huy Phuong Phương Mai Tuan Tuấn
-Kwame Kofi Ama Akosua Chinedu Ngozi Adaeze Amina Nia Zuri Tendai Thabo Sipho Lerato
-`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase('nb-NO')));
+const privacyNameDetector = window.SamtalestottePrivacyDetector;
+if (!privacyNameDetector) throw new Error('Personvernmodulen for navnedeteksjon mangler.');
+const { findLikelyGivenName, findLikelyGivenNames } = privacyNameDetector;
 
-const NAME_FALSE_POSITIVES = new Set(`
-Jeg Vi Det Den Dette En Et Når Hvis På I Som Med Men Og Eller For Til Fra Av Etter Før Under Over Ikke Ja Nei Usikker
-Person Personen Vedkommende Hen Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT
-Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen Oppfølging Tilrettelegging Mandag Tirsdag Onsdag Torsdag Fredag Lørdag Søndag Januar Februar Mars April Mai Juni Juli August September Oktober November Desember
-`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase('nb-NO')));
-
-// Fornavn som også kan være vanlige ord i arbeidsrelatert tekst.
-// Disse krever tydelig personkontekst dersom de er skrevet med liten bokstav.
-const AMBIGUOUS_GIVEN_NAMES = new Set(`
-per liv live line ben even dag finn tone odd gro siv bjørn rune
-`.split(/\s+/).filter(Boolean));
-
-function normalizeNameToken(value) {
-  return String(value || '').toLocaleLowerCase('nb-NO');
-}
-
-function isKnownGivenName(value) {
-  const normalized = normalizeNameToken(value);
-  return COMMON_GIVEN_NAMES.has(normalized) && !NAME_FALSE_POSITIVES.has(normalized);
-}
-
-function findLikelyGivenName(source) {
-  const text = String(source || '');
-
-  // 1. Eksplisitte navneformuleringer er sterke signaler og skal virke uavhengig av stor/liten bokstav.
-  // Eksempel: "han heter knut", "navnet er Cecilie".
-  const explicit = text.match(/\b(?:heter|navn(?:et)?\s+er|kalles|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter|leder(?:en)?\s+heter)\s+([\p{L}][\p{L}'’-]{1,30})\b/iu);
-  if (explicit) {
-    const normalized = normalizeNameToken(explicit[1]);
-    if (!NAME_FALSE_POSITIVES.has(normalized)) return explicit[1];
-  }
-
-  // 2. Kjente navn fra navnelisten fanges case-insensitivt, også "knut" med liten k.
-  // Ambivalente ord som "per" og "liv" krever ekstra personkontekst.
-  const tokens = text.match(/\b[\p{L}][\p{L}'’-]{1,30}\b/gu) || [];
-  for (const token of tokens) {
-    const normalized = normalizeNameToken(token);
-    if (!isKnownGivenName(token)) continue;
-    if (!AMBIGUOUS_GIVEN_NAMES.has(normalized)) return token;
-
-    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const relationUse = new RegExp(`\\b(?:heter|med|til|fra|hos|snakket\\s+med|møte\\s+med)\\s+${escaped}\\b`, 'iu');
-    const subjectUse = /^\p{Lu}/u.test(token) &&
-      new RegExp(`\\b${escaped}\\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\\b`, 'u').test(text);
-    if (relationUse.test(text) || subjectUse) return token;
-  }
-
-  // 3. Ukjente navn kan fortsatt oppdages i tydelig personkontekst, men vi bruker ikke
-  // "stor bokstav ved setningsstart" som signal alene. Det var årsaken til at "Personen" ble flagget.
-  const personContext = text.match(/\b(?:med|til|fra|hos|snakket\s+med|møte\s+med)\s+([\p{Lu}][\p{L}'’-]{1,30})(?=\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\b)/u);
-  if (personContext && !NAME_FALSE_POSITIVES.has(normalizeNameToken(personContext[1]))) return personContext[1];
-
-  // 4. To navn med stor forbokstav ved siden av hverandre er et sterkt signal om fullt navn.
-  // Begge ordene må enten finnes i navnelisten, eller minst ett må være et kjent fornavn.
-  const fullName = text.match(/\b([\p{Lu}][\p{L}'’-]{1,30})\s+([\p{Lu}][\p{L}'’-]{1,30})\b/u);
-  if (fullName) {
-    const a = normalizeNameToken(fullName[1]);
-    const b = normalizeNameToken(fullName[2]);
-    if (!NAME_FALSE_POSITIVES.has(a) && !NAME_FALSE_POSITIVES.has(b) && (isKnownGivenName(fullName[1]) || isKnownGivenName(fullName[2]))) {
-      return `${fullName[1]} ${fullName[2]}`;
-    }
-  }
-
-  // 5. Ekstra lokal kontekstsjekk for navn skrevet med små bokstaver.
-  // Vi sender ikke teksten til ekstern KI for å avgjøre dette, fordi personvernkontrollen skal skje før KI-kallet.
-  // Kandidaten må stå i en tydelig personsetning, og vanlige arbeidsord filtreres bort.
-  const contextualNonNames = new Set(`
-  situasjonen samtalen medarbeider medarbeideren kollega kollegaen leder lederen person personen team teamet
-  arbeidet arbeid stilling stillingen fravær sykefravær oppfølging utvikling prestasjon lønn samarbeid sikkerhet ansvar
-  mandag tirsdag onsdag torsdag fredag lørdag søndag uke uken måned måneden dag dagen år tiden perioden
-  dette det den en et jeg vi du de hen han hun noen ingen alle flere mye lite kanskje derfor fordi dersom
-  `.split(/\s+/).filter(Boolean));
-  const contextualPattern = /(?:^|[.!?]\s+|\b(?:med|til|fra|hos)\s+)([\p{L}][\p{L}'’-]{2,30})\s+(?:er|var|har|hadde|ble|blir|skal|vil|kan|må|sier|sa|jobber|arbeider|ønsker|mener|kommer|møter|trenger|opplever)\b/giu;
-  for (const match of text.matchAll(contextualPattern)) {
-    const candidate = match[1];
-    const normalized = normalizeNameToken(candidate);
-    if (NAME_FALSE_POSITIVES.has(normalized) || contextualNonNames.has(normalized)) continue;
-    if (isKnownGivenName(candidate)) return candidate;
-    // Ukjente småbokstav-kandidater flagges bare etter en sterk relasjonspreposisjon, ikke bare fordi et vanlig ord står først i en setning.
-    if (/^(?:med|til|fra|hos)\s+/iu.test(match[0]) && /^[\p{L}]{3,16}$/u.test(candidate)) return candidate;
-  }
-
-  return null;
-}
-
-
-function findLikelyGivenNames(source) {
-  const names = [];
-  let working = String(source || '');
-
-  // Bruk den eksisterende navnedetektoren flere ganger.
-  // Hvert treff maskeres før neste søk, slik at f.eks. både Kenneth og Tore blir funnet.
-  for (let i = 0; i < 10; i += 1) {
-    const hit = findLikelyGivenName(working);
-    if (!hit) break;
-    if (!names.some(name => normalizeNameToken(name) === normalizeNameToken(hit))) {
-      names.push(hit);
-    }
-    const escaped = hit.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    working = working.replace(new RegExp(`\\b${escaped}\\b`, 'iu'), ' ');
-  }
-  return names;
-}
 
 function detectSensitiveInfo(text) {
   const findings = [];
@@ -562,7 +446,7 @@ function autoFixPrivacyText(text, findings) {
     const match = item.label.match(/«([^»]+)»/);
     if (!match) return;
     const name = match[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    fixed = fixed.replace(new RegExp(`\\b${name}\\b`, 'gi'), 'medarbeideren');
+    fixed = fixed.replace(new RegExp(`(?<![\\p{L}\\p{N}_])${name}(?![\\p{L}\\p{N}_])`, 'giu'), 'medarbeideren');
   });
 
   return fixed.replace(/\s{2,}/g, ' ').trim();
@@ -2666,14 +2550,43 @@ function maybeShowSurveyInvite(){
   box.hidden=done||later||!surveyUsageEligible();
 }
 function markGuidanceUsed(){try{localStorage.setItem('samtalestotte_guidance_count',String(Number(localStorage.getItem('samtalestotte_guidance_count')||0)+1));}catch(_){} maybeShowSurveyInvite();}
+function updateSurveyPrivacy(){
+  const form=document.querySelector('#survey-form');
+  const box=document.querySelector('#survey-privacy');
+  if(!form||!box)return[];
+  const inputs=[...form.querySelectorAll('textarea[name="improvement_text"], textarea[name="most_useful_text"]')];
+  const findings=inputs.flatMap(input=>detectSensitiveInfo(input.value).map(item=>({...item,input})));
+  const {hard,soft}=splitPrivacyFindings(findings);
+  const submit=form.querySelector('button[type="submit"]');
+  if(submit) submit.disabled=hard.length>0;
+  if(!hard.length&&!soft.length){box.hidden=true;box.innerHTML='';return findings;}
+  box.hidden=false;
+  box.className=`privacy-check warning ${hard.length?'blocking':'advisory'}`;
+  box.innerHTML=privacySummaryHtml(findings,{title:'Personvernsjekk av fritekst',blocking:true});
+  return findings;
+}
+
+function updateAiFeedbackCommentPrivacy(){
+  const input=document.querySelector('#ai-feedback-comment');
+  const box=document.querySelector('#ai-feedback-comment-privacy');
+  if(!input||!box)return[];
+  const findings=detectSensitiveInfo(input.value);
+  const {hard,soft}=splitPrivacyFindings(findings);
+  if(!input.value.trim()||(!hard.length&&!soft.length)){box.hidden=true;box.innerHTML='';return findings;}
+  box.hidden=false;
+  box.className=`privacy-check warning ${hard.length?'blocking':'advisory'}`;
+  box.innerHTML=privacySummaryHtml(findings,{title:'Personvernsjekk av kommentaren',blocking:true});
+  return findings;
+}
+
 async function openSurvey(){
   if(!requireLogin())return;
   setBreadcrumb('Gi tilbakemelding');showView('survey');
   const form=document.querySelector('#survey-form'),done=document.querySelector('#survey-completed-message'),closed=document.querySelector('#survey-closed-message');
   if(form)form.hidden=true;if(done)done.hidden=true;if(closed)closed.hidden=true;
   try{const r=await fetch('/api/survey/status',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente status.');
-    if(p.completed){if(done)done.hidden=false;}else if(p.enabled===false){if(closed)closed.hidden=false;}else if(form)form.hidden=false;
-  }catch(_){if(form)form.hidden=false;}
+    if(p.completed){if(done)done.hidden=false;}else if(p.enabled===false){if(closed)closed.hidden=false;}else if(form){form.hidden=false;updateSurveyPrivacy();}
+  }catch(_){if(form){form.hidden=false;updateSurveyPrivacy();}}
 }
 
 async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør database/migrations/V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminInvites();await loadAdminFeedback();await loadAdminSurvey();await loadAdminAiSettings();await loadAdminAiUsage();await loadBenchmarkConfig();}
@@ -2763,11 +2676,12 @@ function buildFeedbackConversationSnapshot(surface,turnIndex=null){
 function feedbackSnapshotFindings(snapshot){return detectSensitiveInfo(flattenFeedbackSnapshotText(snapshot));}
 function flattenFeedbackSnapshotText(value){if(typeof value==='string')return value;if(Array.isArray(value))return value.map(flattenFeedbackSnapshotText).join(' ');if(value&&typeof value==='object')return Object.values(value).map(flattenFeedbackSnapshotText).join(' ');return '';}
 function updateFeedbackAttachmentPrivacy(){const checked=document.querySelector('#ai-feedback-include-conversation')?.checked;const box=document.querySelector('#ai-feedback-privacy');if(!box)return[];if(!checked){box.hidden=true;box.innerHTML='';return[];}const snapshot=buildFeedbackConversationSnapshot(pendingAiFeedback.surface,pendingAiFeedback.turnIndex);const findings=feedbackSnapshotFindings(snapshot);const {hard,soft}=splitPrivacyFindings(findings);box.hidden=false;box.className=`privacy-check ${hard.length?'warning blocking':soft.length?'warning advisory':'ok'}`;box.innerHTML=hard.length?`<strong>Samtalen kan ikke legges ved ennå</strong><span>Personvernsjekken fant opplysninger som må anonymiseres først.</span><ul>${hard.map(x=>`<li>${escapeHtml(x.label)}</li>`).join('')}</ul>`:soft.length?`<strong>Sjekk samtalen før du legger den ved</strong><span>${soft.map(x=>escapeHtml(x.label)).join(', ')}</span>`:`<strong>Personvernsjekk</strong><span>Ingen tydelige personopplysninger er oppdaget i samtalen.</span>`;return findings;}
-function openAiFeedback(surface='general',turnIndex=null){pendingAiFeedback={surface,turnIndex};const dialog=document.querySelector('#ai-feedback-dialog');const comment=document.querySelector('#ai-feedback-comment');const message=document.querySelector('#ai-feedback-message');const include=document.querySelector('#ai-feedback-include-conversation');if(comment)comment.value='';if(include)include.checked=false;if(message){message.textContent='';message.className='auth-message';}updateFeedbackAttachmentPrivacy();dialog?.showModal();}
+function openAiFeedback(surface='general',turnIndex=null){pendingAiFeedback={surface,turnIndex};const dialog=document.querySelector('#ai-feedback-dialog');const comment=document.querySelector('#ai-feedback-comment');const message=document.querySelector('#ai-feedback-message');const include=document.querySelector('#ai-feedback-include-conversation');if(comment)comment.value='';if(include)include.checked=false;if(message){message.textContent='';message.className='auth-message';}updateAiFeedbackCommentPrivacy();updateFeedbackAttachmentPrivacy();dialog?.showModal();}
 function closeAiFeedback(){document.querySelector('#ai-feedback-dialog')?.close();}
 document.addEventListener('click',event=>{const button=event.target.closest('[data-report-ai-response]');if(!button)return;openAiFeedback(button.dataset.reportAiResponse||'general',button.dataset.turnIndex??null);});
 document.querySelector('#ai-feedback-cancel')?.addEventListener('click',closeAiFeedback);
 document.querySelector('#ai-feedback-include-conversation')?.addEventListener('change',updateFeedbackAttachmentPrivacy);
+document.querySelector('#ai-feedback-comment')?.addEventListener('input',updateAiFeedbackCommentPrivacy);
 document.querySelector('#ai-feedback-form')?.addEventListener('submit',async event=>{event.preventDefault();const category=document.querySelector('#ai-feedback-category')?.value||'Annet';const comment=document.querySelector('#ai-feedback-comment')?.value.trim()||'';const message=document.querySelector('#ai-feedback-message');const findings=detectSensitiveInfo(comment);if(splitPrivacyFindings(findings).hard.length){message.className='auth-message error';message.textContent='Fjern navn eller andre tydelige personopplysninger før tilbakemeldingen sendes.';return;}if(comment.length<3){message.className='auth-message error';message.textContent='Skriv kort hva som var problemet.';return;}const includeConversation=Boolean(document.querySelector('#ai-feedback-include-conversation')?.checked);let conversationSnapshot=null;if(includeConversation){const attachmentFindings=updateFeedbackAttachmentPrivacy();if(splitPrivacyFindings(attachmentFindings).hard.length){message.className='auth-message error';message.textContent='Samtalen må anonymiseres før den kan legges ved.';return;}conversationSnapshot=buildFeedbackConversationSnapshot(pendingAiFeedback.surface,pendingAiFeedback.turnIndex);}try{const r=await fetch('/api/ai-feedback',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({category,comment,surface:pendingAiFeedback.surface,turnIndex:pendingAiFeedback.turnIndex,conversationId:currentConversationId||null,topicId:currentTopic?.id||null,subtopic:currentSubtopic||null,includeConversation,conversationSnapshot})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke sende tilbakemeldingen.');message.className='auth-message success';message.textContent=includeConversation?'Takk. Tilbakemeldingen og samtalen er lagret.':'Takk. Tilbakemeldingen er lagret uten samtaleteksten.';setTimeout(closeAiFeedback,800);}catch(error){message.className='auth-message error';message.textContent=error.message;}});
 
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
@@ -3384,11 +3298,14 @@ document.querySelector('#survey-later')?.addEventListener('click',()=>{try{local
 document.querySelector('[data-view="survey"]')?.addEventListener('click',openSurvey);
 document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
   event.preventDefault(); const msg=document.querySelector('#survey-message'); const form=event.currentTarget;
+  const privacyFindings=updateSurveyPrivacy(); if(splitPrivacyFindings(privacyFindings).hard.length){msg.className='auth-message error';msg.textContent='Fjern navn eller andre tydelige personopplysninger fra friteksten før du sender.';return;}
   const body={}; new FormData(form).forEach((v,k)=>body[k]=v);
   for(const key of ['usability','navigation','ai_relevance','practical_usefulness','simulation','privacy','would_use']) if(body[key]!==undefined&&body[key]!=='') body[key]=Number(body[key]);
   try{const r=await fetch('/api/survey',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');msg.className='auth-message success';msg.textContent='Takk! Tilbakemeldingen er lagret.';form.reset();try{localStorage.setItem('samtalestotte_survey_done','1')}catch(_){};setTimeout(()=>openSurvey(),250)}
   catch(e){msg.className='auth-message error';msg.textContent=e.message;}
 });
+
+document.querySelectorAll('#survey-form textarea[name="improvement_text"], #survey-form textarea[name="most_useful_text"]').forEach(input=>input.addEventListener('input',updateSurveyPrivacy));
 
 document.querySelector('#admin-survey-enabled')?.addEventListener('change',async event=>{
   const msg=document.querySelector('#admin-survey-toggle-message'); if(msg){msg.className='auth-message';msg.textContent='Lagrer …';}
