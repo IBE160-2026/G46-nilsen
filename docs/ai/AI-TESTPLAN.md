@@ -840,6 +840,40 @@ Formålet er å:
 
 ---
 
+# Verifisering 2026-10-26 – deterministisk testpakke etter golden-utvidelse
+
+Etter utvidelsen av golden-banken til 21 caser og oppdateringer i README/UI/testplan ble siste `main` hentet lokalt og følgende kjørt:
+
+```bash
+npm run test-golden-schema
+npm test
+```
+
+Resultat:
+
+- golden/fasit-schema: **21 caser**
+- hovedtemaer: **9/9**
+- minimumsdekning: **minst 2 caser per tema**
+- ekstra risikodekning: **bestått**
+- provenance: **dokumentert og verifisert**
+- personvern: **34/34**
+- simulator: **24/24**
+- server-personvern: **OK**
+- UI-regresjon/UU: **OK**
+- historikkregresjon: **OK**
+- samtaleboble-regresjon: **OK**
+- clipboard-regresjon: **OK**
+- golden matcher-regresjon: **OK**
+- sensor-demo-regresjon: **OK**
+- offentlige frontend-assets: **OK**
+- repo-struktur: **OK**
+- package-lock-konsistens: **OK**
+- Node-kompatibilitetsområde: **OK**
+
+Dette dokumenterer at utvidelsen av testgrunnlaget og de siste UI-/dokumentasjonsendringene ikke brøt den deterministiske testpakken. Det sier fortsatt ikke noe om kvaliteten på de 12 nye golden-casene mot en faktisk språkmodell; disse krever ny `npm run test-ai:golden`.
+
+---
+
 # 34. Når tester skal kjøres på nytt
 
 Relevant testsett skal kjøres på nytt når blant annet:
