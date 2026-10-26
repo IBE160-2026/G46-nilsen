@@ -257,7 +257,7 @@ Ekte KI-svar kan deretter testes mot samme fasit med:
 npm run test-ai:golden
 ```
 
-Denne testen kombinerer automatisk kontroll med en eksplisitt manuell vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene. Fasiten er utarbeidet av studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI. Den er basert på prosjektets krav, kilder og sikkerhetsregler, men er **ikke uavhengig ekspertvalidert av HR-/arbeidsretts-/HMS-fagperson**.
+Denne testen kombinerer automatisk kontroll med en eksplisitt manuell vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene. Fasiten er utarbeidet av studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI. Den er basert på prosjektets krav, kilder og sikkerhetsregler, men er **ikke uavhengig validert av relevante eksterne fagpersoner**. Hvilken kompetanse som er relevant varierer med saken og kan blant annet være organisasjonspsykologi/samtalemetodikk, HR/arbeidsliv, arbeidsrett eller HMS.
 
 Siste verifiserte automatiske golden-kjøring mot GPT-5.6 Luna før utvidelsen av testbanken: **9/9 OK**, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil. Golden-banken er senere utvidet til **21 caser**. De nye casene skal ikke omtales som live-verifisert før en ny `npm run test-ai:golden`-kjøring er gjennomført.
 
