@@ -187,6 +187,8 @@ Arbeidsformen ble derfor:
 
 Etter kalibrering ga siste verifiserte golden-kjøring mot GPT-5.6 Luna 9/9 OK, uten kritiske eller tekniske avvik. Jeg ser likevel ikke dette som et bevis på at modellen alltid vil svare perfekt. Det er et bevis på at den besto ni definerte, representative kontrollcaser på det tidspunktet testen ble kjørt.
 
+Etter faglærers tilbakemelding ble golden-banken senere utvidet til 21 caser. Alle ni hovedtemaer har nå minst to caser, og risikoområdene mobbing/trakassering og avslutning av arbeidsforhold har ekstra dekning. Den historiske 9/9-kjøringen beholdes som dokumentasjon av hva som faktisk var verifisert 14.10.2026; de nye casene skal ikke omtales som live-verifisert før de er kjørt på nytt. Jeg presiserte også at den manuelle fasiten er laget av meg som prosjekteier med KI-støtte og kildegrunnlag, ikke av en uavhengig ekspert. Ved videre validering ville jeg derfor brukt ulik fagkompetanse etter hva som vurderes, for eksempel samtalefag/organisasjonspsykologi for samtaleteknikk og arbeidsrett/HMS for formelle spørsmål.
+
 ### 4.3 Autentisering versus testbarhet
 
 Automatiserte KI-tester møtte et praktisk problem da serverendepunkter krevde autentisering. En enkel løsning kunne vært å svekke eller fjerne autentisering under testing, men det ville redusert sikkerheten i produksjonskoden.
