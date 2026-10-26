@@ -1439,3 +1439,9 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Lagt til samme retensjon for `survey_participation`.
 - Server-personverntesten kontrollerer at begge oppryddingsreglene finnes.
 - Personvernerklæring, sikkerhetsdokument og brukertestplan er oppdatert med faktisk retensjon.
+
+
+## 2026-10-26 – Presisert sikkerhetsdokumentets status
+
+- Sikkerhets-/personvernfilens navn beholdes for Git-sporbarhet, men dokumentet markerer nå at det er videreført fra v20.4 og oppdatert gjennom v20.10.3.
+- Serverkommentaren for retensjon er oppdatert slik at den også dekker brukertestdata.
