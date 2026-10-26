@@ -28,9 +28,10 @@
     "test-golden-utils": "node tests/test-golden-utils.js",
     "demo": "node scripts/sensor-demo.js",
     "test-sensor-demo": "node tests/test-sensor-demo.cjs",
-    "test-syntax": "node --check app.js && node --check server.js && node --check scripts/create-invite.js && node --check scripts/sensor-demo.js && node --check src/client-data.js && node --check src/server/topic-contracts.js && node --check src/server/ai-schemas.js",
+    "test-syntax": "node --check app.js && node --check server.js && node --check scripts/create-invite.js && node --check scripts/sensor-demo.js && node --check scripts/update-privacy-names.js && node --check src/privacy-name-data.js && node --check src/privacy-detector.js && node --check src/client-data.js && node --check src/server/topic-contracts.js && node --check src/server/ai-schemas.js",
     "test-repo-structure": "node tests/test-repo-structure.cjs",
-    "test-public-assets": "node tests/test-public-assets.cjs"
+    "test-public-assets": "node tests/test-public-assets.cjs",
+    "update-privacy-names": "node scripts/update-privacy-names.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
