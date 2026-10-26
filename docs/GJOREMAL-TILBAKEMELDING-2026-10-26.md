@@ -126,3 +126,30 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
 Prosjektet skal ikke framstilles som om en komplett BMAD-plan eksisterte før første kode. Den riktige historien er at en fungerende prototype kom først, prosjektet vokste raskt, og BMAD/context engineering ble tatt i bruk for å få kontroll på krav, scope, testing og sporbarhet. Dette er en læring og et eksempel på forbedret KI-styring.
 
 Tilsvarende skal KI-testingen ikke framstilles som ekstern faglig godkjenning. Prosjektet har omfattende teknisk, strukturell og fasitbasert testing, men mangler uavhengig ekspertvalidering av HR-/arbeidsrettsnære råd. Samtalestøtte er derfor bevisst avgrenset til veiledning, forberedelse, trening og refleksjon, og skal ikke erstatte relevante fagpersoner eller menneskelig beslutningsansvar.
+
+
+## Neste operative steg
+
+- [ ] **Kjør full lokal regresjon på nyeste `main`**
+  - `git pull origin main`
+  - `npm test`
+  - Dette må gjøres fordi runtime, retensjon og regresjonstester er endret etter den forrige grønne kjøringen.
+
+- [ ] **Kjør 21-casers golden-bank live**
+  - `npm run test-ai:golden`
+  - Gjennomgå alle `BØR SJEKKES` og `KRITISK AVVIK` manuelt.
+  - Skill mellom modellfeil, testfeil og reell faglig uenighet.
+
+- [ ] **Deploy nyeste commit til Render**
+  - Gjør dette først etter grønn lokal regresjon.
+  - Kontroller at den publiserte brukertesten viser ny personvern-/fagtekst.
+
+- [ ] **Gjennomfør liten pilotbrukertest**
+  - Bruk samme korte skjema til alle.
+  - Be testerne bruke oppdiktede/anonymiserte situasjoner.
+  - Samle både skårer og fritekst uten å jage positive resultater.
+
+- [ ] **Analyser pilotresultatene før sluttrapport**
+  - Oppsummer mønstre og konkrete forbedringspunkter.
+  - Dokumenter hva som ble endret på grunn av testene og hva som eventuelt ble beholdt.
+  - Beskriv lite/målrettet utvalg som metodisk begrensning.
