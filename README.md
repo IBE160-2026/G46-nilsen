@@ -204,7 +204,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - repo-struktur/kjørbarhet: bestått
 - package-lock-konsistens: bestått
 
-Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele `npm test`-pakken ble verifisert grønn etter den kontrollerte modulariseringen, asset-rettingen, UU-endringene og package-lock/repo-kontrollene. Golden/fasit-schema kontrollerer **9/9 hovedtemaer** og krever nå ekstra risikodekning for mobbing/trakassering og avslutning av arbeidsforhold.
+Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele `npm test`-pakken ble verifisert grønn etter den kontrollerte modulariseringen, asset-rettingen, UU-endringene og package-lock/repo-kontrollene. Golden/fasit-schema kontrollerer **9/9 hovedtemaer**, krever minst **to caser per tema**, ekstra risikodekning for mobbing/trakassering og avslutning av arbeidsforhold, og eksplisitt dokumentasjon av hvem som har utarbeidet fasiten og at ekstern ekspertvalidering ikke er gjennomført.
 
 ### Sporbarhet fra krav til test
 
@@ -226,7 +226,7 @@ Dette gjør det mulig å følge sentrale krav fra PRD til konkret testbevis uten
 
 ### Fasitbasert KI-testing
 
-Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den dekker alle ni hovedtemaer og har ekstra caser for de særlig risikoutsatte temaene mobbing/trakassering og avslutning av arbeidsforhold. Banken beskriver:
+Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den inneholder nå **21 caser**, dekker alle ni hovedtemaer med minst to caser per tema og har ekstra dekning for de særlig risikoutsatte temaene mobbing/trakassering og avslutning av arbeidsforhold. Banken beskriver:
 
 - forventet hovedtema
 - maskinelle kontrollpunkter
@@ -247,9 +247,9 @@ Ekte KI-svar kan deretter testes mot samme fasit med:
 npm run test-ai:golden
 ```
 
-Denne testen kombinerer automatisk kontroll med en eksplisitt menneskelig vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene.
+Denne testen kombinerer automatisk kontroll med en eksplisitt manuell vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene. Fasiten er utarbeidet av studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI. Den er basert på prosjektets krav, kilder og sikkerhetsregler, men er **ikke uavhengig ekspertvalidert av HR-/arbeidsretts-/HMS-fagperson**.
 
-Siste verifiserte automatiske golden-kjøring mot GPT-5.6 Luna før utvidelsen av testbanken: **9/9 OK**, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil. Golden-banken er senere utvidet til 13 caser med ekstra risikodekning. De fire nye casene skal ikke omtales som live-verifisert før en ny `npm run test-ai:golden`-kjøring er gjennomført.
+Siste verifiserte automatiske golden-kjøring mot GPT-5.6 Luna før utvidelsen av testbanken: **9/9 OK**, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil. Golden-banken er senere utvidet til **21 caser**. De nye casene skal ikke omtales som live-verifisert før en ny `npm run test-ai:golden`-kjøring er gjennomført.
 
 ### KI- og live-tester
 
