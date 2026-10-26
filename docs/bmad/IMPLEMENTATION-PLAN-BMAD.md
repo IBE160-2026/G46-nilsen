@@ -3,7 +3,7 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Revidert Implementation Plan  
 **Rammeverk:** BMAD  
-**Status:** Revidert plan og status ved levering  
+**Status:** Revidert plan og status per 26.10.2026  
 **Språk:** Norsk
 
 ---
@@ -133,7 +133,7 @@ Etablere et kjørbart teknisk fundament som kan videreutvikles iterativt.
 - nødvendige hemmeligheter ligger utenfor repoet
 - prosjektet kan deployes
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -189,7 +189,7 @@ Det ble også nødvendig å utvikle diagnostikk som kunne skille mellom:
 - samtalekontekst kan videreføres
 - ny samtale starter uten gammel kontekst
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -231,7 +231,7 @@ Løsningen ble derfor forenklet slik at:
 - standard brukerflyt fungerer fra situasjon til veiledning
 - bruker kan fortsette dialogen uten å miste kontekst
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -277,7 +277,7 @@ Eksempler på nødvendig skille:
 - anonymisering bevarer nødvendig kontekst der det er mulig
 - tekniske logger lagrer minst mulig brukerrelatert informasjon
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført og automatisert testet.**
 
@@ -323,7 +323,7 @@ Dette viste behovet for å validere KI-generert databaseoppsett i faktisk drift.
 - bruker kan ikke lese andres historikk
 - server validerer tilgang
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -365,7 +365,7 @@ Samtaletekst skal ikke automatisk lagres i tekniske logger.
 - lagret samtale kan åpnes igjen
 - feedback kan sendes uten automatisk full samtaletekst
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -416,7 +416,7 @@ Dette førte til strengere KI-regler og flere regresjonstester.
 - KI skal ikke dikte opp sentrale personopplysninger
 - brukeren forstår tydelig leder- og medarbeiderrollen
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført og testet.**
 
@@ -474,7 +474,7 @@ Store adminseksjoner skal kunne minimeres.
 - redaktør og admin har ulike rettigheter
 - store adminområder kan skjules/minimeres
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -514,7 +514,7 @@ Følgende må vurderes sammen:
 - aktiv modell kan styres
 - provider kan abstraheres fra øvrig app-logikk
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført i prototypeform.**
 
@@ -576,7 +576,7 @@ I stedet for å svekke ordinær autentisering ble det lagt inn en eksplisitt tes
 - testserver kan kjøre uten å svekke produksjonsauth
 - flere typer KI-caser kan vurderes systematisk
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -625,7 +625,7 @@ Blind sammenligning brukes for å redusere påvirkning fra kjennskap til modelln
 - modellresultat kan vurderes uten å vite modellnavnet på forhånd
 - kostnad og responstid kan inngå i vurderingen
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført i prototype/testform.**
 
@@ -675,7 +675,7 @@ Faglig sikkerhet krever derfor både:
 - felles kildebank er tilgjengelig
 - KI-reglene beskriver hvordan usikkerhet håndteres
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført.**
 
@@ -714,7 +714,7 @@ Kildeanalysen kan brukes til:
 - videre utvikling av SOURCEBANK
 - framtidig lokal kunnskapsbank
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Delvis/prototypebasert gjennomført.**
 
@@ -760,7 +760,7 @@ Det ble tydelig at sikkerhet ikke kunne behandles som én enkelt funksjon, men m
 - sentrale sikkerhetstiltak er dokumentert
 - avgrensninger er eksplisitte
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført på prototypenivå.**
 
@@ -809,7 +809,7 @@ Det ble derfor innført sterkere regler for videre arbeid:
 - simulatorroller er tydelige
 - design fungerer på relevante skjermstørrelser
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Gjennomført, med fortsatt potensial for videre finjustering.**
 
@@ -855,7 +855,7 @@ Brukertest kan blant annet omfatte:
 - høyprioritetsfunn vurderes
 - relevante krav oppdateres ved behov
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Påbegynt/videre arbeid.**
 
@@ -890,7 +890,7 @@ Dette er derfor et arkitekturspor for framtidig videreutvikling.
 - KI-provider kan byttes gjennom abstraksjonslaget
 - lokal kunnskapsbank kan beskrives arkitektonisk
 
-## Status ved levering
+## Status per 26.10.2026
 
 **Planlagt videre arbeid – ikke implementert i leveransen.**
 
@@ -998,9 +998,9 @@ Demomodus er et vurderings- og testverktøy, ikke en erstatning for ekte KI-test
 
 ---
 
-# 23. Status ved levering
+# 23. Status per 26.10.2026
 
-Ved levering er hoveddelen av produktet implementert.
+Per 26.10.2026 er hoveddelen av produktet implementert, samtidig som prosjektet fortsatt er under videre utvikling og brukertesting.
 
 | Område | Status | Spor |
 |---|---|---|
@@ -1028,9 +1028,9 @@ Avvik og endringer fra tidligere planer er dokumentert i:
 
 ---
 
-# 24. Repo- og leveransestruktur
+# 24. Repo- og prosjektstruktur
 
-Ved sluttfasen ble repoet gjennomgått for å gjøre strukturen tydeligere.
+Per 26.10.2026 er repoet gjennomgått og ryddet for å gjøre prosjektstrukturen tydeligere, uten at dette innebærer at prosjektet er i endelig sluttfase.
 
 Dokumentasjon:
 
@@ -1194,6 +1194,6 @@ Implementeringsplanen er derfor både:
 - en dokumentasjon av hvordan nye krav oppstod
 - et grunnlag for videre refleksjon og utvikling
 
-Ved levering er kjerneproduktet, personvern, autentisering, historikk, simulator, admin, KI-testing og sentrale sikkerhetsmekanismer implementert i prototypeform.
+Per 26.10.2026 er kjerneproduktet, personvern, autentisering, historikk, simulator, admin, KI-testing og sentrale sikkerhetsmekanismer implementert i prototypeform. Statusen er et øyeblikksbilde, ikke en erklæring om at prosjektet er ferdig.
 
 Videre arbeid gjelder særlig mer omfattende brukertesting, videre modell-/benchmarkarbeid og eventuell framtidig lukket/offline arkitektur.
