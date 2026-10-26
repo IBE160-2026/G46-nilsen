@@ -1302,3 +1302,14 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - README har fått en eksplisitt seksjon om kjent teknisk gjeld i `app.js` og `server.js`.
 - Videre modularisering er dokumentert som et naturlig produksjonssteg, mens stor sluttrefaktorering er bevisst utsatt for å begrense regresjonsrisiko.
 - Faglærers product-brief-tilbakemelding er flyttet fra repo-roten til `docs/feedback/` og beholdt som dokumentasjon.
+
+
+## 2026-10-26 – Golden-bank utvidet til 21 caser
+
+- Utvidet golden/fasit-banken fra 13 til 21 caser.
+- Alle ni hovedtemaer har nå minst to golden-caser.
+- Lagt inn anonymiserte/generaliserte arbeidshverdagsdilemmaer om sosial utestenging i privat fritid og avslag på høyere stilling etter forhåndskommuniserte kriterier.
+- Lagt til nye caser for rusbekymring, forsentkomming, prestasjonsfall, samarbeidskonflikt, sikkerhetsrutine og belastende livssituasjon.
+- Dokumentert eksplisitt at golden-fasiten er utarbeidet av student/prosjekteier med KI-støtte fra ChatGPT/OpenAI og ikke er uavhengig ekspertvalidert.
+- Schema-testen krever nå minst to caser per hovedtema, ekstra dekning for høyrisikotemaene og eksplisitt provenance.
+- Ny live-kjøring av den utvidede banken gjenstår før de nye casene kan omtales som live-verifisert.
