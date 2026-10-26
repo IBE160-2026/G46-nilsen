@@ -1373,3 +1373,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Golden-rapporten bruker nå «Faglig/regelverksmerknad» i stedet for «HR/juridisk merknad».
 - Automatisk kontrolltekst omtaler relevant faglig/regelverksmessig kvalitetssikring uten å gjøre HR til universell fasit.
 - Underliggende responsfelt beholdes uendret for å unngå funksjonell regresjon.
+
+
+## 2026-10-26 – Dokumentert pilotbrukertesting
+
+- Lagt til `docs/BRUKERTEST-PLAN.md` med ett felles skjema for alle testpersoner.
+- Dokumentert anbefalt testflyt, Render cold-start, bruk av oppdiktede/anonymiserte situasjoner og krav om ærlige svar.
+- Presisert at `survey_responses` ikke inneholder bruker-ID, mens separat `survey_participation` kun markerer at en konto har svart.
+- Beskrevet lite målrettet utvalg som pilot, ikke representativ effektstudie eller ekspertvalidering.
+- Refleksjonsutkastet er oppdatert fra «brukertesting bør gjøres» til at en begrenset pilot nå er satt opp.
