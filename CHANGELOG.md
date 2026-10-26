@@ -1511,3 +1511,14 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Kildehierarkiet er tydeliggjort: lov-/regelverksspørsmål skal forankres i autoritative kilder, mens samtaleteknikk skal bygge på relevant forskning og fagkunnskap.
 - README forklarer at Samtalestøtte styrer både arbeidsflyt og kildebruk, ikke bare selve KI-prompten.
 - Refleksjonsrapporten løfter fram prinsippet: forskjellen ligger også i hvilke rammer modellen må svare innenfor.
+
+
+## 2026-10-26 – Live golden 21 caser: 19 OK + 2 manuelt akseptert
+
+- Kjørte `npm run test-ai:golden` mot GPT-5.6 Luna med alle 21 golden-casene.
+- Maskinelt resultat: **19 OK · 2 BØR SJEKKES · 0 kritiske avvik · 0 tekniske feil**.
+- De to flaggede casene var `G-AVSL-03` og `G-SAMARB-02`.
+- Begge ble flagget fordi testen forventet minst én eksplisitt avklaring mens responsen satte `Avklaring: Nei`.
+- Manuell gjennomgang viste at begge svarene oppfylte MÅ-fasiten og sentrale BØR-punkter.
+- Resultatet dokumenteres som 19 maskinelt OK + 2 manuelt akseptert, ikke som 21/21 maskinelt OK.
+- Ingen runtime- eller testregel ble endret for å pynte på resultatet.
