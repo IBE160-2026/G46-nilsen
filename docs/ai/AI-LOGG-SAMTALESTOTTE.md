@@ -96,7 +96,7 @@ Disse situasjonene førte til nye og mer presise krav.
 
 ### Behov
 
-Jeg ønsket å gå fra Product Brief til en fungerende prototype for ledere som skal forberede krevende medarbeidersamtaler.
+Jeg ønsket å få fram en fungerende prototype for ledere som skal forberede krevende medarbeidersamtaler. Den tidlige utviklingen var utforskende, og BMAD/Product Brief var ennå ikke fullt etablert som styringsrammeverk i den synlige Git-historikken.
 
 Løsningen skulle blant annet ha:
 
@@ -904,7 +904,7 @@ Denne loggen må ses sammen med resten av repoet.
 - `CHANGELOG.md`
 - Git commit-historikken
 
-Versjonsnumrene i denne loggen viser utviklingsfasene. Git-historikken er den autoritative kilden til når konkrete kodeendringer ble gjennomført.
+Versjonsnumrene i denne loggen viser utviklingsfasene. Etter at Git/GitHub var etablert, er Git-historikken den viktigste kilden til når konkrete endringer ble committet. For den tidligste lokale fasen viser commitdatoene når versjonene ble lagt inn i Git, ikke nødvendigvis når hele arbeidet bak dem først ble utført.
 
 ---
 
