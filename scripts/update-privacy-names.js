@@ -1,30 +1,20 @@
 import fs from "node:fs";
 
-const GIVEN_URL="https://data.ssb.no/api/pxwebapi/v2/tables/10467/metadata?lang=no";
-const SURNAME_URL="https://data.ssb.no/api/pxwebapi/v2/tables/12891/metadata?lang=no";
+const GIVEN_URL="https://data.ssb.no/api/v0/no/table/10467";
+const SURNAME_URL="https://data.ssb.no/api/v0/no/table/12891";
 const OUT=new URL("../src/privacy-name-data.js",import.meta.url);
 
-function dims(meta){
-  if(Array.isArray(meta?.dimension)) return meta.dimension;
-  if(meta?.dimension && typeof meta.dimension==="object") return Object.entries(meta.dimension).map(([id,v])=>({id,...v}));
-  return [];
-}
-function labels(dim){
-  const raw=dim?.category?.label ?? dim?.values ?? dim?.valueLabels ?? [];
-  if(Array.isArray(raw)) return raw.map(String);
-  if(raw && typeof raw==="object") return Object.values(raw).map(String);
-  return [];
-}
-function findNameLabels(meta, pattern){
-  const candidates=dims(meta).map(d=>({d,values:labels(d)})).filter(x=>x.values.length);
-  const preferred=candidates.find(x=>pattern.test(String(x.d?.label||x.d?.id||"")));
-  const best=preferred || candidates.sort((a,b)=>b.values.length-a.values.length)[0];
-  return (best?.values||[]).map(x=>x.trim()).filter(x=>/^[\p{L}][\p{L}'’\- ]{1,80}$/u.test(x));
-}
 async function get(url){
   const r=await fetch(url,{headers:{"User-Agent":"Samtalestotte student project"}});
   if(!r.ok) throw new Error("SSB svarte "+r.status+" for "+url);
   return r.json();
+}
+function variableValues(meta, pattern){
+  const variables=Array.isArray(meta?.variables)?meta.variables:[];
+  const variable=variables.find(v=>pattern.test(String(v?.text||v?.code||"")));
+  if(!variable) throw new Error("Fant ikke forventet navnevariabel i SSB-metadata.");
+  const values=Array.isArray(variable.valueTexts)&&variable.valueTexts.length?variable.valueTexts:variable.values;
+  return (values||[]).map(String).map(x=>x.trim()).filter(x=>/^[\p{L}][\p{L}'’\- ]{1,80}$/u.test(x));
 }
 function unique(values){
   const map=new Map();
@@ -50,13 +40,17 @@ function readExisting(){
 }
 const current=readExisting();
 const [givenMeta,surnameMeta]=await Promise.all([get(GIVEN_URL),get(SURNAME_URL)]);
-const givenNames=unique([...current.givenNames,...findNameLabels(givenMeta,/fornavn|jentenavn|guttenavn|name/i)]);
-const surnames=unique(findNameLabels(surnameMeta,/etternavn|surname|name/i));
+const ssbGiven=variableValues(givenMeta,/jente.*navn|gutte.*navn|fornavn|navn/i);
+const ssbSurnames=variableValues(surnameMeta,/etternavn/i);
+if(ssbGiven.length<500) throw new Error("SSB ga uventet få fornavn ("+ssbGiven.length+"). Avbryter uten å skrive fil.");
+if(ssbSurnames.length<500) throw new Error("SSB ga uventet få etternavn ("+ssbSurnames.length+"). Avbryter uten å skrive fil.");
+const givenNames=unique([...current.givenNames,...ssbGiven]);
+const surnames=unique(ssbSurnames);
 const stamp=new Date().toISOString();
 const content=[
   "// Samtalestøtte – felles navnedata for klient og server.",
   "// Kjøres lokalt i nettleseren/serveren; brukertekst sendes ikke til SSB.",
-  "// Generert/oppdatert fra SSB-metadata: "+stamp,
+  "// Generert/oppdatert fra SSB Statistikkbanken: "+stamp,
   "(function(root){",
   "  root.SamtalestottePrivacyNames = Object.freeze({",
   "    metadata: Object.freeze({",
@@ -76,4 +70,4 @@ const content=[
   ""
 ].join("\n");
 fs.writeFileSync(OUT,content,"utf8");
-console.log("Oppdatert navnedata: "+givenNames.length+" fornavn, "+surnames.length+" etternavn.");
+console.log("Oppdatert navnedata fra SSB: "+givenNames.length+" fornavn, "+surnames.length+" etternavn.");
