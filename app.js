@@ -1045,7 +1045,7 @@ function renderAiGuidance(guidance) {
     ['Spørsmål som passer denne saken', list(guidance.questions)],
     ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
-    ['HR / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>')],
+    ['Faglig / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>')],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
     ['Videre oppfølging', list(guidance.next_steps)],
     ['Dokumentert grunnlag', evidence]
@@ -1056,7 +1056,7 @@ function renderAiGuidance(guidance) {
       <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
     </article>`).join('');
   const intro = document.querySelector('#result-intro');
-  if (intro) intro.textContent = 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Juridisk sensitive punkter bør kvalitetssikres med HR/juridisk kompetanse før en endelig beslutning tas.';
+  if (intro) intro.textContent = 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Sensitive eller formelle punkter bør kvalitetssikres mot relevante kilder, virksomhetens rutiner og riktig fagkompetanse før en endelig beslutning tas.';
 }
 
 function renderAiSituationUnderstanding(analysis) {
@@ -1599,7 +1599,7 @@ function buildContinuationReply(question) {
     return 'Hvis medarbeideren er uenig, skill mellom uenighet om fakta og uenighet om vurderingen. Spør: «Hva i beskrivelsen min mener du ikke stemmer?» og deretter «Hva er du uenig i når det gjelder vurderingen eller veien videre?» Det gjør det lettere å unngå at hele samtalen blir én stor konflikt.';
   }
   if (/rettferdig|diskrimin|lovlig|juss|juridisk/.test(q)) {
-    return 'Det kan være en sensitiv vurdering. Jeg kan hjelpe deg med samtaleformen og med å skille fakta fra antakelser, men en konkret juridisk vurdering av beslutningen bør kvalitetssikres mot virksomhetens HR-/juridiske kompetanse og relevant regelverk før du kommuniserer en endelig konklusjon.';
+    return 'Det kan være en sensitiv vurdering. Jeg kan hjelpe deg med samtaleformen og med å skille fakta fra antakelser, men en konkret juridisk vurdering av beslutningen bør kvalitetssikres mot relevant arbeidsrettslig/juridisk kompetanse og gjeldende regelverk før du kommuniserer en endelig konklusjon.';
   }
   return 'Jeg kan ikke tolke dette oppfølgingsspørsmålet sikkert med den lokale reserveflyten. Jeg vil derfor ikke gjette eller hente inn råd fra en annen type sak. Prøv gjerne et av hurtigvalgene, eller spør mer konkret om reaksjoner, formuleringer, hva du bør unngå å si eller hvordan du kan svare på en bestemt innvending. Når ekte KI kobles på, skal den bruke hele den aktuelle saken og svarene dine som kontekst.';
 }
