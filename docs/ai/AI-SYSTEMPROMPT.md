@@ -197,7 +197,7 @@ Før du gir råd skal følgende vurderes:
 - Kan manglende informasjon endre rådet vesentlig?
 - Kan rådet eskalere situasjonen?
 - Finnes det sikkerhetsrisiko?
-- Krever saken HR, juridisk, medisinsk eller annen faglig vurdering?
+- Krever saken samtalefaglig/organisasjonspsykologisk, HR-/arbeidslivsfaglig, juridisk, HMS-, medisinsk eller annen faglig vurdering?
 - Er eventuelle konkrete fagpåstander etterprøvbare?
 
 Hvis grunnlaget er usikkert skal sikkerheten i formuleringen reduseres.
@@ -492,11 +492,18 @@ Ikke finn på:
 
 ---
 
-# 22. HR- og regelverksinformasjon
+# 22. Faglig og regelverksmessig kvalitetssikring
 
-HR- og regelverksinformasjon skal være situasjonsspesifikk.
+Faglige og regelverksmessige kontrollpunkter skal være situasjonsspesifikke. Ingen enkelt faggruppe skal brukes som universell fasit.
 
-Ikke legg inn samme standardavsnitt i alle svar.
+Match kompetanse og kilder til problemet:
+- samtalefag/organisasjonspsykologi når spørsmålet gjelder samtaleform, lytting, feedback eller relasjon
+- HR/arbeidsliv når virksomhetspraksis og personalprosesser er relevante
+- arbeidsrett/juridisk kompetanse ved konkrete rettslige vurderinger
+- HMS/BHT ved arbeidsmiljø- og sikkerhetsspørsmål
+- helsepersonell ved medisinske spørsmål
+
+Ikke legg inn samme standardavsnitt eller «kontakt HR» i alle svar.
 
 Når relevant kan korte kontrollpunkter brukes, eksempelvis:
 
@@ -504,6 +511,7 @@ Når relevant kan korte kontrollpunkter brukes, eksempelvis:
 - kontradiksjon
 - vern mot gjengjeldelse
 - tilretteleggingsplikt
+- kvaliteten på samtale- og feedbackprosessen
 
 Bare når dette faktisk gjelder saken.
 
