@@ -1522,3 +1522,15 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Manuell gjennomgang viste at begge svarene oppfylte MÅ-fasiten og sentrale BØR-punkter.
 - Resultatet dokumenteres som 19 maskinelt OK + 2 manuelt akseptert, ikke som 21/21 maskinelt OK.
 - Ingen runtime- eller testregel ble endret for å pynte på resultatet.
+
+
+## 2026-10-26 – Personvern v2: robust navnedeteksjon
+
+- Flyttet navnedata og navnedeteksjon til delte klient/server-moduler slik at begge lag bruker samme regler.
+- Navnedeteksjonen er case-insensitiv og tester navn skrevet med små bokstaver, stor forbokstav og STORE BOKSTAVER.
+- Sjeldne/ukjente navn kan oppdages gjennom tydelig personkontekst, ikke bare en hardkodet navneliste.
+- Tvetydige navn/ord som Dag, Liv, Line, Finn og Even krever fortsatt personkontekst for å redusere falske positiver.
+- Lagt til støtte for lokal oppdatering av navnedata fra SSB Statistikkbanken tabell 10467 og etternavn fra tabell 12891. Runtime sender aldri brukertekst til SSB.
+- Brukertestens fritekst og KI-tilbakemeldingskommentar får live personvernsjekk i tillegg til eksisterende serversperre.
+- Kontaktskjema/e-post får tydelig personvernpåminnelse, men ingen hard blokkering.
+- Utvidet regresjonstestene med sjeldne navn, små/store bokstaver og negative kontrollsetninger.
