@@ -1257,3 +1257,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 5. `CHANGELOG.md` skal inngå i samme Git-commit som versjonen den dokumenterer.
 6. Ved generering av ny ZIP skal den oppdaterte, komplette changelog-filen være kilden – aldri en lagret eldre mal.
 
+
+
+## 2026-10-26 – Sensorvennlig Node-kompatibilitet
+
+- Skilte lokal Node-kompatibilitet fra produksjonsruntime.
+- Endret `engines.node` fra `>=26.12.1 <27` til `>=22 <27` slik at sensor ikke unødvendig blokkeres lokalt.
+- Render skal fortsatt bruke `NODE_VERSION=26.12.1` som sikkerhetspatchet produksjonsruntime.
+- Oppdaterte README med riktig `cd G46-nilsen` og korrekt rotmappenavn.
+- Oppdaterte repo-strukturtesten og sikkerhets-/AI-dokumentasjon med samme skille.
