@@ -55,6 +55,14 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - README og AI-TESTPLAN skiller nå tydelig mellom samsvar med prosjektets fasit/sikkerhetsregler og ekstern ekspertgodkjenning.
   - Den tidligere 9/9 live-kjøringen er beholdt som dokumentert historisk resultat, men de fire nye casene omtales ikke som live-verifisert før ny kjøring er gjort.
 
+- [x] **Styrk flerfaglig kildegrunnlag for samtaleteknikk**
+  - SOURCEBANK presiserer nå at HR, jus, psykologi eller én samtalemetode ikke er universell fasit.
+  - Lagt til Helsedirektoratets MI-veiledning for åpne spørsmål, refleksjon, lytting og ikke-konfronterende samtale.
+  - Lagt til College of Policing som kilde til generelle ikke-ledende intervjuprinsipper ved faktainnhenting.
+  - Lagt til CIPD-evidens om fair selection og konstruktiv feedback.
+  - Arbeidstilsynets trakasseringskilde er styrket med habilitet, kontradiksjon, dokumentasjon og personvern.
+  - AI-TESTPLAN beskriver nå framtidig faglig validering som tverrfaglig og avhengig av typen råd.
+
 - [ ] **Kjør utvidet golden-bank live**
   - Kjør `npm run test-golden-schema` og deretter `npm run test-ai:golden` med gyldig KI-konfigurasjon.
   - Gjennomgå alle BØR SJEKKES/KRITISK AVVIK manuelt; ikke endre testen bare for å få grønt.
