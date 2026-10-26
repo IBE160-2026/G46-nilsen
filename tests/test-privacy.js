@@ -45,6 +45,10 @@ const nameCases = [
   ['Fraværet har økt.', null],
   ['Sikkerhet må prioriteres.', null],
   ['Arbeidsliv er et bredt begrep.', null],
+  ['Vi skal til møte neste uke.', null],
+  ['Medarbeideren skal til lege i morgen.', null],
+  ['Løsningen kommer senere.', null],
+  ['Kunden sier at leveransen er forsinket.', null],
 ];
 
 const privacyCases = [
