@@ -215,6 +215,8 @@ De nye casene inkluderer både konstruerte regresjonsscenarier og anonymiserte/g
 
 Schema-testen håndhever minst to caser per hovedtema, minst tre for de to definerte høyrisikotemaene, og at fasitens opphav og manglende ekspertvalidering er eksplisitt dokumentert.
 
+Teknisk heter responsfeltet for denne typen kontroll fortsatt `legal_hr_note`. Feltet beholdes av kompatibilitetshensyn, men brukergrensesnittet og promptreglene tolker det bredere som **faglig/regelverksmessig kvalitetssikring**. En ren feltnavnsrefaktorering er utsatt for å unngå unødvendig kontrakts- og regresjonsrisiko før innlevering.
+
 ### Videre kvalitetssikring
 
 Dersom løsningen skulle brukes utover studentprototype/treningsformål, bør relevante deler av faggrunnlag, golden-fasit og høyrisikosvar vurderes tverrfaglig. Samtalekvalitet kan for eksempel kreve organisasjonspsykologisk eller annen samtalefaglig kompetanse, mens formelle arbeidsrettslige eller HMS-spørsmål krever andre kilder og fagmiljøer. Poenget er ikke å finne én faggruppe som kan godkjenne alt, men å matche valideringen til typen påstand eller råd.
