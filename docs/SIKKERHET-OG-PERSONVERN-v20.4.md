@@ -261,3 +261,18 @@ Begrunnelsen for intervallet er:
 Det ble bevisst valgt et avgrenset versjonsintervall fremfor å fryse applikasjonen til nøyaktig 26.12.1. Dette reduserer risikoen for at senere sikkerhetspatcher i samme hovedversjon krever en ny kodeendring.
 
 Etter endringen skal Render-tjenesten bygges og deployes på nytt slik at både Node-runtime og systemets sertifikatlager oppdateres.
+
+
+## 18. Skille mellom lokal Node-kompatibilitet og produksjonsruntime – 26.10.2026
+
+Etter faglærers gjennomgang ble Node-kravet justert for å unngå at sensoren unødvendig blokkeres av et produksjonsspesifikt sikkerhetskrav.
+
+`package.json` angir nå:
+
+`>=22 <27`
+
+Dette er et kompatibilitetsområde for lokal kjøring og testing. Faglærer har verifisert at `npm ci` og `npm test` består på Node 23.11.
+
+Produksjon på Render skal fortsatt bruke `NODE_VERSION=26.12.1`. Render prioriterer denne miljøvariabelen foran `engines.node` i `package.json`. Dermed kan prosjektet være mindre restriktivt for sensor lokalt uten å senke Node-versjonen i produksjon.
+
+Node 26.12.1 ble beholdt som produksjonsversjon fordi den er en sikkerhetsrelease fra 21.10.2026. Den bredere `engines`-verdien skal derfor ikke tolkes som en anbefaling om å bruke eldre eller utgåtte Node-versjoner i produksjon.
