@@ -1539,3 +1539,11 @@ Fra og med neste versjon skal følgende alltid gjøres:
 ### Personvern v2 – regresjonsfunn etter første kjøring
 
 Første lokale testkjøring avdekket at testen kunne være grønn samtidig som navnedetektoren ga ekstra falske navnetreff. Eksemplene «medarbeideren bor …» og «medarbeideren brøt …» viste at rolle + påfølgende verb kunne tolkes som navn. Regelen ble derfor strammet inn, navneordboken brukes nå som evidens sammen med personkontekst i stedet for som ubetinget treff, og testene feiler nå på uventede navnetreff og feil anonymisering. SSB-oppdateringsscriptet ble samtidig gjort eksplisitt mot tabellmetadata for navnevariabelen og avbryter dersom uttrekket ser urimelig lite ut.
+
+
+### Personvern v2 – falske positiver i tvetydige navn og setningssubjekt
+
+- Tvetydige navn som `dag` krever nå stor forbokstav ved ordinær navnekontekst; liten bokstav kan fortsatt fanges i eksplisitte uttrykk som «snakket med per».
+- Deteksjon av ukjente navn ved setningsstart bruker nå personspesifikke handlingsverb i stedet for generelle hjelpeverb som `har`, `er` og `ble`.
+- Dette hindrer at vanlige setninger som «Fraværet har økt» eller «Arbeidsmiljøet har blitt bedre» blir tolket som personnavn.
+- Nye negative regresjonstester dekker disse tilfellene.
