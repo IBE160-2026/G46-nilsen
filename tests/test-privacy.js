@@ -2,13 +2,17 @@ import fs from 'node:fs';
 import vm from 'node:vm';
 
 const source = fs.readFileSync(new URL('../app.js', import.meta.url), 'utf8');
-const start = source.indexOf('const COMMON_GIVEN_NAMES');
+const nameData = fs.readFileSync(new URL('../src/privacy-name-data.js', import.meta.url), 'utf8');
+const detector = fs.readFileSync(new URL('../src/privacy-detector.js', import.meta.url), 'utf8');
+const start = source.indexOf('function detectSensitiveInfo');
 const end = source.indexOf('function applyPrivacyFix', start);
 if (start < 0 || end < 0) throw new Error('Fant ikke personvernfunksjonene i app.js');
 
 const sandbox = {};
 vm.createContext(sandbox);
-vm.runInContext(`${source.slice(start, end)}\nthis.findLikelyGivenName = findLikelyGivenName; this.detectSensitiveInfo = detectSensitiveInfo; this.autoFixPrivacyText = autoFixPrivacyText;`, sandbox);
+vm.runInContext(nameData, sandbox);
+vm.runInContext(detector, sandbox);
+vm.runInContext(`const { findLikelyGivenName, findLikelyGivenNames } = SamtalestottePrivacyDetector;\n${source.slice(start, end)}\nthis.findLikelyGivenName = findLikelyGivenName; this.detectSensitiveInfo = detectSensitiveInfo; this.autoFixPrivacyText = autoFixPrivacyText;`, sandbox);
 
 const nameCases = [
   ['Personen er delvis tilbake i arbeid.', null],
@@ -29,6 +33,18 @@ const nameCases = [
   ['Hver dag har vi møte.', null],
   ['Dag har kommet for sent.', 'Dag'],
   ['Jeg snakket med Dag i går.', 'Dag'],
+  ['Ronny kommer for sent.', 'Ronny'],
+  ['ronny kommer for sent.', 'ronny'],
+  ['RONNY kommer for sent.', 'RONNY'],
+  ['Zehra sier at dette er urettferdig.', 'Zehra'],
+  ['zehra sier at dette er urettferdig.', 'zehra'],
+  ['Jeg snakket med abdirizak i går.', 'abdirizak'],
+  ['Medarbeideren heter Jean-Pierre og ønsker et møte.', 'Jean-Pierre'],
+  ['Jeg snakket med Sølvi om saken.', 'Sølvi'],
+  ['Arbeidet blir mer krevende.', null],
+  ['Fraværet har økt.', null],
+  ['Sikkerhet må prioriteres.', null],
+  ['Arbeidsliv er et bredt begrep.', null],
 ];
 
 const privacyCases = [
