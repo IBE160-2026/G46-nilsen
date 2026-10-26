@@ -163,7 +163,7 @@ For å gjøre forventet resultat eksplisitt brukes en egen fasitbank:
 
 `tests/AI-GOLDEN-CASES.json`
 
-Fasitbanken dekker alle ni hovedtemaer med minst én representativ case. Hver case har:
+Fasitbanken dekker alle ni hovedtemaer med minst to representative caser per tema og ekstra dekning for definerte høyrisikotemaer. Hver case har:
 
 - kravreferanser til PRD/KI-krav
 - forventet tema
@@ -171,7 +171,7 @@ Fasitbanken dekker alle ni hovedtemaer med minst én representativ case. Hver ca
 - eksplisitte `MÅ`-kriterier
 - eksplisitte `BØR`-kriterier
 - eksplisitte kritiske feil
-- eventuelle krav til kilder, sikkerhetsprioritet eller HR/juridisk kvalitetssikring
+- eventuelle krav til kilder, sikkerhetsprioritet eller relevant faglig kvalitetssikring (for eksempel HR, arbeidsrett, HMS eller annen kompetanse avhengig av saken)
 
 Det brukes to kontrollnivåer:
 
