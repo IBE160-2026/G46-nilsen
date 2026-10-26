@@ -2,6 +2,7 @@ const fs = require('fs');
 const assert = require('assert');
 const html = fs.readFileSync('index.html', 'utf8');
 const css = fs.readFileSync('styles.css', 'utf8');
+const app = fs.readFileSync('app.js', 'utf8');
 
 for (const page of ['admin', 'help', 'survey']) {
   assert(html.includes(`data-page-icon="${page}"`), `${page}: mangler minimert sideikon`);
