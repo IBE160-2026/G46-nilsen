@@ -224,6 +224,14 @@
           </div>
         </div>
 
+        <div class="privacy-banner guidance-safety-banner" role="note" aria-label="Veiledning, ikke faglig fasit">
+          <div class="privacy-icon">⚠️</div>
+          <div>
+            <strong>Veiledning – ikke faglig fasit</strong>
+            <p>KI-råd kan være ufullstendige eller feil. Bruk dem som støtte til forberedelse og refleksjon, ikke som endelig vurdering. Ved behov må du bruke relevant kompetanse, virksomhetens rutiner og gjeldende regelverk. Ingen enkelt faggruppe eller samtalemetode er fasit for alle situasjoner.</p>
+          </div>
+        </div>
+
         <section id="history-loaded-situation" class="history-loaded-situation" hidden>
           <span class="eyebrow">LAGRET SITUASJON</span>
           <p id="history-loaded-situation-text"></p>
@@ -575,7 +583,7 @@
           <h2>Brukerens ansvar</h2><p>Du er ansvarlig for innholdet du legger inn og for å følge eventuell taushetsplikt, sikkerhetsinstruks og arbeidsgivers interne regler.</p>
           <h2>Anonymiser så langt som mulig</h2><p>Unngå navn, kontaktinformasjon, fødselsdato, personnummer og andre unødvendige identifiserende opplysninger. Bruk rollebeskrivelser som «medarbeideren». Behold bare arbeidskontekst som er nødvendig for relevante råd.</p>
           <h2>Ikke legg inn opplysninger som ikke kan behandles eksternt</h2><p>Graderte opplysninger eller andre opplysninger som etter lov, instruks eller virksomhetens regler ikke kan behandles i eksterne digitale tjenester, skal ikke legges inn.</p>
-          <h2>KI-råd er beslutningsstøtte</h2><p>Samtalestøtte gir støtte til forberedelse og samtaleform. Juridiske, medisinske, sikkerhetskritiske og andre alvorlige beslutninger må kvalitetssikres mot relevante fagpersoner og gjeldende regelverk.</p>
+          <h2>Veiledning – ikke faglig fasit</h2><p>Samtalestøtte gir støtte til forberedelse, refleksjon og samtaleform. KI-råd kan være ufullstendige eller feil og skal ikke behandles som en autoritativ fasit. Hvilken kompetanse som er relevant avhenger av saken: det kan for eksempel være samtalefaglig/organisasjonspsykologisk kompetanse, HR, arbeidsrett, HMS, helsepersonell eller andre fagmiljøer. Bruk også virksomhetens rutiner og gjeldende regelverk.</p>
           <p class="legal-note"><strong>Betastatus:</strong> Vilkårene er et prosjektutkast og må kvalitetssikres før offentlig lansering.</p>
         </article>
       </section>
@@ -590,7 +598,7 @@
         <div class="about-stack">
           <section class="settings-card about-section"><h2>Hva Samtalestøtte er</h2><p>Samtalestøtte er utviklet for ledere som skal forberede og øve på krevende medarbeidersamtaler. Løsningen gir strukturert støtte gjennom blant annet forslag til spørsmål og formuleringer, refleksjon og samtalesimulering.</p></section>
           <section class="settings-card about-section"><h2>Bakgrunn</h2><p>Prosjektet tar utgangspunkt i et praktisk behov for mer konkret trening i gjennomføring av krevende samtaler. Hensikten er å støtte lederens forberedelse og refleksjon, ikke å overta vurderinger eller beslutninger.</p></section>
-          <section class="settings-card about-section"><h2>Veiledning – ikke fasit</h2><p>Samtalestøtte er ikke et HR-system, journalsystem eller beslutningsverktøy. Innholdet er veiledende og erstatter ikke lederens eget skjønn, virksomhetens rutiner eller nødvendig bistand fra HR, juridisk rådgiver, bedriftshelsetjeneste eller andre fagpersoner.</p></section>
+          <section class="settings-card about-section"><h2>Veiledning – ikke faglig fasit</h2><p>Samtalestøtte er ikke et HR-system, journalsystem eller beslutningsverktøy. Innholdet er veiledende og kan være ufullstendig eller feil. Gode samtaler berører flere fagområder, og ingen enkelt faggruppe er fasit i alle situasjoner. Løsningen erstatter ikke lederens eget skjønn, virksomhetens rutiner eller relevant samtalefaglig, organisasjonspsykologisk, HR-, juridisk, HMS- eller helsefaglig bistand når saken krever det.</p></section>
           <section class="settings-card about-section"><h2>Personvern og ansvarlig bruk</h2><p>Brukeren skal ikke legge inn navn eller andre unødvendige opplysninger som kan identifisere virkelige personer. Personvernkontrollene reduserer risikoen for at identifiserende informasjon sendes videre, men kan ikke garantere at alle slike opplysninger oppdages.</p></section>
           <section class="settings-card about-section"><h2>Om prosjektet</h2><p>Samtalestøtte er utviklet som del av en prosjektoppgave ved Høgskolen i Molde. Studenten har hatt ansvar for behovsforståelse, krav, faglig retning, innhold og produktvalg. ChatGPT fra OpenAI er brukt som støtte i blant annet idéutvikling, programmering, dokumentasjon, testing og kvalitetssikring.</p><p><strong>Status:</strong> Betaversjon – under utvikling og testing.</p></section>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
@@ -840,9 +848,9 @@
   <dialog id="ai-feedback-dialog" class="confirm-dialog"><form id="ai-feedback-form" class="confirm-dialog-card"><h2>Rapporter KI-svar</h2><p>Fortell kort hva som var galt eller lite nyttig.</p><label>Hva var problemet?<select id="ai-feedback-category"><option>Misforstod situasjonen</option><option>Ikke relevant</option><option>Faglig tvilsomt</option><option>For generelt</option><option>Uheldig formulering</option><option>Urealistisk simulatorrespons</option><option>Annet</option></select></label><label>Kommentar<textarea id="ai-feedback-comment" rows="4" placeholder="Hva burde vært annerledes? Unngå navn og andre personopplysninger."></textarea></label><label class="report-log-option ai-feedback-attach"><input id="ai-feedback-include-conversation" type="checkbox"><span><strong>Legg ved samtalen</strong><small>Av som standard. Personvernsjekken kjøres før samtalen eventuelt lagres sammen med rapporten.</small></span></label><div id="ai-feedback-privacy" class="privacy-check" hidden></div><div class="auth-message" id="ai-feedback-message" aria-live="polite"></div><div class="dialog-actions"><button class="secondary-button" id="ai-feedback-cancel" type="button">Avbryt</button><button class="primary-button" type="submit">Send tilbakemelding</button></div></form></dialog>
   <dialog id="privacy-ack-dialog" class="confirm-dialog privacy-ack-dialog">
     <div class="confirm-dialog-card">
-      <span class="eyebrow">FØR DU BRUKER SAMTALESTØTTE</span><h2>Personvern i samtalene</h2>
+      <span class="eyebrow">FØR DU BRUKER SAMTALESTØTTE</span><h2>Personvern og faglige begrensninger</h2>
       <p>Ikke skriv navn eller andre opplysninger som kan identifisere virkelige personer. Personvernkontrollen reduserer risiko, men kan ikke garantere at alt oppdages.</p>
-      <p>Bruk KI-rådene som støtte. Ved alvorlige HR-, juridiske, medisinske eller sikkerhetsmessige spørsmål må riktig fagperson eller virksomhetens rutiner brukes.</p>
+      <p><strong>KI-rådene er veiledning, ikke en faglig fasit.</strong> De kan være ufullstendige eller feil. Bruk relevant kompetanse, virksomhetens rutiner og gjeldende regelverk når saken krever det. Ingen enkelt faggruppe eller samtalemetode er fasit for alle situasjoner.</p>
       <div class="dialog-actions"><button class="secondary-button" id="privacy-ack-read-more" type="button">Les personvernerklæringen</button><button class="primary-button" id="privacy-ack-confirm" type="button">Jeg har lest og forstått</button></div>
     </div>
   </dialog>
