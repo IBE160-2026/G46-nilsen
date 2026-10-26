@@ -862,7 +862,7 @@ Manuell gjennomgang viste at dette ikke var et substansielt faglig avvik:
 
 Begge svarene oppfylte dermed den menneskelige MÅ-fasiten og sentrale BØR-punkter. Resultatet beholdes som **19 maskinelt OK + 2 manuelt akseptert etter gjennomgang**, ikke omskrevet til 21/21 maskinelt OK. Dette er i tråd med teststrategien der `BØR SJEKKES` skal utløse menneskelig kontroll, ikke automatisk feilretting.
 
-# Verifisering 2026-10-26 – deterministisk testpakke etter golden-utvidelse
+# Verifisering 2026-10-26 – deterministisk testpakke etter golden-utvidelse (historisk kjøring)
 
 Etter utvidelsen av golden-banken til 21 caser og oppdateringer i README/UI/testplan ble siste `main` hentet lokalt og følgende kjørt:
 
@@ -878,7 +878,7 @@ Resultat:
 - minimumsdekning: **minst 2 caser per tema**
 - ekstra risikodekning: **bestått**
 - provenance: **dokumentert og verifisert**
-- personvern: **34/34**
+- personvern: **34/34** *(status i denne historiske kjøringen; testsettet ble senere utvidet)*
 - simulator: **24/24**
 - server-personvern: **OK**
 - UI-regresjon/UU: **OK**
@@ -893,6 +893,34 @@ Resultat:
 - Node-kompatibilitetsområde: **OK**
 
 Dette dokumenterer at utvidelsen av testgrunnlaget og endringene fram til denne kjøringen ikke brøt den deterministiske testpakken. Etterpå er det gjort mindre kodeendringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester. Disse endringene ble deretter kontrollert lokalt. Hele pakken besto, med unntak av at repo-strukturtesten først avviste lærerens nylig innførte `CLAUDE.md`/`.claude`-verktøy. Testens allowlist ble oppdatert uten å svekke øvrige strukturkrav, og `npm run test-repo-structure` ble deretter verifisert grønn. Den deterministiske teststatusen er dermed grønn på nyeste kode før live KI-kjøringen. Kjøringen sier uansett ikke noe om kvaliteten på de 12 nye golden-casene mot en faktisk språkmodell; disse krever ny `npm run test-ai:golden`.
+
+## Verifisering 2026-10-26 – Personvern v2 og utvidet regresjonspakke
+
+Etter videre arbeid med navnedeteksjon ble personvernlaget utvidet og testet på nytt. Endringen omfatter blant annet delt navnedetektor på klient og server, lokal navnebase generert fra SSB Statistikkbanken, case-insensitiv deteksjon, kontekstregler for sjeldne/tvetydige navn og egen kontroll av relevante fritekstflater.
+
+Den første forbedringen ga to typer falske positiver i regresjonstesten: vanlige ord som `dag` kunne tolkes som navn i «Hver dag har vi møte», og ordinære setningssubjekt som «Fraværet har økt» kunne bli tolket som ukjent navn. Reglene og testene ble derfor strammet inn før løsningen ble godkjent.
+
+Ny lokal kjøring av `npm test` ga:
+
+- personvern: **56/56**
+- simulator: **24/24**
+- server-personvern: **OK**
+- personvernflater klient/server: **OK**
+- UI-regresjon/UU: **OK**
+- historikkregresjon: **OK**
+- samtaleboble-regresjon: **OK**
+- clipboard-regresjon: **OK**
+- golden-schema: **21 caser, 9/9 hovedtemaer**
+- golden matcher-regresjon: **OK**
+- sensor-demo-regresjon: **OK**
+- offentlige frontend-assets: **OK**
+- repo-struktur: **OK**
+- package-lock-konsistens: **OK**
+- Node-kompatibilitetsområde: **OK**
+
+Den lokalt genererte navnebasen inneholdt ved denne verifiseringen **2110 fornavn og 3706 etternavn** fra SSB Statistikkbanken. Navnedata brukes lokalt i løsningen; brukertekst sendes ikke til SSB.
+
+Denne kjøringen erstatter ikke de tidligere testresultatene som historikk. Den viser nyeste verifiserte deterministiske status etter Personvern v2 per 26.10.2026.
 
 ---
 
@@ -1121,7 +1149,7 @@ npm test
 
 Verifisert resultat:
 
-- personvern: **33/33**
+- personvern: **33/33** *(status i denne tidligere kjøringen; testsettet ble senere utvidet)*
 - samtalesimulering: **24/24**
 - server-personvern: **bestått**
 - UI-regresjon: **bestått**
@@ -1255,7 +1283,7 @@ Dette er siste verifiserte golden-resultat i prosjektet per 14.10.2026.
 
 ---
 
-# Lokal sluttverifisering – utvidet regresjonspakke
+# Historisk lokal verifisering – utvidet regresjonspakke
 
 Etter innføring av lokal sensordemo og syntakskontroll ble `npm test` kjørt på nytt.
 
@@ -1273,4 +1301,4 @@ Bekreftet i denne kjøringen:
 - golden matcher-regresjon: **bestått**
 - sensor-demo-regresjon: **bestått**
 
-Etter den påfølgende sluttkjøringen ble også repo-strukturtesten og de nye integrasjonskontrollene verifisert grønne. Hele den deterministiske `npm test`-pakken besto etter modularisering, asset-retting, UU-endringer og package-lock-synkronisering.
+Etter den påfølgende kjøringen ble også repo-strukturtesten og de nye integrasjonskontrollene verifisert grønne. Hele den deterministiske `npm test`-pakken besto etter modularisering, asset-retting, UU-endringer og package-lock-synkronisering.
