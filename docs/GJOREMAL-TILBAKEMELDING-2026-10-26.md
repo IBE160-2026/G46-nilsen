@@ -18,10 +18,10 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - Full RAG, støtte til andre samtaleroller enn leder, HR-integrasjoner og lukket intern drift er markert som framtid/utenfor kjerne.
   - Teksten skiller mellom implementert funksjonalitet og graden av test/verifisering.
 
-- [ ] **Gjør Success Criteria testbare**
-  - Skriv 5–8 konkrete kriterier i «brukeren kan …»-form.
-  - Koble kriteriene til eksisterende testbevis der det er mulig.
-  - Eksempler: bruker A kan ikke se bruker Bs historikk; alle 9 hovedtemaer har golden-case; personvernkontroll skjer både klient og server; sensordemo kan startes uten nøkler.
+- [x] **Gjør Success Criteria testbare**
+  - Product brief har nå sju etterprøvbare kriterier for kjerneflyt, oppfølging/simulering, historikk/RLS, personvern, golden-dekning, sensordemo og måling av utvidet KI-funksjonalitet.
+  - Kriteriene er koblet til eksisterende testfiler og databaseoppsett.
+  - Golden-kriteriet presiserer at testene viser samsvar med prosjektets fasit og sikkerhetsregler, ikke uavhengig faglig ekspertgodkjenning.
 
 - [ ] **Dokumenter den faktiske tidsrekkefølgen ærlig**
   - Prototype v1–v12 kom før product brief/BMAD.
