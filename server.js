@@ -8,6 +8,8 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
+import "./src/privacy-name-data.js";
+import "./src/privacy-detector.js";
 
 dotenv.config();
 
@@ -91,7 +93,7 @@ app.use("/api", generalApiLimiter);
 
 // Server kun eksplisitt offentlige frontend-filer. SQL, .env, tester og dokumentasjon er ikke web-tilgjengelige.
 const publicAssetNames = new Set([
-  "index.html", "app.js", "styles.css", "src/client-data.js", "assets/images/snakkeboble.svg",
+  "index.html", "app.js", "styles.css", "src/client-data.js", "src/privacy-name-data.js", "src/privacy-detector.js", "assets/images/snakkeboble.svg",
   "assets/images/logo.png", "assets/images/logo-light.png", "assets/images/logo-symbol.png", "assets/images/logo-symbol-light.png",
   "assets/images/profile-ai.png", "assets/images/profile-ai-light.png", "assets/images/profile-human.png", "assets/images/profile-human-light.png",
   "assets/images/hero-conversation-exact.png",
@@ -1161,49 +1163,11 @@ function webSourceUrls(response) {
   return urls;
 }
 
-const SERVER_COMMON_GIVEN_NAMES = new Set(`Kine Gro Reidun Cecilie Trude Kari Karianne Karina Karoline Kristin Kristine Kristina Anne Anna Annika Anette Anita Ingrid Inger Ida Ine Irene Iselin Hege Hilde Hanne Hanna Helene Henriette Silje Sigrid Synne Siri Sofie Sofia Sara Sarah Emma Emilie Amalie Thea Nora Mia Maja Maya Leah Lea Julie Julia Jenny Josefine Frida Frøya Live Linn Linda Lene Lena Line Lisa Lise Liv Lillian Marianne Maria Marie Marit Marte Martine Mathilde Monica Mona Nina Oda Ragnhild Rikke Silja Solveig Stine Tine Tonje Trine Tuva Victoria Viktoria Åse Åshild Bente Berit Britt Brit Gerd Grete Gry Jorunn Jorun Randi Rita Siv Sissel Tone Torill Tove Unni Vigdis Wenche Åsebjørg Elisabeth Elise Ellen Eva Else Gunn Gunhild Ingeborg Kjersti Merete Mette Renate Solfrid Therese Trude Vibeke Anders Andreas André Arne Asbjørn Benjamin Bjørn Christian Kristian Christoffer Christopher Daniel David Eirik Erik Espen Even Fredrik Frederik Frode Geir Gunnar Håkon Hans Henrik Jan Jens Joachim Johannes John Jonas Jonathan Jørgen Karl Kenneth Kim Knut Lars Mads Magnus Martin Mathias Mats Morten Nils Ole Pål Per Petter Robert Roger Rune Simen Sindre Stian Thomas Tobias Tommy Tor Trond Vegard Vidar Øivind Øystein Alf Arild Bjarne Dag Einar Erlend Finn Frank Harald Helge Ivar Kjell Kjetil Leif Magne Odd Ove Roar Roy Steinar Svein Terje Tom Tommy Trygve Aisha Ayesha Fatima Fatma Layla Leila Laila Noor Nour Yasmin Yasmine Zainab Maryam Mariam Amira Samira Nadia Nadiya Hana Huda Rania Salma Sara Omar Ahmed Ahmad Ali Amir Bilal Hassan Hasan Hussein Ibrahim Ismail Khalid Mohammed Mohammad Mohamed Mustafa Yusuf Youssef Adam Alejandro Carlos Diego Eduardo Fernando Francisco Javier Jorge José Jose Juan Luis Manuel Miguel Pablo Pedro Ricardo Roberto Santiago Sofia Camila Valentina Isabella Gabriela Daniela Mariana Lucia Lucía Elena Carmen Ana María Maria Giulia Giorgia Francesca Alessandra Martina Chiara Federica Marco Luca Matteo Lorenzo Alessandro Andrea Giovanni Giuseppe Antonio Stefano Davide Chloe Chloé Emily Olivia Amelia Charlotte Sophie Jessica Rebecca Rachel Megan Lauren Hannah Grace Alice Lucy Eleanor George James William Harry Oliver Jack Charlie Thomas Edward Henry Samuel Alexander Daniel Michael Matthew Joshua Emma Sophie Anna Lena Laura Julia Sarah Lisa Katharina Hannah Marie Johanna Lea Leon Lukas Luca Finn Felix Paul Jonas Elias Noah Ben Benjamin Maximilian Alexander Niklas Élodie Camille Manon Juliette Claire Pauline Amélie Cécile Celine Céline Lucie Margaux Louise Marie Jean Pierre Julien Nicolas Antoine François Philippe Alexandre Thomas Agnieszka Katarzyna Anna Ewa Joanna Magdalena Natalia Aleksandra Marta Piotr Jakub Mateusz Michał Michal Tomasz Krzysztof Paweł Pawel Łukasz Lukasz Anastasia Ekaterina Elena Irina Natalia Olga Svetlana Tatiana Ivan Dmitri Dmitry Alexei Sergey Sergei Nikolai Mikhail Priya Pooja Anjali Neha Aditi Riya Kavya Aarav Arjun Rahul Rohit Vikram Raj Amit Anil Deepak Sanjay Wei Li Ming Jun Chen Ling Mei Xia Yu Yuki Haruka Sakura Aiko Mei Kenji Hiroshi Takashi Akira Satoshi Minjun Jihoon Jisoo Seojun Hyunwoo Minji Yuna Nguyen Minh Linh Lan Anh Trang Huy Phuong Phương Mai Tuan Tuấn Kwame Kofi Ama Akosua Chinedu Ngozi Adaeze Amina Nia Zuri Tendai Thabo Sipho Lerato`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
-const SERVER_NAME_FALSE_POSITIVES = new Set(`Jeg Vi Det Den Dette En Et Når Hvis På I Som Med Men Og Eller For Til Fra Av Etter Før Under Over Ikke Ja Nei Usikker Person Personen Vedkommende Hen Medarbeideren Medarbeider Kollegaen Kollega Lederen Leder Arbeidsgiver Arbeidstaker Ansatt Ansatte Teamet Team HR NAV BHT Fravær Sykefravær Sykmelding Arbeid Arbeidet Stillingen Samtalen Situasjonen Oppfølging Tilrettelegging Mandag Tirsdag Onsdag Torsdag Fredag Lørdag Søndag Januar Februar Mars April Mai Juni Juli August September Oktober November Desember`.split(/\s+/).filter(Boolean).map(n => n.toLocaleLowerCase("nb-NO")));
-const SERVER_AMBIGUOUS_GIVEN_NAMES = new Set(`per liv live line ben even dag finn tone odd gro siv bjørn rune`.split(/\s+/).filter(Boolean));
 const SERVER_HARD_PRIVACY_TYPES = new Set(["email", "phone", "birthdate", "identifier", "name", "address", "gendered_language"]);
-
-function serverNormalizeNameToken(value) { return String(value || "").toLocaleLowerCase("nb-NO"); }
-function serverIsKnownGivenName(value) {
-  const normalized = serverNormalizeNameToken(value);
-  return SERVER_COMMON_GIVEN_NAMES.has(normalized) && !SERVER_NAME_FALSE_POSITIVES.has(normalized);
-}
-function serverFindLikelyGivenName(source) {
-  const text = String(source || "");
-  const explicit = text.match(/\b(?:heter|navn(?:et)?\s+er|kalles|medarbeider(?:en)?\s+heter|kollega(?:en)?\s+heter|leder(?:en)?\s+heter)\s+([\p{L}][\p{L}'’-]{1,30})\b/iu);
-  if (explicit && !SERVER_NAME_FALSE_POSITIVES.has(serverNormalizeNameToken(explicit[1]))) return explicit[1];
-  const tokens = text.match(/\b[\p{L}][\p{L}'’-]{1,30}\b/gu) || [];
-  for (const token of tokens) {
-    const normalized = serverNormalizeNameToken(token);
-    if (!serverIsKnownGivenName(token)) continue;
-    if (!SERVER_AMBIGUOUS_GIVEN_NAMES.has(normalized)) return token;
-    const escaped = token.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    const relationUse = new RegExp(`\\b(?:heter|med|til|fra|hos|snakket\\s+med|møte\\s+med)\\s+${escaped}\\b`, "iu");
-    const subjectUse = /^\p{Lu}/u.test(token) &&
-      new RegExp(`\\b${escaped}\\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\\b`, "u").test(text);
-    if (relationUse.test(text) || subjectUse) return token;
-  }
-  const personContext = text.match(/\b(?:med|til|fra|hos|snakket\s+med|møte\s+med)\s+([\p{Lu}][\p{L}'’-]{1,30})(?=\s+(?:har|hadde|er|var|ble|blir|skal|vil|kan|må|sier|sa|jobber|møter|kommer|ønsker|mener)\b)/u);
-  if (personContext && !SERVER_NAME_FALSE_POSITIVES.has(serverNormalizeNameToken(personContext[1]))) return personContext[1];
-  const fullName = text.match(/\b([\p{Lu}][\p{L}'’-]{1,30})\s+([\p{Lu}][\p{L}'’-]{1,30})\b/u);
-  if (fullName) {
-    const a = serverNormalizeNameToken(fullName[1]), b = serverNormalizeNameToken(fullName[2]);
-    if (!SERVER_NAME_FALSE_POSITIVES.has(a) && !SERVER_NAME_FALSE_POSITIVES.has(b) && (serverIsKnownGivenName(fullName[1]) || serverIsKnownGivenName(fullName[2]))) return `${fullName[1]} ${fullName[2]}`;
-  }
-  return null;
-}
+const sharedPrivacyNameDetector = globalThis.SamtalestottePrivacyDetector;
+if (!sharedPrivacyNameDetector) throw new Error("Delt navnedetektor mangler.");
 function serverFindLikelyGivenNames(source) {
-  const names = []; let working = String(source || "");
-  for (let i = 0; i < 10; i += 1) {
-    const hit = serverFindLikelyGivenName(working); if (!hit) break;
-    if (!names.some(name => serverNormalizeNameToken(name) === serverNormalizeNameToken(hit))) names.push(hit);
-    const escaped = hit.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    working = working.replace(new RegExp(`\\b${escaped}\\b`, "iu"), " ");
-  }
-  return names;
+  return sharedPrivacyNameDetector.findLikelyGivenNames(source);
 }
 
 function serverPrivacyFindings(text) {
