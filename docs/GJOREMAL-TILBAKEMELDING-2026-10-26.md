@@ -4,11 +4,12 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
 
 ## Prioritet 1 – bør gjøres først
 
-- [ ] **Rett README etter repo-flyttingen**
-  - Endre `cd Samtalestotte` til `cd G46-nilsen`.
-  - Endre mappestrukturen fra `Samtalestotte/` til `G46-nilsen/`.
-  - Kontroller Node-avsnittet mot faktisk støttet/testet Node-versjon før teksten endres.
-  - Behold forklaring om at Node 26.12.1-kravet ble innført som sikkerhetstiltak for Render dersom dette fortsatt er riktig.
+- [x] **Rett README etter repo-flyttingen og skill lokal Node-kompatibilitet fra Render-runtime**
+  - `cd Samtalestotte` er endret til `cd G46-nilsen`.
+  - Mappestrukturen starter nå med `G46-nilsen/`.
+  - `engines.node` er endret fra `>=26.12.1 <27` til `>=22 <27` for lokal kompatibilitet/sensor.
+  - Faglærer har verifisert `npm ci` og `npm test` på Node 23.11.
+  - Render skal fortsatt bruke `NODE_VERSION=26.12.1` som sikkerhetspatchet produksjonsruntime.
 
 - [ ] **Revider Scope i product brief**
   - Del tydelig i **In for v1 (kjerne)** og **Utvidelser / utenfor kjerne**.
