@@ -1295,3 +1295,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - What Makes This Different sammenligner nå eksplisitt med generelle KI-chatboter, HR-maler/interne rutiner og kurs/ledertrening, inkludert hva alternativene kan gjøre bedre.
 - Primærbrukeren er konkretisert uten å snevre produktet unødvendig inn.
 - Sekundære brukere er tydelig holdt utenfor kjerneflyten i v1.
+
+
+## 2026-10-26 – Dokumentert teknisk gjeld og ryddet feedback
+
+- README har fått en eksplisitt seksjon om kjent teknisk gjeld i `app.js` og `server.js`.
+- Videre modularisering er dokumentert som et naturlig produksjonssteg, mens stor sluttrefaktorering er bevisst utsatt for å begrense regresjonsrisiko.
+- Faglærers product-brief-tilbakemelding er flyttet fra repo-roten til `docs/feedback/` og beholdt som dokumentasjon.
