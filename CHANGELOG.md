@@ -1356,3 +1356,13 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Success Criteria er oppdatert fra minst én til minst to golden-caser per hovedtema, med ekstra høyrisikodekning.
 - README og AI-TESTPLAN beskriver ekstern faglig validering flerfaglig fremfor HR-sentrert.
 - Refleksjonsutkastet skiller nå eksplisitt mellom den historiske 9/9-kjøringen 14.10.2026 og den senere utvidelsen til 21 caser.
+
+
+## 2026-10-26 – Deterministisk sluttkontroll etter golden-utvidelse
+
+- Kjørt `npm run test-golden-schema` på siste `main`: 21 caser, 9/9 hovedtemaer, minst to per tema, ekstra risikodekning og provenance OK.
+- Kjørt hele `npm test`-pakken på siste `main`: alle deltester besto.
+- Personvern: 34/34.
+- Simulator: 24/24.
+- Server-personvern, UI/UU, historikk, snakkeboble, clipboard, golden matcher, sensor-demo, assets, repo-struktur, package-lock og Node-kompatibilitet: OK.
+- Live golden-kjøring mot faktisk KI gjenstår og skal vurderes separat.
