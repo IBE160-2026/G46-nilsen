@@ -114,7 +114,7 @@ function evaluate(tc, analysis, guidance) {
   if (tc.require_hr_or_legal) {
     const note = String(guidance?.legal_hr_note || "");
     if (!/(hr|jurid|arbeidsrett|kvalitetssikr|personal|hms)/i.test(note)) {
-      review.push("HR/juridisk/HMS: fasiten forventer tydelig kvalitetssikring eller videre henvisning");
+      review.push("Faglig/regelverk: fasiten forventer tydelig relevant kvalitetssikring eller videre henvisning");
     }
   }
   if (tc.require_safety_priority && !/(sikker|stans|stopp|ikke utfør|ikke kjør|tas ut|avbryt|risiko|umiddelbar)/i.test(combined)) {
@@ -204,7 +204,7 @@ for(const r of results){
     md+=`**Mulige reaksjoner og lederrespons:**\n${(r.guidance.reactions||[]).map(x=>`- **${x.reaction||""}** — ${x.leader_response||""}`).join("\n")||"- Ingen"}\n\n`;
     md+=`**Vær særlig oppmerksom på:**\n${(r.guidance.attention||[]).map(x=>`- ${x}`).join("\n")||"- Ingen"}\n\n`;
     md+=`**Sjekk før møtet:**\n${(r.guidance.check_before_meeting||[]).map(x=>`- ${x}`).join("\n")||"- Ingen"}\n\n`;
-    md+=`**HR/juridisk merknad:** ${r.guidance.legal_hr_note||"Ingen"}\n\n`;
+    md+=`**Faglig/regelverksmerknad:** ${r.guidance.legal_hr_note||"Ingen"}\n\n`;
     md+=`**Neste steg:**\n${(r.guidance.next_steps||[]).map(x=>`- ${x}`).join("\n")||"- Ingen"}\n\n`;
     md+=`**Kilder:** ${(r.guidance.source_ids||[]).join(", ")||"Ingen"}\n\n`;
     if(r.require_evidence){
