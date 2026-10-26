@@ -2,11 +2,14 @@ const fs=require('fs');
 const vm=require('vm');
 const assert=require('assert');
 const source=fs.readFileSync('server.js','utf8');
-const start=source.indexOf('const SERVER_COMMON_GIVEN_NAMES');
+const nameData=fs.readFileSync('src/privacy-name-data.js','utf8');
+const detector=fs.readFileSync('src/privacy-detector.js','utf8');
+const start=source.indexOf('const SERVER_HARD_PRIVACY_TYPES');
 const end=source.indexOf('\nfunction flattenTextValues',start);
 assert(start>=0&&end>start,'Fant ikke server-personvernblokken');
+const ctx={};vm.createContext(ctx);vm.runInContext(nameData,ctx);vm.runInContext(detector,ctx);
 const block=source.slice(start,end)+"\nthis._findings=serverPrivacyFindings; this._hard=SERVER_HARD_PRIVACY_TYPES;";
-const ctx={};vm.createContext(ctx);vm.runInContext(block,ctx);
+vm.runInContext(block,ctx);
 const findings=ctx._findings;
 const hard=ctx._hard;
 const cases=[
@@ -31,7 +34,16 @@ const ambiguousNameCases=[
   ['Dette skjer hver dag.',false],
   ['Hver dag har vi møte.',false],
   ['Dag har kommet for sent.',true],
-  ['Jeg snakket med Dag i går.',true]
+  ['Jeg snakket med Dag i går.',true],
+  ['Ronny kommer for sent.',true],
+  ['ronny kommer for sent.',true],
+  ['RONNY kommer for sent.',true],
+  ['Zehra sier at dette er urettferdig.',true],
+  ['zehra sier at dette er urettferdig.',true],
+  ['Jeg snakket med abdirizak i går.',true],
+  ['Arbeidet blir mer krevende.',false],
+  ['Fraværet har økt.',false],
+  ['Sikkerhet må prioriteres.',false]
 ];
 for(const [text,expectedName] of ambiguousNameCases){
   const got=findings(text).map(x=>x.type);
