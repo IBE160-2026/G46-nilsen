@@ -1342,3 +1342,9 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Oppfordrer testere til å bruke oppdiktede situasjoner og unngå personopplysninger.
 - KI-spørsmålet vurderer nå både relevans og balanse.
 - Fritekstfeltet inviterer testere med relevant leder-/fagbakgrunn til å kommentere råd og samtaleteknikk.
+
+
+## 2026-10-26 – Presisert brukertestens kontekst
+
+- Brukertesten opplyser kort at Samtalestøtte er utviklet som skoleprosjekt i Programmering med KI ved Høgskolen i Molde.
+- Spørsmålet om faktisk bruk er utvidet fra «leder med personalansvar» til «leder- eller personalansvar» for å passe flere testere uten å legge til et ekstra spørsmål.
