@@ -74,14 +74,14 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
 
 ## Prioritet 4 – teknisk gjeld og repo
 
-- [ ] **Dokumenter kjent teknisk gjeld**
-  - `app.js` og `server.js` er store filer.
-  - Beskriv dette som kjent gjeld og et naturlig neste modulariseringssteg.
-  - Ikke refaktorer store deler av fungerende kode kun for å pynte før innlevering med mindre det er nødvendig.
+- [x] **Dokumenter kjent teknisk gjeld**
+  - README har nå en egen seksjon om at `app.js` og `server.js` fortsatt er store hovedfiler.
+  - Kontrollert modularisering er beskrevet, sammen med naturlig neste steg.
+  - Det er eksplisitt dokumentert hvorfor en stor sluttrefaktorering ikke gjøres rett før levering: regresjonsrisiko uten tilsvarende produktgevinst.
 
-- [ ] **Flytt lærerens tilbakemeldingsfil fra rot etter at tiltakene er tatt**
-  - Bevar den helst under f.eks. `docs/feedback/` i stedet for å slette den, slik at historikken beholdes.
-  - Gjør dette først når denne arbeidslisten og nødvendige revisjoner er på plass.
+- [x] **Flytt lærerens tilbakemeldingsfil fra rot etter at tiltakene er tatt**
+  - Tilbakemeldingen er bevart under `docs/feedback/tilbakemelding-product-brief.md`.
+  - Rotmappen er dermed ryddigere samtidig som lærerens vurdering og Git-historikk beholdes.
 
 ## Må beholdes / styrker prosjektet
 
