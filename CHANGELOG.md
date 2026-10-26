@@ -1286,3 +1286,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Lagt til to ekstra caser for mobbing/trakassering og to ekstra caser for avslutning av arbeidsforhold.
 - Schema-testen krever nå minst tre golden-caser for hvert av de to risikotemaene.
 - README skiller mellom siste verifiserte 9/9 live-kjøring og de fire nye casene som ennå ikke er live-kjørt.
+
+
+## 2026-10-26 – Skjerpet product brief og produktposisjonering
+
+- Executive Summary er gjort mer selvstendig og mindre teknisk.
+- The Problem har fått et konkret brukseksempel.
+- What Makes This Different sammenligner nå eksplisitt med generelle KI-chatboter, HR-maler/interne rutiner og kurs/ledertrening, inkludert hva alternativene kan gjøre bedre.
+- Primærbrukeren er konkretisert uten å snevre produktet unødvendig inn.
+- Sekundære brukere er tydelig holdt utenfor kjerneflyten i v1.
