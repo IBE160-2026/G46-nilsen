@@ -24,11 +24,13 @@ const cases=[
   ['Medarbeideren er 47 år gammel.','age'],
   ['Medarbeideren har to døtre på 7 og 9.','family_details'],
   ['Medarbeideren er den eneste elektrikeren på avdelingen.','unique_role'],
-  ['Jeg jobber i Forsvaret og trenger råd.','workplace_detail']
+  ['Jeg jobber i Forsvaret og trenger råd.','workplace_detail'],
+  ['Medarbeideren bor med ektefellen og to barn.','family_details']
 ];
 for(const [text,type] of cases){
   const got=findings(text).map(x=>x.type);
   assert(got.includes(type),`${type} ikke oppdaget i: ${text}; fikk ${got.join(',')}`);
+  if(type!=='name') assert(!got.includes('name'),`Uventet navnetreff i: ${text}; fikk ${got.join(',')}`);
 }
 const ambiguousNameCases=[
   ['Dette skjer hver dag.',false],
