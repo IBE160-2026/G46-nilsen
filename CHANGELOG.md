@@ -1407,3 +1407,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Erstattet en ustabil CIPD-bitesize-lenke med CIPDs `Performance feedback: An evidence review` (2022).
 - Kildebanken bruker nå den mer etterprøvbare evidensgjennomgangen for prinsipper om spesifikk, konstruktiv, rettferdig og toveis feedback.
 - URL og kilde-ID er oppdatert i både Markdown- og JSON-SOURCEBANK.
+
+
+## 2026-10-26 – Mer presis Arbeidstilsynet-kilde for personalsaker
+
+- Lagt til Arbeidstilsynets side `Personalsaker` som egen SOURCEBANK-kilde.
+- Habilitet, kontradiksjon, konfidensialitet/personvern og dokumentasjon knyttes nå til denne mer presise kilden.
+- Den generelle trakasseringskilden brukes fortsatt for undersøkelses- og oppfølgingsplikten, men bærer ikke alene alle saksbehandlingsprinsippene.
