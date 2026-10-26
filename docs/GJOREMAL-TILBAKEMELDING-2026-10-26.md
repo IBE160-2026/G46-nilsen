@@ -11,11 +11,12 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - Faglærer har verifisert `npm ci` og `npm test` på Node 23.11.
   - Render skal fortsatt bruke `NODE_VERSION=26.12.1` som sikkerhetspatchet produksjonsruntime.
 
-- [ ] **Revider Scope i product brief**
-  - Del tydelig i **In for v1 (kjerne)** og **Utvidelser / utenfor kjerne**.
-  - Kjerne bør beskrive hovedflyten: situasjonsvalg → veiledning → oppfølging → simulering → refleksjon, samt personvern og innlogging/historikk.
-  - Skill fra tillegg som web search, modellsammenligning, kostnadslogging, SOURCEBANK/RAG og eventuell lukket modell.
-  - Marker eksplisitt hva som er **bygget og testet**, hva som er **bygget men ikke fullt validert**, og hva som bare er **planlagt/fremtidig**.
+- [x] **Revider Scope i product brief**
+  - Scope er delt i **In for v1 – kjerne**, **Tillegg som er bygget i prototypen** og **Utenfor v1 / framtidige utvidelser**.
+  - Kjerneflyten er tydelig avgrenset til situasjonsvalg, veiledning, oppfølging, simulering/refleksjon, personvern og innlogging/historikk.
+  - Web search, modellsammenligning, kostnadslogging, administrasjon og SOURCEBANK er markert som bygde tillegg.
+  - Full RAG, støtte til andre samtaleroller enn leder, HR-integrasjoner og lukket intern drift er markert som framtid/utenfor kjerne.
+  - Teksten skiller mellom implementert funksjonalitet og graden av test/verifisering.
 
 - [ ] **Gjør Success Criteria testbare**
   - Skriv 5–8 konkrete kriterier i «brukeren kan …»-form.
