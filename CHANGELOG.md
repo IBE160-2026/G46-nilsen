@@ -1266,3 +1266,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Render skal fortsatt bruke `NODE_VERSION=26.12.1` som sikkerhetspatchet produksjonsruntime.
 - Oppdaterte README med riktig `cd G46-nilsen` og korrekt rotmappenavn.
 - Oppdaterte repo-strukturtesten og sikkerhets-/AI-dokumentasjon med samme skille.
+
+
+## 2026-10-26 – Presisert sporbarhet og BMAD-tidslinje
+
+- Presisert at utviklingen startet lokalt før Git/GitHub var fullt etablert.
+- Dokumentert at synlig Git-historikk viser prototypecommits før synlig Product Brief/BMAD-formalisering, uten å bruke dette som fullstendig bevis for pre-Git-rekkefølgen.
+- Beskrevet BMAD som et styringsrammeverk som ble tatt i bruk mens prosjektet allerede var under utvikling, og som deretter strammet inn krav, scope, arkitektur, testing og sporbarhet.
+- Fjernet formuleringer i AI-loggen som kunne gi inntrykk av en mer lineær prosess enn den faktiske.
+- Korrigert branch-beskrivelsen i refleksjonsutkastet til at endelig leveringsgren er `main`.
