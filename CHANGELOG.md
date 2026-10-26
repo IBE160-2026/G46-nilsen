@@ -1547,3 +1547,13 @@ Første lokale testkjøring avdekket at testen kunne være grønn samtidig som n
 - Deteksjon av ukjente navn ved setningsstart bruker nå personspesifikke handlingsverb i stedet for generelle hjelpeverb som `har`, `er` og `ble`.
 - Dette hindrer at vanlige setninger som «Fraværet har økt» eller «Arbeidsmiljøet har blitt bedre» blir tolket som personnavn.
 - Nye negative regresjonstester dekker disse tilfellene.
+
+
+## 2026-10-26 – Dokumentasjon justert til pågående prosjektstatus
+
+- AI-testplanen beholder eldre 33/33- og 34/34-personvernkjøringer som historiske målepunkter, men markerer dem tydelig som eldre status.
+- Ny verifisering dokumenterer Personvern v2 med **56/56 personverntester**, klient/server-flatekontroll og grønn samlet deterministisk testpakke.
+- Dokumentert lokal SSB-navnebase ved verifisering: **2110 fornavn og 3706 etternavn**.
+- Implementation Plan er endret fra «status ved levering» til **status per 26.10.2026** der prosjektet fortsatt er under aktiv utvikling.
+- Formuleringer som «sluttfase», «sluttmodularisering» og «sluttverifisering» er tonet ned der de kunne gi feil inntrykk av at prosjektet allerede var ferdig.
+- Historiske testresultater og utviklingsspor er beholdt; endringen rydder i statusformuleringer uten å omskrive prosjektets faktiske historikk.
