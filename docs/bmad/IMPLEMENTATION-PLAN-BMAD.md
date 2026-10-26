@@ -72,7 +72,9 @@ Målet er ikke å fremstille utviklingsprosessen som mer lineær enn den faktisk
 
 # 3. Forholdet mellom BMAD og faktisk utvikling
 
-BMAD-dokumentene brukes som styrings- og dokumentasjonsverktøy.
+BMAD-dokumentene brukes som styrings- og dokumentasjonsverktøy, men de skal ikke leses som om hele planen eksisterte før første prototype. Den tidlige utviklingen var utforskende, og BMAD ble tatt i bruk og videreutviklet mens prosjektet allerede var i bevegelse.
+
+Dette var ikke bare dokumentasjon i ettertid. Etter at BMAD-strukturen kom på plass ble krav tydeligere, scope ble mer eksplisitt, testbevis ble koblet til krav, og større endringer ble vurdert mot eksisterende arkitektur og akseptansekriterier.
 
 I prosjektet har flere funksjoner blitt identifisert eller vesentlig endret etter at utviklingen allerede var i gang.
 
@@ -1074,7 +1076,9 @@ Denne oppryddingen ble gjort uten å omskrive Git-historikken, slik at tidligere
 
 Utviklingen startet før prosjektet var koblet til Git/GitHub.
 
-Tidlige versjoner ble derfor utviklet lokalt før de senere ble lagt inn i repository.
+Tidlige versjoner ble derfor utviklet lokalt før de senere ble lagt inn i repository. Den synlige Git-historikken viser samtidig at prototypecommits ligger før den første synlige committen av Product Brief og de øvrige BMAD-artefaktene. På grunn av den lokale oppstartsfasen kan Git alene ikke brukes til å rekonstruere den eksakte rekkefølgen før repository var etablert.
+
+Det som kan dokumenteres sikkert, er at BMAD-formaliseringen skjedde mens utviklingen allerede var i gang, og at BMAD deretter ble brukt aktivt til å stramme inn krav, scope, arkitektur, testing og sporbarhet.
 
 Dette forklarer hvorfor mange tidlige versjonscommits er konsentrert i perioden 23.–27. september 2026.
 
