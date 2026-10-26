@@ -130,10 +130,10 @@ Tilsvarende skal KI-testingen ikke framstilles som ekstern faglig godkjenning. P
 
 ## Neste operative steg
 
-- [ ] **Kjør full lokal regresjon på nyeste `main`**
-  - `git pull origin main`
-  - `npm test`
-  - Dette må gjøres fordi runtime, retensjon og regresjonstester er endret etter den forrige grønne kjøringen.
+- [x] **Kjør full lokal regresjon på nyeste `main`**
+  - Hele `npm test` besto etter runtime-/retensjonsendringene, bortsett fra repo-struktur som først avviste lærerens nye `CLAUDE.md`/`.claude`.
+  - Repo-strukturtesten ble oppdatert for disse tilsiktede kursfilene og framtidig `.logs/`, og `npm run test-repo-structure` besto deretter.
+  - Deterministisk teststatus er grønn før live KI-kjøring.
 
 - [ ] **Kjør 21-casers golden-bank live**
   - `npm run test-ai:golden`
