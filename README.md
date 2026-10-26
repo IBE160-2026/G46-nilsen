@@ -214,7 +214,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - repo-struktur/kjørbarhet: bestått
 - package-lock-konsistens: bestått
 
-Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. **26.10.2026 ble hele `npm test`-pakken kjørt på nytt på siste `main` og besto uten feil.** Dette inkluderer syntaks, 34 personverntester, 24/24 simulatorkontroller, server-personvern, UI-regresjon/UU, historikk, samtaleboble, clipboard, golden-schema, golden-matcher, sensor-demo, offentlige assets, repo-struktur, package-lock og Node-kompatibilitet. Golden/fasit-schema verifiserte **21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert provenance**.
+Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. **26.10.2026 ble hele `npm test`-pakken kjørt etter utvidelsen av golden-banken og besto uten feil.** Kjøringen inkluderte syntaks, 34 personverntester, 24/24 simulatorkontroller, server-personvern, UI-regresjon/UU, historikk, samtaleboble, clipboard, golden-schema, golden-matcher, sensor-demo, offentlige assets, repo-struktur, package-lock og Node-kompatibilitet. Golden/fasit-schema verifiserte **21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert provenance**. Etter denne kjøringen er det gjort mindre endringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester; hele pakken skal derfor kjøres én gang til før sluttstatus omtales som verifisert på nyeste commit.
 
 ### Sporbarhet fra krav til test
 
