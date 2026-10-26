@@ -11,8 +11,8 @@
 
   const TOKEN = "[\\p{L}][\\p{L}'’\\-]{1,39}";
   const TITLE_TOKEN = "[\\p{Lu}][\\p{L}'’\\-]{1,39}";
-  const PERSON_ACTION = "(?:sier|sa|mener|mente|ønsker|ønsket|kommer|kom|møter|møtte|jobber|arbeider|jobbet|arbeidet|nekter|nektet|hevder|forteller|fortalte|opplever|opplevde|trenger|trengte|ber|ba|klager|klaget|spør|spurte|svarer|svarte|gråter|gråt|smiler|slutter|sluttet|begynner|begynte|forlater|forlot|ankommer|ankom|er|var|har|hadde|ble|blir|skal|vil|kan|må)";
-  const PERSON_AUX = "(?:har\\s+(?:kommet|sagt|vært|jobbet|arbeidet|møtt|nektet|fortalt|klaget|spurt|svart|sluttet|begynt)|er\\s+(?:uenig|enig|syk|frustrert|sint|forsinket|borte|ansatt|leder|medarbeider)|var\\s+(?:uenig|enig|syk|frustrert|sint|forsinket|borte|ansatt|leder|medarbeider))";
+  const PERSON_ACTION = "(?:sier|sa|mener|mente|ønsker|ønsket|kommer|kom|møter|møtte|jobber|arbeider|jobbet|arbeidet|nekter|nektet|hevder|forteller|fortalte|opplever|opplevde|trenger|trengte|ber|ba|klager|klaget|spør|spurte|svarer|svarte|gråter|gråt|smiler|slutter|sluttet|begynner|begynte|forlater|forlot|ankommer|ankom)";
+  const PERSON_AUX = "(?:har\\s+(?:kommet|sagt|vært|jobbet|arbeidet|møtt|nektet|fortalt|klaget|spurt|svart|sluttet|begynt)|er\\s+(?:uenig|enig|syk|frustrert|sint|forsinket|borte|ansatt|leder|medarbeider)|var\\s+(?:uenig|enig|syk|frustrert|sint|forsinket|borte|ansatt|leder|medarbeider)|(?:har|hadde|er|var|ble|blir|skal|vil|kan|må))";
   const ACTION = "(?:" + PERSON_ACTION + "|" + PERSON_AUX + ")";
   const ROLE = "(?:medarbeider(?:en)?|kollega(?:en)?|leder(?:en)?|ansatt(?:en)?|personen)";
   const RELATION = "(?:snakket\\s+med|møte\\s+med|samtale\\s+med|med|til|fra|hos)";
@@ -99,7 +99,7 @@
   }
 
   function subjectUnknown(text){
-    const re=new RegExp("(?:^|[.!?]\\s+|\\n\\s*)(" + TOKEN + ")\\s+" + ACTION + "\\b","giu");
+    const re=new RegExp("(?:^|[.!?]\\s+|\\n\\s*)(" + TOKEN + ")\\s+" + PERSON_ACTION + "\\b","giu");
     for(const m of text.matchAll(re)){
       const candidate=m[1];
       if(!candidateAllowed(candidate)) continue;
@@ -121,6 +121,7 @@
     const tokens=text.match(new RegExp("(?<![\\p{L}\\p{N}_])" + TOKEN + "(?![\\p{L}\\p{N}_])","gu")) || [];
     for(const token of tokens){
       if(!isKnownGivenName(token)) continue;
+      if(isAmbiguous(token) && !looksTitleCased(token)) continue;
       if(strongContextFor(text,token)) return token;
     }
 
