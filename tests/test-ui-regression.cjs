@@ -43,3 +43,7 @@ console.log("Klientmodul-innlasting: OK");
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
 assert(html.includes('Veiledning – ikke faglig fasit'), 'Mangler synlig advarsel om at KI-råd ikke er faglig fasit');
 assert(html.includes('KI-råd kan være ufullstendige eller feil') || html.includes('KI-rådene er veiledning, ikke en faglig fasit'), 'Mangler tydelig begrensning om KI-rådenes usikkerhet');
+
+// Brukertest-personvern skal være synlig i personvernerklæringen.
+assert(html.includes('Svar i den korte brukertesten lagres separat uten navn, e-post eller bruker-ID'), 'Mangler personverninformasjon om brukertest');
+assert(html.includes('deltakelsesmarkering'), 'Mangler forklaring av separat deltakelsesmarkering');
