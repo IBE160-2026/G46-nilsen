@@ -1292,9 +1292,9 @@ Ruten ble endret til å kontrollere hele request-pathen mot samme eksplisitte al
 Dette kontrolleres av `tests/test-public-assets.cjs`, som starter produksjonsserveren i testmiljø og verifiserer både tillatte og blokkerte filer.
 
 
-## Kontrollert sluttmodularisering
+## Kontrollert modularisering
 
-I sluttfasen ble den dokumenterte vedlikeholdbarhetsgjelden redusert uten å gjennomføre en stor omskriving.
+I utviklingsfasen fram til 26.10.2026 ble den dokumenterte vedlikeholdbarhetsgjelden redusert uten å gjennomføre en stor omskriving.
 
 Følgende ansvar ble flyttet ut:
 
@@ -1307,12 +1307,12 @@ Resultat:
 - `app.js` ble redusert fra ca. 3605 til ca. 3411 linjer
 - `server.js` ble redusert fra ca. 1776 til ca. 1600 linjer
 
-Autentisering, databaseflyt og levende UI-state ble bevisst ikke flyttet i denne sluttfasen. Målet var å redusere ansvar i hovedfilene med lav regresjonsrisiko, ikke å maksimere antall moduler rett før levering.
+Autentisering, databaseflyt og levende UI-state ble bevisst ikke flyttet i denne modulariseringsrunden. Målet var å redusere ansvar i hovedfilene med lav regresjonsrisiko, ikke å maksimere antall moduler mens prosjektet fortsatt var under aktiv utvikling.
 
 Samtidig ble produksjonsserverens håndtering av nested frontend-assets korrigert og dekket med en egen integrasjonstest.
 
 
-## Sluttverifisering etter modularisering
+## Verifisering etter modularisering
 
 Etter uttrekk av klientdata, serverens temakontrakt og KI-skjemaer ble hele den deterministiske regresjonspakken kjørt på nytt med `npm test`.
 
@@ -1332,4 +1332,4 @@ Dette inkluderte blant annet:
 - repo-struktur
 - package-lock-konsistens
 
-Modulariseringen beholdes derfor som en verifisert arkitekturforbedring og ikke som en utestet sluttendring.
+Modulariseringen beholdes derfor som en verifisert arkitekturforbedring og ikke som en utestet endring.
