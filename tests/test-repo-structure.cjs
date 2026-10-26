@@ -19,7 +19,8 @@ const allowedRootFiles = new Set([
   "product-brief.md",
   "README.md",
   "server.js",
-  "styles.css"
+  "styles.css",
+  "tilbakemelding-product-brief.md"
 ]);
 const allowedRootDirs = new Set(["assets", "data", "database", "docs", "scripts", "src", "tests"]);
 
