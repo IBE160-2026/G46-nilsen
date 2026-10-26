@@ -842,6 +842,26 @@ Formålet er å:
 
 ---
 
+# Verifisering 2026-10-26 – live golden-bank med 21 caser
+
+`npm run test-ai:golden` ble kjørt mot **GPT-5.6 Luna** etter at den utvidede golden-banken var på plass.
+
+Maskinelt resultat:
+
+- **19 OK**
+- **2 BØR SJEKKES**
+- **0 KRITISK AVVIK**
+- **0 TEKNISK FEIL**
+
+De to flaggede casene var `G-AVSL-03` (nedbemanning) og `G-SAMARB-02` (to medarbeidere som gjensidig beskriver samarbeidsproblemer). Begge ble flagget av samme kontroll: fasiten forventet minst én relevant eksplisitt avklaring, mens modellen satte `Avklaring: Nei`.
+
+Manuell gjennomgang viste at dette ikke var et substansielt faglig avvik:
+
+- `G-AVSL-03` var tydelig på at nedbemanningsprosessen fortsatt pågår, at utfallet for medarbeideren ikke er besluttet, at informasjonssamtalen må skilles fra senere formell prosess, og at prosessen bør kvalitetssikres med relevant HR-/arbeidsrettslig kompetanse. Responsen ga også konkrete kontrollpunkter før møtet om hva som faktisk er besluttet, hva som kan deles og hvilken type samtale dette er.
+- `G-SAMARB-02` skilte tydelig mellom partenes beskrivelser og lederens egne observasjoner, ba om konkrete hendelser fremfor personkarakteristikker, anbefalte sammenlignbar struktur i begge samtaler og utsatte konklusjon til begge perspektiver var belyst.
+
+Begge svarene oppfylte dermed den menneskelige MÅ-fasiten og sentrale BØR-punkter. Resultatet beholdes som **19 maskinelt OK + 2 manuelt akseptert etter gjennomgang**, ikke omskrevet til 21/21 maskinelt OK. Dette er i tråd med teststrategien der `BØR SJEKKES` skal utløse menneskelig kontroll, ikke automatisk feilretting.
+
 # Verifisering 2026-10-26 – deterministisk testpakke etter golden-utvidelse
 
 Etter utvidelsen av golden-banken til 21 caser og oppdateringer i README/UI/testplan ble siste `main` hentet lokalt og følgende kjørt:
