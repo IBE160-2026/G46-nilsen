@@ -232,18 +232,18 @@ Relevant ved:
 
 Dette støtter at lederen forklarer beslutningen ut fra kjente, relevante kriterier fremfor personlige karakteristikker eller sammenligninger med andre kandidater.
 
-## CIPD_FEEDBACK_2024
+## CIPD_PERFORMANCE_FEEDBACK_2022
 
-**Improving feedback to improve performance**  
-CIPD (2024)
+**Performance feedback: An evidence review**  
+CIPD (2022)
 
-**Type:** Forskningsbasert kunnskapsoppsummering
+**Type:** Evidensgjennomgang
 
-Kilden fremhever at feedback bør være en toveis samtale og at lederens evne til å lytte og måten feedback oppleves på påvirker om den faktisk blir nyttig.
+Gjennomgangen oppsummerer forskning på hva som gjør feedback mer eller mindre effektiv. Den fremhever blant annet at feedback bør være spesifikk og konstruktiv, bygge på et troverdig og rimelig vurderingsgrunnlag og gi medarbeideren mulighet til å respondere slik at samtalen blir toveis.
 
 ### Bruk i Samtalestøtte
 
-Relevant ved prestasjon, utvikling, forventningsavklaring og avslag. KI-en bør hjelpe lederen med konkret, jobbrelatert feedback og samtidig gi medarbeideren mulighet til å respondere og bidra i samtalen.
+Relevant ved prestasjon, utvikling, forventningsavklaring og avslag. KI-en bør hjelpe lederen med konkret, jobbrelatert feedback, forklare grunnlaget og gi medarbeideren reell mulighet til å kommentere og bidra i samtalen.
 
 ## AT_TRAKASSERING_PROCESS
 
