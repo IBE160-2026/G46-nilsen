@@ -63,6 +63,13 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - Arbeidstilsynets trakasseringskilde er styrket med habilitet, kontradiksjon, dokumentasjon og personvern.
   - AI-TESTPLAN beskriver nå framtidig faglig validering som tverrfaglig og avhengig av typen råd.
 
+- [x] **Gjør faglige begrensninger synlige for brukeren**
+  - README har en egen seksjon «Veiledning – ikke faglig fasit».
+  - Veiledningsskjermen viser en fast påminnelse om at KI-råd kan være ufullstendige eller feil.
+  - Førstegangsbekreftelsen omtaler nå både personvern og faglige begrensninger.
+  - Om-siden og bruksvilkårene beskriver relevant kompetanse flerfaglig, ikke bare som HR/jus.
+  - UI-regresjonstesten kontrollerer at advarselen fortsatt finnes.
+
 - [ ] **Kjør utvidet golden-bank live**
   - Kjør `npm run test-golden-schema` og deretter `npm run test-ai:golden` med gyldig KI-konfigurasjon.
   - Gjennomgå alle BØR SJEKKES/KRITISK AVVIK manuelt; ikke endre testen bare for å få grønt.
