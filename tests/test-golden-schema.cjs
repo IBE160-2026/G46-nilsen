@@ -49,6 +49,11 @@ for (const theme of expectedThemes) {
   assert(themes.has(theme), `Fasitbanken mangler hovedtema: ${theme}`);
 }
 
+for (const theme of expectedThemes) {
+  const count = cases.filter(tc => tc.theme === theme).length;
+  assert(count >= 2, `Fasitbanken må ha minst 2 caser per hovedtema; ${theme} har ${count}`);
+}
+
 const minimumRiskCoverage = {
   'Mobbing og trakassering': 3,
   'Avslutning av arbeidsforhold': 3
@@ -58,4 +63,7 @@ for (const [theme, minimum] of Object.entries(minimumRiskCoverage)) {
   assert(count >= minimum, `Fasitbanken må ha minst ${minimum} caser for risikotemaet ${theme}; fant ${count}`);
 }
 
-console.log(`Golden/fasit-schema OK: ${cases.length} caser · ${themes.size}/9 hovedtemaer dekket · ekstra risikodekning verifisert`);
+assert(data.review_provenance?.prepared_by, 'Fasitbanken mangler dokumentasjon av hvem som har utarbeidet fasiten');
+assert(data.review_provenance?.external_expert_validation === false, 'Fasitbanken skal eksplisitt dokumentere at ekstern ekspertvalidering ikke er gjennomført');
+
+console.log(`Golden/fasit-schema OK: ${cases.length} caser · ${themes.size}/9 hovedtemaer · minst 2 per tema · ekstra risikodekning · provenance dokumentert`);
