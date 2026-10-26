@@ -344,6 +344,8 @@ G46-nilsen/
 
 Hovedkoden ligger i rotmappen, mens dokumentasjon, tester, bilder og databasefiler er skilt ut i egne mapper. Klientens tema-/ikondata ligger separat i `src/client-data.js`, slik at `app.js` i større grad inneholder faktisk bruker- og tilstandslogikk. Tilsvarende ligger serverens tema-/KI-kontrakter i `src/server/`, mens autentisering, database- og API-flyt fortsatt ligger samlet i `server.js`.
 
+Repoet inneholder også lærer-/kursverktøy for Claude-basert sesjonslogging (`CLAUDE.md` og `.claude/`). Disse er lagt inn av faglærer og er derfor eksplisitt tillatt av repo-strukturtesten. Verktøyet kan senere opprette `.logs/` med sesjonslogger; dette regnes også som et forventet rotområde, ikke som løs prosjektstøy.
+
 ## Kjent teknisk gjeld
 
 Prototypen fungerer og er dekket av regresjonstester, men hovedfilene er fortsatt store: `app.js` er omtrent 3 400 linjer og `server.js` omtrent 1 600 linjer. En kontrollert sluttmodularisering flyttet statiske klientdata og serverens tema-/KI-kontrakter til `src/`, men autentisering, databaseflyt, API-ruter og mye klienttilstand ligger fortsatt samlet i hovedfilene.
