@@ -1485,3 +1485,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Repo-strukturtesten feilet derfor på filer som nå er tilsiktede kurs-/verktøyfiler.
 - `CLAUDE.md`, `.claude/` og den framtidige `.logs/`-mappen er nå eksplisitt tillatt.
 - Testen er fortsatt streng mot andre uventede rotfiler og genererte/hemmelige filer.
+
+
+## 2026-10-26 – Deterministisk teststatus grønn på nyeste kode
+
+- Ny lokal testkjøring bekreftet at syntaks, personvern, simulator, server-personvern, UI/UU, historikk, snakkeboble, clipboard, golden-schema, golden-utils, sensor-demo og offentlige assets består.
+- Repo-strukturtesten feilet først fordi faglærer hadde lagt inn `CLAUDE.md` og `.claude/`.
+- Testen ble oppdatert til å tillate lærerens kursverktøy og framtidig `.logs/`, uten å tillate øvrige tilfeldige rotfiler.
+- `npm run test-repo-structure` besto deretter med repo-struktur, package-lock og Node-kompatibilitet OK.
+- Deterministisk teststatus er dermed grønn på nyeste kode før 21-casers live golden-kjøring.
