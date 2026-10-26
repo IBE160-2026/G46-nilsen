@@ -1,6 +1,6 @@
 {
-  "version": 4,
-  "description": "Kuratert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken kombinerer empirisk samtaleforskning, organisasjons- og ledelsespsykologi, norsk arbeidslivsforskning, faglige rammeverk og autoritative myndighets-/lovkilder. Den lokale banken er førstevalg og kvalitetsanker; oppdaterte eksterne kilder kan supplere ved behov.",
+  "version": 5,
+  "description": "Kuratert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken kombinerer empirisk samtaleforskning, organisasjons- og ledelsespsykologi, norsk arbeidslivsforskning, evidensbaserte intervjuprinsipper, faglige rammeverk og autoritative myndighets-/lovkilder. Ingen enkelt faggruppe behandles som universell fasit; kildetype velges etter hva slags spørsmål som vurderes.",
   "sources": [
     {
       "id": "DEDREU_WEINGART_2003_CONFLICT",
@@ -996,16 +996,22 @@
       ],
       "principles": [
         "Arbeidsgiver skal undersøke påstander om trakassering og følge opp involverte.",
-        "Konflikt og trakassering er ikke det samme; faktagrunnlaget må undersøkes før konklusjoner trekkes."
+        "Konflikt og trakassering er ikke det samme; faktagrunnlaget må undersøkes før konklusjoner trekkes.",
+        "Påstander om trakassering bør undersøkes før konklusjoner trekkes; involverte parter må følges opp.",
+        "Habilitet, kontradiksjon, dokumentasjon og personvern er sentrale prinsipper i håndteringen."
       ],
       "use_when": [
         "trakassering",
         "mobbing",
         "utilbørlig opptreden",
-        "varsling"
+        "varsling",
+        "kontradiksjon",
+        "habilitet",
+        "undersøkelse",
+        "høre begge sider"
       ],
       "authority": "high",
-      "last_verified": "2026-10-07",
+      "last_verified": "2026-10-26",
       "time_sensitive": true
     },
     {
@@ -1347,6 +1353,128 @@
       "authority": "high",
       "last_verified": "2026-10-07",
       "time_sensitive": true
+    },
+    {
+      "id": "HELSEDIR_MI_METHOD",
+      "type": "myndighets-/fagveiledning",
+      "title": "Motiverende intervju som metode",
+      "author": "Helsedirektoratet",
+      "year": 2017,
+      "url": "https://www.helsedirektoratet.no/forebygging-diagnose-og-behandling/forebygging-og-levevaner/motiverende-intervju-mi/motiverende-intervju-som-metode",
+      "topics": [
+        "Alkohol og rus",
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Åpne spørsmål, refleksjoner, oppsummeringer og aktiv lytting kan støtte en respektfull og utforskende samtale.",
+        "Unødvendig argumentering og konfrontasjon kan øke motstand; personen bør få rom til å formulere eget perspektiv.",
+        "Partnerskap, aksept, nysgjerrighet og respekt for autonomi er sentrale samtaleprinsipper."
+      ],
+      "use_when": [
+        "åpne spørsmål",
+        "aktiv lytting",
+        "refleksjon",
+        "oppsummering",
+        "motstand",
+        "ambivalens",
+        "endring",
+        "samtaleteknikk"
+      ],
+      "authority": "high",
+      "note": "MI er utviklet for endringsorienterte og ofte kliniske samtaler. Samtalestøtte bruker relevante kommunikative prinsipper, ikke MI som full behandlingsmetode.",
+      "last_verified": "2026-10-26",
+      "time_sensitive": false
+    },
+    {
+      "id": "COLLEGE_POLICING_INVESTIGATIVE_INTERVIEWING",
+      "type": "evidensbasert profesjonsveiledning",
+      "title": "Investigative interviewing",
+      "author": "College of Policing",
+      "url": "https://www.college.police.uk/app/investigation/investigative-interviewing/investigative-interviewing",
+      "topics": [
+        "Mobbing og trakassering",
+        "Samarbeid og kommunikasjon",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Begynn med åpne spørsmål og la personen gi en friere forklaring før mer spesifikke avklaringer.",
+        "Lytt uten unødvendige avbrytelser og reflekter tilbake relevant informasjon.",
+        "Unngå ledende og tvungne svaralternativer når formålet er å forstå hva som faktisk har skjedd."
+      ],
+      "use_when": [
+        "varsling",
+        "trakassering",
+        "konflikt",
+        "hendelse",
+        "avklaring",
+        "åpne spørsmål",
+        "ledende spørsmål",
+        "faktainnhenting"
+      ],
+      "authority": "high",
+      "note": "Kilden gjelder etterforskningsintervju. Samtalestøtte overfører bare generelle, ikke-ledende samtaleprinsipper; ledersamtaler er ikke politiavhør.",
+      "last_verified": "2026-10-26",
+      "time_sensitive": false
+    },
+    {
+      "id": "CIPD_FAIR_SELECTION_2023",
+      "type": "evidensgjennomgang",
+      "title": "Fair selection: An evidence review",
+      "author": "CIPD",
+      "year": 2023,
+      "url": "https://www.cipd.org/en/knowledge/evidence-reviews/evidence-fair-selection/",
+      "topics": [
+        "Lønn og utvikling",
+        "Prestasjon og utvikling"
+      ],
+      "principles": [
+        "Utvelgelseskriterier bør være relevante for jobben og brukes på en konsistent måte.",
+        "Transparente forklaringer på kriterier, prosess og beslutning kan styrke opplevelsen av rettferdighet.",
+        "Feedback bør være informativ og utviklingsrettet også for kandidater som ikke blir valgt."
+      ],
+      "use_when": [
+        "forfremmelse",
+        "intern stilling",
+        "utvelgelse",
+        "avslag",
+        "kriterier",
+        "feedback",
+        "rettferdighet"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-26",
+      "time_sensitive": false
+    },
+    {
+      "id": "CIPD_FEEDBACK_2024",
+      "type": "forskningsbasert kunnskapsoppsummering",
+      "title": "Improving feedback to improve performance",
+      "author": "CIPD",
+      "year": 2024,
+      "url": "https://www.cipd.org/en/knowledge/bitesize-research/improving-feedback/",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Feedback fungerer best som en toveis samtale fremfor ren enveiskommunikasjon.",
+        "Lederens lytting og relasjonen påvirker hvordan feedback mottas og brukes.",
+        "Konkret og relevant feedback bør støtte læring og videre utvikling."
+      ],
+      "use_when": [
+        "feedback",
+        "prestasjon",
+        "utvikling",
+        "vanskelig samtale",
+        "lytting",
+        "forventninger"
+      ],
+      "authority": "high",
+      "last_verified": "2026-10-26",
+      "time_sensitive": false
     }
   ]
 }
