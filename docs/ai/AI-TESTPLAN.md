@@ -182,7 +182,7 @@ Dette skillet er bevisst. En språkmodell kan formulere et godt svar på flere m
 
 ## 6B. Faglig validering – hva testene kan og ikke kan dokumentere
 
-Golden-banken og de øvrige KI-testene er utviklet i prosjektet. De er basert på prosjektets krav, kuraterte faggrunnlag, kildebank, sikkerhetsregler og manuell vurdering, men fasiten er **ikke uavhengig validert av en HR-, arbeidsretts- eller annen domeneekspert**.
+Golden-banken og de øvrige KI-testene er utviklet i prosjektet. Den manuelle fasiten er utarbeidet av **studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI**, basert på prosjektets krav, kuraterte faggrunnlag, kildebank, sikkerhetsregler og manuell vurdering. Studenten har praktisk kjennskap til typen arbeidssituasjoner løsningen retter seg mot, men dette er ikke det samme som formell faglig ekspertvalidering. Fasiten er **ikke uavhengig validert av en HR-, arbeidsretts-, HMS- eller annen domeneekspert**.
 
 Dette er en metodisk begrensning. Testene kan dokumentere at KI-svar:
 
@@ -201,14 +201,19 @@ Denne produktavgrensningen reduserer konsekvensen av at prosjektet ikke har ekst
 
 Golden-banken dekker alle ni hovedtemaer, men den er ikke en full faglig fasit for alle 56 undertemaer. Den bredere benchmarkbanken dekker undertemastrukturen med flere testscenarier, mens golden-banken brukes som et mindre, strengere regresjonssett.
 
-Etter faglærers tilbakemelding 26.10.2026 ble golden-banken utvidet fra 9 til 13 caser. De mest risikoutsatte temaene **Mobbing og trakassering** og **Avslutning av arbeidsforhold** har nå tre golden-caser hver. De ekstra casene retter seg særlig mot:
+Etter faglærers tilbakemelding 26.10.2026 ble golden-banken først utvidet fra 9 til 13 caser og deretter videre til **21 caser**. Banken har nå minst **to caser per hovedtema**, mens de mest risikoutsatte temaene har ekstra dekning. **Mobbing og trakassering** har fire golden-caser og **Avslutning av arbeidsforhold** har tre.
+
+De nye casene inkluderer både konstruerte regresjonsscenarier og anonymiserte/generaliserte situasjoner inspirert av reelle arbeidshverdagsdilemmaer. Eksempler er:
 
 - uønsket fysisk kontakt uten å anta seksuelt motiv
 - samtale med en medarbeider som et varsel gjelder, uten forhåndskonklusjon om skyld
+- opplevd sosial utestenging knyttet til private fritidsaktiviteter, der KI-en må skille privat sosial omgang fra forhold i arbeidsmiljøet
+- intern søknad til høyere stilling der kjente kriterier bare er oppfylt av én søker
 - prøvetid uten å fremstille dette som automatisk oppsigelsesadgang
 - nedbemanning uten å fremstille et ikke-besluttet utfall som endelig
+- fravær/forsentkomming, prestasjonsfall, samarbeid, sikkerhetsrutiner, rusbekymring og belastende livssituasjoner
 
-Schema-testen håndhever denne ekstra risikodekningen deterministisk.
+Schema-testen håndhever minst to caser per hovedtema, minst tre for de to definerte høyrisikotemaene, og at fasitens opphav og manglende ekspertvalidering er eksplisitt dokumentert.
 
 ### Videre kvalitetssikring
 
