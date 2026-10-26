@@ -1391,3 +1391,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Forklart at separat deltakelsesmarkering kun brukes for å hindre dobbeltinnsending og ikke inneholder svarene.
 - Lagringsteksten presiserer at et enkelt brukertestsvar ikke kan kobles tilbake til en bestemt konto i ettertid.
 - UI-regresjonstesten kontrollerer at denne informasjonen fortsatt finnes.
+
+
+## 2026-10-26 – Brukertestdata inn i sikkerhetsarkitekturen
+
+- Sikkerhets-/personverndokumentet beskriver nå `survey_responses` og `survey_participation`.
+- Dokumentert at brukertestsvar lagres uten bruker-ID, mens separat deltakelsesmarkering begrenser dobbeltinnsending.
+- Dokumentert personvernavveiningen: redusert profilering mot manglende mulighet til å identifisere/slette ett bestemt svar via konto.
+- Arkitekturdokumentet beskriver samme datamodell og avveining.
+- AI-loggen dokumenterer hvorfor ett felles skjema og en liten pilot ble valgt.
