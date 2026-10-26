@@ -1400,3 +1400,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Dokumentert personvernavveiningen: redusert profilering mot manglende mulighet til å identifisere/slette ett bestemt svar via konto.
 - Arkitekturdokumentet beskriver samme datamodell og avveining.
 - AI-loggen dokumenterer hvorfor ett felles skjema og en liten pilot ble valgt.
+
+
+## 2026-10-26 – Verifisert feedback-kilde
+
+- Erstattet en ustabil CIPD-bitesize-lenke med CIPDs `Performance feedback: An evidence review` (2022).
+- Kildebanken bruker nå den mer etterprøvbare evidensgjennomgangen for prinsipper om spesifikk, konstruktiv, rettferdig og toveis feedback.
+- URL og kilde-ID er oppdatert i både Markdown- og JSON-SOURCEBANK.
