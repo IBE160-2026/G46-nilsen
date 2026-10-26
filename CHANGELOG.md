@@ -1503,3 +1503,11 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - README fremhever at brukeren slipper å bygge prompt, sikkerhetsramme og arbeidsflyt selv.
 - Refleksjonsrapportens innledning beskriver produktideen som en sammenhengende arbeidsflyt fra forberedelse til simulering og refleksjon.
 - Endringen er dokumentasjon/posisjonering og påvirker ikke live golden-kjøringen.
+
+
+## 2026-10-26 – Kildegrunnlag tydeliggjort som produktfortrinn
+
+- Product Brief beskriver nå SOURCEBANK som førstevalg og kontrollert nettsøk som supplement.
+- Kildehierarkiet er tydeliggjort: lov-/regelverksspørsmål skal forankres i autoritative kilder, mens samtaleteknikk skal bygge på relevant forskning og fagkunnskap.
+- README forklarer at Samtalestøtte styrer både arbeidsflyt og kildebruk, ikke bare selve KI-prompten.
+- Refleksjonsrapporten løfter fram prinsippet: forskjellen ligger også i hvilke rammer modellen må svare innenfor.
