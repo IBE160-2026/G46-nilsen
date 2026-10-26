@@ -872,7 +872,7 @@ Resultat:
 - package-lock-konsistens: **OK**
 - Node-kompatibilitetsområde: **OK**
 
-Dette dokumenterer at utvidelsen av testgrunnlaget og endringene fram til denne kjøringen ikke brøt den deterministiske testpakken. Etterpå er det gjort mindre kodeendringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester. Derfor skal hele `npm test` kjøres på nytt før endelig sluttstatus settes. Kjøringen sier uansett ikke noe om kvaliteten på de 12 nye golden-casene mot en faktisk språkmodell; disse krever ny `npm run test-ai:golden`.
+Dette dokumenterer at utvidelsen av testgrunnlaget og endringene fram til denne kjøringen ikke brøt den deterministiske testpakken. Etterpå er det gjort mindre kodeendringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester. Disse endringene ble deretter kontrollert lokalt. Hele pakken besto, med unntak av at repo-strukturtesten først avviste lærerens nylig innførte `CLAUDE.md`/`.claude`-verktøy. Testens allowlist ble oppdatert uten å svekke øvrige strukturkrav, og `npm run test-repo-structure` ble deretter verifisert grønn. Den deterministiske teststatusen er dermed grønn på nyeste kode før live KI-kjøringen. Kjøringen sier uansett ikke noe om kvaliteten på de 12 nye golden-casene mot en faktisk språkmodell; disse krever ny `npm run test-ai:golden`.
 
 ---
 
