@@ -1424,3 +1424,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Generell brukerintro anbefaler relevante kilder, virksomhetens rutiner og riktig fagkompetanse fremfor HR som standard.
 - Internt felt `legal_hr_note` beholdes for kompatibilitet; testplanen dokumenterer dette som bevisst teknisk gjeld.
 - UI-regresjon beskytter den nye flerfaglige terminologien.
+
+
+## 2026-10-26 – Rettet ny UI-regresjonstest
+
+- Statisk gjennomgang avdekket at den nye flerfaglige UI-assertionen refererte til `app` uten at `app.js` var lest inn i testen.
+- `tests/test-ui-regression.cjs` leser nå `app.js` eksplisitt før assertionene kjøres.
+- Dette er en testfeil, ikke en produktfeil, og ble rettet før neste lokale `npm test`.
