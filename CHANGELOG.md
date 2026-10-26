@@ -1333,3 +1333,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Førstegangsbekreftelsen kombinerer personverninformasjon med faglige begrensninger.
 - Bruksvilkår og Om-siden beskriver relevant fagkompetanse flerfaglig fremfor å gjøre HR til universell referanse.
 - UI-regresjonstesten kontrollerer at advarselen ikke utilsiktet fjernes.
+
+
+## 2026-10-26 – Forenklet felles brukertest
+
+- Beholder ett felles brukertestskjema for alle testere slik at svarene kan sammenlignes.
+- Presisert at svarene lagres uten navn eller direkte kobling til kontoen.
+- Oppfordrer testere til å bruke oppdiktede situasjoner og unngå personopplysninger.
+- KI-spørsmålet vurderer nå både relevans og balanse.
+- Fritekstfeltet inviterer testere med relevant leder-/fagbakgrunn til å kommentere råd og samtaleteknikk.
