@@ -35,6 +35,8 @@ for(const [text,type] of cases){
 const ambiguousNameCases=[
   ['Dette skjer hver dag.',false],
   ['Hver dag har vi møte.',false],
+  ['Neste dag har vi møte.',false],
+  ['En dag kommer vi tilbake.',false],
   ['Dag har kommet for sent.',true],
   ['Jeg snakket med Dag i går.',true],
   ['Ronny kommer for sent.',true],
@@ -45,6 +47,9 @@ const ambiguousNameCases=[
   ['Jeg snakket med abdirizak i går.',true],
   ['Arbeidet blir mer krevende.',false],
   ['Fraværet har økt.',false],
+  ['Arbeidsmiljøet har blitt bedre.',false],
+  ['Situasjonen er vanskelig.',false],
+  ['Resultatet ble bedre.',false],
   ['Sikkerhet må prioriteres.',false],
   ['Vi skal til møte neste uke.',false],
   ['Medarbeideren skal til lege i morgen.',false],
