@@ -52,3 +52,10 @@ assert(html.includes('deltakelsesmarkering'), 'Mangler forklaring av separat del
 // Runtime-UI skal ikke fremstille HR som universell fasit.
 assert(app.includes("['Faglig / regelverk'"), 'Mangler flerfaglig overskrift i veiledningen');
 assert(!app.includes("['HR / regelverk'"), 'Gammel HR-sentrert overskrift finnes fortsatt i veiledningen');
+
+assert(html.includes('id="survey-privacy"'), 'Brukertestens fritekst mangler live personvernsjekk');
+assert(html.includes('id="ai-feedback-comment-privacy"'), 'KI-tilbakemeldingskommentar mangler live personvernsjekk');
+assert(html.includes('<strong>Personvern:</strong> Ikke skriv navn'), 'Kontaktskjemaet mangler personvernpåminnelse');
+assert(app.includes("updateSurveyPrivacy"), 'Brukertestens live personvernsjekk er ikke koblet i app.js');
+assert(app.includes("updateAiFeedbackCommentPrivacy"), 'KI-feedback live personvernsjekk er ikke koblet i app.js');
+console.log("Personvernflater: OK");
