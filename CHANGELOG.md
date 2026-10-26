@@ -1471,3 +1471,9 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Server-personverntesten kontrollerer nå at selve `survey_responses`-raden ikke inneholder `user_id`.
 - Testen kontrollerer samtidig at engangsbegrensningen fortsatt bruker separat `survey_participation`.
 - En senere kodeendring som kobler evalueringen direkte til brukerprofilen skal dermed gi testfeil.
+
+
+## 2026-10-26 – Samlet neste steg før pilot og sluttverifisering
+
+- Gjøremålsfila har fått en egen operativ sluttsekvens: ny lokal regresjon, 21-casers live golden, Render-deploy, pilotbrukertest og analyse av resultatene.
+- Dette skiller ferdige dokumentasjons-/kodeforbedringer fra oppgaver som krever lokal kjøring eller faktiske testpersoner.
