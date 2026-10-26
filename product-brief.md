@@ -77,11 +77,41 @@ Løsningen skal også kunne sammenligne KI-modeller og registrere responstid, to
 
 ## Scope
 
-Første versjon skal være en fungerende webbasert prototype med strukturert KI-støtte, oppfølgingsdialog, samtalesimulator, innlogging, brukerhistorikk, rollebasert administrasjon, personvernkontroll, kontrollert web search, modelltesting og teknisk logging.
+### In for v1 – kjerne
 
-Løsningen skal ikke være et HR-system, journalsystem eller automatisert beslutningssystem. Den skal ikke fatte personalavgjørelser, stille diagnoser, gi bindende juridiske råd eller erstatte HR, juridisk bistand eller lederens ansvar.
+Første versjon skal demonstrere en sammenhengende og fungerende arbeidsflyt for en leder som skal forberede og øve på en krevende medarbeidersamtale. Kjernen består av at brukeren kan:
 
-Full integrasjon mot HR-systemer og produksjonsklar drift i lukkede nettverk ligger utenfor studentprototypen.
+- velge eller beskrive en situasjon og få strukturert KI-støtte
+- følge opp med spørsmål og videre dialog om samme situasjon
+- øve i en dynamisk samtalesimulering og reflektere over gjennomføringen
+- bruke løsningen med personvernkontroll før tekst sendes til ekstern KI
+- logge inn, lagre egen historikk og gå tilbake til tidligere arbeid
+
+Disse delene er bygget i prototypen. Kritiske deler av kjerneflyten er dekket av deterministiske tester og dokumenterte KI-tester, med testspor beskrevet i README og testplanen.
+
+### Tillegg som er bygget i prototypen
+
+Prosjektet inneholder også funksjonalitet som går utover minimumskjernen:
+
+- rollebasert administrasjon for user/editor/admin
+- kontrollert web search og registrering av brukte kilder
+- modellvalg, modellsammenligning og benchmark-funksjoner
+- logging av responstid, tokenbruk og estimert KI-kostnad
+- en kuratert SOURCEBANK som faglig og teknisk grunnlag
+
+Disse funksjonene er implementert for å undersøke kvalitet, sporbarhet og drift, men er ikke nødvendige for å demonstrere den grunnleggende brukerreisen i v1. Testdekning og modenhet varierer mellom funksjonene og er dokumentert separat.
+
+### Utenfor v1 / framtidige utvidelser
+
+Følgende ligger utenfor kjernen i studentprototypen:
+
+- full RAG-løsning som automatisk henter kontekst fra en større lokal kunnskapsbase
+- rollebasert samtalestøtte tilpasset andre brukerroller enn leder
+- full integrasjon mot HR-systemer eller journalsystemer
+- produksjonsklar drift i lukkede nettverk med intern språkmodell og intern database
+- automatiserte personalbeslutninger eller andre beslutningsstøttefunksjoner som overtar lederens ansvar
+
+Løsningen skal ikke være et HR-system, journalsystem eller automatisert beslutningssystem. Den skal ikke fatte personalavgjørelser, stille diagnoser, fastslå skyld eller motiv, gi bindende juridiske råd eller erstatte HR, juridisk bistand eller annen relevant fagkompetanse.
 
 ## Vision
 
