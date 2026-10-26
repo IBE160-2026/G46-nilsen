@@ -1477,3 +1477,11 @@ Fra og med neste versjon skal følgende alltid gjøres:
 
 - Gjøremålsfila har fått en egen operativ sluttsekvens: ny lokal regresjon, 21-casers live golden, Render-deploy, pilotbrukertest og analyse av resultatene.
 - Dette skiller ferdige dokumentasjons-/kodeforbedringer fra oppgaver som krever lokal kjøring eller faktiske testpersoner.
+
+
+## 2026-10-26 – Repo-struktur tilpasset lærerens Claude-verktøy
+
+- Faglærer la inn `CLAUDE.md` og `.claude/skills/sesjonslogg` i repoet.
+- Repo-strukturtesten feilet derfor på filer som nå er tilsiktede kurs-/verktøyfiler.
+- `CLAUDE.md`, `.claude/` og den framtidige `.logs/`-mappen er nå eksplisitt tillatt.
+- Testen er fortsatt streng mot andre uventede rotfiler og genererte/hemmelige filer.
