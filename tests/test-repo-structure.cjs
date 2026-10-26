@@ -60,6 +60,6 @@ assert.deepEqual(packageLock.packages?.[""]?.dependencies || {}, packageJson.dep
 console.log("Package-lock-konsistens: OK");
 
 
-assert.equal(packageJson.engines?.node, ">=26.12.1 <27", "Node-runtimekrav i package.json er ikke sikkerhetsintervallet >=26.12.1 <27");
+assert.equal(packageJson.engines?.node, ">=22 <27", "Node-kompatibilitetsområdet i package.json er ikke >=22 <27");
 assert.equal(packageLock.packages?.[""]?.engines?.node, packageJson.engines?.node, "package-lock.json har annet Node-runtimekrav enn package.json");
-console.log("Node-runtimekrav: OK");
+console.log("Node-kompatibilitetsområde: OK");
