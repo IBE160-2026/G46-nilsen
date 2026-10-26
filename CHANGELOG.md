@@ -1452,3 +1452,8 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Brukertesten sier nå eksplisitt at også kritiske svar er nyttige.
 - Adminoversikten viser «KI relevans/balanse», i samsvar med selve spørsmålet.
 - Ingen databasefelt eller svarformat er endret.
+
+
+## 2026-10-26 – Oppdatert omtrentlig ordantall i refleksjonsutkast
+
+- Refleksjonsutkastets topptekst er oppdatert fra ca. 4121 til ca. 4400 ord etter dagens dokumentasjonstillegg.
