@@ -82,7 +82,22 @@ Samtale kan bare legges ved når brukeren aktivt velger dette. Vedlegget er av s
 
 Ved kontosletting slettes brukerens feedback eksplisitt. Dette er viktig fordi feedback kan inneholde et frivillig samtalevedlegg.
 
-## 6. Lagringsbegrensning
+## 6. Brukertestdata
+
+Brukertestsvar lagres i `survey_responses` uten navn, e-post eller `user_id`. Tabellen inneholder bare skårer, frivillige fritekstsvar, teknisk rad-ID og tidspunkt.
+
+For å hindre dobbeltinnsending brukes `survey_participation`, som lagrer `user_id` og tidspunkt for gjennomført test. Denne tabellen inneholder ikke selve svarene og har ingen fremmednøkkel til en bestemt svarrad.
+
+Konsekvensen av dette designet er:
+
+- administrator kan se aggregerte og enkeltstående testsvar uten å se hvilken konto som ga svaret
+- kontoeksport kan ikke hente et bestemt brukertestsvar som «brukerens», fordi koblingen ikke finnes
+- ved kontosletting fjernes deltakelsesmarkeringen gjennom referansen til Auth-brukeren, mens det allerede innsendte svaret blir stående som frakoblet prosjektdata
+- et enkelt svar kan derfor heller ikke slettes på forespørsel ved å slå opp kontoen; det finnes ingen sikker kobling som identifiserer hvilken svarrad som tilhørte brukeren
+
+Dette er valgt for å redusere profilering og kobling mellom konto og evaluering, men innebærer samtidig en avveining mot individuell dataportabilitet/sletting av selve testsvaret.
+
+## 7. Lagringsbegrensning
 
 v20.4 har automatisk opprydding på serveren:
 
@@ -93,10 +108,11 @@ v20.4 har automatisk opprydding på serveren:
 | Øvrig feedback | 365 dager |
 | Benchmarkresultater | 365 dager |
 | Samtalehistorikk | til brukeren sletter den eller kontoen |
+| Brukertestsvar | beholdes som prosjektets testgrunnlag til administrativ sletting |
 
 Oppryddingen kjøres periodisk når appserveren er aktiv. Den er ment som teknisk sikkerhetsnett; retensjonsreglene må også beskrives i virksomhetens personverndokumentasjon dersom løsningen settes i ordinær drift.
 
-## 7. Sletting og dataportabilitet
+## 8. Sletting og dataportabilitet
 
 Brukeren kan:
 
@@ -105,7 +121,7 @@ Brukeren kan:
 - slette konto og historikk
 - laste ned egne lagrede data som JSON
 
-Eksporten inneholder kontoopplysninger, brukerens egne lagrede samtaler og egne feedback-rader. Den inneholder ikke anonym teknisk KI-statistikk fordi denne ikke lenger kobles til brukerprofilen.
+Eksporten inneholder kontoopplysninger, brukerens egne lagrede samtaler og egne feedback-rader. Den inneholder ikke anonym teknisk KI-statistikk fordi denne ikke lenger kobles til brukerprofilen. Brukertestsvar inngår heller ikke i kontoeksporten fordi `survey_responses` ikke lagrer bruker-ID og derfor ikke kan knyttes sikkert til en bestemt konto.
 
 Ved sletting av konto:
 
@@ -115,7 +131,7 @@ Ved sletting av konto:
 4. Supabase Auth-brukeren slettes
 5. innloggingscookies fjernes
 
-## 8. Innlogging og sesjon
+## 9. Innlogging og sesjon
 
 Samtalestøtte bruker Supabase Auth.
 
