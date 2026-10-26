@@ -63,6 +63,16 @@ Samtalestøtte kan blant annet:
 
 Løsningen er ikke et HR-system, journalsystem eller beslutningsverktøy.
 
+## Veiledning – ikke faglig fasit
+
+Samtalestøtte skal brukes som **støtte til forberedelse, refleksjon og trening**, ikke som en autoritativ fasit på hvordan en krevende samtale skal håndteres.
+
+Gode medarbeidersamtaler berører flere fagområder. Formelle spørsmål kan kreve arbeidsrettslig, HR- eller HMS-kompetanse, mens selve samtaleføringen også bygger på kunnskap fra blant annet organisasjonspsykologi, aktiv lytting, feedback, veiledning, motiverende intervju og evidensbaserte intervjuprinsipper. Ingen enkelt faggruppe behandles som universell fasit.
+
+Prosjektets golden/fasit-bank er utarbeidet av studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI og bygger på prosjektets krav, kuraterte kilder og sikkerhetsregler. Den er **ikke uavhengig ekspertvalidert**. KI-svar kan derfor være ufullstendige, unøyaktige eller lite egnet i den konkrete situasjonen.
+
+Brukeren må alltid gjøre en selvstendig vurdering og bruke relevant fagkompetanse, virksomhetens rutiner og gjeldende regelverk når saken krever det. Samtalestøtte skal ikke stille diagnoser, fastslå skyld eller motiv, gi bindende juridiske råd eller ta personalbeslutninger.
+
 ## Temaer
 
 Prototypen har ni hovedtemaer:
