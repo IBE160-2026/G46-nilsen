@@ -179,3 +179,24 @@ Disse resultatene brukes som testbevis, men erstatter ikke manuell kvalitetsvurd
 Det er opplyst som en **sannsynlig, ikke bekreftet**, vurderingsform at KI kan lese hele Git-historikken opp mot sensorveiledningen, mens en menneskelig sensor tester appen. Derfor skal dokumentasjonen være lesbar og kontrollerbar for begge, uten å skrive for en tenkt KI-sensor eller pynte på historikken.
 
 Før innlevering: følg den endelige sensorveiledningen, sjekk at README, Product Brief, BMAD, tester og refleksjonsrapport beskriver samme faktiske versjon. Eldre formuleringer som «status ved levering» og «sluttkontroll» skal kontrolleres på nytt; prosjektet er fortsatt under utvikling per 15.10.2026.
+
+
+## 15.10.2026 – Beslutning etter realistisk brukertest: støtte til flere roller (planlagt, ikke implementert)
+
+**Observasjon:** Under lokal testing beskrev brukeren en kollega som gjentatte ganger tok fysisk kontakt til tross for kroppslige signaler om at dette var uønsket. Testen avdekket både svakheter i demoens temasortering og en bredere produktbegrensning: Samtalestøtte tar i stor grad utgangspunkt i at den som ber om råd, er leder.
+
+**Produktbeslutning:** Behold ledere med personalansvar som primærmålgruppe, men planlegg støtte også for medarbeidere som skal ha en krevende samtale med en kollega eller egen leder. Unngå at produktet automatisk gir lederråd til en medarbeider.
+
+**Foreslått enkel rollekontekst før veiledning:**
+- Jeg er leder og skal snakke med en medarbeider.
+- Jeg skal snakke med en kollega.
+- Jeg skal ta opp noe med min leder.
+- Annen arbeidssituasjon / avklar behov.
+
+**Faglige og etiske grenser:** Samme hendelse kan kreve ulike råd avhengig av rolle, ansvar og maktforhold. Et råd om å «ta det opp direkte først» må aldri brukes som generell regel, spesielt ikke ved utrygghet, mulige krenkelser/trakassering, trusler eller asymmetrisk makt. Verktøyet må gi anledning til å søke støtte fra leder, verneombud, tillitsvalgt, HR eller relevante varslingskanaler, uten å konkludere på skyld eller rettslig klassifisering.
+
+**Plan for gjennomføring:** Stabiliser eksisterende lederflyt først. Utform deretter et lite rollevalg og test samme situasjon i minst tre perspektiver (leder, kollega, medarbeider som henvender seg til leder). Undersøk nødvendige endringer i prompts, skjema, simulering, personvern og testdata før implementasjon. Ikke endre produktets hovedmålgruppe eller BMAD-krav som om funksjonen er levert.
+
+**Teorikobling:** Brukerrolle som eksplisitt kontekst (*Context Engineering*), presis avgrensning av KI-oppgaven, kravsporing, etisk risikovurdering og differensiert regresjonstesting.
+
+**Status per 15.10.2026:** Idé godkjent for videre planlegging; ikke implementert eller testet som rollebasert funksjon.

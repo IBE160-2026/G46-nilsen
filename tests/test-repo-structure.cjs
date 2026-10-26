@@ -57,3 +57,8 @@ assert.equal(packageLock.version, packageJson.version, "package-lock.json er ikk
 assert.equal(packageLock.packages?.[""]?.version, packageJson.version, "Rotpakken i package-lock.json har feil versjon");
 assert.deepEqual(packageLock.packages?.[""]?.dependencies || {}, packageJson.dependencies || {}, "Rotavhengighetene i package-lock.json er ikke synkronisert");
 console.log("Package-lock-konsistens: OK");
+
+
+assert.equal(packageJson.engines?.node, ">=26.12.1 <27", "Node-runtimekrav i package.json er ikke sikkerhetsintervallet >=26.12.1 <27");
+assert.equal(packageLock.packages?.[""]?.engines?.node, packageJson.engines?.node, "package-lock.json har annet Node-runtimekrav enn package.json");
+console.log("Node-runtimekrav: OK");

@@ -29,7 +29,7 @@ const topics = [
   { id:"avslutning-arbeidsforhold", title:"Avslutning av arbeidsforhold", subtopic:"Vurdering før avslutning", words:["oppsigelse","avslutte arbeidsforhold","nedbemanning"] },
   { id:"sikkerhet-ansvar", title:"Sikkerhet og ansvar", subtopic:"Sikkerhetsrutiner og avvik", words:["sikkerhet","hms","risiko","truck","avvik"] },
   { id:"livssituasjoner", title:"Livssituasjoner", subtopic:"Krevende livssituasjon", words:["livssituasjon","familie","omsorg","samlivsbrudd","privat situasjon"] },
-  { id:"mobbing-trakassering", title:"Mobbing og trakassering", subtopic:"Uønsket fysisk kontakt og grenseoverskridelser", words:["mobbing","trakassering","nedsettende","utestengt","uønsket seksuell","uønsket fysisk kontakt","tar på meg","stryker meg","berører meg","tar på kroppen","kommer meg unna"] }
+  { id:"mobbing-trakassering", title:"Mobbing og trakassering", subtopic:"Krenkende eller utilbørlig atferd", words:["mobbing","trakassering","nedsettende","utestengt","uønsket seksuell","uønsket fysisk kontakt","tar på meg","ta på meg","stryker meg","stryker meg over ryggen","stryker meg på","berører meg","tar på kroppen","legger ofte hånden","trukket meg unna","kommer meg unna","nærgående"] }
 ];
 
 const history = [];
