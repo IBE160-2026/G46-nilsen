@@ -11,6 +11,7 @@ const tracked = execFileSync("git", ["ls-files"], { cwd: root, encoding: "utf8" 
 const allowedRootFiles = new Set([
   ".env.example",
   ".gitignore",
+  "CLAUDE.md",
   "app.js",
   "CHANGELOG.md",
   "index.html",
@@ -22,8 +23,9 @@ const allowedRootFiles = new Set([
   "styles.css",
   "tilbakemelding-product-brief.md"
 ]);
-const allowedRootDirs = new Set(["assets", "data", "database", "docs", "scripts", "src", "tests"]);
+const allowedRootDirs = new Set([".claude", ".logs", "assets", "data", "database", "docs", "scripts", "src", "tests"]);
 
+// Lærerens Claude-/sesjonslogg-verktøy ligger bevisst i repoet og kan opprette .logs/ senere.
 const trackedRootItems = [...new Set(tracked.map(file => file.split("/")[0]))].sort();
 const unexpected = trackedRootItems.filter(item =>
   !allowedRootFiles.has(item) && !allowedRootDirs.has(item)
