@@ -56,20 +56,21 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
 
 ## Prioritet 3 – brief og produktposisjonering
 
-- [ ] **Skjerp Executive Summary**
-  - La første avsnitt kunne stå alene som kort produktbeskrivelse.
-  - Flytt utviklingsutfordringer/teknisk kompleksitet ut av innledningen dersom nødvendig.
+- [x] **Skjerp Executive Summary**
+  - Første avsnitt fungerer nå alene som kort produktbeskrivelse.
+  - Teknisk kompleksitet er tatt ut av sammendraget og ligger i Project Complexity.
+  - Produktets avgrensning mot generell chatbot/automatisert HR-system er tydeligere.
 
-- [ ] **Konkretiser The Problem**
-  - Legg inn ett kort realistisk eksempel på situasjonen brukeren står i.
+- [x] **Konkretiser The Problem**
+  - Problemseksjonen har nå et konkret eksempel på en leder som skal håndtere en krevende samtale uten umiddelbar HR-støtte.
 
-- [ ] **Forbedre What Makes This Different**
-  - Sammenlign eksplisitt med generelle chatboter, HR-maler og kurs.
-  - Vær også ærlig om hva disse alternativene kan gjøre bedre enn Samtalestøtte.
+- [x] **Forbedre What Makes This Different**
+  - Briefen sammenligner nå eksplisitt med generelle KI-chatboter, HR-maler/interne rutiner og kurs/ledertrening.
+  - Teksten sier også hva alternativene kan gjøre bedre, slik at differensieringen ikke blir reklamepreget.
 
-- [ ] **Presiser primærbruker**
-  - Gjør situasjonen mer konkret uten å snevre produktet kunstig inn.
-  - Hold sekundære brukere tydelig utenfor kjernen i v1.
+- [x] **Presiser primærbruker**
+  - Primærbrukeren er konkretisert som leder med personalansvar, med særlig relevans for nye/mindre erfarne ledere eller situasjoner uten umiddelbar HR-støtte.
+  - Sekundære brukere er tydelig markert som framtidige og utenfor kjerneflyten i v1.
 
 ## Prioritet 4 – teknisk gjeld og repo
 
