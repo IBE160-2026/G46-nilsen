@@ -83,19 +83,19 @@ Prototypen har ni hovedtemaer:
 
 Prosjektet er utviklet og testet med:
 
-- Node.js 26.12.1 eller nyere innen Node 26
+- Node.js 22–26 for lokal kjøring og testing (Node 24 LTS anbefales)
 - npm 11.x (følger med støttet Node.js-versjon)
 - Git
 
 ### Node-versjon for Render
 
-`package.json` angir `>=26.12.1 <27`. Dette betyr at tjenesten ikke kan bygges med en eldre Node 26-versjon enn sikkerhetsutgaven 26.12.1, samtidig som senere patch-/minor-utgaver innen Node 26 kan brukes uten ny kodeendring.
+`package.json` angir `>=22 <27` som kompatibilitetsområde for lokal kjøring og vurdering. Faglærer har verifisert at `npm ci` og `npm test` består på Node 23.11. Produksjon på Render skal fortsatt bruke den sikkerhetspatchede Node-versjonen `26.12.1` via miljøvariabelen `NODE_VERSION`, slik at lokal kompatibilitet og produksjonssikkerhet holdes adskilt.
 
 ### Klon repoet
 
 ```bash
 git clone https://github.com/IBE160-2026/G46-nilsen.git
-cd Samtalestotte
+cd G46-nilsen
 ```
 
 ### Installer avhengigheter
@@ -301,7 +301,7 @@ Utviklingshistorikken kan også følges i Git-historikken og `CHANGELOG.md`.
 ## Mappestruktur
 
 ```text
-Samtalestotte/
+G46-nilsen/
 ├── assets/
 ├── data/
 ├── database/
