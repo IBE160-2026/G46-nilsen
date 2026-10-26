@@ -204,7 +204,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - repo-struktur/kjørbarhet: bestått
 - package-lock-konsistens: bestått
 
-Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele `npm test`-pakken ble verifisert grønn etter den kontrollerte modulariseringen, asset-rettingen, UU-endringene og package-lock/repo-kontrollene. Golden/fasit-schema ble samtidig verifisert med **9/9 hovedtemaer dekket**.
+Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. Hele `npm test`-pakken ble verifisert grønn etter den kontrollerte modulariseringen, asset-rettingen, UU-endringene og package-lock/repo-kontrollene. Golden/fasit-schema kontrollerer **9/9 hovedtemaer** og krever nå ekstra risikodekning for mobbing/trakassering og avslutning av arbeidsforhold.
 
 ### Sporbarhet fra krav til test
 
@@ -226,7 +226,7 @@ Dette gjør det mulig å følge sentrale krav fra PRD til konkret testbevis uten
 
 ### Fasitbasert KI-testing
 
-Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den inneholder minst én representativ case per hovedtema og beskriver:
+Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den dekker alle ni hovedtemaer og har ekstra caser for de særlig risikoutsatte temaene mobbing/trakassering og avslutning av arbeidsforhold. Banken beskriver:
 
 - forventet hovedtema
 - maskinelle kontrollpunkter
@@ -249,7 +249,7 @@ npm run test-ai:golden
 
 Denne testen kombinerer automatisk kontroll med en eksplisitt menneskelig vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene.
 
-Siste verifiserte automatiske golden-kjøring mot GPT-5.6 Luna: **9/9 OK**, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil. Kjøringen er gjort etter kalibrering av temadekning, kildepresisjon og kritiske helords-/frasetriggere.
+Siste verifiserte automatiske golden-kjøring mot GPT-5.6 Luna før utvidelsen av testbanken: **9/9 OK**, 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil. Golden-banken er senere utvidet til 13 caser med ekstra risikodekning. De fire nye casene skal ikke omtales som live-verifisert før en ny `npm run test-ai:golden`-kjøring er gjennomført.
 
 ### KI- og live-tester
 
