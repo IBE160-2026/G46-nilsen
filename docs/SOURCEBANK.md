@@ -4,7 +4,7 @@
 **Dokumenttype:** Kuratert fag- og kildebank  
 **Status:** Aktiv og utvidbar  
 **Versjon ved dokumentasjon:** 20.10.3  
-**Sist faglig gjennomgått:** 07.10.2026  
+**Sist faglig gjennomgått:** 26.10.2026  
 **Språk:** Norsk
 
 ---
@@ -144,6 +144,125 @@ Kan brukes til praktisk operasjonalisering innen et definert område.
 Eksempel:
 
 - Akan kompetansesenter ved rus- og spillproblematikk
+
+---
+
+# 3.6 Flerfaglig validering – ingen enkelt faggruppe er fasit
+
+Samtalestøtte dekker situasjoner der flere typer kunnskap møtes. Det er derfor metodisk feil å behandle HR, jus, psykologi eller én bestemt samtalemetode som en universell fasit.
+
+Kildetype skal velges etter hva som faktisk vurderes:
+
+| Spørsmål | Mest relevant kunnskapsgrunnlag |
+|---|---|
+| Hva er arbeidsgivers plikt eller formelle handlingsrom? | Lovverk, myndighetskilder og eventuelt juridisk kompetanse |
+| Hvordan gjennomføre en vanskelig samtale på en respektfull måte? | Samtaleforskning, psykologi, veiledning, coaching og kommunikasjon |
+| Hvordan innhente en persons versjon uten å lede eller konkludere for tidlig? | Evidensbaserte intervjuprinsipper, aktiv lytting og åpne spørsmål |
+| Hvordan gi prestasjonsfeedback? | Organisasjonspsykologi og forskning på feedback/performance management |
+| Hvordan kommunisere utvelgelse, avslag og forfremmelse? | Forskning på organisatorisk rettferdighet, fair selection og feedback |
+| Hvordan håndtere påstander om trakassering/varsling? | Arbeidsmiljøregelverk, kontradiksjon, habilitet og samtale-/intervjuprinsipper |
+| Hvordan møte ambivalens eller motstand? | Relevante elementer fra motiverende intervju og annen endrings-/samtaleforskning |
+
+En golden-case skal derfor ikke vurderes mot «hva HR ville sagt» som eneste standard. Den bør vurderes mot en kombinasjon av relevante kilder og prinsipper for akkurat den typen samtale.
+
+Det betyr også at ekstern kvalitetssikring, dersom prosjektet senere skulle videreutvikles til reell produksjonsbruk, ideelt bør være **tverrfaglig**. Aktuelle fagmiljøer kan være organisasjonspsykologi, HR/arbeidsliv, arbeidsrett, HMS, kommunikasjon, veiledning eller annen samtalefaglig kompetanse avhengig av tema.
+
+---
+
+# 3.7 Autoritative kilder for samtaleteknikk og rettferdig prosess
+
+## HELSEDIR_MI_METHOD
+
+**Motiverende intervju som metode**  
+Helsedirektoratet
+
+**Type:** Norsk myndighets-/fagveiledning
+
+Helsedirektoratet beskriver blant annet partnerskap, aksept, nysgjerrighet, aktiv lytting, refleksjoner, åpne spørsmål og oppsummeringer. Metoden understreker også å unngå unødvendig argumentering og konfrontasjon.
+
+### Bruk i Samtalestøtte
+
+Dette støtter samtaleråd som:
+
+- spør åpent før du konkluderer
+- vis at du har forstått ved å oppsummere eller reflektere
+- unngå å gjøre samtalen til en argumentasjonskamp
+- respekter den andres perspektiv og handlingsrom
+
+### Avgrensning
+
+MI er utviklet for endringsorienterte og ofte kliniske samtaler. Samtalestøtte skal ikke gjøre en ordinær ledersamtale til terapi eller late som lederen er MI-behandler. Det er de generelle kommunikative prinsippene som er relevante.
+
+## COLLEGE_POLICING_INVESTIGATIVE_INTERVIEWING
+
+**Investigative interviewing**  
+College of Policing
+
+**Type:** Evidensbasert profesjonsveiledning for intervju
+
+Kilden anbefaler blant annet å:
+
+- lytte uten unødvendige avbrytelser
+- reflektere tilbake det som er sagt
+- begynne med åpne spørsmål
+- utdype ett tema systematisk før man hopper videre
+- være varsom med ledende spørsmål
+
+### Bruk i Samtalestøtte
+
+Samtalestøtte skal ikke lære ledere å gjennomføre politiavhør. Prinsippene er relevante når lederen trenger å **forstå en hendelse før det trekkes konklusjoner**, for eksempel i konflikt-, varslings- eller trakasseringssaker.
+
+## CIPD_FAIR_SELECTION_2023
+
+**Fair selection: An evidence review**  
+CIPD (2023)
+
+**Type:** Evidensgjennomgang
+
+Kilden fremhever blant annet jobbrelaterte kriterier, transparente prosesser, forklaringer og nyttig feedback som faktorer som påvirker opplevelsen av rettferdighet i utvelgelse.
+
+### Bruk i Samtalestøtte
+
+Relevant ved:
+
+- intern søknad på stilling
+- forfremmelse
+- avslag
+- samtaler om kriterier og utviklingsbehov
+
+Dette støtter at lederen forklarer beslutningen ut fra kjente, relevante kriterier fremfor personlige karakteristikker eller sammenligninger med andre kandidater.
+
+## CIPD_FEEDBACK_2024
+
+**Improving feedback to improve performance**  
+CIPD (2024)
+
+**Type:** Forskningsbasert kunnskapsoppsummering
+
+Kilden fremhever at feedback bør være en toveis samtale og at lederens evne til å lytte og måten feedback oppleves på påvirker om den faktisk blir nyttig.
+
+### Bruk i Samtalestøtte
+
+Relevant ved prestasjon, utvikling, forventningsavklaring og avslag. KI-en bør hjelpe lederen med konkret, jobbrelatert feedback og samtidig gi medarbeideren mulighet til å respondere og bidra i samtalen.
+
+## AT_TRAKASSERING_PROCESS
+
+**Trakassering**  
+Arbeidstilsynet
+
+**Type:** Norsk myndighetskilde
+
+Ved påstander om trakassering understrekes blant annet undersøkelsesplikt, oppfølging av involverte og grunnleggende saksbehandlingsprinsipper som habilitet, kontradiksjon, dokumentasjon og personvern.
+
+### Bruk i Samtalestøtte
+
+Dette støtter golden-regler om å:
+
+- ta en påstand alvorlig
+- høre flere sider
+- ikke fastslå skyld på forhånd
+- skille opplysninger/påstander fra konklusjon
+- dokumentere og ivareta personvern
 
 ---
 
