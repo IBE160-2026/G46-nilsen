@@ -1534,3 +1534,8 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Brukertestens fritekst og KI-tilbakemeldingskommentar får live personvernsjekk i tillegg til eksisterende serversperre.
 - Kontaktskjema/e-post får tydelig personvernpåminnelse, men ingen hard blokkering.
 - Utvidet regresjonstestene med sjeldne navn, små/store bokstaver og negative kontrollsetninger.
+
+
+### Personvern v2 – regresjonsfunn etter første kjøring
+
+Første lokale testkjøring avdekket at testen kunne være grønn samtidig som navnedetektoren ga ekstra falske navnetreff. Eksemplene «medarbeideren bor …» og «medarbeideren brøt …» viste at rolle + påfølgende verb kunne tolkes som navn. Regelen ble derfor strammet inn, navneordboken brukes nå som evidens sammen med personkontekst i stedet for som ubetinget treff, og testene feiler nå på uventede navnetreff og feil anonymisering. SSB-oppdateringsscriptet ble samtidig gjort eksplisitt mot tabellmetadata for navnevariabelen og avbryter dersom uttrekket ser urimelig lite ut.
