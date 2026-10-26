@@ -6,7 +6,7 @@
 **Student-ID:** [fyll inn]  
 **Gruppestørrelse:** 1  
 **Status:** Utkast til individuell refleksjonsrapport  
-**Ordantall:** ca. 4121 ord (Markdown-ordtelling, før eventuell sluttredigering)
+**Ordantall:** ca. 4400 ord (omtrentlig Markdown-ordtelling, før eventuell sluttredigering)
 
 ---
 
