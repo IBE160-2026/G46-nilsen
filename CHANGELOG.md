@@ -1324,3 +1324,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Lagt til CIPD-kilder om fair selection og konstruktiv feedback.
 - Styrket Arbeidstilsynet-kilden om trakassering med habilitet, kontradiksjon, dokumentasjon og personvern.
 - Oppdatert AI-TESTPLAN slik at eventuell framtidig ekstern validering beskrives som tverrfaglig og problemavhengig.
+
+
+## 2026-10-26 – Synlig brukeradvarsel om KI-råd
+
+- README har fått en egen seksjon «Veiledning – ikke faglig fasit».
+- Veiledningsskjermen viser nå en fast brukeradvarsel om at KI-råd kan være ufullstendige eller feil.
+- Førstegangsbekreftelsen kombinerer personverninformasjon med faglige begrensninger.
+- Bruksvilkår og Om-siden beskriver relevant fagkompetanse flerfaglig fremfor å gjøre HR til universell referanse.
+- UI-regresjonstesten kontrollerer at advarselen ikke utilsiktet fjernes.
