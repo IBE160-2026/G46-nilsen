@@ -252,17 +252,39 @@ Arbeidstilsynet
 
 **Type:** Norsk myndighetskilde
 
-Ved påstander om trakassering understrekes blant annet undersøkelsesplikt, oppfølging av involverte og grunnleggende saksbehandlingsprinsipper som habilitet, kontradiksjon, dokumentasjon og personvern.
+Ved påstander om trakassering understrekes blant annet arbeidsgivers ansvar for å undersøke påstander, følge opp involverte og bruke en metode som er egnet for den konkrete saken.
 
 ### Bruk i Samtalestøtte
 
 Dette støtter golden-regler om å:
 
 - ta en påstand alvorlig
-- høre flere sider
+- undersøke forholdet før konklusjoner trekkes
 - ikke fastslå skyld på forhånd
-- skille opplysninger/påstander fra konklusjon
-- dokumentere og ivareta personvern
+- følge opp involverte
+- bruke riktig prosess og kompetanse
+
+## AT_PERSONALSAKER
+
+**Personalsaker**  
+Arbeidstilsynet
+
+**Type:** Norsk myndighetskilde
+
+Arbeidstilsynet beskriver habilitet, kontradiksjon, konfidensialitet/personvern og dokumentasjon som sentrale prinsipper i håndtering av personalsaker.
+
+### Bruk i Samtalestøtte
+
+Kilden er særlig relevant når lederen skal:
+
+- høre flere sider av en sak
+- gi den det gjelder mulighet til å beskrive sin versjon
+- skille påstander fra dokumenterte forhold
+- vurdere habilitet i hvem som håndterer saken
+- dokumentere prosessen på en forsvarlig måte
+- begrense deling av sensitive opplysninger
+
+Dette er prosessprinsipper. De avgjør ikke alene om en påstand er sann eller hvilken personalmessig beslutning som skal tas.
 
 ---
 
