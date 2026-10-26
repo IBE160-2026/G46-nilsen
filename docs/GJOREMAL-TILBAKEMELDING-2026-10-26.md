@@ -71,9 +71,10 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - UI-regresjonstesten kontrollerer at advarselen fortsatt finnes.
 
 - [ ] **Kjør utvidet golden-bank live**
-  - `npm run test-golden-schema` og hele `npm test` ble kjørt 26.10.2026 på siste `main` og besto.
+  - `npm run test-golden-schema` og hele `npm test` ble kjørt 26.10.2026 og besto etter golden-utvidelsen.
   - Golden-schema: 21 caser · 9/9 hovedtemaer · minst 2 per tema · ekstra risikodekning · provenance dokumentert.
-  - Gjenstår: `npm run test-ai:golden` med gyldig KI-konfigurasjon.
+  - Det er senere gjort mindre kodeendringer i runtime/retensjon/tester, så `npm test` må kjøres én gang til på nyeste `main`.
+  - Deretter gjenstår `npm run test-ai:golden` med gyldig KI-konfigurasjon.
   - Gjennomgå alle BØR SJEKKES/KRITISK AVVIK manuelt; ikke endre testen bare for å få grønt.
   - Oppdater README/testplan med faktisk live-resultat for 21-casersbanken.
   - Behold skillet mellom maskinelt resultat og faglig/manuell vurdering.
