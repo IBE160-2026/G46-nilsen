@@ -43,7 +43,11 @@ const ambiguousNameCases=[
   ['Jeg snakket med abdirizak i går.',true],
   ['Arbeidet blir mer krevende.',false],
   ['Fraværet har økt.',false],
-  ['Sikkerhet må prioriteres.',false]
+  ['Sikkerhet må prioriteres.',false],
+  ['Vi skal til møte neste uke.',false],
+  ['Medarbeideren skal til lege i morgen.',false],
+  ['Løsningen kommer senere.',false],
+  ['Kunden sier at leveransen er forsinket.',false]
 ];
 for(const [text,expectedName] of ambiguousNameCases){
   const got=findings(text).map(x=>x.type);
