@@ -39,13 +39,15 @@ KI-en skal ikke diagnostisere medarbeidere, fastslå motiv eller skyld, gi binde
 
 ## What Makes This Different
 
-Samtalestøtte er et spesialisert arbeidsverktøy, ikke en generell chatbot med nytt grensesnitt.
+Samtalestøtte er ikke bare en generell chatbot pakket inn i et nytt grensesnitt. Løsningen er bygget rundt den konkrete arbeidsprosessen en leder står i når en krevende medarbeidersamtale skal forberedes, gjennomføres og reflekteres over.
 
-Generelle KI-chatboter er mer fleksible og kan være bedre når brukeren ønsker bred problemløsning på tvers av temaer, men de gir ikke nødvendigvis en fast arbeidsflyt eller de samme innebygde grensene for personalsaker. HR-maler og interne rutiner kan være mer autoritative for virksomhetens egne prosesser og regler, men er ofte statiske og gir begrenset mulighet til å øve på en konkret samtale. Kurs og ledertrening kan gi dypere faglig læring og menneskelig veiledning, men er ikke alltid tilgjengelig akkurat når en vanskelig samtale skal forberedes.
+I en generell KI-chat må brukeren selv formulere gode prompter, gi nødvendig kontekst, sette faglige grenser og vurdere hva som bør anonymiseres. Samtalestøtte flytter mye av dette ansvaret inn i selve produktet. Lederen velger eller beskriver situasjonen og føres gjennom en domenespesifikk arbeidsflyt med forberedelse, mål, spørsmål, mulige reaksjoner, oppfølging, samtalesimulering og refleksjon. Ni hovedtemaer og 56 undertemaer gir systemet strukturert kontekst uten at brukeren trenger å kunne prompt engineering.
 
-Samtalestøtte forsøker å fylle rommet mellom disse alternativene. Løsningen kombinerer ni hovedtemaer og 56 undertemaer med forberedelse, oppfølging, refleksjon og simulering i samme arbeidsflyt. I tillegg har prototypen personvernkontroll i klient og server, bruker-eid historikk, kontrollert web search, kildehåndtering, rollebasert administrasjon og modelltesting.
+Personvern og faglige begrensninger er også bygget inn i arbeidsflyten. Identifiserende opplysninger kontrolleres både i klient og server før tekst sendes til ekstern KI, og modellen instrueres eksplisitt om blant annet å unngå diagnoser, antakelser om motiv og skyld, oppdiktede fakta og bastante juridiske konklusjoner. En kuratert fagbank og kontrollert kildebruk gir i tillegg et mer definert kunnskapsgrunnlag enn en åpen chatbot alene.
 
-Fortrinnet ligger derfor ikke i å erstatte HR, kurs, fagpersoner eller generelle KI-verktøy, og heller ikke i å utvikle en egen språkmodell. Det ligger i hvordan KI, personvern, simulering, testing og en domenespesifikk brukerflyt er bygget sammen for situasjonen der en leder trenger praktisk støtte før og rundt en krevende samtale.
+HR-maler og interne rutiner kan være mer autoritative for virksomhetens egne regler og prosesser, men er i hovedsak statiske. Kurs og ledertrening kan gi større faglig dybde og menneskelig veiledning, men er ikke nødvendigvis tilgjengelig i det øyeblikket lederen står foran en konkret samtale. Generelle KI-verktøy er på sin side mer fleksible enn Samtalestøtte og kan brukes til langt flere oppgaver.
+
+Samtalestøttes særpreg ligger derfor i kombinasjonen: **situasjonsspesifikk KI-støtte, en fast lederrettet arbeidsflyt, dynamisk samtaletrening, innebygget personvern, faglige sikkerhetsgrenser og systematisk kvalitetstesting i én løsning.** Målet er ikke å erstatte fagpersoner eller lederens skjønn, men å gjøre det enklere å gå fra «jeg må ta en vanskelig samtale» til konkret forberedelse og øvelse på en mer strukturert og ansvarlig måte.
 
 ## Project Complexity
 
