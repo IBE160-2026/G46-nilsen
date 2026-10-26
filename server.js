@@ -91,7 +91,7 @@ app.use("/api", generalApiLimiter);
 
 // Server kun eksplisitt offentlige frontend-filer. SQL, .env, tester og dokumentasjon er ikke web-tilgjengelige.
 const publicAssetNames = new Set([
-  "index.html", "app.js", "styles.css", "topic.ico", "src/client-data.js", "assets/images/snakkeboble.svg",
+  "index.html", "app.js", "styles.css", "src/client-data.js", "assets/images/snakkeboble.svg",
   "assets/images/logo.png", "assets/images/logo-light.png", "assets/images/logo-symbol.png", "assets/images/logo-symbol-light.png",
   "assets/images/profile-ai.png", "assets/images/profile-ai-light.png", "assets/images/profile-human.png", "assets/images/profile-human-light.png",
   "assets/images/hero-conversation-exact.png",
@@ -676,7 +676,7 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   let storageReady=true;
   const probe=await supabaseAdmin.from('benchmark_results').select('id,source_pages').limit(1);
   if(probe.error) storageReady=false;
-  res.json({version:'20.10.3',totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+  res.json({version:appVersion,totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
 });
 
 app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
