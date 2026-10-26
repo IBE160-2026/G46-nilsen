@@ -872,7 +872,7 @@ Resultat:
 - package-lock-konsistens: **OK**
 - Node-kompatibilitetsområde: **OK**
 
-Dette dokumenterer at utvidelsen av testgrunnlaget og de siste UI-/dokumentasjonsendringene ikke brøt den deterministiske testpakken. Det sier fortsatt ikke noe om kvaliteten på de 12 nye golden-casene mot en faktisk språkmodell; disse krever ny `npm run test-ai:golden`.
+Dette dokumenterer at utvidelsen av testgrunnlaget og endringene fram til denne kjøringen ikke brøt den deterministiske testpakken. Etterpå er det gjort mindre kodeendringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester. Derfor skal hele `npm test` kjøres på nytt før endelig sluttstatus settes. Kjøringen sier uansett ikke noe om kvaliteten på de 12 nye golden-casene mot en faktisk språkmodell; disse krever ny `npm run test-ai:golden`.
 
 ---
 
