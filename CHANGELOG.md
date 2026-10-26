@@ -1348,3 +1348,11 @@ Fra og med neste versjon skal følgende alltid gjøres:
 
 - Brukertesten opplyser kort at Samtalestøtte er utviklet som skoleprosjekt i Programmering med KI ved Høgskolen i Molde.
 - Spørsmålet om faktisk bruk er utvidet fra «leder med personalansvar» til «leder- eller personalansvar» for å passe flere testere uten å legge til et ekstra spørsmål.
+
+
+## 2026-10-26 – Konsistens etter utvidet golden-bank
+
+- Product Brief skiller nå tydelig mellom benchmarkbankens 56 undertemaer og den mindre golden/fasit-banken.
+- Success Criteria er oppdatert fra minst én til minst to golden-caser per hovedtema, med ekstra høyrisikodekning.
+- README og AI-TESTPLAN beskriver ekstern faglig validering flerfaglig fremfor HR-sentrert.
+- Refleksjonsutkastet skiller nå eksplisitt mellom den historiske 9/9-kjøringen 14.10.2026 og den senere utvidelsen til 21 caser.
