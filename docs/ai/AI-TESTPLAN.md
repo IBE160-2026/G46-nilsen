@@ -182,7 +182,7 @@ Dette skillet er bevisst. En språkmodell kan formulere et godt svar på flere m
 
 ## 6B. Faglig validering – hva testene kan og ikke kan dokumentere
 
-Golden-banken og de øvrige KI-testene er utviklet i prosjektet. Den manuelle fasiten er utarbeidet av **studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI**, basert på prosjektets krav, kuraterte faggrunnlag, kildebank, sikkerhetsregler og manuell vurdering. Studenten har praktisk kjennskap til typen arbeidssituasjoner løsningen retter seg mot, men dette er ikke det samme som formell faglig ekspertvalidering. Fasiten er **ikke uavhengig validert av en HR-, arbeidsretts-, HMS- eller annen domeneekspert**.
+Golden-banken og de øvrige KI-testene er utviklet i prosjektet. Den manuelle fasiten er utarbeidet av **studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI**, basert på prosjektets krav, kuraterte faggrunnlag, kildebank, sikkerhetsregler og manuell vurdering. Studenten har praktisk kjennskap til typen arbeidssituasjoner løsningen retter seg mot, men dette er ikke det samme som formell faglig ekspertvalidering. Fasiten er **ikke uavhengig validert av relevante eksterne fagpersoner**, for eksempel innen organisasjonspsykologi/samtalemetodikk, HR/arbeidsliv, arbeidsrett eller HMS. Ingen av disse fagområdene behandles som en universell fasit; relevant kompetanse avhenger av hva slags råd som vurderes.
 
 Dette er en metodisk begrensning. Testene kan dokumentere at KI-svar:
 
@@ -217,7 +217,7 @@ Schema-testen håndhever minst to caser per hovedtema, minst tre for de to defin
 
 ### Videre kvalitetssikring
 
-Dersom løsningen skulle brukes utover studentprototype/treningsformål, bør relevante deler av faggrunnlag, golden-fasit og høyrisikosvar gjennomgås av kvalifisert HR-/arbeidsretts-/HMS-kompetanse før produksjonsbruk.
+Dersom løsningen skulle brukes utover studentprototype/treningsformål, bør relevante deler av faggrunnlag, golden-fasit og høyrisikosvar vurderes tverrfaglig. Samtalekvalitet kan for eksempel kreve organisasjonspsykologisk eller annen samtalefaglig kompetanse, mens formelle arbeidsrettslige eller HMS-spørsmål krever andre kilder og fagmiljøer. Poenget er ikke å finne én faggruppe som kan godkjenne alt, men å matche valideringen til typen påstand eller råd.
 
 # 6. Aktiv teststruktur
 
