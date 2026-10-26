@@ -1445,3 +1445,10 @@ Fra og med neste versjon skal følgende alltid gjøres:
 
 - Sikkerhets-/personvernfilens navn beholdes for Git-sporbarhet, men dokumentet markerer nå at det er videreført fra v20.4 og oppdatert gjennom v20.10.3.
 - Serverkommentaren for retensjon er oppdatert slik at den også dekker brukertestdata.
+
+
+## 2026-10-26 – Finjustert brukertesttekst
+
+- Brukertesten sier nå eksplisitt at også kritiske svar er nyttige.
+- Adminoversikten viser «KI relevans/balanse», i samsvar med selve spørsmålet.
+- Ingen databasefelt eller svarformat er endret.
