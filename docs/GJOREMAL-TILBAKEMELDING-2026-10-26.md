@@ -23,12 +23,12 @@ Denne listen bygger på faglærers nye vurdering av `product-brief.md` og skal b
   - Kriteriene er koblet til eksisterende testfiler og databaseoppsett.
   - Golden-kriteriet presiserer at testene viser samsvar med prosjektets fasit og sikkerhetsregler, ikke uavhengig faglig ekspertgodkjenning.
 
-- [ ] **Dokumenter den faktiske tidsrekkefølgen ærlig**
-  - Prototype v1–v12 kom før product brief/BMAD.
-  - BMAD ble innført da prosjektet vokste.
-  - Beskriv hva BMAD faktisk endret: tydeligere krav, scope, regresjonstester, sporbarhet og struktur.
-  - AI-loggen skal fortsatt være tydelig på at deler er rekonstruert fra Git-/chat-historikk og ikke er en ordrett logg.
-  - Hovedsted: refleksjonsrapporten. Eventuelt også kort i Implementation Plan/BMAD.
+- [x] **Dokumenter den faktiske tidsrekkefølgen ærlig**
+  - Refleksjonsrapporten og Implementation Plan forklarer nå at utviklingen startet lokalt før Git/GitHub var fullt etablert.
+  - Den synlige Git-historikken viser prototypecommits før den synlige Product Brief/BMAD-formaliseringen, men brukes ikke som bevis på hele den pre-Git kronologien.
+  - BMAD beskrives som et rammeverk som ble tatt i bruk mens prosjektet allerede var under utvikling, og som deretter strammet inn krav, scope, testing, arkitektur og sporbarhet.
+  - AI-loggen er justert slik at den ikke fremstiller prosessen som lineær eller hevder at Git kan tidfeste hele den tidligste lokale fasen.
+  - Refleksjonsutkastet er også korrigert fra `master` til at leveringsgrenen i skolerepoet er `main`.
 
 ## Prioritet 2 – faglig kvalitetssikring av KI
 
