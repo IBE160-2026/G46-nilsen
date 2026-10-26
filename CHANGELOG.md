@@ -1313,3 +1313,14 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Dokumentert eksplisitt at golden-fasiten er utarbeidet av student/prosjekteier med KI-støtte fra ChatGPT/OpenAI og ikke er uavhengig ekspertvalidert.
 - Schema-testen krever nå minst to caser per hovedtema, ekstra dekning for høyrisikotemaene og eksplisitt provenance.
 - Ny live-kjøring av den utvidede banken gjenstår før de nye casene kan omtales som live-verifisert.
+
+
+## 2026-10-26 – Flerfaglig samtalegrunnlag
+
+- Presisert at HR, jus, psykologi og andre fagområder ikke hver for seg er universell fasit for gode medarbeidersamtaler.
+- SOURCEBANK skiller nå tydeligere mellom samtaleteknikk, faktainnhenting, organisatorisk rettferdighet og formelle plikter.
+- Lagt til Helsedirektoratets veiledning om motiverende intervju som kilde til åpne spørsmål, refleksjon, lytting og ikke-konfronterende kommunikasjon.
+- Lagt til College of Policing som kilde til generelle prinsipper for ikke-ledende og systematisk intervju/faktainnhenting, med tydelig avgrensning mot politiavhør.
+- Lagt til CIPD-kilder om fair selection og konstruktiv feedback.
+- Styrket Arbeidstilsynet-kilden om trakassering med habilitet, kontradiksjon, dokumentasjon og personvern.
+- Oppdatert AI-TESTPLAN slik at eventuell framtidig ekstern validering beskrives som tverrfaglig og problemavhengig.
