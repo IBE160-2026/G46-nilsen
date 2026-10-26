@@ -1494,3 +1494,12 @@ Fra og med neste versjon skal følgende alltid gjøres:
 - Testen ble oppdatert til å tillate lærerens kursverktøy og framtidig `.logs/`, uten å tillate øvrige tilfeldige rotfiler.
 - `npm run test-repo-structure` besto deretter med repo-struktur, package-lock og Node-kompatibilitet OK.
 - Deterministisk teststatus er dermed grønn på nyeste kode før 21-casers live golden-kjøring.
+
+
+## 2026-10-26 – Tydeligere produktdifferensiering
+
+- Product Brief forklarer nå tydeligere hvorfor Samtalestøtte er et domenespesifikt arbeidsverktøy og ikke bare en generell chatbot med nytt grensesnitt.
+- Sammenligningen mot generelle KI-chatboter, HR-maler/interne rutiner og kurs/ledertrening er gjort mer konkret og balansert.
+- README fremhever at brukeren slipper å bygge prompt, sikkerhetsramme og arbeidsflyt selv.
+- Refleksjonsrapportens innledning beskriver produktideen som en sammenhengende arbeidsflyt fra forberedelse til simulering og refleksjon.
+- Endringen er dokumentasjon/posisjonering og påvirker ikke live golden-kjøringen.
