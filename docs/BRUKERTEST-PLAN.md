@@ -62,7 +62,7 @@ For å hindre at samme konto sender inn skjemaet flere ganger brukes en separat 
 - `user_id`
 - tidspunkt for gjennomført test
 
-Det finnes dermed en konto-relatert markering av **at** testen er gjennomført, men ikke en direkte databasekobling mellom denne markeringen og selve svarraden.
+Det finnes dermed en konto-relatert markering av **at** testen er gjennomført, men ikke en direkte databasekobling mellom denne markeringen og selve svarraden. Både svar og deltakelsesmarkering slettes automatisk etter inntil 365 dager.
 
 Fritekst blir kontrollert for tydelige personopplysninger før innsending. Testpersonene instrueres uansett om å unngå virkelige navn og andre identifiserende opplysninger.
 
