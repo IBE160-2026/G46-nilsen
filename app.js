@@ -19,6 +19,7 @@ let infoReturnView = "home";
 let publicConfig = { appVersion: "20.10.3", contactEmail: "" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
+let surveySubmitting = false;
 const clientErrorLog = [];
 
 let currentTopic = null;
@@ -3296,16 +3297,30 @@ window.addEventListener('pageshow', () => {
 
 document.querySelector('#survey-now')?.addEventListener('click',openSurvey);
 document.querySelector('#survey-later')?.addEventListener('click',()=>{try{localStorage.setItem('samtalestotte_survey_later','1')}catch(_){} const box=document.querySelector('#survey-invite');if(box)box.hidden=true;});
-document.querySelector('[data-view="survey"]')?.addEventListener('click',openSurvey);
 document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
-  event.preventDefault(); const msg=document.querySelector('#survey-message'); const form=event.currentTarget;
-  const privacyFindings=updateSurveyPrivacy(); if(splitPrivacyFindings(privacyFindings).hard.length){msg.className='auth-message error';msg.textContent='Fjern navn eller andre tydelige personopplysninger fra friteksten før du sender.';return;}
+  event.preventDefault();
+  if(surveySubmitting)return;
+  const msg=document.querySelector('#survey-message');
+  const form=event.currentTarget;
+  const submit=form.querySelector('button[type="submit"]');
+  const privacyFindings=updateSurveyPrivacy();
+  if(splitPrivacyFindings(privacyFindings).hard.length){msg.className='auth-message error';msg.textContent='Fjern navn eller andre tydelige personopplysninger fra friteksten før du sender.';return;}
   const body={}; new FormData(form).forEach((v,k)=>body[k]=v);
   for(const key of ['usability','navigation','ai_relevance','practical_usefulness','simulation','privacy','would_use']) if(body[key]!==undefined&&body[key]!=='') body[key]=Number(body[key]);
+  surveySubmitting=true;
+  if(submit){submit.disabled=true;submit.dataset.originalText=submit.textContent;submit.textContent='Sender …';}
   try{
     const r=await fetch('/api/survey',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
     const p=await r.json();
-    if(!r.ok)throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');
+    if(!r.ok){
+      if(p.error==='SURVEY_ALREADY_COMPLETED'){
+        form.hidden=true;
+        const done=document.querySelector('#survey-completed-message');
+        if(done)done.hidden=false;
+        return;
+      }
+      throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');
+    }
     form.reset();
     try{localStorage.setItem('samtalestotte_survey_done','1')}catch(_){}
     form.hidden=true;
@@ -3315,6 +3330,10 @@ document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
     msg.textContent='Takk! Tilbakemeldingen er registrert.';
   }
   catch(e){msg.className='auth-message error';msg.textContent=e.message;}
+  finally{
+    surveySubmitting=false;
+    if(submit){submit.disabled=false;submit.textContent=submit.dataset.originalText||'Send tilbakemelding';delete submit.dataset.originalText;}
+  }
 });
 
 document.querySelectorAll('#survey-form textarea[name="improvement_text"], #survey-form textarea[name="most_useful_text"]').forEach(input=>input.addEventListener('input',updateSurveyPrivacy));
