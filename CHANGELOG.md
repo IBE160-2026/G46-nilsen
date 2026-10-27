@@ -1557,3 +1557,11 @@ Første lokale testkjøring avdekket at testen kunne være grønn samtidig som n
 - Implementation Plan er endret fra «status ved levering» til **status per 26.10.2026** der prosjektet fortsatt er under aktiv utvikling.
 - Formuleringer som «sluttfase», «sluttmodularisering» og «sluttverifisering» er tonet ned der de kunne gi feil inntrykk av at prosjektet allerede var ferdig.
 - Historiske testresultater og utviklingsspor er beholdt; endringen rydder i statusformuleringer uten å omskrive prosjektets faktiske historikk.
+
+
+## 2026-10-27 – Pilotfunn: brukerteststatus og reset mellom saker
+
+- Første pilottilbakemelding avdekket at vellykket innsending av brukertesten ble fulgt av automatisk gjenåpning etter 250 ms, slik at brukeren så «allerede sendt» i stedet for en stabil bekreftelse. Automatisk gjenåpning er fjernet, og ferdigtilstanden bekrefter nå tydelig at svaret er registrert.
+- Full reset nullstiller nå `pendingSituationText`, slik at tekst fra en tidligere sak ikke følger med når brukeren starter nytt tema/samtale.
+- UI-regresjonstesten dekker begge feilene.
+- Mobilopplevelse, begrepskonsistens og mer naturlig KI-språk er registrert som separate pilotfunn for videre vurdering.
