@@ -8,6 +8,13 @@
   const AMBIGUOUS = toSet(data.ambiguousGivenNames);
   const FALSE_POSITIVES = toSet(data.falsePositives);
   const CONTEXT_NON_NAMES = toSet(data.contextualNonNames);
+  // Vanlige norske pronomen/funksjonsord kan opptre i "person-lignende" kontekst
+  // (f.eks. "til dem som er ny") og skal aldri tolkes som ukjente navn.
+  const GRAMMAR_NON_NAMES = toSet([
+    "jeg","vi","du","dere","de","dem","oss","meg","deg","seg",
+    "han","hun","hen","ham","henne","den","det","dette","disse",
+    "man","noen","noe","alle","andre","hverandre","en","et"
+  ]);
 
   const TOKEN = "[\\p{L}][\\p{L}'’\\-]{1,39}";
   const TITLE_TOKEN = "[\\p{Lu}][\\p{L}'’\\-]{1,39}";
@@ -19,15 +26,15 @@
 
   function isKnownGivenName(value){
     const n=normalizeNameToken(value);
-    return GIVEN.has(n) && !FALSE_POSITIVES.has(n);
+    return GIVEN.has(n) && !FALSE_POSITIVES.has(n) && !GRAMMAR_NON_NAMES.has(n);
   }
   function isKnownSurname(value){
     const n=normalizeNameToken(value);
-    return SURNAMES.has(n) && !FALSE_POSITIVES.has(n);
+    return SURNAMES.has(n) && !FALSE_POSITIVES.has(n) && !GRAMMAR_NON_NAMES.has(n);
   }
   function candidateAllowed(value){
     const n=normalizeNameToken(value);
-    return n.length >= 2 && !FALSE_POSITIVES.has(n) && !CONTEXT_NON_NAMES.has(n);
+    return n.length >= 2 && !FALSE_POSITIVES.has(n) && !CONTEXT_NON_NAMES.has(n) && !GRAMMAR_NON_NAMES.has(n);
   }
   function isAmbiguous(value){ return AMBIGUOUS.has(normalizeNameToken(value)); }
   function looksTitleCased(value){ return /^\p{Lu}/u.test(String(value || "")); }
