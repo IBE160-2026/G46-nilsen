@@ -108,7 +108,7 @@ Dette dokumentet foreslår tekst og enkelte titler. Ingen av forslagene er lagt 
 | Endringer i stilling eller behov | **Gul – litt diffus** | **Vurder ny tittel: «Endret rolle eller bemanningsbehov».** Velg dette når oppgaver, rolle eller virksomhetens behov endres og det kan få konsekvenser for medarbeiderens stilling. |
 | Tidligere oppfølging | **Rød – beskriver historikk, ikke situasjonen** | **Vurder ny tittel: «Manglende bedring etter oppfølging».** Velg dette når samme problem er tatt opp tidligere, tiltak er prøvd, og dere nå må vurdere hva som skal skje videre. |
 | Frivillig avslutning | **Grønn** | Velg dette når medarbeideren selv ønsker å slutte, vurderer å si opp eller ønsker å diskutere en frivillig avslutning. |
-| Samtale før videre prosess | **Rød – svært vag** | **Vurder ny tittel: «Alvorlig forhold før formell oppfølging».** Velg dette når et alvorlig forhold må tas opp og dokumenteres før saken eventuelt går videre til formell behandling eller relevant fagstøtte. |
+| Samtale før videre prosess | **Rød – svært vag** | **Vurder ny tittel: «Advarsel og formell oppfølging».** Velg dette når et alvorlig forhold må tas opp og dokumenteres før saken eventuelt går videre til formell behandling eller relevant fagstøtte. |
 
 **Merknad:** Dette temaet trenger særlig tydelig språk fordi feil valg kan få brukeren til å tro at appen gir juridiske konklusjoner. Kortene skal beskrive samtalesituasjonen, ikke antyde at oppsigelse allerede er besluttet.
 
