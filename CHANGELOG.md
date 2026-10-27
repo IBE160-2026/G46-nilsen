@@ -1565,3 +1565,11 @@ Første lokale testkjøring avdekket at testen kunne være grønn samtidig som n
 - Full reset nullstiller nå `pendingSituationText`, slik at tekst fra en tidligere sak ikke følger med når brukeren starter nytt tema/samtale.
 - UI-regresjonstesten dekker begge feilene.
 - Mobilopplevelse, begrepskonsistens og mer naturlig KI-språk er registrert som separate pilotfunn for videre vurdering.
+
+
+### 2026-10-27 – Brukertest: sikring mot dobbelt-submit
+
+- Kodegjennomgang fant ingen auto-submit ved navigasjon, tilbakeknapp, `pageshow` eller fokusendring.
+- Send-knappen deaktiveres nå mens brukertest-POST pågår, og en klientguard hindrer flere samtidige innsendinger.
+- Duplisert click-listener for «Gi tilbakemelding» i sidemenyen er fjernet; ordinær navigasjonslistener håndterer åpningen.
+- `SURVEY_ALREADY_COMPLETED` vises som fullført tilstand fremfor teknisk feil.
