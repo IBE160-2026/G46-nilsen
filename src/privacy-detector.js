@@ -13,7 +13,8 @@
   const GRAMMAR_NON_NAMES = toSet([
     "jeg","vi","du","dere","de","dem","oss","meg","deg","seg",
     "han","hun","hen","ham","henne","den","det","dette","disse",
-    "man","noen","noe","alle","andre","hverandre","en","et"
+    "man","noen","noe","alle","andre","hverandre","en","et",
+    "vårt","våre","mitt","mine","ditt","dine","sitt","sine","deres"
   ]);
 
   const TOKEN = "[\\p{L}][\\p{L}'’\\-]{1,39}";
