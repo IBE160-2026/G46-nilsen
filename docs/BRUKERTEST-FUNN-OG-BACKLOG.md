@@ -78,10 +78,15 @@ Sikkerhets- og forsiktighetsreglene kan ha trukket enkelte svar for langt mot ge
 - Undertemakortene fungerer i praksis som navigasjon og må derfor hjelpe brukeren å velge, ikke bare forklare begrepet.
 
 ### Arbeid utført
-- Egen gjennomgang av alle 56 undertemaer er dokumentert i:
+- Første klarspråkgjennomgang av alle 56 undertemaer:
   - `docs/BRUKERTEST-KLARSPRAK-UNDERTEMA.md`
-- Hovedregel:
+- Ny, strengere gjennomgang av selve taksonomien – 9 hovedtemaer og 56 undertemaer:
+  - `docs/BRUKERTEST-TAKSONOMI-GJENNOMGANG.md`
+- Den nye gjennomgangen vurderer ikke bare tekst, men også om titler bør omdøpes, om skiller er uklare, og om strukturen samsvarer med ordene en leder faktisk vil lete etter.
+- Hovedregler:
   > Beskrivelsen skal hjelpe brukeren å vite «velg dette når …», ikke bare definere fagbegrepet.
+  
+  > Hvis en leder normalt ville brukt et bestemt ord om problemet, bør vi ikke gjemme ordet bak en penere eller mer abstrakt omskrivning.
 
 ### Mest utsatte skiller
 - Mobbing vs. utestenging/utfrysing.
@@ -263,7 +268,7 @@ Pilotarbeidet gir allerede flere konkrete læringspunkter:
 - [ ] Mobil/responsiv layout – designbeslutning og implementeringsplan.
 - [ ] KI-språk – mindre passivt, mer konkret og naturlig.
 - [ ] Begrepsfasit – særlig samtaleøvelse/simulering og personvernord.
-- [ ] Klarspråkendringer for undertemaer basert på 56-tema-gjennomgangen.
+- [ ] Hovedtema/undertema: ta stilling til forslagene i taksonomigjennomgangen, særlig «Oppsigelse og avslutning av arbeidsforhold», «Endret engasjement» og tydeligere skiller mellom overlappende kort.
 - [ ] Spore og rette rå citation-markør i UI.
 - [ ] Designe trygg «ikke en personopplysning»-flyt for heuristiske funn.
 - [ ] Vurdere anonymisert logging/telling av falske positive uten samtaletekst.
