@@ -59,3 +59,10 @@ assert(html.includes('<strong>Personvern:</strong> Ikke skriv navn'), 'Kontaktsk
 assert(app.includes("updateSurveyPrivacy"), 'Brukertestens live personvernsjekk er ikke koblet i app.js');
 assert(app.includes("updateAiFeedbackCommentPrivacy"), 'KI-feedback live personvernsjekk er ikke koblet i app.js');
 console.log("Personvernflater: OK");
+
+
+assert(index.includes('id="survey-completed-message"') && index.includes('Brukertesten er sendt inn'), 'Brukertest skal vise tydelig bekreftelse etter innsending');
+assert(!app.includes('setTimeout(()=>openSurvey(),250)'), 'Brukertest skal ikke åpnes på nytt rett etter vellykket innsending');
+assert(app.includes("pendingSituationText = '';"), 'Ny/full reset skal nullstille bevart situasjonstekst');
+assert(app.includes("if (detailSearch) detailSearch.value = '';"), 'Temadetaljfelt skal være tomt etter full reset');
+console.log('Brukertest/reset-regresjon: OK');
