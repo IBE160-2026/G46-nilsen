@@ -115,3 +115,16 @@ Etter at svarene er samlet inn skal prosjektet:
 6. beskrive resultatene og begrensningene nøkternt i refleksjonsrapporten
 
 Målet er ikke å få gode skårer, men å finne ut hva som faktisk bør forbedres.
+
+
+## Pilotfunn 27.10.2026 – første kvalitative tilbakemelding
+
+Første mottatte pilottilbakemelding beskrev løsningen som ferdig og smidig, med lite å utsette på interaksjonsdesignet, men pekte på flere konkrete forbedringsområder:
+
+- **Brukertest-status:** Etter innsending ble visningen raskt erstattet av «Du har allerede sendt inn brukertesten», noe som gjorde testeren usikker på om svaret var registrert. Kodegjennomgang viste at klienten åpnet skjemaet på nytt 250 ms etter vellykket POST. Dette er identifisert som UI/state-feil.
+- **Reset mellom saker:** Tidligere situasjonstekst kunne følge med inn i nytt tema etter samtaleøvelse. Kodegjennomgang viste at `pendingSituationText` ikke ble nullstilt ved full reset.
+- **Mobil:** Løsningen oppleves ikke ideell på mobil. Dette behandles som UX-/responsivitetsfunn, ikke som dokumentert funksjonsfeil.
+- **Begrepskonsistens:** Testeren anbefalte mer konsekvent språk, særlig «simulering» versus «samtale/øvelse/råd» og «identifiserende opplysninger» versus «identifikatorer».
+- **KI-språk:** Enkelte formuleringer ble opplevd som robotaktige eller lite naturlige i en reell samtale, eksempelvis uttrykket «det var ikke meningen å stemple deg». Dette følges opp som språk-/promptkvalitet.
+
+Tilbakemeldingen behandles som ett kvalitativt pilotfunn. Den brukes ikke som statistisk dokumentasjon, men som grunnlag for feilretting og senere mønstervurdering når flere svar foreligger.
