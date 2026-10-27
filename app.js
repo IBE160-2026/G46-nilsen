@@ -184,6 +184,7 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
 function resetConversationState() {
   currentTopic = null;
   currentSubtopic = null;
+  pendingSituationText = '';
 
   document.querySelectorAll('.topic-card').forEach(card => {
     card.classList.remove('active-card');
@@ -194,7 +195,7 @@ function resetConversationState() {
   if (search) search.value = '';
 
   const detailSearch = document.querySelector('#topic-detail-search');
-  if (detailSearch) detailSearch.value = pendingSituationText;
+  if (detailSearch) detailSearch.value = '';
 
   const subSuggestion = document.querySelector('#subtopic-suggestion');
   if (subSuggestion) {
@@ -3301,7 +3302,18 @@ document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
   const privacyFindings=updateSurveyPrivacy(); if(splitPrivacyFindings(privacyFindings).hard.length){msg.className='auth-message error';msg.textContent='Fjern navn eller andre tydelige personopplysninger fra friteksten før du sender.';return;}
   const body={}; new FormData(form).forEach((v,k)=>body[k]=v);
   for(const key of ['usability','navigation','ai_relevance','practical_usefulness','simulation','privacy','would_use']) if(body[key]!==undefined&&body[key]!=='') body[key]=Number(body[key]);
-  try{const r=await fetch('/api/survey',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');msg.className='auth-message success';msg.textContent='Takk! Tilbakemeldingen er lagret.';form.reset();try{localStorage.setItem('samtalestotte_survey_done','1')}catch(_){};setTimeout(()=>openSurvey(),250)}
+  try{
+    const r=await fetch('/api/survey',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const p=await r.json();
+    if(!r.ok)throw new Error(p.message||'Kunne ikke lagre tilbakemeldingen.');
+    form.reset();
+    try{localStorage.setItem('samtalestotte_survey_done','1')}catch(_){}
+    form.hidden=true;
+    const done=document.querySelector('#survey-completed-message');
+    if(done)done.hidden=false;
+    msg.className='auth-message success';
+    msg.textContent='Takk! Tilbakemeldingen er registrert.';
+  }
   catch(e){msg.className='auth-message error';msg.textContent=e.message;}
 });
 
