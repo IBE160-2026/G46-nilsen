@@ -1177,7 +1177,16 @@ function serverPrivacyFindings(text) {
   if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(source)) add("email", "Fjern e-postadresse.");
   if (/(?:\+47\s?)?(?:\d[\s-]?){8}\b/.test(source)) add("phone", "Fjern telefonnummer.");
   if (/\b(?:\d{1,2}[.\/-]\d{1,2}[.\/-](?:19|20)?\d{2})\b/.test(source) || /\b(?:født|fødselsdato)\s+(?:i\s+)?(?:19|20)\d{2}\b/i.test(source)) add("birthdate", "Fjern fødselsdato eller fødselsår.");
-  if (/\b(?:[1-9]|[1-9]\d|1[01]\d|120)\s*år(?:\s+gammel)?\b/i.test(source)) add("age", "Generaliser konkret alder hvis den ikke er nødvendig.");
+  const ageNumber = "(?:[1-9]|[1-9]\\d|1[01]\\d|120)";
+  const explicitAge = new RegExp(
+    "\\b(?:(?:er|var|blir|fyller)\\s+" + ageNumber + "\\s*år(?:\\s+gammel)?|" +
+    ageNumber + "\\s*år\\s+gammel|" +
+    ageNumber + "[-\\s]?åring(?:en)?|" +
+    "alder(?:en)?(?:\\s+er|\\s+på)?\\s*" + ageNumber + "|" +
+    "(?:medarbeider(?:en)?|ansatt(?:en)?|person(?:en)?|leder(?:en)?|kollega(?:en)?)\\s+på\\s+" + ageNumber + "\\s*år)\\b",
+    "i"
+  );
+  if (explicitAge.test(source)) add("age", "Generaliser konkret alder hvis den ikke er nødvendig.");
   if (/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source) || /\b\d{11}\b/.test(source)) add("identifier", "Fjern identifikasjonsnummer.");
   if (/\b(?:han|hun|ham|henne|hans|hennes)\b/iu.test(source)) add("gendered_language", "Bruk kjønnsnøytral formulering, for eksempel «hen» eller «medarbeideren».");
   if (/\b[A-ZÆØÅ][a-zæøå]+(?:gate|gata|veien|vegen|allé|stien)\s+\d+[A-Za-z]?\b/.test(source)) add("address", "Fjern konkret gateadresse.");
