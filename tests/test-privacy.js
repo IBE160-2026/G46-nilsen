@@ -54,6 +54,8 @@ const nameCases = [
   ['Medarbeideren skal til lege i morgen.', null],
   ['Løsningen kommer senere.', null],
   ['Kunden sier at leveransen er forsinket.', null],
+  ['Hvordan kan vi stille større krav til dem som er ny?', null],
+  ['Jeg mistenker at de blir veldig skuffa og mener det er ekstremt urettferdig. Hvordan kan vi stille større krav til dem som er ny?', null],
 ];
 
 const privacyCases = [
@@ -70,6 +72,9 @@ const privacyCases = [
   ['Jeg jobber i en sikkerhetskritisk virksomhet.', null],
   ['Hun ønsker et møte med lederen.', 'gendered_language'],
   ['Jeg ga beskjed til ham i går.', 'gendered_language'],
+  ['Medarbeideren har jobbet her i 20 år.', null],
+  ['Medarbeideren har 20 års erfaring.', null],
+  ['Medarbeideren er 20 år gammel.', 'age'],
 ];
 
 let failures = 0;
