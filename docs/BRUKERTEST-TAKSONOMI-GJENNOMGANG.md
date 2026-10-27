@@ -208,7 +208,7 @@ Dette er den tydeligste endringen i hele taksonomien.
 | Endringer i stilling eller behov | **Endret stilling eller bemanningsbehov** | Omdøp |
 | Tidligere oppfølging | **Manglende bedring etter tidligere oppfølging** | Anbefalt endring |
 | Frivillig avslutning | **Medarbeideren ønsker å slutte** | Anbefalt klarspråk |
-| Samtale før videre prosess | **Alvorlig forhold før formell oppfølging** | Anbefalt endring |
+| Samtale før videre prosess | **Advarsel og formell oppfølging** | Anbefalt endring |
 
 ### Foreslåtte korte beskrivelser
 - **Mulig oppsigelse fra arbeidsgiver:** Når arbeidsgiver vurderer om arbeidsforholdet kan fortsette og du må gjennomføre en tydelig samtale før eventuell videre prosess.
@@ -216,7 +216,7 @@ Dette er den tydeligste endringen i hele taksonomien.
 - **Endret stilling eller bemanningsbehov:** Når rolle, oppgaver eller virksomhetens bemanningsbehov endres og dette kan få konsekvenser for stillingen.
 - **Manglende bedring etter tidligere oppfølging:** Når samme problem er tatt opp tidligere, tiltak er prøvd, men nødvendig bedring ikke har kommet.
 - **Medarbeideren ønsker å slutte:** Når medarbeideren selv vurderer å si opp eller ønsker å snakke om en frivillig avslutning.
-- **Alvorlig forhold før formell oppfølging:** Når et alvorlig forhold må tas opp og dokumenteres før saken eventuelt går videre til HR eller annen formell behandling.
+- **Advarsel og formell oppfølging:** Når det har skjedd noe alvorlig, eller et problem har kommet så langt at du må ta en tydelig samtale før eventuell advarsel eller annen formell oppfølging.
 
 ### Viktig språkgrense
 Det er riktig å bruke **oppsigelse** som navigasjonsord. Det er ikke det samme som å si at oppsigelse er riktig eller lovlig i saken. KI-en må fortsatt tydelig skille mellom:
@@ -342,7 +342,7 @@ Det kan løse mer enn bare en tekstendring.
 2. Endre beskrivelsen slik at ordet **oppsigelse** brukes direkte, med tydelig avgrensning mot juridisk konklusjon.
 3. Omdøp **Avslutning av arbeidsforhold**-undertemaet til **Mulig oppsigelse fra arbeidsgiver**.
 4. Omdøp **Tidligere oppfølging** til **Manglende bedring etter tidligere oppfølging**.
-5. Omdøp **Samtale før videre prosess** til **Alvorlig forhold før formell oppfølging**.
+5. Omdøp **Samtale før videre prosess** til **Advarsel og formell oppfølging**.
 6. Omdøp **Motivasjon** til **Endret engasjement**.
 7. Skill tydelig mellom ordinær **Feil i arbeidet** og **Sikkerhetshendelse eller avvik**.
 8. Skill tydelig mellom **Seksuell trakassering** og **Kjønnstrakassering**.
