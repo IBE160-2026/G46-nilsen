@@ -54,12 +54,19 @@ const ambiguousNameCases=[
   ['Vi skal til møte neste uke.',false],
   ['Medarbeideren skal til lege i morgen.',false],
   ['Løsningen kommer senere.',false],
-  ['Kunden sier at leveransen er forsinket.',false]
+  ['Kunden sier at leveransen er forsinket.',false],
+  ['Hvordan kan vi stille større krav til dem som er ny?',false],
+  ['Jeg mistenker at de blir veldig skuffa og mener det er ekstremt urettferdig. Hvordan kan vi stille større krav til dem som er ny?',false]
 ];
 for(const [text,expectedName] of ambiguousNameCases){
   const got=findings(text).map(x=>x.type);
   assert.strictEqual(got.includes('name'),expectedName,`Tvetydig navn feil i: ${text}; fikk ${got.join(',') || 'ingen'}`);
 }
+for(const text of ['Medarbeideren har jobbet her i 20 år.','Medarbeideren har 20 års erfaring.']){
+  const got=findings(text).map(x=>x.type);
+  assert(!got.includes('age'),`Varighet/ansiennitet ble feiltolket som alder i: ${text}; fikk ${got.join(',') || 'ingen'}`);
+}
+assert(findings('Medarbeideren er 20 år gammel.').some(x=>x.type==='age'),'Eksplisitt alder skal fortsatt oppdages');
 for(const t of ['email','phone','birthdate','identifier','name','address','gendered_language']) assert(hard.has(t),`${t} skal være hard blokkering`);
 for(const t of ['age','family_details','unique_role','workplace_detail']) assert(!hard.has(t),`${t} skal være rådgivende, ikke hard blokkering`);
 console.log('v20.4 server privacy: OK');
