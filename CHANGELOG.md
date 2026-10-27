@@ -1582,3 +1582,10 @@ Første lokale testkjøring avdekket at testen kunne være grønn samtidig som n
 - Aldersdeteksjon krever nå tydelig alderskontekst som «er 20 år gammel», «fyller 20 år» eller «20-åring».
 - Varighet og ansiennitet som «jobbet her i 20 år» og «20 års erfaring» skal ikke lenger flagges som alder.
 - Samme alderslogikk og regresjonsdekning brukes klient- og server-side.
+
+
+### 2026-10-27 – personvern: eiendomsord skal ikke tolkes som navn
+
+- Utvider grammatikklisten med norske eiendomsord som `vårt`, `våre`, `mitt`, `mine`, `ditt`, `dine`, `sitt`, `sine` og `deres`.
+- Regresjon lagt til for «Dette ligger innenfor vårt ansvarsområde.» og «Våre rutiner gjelder her.»
+- `Vår` beholdes som mulig faktisk fornavn og håndteres fortsatt kontekstuelt.
