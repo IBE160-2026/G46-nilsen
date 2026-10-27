@@ -128,3 +128,15 @@ Første mottatte pilottilbakemelding beskrev løsningen som ferdig og smidig, me
 - **KI-språk:** Enkelte formuleringer ble opplevd som robotaktige eller lite naturlige i en reell samtale, eksempelvis uttrykket «det var ikke meningen å stemple deg». Dette følges opp som språk-/promptkvalitet.
 
 Tilbakemeldingen behandles som ett kvalitativt pilotfunn. Den brukes ikke som statistisk dokumentasjon, men som grunnlag for feilretting og senere mønstervurdering når flere svar foreligger.
+
+
+### Presisering av brukertestfunnet
+
+Testeren beskrev at hun fylte ut deler av skjemaet, gikk ut for å kontrollere noe, kom tilbake, fylte ut resten og trykket Send. Etterpå fikk hun meldingen om at brukertesten allerede var sendt. Kodegjennomgang fant **ingen hendelse som sender skjemaet ved navigasjon bort/tilbake, `pageshow`, fokusendring eller visningsbytte**. Innsending skjer bare ved skjemaets `submit`-hendelse.
+
+Det kan derfor ikke dokumenteres at skjemaet faktisk ble sendt før brukeren trykket Send. Den observerte usikkerheten kan forklares av den bekreftede UI-feilen der en vellykket innsending umiddelbart åpnet statusvisningen igjen. I tillegg manglet klienten sperre mot dobbel innsending mens første POST pågikk; dette er nå sikret med en eksplisitt `surveySubmitting`-guard og deaktivert Send-knapp under innsending.
+
+Funnstatus:
+- automatisk innsending ved navigasjon: **ikke funnet / ikke reprodusert i kode**
+- misvisende «allerede sendt»-tilstand etter vellykket innsending: **bekreftet**
+- mulig dobbelt-submit/race: **teknisk mulig før retting, nå sperret**
