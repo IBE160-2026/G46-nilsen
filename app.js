@@ -344,7 +344,16 @@ function detectSensitiveInfo(text) {
   if (/\b(?:\d{1,2}[.\/-]\d{1,2}[.\/-](?:19|20)?\d{2})\b/.test(source) || /\b(?:født|fødselsdato)\s+(?:i\s+)?(?:19|20)\d{2}\b/i.test(source)) {
     add('birthdate', 'Fødselsdato eller fødselsår', 'Fjern fødselsdato eller fødselsår.');
   }
-  if (/\b(?:[1-9]|[1-9]\d|1[01]\d|120)\s*år(?:\s+gammel)?\b/i.test(source)) {
+  const ageNumber = "(?:[1-9]|[1-9]\\d|1[01]\\d|120)";
+  const explicitAge = new RegExp(
+    "\\b(?:(?:er|var|blir|fyller)\\s+" + ageNumber + "\\s*år(?:\\s+gammel)?|" +
+    ageNumber + "\\s*år\\s+gammel|" +
+    ageNumber + "[-\\s]?åring(?:en)?|" +
+    "alder(?:en)?(?:\\s+er|\\s+på)?\\s*" + ageNumber + "|" +
+    "(?:medarbeider(?:en)?|ansatt(?:en)?|person(?:en)?|leder(?:en)?|kollega(?:en)?)\\s+på\\s+" + ageNumber + "\\s*år)\\b",
+    "i"
+  );
+  if (explicitAge.test(source)) {
     add('age', 'Alder', 'Fjern konkret alder. Skriv heller bare det som er relevant for arbeidssituasjonen.');
   }
   if (/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source) || /\b\d{11}\b/.test(source)) {
