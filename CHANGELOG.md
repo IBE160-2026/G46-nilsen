@@ -1573,3 +1573,12 @@ Første lokale testkjøring avdekket at testen kunne være grønn samtidig som n
 - Send-knappen deaktiveres nå mens brukertest-POST pågår, og en klientguard hindrer flere samtidige innsendinger.
 - Duplisert click-listener for «Gi tilbakemelding» i sidemenyen er fjernet; ordinær navigasjonslistener håndterer åpningen.
 - `SURVEY_ALREADY_COMPLETED` vises som fullført tilstand fremfor teknisk feil.
+
+
+## 2026-10-27 – personvern: falske positiver for pronomen og ansiennitet
+
+- Navnedetektoren behandler nå vanlige norske pronomen og funksjonsord som `dem`, `de`, `dere`, `oss`, `meg`, `deg` og `seg` som sikre ikke-navn også i personlignende setningskontekst.
+- Regresjon lagt til for pilotsetningen «Hvordan kan vi stille større krav til dem som er ny?».
+- Aldersdeteksjon krever nå tydelig alderskontekst som «er 20 år gammel», «fyller 20 år» eller «20-åring».
+- Varighet og ansiennitet som «jobbet her i 20 år» og «20 års erfaring» skal ikke lenger flagges som alder.
+- Samme alderslogikk og regresjonsdekning brukes klient- og server-side.
