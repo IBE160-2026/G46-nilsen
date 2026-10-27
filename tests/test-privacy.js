@@ -56,6 +56,8 @@ const nameCases = [
   ['Kunden sier at leveransen er forsinket.', null],
   ['Hvordan kan vi stille større krav til dem som er ny?', null],
   ['Jeg mistenker at de blir veldig skuffa og mener det er ekstremt urettferdig. Hvordan kan vi stille større krav til dem som er ny?', null],
+  ['Dette ligger innenfor vårt ansvarsområde.', null],
+  ['Våre rutiner gjelder her.', null],
 ];
 
 const privacyCases = [
