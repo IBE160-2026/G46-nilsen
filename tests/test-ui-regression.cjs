@@ -66,3 +66,8 @@ assert(!app.includes('setTimeout(()=>openSurvey(),250)'), 'Brukertest skal ikke 
 assert(app.includes("pendingSituationText = '';"), 'Ny/full reset skal nullstille bevart situasjonstekst');
 assert(app.includes("if (detailSearch) detailSearch.value = '';"), 'Temadetaljfelt skal være tomt etter full reset');
 console.log('Brukertest/reset-regresjon: OK');
+
+assert(app.includes('if(surveySubmitting)return;'), 'Brukertest skal blokkere dobbel innsending mens POST pågår');
+assert(app.includes("submit.textContent='Sender …'"), 'Brukertest skal vise at innsending pågår');
+assert(!app.includes("document.querySelector('[data-view=\"survey\"]')?.addEventListener('click',openSurvey);"), 'Survey-nav skal ikke ha duplisert openSurvey-listener');
+console.log('Brukertest dobbel-submit-regresjon: OK');
