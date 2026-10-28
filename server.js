@@ -684,21 +684,26 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   res.json({version:appVersion,totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
 });
 
-app.get('/api/admin/pilot-regression/cases', requireAdmin, async (_req,res)=>{
+app.get('/api/admin/pilot-regression/cases', requireAdmin, async (req,res)=>{
   try {
     const goldenPath = path.join(__dirname, 'tests/AI-GOLDEN-CASES.json');
     const bank = JSON.parse(fs.readFileSync(goldenPath, 'utf8'));
-    const cases = (bank.cases || []).filter(item => item.pilot_regression).map(item => ({
+    const mode = String(req.query?.mode || 'pilot') === 'full' ? 'full' : 'pilot';
+    const selected = mode === 'full'
+      ? (bank.cases || [])
+      : (bank.cases || []).filter(item => item.pilot_regression);
+    const cases = selected.map(item => ({
       id:item.id,
       theme:item.theme,
       input:item.input,
+      pilot_regression:Boolean(item.pilot_regression),
       opening_checks:item.opening_checks || {},
       manual_fasit:item.manual_fasit || null
     }));
-    res.json({ count:cases.length, cases });
+    res.json({ mode, count:cases.length, cases });
   } catch (error) {
-    console.error('Kunne ikke lese pilot-regresjonscaser:', error?.message || error);
-    res.status(500).json({ error:'PILOT_CASES_FAILED', message:'Kunne ikke hente pilotcasene.' });
+    console.error('Kunne ikke lese produksjonsflyt-caser:', error?.message || error);
+    res.status(500).json({ error:'REGRESSION_CASES_FAILED', message:'Kunne ikke hente testcasene.' });
   }
 });
 
@@ -707,8 +712,9 @@ app.post('/api/admin/pilot-regression/result', requireAdmin, async (req,res)=>{
     const goldenPath = path.join(__dirname, 'tests/AI-GOLDEN-CASES.json');
     const bank = JSON.parse(fs.readFileSync(goldenPath, 'utf8'));
     const caseId = String(req.body?.caseId || '').slice(0,80);
-    const testCase = (bank.cases || []).find(item => item.pilot_regression && item.id === caseId);
-    if (!testCase) return res.status(400).json({error:'INVALID_PILOT_CASE',message:'Ukjent pilotcase.'});
+    const mode = String(req.body?.mode || 'pilot') === 'full' ? 'full' : 'pilot';
+    const testCase = (bank.cases || []).find(item => item.id === caseId && (mode === 'full' || item.pilot_regression));
+    if (!testCase) return res.status(400).json({error:'INVALID_REGRESSION_CASE',message:'Ukjent testcase.'});
 
     const opening = String(req.body?.opening || '').trim().slice(0,700);
     const model = String(req.body?.model || '').trim().slice(0,120);
@@ -718,21 +724,29 @@ app.post('/api/admin/pilot-regression/result', requireAdmin, async (req,res)=>{
       .map(value => String(value || '').trim().slice(0,220))
       .filter(Boolean)
       .slice(0,8);
+    const notes = (Array.isArray(req.body?.notes) ? req.body.notes : [])
+      .map(value => String(value || '').trim().slice(0,220))
+      .filter(Boolean)
+      .slice(0,8);
 
-    // Kun faste, personverntrygge pilotcaser logges her. Ingen fri brukersamtale lagres.
-    console.info('[pilot-regression-result]', JSON.stringify({
+    // Kun faste, personverntrygge testbankcaser logges. Ingen fri brukersamtale lagres.
+    const marker = mode === 'full' ? '[production-regression-result]' : '[pilot-regression-result]';
+    console.info(marker, JSON.stringify({
       runId,
+      mode,
       caseId:testCase.id,
       theme:testCase.theme,
+      pilot:Boolean(testCase.pilot_regression),
       model,
       ok,
       issues,
+      notes,
       opening
     }));
     res.json({ok:true});
   } catch (error) {
-    console.error('[pilot-regression-result] logging failed:', error?.message || error);
-    res.status(500).json({error:'PILOT_RESULT_LOG_FAILED',message:'Kunne ikke registrere pilotresultatet.'});
+    console.error('[regression-result] logging failed:', error?.message || error);
+    res.status(500).json({error:'REGRESSION_RESULT_LOG_FAILED',message:'Kunne ikke registrere testresultatet.'});
   }
 });
 
@@ -1364,7 +1378,7 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   }
 
   const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", testMode = "" } = req.body || {};
-  const adminPilotTest = testMode === "pilot-regression" && effectiveRole(req.user) === "admin";
+  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
@@ -1423,7 +1437,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
   }
 
   const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "" } = req.body || {};
-  const adminPilotTest = testMode === "pilot-regression" && effectiveRole(req.user) === "admin";
+  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
