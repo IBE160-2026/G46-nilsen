@@ -10,8 +10,10 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const data = JSON.parse(fs.readFileSync(path.join(__dirname, "AI-GOLDEN-CASES.json"), "utf8"));
 const allCases = data.cases || [];
+const pilotOnly = process.argv.includes("--pilot");
 const requestedLimit = Number(process.env.AI_TEST_LIMIT || 0);
-const cases = requestedLimit > 0 ? allCases.slice(0, requestedLimit) : allCases;
+const selectedCases = pilotOnly ? allCases.filter(tc => tc.pilot_regression) : allCases;
+const cases = requestedLimit > 0 ? selectedCases.slice(0, requestedLimit) : selectedCases;
 const port = 3203;
 const base = `http://127.0.0.1:${port}`;
 
@@ -21,7 +23,7 @@ if (!process.env.OPENAI_API_KEY && !process.env.OPENROUTER_API_KEY) {
 }
 
 console.log("\nSamtalestøtte – fasitbasert KI-test");
-console.log(`Kjører ${cases.length} av ${allCases.length} golden cases.`);
+console.log(pilotOnly ? `Kjører ${cases.length} pilot-regresjonscaser.` : `Kjører ${cases.length} av ${allCases.length} golden cases.`);
 console.log("Hver case vurderes mot maskinell fasit og en eksplisitt menneskelig vurderingsfasit.\n");
 
 const server = spawn(process.execPath, [path.join(__dirname, "../server.js")], {
@@ -108,6 +110,27 @@ function evaluate(tc, analysis, guidance) {
   }
   if (/\b(?:medarbeideren|lederen)\b/iu.test(opening) && !/\bdu\b/iu.test(opening)) {
     review.push("Åpning: ser ut til å være skrevet om samtalen i tredjeperson, ikke som muntlig replikk");
+  }
+
+  const openingChecks = tc.opening_checks || null;
+  if (openingChecks) {
+    const maxWords = Number(openingChecks.max_words || 0);
+    if (maxWords > 0 && openingWords > maxWords) {
+      review.push(`Pilotåpning: ${openingWords} ord, maks ${maxWords} i denne casen`);
+    }
+    for (const pattern of openingChecks.forbidden_patterns || []) {
+      if (new RegExp(pattern, "iu").test(opening)) {
+        review.push(`Pilotåpning: inneholder uønsket mekanisk/instruksjonsaktig formulering (${pattern})`);
+      }
+    }
+    const required = openingChecks.required_patterns_any || [];
+    if (required.length && !required.some(pattern => new RegExp(pattern, "iu").test(opening))) {
+      review.push("Pilotåpning: mangler et sentralt, situasjonsspesifikt element");
+    }
+    const sentenceCount = opening.split(/[.!?]+(?:\s|$)/u).map(x => x.trim()).filter(Boolean).length;
+    if (sentenceCount > 4) {
+      review.push(`Pilotåpning: ${sentenceCount} setninger; bør være maks 4`);
+    }
   }
   if (!Array.isArray(guidance?.reactions) || guidance.reactions.length < 2) {
     review.push("Rådsstruktur: mangler minst to situasjonsspesifikke reaksjoner");
