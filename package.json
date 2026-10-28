@@ -33,7 +33,8 @@
     "test-repo-structure": "node tests/test-repo-structure.cjs",
     "test-public-assets": "node tests/test-public-assets.cjs",
     "update-privacy-names": "node scripts/update-privacy-names.js",
-    "test-privacy-surfaces": "node tests/test-privacy-surfaces.cjs"
+    "test-privacy-surfaces": "node tests/test-privacy-surfaces.cjs",
+    "test-ai:pilot": "node tests/test-ai-golden.js --pilot"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
