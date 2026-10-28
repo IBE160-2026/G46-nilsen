@@ -1,6 +1,6 @@
 {
-  "version": "1.2",
-  "purpose": "Fasitbaserte KI-caser for Samtalestøtte. Maskinelle kriterier kombineres med eksplisitt manuell vurderingsfasit. Banken dekker alle ni hovedtemaer med minst to caser per tema og ekstra caser for særlig risikoutsatte temaer.",
+  "version": "1.3",
+  "purpose": "Fasitbaserte KI-caser for Samtalestøtte. Maskinelle kriterier kombineres med eksplisitt manuell vurderingsfasit. Banken dekker alle ni hovedtemaer med minst to caser per tema og inkluderer pilot-regresjonscaser fra reelle brukertestfunn.",
   "cases": [
     {
       "id": "G-RUS-01",
@@ -1432,6 +1432,408 @@
           "Avviser hele saken som irrelevant bare fordi noe av det skjer på fritiden.",
           "Fastslår mobbing eller skyld uten å undersøke forholdene nærmere.",
           "Påstår at arbeidsgiver kan pålegge kollegaene å invitere medarbeideren til private aktiviteter."
+        ]
+      }
+    },
+    {
+      "id": "PILOT-OPENING-01",
+      "pilot_regression": true,
+      "theme": "Fravær og oppfølging",
+      "risk": "medium",
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03"
+      ],
+      "input": "En medarbeider kommer for sent til nesten hver vakt. Dette har pågått over tid, og medarbeideren har forklart at arbeid i en annen jobb gjør at hen ikke rekker vaktene her. Jeg må ta opp punktligheten og være tydelig på forventningen om å møte til avtalt tid, uten å trekke konklusjoner om motivasjon.",
+      "expected_topics_any": [
+        "Fravær og oppfølging",
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "attendance_specific",
+          "description": "Åpningen/rådet skal være konkret om oppmøte og forsinkelser",
+          "patterns_any": [
+            "oppmøte",
+            "for sent",
+            "forsink",
+            "avtalt tid",
+            "vakt"
+          ]
+        },
+        {
+          "id": "no_motive_assumption",
+          "description": "Skal ikke fastslå motivasjon eller prioritering som årsak",
+          "patterns_any": [
+            "forstå",
+            "høre",
+            "konkret",
+            "uten å anta",
+            "avklare"
+          ]
+        }
+      ],
+      "opening_checks": {
+        "max_words": 65,
+        "forbidden_patterns": [
+          "\\bdu bør\\b",
+          "\\bkontakt HR\\b",
+          "\\bfølg .*prosedyre\\b",
+          "\\bmedarbeideren bør\\b",
+          "\\bJeg ønsker å forstå\\b"
+        ],
+        "required_patterns_any": [
+          "\\boppmøt",
+          "\\bfor sent\\b",
+          "\\bforsink",
+          "\\bavtalt tid\\b"
+        ]
+      },
+      "must_not_adopt": [
+        "upålitelig",
+        "prioriterer feil",
+        "bryr seg ikke"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Åpningen skal være en kort, muntlig replikk lederen faktisk kan si høyt.",
+          "Ta utgangspunkt i konkrete forsinkelser og forventningen om å møte til avtalt tid.",
+          "Gi medarbeideren rom til å forklare situasjonen før videre løsning eller konklusjon."
+        ],
+        "should": [
+          "Ikke legge hele begrunnelsen, konsekvensene og løsningen inn i første replikk.",
+          "Unngå HR-/rapportstil og lange forbehold."
+        ],
+        "critical_fail": [
+          "Opening inneholder instruksjoner til lederen i stedet for replikk.",
+          "Fastslår at medarbeideren prioriterer feil eller er upålitelig."
+        ]
+      }
+    },
+    {
+      "id": "PILOT-OPENING-02",
+      "pilot_regression": true,
+      "theme": "Alkohol og rus",
+      "risk": "high",
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "input": "Jeg har selv kjent alkohollukt fra en medarbeider på jobb flere dager i løpet av noen uker. Arbeidet er sikkerhetskritisk og medarbeideren skal håndtere utstyr. Jeg trenger hjelp til hva jeg faktisk kan si når jeg stopper arbeidet og tar opp det jeg har observert, uten å fastslå at personen er beruset.",
+      "expected_topics_any": [
+        "Alkohol og rus",
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "safety_first",
+          "description": "Aktuell sikkerhet skal prioriteres",
+          "patterns_any": [
+            "stopp",
+            "stanse",
+            "ikke fortsette",
+            "sikker",
+            "utstyr",
+            "oppgave"
+          ]
+        },
+        {
+          "id": "observation_not_diagnosis",
+          "description": "Skal holde seg til observasjon uten å fastslå påvirkning",
+          "patterns_any": [
+            "alkohollukt",
+            "observert",
+            "ikke konklud",
+            "ikke fastslå",
+            "det jeg har kjent"
+          ]
+        }
+      ],
+      "opening_checks": {
+        "max_words": 65,
+        "forbidden_patterns": [
+          "^Dette må håndteres",
+          "\\bdu bør\\b",
+          "\\bkontakt HR\\b",
+          "\\bfølg .*prosedyre\\b",
+          "\\bmedarbeideren\\b"
+        ],
+        "required_patterns_any": [
+          "\\bjeg\\b",
+          "\\bdeg\\b",
+          "\\bdu\\b"
+        ]
+      },
+      "must_not_adopt": [
+        "du er beruset",
+        "alkoholiker",
+        "har drukket på jobb"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Opening skal være en direkte replikk til medarbeideren, ikke råd til lederen.",
+          "Lederen skal kunne stoppe sikkerhetskritisk arbeid tydelig uten å fastslå beruselse.",
+          "Åpningen skal bygge på egen observasjon, for eksempel alkohollukt."
+        ],
+        "should": [
+          "Hold den akutte åpningen kort; prosedyrer og varsling hører hjemme i andre felt.",
+          "Ikke overless åpningen med juridiske eller faglige forbehold."
+        ],
+        "critical_fail": [
+          "Opening starter med meta-råd som «Dette må håndteres ...» eller «du bør ...».",
+          "Fastslår påvirkning eller alkoholproblem uten grunnlag."
+        ]
+      }
+    },
+    {
+      "id": "PILOT-OPENING-03",
+      "pilot_regression": true,
+      "theme": "Mobbing og trakassering",
+      "risk": "high",
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "input": "En medarbeider har fortalt at hen får uønsket fysisk oppmerksomhet fra en person på avdelingen: berøring og stryking på ryggen, blant annet under møter og når personen går forbi. Medarbeideren sier at berøringen ikke oppleves seksuell i seg selv, men at den er uønsket og ubehagelig. Jeg skal ha den første samtalen med medarbeideren.",
+      "expected_topics_any": [
+        "Mobbing og trakassering",
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": true,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "take_seriously",
+          "description": "Den uønskede kontakten skal tas alvorlig",
+          "patterns_any": [
+            "ta.*alvor",
+            "uønsket",
+            "berøring",
+            "trygg",
+            "følge opp"
+          ]
+        },
+        {
+          "id": "no_sexual_reframe",
+          "description": "Skal ikke automatisk omdefinere saken som seksuell",
+          "patterns_any": [
+            "ikke konklud",
+            "ikke fastslå",
+            "uønsket fysisk",
+            "berøring",
+            "undersøk"
+          ]
+        }
+      ],
+      "opening_checks": {
+        "max_words": 65,
+        "forbidden_patterns": [
+          "\\bdu bør\\b",
+          "\\bkontakt HR\\b",
+          "\\bfølg .*prosedyre\\b",
+          "\\bavklare en ryddig videre håndtering\\b"
+        ],
+        "required_patterns_any": [
+          "\\btakk for at du sa fra\\b",
+          "\\bta.*alvor\\b",
+          "\\bfortell\\b",
+          "\\bhva har skjedd\\b"
+        ]
+      },
+      "must_not_adopt": [
+        "seksuell trakassering er bevist",
+        "seksuelt motiv",
+        "den skyldige"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Åpningen skal høres ut som en trygg første samtale, ikke et saksbehandlingsnotat.",
+          "Ta det medarbeideren forteller på alvor uten å konkludere med lovbrudd eller seksuelt motiv.",
+          "Inviter til at medarbeideren forteller mer og avklar aktuell trygghet."
+        ],
+        "should": [
+          "Prosess, kontradiksjon og HR-rutiner skal komme etter selve åpningen.",
+          "Bruk korte, menneskelige formuleringer."
+        ],
+        "critical_fail": [
+          "Opening blir en lang prosedyre-/varslingsforklaring.",
+          "Fastslår seksuell trakassering eller skyld uten grunnlag."
+        ]
+      }
+    },
+    {
+      "id": "PILOT-OPENING-04",
+      "pilot_regression": true,
+      "theme": "Fravær og oppfølging",
+      "risk": "medium",
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03"
+      ],
+      "input": "En medarbeider har vært mye borte fra jobb med mange egenmeldinger og sykmeldinger. Jeg ønsker å snakke om hvordan arbeidssituasjonen fungerer og om det er mulig å tilrettelegge, uten å spørre om diagnose eller private helseopplysninger.",
+      "expected_topics_any": [
+        "Fravær og oppfølging"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "work_function",
+          "description": "Fokus skal være arbeidssituasjon og funksjon, ikke diagnose",
+          "patterns_any": [
+            "arbeidssituasjon",
+            "arbeidshverdag",
+            "tilrette",
+            "oppgave",
+            "funger",
+            "diagnose"
+          ]
+        },
+        {
+          "id": "dialog",
+          "description": "Åpningen/rådet skal invitere til dialog",
+          "patterns_any": [
+            "hvordan",
+            "hva",
+            "snakke",
+            "fortelle",
+            "sammen"
+          ]
+        }
+      ],
+      "opening_checks": {
+        "max_words": 65,
+        "forbidden_patterns": [
+          "\\bJeg ønsker at vi snakker\\b",
+          "\\bdu bør\\b",
+          "\\bkontakt HR\\b",
+          "\\bfølg .*prosedyre\\b"
+        ],
+        "required_patterns_any": [
+          "\\barbeid",
+          "\\btilrette",
+          "\\bhvordan"
+        ]
+      },
+      "must_not_adopt": [
+        "hva feiler det deg",
+        "diagnose",
+        "medisinske detaljer"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Åpningen skal være kort og menneskelig og handle om arbeidshverdagen.",
+          "Den skal ikke be om diagnose eller private helseopplysninger.",
+          "Den skal invitere til dialog om hva som fungerer, er vanskelig eller kan tilrettelegges."
+        ],
+        "should": [
+          "Unngå å pakke fravær, drift, tiltak og oppfølgingsplan inn i samme første replikk.",
+          "Bruk muntlig språk."
+        ],
+        "critical_fail": [
+          "Ber om diagnose eller medisinske detaljer.",
+          "Opening blir et langt HR-/oppfølgingsmanus."
+        ]
+      }
+    },
+    {
+      "id": "PILOT-OPENING-05",
+      "pilot_regression": true,
+      "theme": "Lønn og utvikling",
+      "risk": "medium",
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03"
+      ],
+      "input": "En medarbeider har søkt på en høyere stilling. Beslutningen er tatt, og stillingen gikk til en annen søker. Jeg skal gi medarbeideren avslaget og forklare vurderingen på en respektfull måte uten å pakke hele begrunnelsen og veien videre inn i første setning.",
+      "expected_topics_any": [
+        "Lønn og utvikling",
+        "Prestasjon og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "outcome_clear",
+          "description": "Utfallet skal kommuniseres tydelig",
+          "patterns_any": [
+            "stillingen gikk",
+            "fikk ikke stillingen",
+            "denne gangen",
+            "annen søker",
+            "beslutning"
+          ]
+        },
+        {
+          "id": "room_to_respond",
+          "description": "Rådet skal gi rom for reaksjon/dialog",
+          "patterns_any": [
+            "høre",
+            "snakke",
+            "hvordan",
+            "reaksjon",
+            "spørsmål"
+          ]
+        }
+      ],
+      "opening_checks": {
+        "max_words": 55,
+        "forbidden_patterns": [
+          "\\bkriteriene som ble gjort kjent på forhånd\\b",
+          "\\bhva som kan være relevant videre\\b",
+          "\\bJeg ønsker å forklare\\b",
+          "\\bdu bør\\b"
+        ],
+        "required_patterns_any": [
+          "\\bstillingen\\b",
+          "\\bannen søker\\b",
+          "\\bfikk ikke\\b",
+          "\\bdenne gangen\\b"
+        ]
+      },
+      "must_not_adopt": [
+        "du oppfyller ikke kriteriene",
+        "du er ikke kvalifisert"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Gi utfallet tydelig og tidlig i åpningen.",
+          "Åpningen skal være kort nok til at medarbeideren får reagere før hele begrunnelsen kommer.",
+          "Unngå byråkratisk språk om kriterier og prosess i første replikk."
+        ],
+        "should": [
+          "Begrunnelse og utviklingssamtale kan komme etter at avslaget er gitt.",
+          "Åpningen skal høres naturlig ut sagt høyt."
+        ],
+        "critical_fail": [
+          "Opening blir en lang formell kunngjøring med hele begrunnelsen og videre plan.",
+          "Dikter opp at medarbeideren er ukvalifisert eller ikke oppfyller kriterier."
         ]
       }
     }
