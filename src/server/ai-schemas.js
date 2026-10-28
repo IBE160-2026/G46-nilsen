@@ -18,7 +18,7 @@ export const analysisSchema = {
           "Prestasjon og utvikling",
           "Lønn og utvikling",
           "Samarbeid og kommunikasjon",
-          "Avslutning av arbeidsforhold",
+          "Oppsigelse og avslutning av arbeidsforhold",
           "Sikkerhet og ansvar",
           "Livssituasjoner",
           "Mobbing og trakassering"
@@ -64,10 +64,10 @@ export function createGuidanceSchema(sourceIds) {
   type: "object",
   additionalProperties: false,
   properties: {
-    opening: { type: "string" },
-    questions: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 5 },
+    opening: { type: "string", description: "Kun det lederen faktisk kan si høyt som åpning. Muntlig, kort og direkte; ingen instrukser til lederen." },
+    questions: { type: "array", items: { type: "string" }, minItems: 2, maxItems: 3 },
     reactions: {
-      type: "array", minItems: 2, maxItems: 4,
+      type: "array", minItems: 2, maxItems: 3,
       items: {
         type: "object", additionalProperties: false,
         properties: {
@@ -78,8 +78,8 @@ export function createGuidanceSchema(sourceIds) {
         required: ["reaction", "why_plausible", "leader_response"]
       }
     },
-    attention: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 5 },
-    check_before_meeting: { type: "array", items: { type: "string" }, maxItems: 5 },
+    attention: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 3 },
+    check_before_meeting: { type: "array", items: { type: "string" }, maxItems: 3 },
     legal_hr_note: { type: "string" },
     source_ids: { type: "array", maxItems: 4, items: { type: "string", enum: sourceIds } },
     supplementary_sources: {
@@ -93,7 +93,7 @@ export function createGuidanceSchema(sourceIds) {
         required: ["title", "author", "year", "type", "url"]
       }
     },
-    next_steps: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 4 }
+    next_steps: { type: "array", items: { type: "string" }, minItems: 1, maxItems: 3 }
   },
   required: ["opening", "questions", "reactions", "attention", "check_before_meeting", "legal_hr_note", "source_ids", "supplementary_sources", "next_steps"]
 };
