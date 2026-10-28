@@ -3,56 +3,56 @@ export const topicCatalog = [
   {
     id: "alkohol-rus",
     title: "Alkohol og rus",
-    description: "Eksplisitte observasjoner eller bekymringer om alkohol, rusmidler eller påvirkning.",
-    subtopics: ["Bekymring knyttet til alkohol","Bekymring knyttet til rusmidler","Påvirkning på jobb","Arbeidsevne og fungering","Sikkerhet og hendelser","Oppfølging og tilbakekomst"]
+    description: "Bekymring for alkohol eller andre rusmidler, påvirkning på jobb, endret fungering, sikkerhetsrisiko eller videre oppfølging.",
+    subtopics: ["Alkoholbruk","Andre rusmidler","Påvirket på jobb","Fungering på jobb","Rus og sikkerhet","Videre oppfølging"]
   },
   {
     id: "fravaer-oppfolging",
     title: "Fravær og oppfølging",
-    description: "Sykefravær, egenmeldinger, oppmøte, planlagt fravær, tilbakekomst, arbeidsevne eller tilrettelegging.",
-    subtopics: ["Hyppig korttidsfravær og egenmeldinger","Langvarig sykefravær","Oppmøte og punktlighet","Planlagt fravær","Tilbakekomst til arbeid","Tilrettelegging og arbeidsevne"]
+    description: "Kort- eller langtidsfravær, oppmøte, planlagt fravær, tilbakekomst eller tilrettelegging med fokus på arbeidssituasjonen.",
+    subtopics: ["Korttidsfravær","Langtidsfravær","Oppmøte og punktlighet","Planlagt fravær","Tilbake i jobb","Tilrettelegging"]
   },
   {
     id: "prestasjon-utvikling",
     title: "Prestasjon og utvikling",
-    description: "Arbeidsutførelse, prioritering, tidsbruk, mål, kvalitet, motivasjon, ansvar, initiativ eller kompetanse.",
-    subtopics: ["Måloppnåelse","Motivasjon","Kvalitet i arbeidet","Feil og avvik","Kompetanse og mestring","Ansvar og initiativ"]
+    description: "Måloppnåelse, engasjement, kvalitet, arbeidsutførelse, kompetanse, ansvar eller initiativ.",
+    subtopics: ["Måloppnåelse","Engasjement","Kvalitet","Arbeidsutførelse","Kompetanse","Ansvar og initiativ"]
   },
   {
     id: "lonn-utvikling",
     title: "Lønn og utvikling",
-    description: "Lønn, lønnsforventninger, ansvarstillegg, karriere, forfremmelse eller utviklingsmuligheter.",
-    subtopics: ["Lønnsutvikling","Forventninger til lønn","Lønnsforskjeller","Nye oppgaver og ansvar","Utvikling og forfremmelse"]
+    description: "Lønnsutvikling, lønnskrav, lønnsforskjeller eller forfremmelse og videre utvikling.",
+    subtopics: ["Lønnsutvikling","Lønnskrav","Lønnsforskjeller","Forfremmelse"]
   },
   {
     id: "samarbeid-kommunikasjon",
     title: "Samarbeid og kommunikasjon",
-    description: "Kommunikasjon, tillit, roller, konflikt, teamarbeid, tone, respekt eller personlige grenser.",
-    subtopics: ["Kommunikasjon","Tillit","Roller og forventninger","Uenighet og konflikt","Samspill i team","Grenser og respekt"]
+    description: "Samarbeidsutfordringer, konflikt med kollega eller leder, tillitsbrudd eller uklarhet om roller og forventninger.",
+    subtopics: ["Samarbeidsutfordringer","Konflikt med kollega","Konflikt med leder","Tillitsbrudd","Roller og forventninger"]
   },
   {
     id: "avslutning-arbeidsforhold",
     title: "Oppsigelse og avslutning av arbeidsforhold",
     description: "Mulig oppsigelse, prøvetid, endret stilling eller bemanningsbehov, manglende bedring etter tidligere oppfølging, frivillig avslutning, advarsel eller annen formell oppfølging.",
-    subtopics: ["Mulig oppsigelse fra arbeidsgiver","Problemer i prøvetiden","Endret stilling eller bemanningsbehov","Manglende bedring etter tidligere oppfølging","Medarbeideren ønsker å slutte","Advarsel og formell oppfølging"]
+    subtopics: ["Mulig oppsigelse","Prøvetid","Endret stilling","Manglende bedring","Ønske om å slutte","Advarsel og oppfølging"]
   },
   {
     id: "sikkerhet-ansvar",
     title: "Sikkerhet og ansvar",
-    description: "Sikkerhetsrutiner, risiko, avvik, hendelser, rapportering eller informasjonssikkerhet.",
-    subtopics: ["Sikkerhetsrutiner","Avvik og hendelser","Risikovurdering","Rapportering","Informasjonssikkerhet","Ansvar og læring etter hendelser","Vold og trusler"]
+    description: "Sikkerhetsrutiner, sikkerhetshendelser og avvik, informasjonssikkerhet eller vold og trusler. Risiko, rapportering og læring håndteres i de relevante undertemaene.",
+    subtopics: ["Sikkerhetsrutiner","Sikkerhetshendelser","Informasjonssikkerhet","Vold og trusler"]
   },
   {
     id: "livssituasjoner",
     title: "Livssituasjoner",
-    description: "Personlige belastninger, familie, sorg, omsorgsansvar, psykisk belastning eller utmattelse som påvirker arbeidshverdagen.",
-    subtopics: ["Samlivs- og familieforhold","Sykdom i nær familie","Sorg og tap","Psykisk belastning","Omsorgsansvar","Belastning og utmattelse"]
+    description: "Samliv og familie, sorg og tap, omsorgsansvar, psykisk belastning eller utmattelse som påvirker arbeidshverdagen.",
+    subtopics: ["Samliv og familie","Sorg og tap","Omsorgsansvar","Psykisk belastning","Utmattelse"]
   },
   {
     id: "mobbing-trakassering",
     title: "Mobbing og trakassering",
-    description: "Mobbing, utestenging, trakassering, seksuell trakassering, uønsket seksuell oppmerksomhet eller varsling om slike forhold.",
-    subtopics: ["Mobbing","Utestenging og utfrysing","Krenkende eller utilbørlig atferd","Seksuell trakassering","Kjønnstrakassering og uønsket seksuell oppmerksomhet","Varsling om mobbing eller trakassering","Samtale med den som sier ifra","Samtale med den varselet gjelder"]
+    description: "Mobbing, utestenging, uønsket adferd, seksuell trakassering, diskriminering eller varsling om slike forhold.",
+    subtopics: ["Mobbing","Utestenging","Uønsket adferd","Seksuell trakassering","Diskriminering","Varslingssak"]
   }
 ];
 
