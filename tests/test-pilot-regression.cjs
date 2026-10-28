@@ -15,6 +15,11 @@ assert(app.includes("testMode:'pilot-regression'"),'Pilotkall merkes ikke som te
 assert(app.includes("fetch('/api/analyze-situation'"),'Pilotkjøringen bruker ikke ekte analyse-endepunkt');
 assert(app.includes("fetch('/api/generate-guidance'"),'Pilotkjøringen bruker ikke ekte veilednings-endepunkt');
 assert(server.includes("app.get('/api/admin/pilot-regression/cases'"),'Serveren eksponerer ikke pilotcaser til admin');
+assert(server.includes("app.post('/api/admin/pilot-regression/result'"),'Serveren mangler mottak/logging av pilotresultater');
+assert(server.includes("[pilot-regression-result]"),'Pilotresultater merkes ikke tydelig i serverloggen');
+assert(app.includes("fetch('/api/admin/pilot-regression/result'"),'Klienten sender ikke pilotresultatene til serverloggen');
+assert(app.includes("rateLimitedModels"),'Benchmark stopper ikke videre kall til en modell som allerede er ratebegrenset');
+assert(app.includes("google/gemma-4-26b-a4b-it:free"),'Gemma Free-håndtering mangler');
 assert(server.includes('const adminPilotTest = testMode === "pilot-regression" && effectiveRole(req.user) === "admin"'),'Serveren beskytter testmerking med adminrolle');
 assert(pilot.every(x=>x.opening_checks?.max_words),'Alle pilotcaser skal ha konkret kontroll av åpningen');
 
