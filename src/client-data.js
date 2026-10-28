@@ -121,20 +121,20 @@ window.SamtalestotteClientData = Object.freeze({
   },
   {
     id: 'avslutning-arbeidsforhold',
-    title: 'Avslutning av arbeidsforhold',
+    title: 'Oppsigelse og avslutning av arbeidsforhold',
     iconKey: 'exitDoor',
     image: 'assets/images/topics/topic-avslutning-arbeidsforhold.png',
-    imageAlt: 'Alvorlig og profesjonell samtale om avslutning av arbeidsforhold',
-    description: 'Støtte til tydelige og respektfulle samtaler når arbeidsforholdet kan være på vei mot en avslutning eller saken krever en mer formell videre prosess.',
-    representations: ['Prøvetid og tidligere oppfølging', 'Endrede behov eller rolle', 'Samtale før videre prosess'],
-    keywords: ['oppsigelse','slutte','avslutte','prøvetid','arbeidsforhold','avskjed','bemanning','nedbemanning'],
+    imageAlt: 'Alvorlig og profesjonell samtale om oppsigelse eller avslutning av arbeidsforhold',
+    description: 'Støtte til samtaler når oppsigelse kan bli aktuelt, når det er alvorlige problemer i arbeidsforholdet, eller når medarbeideren selv vurderer å slutte. Verktøyet hjelper med selve samtalen, men avgjør ikke om vilkårene for oppsigelse er oppfylt.',
+    representations: ['Mulig oppsigelse og prøvetid', 'Endret stilling eller tidligere oppfølging', 'Advarsel eller frivillig avslutning'],
+    keywords: ['oppsigelse','slutte','avslutte','prøvetid','arbeidsforhold','avskjed','bemanning','nedbemanning','advarsel','formell oppfølging'],
     subtopics: [
-      ['Avslutning av arbeidsforhold', 'Samtaler der arbeidsforholdet kan være på vei mot en avslutning.'],
-      ['Prøvetid', 'Oppfølging av forventninger, utvikling og vurderinger i prøvetiden.'],
-      ['Endringer i stilling eller behov', 'Situasjoner der rolle, oppgaver eller bemanningsbehov endres.'],
-      ['Tidligere oppfølging', 'Når medarbeideren allerede har fått tilbakemeldinger, veiledning eller oppfølgingssamtaler.'],
-      ['Frivillig avslutning', 'Når medarbeideren selv vurderer å slutte eller ønsker å avslutte arbeidsforholdet.'],
-      ['Samtale før videre prosess', 'Når alvorlige forhold må tas opp før saken eventuelt går videre til HR eller formell behandling.']
+      ['Mulig oppsigelse fra arbeidsgiver', 'Når arbeidsgiver vurderer om arbeidsforholdet kan fortsette og du må gjennomføre en tydelig samtale før eventuell videre prosess.'],
+      ['Problemer i prøvetiden', 'Når medarbeideren er i prøvetid og forventninger, utvikling eller forhold som ikke fungerer må tas opp.'],
+      ['Endret stilling eller bemanningsbehov', 'Når rolle, oppgaver eller virksomhetens bemanningsbehov endres og dette kan få konsekvenser for stillingen.'],
+      ['Manglende bedring etter tidligere oppfølging', 'Når samme problem er tatt opp tidligere, tiltak er prøvd, men nødvendig bedring ikke har kommet.'],
+      ['Medarbeideren ønsker å slutte', 'Når medarbeideren selv vurderer å si opp eller ønsker å snakke om en frivillig avslutning.'],
+      ['Advarsel og formell oppfølging', 'Når det har skjedd noe alvorlig, eller et problem har kommet så langt at du må ta en tydelig samtale før eventuell advarsel eller annen formell oppfølging.']
     ]
   },
   {
