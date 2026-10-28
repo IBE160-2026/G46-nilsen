@@ -1,6 +1,6 @@
 # Brukertest – funn og forbedringsbacklog
 
-**Oppdatert:** 27.10.2026  
+**Oppdatert:** 28.10.2026  
 **Status:** Levende arbeidsdokument under pilot  
 **Prinsipp:** Ikke endre produksjonsversjonen fortløpende for hvert enkelt innspill. Samle mønstre, rett bekreftede feil kontrollert, og planlegg en samlet pilotforbedringsrunde.
 
@@ -45,13 +45,24 @@ Dette er ikke et avvik fra opprinnelig v1-scope, siden løsningen ble utformet f
 ### Tolkning
 Sikkerhets- og forsiktighetsreglene kan ha trukket enkelte svar for langt mot generelle og forsiktige formuleringer. Målet bør være **konkret og handlingsrettet uten å være skråsikker, diagnostiserende eller juridisk bastant**.
 
-### Kandidater til forbedring
-- Foretrekk konkrete lederhandlinger: «Start med …», «Spør deretter …», «Si for eksempel …», «Unngå …».
-- Bruk «kan», «vurder» og «eventuelt» når usikkerhet faktisk er relevant, ikke som standard i alle råd.
-- Eksempelformuleringer skal høres ut som noe en leder naturlig kan si høyt.
-- Lag egne språk-/kvalitetscaser for konkrete vs. passive råd i golden testbank.
+### Bekreftet mønster
+Flere reelle testeksempler viser at problemet er særlig tydelig i **«Forslag til åpning»**:
+- åpningen prøver å gjennomføre for mye av samtalen før medarbeideren får svare
+- skriftlig HR-/rapportstil presenteres som muntlig replikk
+- i minst ett sikkerhetskritisk rus-case ble `opening` brukt til instruksjoner **til lederen** i stedet for ord lederen faktisk kunne si
+- samme råd gjentas i flere seksjoner og gjør svaret lengre og mer mekanisk
 
-**Status:** Gjengangende kvalitetsfunn; høy prioritet for analyse etter pilot.
+### Rettelser 28.10.2026
+- `opening` er nå eksplisitt definert som **kun det lederen faktisk kan si høyt direkte til medarbeideren**.
+- Åpningen skal være vanlig muntlig norsk, normalt ca. 30–65 ord og maks 2–4 korte setninger.
+- Åpningen skal gi hovedbudskapet først og gi medarbeideren rom til å svare før detaljer og videre prosess.
+- Lederinstruksjoner som «du bør», «kontakt HR», «følg prosedyren» og «kvalitetssikre» er eksplisitt flyttet ut av `opening`.
+- Veiledningen er strammet inn til normalt 2–3 spørsmål, 2–3 reaksjoner og maks 3 punkter i forberedelse, oppmerksomhet og videre steg.
+- Prompten sier eksplisitt at samme råd ikke skal gjentas i flere seksjoner.
+- Golden-testen flagger nå for lange åpninger og åpninger som ser ut som instruksjoner til lederen.
+- Egen statisk regresjonstest kontrollerer at disse kravene fortsatt finnes.
+
+**Status:** Rettet i kode på `main`; skal verifiseres med nye KI-svar etter deploy.
 
 ---
 
@@ -240,7 +251,25 @@ Det kan vurderes å telle anonymiserte falsk-positiv-typer/ord uten å lagre hel
 
 ---
 
-## 11. Pilotprinsipp og deploy
+## 11. Tekstmarkering følger med til neste samtale
+
+### Funn
+- **Rapportert 28.10.2026:** Etter at all tekst i én lagret samtale var markert, ble teksten i neste samtale også vist som markert da brukeren åpnet den.
+
+### Teknisk årsak
+Visnings- og historikkbytte nullstilte ikke nettleserens aktive tekstutvalg. Når innholdet i den samme visningsflaten ble erstattet, kunne markeringen derfor følge med til det nye innholdet.
+
+### Rettelse
+- Lagt til eksplisitt nullstilling av dokumentets tekstutvalg ved visningsbytte.
+- Nullstiller også markeringen før en lagret samtale lastes.
+- Gjentar nullstillingen etter rendring for å unngå at nettleseren gjenoppretter markeringen.
+- Regresjonstest lagt til i historikktesten.
+
+**Status:** Rettet i kode på `main`.
+
+---
+
+## 12. Pilotprinsipp og deploy
 
 - Produksjonsversjonen bør ikke endres unødvendig mens det er sannsynlig at pilotbrukere er aktive.
 - Bekreftede feil kan rettes på `main` og testes først.
@@ -249,7 +278,7 @@ Det kan vurderes å telle anonymiserte falsk-positiv-typer/ord uten å lagre hel
 
 ---
 
-## 12. Refleksjonspunkter til rapporten
+## 13. Refleksjonspunkter til rapporten
 
 Pilotarbeidet gir allerede flere konkrete læringspunkter:
 
@@ -266,7 +295,7 @@ Pilotarbeidet gir allerede flere konkrete læringspunkter:
 ## Åpen backlog før samlet pilotforbedringsrunde
 
 - [ ] Mobil/responsiv layout – designbeslutning og implementeringsplan.
-- [ ] KI-språk – mindre passivt, mer konkret og naturlig.
+- [x] KI-språk – åpninger er strammet inn til muntlig, kort og direkte språk; verifiser med nye KI-svar etter deploy.
 - [ ] Begrepsfasit – særlig samtaleøvelse/simulering og personvernord.
 - [ ] Hovedtema/undertema: ta stilling til forslagene i taksonomigjennomgangen, særlig «Oppsigelse og avslutning av arbeidsforhold», «Endret engasjement» og tydeligere skiller mellom overlappende kort.
 - [ ] Spore og rette rå citation-markør i UI.
