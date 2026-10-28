@@ -2528,6 +2528,78 @@ function renderBenchmarkResults(results){
   const groups=new Map();for(const r of results){if(!groups.has(r.case_id))groups.set(r.case_id,[]);groups.get(r.case_id).push(r);}
   host.innerHTML=[...groups.values()].map(rows=>{const first=rows[0];return `<article class="benchmark-case-result"><h4>${escapeHtml(first.topic)} → ${escapeHtml(first.subtopic)} · ${escapeHtml(first.variant||'')}</h4><div class="benchmark-model-grid">${rows.map(r=>`<div class="benchmark-model-result"><h5>${escapeHtml((benchmarkConfig?.models||[]).find(m=>m.id===r.model)?.label||r.model)}</h5><div class="benchmark-metrics"><span>${Number(r.input_tokens||0)+Number(r.output_tokens||0)} tokens</span><span>${formatUsd(r.estimated_cost_usd)}</span><span>${Number(r.web_search_count||0)} websøk</span><span>${(Number(r.latency_ms||0)/1000).toFixed(1)} s</span></div><p>${escapeHtml(r.response_text||'')}</p>${(r.web_search_queries||[]).length?`<div class="benchmark-source-detail"><strong>Søk:</strong><ul>${(r.web_search_queries||[]).map(q=>`<li>${escapeHtml(q)}</li>`).join('')}</ul></div>`:''}${(r.source_pages||[]).length?`<div class="benchmark-source-detail"><strong>Konkrete kilder:</strong><ul>${(r.source_pages||[]).map(p=>`<li><a href="${escapeHtml(p.url||'')}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.title||p.url||p.domain||'Kilde')}</a></li>`).join('')}</ul></div>`:(r.source_domains||[]).length?`<small>Domener: ${escapeHtml((r.source_domains||[]).join(', '))}</small>`:''}</div>`).join('')}</div></article>`}).join('')||'<small>Ingen benchmark-resultater ennå.</small>';
 }
+
+function evaluatePilotOpening(testCase, guidance){
+  const opening=String(guidance?.opening||'').trim();
+  const issues=[];
+  const words=opening?opening.split(/\s+/u).filter(Boolean).length:0;
+  const checks=testCase?.opening_checks||{};
+  if(!opening)issues.push('Mangler forslag til åpning');
+  if(Number(checks.max_words)>0&&words>Number(checks.max_words))issues.push(`For lang åpning: ${words} ord (maks ${checks.max_words})`);
+  if(/\b(?:du bør|bør du|kontakt HR|kontakt juridisk|følg (?:virksomhetens|lokal|intern|gjeldende)?\s*prosedyre|varsle (?:ansvarlig|nærmeste)?\s*leder|kvalitetssikre)\b/iu.test(opening))issues.push('Inneholder instruksjoner til lederen i stedet for bare replikk');
+  for(const pattern of checks.forbidden_patterns||[]){
+    try{if(new RegExp(pattern,'iu').test(opening))issues.push(`Treffer uønsket formulering: ${pattern}`);}catch(_){}
+  }
+  const required=checks.required_patterns_any||[];
+  if(required.length){
+    const matched=required.some(pattern=>{try{return new RegExp(pattern,'iu').test(opening);}catch(_){return false;}});
+    if(!matched)issues.push('Mangler et sentralt, situasjonsspesifikt element');
+  }
+  const sentences=opening.split(/[.!?]+(?:\s|$)/u).map(x=>x.trim()).filter(Boolean).length;
+  if(sentences>4)issues.push(`For mange setninger i åpningen: ${sentences}`);
+  return {ok:issues.length===0,opening,words,issues};
+}
+
+function renderPilotRegressionResults(results){
+  const host=document.querySelector('#pilot-regression-results');if(!host)return;
+  host.innerHTML=results.map(result=>{
+    const status=result.error?'FEIL':result.evaluation?.ok?'BESTÅTT':'SJEKK';
+    const issues=result.error?[result.error]:(result.evaluation?.issues||[]);
+    const topics=(result.analysis?.relevant_topics||[]).join(' · ');
+    return `<article class="benchmark-case-result"><h4>${escapeHtml(result.testCase?.id||'Pilotcase')} · ${escapeHtml(result.testCase?.theme||'')} · ${status}</h4><div class="benchmark-model-result"><div class="benchmark-metrics"><span>${result.evaluation?.words||0} ord</span><span>${escapeHtml(result.guidance?.model||result.analysis?.model||'')}</span>${result.analysis?.needs_clarification?'<span>Ville normalt spurt om avklaring</span>':''}</div><p><strong>Åpning:</strong><br>${escapeHtml(result.evaluation?.opening||'–')}</p>${topics?`<small>Tema fra analysen: ${escapeHtml(topics)}</small>`:''}${issues.length?`<div class="benchmark-source-detail"><strong>Kontrollpunkter:</strong><ul>${issues.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>`:'<p><strong>✓ Ingen automatiske åpningsavvik</strong></p>'}</div></article>`;
+  }).join('')||'<small>Ingen pilotresultater ennå.</small>';
+}
+
+async function runPilotRegression(){
+  const button=document.querySelector('#pilot-regression-run');
+  const status=document.querySelector('#pilot-regression-status');
+  if(!button||button.disabled)return;
+  let cases=[];
+  try{
+    const r=await fetch('/api/admin/pilot-regression/cases',{credentials:'include',cache:'no-store'});
+    const payload=await r.json();
+    if(!r.ok)throw new Error(payload.message||'Kunne ikke hente pilotcasene.');
+    cases=payload.cases||[];
+  }catch(error){if(status)status.textContent=error.message;return;}
+  if(!cases.length){if(status)status.textContent='Fant ingen pilotcaser.';return;}
+  if(!confirm(`Kjøre ${cases.length} pilotcaser gjennom den ekte KI-flyten?\n\nDette gir ${cases.length*2} KI-kall (analyse + veiledning) og bruker API-penger. Testtrafikken merkes separat.`))return;
+  button.disabled=true;
+  const results=[];
+  renderPilotRegressionResults(results);
+  try{
+    for(let i=0;i<cases.length;i++){
+      const testCase=cases[i];
+      if(status)status.textContent=`${i+1}/${cases.length}: ${testCase.theme}`;
+      try{
+        const ar=await fetch('/api/analyze-situation',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({situation:testCase.input,testMode:'pilot-regression'})});
+        const analysis=await ar.json();
+        if(!ar.ok)throw new Error(analysis.message||'Analyse feilet.');
+        const gr=await fetch('/api/generate-guidance',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({situation:testCase.input,analysis,followups:{},testMode:'pilot-regression'})});
+        const guidance=await gr.json();
+        if(!gr.ok)throw new Error(guidance.message||'Veiledning feilet.');
+        results.push({testCase,analysis,guidance,evaluation:evaluatePilotOpening(testCase,guidance)});
+      }catch(error){
+        results.push({testCase,error:error.message||'Ukjent feil',evaluation:{ok:false,opening:'',words:0,issues:[]}});
+      }
+      renderPilotRegressionResults(results);
+    }
+    const passed=results.filter(x=>!x.error&&x.evaluation?.ok).length;
+    if(status)status.textContent=`Ferdig: ${passed}/${results.length} åpninger besto automatisk kontroll.`;
+  }finally{
+    button.disabled=false;
+    await loadAdminAiUsage();
+  }
+}
 async function loadBenchmarkConfig(){
   if(currentUser?.role!=='admin')return;const coverage=document.querySelector('#benchmark-coverage');
   try{const r=await fetch('/api/admin/benchmark/cases',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente testbanken.');benchmarkConfig=p;if(coverage)coverage.textContent=`${p.totalCases} faste testsaker · ${p.totalSubtopics} undertemaer · minst 2 saker per undertema`;const models=document.querySelector('#benchmark-models');if(models)models.innerHTML=(p.models||[]).map(m=>`<label class="benchmark-model-option"><input type="checkbox" data-benchmark-model value="${escapeHtml(m.id)}" checked><span>${escapeHtml(m.label)}</span></label>`).join('');const run=document.querySelector('#benchmark-run-live');if(run)run.disabled=!p.storageReady;const status=document.querySelector('#benchmark-live-status');if(!p.storageReady&&status)status.textContent='Kjør database/migrations/V20-4-SUPABASE-MIGRATION.sql før ekte benchmark.';try{const rr=await fetch('/api/admin/benchmark/results',{credentials:'include',cache:'no-store'});const rp=await rr.json();if(rr.ok){renderBenchmarkResults((rp.items||[]).slice(0,24));renderBenchmarkSummary((rp.items||[]).slice(0,24));}}catch(_){}}catch(error){if(coverage)coverage.textContent=error.message;}
@@ -2710,6 +2782,7 @@ document.querySelector('#admin-save-cancel')?.addEventListener('click',()=>docum
 document.querySelector('#admin-save-confirm')?.addEventListener('click',async()=>{document.querySelector('#admin-save-dialog')?.close();await saveAdminContent();});
 document.querySelector('#admin-save-ai-model')?.addEventListener('click',async()=>{const model=document.querySelector('#admin-ai-model')?.value;const option=document.querySelector('#admin-ai-model')?.selectedOptions?.[0]?.textContent||model;if(!model)return;if(!confirm(`Bytte KI-modell til ${option}?\n\nEn dyrere modell kan øke API-kostnadene for alle nye KI-kall.`))return;const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message';msg.textContent='Lagrer …';try{const r=await fetch('/api/admin/ai-settings',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({model})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre modellvalget.');msg.className='auth-message success';msg.textContent='KI-modellen er endret. Nye KI-kall bruker dette valget.';}catch(error){msg.className='auth-message error';msg.textContent=error.message;}});
 document.querySelector('#admin-usage-include-tests')?.addEventListener('change',loadAdminAiUsage);
+document.querySelector('#pilot-regression-run')?.addEventListener('click',runPilotRegression);
 document.querySelector('#benchmark-run-mock')?.addEventListener('click',runBenchmarkMock);
 document.querySelector('#benchmark-run-live')?.addEventListener('click',runBenchmarkLive);
 document.querySelector('#benchmark-stop-live')?.addEventListener('click',()=>{benchmarkStopRequested=true;});
