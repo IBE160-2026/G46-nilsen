@@ -2532,22 +2532,24 @@ function renderBenchmarkResults(results){
 function evaluatePilotOpening(testCase, guidance){
   const opening=String(guidance?.opening||'').trim();
   const issues=[];
+  const notes=[];
   const words=opening?opening.split(/\s+/u).filter(Boolean).length:0;
   const checks=testCase?.opening_checks||{};
+  const maxWords=Number(checks.max_words||65);
   if(!opening)issues.push('Mangler forslag til åpning');
-  if(Number(checks.max_words)>0&&words>Number(checks.max_words))issues.push(`For lang åpning: ${words} ord (maks ${checks.max_words})`);
+  if(words>maxWords)issues.push(`For lang åpning: ${words} ord (maks ${maxWords})`);
   if(/\b(?:du bør|bør du|kontakt HR|kontakt juridisk|følg (?:virksomhetens|lokal|intern|gjeldende)?\s*prosedyre|varsle (?:ansvarlig|nærmeste)?\s*leder|kvalitetssikre)\b/iu.test(opening))issues.push('Inneholder instruksjoner til lederen i stedet for bare replikk');
   for(const pattern of checks.forbidden_patterns||[]){
-    try{if(new RegExp(pattern,'iu').test(opening))issues.push(`Treffer uønsket formulering: ${pattern}`);}catch(_){}
+    try{if(new RegExp(pattern,'iu').test(opening))issues.push('Treffer en formulering vi tidligere har identifisert som mekanisk eller uheldig');}catch(_){}
   }
   const required=checks.required_patterns_any||[];
   if(required.length){
     const matched=required.some(pattern=>{try{return new RegExp(pattern,'iu').test(opening);}catch(_){return false;}});
-    if(!matched)issues.push('Mangler et sentralt, situasjonsspesifikt element');
+    if(!matched)notes.push('Automatisk ordtreff fant ikke forventet situasjonsspråk – bør vurderes menneskelig, ikke regnes som feil alene');
   }
   const sentences=opening.split(/[.!?]+(?:\s|$)/u).map(x=>x.trim()).filter(Boolean).length;
   if(sentences>4)issues.push(`For mange setninger i åpningen: ${sentences}`);
-  return {ok:issues.length===0,opening,words,issues};
+  return {ok:issues.length===0,opening,words,issues,notes};
 }
 
 function renderPilotRegressionResults(results){
@@ -2555,54 +2557,63 @@ function renderPilotRegressionResults(results){
   host.innerHTML=results.map(result=>{
     const status=result.error?'FEIL':result.evaluation?.ok?'BESTÅTT':'SJEKK';
     const issues=result.error?[result.error]:(result.evaluation?.issues||[]);
+    const notes=result.evaluation?.notes||[];
     const topics=(result.analysis?.relevant_topics||[]).join(' · ');
-    return `<article class="benchmark-case-result"><h4>${escapeHtml(result.testCase?.id||'Pilotcase')} · ${escapeHtml(result.testCase?.theme||'')} · ${status}</h4><div class="benchmark-model-result"><div class="benchmark-metrics"><span>${result.evaluation?.words||0} ord</span><span>${escapeHtml(result.guidance?.model||result.analysis?.model||'')}</span>${result.analysis?.needs_clarification?'<span>Ville normalt spurt om avklaring</span>':''}</div><p><strong>Åpning:</strong><br>${escapeHtml(result.evaluation?.opening||'–')}</p>${topics?`<small>Tema fra analysen: ${escapeHtml(topics)}</small>`:''}${issues.length?`<div class="benchmark-source-detail"><strong>Kontrollpunkter:</strong><ul>${issues.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>`:'<p><strong>✓ Ingen automatiske åpningsavvik</strong></p>'}</div></article>`;
-  }).join('')||'<small>Ingen pilotresultater ennå.</small>';
+    const pilotBadge=result.testCase?.pilot_regression?' · DIN PILOTCASE':'';
+    return `<article class="benchmark-case-result"><h4>${escapeHtml(result.testCase?.id||'Testcase')} · ${escapeHtml(result.testCase?.theme||'')}${pilotBadge} · ${status}</h4><div class="benchmark-model-result"><div class="benchmark-metrics"><span>${result.evaluation?.words||0} ord</span><span>${escapeHtml(result.guidance?.model||result.analysis?.model||'')}</span>${result.analysis?.needs_clarification?'<span>Ville normalt spurt om avklaring</span>':''}</div><p><strong>Åpning:</strong><br>${escapeHtml(result.evaluation?.opening||'–')}</p>${topics?`<small>Tema fra analysen: ${escapeHtml(topics)}</small>`:''}${issues.length?`<div class="benchmark-source-detail"><strong>Avvik:</strong><ul>${issues.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>`:'<p><strong>✓ Ingen automatiske åpningsavvik</strong></p>'}${notes.length?`<div class="benchmark-source-detail"><strong>Manuell vurdering:</strong><ul>${notes.map(x=>`<li>${escapeHtml(x)}</li>`).join('')}</ul></div>`:''}</div></article>`;
+  }).join('')||'<small>Ingen testresultater ennå.</small>';
 }
 
-async function runPilotRegression(){
-  const button=document.querySelector('#pilot-regression-run');
+async function runPilotRegression(mode='pilot'){
+  const pilotButton=document.querySelector('#pilot-regression-run');
+  const fullButton=document.querySelector('#production-regression-run');
+  const button=mode==='full'?fullButton:pilotButton;
   const status=document.querySelector('#pilot-regression-status');
   if(!button||button.disabled)return;
   let cases=[];
   try{
-    const r=await fetch('/api/admin/pilot-regression/cases',{credentials:'include',cache:'no-store'});
+    const r=await fetch(`/api/admin/pilot-regression/cases?mode=${mode==='full'?'full':'pilot'}`,{credentials:'include',cache:'no-store'});
     const payload=await r.json();
-    if(!r.ok)throw new Error(payload.message||'Kunne ikke hente pilotcasene.');
+    if(!r.ok)throw new Error(payload.message||'Kunne ikke hente testcasene.');
     cases=payload.cases||[];
   }catch(error){if(status)status.textContent=error.message;return;}
-  if(!cases.length){if(status)status.textContent='Fant ingen pilotcaser.';return;}
-  if(!confirm(`Kjøre ${cases.length} pilotcaser gjennom den ekte KI-flyten?\n\nDette gir ${cases.length*2} KI-kall (analyse + veiledning) og bruker API-penger. Testtrafikken merkes separat.`))return;
-  button.disabled=true;
+  if(!cases.length){if(status)status.textContent='Fant ingen testcaser.';return;}
+  const label=mode==='full'?'full produksjonsflyt-test':'pilotkontroll';
+  if(!confirm(`Kjøre ${label} med ${cases.length} saker?\n\nDette gir ${cases.length*2} KI-kall (analyse + veiledning) og bruker API-penger. Testtrafikken merkes separat. ${mode==='full'?'Dine fem pilotcaser er inkludert.':''}`))return;
+  if(pilotButton)pilotButton.disabled=true;
+  if(fullButton)fullButton.disabled=true;
   const results=[];
   const runId=crypto.randomUUID();
+  const testMode=mode==='full'?'production-regression':'pilot-regression';
   renderPilotRegressionResults(results);
   try{
     for(let i=0;i<cases.length;i++){
       const testCase=cases[i];
-      if(status)status.textContent=`${i+1}/${cases.length}: ${testCase.theme}`;
+      if(status)status.textContent=`${i+1}/${cases.length}: ${testCase.theme} · ${testCase.id}`;
       try{
-        const ar=await fetch('/api/analyze-situation',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({situation:testCase.input,testMode:'pilot-regression'})});
+        const ar=await fetch('/api/analyze-situation',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({situation:testCase.input,testMode})});
         const analysis=await ar.json();
         if(!ar.ok)throw new Error(analysis.message||'Analyse feilet.');
-        const gr=await fetch('/api/generate-guidance',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({situation:testCase.input,analysis,followups:{},testMode:'pilot-regression'})});
+        const gr=await fetch('/api/generate-guidance',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({situation:testCase.input,analysis,followups:{},testMode})});
         const guidance=await gr.json();
         if(!gr.ok)throw new Error(guidance.message||'Veiledning feilet.');
         const evaluation=evaluatePilotOpening(testCase,guidance);
         const result={testCase,analysis,guidance,evaluation};
         results.push(result);
-        fetch('/api/admin/pilot-regression/result',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId,caseId:testCase.id,model:guidance.model||analysis.model||'',opening:evaluation.opening,ok:evaluation.ok,issues:evaluation.issues})}).catch(()=>{});
+        fetch('/api/admin/pilot-regression/result',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode,runId,caseId:testCase.id,model:guidance.model||analysis.model||'',opening:evaluation.opening,ok:evaluation.ok,issues:evaluation.issues,notes:evaluation.notes})}).catch(()=>{});
       }catch(error){
-        const result={testCase,error:error.message||'Ukjent feil',evaluation:{ok:false,opening:'',words:0,issues:[]}};
+        const result={testCase,error:error.message||'Ukjent feil',evaluation:{ok:false,opening:'',words:0,issues:[],notes:[]}};
         results.push(result);
-        fetch('/api/admin/pilot-regression/result',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({runId,caseId:testCase.id,model:'',opening:'',ok:false,issues:[result.error]})}).catch(()=>{});
+        fetch('/api/admin/pilot-regression/result',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({mode,runId,caseId:testCase.id,model:'',opening:'',ok:false,issues:[result.error],notes:[]})}).catch(()=>{});
       }
       renderPilotRegressionResults(results);
+      if(mode==='full')await new Promise(resolve=>setTimeout(resolve,500));
     }
     const passed=results.filter(x=>!x.error&&x.evaluation?.ok).length;
-    if(status)status.textContent=`Ferdig: ${passed}/${results.length} åpninger besto automatisk kontroll.`;
+    if(status)status.textContent=`Ferdig: ${passed}/${results.length} åpninger uten automatiske avvik. ${mode==='full'?'Resultatene er logget så de kan gjennomgås samlet.':''}`;
   }finally{
-    button.disabled=false;
+    if(pilotButton)pilotButton.disabled=false;
+    if(fullButton)fullButton.disabled=false;
     await loadAdminAiUsage();
   }
 }
@@ -2788,7 +2799,8 @@ document.querySelector('#admin-save-cancel')?.addEventListener('click',()=>docum
 document.querySelector('#admin-save-confirm')?.addEventListener('click',async()=>{document.querySelector('#admin-save-dialog')?.close();await saveAdminContent();});
 document.querySelector('#admin-save-ai-model')?.addEventListener('click',async()=>{const model=document.querySelector('#admin-ai-model')?.value;const option=document.querySelector('#admin-ai-model')?.selectedOptions?.[0]?.textContent||model;if(!model)return;if(!confirm(`Bytte KI-modell til ${option}?\n\nEn dyrere modell kan øke API-kostnadene for alle nye KI-kall.`))return;const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message';msg.textContent='Lagrer …';try{const r=await fetch('/api/admin/ai-settings',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({model})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre modellvalget.');msg.className='auth-message success';msg.textContent='KI-modellen er endret. Nye KI-kall bruker dette valget.';}catch(error){msg.className='auth-message error';msg.textContent=error.message;}});
 document.querySelector('#admin-usage-include-tests')?.addEventListener('change',loadAdminAiUsage);
-document.querySelector('#pilot-regression-run')?.addEventListener('click',runPilotRegression);
+document.querySelector('#pilot-regression-run')?.addEventListener('click',()=>runPilotRegression('pilot'));
+document.querySelector('#production-regression-run')?.addEventListener('click',()=>runPilotRegression('full'));
 document.querySelector('#benchmark-run-mock')?.addEventListener('click',runBenchmarkMock);
 document.querySelector('#benchmark-run-live')?.addEventListener('click',runBenchmarkLive);
 document.querySelector('#benchmark-stop-live')?.addEventListener('click',()=>{benchmarkStopRequested=true;});
