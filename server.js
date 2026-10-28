@@ -702,6 +702,40 @@ app.get('/api/admin/pilot-regression/cases', requireAdmin, async (_req,res)=>{
   }
 });
 
+app.post('/api/admin/pilot-regression/result', requireAdmin, async (req,res)=>{
+  try {
+    const goldenPath = path.join(__dirname, 'tests/AI-GOLDEN-CASES.json');
+    const bank = JSON.parse(fs.readFileSync(goldenPath, 'utf8'));
+    const caseId = String(req.body?.caseId || '').slice(0,80);
+    const testCase = (bank.cases || []).find(item => item.pilot_regression && item.id === caseId);
+    if (!testCase) return res.status(400).json({error:'INVALID_PILOT_CASE',message:'Ukjent pilotcase.'});
+
+    const opening = String(req.body?.opening || '').trim().slice(0,700);
+    const model = String(req.body?.model || '').trim().slice(0,120);
+    const runId = String(req.body?.runId || '').trim().slice(0,100);
+    const ok = req.body?.ok === true;
+    const issues = (Array.isArray(req.body?.issues) ? req.body.issues : [])
+      .map(value => String(value || '').trim().slice(0,220))
+      .filter(Boolean)
+      .slice(0,8);
+
+    // Kun faste, personverntrygge pilotcaser logges her. Ingen fri brukersamtale lagres.
+    console.info('[pilot-regression-result]', JSON.stringify({
+      runId,
+      caseId:testCase.id,
+      theme:testCase.theme,
+      model,
+      ok,
+      issues,
+      opening
+    }));
+    res.json({ok:true});
+  } catch (error) {
+    console.error('[pilot-regression-result] logging failed:', error?.message || error);
+    res.status(500).json({error:'PILOT_RESULT_LOG_FAILED',message:'Kunne ikke registrere pilotresultatet.'});
+  }
+});
+
 app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
   const groups=new Map(); const problems=[];
   for(const item of benchmarkCases){
@@ -761,9 +795,12 @@ Krav:
 
   const status=Number(error?.status)||500;
 
+  const providerRateLimited = status === 429 && model === 'google/gemma-4-26b-a4b-it:free';
   res.status(status>=400&&status<600?status:500).json({
     error:'BENCHMARK_FAILED',
-    message:error?.message || 'Benchmark-kallet feilet.',
+    message:providerRateLimited
+      ? 'Gemma Free er midlertidig ratebegrenset hos OpenRouter (429). Prøv senere eller velg en annen modell.'
+      : (error?.message || 'Benchmark-kallet feilet.'),
     model,
     caseId,
     status:error?.status || null,
