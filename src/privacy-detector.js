@@ -14,6 +14,7 @@
     "jeg","vi","du","dere","de","dem","oss","meg","deg","seg",
     "han","hun","hen","ham","henne","den","det","dette","disse",
     "man","noen","noe","alle","andre","hverandre","en","et",
+    "hva","hvem","hvilken","hvilke","varsler","varsleren",
     "vårt","våre","mitt","mine","ditt","dine","sitt","sine","deres"
   ]);
 
@@ -74,10 +75,22 @@
   }
 
   function relationalUnknown(text){
-    const direct=new RegExp("\\b(?:snakket\\s+med|møte\\s+med|samtale\\s+med|møtte|ringte|kontaktet)\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
+    const direct=new RegExp("\\b(?:snakket\\s+med|møte\\s+med|samtale\\s+med|ringte|kontaktet)\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
     for(const m of text.matchAll(direct)){
       const a=m[1], b=m[2];
       if(!candidateAllowed(a)) continue;
+      if(b && candidateAllowed(b) && (isKnownSurname(b) || looksTitleCased(b))) return a+" "+b;
+      return a;
+    }
+
+    // «møtte» er tvetydig: «Jeg møtte Knut» vs. «medarbeideren møtte påvirket».
+    // Krev derfor faktisk navnesignal etter verbet, ikke bare et vilkårlig ord.
+    const metPerson=new RegExp("\\bmøtte\\s+(" + TOKEN + ")(?:\\s+(" + TOKEN + "))?","giu");
+    for(const m of text.matchAll(metPerson)){
+      const a=m[1], b=m[2];
+      if(!candidateAllowed(a)) continue;
+      const knownGiven=isKnownGivenName(a) && (!isAmbiguous(a) || looksTitleCased(a));
+      if(!(looksTitleCased(a) || knownGiven)) continue;
       if(b && candidateAllowed(b) && (isKnownSurname(b) || looksTitleCased(b))) return a+" "+b;
       return a;
     }
