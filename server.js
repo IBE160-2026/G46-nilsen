@@ -684,6 +684,24 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   res.json({version:appVersion,totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
 });
 
+app.get('/api/admin/pilot-regression/cases', requireAdmin, async (_req,res)=>{
+  try {
+    const goldenPath = path.join(__dirname, 'tests/AI-GOLDEN-CASES.json');
+    const bank = JSON.parse(fs.readFileSync(goldenPath, 'utf8'));
+    const cases = (bank.cases || []).filter(item => item.pilot_regression).map(item => ({
+      id:item.id,
+      theme:item.theme,
+      input:item.input,
+      opening_checks:item.opening_checks || {},
+      manual_fasit:item.manual_fasit || null
+    }));
+    res.json({ count:cases.length, cases });
+  } catch (error) {
+    console.error('Kunne ikke lese pilot-regresjonscaser:', error?.message || error);
+    res.status(500).json({ error:'PILOT_CASES_FAILED', message:'Kunne ikke hente pilotcasene.' });
+  }
+});
+
 app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
   const groups=new Map(); const problems=[];
   for(const item of benchmarkCases){
@@ -1308,7 +1326,8 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
     });
   }
 
-  const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "" } = req.body || {};
+  const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", testMode = "" } = req.body || {};
+  const adminPilotTest = testMode === "pilot-regression" && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
@@ -1319,7 +1338,7 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'analyse', _userId:req.user.id, _topicId:selectedTopic || null, _subtopic:selectedSubtopic || null, _privacyTexts:[situation, helpRequest],
+      _functionName:'analyse', _userId:req.user.id, _topicId:selectedTopic || null, _subtopic:selectedSubtopic || null, _privacyTexts:[situation, helpRequest], _isTest:adminPilotTest,
       instructions: systemPrompt + task,
       input: [
         {
@@ -1366,7 +1385,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
 
-  const { situation, analysis = null, followups = {}, topicId = "", subtopic = "" } = req.body || {};
+  const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "" } = req.body || {};
+  const adminPilotTest = testMode === "pilot-regression" && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
@@ -1377,7 +1397,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)],
+      _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)], _isTest:adminPilotTest,
       tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + guidanceTask,
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
