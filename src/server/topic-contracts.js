@@ -32,9 +32,9 @@ export const topicCatalog = [
   },
   {
     id: "avslutning-arbeidsforhold",
-    title: "Avslutning av arbeidsforhold",
-    description: "Oppsigelse, prøvetid, avslutning, nedbemanning eller formell videre prosess.",
-    subtopics: ["Avslutning av arbeidsforhold","Prøvetid","Endringer i stilling eller behov","Tidligere oppfølging","Frivillig avslutning","Samtale før videre prosess"]
+    title: "Oppsigelse og avslutning av arbeidsforhold",
+    description: "Mulig oppsigelse, prøvetid, endret stilling eller bemanningsbehov, manglende bedring etter tidligere oppfølging, frivillig avslutning, advarsel eller annen formell oppfølging.",
+    subtopics: ["Mulig oppsigelse fra arbeidsgiver","Problemer i prøvetiden","Endret stilling eller bemanningsbehov","Manglende bedring etter tidligere oppfølging","Medarbeideren ønsker å slutte","Advarsel og formell oppfølging"]
   },
   {
     id: "sikkerhet-ansvar",
