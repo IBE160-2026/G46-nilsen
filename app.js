@@ -91,7 +91,13 @@ function updateNavState(name) {
   });
 }
 
+function clearDocumentSelection() {
+  const selection = window.getSelection?.();
+  if (selection?.rangeCount) selection.removeAllRanges();
+}
+
 function showView(name) {
+  clearDocumentSelection();
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
@@ -103,6 +109,7 @@ function showView(name) {
     views[name].querySelectorAll('details[open]').forEach(detail => { detail.open = false; });
   }
 
+  requestAnimationFrame(clearDocumentSelection);
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
@@ -2349,7 +2356,8 @@ function renderHistoryPrivacyReview(item, target='guidance') {
 }
 
 function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
-  if(!item)return; loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
+  if(!item)return;
+  clearDocumentSelection(); loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   const storedSituation = cleanStoredSituationText(item.situation||'');
   document.querySelector('#situation').value=storedSituation; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
