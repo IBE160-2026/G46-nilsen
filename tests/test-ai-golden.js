@@ -97,6 +97,18 @@ function evaluate(tc, analysis, guidance) {
   if (!guidance?.opening || !Array.isArray(guidance?.questions) || guidance.questions.length < 2) {
     review.push("Rådsstruktur: mangler tydelig åpning eller minst to konkrete spørsmål");
   }
+
+  const opening = String(guidance?.opening || "").trim();
+  const openingWords = opening ? opening.split(/\s+/u).filter(Boolean).length : 0;
+  if (openingWords > 75) {
+    review.push(`Åpning: for lang (${openingWords} ord; bør normalt være maks ca. 75)`);
+  }
+  if (/\b(?:du bør|bør du|kontakt HR|kontakt juridisk|følg (?:virksomhetens|lokal|intern|gjeldende)?\s*prosedyre|varsle (?:ansvarlig|nærmeste)?\s*leder|kvalitetssikre)\b/iu.test(opening)) {
+    review.push("Åpning: ser ut til å inneholde instruksjoner til lederen i stedet for bare replikk");
+  }
+  if (/\b(?:medarbeideren|lederen)\b/iu.test(opening) && !/\bdu\b/iu.test(opening)) {
+    review.push("Åpning: ser ut til å være skrevet om samtalen i tredjeperson, ikke som muntlig replikk");
+  }
   if (!Array.isArray(guidance?.reactions) || guidance.reactions.length < 2) {
     review.push("Rådsstruktur: mangler minst to situasjonsspesifikke reaksjoner");
   }
