@@ -20,6 +20,8 @@ jobs:
       - name: Install
         run: npm ci
       - name: Remove temporary CI metadata
-        run: rm -rf .github
+        run: |
+          git rm -r --cached .github
+          rm -rf .github
       - name: Test
         run: npm test
