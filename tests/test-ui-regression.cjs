@@ -14,7 +14,7 @@ assert(/width:\s*42px\s*!important/.test(css), 'Minimert ikon er ikke gjort stø
 assert(/transform:\s*translateY\(-4px\)/.test(css), 'Minimert ikon er ikke hevet');
 assert(/font-weight:\s*600\s*!important/.test(css), 'Accordion-overskrifter er ikke tonet ned');
 assert(!/<details[^>]*\sopen(?:\s|>|=)/.test(html), 'En eller flere details er åpne som standard');
-console.log('v20.10.8 UI-kontroll: OK');
+console.log('v20.10.9 UI-kontroll: OK');
 
 
 
@@ -31,11 +31,11 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.10\.8/.test(html), "CSS cache-versjon er ikke 20.10.8");
-assert(/id=["']about-app-version["']>20\.10\.8</.test(html), "Fallback-appversjon i Om-siden er ikke 20.10.8");
+assert(/styles\.css\?v=20\.10\.8/.test(html), "CSS cache-versjon er ikke 20.10.9");
+assert(/id=["']about-app-version["']>20\.10\.8</.test(html), "Fallback-appversjon i Om-siden er ikke 20.10.9");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
-assert(/id=["']report-meta["']>Versjon 20\.10\.8</.test(html), "Fallback-versjon i Kontakt er ikke 20.10.8");
+assert(/id=["']report-meta["']>Versjon 20\.10\.8</.test(html), "Fallback-versjon i Kontakt er ikke 20.10.9");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
 assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.10\.8["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.10\.8["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.10\.8["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.10\.8["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
@@ -71,3 +71,32 @@ assert(app.includes('if(surveySubmitting)return;'), 'Brukertest skal blokkere do
 assert(app.includes("submit.textContent='Sender …'"), 'Brukertest skal vise at innsending pågår');
 assert(!app.includes("document.querySelector('[data-view=\"survey\"]')?.addEventListener('click',openSurvey);"), 'Survey-nav skal ikke ha duplisert openSurvey-listener');
 console.log('Brukertest dobbel-submit-regresjon: OK');
+
+
+const clientDataSource = fs.readFileSync('src/client-data.js', 'utf8');
+const topicContractSource = fs.readFileSync('src/server/topic-contracts.js', 'utf8');
+const expectedSubtopics = {
+  'Alkohol og rus': ['Alkoholbruk','Andre rusmidler','Påvirket på jobb','Fungering på jobb','Rus og sikkerhet','Videre oppfølging'],
+  'Fravær og oppfølging': ['Korttidsfravær','Langtidsfravær','Oppmøte og punktlighet','Planlagt fravær','Tilbake i jobb','Tilrettelegging'],
+  'Prestasjon og utvikling': ['Måloppnåelse','Engasjement','Kvalitet','Arbeidsutførelse','Kompetanse','Ansvar og initiativ'],
+  'Lønn og utvikling': ['Lønnsutvikling','Lønnskrav','Lønnsforskjeller','Forfremmelse'],
+  'Samarbeid og kommunikasjon': ['Samarbeidsutfordringer','Konflikt med kollega','Konflikt med leder','Tillitsbrudd','Roller og forventninger'],
+  'Oppsigelse og avslutning av arbeidsforhold': ['Mulig oppsigelse','Prøvetid','Endret stilling','Manglende bedring','Ønske om å slutte','Advarsel og oppfølging'],
+  'Sikkerhet og ansvar': ['Sikkerhetsrutiner','Sikkerhetshendelser','Informasjonssikkerhet','Vold og trusler'],
+  'Livssituasjoner': ['Samliv og familie','Sorg og tap','Omsorgsansvar','Psykisk belastning','Utmattelse'],
+  'Mobbing og trakassering': ['Mobbing','Utestenging','Uønsket adferd','Seksuell trakassering','Diskriminering','Varslingssak']
+};
+
+for (const [theme, subtopics] of Object.entries(expectedSubtopics)) {
+  for (const subtopic of subtopics) {
+    assert(
+      clientDataSource.includes(`['${subtopic}',`),
+      `${theme}: klienten mangler undertemaet ${subtopic}`
+    );
+    assert(
+      topicContractSource.includes(`"${subtopic}"`),
+      `${theme}: serverkontrakten mangler undertemaet ${subtopic}`
+    );
+  }
+}
+console.log('Undertemastruktur: OK');
