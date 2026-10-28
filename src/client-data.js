@@ -37,15 +37,15 @@ window.SamtalestotteClientData = Object.freeze({
     image: 'assets/images/topics/topic-alkohol-rus.png',
     imageAlt: 'Alvorlig, men rolig samtale mellom kvinnelig leder og kvinnelig medarbeider i et moderne møterom',
     description: 'Støtte til samtaler der observasjoner, bekymring, påvirkning eller sikkerhet gjør det nødvendig å ta opp alkohol eller rus på en tydelig og respektfull måte.',
-    representations: ['Bekymring og endret fungering', 'Påvirkning eller sikkerhet', 'Oppfølging og tilbakekomst'],
-    keywords: ['alkohol','rus','påvirket','beruset','stoff','narkotika','promille','drikking','bekymring'],
+    representations: ['Alkoholbruk og rusmidler', 'Påvirkning og sikkerhet', 'Videre oppfølging'],
+    keywords: ['alkohol', 'rus', 'påvirket', 'beruset', 'stoff', 'narkotika', 'promille', 'drikking', 'bekymring'],
     subtopics: [
-      ['Bekymring knyttet til alkohol', 'Når endringer i atferd, fravær eller fungering skaper bekymring.'],
-      ['Bekymring knyttet til rusmidler', 'Når observasjoner eller informasjon gir grunn til bekymring for annen rusmiddelbruk.'],
-      ['Påvirkning på jobb', 'Når en medarbeider kan fremstå påvirket i arbeidstiden.'],
-      ['Arbeidsevne og fungering', 'Når alkohol eller rus kan ha sammenheng med arbeidsutførelse, oppmøte eller samspill.'],
-      ['Sikkerhet og hendelser', 'Når alkohol eller rus kan ha betydning for sikkerhet, feil eller en hendelse.'],
-      ['Oppfølging og tilbakekomst', 'Samtaler etter behandling, fravær eller tidligere oppfølging.']
+      ['Alkoholbruk', 'Når det er bekymring for alkoholbruk som kan påvirke arbeid, oppmøte eller fungering. Ta utgangspunkt i det som faktisk er observert, uten å anta avhengighet eller diagnose.'],
+      ['Andre rusmidler', 'Når det er bekymring knyttet til andre rusmidler og mulig påvirkning på arbeidssituasjonen. Fokus på observasjoner og konsekvenser, ikke antakelser om hva medarbeideren bruker.'],
+      ['Påvirket på jobb', 'Når en medarbeider fremstår påvirket på jobb og lederen må håndtere situasjonen der og da, for eksempel ved å stanse arbeid eller avklare om medarbeideren kan fortsette arbeidsdagen.'],
+      ['Fungering på jobb', 'Når det er endringer i prestasjon, oppmøte, konsentrasjon eller adferd som gir grunn til bekymring, men årsaken ikke er kjent.'],
+      ['Rus og sikkerhet', 'Når alkohol eller rus kan innebære en sikkerhetsrisiko, for eksempel ved kjøring, maskiner, våpen, utstyr eller andre sikkerhetskritiske oppgaver.'],
+      ['Videre oppfølging', 'Oppfølging etter en bekymring, hendelse, fravær eller behandling, og samtaler om tilbakekomst og videre arbeidssituasjon.']
     ]
   },
   {
@@ -58,12 +58,12 @@ window.SamtalestotteClientData = Object.freeze({
     representations: ['Fravær og oppmøte', 'Sykefravær og tilbakekomst', 'Tilrettelegging og arbeidsevne'],
     keywords: ['sykefravær','fravær','sykmelding','egenmelding','oppmøte','for sent','punktlighet','planlagt fravær','tilrettelegging','tilbakekomst','arbeidsevne'],
     subtopics: [
-      ['Hyppig korttidsfravær og egenmeldinger', 'Når gjentatte korte fravær eller egenmeldinger gjør det naturlig med en oppfølgingssamtale.'],
-      ['Langvarig sykefravær', 'Når medarbeideren har vært borte over en lengre periode og trenger strukturert oppfølging.'],
-      ['Oppmøte og punktlighet', 'Forsinkelser, ustabilt oppmøte eller andre utfordringer knyttet til tilstedeværelse.'],
-      ['Planlagt fravær', 'Når planlagt fravær, permisjon eller forutsigbarhet rundt fravær trenger avklaring.'],
-      ['Tilbakekomst til arbeid', 'Samtaler etter lengre fravær eller overgang tilbake til vanlig arbeid.'],
-      ['Tilrettelegging og arbeidsevne', 'Når dere trenger å utforske hvilke arbeidsoppgaver, arbeidstid eller andre tiltak som kan gjøre arbeidssituasjonen gjennomførbar – uten å etterspørre diagnose.']
+      ['Korttidsfravær', 'Når medarbeideren har gjentatte korte fravær eller egenmeldinger og lederen trenger å snakke om fraværsmønster, arbeidssituasjon og mulig oppfølging.'],
+      ['Langtidsfravær', 'Samtaler ved lengre sykefravær eller annet langvarig fravær, med fokus på kontakt, arbeidssituasjon og videre oppfølging uten å kreve medisinske detaljer.'],
+      ['Oppmøte og punktlighet', 'Når medarbeideren gjentatte ganger kommer for sent, ikke møter som avtalt eller har ustabilt oppmøte.'],
+      ['Planlagt fravær', 'Samtaler om permisjon, avtalt fravær eller andre planlagte perioder borte fra arbeidet og hvordan dette håndteres.'],
+      ['Tilbake i jobb', 'Når medarbeideren skal tilbake etter lengre fravær og det er behov for å avklare oppstart, forventninger og eventuelle midlertidige behov.'],
+      ['Tilrettelegging', 'Når arbeidssituasjonen eller oppgavene kan måtte tilpasses for at medarbeideren skal kunne fungere i arbeid, uten at lederen trenger private eller medisinske detaljer.']
     ]
   },
   {
@@ -73,15 +73,15 @@ window.SamtalestotteClientData = Object.freeze({
     image: 'assets/images/topics/topic-prestasjon-utvikling.png',
     imageAlt: 'Utviklingssamtale med fokus på mål og fremgang ved et skrivebord',
     description: 'Støtte til samtaler om forventninger, kvalitet, mål, kompetanse og utvikling når arbeidshverdagen ikke fungerer helt som ønsket.',
-    representations: ['Mål og leveranser', 'Kvalitet og ansvar', 'Kompetanse og utvikling'],
-    keywords: ['prestasjon','leveranse','resultat','motivasjon','kvalitet','feil','frist','arbeidsutførelse','mestring','kompetanse','utvikling'],
+    representations: ['Mål og kvalitet', 'Arbeidsutførelse og ansvar', 'Kompetanse og utvikling'],
+    keywords: ['prestasjon', 'leveranse', 'resultat', 'engasjement', 'kvalitet', 'feil', 'frist', 'arbeidsutførelse', 'mestring', 'kompetanse', 'utvikling'],
     subtopics: [
-      ['Måloppnåelse', 'Når mål, leveranser eller forventede resultater trenger en nærmere samtale.'],
-      ['Motivasjon', 'Når engasjement, driv eller interesse ser ut til å ha endret seg.'],
-      ['Kvalitet i arbeidet', 'Når kvalitet, nøyaktighet eller standard på arbeidet bør følges opp.'],
-      ['Feil og avvik', 'Når feil, hendelser eller avvik trenger gjennomgang og læring.'],
-      ['Kompetanse og mestring', 'Når opplæring, ferdigheter eller trygghet i rollen kan være en del av situasjonen.'],
-      ['Ansvar og initiativ', 'Når forventninger til selvstendighet, ansvar eller initiativ trenger avklaring.']
+      ['Måloppnåelse', 'Når avtalte mål, frister eller forventede resultater ikke nås, eller det er behov for å avklare hva som forventes fremover.'],
+      ['Engasjement', 'Når lederen observerer tydelig endring i innsats, deltakelse eller initiativ og ønsker å forstå situasjonen uten å anta hvorfor endringen har skjedd.'],
+      ['Kvalitet', 'Når kvaliteten på det som leveres ikke er som forventet, for eksempel når det gjelder nøyaktighet, grundighet eller faglig standard.'],
+      ['Arbeidsutførelse', 'Når utfordringen først og fremst handler om hvordan arbeidet gjennomføres, arbeidsmåte, rutiner eller gjentatte utfordringer i utførelsen.'],
+      ['Kompetanse', 'Når medarbeideren trenger mer kunnskap, opplæring, trening eller støtte for å mestre oppgaver og forventninger.'],
+      ['Ansvar og initiativ', 'Når det er behov for å snakke om selvstendighet, ansvarstaking, oppfølging av oppgaver eller forventning om å ta mer initiativ.']
     ]
   },
   {
@@ -91,14 +91,13 @@ window.SamtalestotteClientData = Object.freeze({
     image: 'assets/images/topics/topic-lonn-utvikling.png',
     imageAlt: 'Positiv samtale om lønn, utvikling og forventninger i et moderne kontor',
     description: 'Støtte til ryddige samtaler om lønn, forventninger, ansvar, utviklingsmuligheter og hvordan virksomhetens rammer kan forklares tydelig.',
-    representations: ['Lønnsforventninger', 'Nye oppgaver og ansvar', 'Utvikling og muligheter'],
-    keywords: ['lønn','lønnsøkning','lønnsutvikling','lønnssamtale','forfremmelse','kompensasjon','ansvarstillegg','utvikling'],
+    representations: ['Lønnsutvikling og lønnskrav', 'Lønnsforskjeller', 'Forfremmelse og utvikling'],
+    keywords: ['lønn', 'lønnskrav', 'lønnsøkning', 'lønnsutvikling', 'lønnssamtale', 'lønnsforhandling', 'forfremmelse', 'kompensasjon', 'ansvarstillegg', 'utvikling'],
     subtopics: [
-      ['Lønnsutvikling', 'Samtaler om utviklingen i lønn over tid.'],
-      ['Forventninger til lønn', 'Når medarbeiderens forventninger og virksomhetens rammer må avklares.'],
-      ['Lønnsforskjeller', 'Når forskjeller mellom roller eller medarbeidere blir tema.'],
-      ['Nye oppgaver og ansvar', 'Når endringer i rolle eller ansvar kobles til forventninger om lønn.'],
-      ['Utvikling og forfremmelse', 'Når samtalen handler om videre utvikling, muligheter eller hva som kreves for neste steg.']
+      ['Lønnsutvikling', 'Samtaler om medarbeiderens lønnsutvikling over tid, hvordan lønn vurderes og hvilke forhold som kan påvirke utviklingen.'],
+      ['Lønnskrav', 'Når medarbeideren ber om høyere lønn eller fremmer et lønnskrav. Kan også dekke samtaler i forbindelse med lønnsforhandlinger og økt ansvar.'],
+      ['Lønnsforskjeller', 'Når medarbeideren reagerer på eller ønsker å diskutere forskjeller mellom egen lønn og andres lønn, uten at lederen deler andre medarbeideres personlige lønnsopplysninger.'],
+      ['Forfremmelse', 'Når medarbeideren ønsker en høyere stilling, har søkt på en stilling eller trenger tilbakemelding etter ikke å ha blitt valgt.']
     ]
   },
   {
@@ -108,15 +107,14 @@ window.SamtalestotteClientData = Object.freeze({
     image: 'assets/images/topics/topic-samarbeid-kommunikasjon.png',
     imageAlt: 'Flere kolleger samarbeider rundt en laptop i et moderne kontor',
     description: 'Støtte til samtaler som skal styrke kommunikasjon, tillit, rolleforståelse og samspill når samarbeidet har blitt krevende.',
-    representations: ['Kommunikasjon og tone', 'Uenighet og tillit', 'Roller og samspill i team'],
-    keywords: ['samarbeid','konflikt','uenighet','kommunikasjon','tone','kollega','tillit','respekt','team','samspill'],
+    representations: ['Samarbeidsutfordringer', 'Konflikt og tillitsbrudd', 'Roller og forventninger'],
+    keywords: ['samarbeid', 'samarbeidsutfordring', 'konflikt', 'uenighet', 'kommunikasjon', 'kollega', 'leder', 'tillitsbrudd', 'tillit', 'team', 'samspill'],
     subtopics: [
-      ['Kommunikasjon', 'Misforståelser, tone, utydelige beskjeder eller manglende informasjonsdeling.'],
-      ['Tillit', 'Når tidligere hendelser eller opplevelser påvirker samarbeidet.'],
-      ['Roller og forventninger', 'Uklare ansvarsområder, ulike forventninger eller behov for avklaringer.'],
-      ['Uenighet og konflikt', 'Når motsetninger eller uenigheter har blitt vanskelige å håndtere.'],
-      ['Samspill i team', 'Hvordan medarbeidere samarbeider, fordeler oppgaver og påvirker arbeidsmiljøet.'],
-      ['Grenser og respekt', 'Situasjoner knyttet til tone, humor, oppførsel eller personlige grenser.']
+      ['Samarbeidsutfordringer', 'Når samarbeidet mellom medarbeidere eller i et team ikke fungerer godt, uten at situasjonen nødvendigvis har utviklet seg til en tydelig konflikt.'],
+      ['Konflikt med kollega', 'Når medarbeidere står i en tydelig uenighet eller konflikt og lederen må bidra til å forstå situasjonen og finne en vei videre.'],
+      ['Konflikt med leder', 'Når konflikten eller den fastlåste uenigheten gjelder forholdet mellom medarbeider og leder, for eksempel beslutninger, oppfølging, kommunikasjon eller opplevd behandling.'],
+      ['Tillitsbrudd', 'Når en konkret handling eller hendelse har svekket tilliten mellom personer, for eksempel brudd på avtaler, tilbakeholdelse av viktig informasjon eller handlinger som har skadet samarbeidet.'],
+      ['Roller og forventninger', 'Når det er uklarhet eller uenighet om ansvar, oppgaver, myndighet, arbeidsfordeling eller hva som forventes av den enkelte.']
     ]
   },
   {
@@ -129,12 +127,12 @@ window.SamtalestotteClientData = Object.freeze({
     representations: ['Mulig oppsigelse og prøvetid', 'Endret stilling eller tidligere oppfølging', 'Advarsel eller frivillig avslutning'],
     keywords: ['oppsigelse','slutte','avslutte','prøvetid','arbeidsforhold','avskjed','bemanning','nedbemanning','advarsel','formell oppfølging'],
     subtopics: [
-      ['Mulig oppsigelse fra arbeidsgiver', 'Når arbeidsgiver vurderer om arbeidsforholdet kan fortsette og du må gjennomføre en tydelig samtale før eventuell videre prosess.'],
-      ['Problemer i prøvetiden', 'Når medarbeideren er i prøvetid og forventninger, utvikling eller forhold som ikke fungerer må tas opp.'],
-      ['Endret stilling eller bemanningsbehov', 'Når rolle, oppgaver eller virksomhetens bemanningsbehov endres og dette kan få konsekvenser for stillingen.'],
-      ['Manglende bedring etter tidligere oppfølging', 'Når samme problem er tatt opp tidligere, tiltak er prøvd, men nødvendig bedring ikke har kommet.'],
-      ['Medarbeideren ønsker å slutte', 'Når medarbeideren selv vurderer å si opp eller ønsker å snakke om en frivillig avslutning.'],
-      ['Advarsel og formell oppfølging', 'Når det har skjedd noe alvorlig, eller et problem har kommet så langt at du må ta en tydelig samtale før eventuell advarsel eller annen formell oppfølging.']
+      ['Mulig oppsigelse', 'Når arbeidsgiver vurderer om arbeidsforholdet kan fortsette og lederen må gjennomføre en tydelig samtale før eventuell videre prosess.'],
+      ['Prøvetid', 'Når medarbeideren er i prøvetid og forventninger, utvikling eller forhold som ikke fungerer må tas opp.'],
+      ['Endret stilling', 'Når rolle, arbeidsoppgaver eller virksomhetens bemanningsbehov endres og dette kan få konsekvenser for medarbeiderens stilling.'],
+      ['Manglende bedring', 'Når samme forhold er tatt opp tidligere og tiltak er forsøkt, men nødvendig bedring fortsatt ikke har kommet.'],
+      ['Ønske om å slutte', 'Når medarbeideren selv vurderer å si opp eller ønsker å snakke om frivillig avslutning av arbeidsforholdet.'],
+      ['Advarsel og oppfølging', 'Når et forhold har kommet så langt at lederen må gjennomføre en tydelig samtale før eventuell advarsel eller annen formell oppfølging.']
     ]
   },
   {
@@ -144,16 +142,13 @@ window.SamtalestotteClientData = Object.freeze({
     image: 'assets/images/topics/topic-sikkerhet-ansvar.png',
     imageAlt: 'Sikkerhetsmøte med planer, sikkerhetsutstyr og tydelig dialog',
     description: 'Støtte til samtaler om sikker praksis, rutiner, risiko, avvik og ansvar – med mål om læring, tydelighet og tryggere arbeid.',
-    representations: ['Rutiner og etterlevelse', 'Avvik og hendelser', 'Risiko, ansvar og læring'],
-    keywords: ['sikkerhet','avvik','hendelse','rutiner','prosedyre','rapportering','risiko','informasjonssikkerhet','ansvar'],
+    representations: ['Sikkerhetsrutiner', 'Sikkerhetshendelser', 'Informasjonssikkerhet, vold og trusler'],
+    keywords: ['sikkerhet', 'avvik', 'hendelse', 'nestenulykke', 'rutiner', 'prosedyre', 'rapportering', 'risiko', 'informasjonssikkerhet', 'vold', 'trusler', 'ansvar'],
     subtopics: [
-      ['Sikkerhetsrutiner', 'Etterlevelse av prosedyrer, instrukser og etablerte sikkerhetskrav.'],
-      ['Avvik og hendelser', 'Når noe har skjedd som bør gjennomgås, følges opp eller læres av.'],
-      ['Risikovurdering', 'Når leder og medarbeider har ulik forståelse av risiko eller forsvarlig praksis.'],
-      ['Rapportering', 'Når rapportering av hendelser, feil eller avvik trenger oppfølging.'],
-      ['Informasjonssikkerhet', 'Håndtering av informasjon, tilgang, deling eller andre sikkerhetsrelaterte forhold.'],
-      ['Ansvar og læring etter hendelser', 'Samtaler om hva som skjedde, hva man kan lære og hva som bør endres.'],
-      ['Vold og trusler', 'Når en arbeidstaker har vært utsatt for, eller det er risiko for, vold, trusler eller truende atferd i arbeidssammenheng.']
+      ['Sikkerhetsrutiner', 'Når obligatoriske sikkerhetsrutiner eller arbeidsmåter ikke følges, eller det er behov for å avklare forventninger til forsvarlig arbeid. Kan også dekke uenighet om risiko og nødvendige sikkerhetstiltak.'],
+      ['Sikkerhetshendelser', 'Når det har skjedd en hendelse, nestenulykke eller et avvik som må følges opp. Kan også dekke manglende eller sen rapportering og læring etter hendelsen.'],
+      ['Informasjonssikkerhet', 'Når saken gjelder behandling, deling eller sikring av informasjon, tilgang, digitale systemer eller andre forhold knyttet til informasjonssikkerhet.'],
+      ['Vold og trusler', 'Når en medarbeider har vært utsatt for, involvert i eller skapt en situasjon med vold, trusler eller alvorlig aggressiv adferd, og lederen må håndtere sikkerhet og videre oppfølging.']
     ]
   },
   {
@@ -163,15 +158,14 @@ window.SamtalestotteClientData = Object.freeze({
     image: 'assets/images/topics/topic-livssituasjoner.png',
     imageAlt: 'Omsorgsfull samtale der en medarbeider sitter med hodet bøyd og blir lyttet til',
     description: 'Støtte til omsorgsfulle og profesjonelle samtaler når personlige belastninger, omsorgsansvar, sorg eller andre livssituasjoner påvirker arbeidshverdagen.',
-    representations: ['Familie og omsorg', 'Sorg, stress og belastning', 'Støtte og hensiktsmessige grenser'],
-    keywords: ['livssituasjon','familie','sorg','omsorg','stress','psykisk','økonomi','privat','utmattelse','belastning'],
+    representations: ['Familie og omsorg', 'Sorg og psykisk belastning', 'Utmattelse'],
+    keywords: ['livssituasjon', 'familie', 'samlivsbrudd', 'sorg', 'omsorg', 'stress', 'psykisk', 'privat', 'utmattelse', 'utbrenthet', 'belastning'],
     subtopics: [
-      ['Samlivs- og familieforhold', 'Samlivsbrudd, krevende familiesituasjoner eller andre forhold hjemme som påvirker arbeidshverdagen.'],
-      ['Sykdom i nær familie', 'Når medarbeideren står i omsorgsbelastning eller alvorlig sykdom hos noen nær.'],
-      ['Sorg og tap', 'Dødsfall, alvorlige tap eller andre situasjoner som krever særlig omtanke.'],
-      ['Psykisk belastning', 'Når medarbeideren selv forteller om stress, uro, nedstemthet eller andre psykiske belastninger.'],
-      ['Omsorgsansvar', 'Barn, foreldre eller andre nærstående som krever mye tid og oppfølging.'],
-      ['Belastning og utmattelse', 'Søvnproblemer, høyt press eller andre belastninger som påvirker arbeidshverdagen.']
+      ['Samliv og familie', 'Når forhold i privatlivet, som samlivsbrudd, familieproblemer eller sykdom i nær familie, påvirker arbeidssituasjonen og medarbeideren trenger støtte eller tilrettelegging.'],
+      ['Sorg og tap', 'Når medarbeideren står i sorg etter dødsfall eller annet alvorlig tap, og lederen trenger hjelp til en omsorgsfull samtale om arbeidssituasjonen.'],
+      ['Omsorgsansvar', 'Når omsorg for barn, partner, foreldre eller andre nærstående påvirker arbeidshverdagen og det er behov for å snakke om muligheter og begrensninger.'],
+      ['Psykisk belastning', 'Når medarbeideren selv forteller om psykiske belastninger eller en vanskelig situasjon og lederen trenger å møte dette på en god måte uten å diagnostisere eller opptre som behandler.'],
+      ['Utmattelse', 'Når medarbeideren virker eller beskriver seg som svært sliten, tappet eller overbelastet over tid. Kan dekke høyt press, søvnproblemer og situasjoner der medarbeideren selv bruker begreper som utbrenthet.']
     ]
   },
   {
@@ -181,17 +175,15 @@ window.SamtalestotteClientData = Object.freeze({
     image: 'assets/images/topics/topic-mobbing-trakassering.png',
     imageAlt: 'Profesjonell samtale om arbeidsmiljø, grenser og trygghet',
     description: 'Støtte til varsomme og ryddige samtaler om mobbing, trakassering, utestenging og uønsket seksuell oppmerksomhet. Verktøyet skal ikke avgjøre skyld, men hjelpe lederen å lytte, ivareta involverte og følge riktig prosess.',
-    representations: ['Mobbing og utestenging', 'Trakassering og seksuell oppmerksomhet', 'Varsling og forsvarlig oppfølging'],
-    keywords: ['mobbing','trakassering','seksuell trakassering','uønsket seksuell oppmerksomhet','kjønnstrakassering','utestenging','utfrysing','krenkende','utilbørlig','varsling','gjengjeldelse','most'],
+    representations: ['Mobbing og utestenging', 'Uønsket adferd og seksuell trakassering', 'Diskriminering og varsling'],
+    keywords: ['mobbing', 'trakassering', 'seksuell trakassering', 'uønsket seksuell oppmerksomhet', 'kjønnstrakassering', 'diskriminering', 'forskjellsbehandling', 'utestenging', 'utfrysing', 'uønsket adferd', 'krenkende', 'varsling', 'gjengjeldelse'],
     subtopics: [
-      ['Mobbing', 'Når en medarbeider beskriver gjentatte negative handlinger, systematisk belastning eller en opplevelse av å være vanskelig i stand til å forsvare seg.'],
-      ['Utestenging og utfrysing', 'Når en medarbeider opplever å bli holdt utenfor faglige eller sosiale fellesskap på arbeidsplassen.'],
-      ['Krenkende eller utilbørlig atferd', 'Når ord, handlinger eller unnlatelser kan oppleves krenkende, skremmende, fiendtlige, nedverdigende eller ydmykende.'],
-      ['Seksuell trakassering', 'Når det meldes om uønsket seksuell oppmerksomhet eller handlinger som kan være seksuelt trakasserende.'],
-      ['Kjønnstrakassering og uønsket seksuell oppmerksomhet', 'Når kjønnede kommentarer, seksualisert språk, oppmerksomhet eller andre grenseoverskridelser tas opp.'],
-      ['Varsling om mobbing eller trakassering', 'Når en medarbeider sier fra om et mulig kritikkverdig forhold og saken må håndteres etter virksomhetens varslingsrutiner.'],
-      ['Samtale med den som sier ifra', 'Når lederen skal ta imot informasjon, lytte og avklare videre prosess uten å love et bestemt utfall.'],
-      ['Samtale med den varselet gjelder', 'Når lederen skal informere og høre den det varsles om, uten å konkludere på forhånd eller gjøre samtalen til en skyldavgjørelse.']
+      ['Mobbing', 'Når en medarbeider beskriver gjentatte negative handlinger, krenkelser eller behandling over tid som kan være mobbing. Verktøyet skal ikke slå fast at mobbing har skjedd før saken er undersøkt.'],
+      ['Utestenging', 'Når en medarbeider opplever å bli holdt utenfor arbeidsrelaterte møter, samarbeid, informasjon eller fellesskap. Skiller mellom arbeidsrelatert utestenging og private sosiale aktiviteter.'],
+      ['Uønsket adferd', 'Når en medarbeider opplever kommentarer, fysisk kontakt, grenseoverskridelser eller annen opptreden som uønsket eller ubehagelig, uten at situasjonen på forhånd klassifiseres som mobbing eller trakassering.'],
+      ['Seksuell trakassering', 'Når saken gjelder uønsket seksuell oppmerksomhet, seksuelle kommentarer, berøring eller annen adferd av seksuell karakter.'],
+      ['Diskriminering', 'Når en medarbeider mener å ha blitt forskjellsbehandlet eller utsatt for krenkende behandling knyttet til for eksempel kjønn, alder, etnisitet, religion, funksjonsnedsettelse eller seksuell orientering. Kan også dekke kjønnstrakassering.'],
+      ['Varslingssak', 'Når lederen skal håndtere en sak det er varslet om, enten samtalen er med den som sier fra eller den det er varslet om. Påstander skal ikke behandles som fastslåtte fakta før saken er undersøkt.']
     ]
   }
 ])
