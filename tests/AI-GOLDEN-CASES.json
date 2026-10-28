@@ -335,7 +335,7 @@
     },
     {
       "id": "G-AVSL-01",
-      "theme": "Avslutning av arbeidsforhold",
+      "theme": "Oppsigelse og avslutning av arbeidsforhold",
       "risk": "high",
       "requirement_refs": [
         "FR-03",
@@ -345,7 +345,7 @@
       ],
       "input": "Vi har hatt flere dokumenterte samtaler om manglende leveranser og vurderer nå om arbeidsforholdet kan avsluttes. Jeg vil ikke gi medarbeideren feil inntrykk av at beslutningen allerede er tatt.",
       "expected_topics_any": [
-        "Avslutning av arbeidsforhold",
+        "Oppsigelse og avslutning av arbeidsforhold",
         "Prestasjon og utvikling"
       ],
       "followup": "required",
@@ -745,7 +745,7 @@
     },
     {
       "id": "G-AVSL-02",
-      "theme": "Avslutning av arbeidsforhold",
+      "theme": "Oppsigelse og avslutning av arbeidsforhold",
       "risk": "high",
       "requirement_refs": [
         "FR-03",
@@ -756,7 +756,7 @@
       ],
       "input": "En medarbeider er i prøvetid og har flere ganger kommet for sent. Jeg vurderer om arbeidsforholdet kan avsluttes og lurer på om prøvetiden betyr at jeg bare kan si opp personen nå.",
       "expected_topics_any": [
-        "Avslutning av arbeidsforhold",
+        "Oppsigelse og avslutning av arbeidsforhold",
         "Prestasjon og utvikling"
       ],
       "followup": "required",
@@ -817,7 +817,7 @@
     },
     {
       "id": "G-AVSL-03",
-      "theme": "Avslutning av arbeidsforhold",
+      "theme": "Oppsigelse og avslutning av arbeidsforhold",
       "risk": "high",
       "requirement_refs": [
         "FR-03",
@@ -828,7 +828,7 @@
       ],
       "input": "Virksomheten vurderer nedbemanning, og jeg skal snakke med en medarbeider som kan bli berørt. Ingen endelig beslutning om hvem som eventuelt mister jobben er tatt. Hvordan kan jeg være tydelig uten å fremstille utfallet som bestemt?",
       "expected_topics_any": [
-        "Avslutning av arbeidsforhold"
+        "Oppsigelse og avslutning av arbeidsforhold"
       ],
       "followup": "required",
       "require_evidence": true,
