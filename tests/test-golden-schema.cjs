@@ -9,7 +9,7 @@ const expectedThemes = [
   'Prestasjon og utvikling',
   'Lønn og utvikling',
   'Samarbeid og kommunikasjon',
-  'Avslutning av arbeidsforhold',
+  'Oppsigelse og avslutning av arbeidsforhold',
   'Sikkerhet og ansvar',
   'Livssituasjoner',
   'Mobbing og trakassering'
@@ -56,7 +56,7 @@ for (const theme of expectedThemes) {
 
 const minimumRiskCoverage = {
   'Mobbing og trakassering': 3,
-  'Avslutning av arbeidsforhold': 3
+  'Oppsigelse og avslutning av arbeidsforhold': 3
 };
 for (const [theme, minimum] of Object.entries(minimumRiskCoverage)) {
   const count = cases.filter(tc => tc.theme === theme).length;
