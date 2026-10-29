@@ -7942,3 +7942,79 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
     margin-top: 2px;
   }
 }
+
+
+/* FINAL MOBILE GUIDANCE TIGHTENING + AI HALO 2026-10-29 */
+
+/* Rådskort: nummer og overskrift på samme linje, teksten bruker hele bredden under. */
+#structured-guidance .guidance-card {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0,1fr) !important;
+  grid-template-rows: auto auto !important;
+  column-gap: 9px !important;
+  row-gap: 7px !important;
+  padding: 13px 14px 14px !important;
+}
+
+#structured-guidance .guidance-number {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center;
+  margin: 0 !important;
+}
+
+#structured-guidance .guidance-card > div {
+  display: contents !important;
+}
+
+#structured-guidance .guidance-card h3 {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center;
+  margin: 0 !important;
+  line-height: 1.25;
+}
+
+#structured-guidance .guidance-card p,
+#structured-guidance .guidance-card .guidance-copy {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* KI-hodet: myk lys halo i mørk/hybrid så den mørke ansiktssiden ikke forsvinner. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
+html[data-theme="dark"] .simulation-ai-heading-icon img,
+html[data-theme="hybrid"] .simulation-ai-heading-icon img,
+html[data-theme="dark"] .simulation-logo-crop img,
+html[data-theme="hybrid"] .simulation-logo-crop img,
+html[data-theme="dark"] .simulation-entry-icon img,
+html[data-theme="hybrid"] .simulation-entry-icon img,
+html[data-theme="dark"] .simulation-avatar img,
+html[data-theme="hybrid"] .simulation-avatar img {
+  filter:
+    drop-shadow(0 0 1px rgba(255,255,255,.85))
+    drop-shadow(0 0 5px rgba(220,242,246,.48))
+    drop-shadow(0 2px 7px rgba(0,0,0,.18)) !important;
+}
+
+@media (max-width:700px) {
+  #structured-guidance .guidance-card {
+    grid-template-columns: 25px minmax(0,1fr) !important;
+    column-gap: 8px !important;
+    row-gap: 6px !important;
+    padding: 11px 11px 12px !important;
+  }
+
+  #structured-guidance .guidance-number {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  #structured-guidance .guidance-card h3 {
+    font-size: .97rem !important;
+  }
+}
