@@ -4,7 +4,7 @@
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
 **Status:** Revidert UX-spesifikasjon med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.4  
+**Versjon ved dokumentasjon:** 20.11.5  
 **Språk:** Norsk
 
 ---
@@ -1011,3 +1011,10 @@ I kompakt desktop skal brukerprofilen fortsatt oppfattes som en global kontroll 
 Historikk bruker nå en todelt header på desktop: tekstinnhold til venstre og en separat, responsiv visuell flate til høyre. Logoen sentreres i denne flaten og skalerer dynamisk, slik at den beholder balanse ved ulike vindusbredder.
 
 I Samtaleøvelse skal KI-illustrasjonen framstå som et visuelt merke, ikke som et kort. Derfor er dekorativ ramme, bakgrunn, skygge og avrundet boks fjernet rundt illustrasjonen. Responsiv størrelse og klikkbar større visning beholdes.
+
+
+## Hotfix 20.11.5 – separat visuell kolonne og hover-kontrast
+
+Historikklogoen skal aldri konkurrere med eller wrappe under overskriften. På desktop og kompakt desktop ligger den derfor i en egen høyrekolonne fra 641 CSS-piksler og opp. Kolonnen og logoen krymper dynamisk med tilgjengelig bredde, mens mobil under 640 px skjuler den dekorative logoen. Den visuelle plasseringen ligger høyt i den ledige høyre flaten og skal ikke skape ekstra vertikal høyde i tekstinnholdet.
+
+På mørk og hybrid sidemeny skal hover/fokus/aktiv tilstand bevare høy kontrast. Raden bruker mørk teal bakgrunn, hvit tekst og tydelig ikon i stedet for lys/hvit hoverflate.
