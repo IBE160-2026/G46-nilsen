@@ -20,8 +20,8 @@ Format: `HOVED.MILEPÆL.PATCH`.
 ## Neste versjoner
 
 - **20.10.10** er siste publiserte versjon i den gamle løpende serien.
-- **20.11.0** er planlagt samlet pilotforbedringsversjon: begrepskonsistens, menneskeligere KI-språk og mobil-first UX.
-- **20.11.1, 20.11.2 ...** brukes bare dersom 20.11 trenger mindre feilrettinger.
+- **20.11.0** er samlet produksjonsrelease for pilotforbedringene 29.10.2026: mobil-first UX, PWA/installasjon, merkevare, begrepskonsistens og dokumentasjonssynk.
+- **20.11.1, 20.11.2 ...** brukes bare dersom produksjonsrelease 20.11 trenger mindre feilrettinger.
 - **21.0.0** brukes når produktet når en reell innleverings-/release-candidate-milepæl: prioriterte pilotfunn er behandlet, hovedflytene er testet, dokumentasjonen samsvarer med produktet og løsningen vurderes som klar for sluttkontroll.
 
 ## Viktig
