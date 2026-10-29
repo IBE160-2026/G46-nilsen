@@ -8146,7 +8146,7 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
 
 .representation-chip.active,
 .representation-chip[aria-pressed="true"] {
-  color: var(--surface);
+  color: #fff;
   background: var(--accent-strong);
   border-color: var(--accent-strong);
   box-shadow: 0 5px 14px rgba(15,68,87,.14);
