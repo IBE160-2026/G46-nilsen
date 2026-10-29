@@ -475,3 +475,10 @@ I samme test oppdaget jeg et annet type problem: situasjonsteksten som var brukt
 ## Tillegg 29.10.2026 – korrekt funksjon er ikke alltid korrekt visuell hierarki
 
 Etter at topplinjen teknisk var gjort responsiv, viste brukertest at løsningen fortsatt kunne oppleves feil: profilen var synlig, men den hadde flyttet seg for langt mot venstre, og temavelgeren lå for tett på sidefeltknappen. Dette var ikke funksjonsfeil, men feil i visuelt hierarki og plassering. Rettelsen ble å forankre profilen som fast høyrekontroll og la andre elementer komprimeres rundt den. Dette minnet meg om at responsivitet ikke bare handler om at alt får plass; elementenes rolle og forventede plassering må også bevares når vindusstørrelsen endres.
+
+
+## Tillegg 29.10.2026 – fra pikselforskyvning til layoutstruktur
+
+Historikksiden ga et nytt eksempel på forskjellen mellom å flytte et element og å løse selve layoutproblemet. Logoen var tidligere plassert ved hjelp av flex og transformasjoner i samme rad som overskriften. Det kunne se akseptabelt ut i én vindusstørrelse, men den ble aldri egentlig sentrert i den ledige høyre flaten. I stedet for å legge til enda en fast margin valgte jeg å endre layoutstrukturen i CSS: teksten og logoen fikk hver sin grid-kolonne, og logoen ble sentrert med dynamisk størrelse via `clamp()`.
+
+Samtidig fjernet jeg kortutseendet rundt KI-illustrasjonen i Samtaleøvelse fordi brukertesten viste at selve merket var sterkt nok visuelt uten ekstra ramme. Dette er et lite, men tydelig eksempel på at sluttfasen ikke bare handlet om å få funksjonene til å virke, men om å forenkle visuell struktur og fjerne styling som ikke lenger hadde en funksjon.

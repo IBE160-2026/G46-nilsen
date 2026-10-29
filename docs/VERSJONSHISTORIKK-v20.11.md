@@ -96,3 +96,10 @@ I samme patch ble et state-problem i Finn tema-flyten rettet. Når situasjonstek
 ## v20.11.3 – profilforankring og luft i kompakt desktop
 
 Etter v20.11.2 ble profilområdet korrekt synlig, men på kompakt desktop ble brukerprofilen visuelt flyttet for langt mot venstre. I tillegg lå temavelgeren for tett på den utstikkende sidefeltknappen. v20.11.3 beholder profilen som siste element helt mot høyre kant, lar profilteksten komprimeres ved behov og reserverer egen venstrebuffersone i høyresiden av topplinjen slik at sidefeltknappen ikke kolliderer visuelt med temavelgeren.
+
+
+## v20.11.4 – historikklogo og Samtaleøvelse-illustrasjon
+
+Produksjonskontroll av Historikk viste at logoen fortsatt lå som et element i samme rad som overskriften. Det gjorde at den ikke kunne være visuelt sentrert i den store ledige flaten til høyre. I v20.11.4 brukes derfor CSS-grid til å gjøre høyresiden til en faktisk visuell kolonne uten å endre semantisk HTML-struktur. Logoen sentreres i kolonnen og skalerer med `clamp()`, slik at plasseringen følger vindusstørrelsen i stedet for faste pikselforskyvninger.
+
+Samtidig ble kortutseendet rundt KI-illustrasjonen i Samtaleøvelse fjernet. Wrapperen er fortsatt brukt til responsiv størrelse og klikkflate, men border, bakgrunn, skygge og radius er fjernet slik at selve illustrasjonen står fritt.

@@ -16,14 +16,19 @@ assert(/font-weight:\s*600\s*!important/.test(css), 'Accordion-overskrifter er i
 const openDetails = [...html.matchAll(/<details\b[^>]*\sopen(?:\s|>|=)[^>]*>/g)].map(match => match[0]);
 assert.equal(openDetails.length, 1, 'Nøyaktig ett details-kort skal være åpent som standard');
 assert(openDetails[0].includes('id="install-app-card"'), 'Det åpne details-kortet skal være installasjonskortet');
-assert(css.includes('v20.11.3 COMPACT DESKTOP TOPBAR'), 'Kompakt desktop-topplinje mangler');
+assert(css.includes('v20.11.4 COMPACT DESKTOP TOPBAR'), 'Kompakt desktop-topplinje mangler');
 assert(css.includes('@media (min-width:641px) and (max-width:1500px)'), 'Mellombredde-regel for topplinje mangler');
 assert(css.includes('@media (min-width:641px) and (max-width:1100px)'), 'To-raders kompakt desktopregel mangler');
-assert(css.includes('v20.11.3 COMPACT DESKTOP ALIGNMENT'), 'Høyrejustert kompakt desktop-topplinje mangler');
+assert(css.includes('v20.11.4 COMPACT DESKTOP ALIGNMENT'), 'Høyrejustert kompakt desktop-topplinje mangler');
 assert(css.includes('justify-content: flex-end !important;'), 'Kompakt desktop skal høyrejustere topbar-høyresiden');
 assert(css.includes('padding-left: 44px !important;'), 'Kompakt desktop mangler avstand fra sidefeltknappen');
 assert(css.includes('.topbar-right .profile-wrap') && css.includes('margin-left: auto !important;'), 'Profilen er ikke forankret til høyre');
-console.log('v20.11.3 UI-kontroll: OK');
+assert(css.includes('v20.11.4 HISTORY HERO + CLEAN SIMULATION MARK'), 'Historikkhero / ren KI-logo-regel mangler');
+assert(css.includes('#history-view .history-header .utility-header-copy'), 'Historikk mangler egen dynamisk logokolonne');
+assert(css.includes('grid-column: 2 !important;') && css.includes('place-items: center !important;'), 'Historikklogo er ikke sentrert i høyre felt');
+assert(css.includes('width: clamp(200px,22vw,340px) !important;'), 'Historikklogo har ikke dynamisk desktopstørrelse');
+assert(css.includes('#simulation-view .simulation-logo-crop') && css.includes('border: 0 !important;') && css.includes('background: transparent !important;'), 'Samtaleøvelse har fortsatt kort/ramme rundt KI-merket');
+console.log('v20.11.4 UI-kontroll: OK');
 
 
 
@@ -40,14 +45,14 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.11\.3/.test(html), "CSS cache-versjon er ikke 20.11.3");
-assert(/id=["']about-app-version["']>20\.11\.3</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.3");
+assert(/styles\.css\?v=20\.11\.4/.test(html), "CSS cache-versjon er ikke 20.11.4");
+assert(/id=["']about-app-version["']>20\.11\.4</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.4");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
-assert(/id=["']report-meta["']>Versjon 20\.11\.3</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.3");
+assert(/id=["']report-meta["']>Versjon 20\.11\.4</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.4");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
-assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.3["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.3["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.3["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.3["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
+assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.4["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.4["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.4["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.4["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
 console.log("Klientmodul-innlasting: OK");
 
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.

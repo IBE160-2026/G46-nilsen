@@ -1,3 +1,12 @@
+# v20.11.4 – sentrert historikklogo og ren KI-illustrasjon
+
+- Historikkoverskriften bruker nå en ekte responsiv høyrekolonne for logoen.
+- Logoen sentreres i høyre felt og skalerer dynamisk med vindusstørrelsen via clamp().
+- På mellomstore og små skjermer justeres størrelsen uten faste manuelle marger.
+- KI-illustrasjonen i Samtaleøvelse vises uten ramme, bakgrunn, kortskygge eller avrundet boks.
+- Versjon, cache og regresjonstester er synkronisert til 20.11.4.
+
+---
 # v20.11.3 – høyrejustert profil og bedre luft i topplinjen
 
 - Brukerprofilen er forankret til høyre kant også i kompakt desktopvisning.

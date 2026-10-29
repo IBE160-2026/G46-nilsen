@@ -1,6 +1,6 @@
 ﻿# Samtalestøtte
 
-**Gjeldende produksjonsversjon:** 20.11.3 · 29.10.2026  
+**Gjeldende produksjonsversjon:** 20.11.4 · 29.10.2026  
 
 Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Løsningen er utviklet som del av IBE160 Programmering med KI ved Høgskolen i Molde.
 
@@ -142,7 +142,7 @@ SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SECRET_KEY=sb_secret_...
 
 ADMIN_EMAILS=din-admin-epost@example.com
-APP_VERSION=20.11.0
+APP_VERSION=20.11.4
 ```
 
 Ekte API-nøkler og andre hemmeligheter skal ikke legges i GitHub.
@@ -174,6 +174,8 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 **Patch 20.11.2:** topplinjen fikk en egen kompakt desktoptilstand for mellomstore vinduer slik at logo, breadcrumb, temavelger, Ny samtale og profil ikke overlapper eller kuttes. Finn tema-feltene tømmes også når brukeren går videre til råd, slik at en tidligere situasjonsbeskrivelse ikke blir hengende igjen i søkefeltene.
 
 **Patch 20.11.3:** profilen er igjen forankret til høyre kant på kompakt desktop, mens temavelgeren har reservert luft mot sidefeltknappen. Innholdet komprimeres uten å flytte brukerprofilen unødvendig mot venstre.
+
+**Patch 20.11.4:** Historikk-logoen er flyttet inn i en ekte, responsiv høyrekolonne og sentreres dynamisk med vindusstørrelsen. KI-illustrasjonen i Samtaleøvelse vises uten kort, kant eller bakgrunn rundt selve merket.
 
 Pilotarbeidet 29.10.2026 viste at mobil måtte behandles som en reell brukerflate, ikke bare som en nedskalert desktopvisning. Versjon 20.11.0 samler derfor mobil-first UX, PWA-installasjon og merkevareforbedringer i én produksjonsrelease.
 

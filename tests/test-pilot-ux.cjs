@@ -30,4 +30,4 @@ assert(backlog.includes('## 12. Voice / tale i samtaleøvelsen'), 'Voice-funn ma
 assert(fs.existsSync('docs/VERSJONSSTRATEGI.md'), 'Versjonsstrategi mangler');
 assert(fs.existsSync('docs/VOICE-DESIGN.md'), 'Voice-design mangler');
 
-console.log('Produksjons-UX v20.11.3: begreper, mobil, PWA, voice-backlog og versjonsstrategi OK');
+console.log('Produksjons-UX v20.11.4: begreper, mobil, PWA, voice-backlog og versjonsstrategi OK');
