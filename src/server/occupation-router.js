@@ -39,31 +39,74 @@ export function getOccupationLegalRegistry() {
 
 export function classifyOccupationLocally(value) {
   const needle = normalize(value);
-  if (!needle) return { matched: false, sectorId: null, matchMode: "none", matchedValue: null };
+  if (!needle) {
+    return { matched: false, ambiguous: false, sectorId: null, matchMode: "none", matchedValue: null, candidates: [] };
+  }
 
-  let best = null;
+  const matches = [];
   for (const sector of sourceMap.sectors || []) {
     if (sector.id === "other") continue;
     const candidates = [
       ...(sector.occupations || []).map(v => ({ value: v, mode: "occupation" })),
       ...(sector.aliases || []).map(v => ({ value: v, mode: "alias" }))
     ];
+
     for (const candidate of candidates) {
       const n = normalize(candidate.value);
       if (!n) continue;
       const exact = needle === n;
       const contains = needle.includes(n) || n.includes(needle);
       if (!exact && !contains) continue;
-      const score = (exact ? 1000 : 100) + Math.min(n.length, 80);
-      if (!best || score > best.score) {
-        best = { score, sectorId: sector.id, matchMode: candidate.mode, matchedValue: candidate.value };
-      }
+
+      const score =
+        (exact ? 1000 : 100) +
+        (candidate.mode === "occupation" ? 20 : 0) +
+        Math.min(n.length, 80);
+
+      matches.push({
+        score,
+        sectorId: sector.id,
+        sectorLabel: sector.label,
+        matchMode: candidate.mode,
+        matchedValue: candidate.value
+      });
     }
   }
 
-  return best
-    ? { matched: true, sectorId: best.sectorId, matchMode: best.matchMode, matchedValue: best.matchedValue }
-    : { matched: false, sectorId: null, matchMode: "none", matchedValue: null };
+  matches.sort((a, b) => b.score - a.score);
+  if (!matches.length) {
+    return { matched: false, ambiguous: false, sectorId: null, matchMode: "none", matchedValue: null, candidates: [] };
+  }
+
+  const topScore = matches[0].score;
+  const top = matches.filter(match => match.score === topScore);
+  const topSectors = [...new Set(top.map(match => match.sectorId))];
+
+  if (topSectors.length > 1) {
+    return {
+      matched: false,
+      ambiguous: true,
+      sectorId: null,
+      matchMode: "ambiguous",
+      matchedValue: null,
+      candidates: top.map(({ sectorId, sectorLabel, matchMode, matchedValue }) => ({
+        sectorId,
+        sectorLabel,
+        matchMode,
+        matchedValue
+      }))
+    };
+  }
+
+  const best = matches[0];
+  return {
+    matched: true,
+    ambiguous: false,
+    sectorId: best.sectorId,
+    matchMode: best.matchMode,
+    matchedValue: best.matchedValue,
+    candidates: []
+  };
 }
 
 export function shouldUseOccupationContext({ occupation, sectorId, topic, subtopic, situation } = {}) {
