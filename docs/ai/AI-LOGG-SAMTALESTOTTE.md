@@ -1298,3 +1298,23 @@ Valget om ett felles skjema var bevisst:
 Personvern ble kontrollert mot faktisk databaseimplementasjon. `survey_responses` lagrer ikke bruker-ID, mens `survey_participation` bare markerer at en konto har sendt inn. Dokumentasjonen ble oppdatert slik at løsningen ikke omtaler svarene som «helt anonyme», men som lagret uten navn eller direkte kobling til konto.
 
 Det ble også eksplisitt dokumentert at et lite, målrettet utvalg ikke er representativt og at positive svar fra personer med relevant bakgrunn ikke automatisk er ekspertvalidering. Målet med piloten er å finne forbedringspunkter, ikke å produsere gode skårer.
+
+
+## 2026-10-28/29 – KI-styrt regresjon, personvernfunn og taksonomirydding
+
+Brukeren/prosjekteieren styrte først en kvalitetsgjennomgang av faktiske KI-svar og pekte på at «Forslag til åpning» ble for langt, formelt og noen ganger skrevet som instruksjon til lederen. KI-assistenten foreslo et mønster på tvers av eksemplene, men endringen ble først gjennomført etter eksplisitt godkjenning.
+
+KI-assistenten bidro deretter med:
+- konkret prompt-/schema-innstramming for korte muntlige åpninger
+- deterministiske kontrakts- og regresjonstester
+- fem pilotcaser basert på faktiske problemtyper
+- adminflyt for å kjøre pilot og senere alle 26 golden/pilotcaser gjennom produksjonsendepunktene
+- gjennomgang av Render-logger for å skille modellfeil, testfeil og personvernfeil
+
+Ved første fullkjøring ble tre saker stoppet før KI-kall. I stedet for å endre testcasene for å få grønt resultat ble selve personverndetektoren analysert. KI-assistenten lokaliserte tre falske navnemønstre («møtte tydelig påvirket», «med hva …», «Varsleren mener …»), foreslo minimal regelendring og la inn regresjonstester. Prosjekteieren godkjente at dette skulle rettes i underliggende logikk. Ny fullkjøring fikk 26/26 saker gjennom.
+
+Et annet viktig valg var å gjøre situasjonsspesifikke ordtreff til **noter** i stedet for harde feil. Et godt svar kan bruke andre ord enn testforfatteren forventet. Dermed beholdes automatisering der den er robust (lengde, forbudte instruksjoner, setningsantall), mens semantisk kvalitet fortsatt kan kreve menneskelig vurdering.
+
+29.10 ledet prosjekteieren en ny taksonomigjennomgang og avviste flere KI-forslag som var for lange, belastede eller overlappende. Eksempler var preferanse for «Lønnskrav», «Samarbeidsutfordringer», skille mellom konflikt med kollega og leder, og at korte overskrifter skulle støttes av gode beskrivelser. KI-assistentens rolle var å holde oversikten, synkronisere beslutningene i klient/server/testbank og dokumentere begrunnelsene.
+
+Denne delen av prosessen viser tydelig at KI ikke bare «skrev koden». Prosjekteieren korrigerte språk, kategorier, testkriterier og graden av automatisering. KI-assistenten ble brukt som implementerings- og analyseverktøy, mens beslutningsmyndigheten lå hos prosjekteieren.
