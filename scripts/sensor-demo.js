@@ -121,7 +121,7 @@ for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-d
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
 
 app.get("/api/public-config", (_req, res) => res.json({
-  appVersion: "20.11.4",
+  appVersion: "20.11.5",
   contactEmail: "",
   demoMode: true
 }));
