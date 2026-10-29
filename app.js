@@ -4,6 +4,7 @@ if (!svgIcons || !topics) throw new Error("Mangler Samtalestøtte-klientdata.");
 let lastAiAnalysis = null;
 let lastAiGuidance = null;
 let currentUser = null;
+let deferredInstallPrompt = null;
 let currentConversationId = null;
 let conversationDirty = false;
 let pendingSituationText = '';
@@ -2717,6 +2718,82 @@ async function openSurvey(){
 }
 
 async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør database/migrations/V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminInvites();await loadAdminFeedback();await loadAdminSurvey();await loadAdminAiSettings();await loadAdminAiUsage();await loadBenchmarkConfig();}
+
+
+function isStandaloneApp(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function isIosDevice(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function updateInstallAppUi(){
+  const button=document.querySelector('#install-app-button');
+  const iosHelp=document.querySelector('#install-app-ios-help');
+  const status=document.querySelector('#install-app-status');
+  const description=document.querySelector('#install-app-description');
+  if(!button || !status) return;
+
+  if(isStandaloneApp()){
+    button.hidden=true;
+    if(iosHelp) iosHelp.hidden=true;
+    if(description) description.textContent='Samtalestøtte er installert og kan åpnes som en egen app.';
+    status.textContent='Installert på denne enheten.';
+    return;
+  }
+
+  if(deferredInstallPrompt){
+    button.hidden=false;
+    if(iosHelp) iosHelp.hidden=true;
+    status.textContent='';
+    return;
+  }
+
+  button.hidden=true;
+  if(isIosDevice()){
+    if(iosHelp) iosHelp.hidden=false;
+    status.textContent='iOS viser ikke den samme installasjonsdialogen som Chrome/Edge.';
+  }else{
+    if(iosHelp) iosHelp.hidden=true;
+    status.textContent='Hvis nettleseren støtter appinstallasjon, vises installasjonsknappen automatisk her.';
+  }
+}
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt=event;
+  updateInstallAppUi();
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt=null;
+  updateInstallAppUi();
+});
+
+document.querySelector('#install-app-button')?.addEventListener('click', async () => {
+  const status=document.querySelector('#install-app-status');
+  if(!deferredInstallPrompt){
+    updateInstallAppUi();
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const choice=await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  if(status) status.textContent=choice.outcome==='accepted' ? 'Installeringen er startet.' : 'Installeringen ble avbrutt.';
+  updateInstallAppUi();
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js').catch(error => {
+      console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
+    });
+  });
+}
+
+window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallAppUi);
+setTimeout(updateInstallAppUi,0);
 
 async function loadPublicConfig(){
   try{

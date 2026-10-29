@@ -4,6 +4,14 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Samtalestøtte</title>
+  <meta name="theme-color" content="#123e4a" />
+  <meta name="mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="Samtalestøtte" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <link rel="manifest" href="/manifest.webmanifest" />
+  <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
   <link rel="stylesheet" href="styles.css?v=20.10.10" />
 </head>
 <body>
@@ -518,6 +526,24 @@
             <button data-theme="dark" type="button"><span>☾</span>Mørkt</button>
             <button data-theme="system" type="button"><span>◐</span>Følg systemet</button>
           </div></div>
+        </details>
+        <details class="settings-card utility-accordion" id="install-app-card">
+          <summary>Installer Samtalestøtte</summary>
+          <div class="utility-accordion-body install-app-body">
+            <div class="install-app-brand" aria-hidden="true"><img src="/assets/icons/app-icon.svg" alt="" /></div>
+            <div class="install-app-copy">
+              <h2>Bruk Samtalestøtte som en app</h2>
+              <p id="install-app-description">Installer Samtalestøtte på mobilen eller datamaskinen for rask tilgang og et eget appvindu.</p>
+              <div class="settings-account-actions">
+                <button class="primary-button" id="install-app-button" type="button" hidden>Installer Samtalestøtte</button>
+              </div>
+              <div class="install-app-help" id="install-app-ios-help" hidden>
+                <strong>På iPhone/iPad</strong>
+                <p>Åpne siden i Safari, trykk Del og velg «Legg til på Hjem-skjerm».</p>
+              </div>
+              <p class="muted-note" id="install-app-status" aria-live="polite"></p>
+            </div>
+          </div>
         </details>
         <details class="settings-card utility-accordion">
           <summary>Konto og lagring</summary>

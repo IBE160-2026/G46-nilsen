@@ -112,7 +112,7 @@ function guidanceFor(situation, analysis) {
 }
 
 app.get("/", (_req, res) => res.sendFile(path.join(root, "index.html")));
-for (const filename of ["app.js", "styles.css"]) {
+for (const filename of ["app.js", "styles.css", "manifest.webmanifest", "sw.js"]) {
   app.get(`/${filename}`, (_req, res) => res.sendFile(path.join(root, filename)));
 }
 for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-data.js"]) {

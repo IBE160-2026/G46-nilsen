@@ -1,0 +1,30 @@
+{
+  "name": "Samtalestøtte",
+  "short_name": "Samtalestøtte",
+  "description": "Forbered og øv på krevende medarbeidersamtaler med strukturert KI-støtte.",
+  "lang": "nb-NO",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#f4f8fa",
+  "theme_color": "#123e4a",
+  "categories": [
+    "productivity",
+    "business"
+  ],
+  "icons": [
+    {
+      "src": "/assets/icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/assets/icons/app-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

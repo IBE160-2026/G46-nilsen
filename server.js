@@ -93,7 +93,7 @@ app.use("/api", generalApiLimiter);
 
 // Server kun eksplisitt offentlige frontend-filer. SQL, .env, tester og dokumentasjon er ikke web-tilgjengelige.
 const publicAssetNames = new Set([
-  "index.html", "app.js", "styles.css", "src/client-data.js", "src/privacy-name-data.js", "src/privacy-detector.js", "assets/images/snakkeboble.svg",
+  "index.html", "app.js", "styles.css", "manifest.webmanifest", "sw.js", "src/client-data.js", "src/privacy-name-data.js", "src/privacy-detector.js", "assets/icons/app-icon.svg", "assets/images/snakkeboble.svg",
   "assets/images/logo.png", "assets/images/logo-light.png", "assets/images/logo-symbol.png", "assets/images/logo-symbol-light.png",
   "assets/images/profile-ai.png", "assets/images/profile-ai-light.png", "assets/images/profile-human.png", "assets/images/profile-human-light.png",
   "assets/images/hero-conversation-exact.png",
