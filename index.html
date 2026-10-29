@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.4" />
+  <link rel="stylesheet" href="styles.css?v=20.11.5" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -79,11 +79,13 @@
     <main class="main">
       <header class="topbar">
         <div class="topbar-left">
-          <img class="topbar-brand-logo" src="assets/images/logo.png" alt="Samtalestøtte" />
-          <span class="topbar-mobile-brand-lockup" aria-hidden="true">
-            <img class="topbar-mobile-brand-symbol" src="assets/images/logo-symbol.png" alt="" />
-            <span class="topbar-mobile-brand-word">Samtalestøtte</span>
-          </span>
+          <button class="topbar-brand-button" type="button" data-open-brand-logo aria-label="Vis Samtalestøtte-logoen større">
+            <img class="topbar-brand-logo" src="assets/images/logo.png" alt="Samtalestøtte" />
+            <span class="topbar-mobile-brand-lockup" aria-hidden="true">
+              <img class="topbar-mobile-brand-symbol" src="assets/images/logo-symbol.png" alt="" />
+              <span class="topbar-mobile-brand-word">Samtalestøtte</span>
+            </span>
+          </button>
           <div id="breadcrumb"></div>
         </div>
         <div class="topbar-right">
@@ -372,9 +374,9 @@
             </div>
             <p data-content-key="simulation.hero.intro">Tren i et eget samtalerom. Du er leder, KI-en spiller medarbeideren. Start fra en sak du allerede jobber med, eller gå rett inn i en ny øvelse.</p>
           </div>
-          <div class="simulation-logo-crop" aria-hidden="true">
-            <img src="assets/images/logo.png" alt="" />
-          </div>
+          <button class="simulation-logo-crop brand-preview-trigger" type="button" data-open-brand-logo aria-label="Vis Samtalestøtte-logoen større">
+            <img src="assets/images/logo-symbol.png" alt="" />
+          </button>
         </div>
         <div id="history-privacy-review-simulation" class="history-privacy-review" hidden></div>
 
@@ -555,6 +557,10 @@
               <div class="install-app-help" id="install-app-ios-help" hidden>
                 <strong>På iPhone/iPad</strong>
                 <p>Åpne siden i Safari, trykk Del og velg «Legg til på Hjem-skjerm».</p>
+              </div>
+              <div class="install-app-help" id="install-app-manual-help" hidden>
+                <strong>Installer fra nettleseren</strong>
+                <p id="install-app-manual-text">Åpne nettlesermenyen og velg «Installer app» eller «Legg til på startskjermen».</p>
               </div>
               <p class="muted-note" id="install-app-status" aria-live="polite"></p>
             </div>
@@ -913,6 +919,13 @@
   </div>
 
 
+  <dialog id="brand-logo-dialog" class="brand-logo-dialog">
+    <div class="brand-logo-dialog-card">
+      <button class="brand-logo-dialog-close" id="brand-logo-dialog-close" type="button" aria-label="Lukk">×</button>
+      <img src="assets/images/logo.png" alt="Samtalestøtte" />
+    </div>
+  </dialog>
+
   <dialog id="admin-save-dialog" class="confirm-dialog"><form method="dialog" class="confirm-dialog-card"><h2>Lagre endringene?</h2><p>Er du sikker på at du vil lagre endringene? De blir synlige for brukerne med en gang.</p><div class="dialog-actions"><button class="secondary-button" id="admin-save-cancel" type="button">Avbryt</button><button class="primary-button" id="admin-save-confirm" type="button">Lagre endringer</button></div></form></dialog>
 
   <dialog id="ai-feedback-dialog" class="confirm-dialog"><form id="ai-feedback-form" class="confirm-dialog-card"><h2>Rapporter KI-svar</h2><p>Fortell kort hva som var galt eller lite nyttig.</p><label>Hva var problemet?<select id="ai-feedback-category"><option>Misforstod situasjonen</option><option>Ikke relevant</option><option>Faglig tvilsomt</option><option>For generelt</option><option>Uheldig formulering</option><option>Urealistisk simulatorrespons</option><option>Annet</option></select></label><label>Kommentar<textarea id="ai-feedback-comment" rows="4" placeholder="Hva burde vært annerledes? Unngå navn og andre personopplysninger."></textarea></label><div id="ai-feedback-comment-privacy" class="privacy-check" hidden></div><label class="report-log-option ai-feedback-attach"><input id="ai-feedback-include-conversation" type="checkbox"><span><strong>Legg ved samtalen</strong><small>Av som standard. Personvernsjekken kjøres før samtalen eventuelt lagres sammen med rapporten.</small></span></label><div id="ai-feedback-privacy" class="privacy-check" hidden></div><div class="auth-message" id="ai-feedback-message" aria-live="polite"></div><div class="dialog-actions"><button class="secondary-button" id="ai-feedback-cancel" type="button">Avbryt</button><button class="primary-button" type="submit">Send tilbakemelding</button></div></form></dialog>
@@ -984,6 +997,6 @@
   <script src="src/privacy-name-data.js?v=20.10.10"></script>
   <script src="src/privacy-detector.js?v=20.10.10"></script>
   <script src="src/client-data.js?v=20.10.10"></script>
-  <script src="app.js?v=20.11.4"></script>
+  <script src="app.js?v=20.11.5"></script>
 </body>
 </html>
