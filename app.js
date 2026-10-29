@@ -95,6 +95,50 @@ function updateNavState(name) {
   });
 }
 
+function setMobileNavHidden(hidden) {
+  if (window.innerWidth > 700) {
+    document.body.classList.remove('mobile-nav-hidden');
+    return;
+  }
+  document.body.classList.toggle('mobile-nav-hidden', Boolean(hidden));
+}
+
+let mobileNavLastScrollY = Math.max(0, window.scrollY);
+let mobileNavScrollTicking = false;
+
+function updateMobileNavForScroll() {
+  const y = Math.max(0, window.scrollY);
+  const delta = y - mobileNavLastScrollY;
+
+  if (window.innerWidth > 700 || y < 64) {
+    setMobileNavHidden(false);
+  } else if (delta > 7) {
+    setMobileNavHidden(true);
+  } else if (delta < -7) {
+    setMobileNavHidden(false);
+  }
+
+  mobileNavLastScrollY = y;
+  mobileNavScrollTicking = false;
+}
+
+window.addEventListener('scroll', () => {
+  if (mobileNavScrollTicking) return;
+  mobileNavScrollTicking = true;
+  requestAnimationFrame(updateMobileNavForScroll);
+}, { passive: true });
+
+window.addEventListener('resize', () => {
+  mobileNavLastScrollY = Math.max(0, window.scrollY);
+  if (window.innerWidth > 700) setMobileNavHidden(false);
+}, { passive: true });
+
+document.addEventListener('focusin', event => {
+  if (event.target?.matches?.('input, textarea, select, [contenteditable="true"]')) {
+    setMobileNavHidden(false);
+  }
+});
+
 function clearDocumentSelection() {
   const selection = window.getSelection?.();
   if (selection?.rangeCount) selection.removeAllRanges();
@@ -102,6 +146,8 @@ function clearDocumentSelection() {
 
 function showView(name) {
   clearDocumentSelection();
+  setMobileNavHidden(false);
+  mobileNavLastScrollY = 0;
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
