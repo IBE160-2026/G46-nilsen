@@ -665,6 +665,53 @@ function hideAutoTopicNote() {
   if (note) note.hidden = true;
 }
 
+function scrollFinderResultIntoView(box, inputSelector = '') {
+  const input = inputSelector ? document.querySelector(inputSelector) : null;
+  input?.blur();
+  requestAnimationFrame(() => {
+    box?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
+function openGuidanceAndGetAdvice(topic, subtopic, situation, classification = null) {
+  currentTopic = topic;
+  highlightTopicCard(topic.id);
+  openGuidance(subtopic[0], subtopic[1], situation);
+  if (classification) showAutoTopicNote(topic, subtopic, classification);
+
+  requestAnimationFrame(() => {
+    const field = document.querySelector('#situation');
+    field?.blur();
+    requestAnimationFrame(() => {
+      document.querySelector('#situation-form')?.requestSubmit();
+    });
+  });
+}
+
+function renderConfirmedTopicSuggestion(box, topic, subtopic, classification, situation, inputSelector = '') {
+  box.hidden = false;
+  box.className = 'topic-suggestion ai-topic-suggestion';
+  box.innerHTML = `
+    <span class="suggestion-kicker">Foreslått tema</span>
+    <strong>${escapeHtml(topic.title)} <span aria-hidden="true">→</span> ${escapeHtml(subtopic[0])}</strong>
+    <p>${escapeHtml(classification.reason || subtopic[1] || 'Dette ser ut til å passe best med det du beskrev.')}</p>
+    <div class="suggestion-actions">
+      <button class="primary-button" type="button" data-get-advice-now>Få råd</button>
+      <button class="ghost-button" type="button" data-review-topic>Se andre undertemaer</button>
+    </div>
+  `;
+
+  box.querySelector('[data-get-advice-now]')?.addEventListener('click', () => {
+    openGuidanceAndGetAdvice(topic, subtopic, situation, classification);
+  });
+  box.querySelector('[data-review-topic]')?.addEventListener('click', () => {
+    currentTopic = topic;
+    highlightTopicCard(topic.id);
+    openTopic(topic);
+  });
+  scrollFinderResultIntoView(box, inputSelector);
+}
+
 function renderLowConfidenceTopicChoice(box, classification, situation) {
   const ids = [classification.primary_topic_id, ...(classification.alternative_topic_ids || [])]
     .filter((id, index, all) => id && all.indexOf(id) === index)
@@ -692,10 +739,11 @@ function renderLowConfidenceTopicChoice(box, classification, situation) {
       const topic = topics.find(item => item.id === button.dataset.aiTopic);
       if (!topic) return;
       const subtopic = topicSubtopicByTitle(topic, button.dataset.aiSubtopic) || topic.subtopics[0];
-      openGuidanceFromSuggestion(topic, subtopic, situation);
-      showAutoTopicNote(topic, subtopic, { ...classification, confidence: 'low', reason: 'Du valgte temaet etter KI-forslaget.' });
+      openGuidanceAndGetAdvice(topic, subtopic, situation, { ...classification, confidence: 'low', reason: 'Du valgte temaet etter KI-forslaget.' });
     });
   });
+
+  scrollFinderResultIntoView(box);
 }
 
 async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBoxId, selectedTopicId = '' }) {
@@ -717,6 +765,7 @@ async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBox
   box.hidden = false;
   box.className = 'topic-suggestion ai-topic-suggestion loading';
   box.innerHTML = '<div class="topic-thinking"><span class="thinking-spinner" aria-hidden="true"></span><div><strong>Forstår situasjonen …</strong><p>KI vurderer hele konteksten og finner mest sannsynlige tema.</p></div></div>';
+  scrollFinderResultIntoView(box, inputId);
 
   try {
     const classification = await requestTopicClassification(situation, selectedTopicId);
@@ -729,9 +778,8 @@ async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBox
       return;
     }
 
-    // Høy/middels sikkerhet: færre klikk. Gå direkte videre og la brukeren endre tema ved behov.
-    openGuidanceFromSuggestion(topic, subtopic, situation);
-    showAutoTopicNote(topic, subtopic, classification);
+    // Høy/middels sikkerhet: vis ett tydelig forslag og la hovedhandlingen gå direkte til rådet.
+    renderConfirmedTopicSuggestion(box, topic, subtopic, classification, situation, inputId);
   } catch (error) {
     console.warn('KI-temaforslag feilet, bruker lokal reserve:', error);
     if (selectedTopicId && currentTopic) renderSubtopicSuggestion(situation);
@@ -739,6 +787,7 @@ async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBox
     const fallbackBox = document.querySelector(boxId);
     if (fallbackBox) {
       fallbackBox.insertAdjacentHTML('afterbegin', '<span class="suggestion-kicker">Lokal reserve</span>');
+      scrollFinderResultIntoView(fallbackBox, inputId);
     }
   }
 }
@@ -1685,12 +1734,12 @@ function renderSuggestion(query) {
         <strong>${best.topic.title} <span aria-hidden="true">→</span> ${subTitle}</strong>
         <p>${subHelp}</p>
         <div class="suggestion-actions">
-          <button class="primary-button" type="button" id="open-suggested-guidance">Bruk forslag</button>
+          <button class="primary-button" type="button" id="open-suggested-guidance">Få råd</button>
           <button class="ghost-button" type="button" id="review-suggested-topic">Se andre undertemaer</button>
           ${alternatives}
         </div>
       `;
-      box.querySelector('#open-suggested-guidance').addEventListener('click', () => openGuidanceFromSuggestion(best.topic, bestSubtopic.subtopic, trimmed));
+      box.querySelector('#open-suggested-guidance').addEventListener('click', () => openGuidanceAndGetAdvice(best.topic, bestSubtopic.subtopic, trimmed, { confidence: 'local', reason: 'Temaet er foreslått av reserveflyten.' }));
       box.querySelector('#review-suggested-topic').addEventListener('click', () => openTopic(best.topic));
     } else {
       box.innerHTML = `
@@ -1711,6 +1760,8 @@ function renderSuggestion(query) {
       if (topic) openTopic(topic);
     });
   });
+
+  scrollFinderResultIntoView(box, '#topic-search');
 }
 
 function filterTopicCards(query) {
@@ -1775,10 +1826,12 @@ function renderSubtopicSuggestion(query) {
     <strong>Foreslått undertema: ${title}</strong>
     <p>${help}</p>
     <div class="suggestion-actions">
-      <button class="primary-button" type="button" id="open-suggested-subtopic">Bruk dette undertemaet</button>
+      <button class="primary-button" type="button" id="open-suggested-subtopic">Få råd</button>
     </div>
   `;
-  box.querySelector('#open-suggested-subtopic').addEventListener('click', () => openGuidance(title, help, query));
+  box.querySelector('#open-suggested-subtopic').addEventListener('click', () => openGuidanceAndGetAdvice(currentTopic, best.subtopic, query, { confidence: 'local', reason: 'Undertemaet er foreslått av reserveflyten.' }));
+
+  scrollFinderResultIntoView(box, '#topic-detail-search');
 }
 
 function filterSubtopicCards(query) {
