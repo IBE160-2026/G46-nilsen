@@ -3,7 +3,7 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** AI Test Plan / Quality Assurance  
 **Status:** Aktiv og revidert testplan  
-**Versjon ved dokumentasjon:** 20.10.3  
+**Versjon ved dokumentasjon:** 20.10.9  
 **Språk:** Norsk
 
 ---
@@ -199,9 +199,9 @@ Denne produktavgrensningen reduserer konsekvensen av at prosjektet ikke har ekst
 
 ### Dekning i golden-banken
 
-Golden-banken dekker alle ni hovedtemaer, men den er ikke en full faglig fasit for alle 56 undertemaer. Den bredere benchmarkbanken dekker undertemastrukturen med flere testscenarier, mens golden-banken brukes som et mindre, strengere regresjonssett.
+Golden-banken dekker alle ni hovedtemaer, men den er ikke en full faglig fasit for alle 48 gjeldende undertemaer. Den bredere benchmarkbanken dekker undertemastrukturen med flere testscenarier, mens golden-banken brukes som et mindre, strengere regresjonssett.
 
-Etter faglærers tilbakemelding 26.10.2026 ble golden-banken først utvidet fra 9 til 13 caser og deretter videre til **21 caser**. Banken har nå minst **to caser per hovedtema**, mens de mest risikoutsatte temaene har ekstra dekning. **Mobbing og trakassering** har fire golden-caser og **Avslutning av arbeidsforhold** har tre.
+Etter faglærers tilbakemelding 26.10.2026 ble golden-banken først utvidet fra 9 til 13 caser og deretter til **21 caser**. 28.10.2026 ble den videre utvidet med fem faktiske pilotcaser til **26 caser**. Banken har minst **to caser per hovedtema**, mens de mest risikoutsatte temaene har ekstra dekning. **Mobbing og trakassering** har fire golden-caser og **Avslutning av arbeidsforhold** har tre.
 
 De nye casene inkluderer både konstruerte regresjonsscenarier og anonymiserte/generaliserte situasjoner inspirert av reelle arbeidshverdagsdilemmaer. Eksempler er:
 
@@ -609,7 +609,7 @@ data/BENCHMARK-CASES.json
 
 Banken er utviklet for å dekke dagens tema- og undertemastruktur bredere enn det mindre regresjonssettet.
 
-Den inneholder **112 caser fordelt på 56 undertemaer**, med minimum to caser per undertema i denne versjonen av testgrunnlaget.
+Den inneholder nå **114 caser fordelt på 48 gjeldende undertemaer**, med minimum to caser per undertema. Flere sammenslåtte undertemaer har ekstra historisk testdekning.
 
 Benchmarkbanken trenger ikke kjøres mot alle betalte modeller ved hver endring.
 
@@ -1302,3 +1302,26 @@ Bekreftet i denne kjøringen:
 - sensor-demo-regresjon: **bestått**
 
 Etter den påfølgende kjøringen ble også repo-strukturtesten og de nye integrasjonskontrollene verifisert grønne. Hele den deterministiske `npm test`-pakken besto etter modularisering, asset-retting, UU-endringer og package-lock-synkronisering.
+
+---
+
+## Verifisering 2026-10-28/29 – full produksjonsflyt og taksonomisynk
+
+Goldenbanken ble utvidet til 26 caser, inkludert fem faktiske pilotcaser som tidligere hadde avdekket svake samtaleåpninger. Admin fikk en produksjonsflyt-test som bruker samme analyse- og veiledningsendepunkter som vanlige brukere, men merker trafikken eksplisitt som test.
+
+Første fullkjøring registrerte alle 26 saker. 23 nådde KI-veiledningen og besto åpningstesten, mens tre ble stoppet av personvernfilteret før KI-kall. Feilen var ikke i modellen, men i den deterministiske navnedetektoren:
+
+- «møtte tydelig påvirket» ble feil tolket som personreferanse etter verbet «møtte»
+- «med hva som har skjedd» ga falskt navnetreff på «hva»
+- «Varsleren mener …» ga falskt navnetreff på «Varsleren»
+
+Reglene ble rettet i `src/privacy-detector.js` og låst i klient- og serverrettede personverntester. Deretter ble fullkjøringen gjentatt. **26/26 caser kom gjennom til KI-svar.** 25 åpninger besto automatisk kontroll. Én åpning var 67 ord mot testgrensen på 65 og ble beholdt som manuelt akseptabel fordi innholdet traff kravene og avviket var marginalt.
+
+Dette ga to viktige testprinsipper:
+
+1. En full produksjonsflyt-test må kontrollere mer enn selve KI-svaret; deterministiske komponenter før KI-kallet kan også stoppe korrekt funksjon.
+2. Ikke-deterministisk KI bør testes på stabile egenskaper og sikkerhetskrav, ikke forventes å produsere identisk tekst ved hver kjøring.
+
+29.10.2026 ble undertemastrukturen forenklet fra 56 til 48 undertemaer. Klientdata og serverens klassifiseringskontrakt ble synkronisert, og UI-regresjonen låser de nye navnene. Benchmarkbanken ble deretter remappet til den gjeldende taksonomien uten å kaste tidligere testsaker. To nye saker for «Konflikt med leder» ble lagt til, slik at banken nå har 114 saker og minst to per gjeldende undertema. `tests/test-benchmark-taxonomy.cjs` kontrollerer koblingen mot `src/server/topic-contracts.js`.
+
+Merk at den historiske fullkjøringen av `npm test` 26.10.2026 fortsatt dokumenteres som den siste komplette lokale kjøringen av hele pakken. Senere endringer er kontrollert med målrettede regresjoner, statiske kontraktskontroller og vellykket Render-bygg/deploy; dokumentasjonen skal ikke late som en full lokal testpakke er kjørt etter hver dokumentasjonsendring.
