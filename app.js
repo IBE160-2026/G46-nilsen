@@ -58,7 +58,6 @@ function renderStaticIcons() {
   setSvg('sidebar-message-icon', svgIcons.team);
   setSvg('simulation-heading-icon', svgIcons.simulation);
   setSvg('mobile-nav-home-icon', svgIcons.home);
-  setSvg('mobile-nav-simulation-icon', svgIcons.simulation);
   setSvg('mobile-nav-history-icon', svgIcons.history);
   setSvg('mobile-nav-settings-icon', svgIcons.settings);
 
@@ -2801,7 +2800,7 @@ function updateInstallAppUi(){
     if(iosHelp) iosHelp.hidden=true;
     if(manualHelp) manualHelp.hidden=true;
     if(description) description.textContent='Samtalestøtte er installert og kan åpnes som en egen app.';
-    status.textContent='Installert på denne enheten.';
+    status.textContent='Installert som app. Den skal åpnes uten vanlig nettleserlinje.';
     return;
   }
 
@@ -2861,18 +2860,48 @@ document.querySelector('#install-app-button')?.addEventListener('click', async (
   updateInstallAppUi();
 });
 
-const brandLogoDialog=document.querySelector('#brand-logo-dialog');
-document.querySelectorAll('[data-open-brand-logo]').forEach(button => {
-  button.addEventListener('click', () => brandLogoDialog?.showModal());
+const imagePreviewDialog=document.querySelector('#image-preview-dialog');
+const imagePreviewDialogImage=document.querySelector('#image-preview-dialog-image');
+
+function openImagePreview(sourceImage){
+  if(!imagePreviewDialog || !imagePreviewDialogImage || !sourceImage) return;
+  let src=sourceImage.getAttribute('src') || sourceImage.currentSrc || '';
+  if(sourceImage.classList.contains('topbar-brand-logo') && document.documentElement.dataset.theme==='dark'){
+    src='assets/images/logo-light.png';
+  }
+  imagePreviewDialogImage.src=src;
+  imagePreviewDialogImage.alt=sourceImage.alt || 'Forstørret bilde';
+  imagePreviewDialog.showModal();
+}
+
+document.querySelectorAll('.image-preview-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => openImagePreview(trigger.querySelector('img')));
+  trigger.addEventListener('keydown', event => {
+    if((event.key==='Enter' || event.key===' ') && trigger.tagName!=='BUTTON'){
+      event.preventDefault();
+      openImagePreview(trigger.querySelector('img'));
+    }
+  });
 });
-document.querySelector('#brand-logo-dialog-close')?.addEventListener('click', () => brandLogoDialog?.close());
-brandLogoDialog?.addEventListener('click', event => {
-  if(event.target===brandLogoDialog) brandLogoDialog.close();
+
+document.querySelectorAll('.expandable-content-image').forEach(image => {
+  image.addEventListener('click', () => openImagePreview(image));
+  image.addEventListener('keydown', event => {
+    if(event.key==='Enter' || event.key===' '){
+      event.preventDefault();
+      openImagePreview(image);
+    }
+  });
+});
+
+document.querySelector('#image-preview-dialog-close')?.addEventListener('click', () => imagePreviewDialog?.close());
+imagePreviewDialog?.addEventListener('click', event => {
+  if(event.target===imagePreviewDialog) imagePreviewDialog.close();
 });
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.5', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.7', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
