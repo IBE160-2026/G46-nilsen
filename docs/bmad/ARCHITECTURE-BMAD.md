@@ -4,7 +4,7 @@
 **Dokumenttype:** Architecture Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert arkitektur med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.10.10  
+**Versjon ved dokumentasjon:** 20.11.0  
 **Språk:** Norsk
 
 ---
@@ -1258,7 +1258,7 @@ De viktigste arkitekturvalgene er:
 
 Arkitekturen har blitt utviklet iterativt og endret som følge av testing og feilretting.
 
-Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, men den arkitekturen prosjektet faktisk har utviklet fram til versjon 20.10.10.
+Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, men den arkitekturen prosjektet faktisk har utviklet fram til versjon 20.11.0.
 
 Framtidige mål som intern KI, lokal RAG og lukket nettverk er dokumentert separat og fremstilles ikke som ferdige deler av dagens leveranse.
 
@@ -1333,3 +1333,23 @@ Dette inkluderte blant annet:
 - package-lock-konsistens
 
 Modulariseringen beholdes derfor som en verifisert arkitekturforbedring og ikke som en utestet endring.
+
+
+# Produksjonstillegg – PWA-arkitektur i v20.11.0
+
+PWA-funksjonaliteten er lagt som et klientnært installasjons- og cachelag over den eksisterende webarkitekturen:
+
+    Nettleser / installert PWA
+            |
+            +-- manifest.webmanifest + appikoner
+            +-- sw.js (app-shell/cache)
+            |
+            v
+    HTML/CSS/JavaScript
+            |
+            v
+    Node/Express -> Supabase / KI-provider
+
+Service workeren cacher bare eksplisitte frontendressurser og skal ikke fungere som cache for API-kall eller ikke-GET-forespørsler. Dette reduserer risikoen for at autentiserte eller dynamiske API-svar blir liggende i app-shell-cachen. Produksjonsserverens vanlige sikkerhets- og personverngrenser gjelder uendret når løsningen åpnes som installert PWA.
+
+PWA-laget endrer dermed distribusjonsopplevelsen, men ikke tillitsgrensen: serveren er fortsatt kontrollpunkt for autentisering, autorisasjon, personverngateway, hemmeligheter og KI-kall.
