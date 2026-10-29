@@ -17,7 +17,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.11.0", contactEmail: "" };
+let publicConfig = { appVersion: "20.11.1", contactEmail: "" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 let surveySubmitting = false;
@@ -96,7 +96,7 @@ function updateNavState(name) {
 }
 
 function setMobileNavHidden(hidden) {
-  if (window.innerWidth > 700) {
+  if (window.innerWidth > 640) {
     document.body.classList.remove('mobile-nav-hidden');
     return;
   }
@@ -110,7 +110,7 @@ function updateMobileNavForScroll() {
   const y = Math.max(0, window.scrollY);
   const delta = y - mobileNavLastScrollY;
 
-  if (window.innerWidth > 700 || y < 64) {
+  if (window.innerWidth > 640 || y < 64) {
     setMobileNavHidden(false);
   } else if (delta > 7) {
     setMobileNavHidden(true);
@@ -130,7 +130,7 @@ window.addEventListener('scroll', () => {
 
 window.addEventListener('resize', () => {
   mobileNavLastScrollY = Math.max(0, window.scrollY);
-  if (window.innerWidth > 700) setMobileNavHidden(false);
+  if (window.innerWidth > 640) setMobileNavHidden(false);
 }, { passive: true });
 
 document.addEventListener('focusin', event => {
@@ -3145,7 +3145,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.0', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.1', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
