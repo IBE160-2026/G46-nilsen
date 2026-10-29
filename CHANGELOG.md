@@ -1,3 +1,49 @@
+# v20.10.9 – kortere undertemaer, taksonomisynk og sporbarhet
+
+- Undertemastrukturen er forenklet fra 56 til 48 undertemaer med korte, skannbare titler og mer forklarende beskrivelser.
+- Klientdata og serverens tema-/klassifiseringskontrakt er synkronisert og låst med regresjonstest.
+- Benchmarkbanken er remappet til gjeldende taksonomi uten å kaste tidligere testsaker; to nye saker dekker «Konflikt med leder». Banken har nå 114 saker og minst to per undertema.
+- Ny `tests/test-benchmark-taxonomy.cjs` kontrollerer at benchmarkcaser bruker gyldige tema/undertema-par.
+- README, Product Brief, PRD, arkitektur og KI-testplan er oppdatert til 48 undertemaer og versjon 20.10.9.
+- Versjons- og commitspor for v20.10.4–v20.10.9 dokumenteres i `docs/VERSJONSHISTORIKK-v20.10.md`.
+
+# v20.10.8 – personvernfunn fra full produksjonsflyt
+
+- Full produksjonsflyt-test avdekket tre falske navnetreff før KI-kall.
+- Navnedetektoren ble rettet for tvetydig «møtte», spørreordet «hva» og rolleordet «Varsleren».
+- Regresjonstester låser de tre konkrete funnene samtidig som reelle navn etter «møtte» fortsatt oppdages.
+- Ny fullkjøring etter rettingen fikk 26/26 caser helt frem til KI-svar.
+- 25/26 åpninger besto automatisk kontroll; ett marginalt lengdeavvik (67 mot 65 ord) ble manuelt vurdert som akseptabelt.
+
+# v20.10.7 – full produksjonsflyt-test med 26 golden/pilotcaser
+
+- Admin kan kjøre alle 26 golden- og pilotcaser gjennom samme analyse- og veiledningsflyt som vanlige brukere.
+- Testtrafikk merkes separat og resultatene logges med run-ID, case-ID, tema, modell, åpning, issues og notes.
+- Situasjonsspesifikke nøkkelord brukes som manuelle noter, ikke som hard feil alene, for å unngå falske negative kvalitetsflagg.
+- Første fullkjøring registrerte 26/26 saker; tre ble stoppet av personverngatewayen og ble senere brukt til å forbedre detektoren.
+
+# v20.10.6 – pilotlogging og robust håndtering av Gemma-ratebegrensning
+
+- Pilotresultater merkes og logges slik at faktiske produksjonsflyt-resultater kan gjennomgås samlet.
+- Gemma Free 429 fra OpenRouter forklares som ekstern ratebegrensning i stedet for generell appfeil.
+- Benchmark stopper resterende kall til en modell etter første bekreftede rate-limit for å unngå unødvendige feil/kall.
+
+# v20.10.5 – fem faktiske pilotcaser i produksjonsflyten
+
+- Fem brukerbaserte pilotcaser er lagt til goldenbanken for fravær, alkohol/rus, uønsket fysisk oppmerksomhet og lønn/forfremmelse.
+- Admin kan kjøre pilotcasene gjennom den faktiske produksjonsflyten.
+- Automatisk åpningskontroll måler blant annet lengde, instruksjonsaktig språk og situasjonsrelevans.
+
+# v20.10.4 – menneskelige samtaleåpninger, oppsigelsestema og UI-regresjon
+
+- Oppsigelsestemaet ble tydeliggjort til «Oppsigelse og avslutning av arbeidsforhold» og synkronisert mellom klient, KI-skjema og goldenbank.
+- Veiledningsprompten krever korte, muntlige åpninger som kan sies direkte til medarbeideren, normalt 2–4 setninger og 30–65 ord.
+- Instruksjoner til lederen, HR-/rapportstil og forsøk på å gjennomføre hele samtalen i åpningsreplikken er eksplisitt begrenset.
+- Golden- og kontraktstester flagger mekaniske, instruksjonsaktige og for lange åpninger.
+- Nettleserens tekstmarkering nullstilles ved samtale-/historikkbytte slik at markering ikke følger med til neste visning.
+- Pilotfunn og språk-/UI-endringer ble dokumentert i backloggen.
+
+---
 # v20.10.3 – konsekvente sidehoder og roligere accordions
 
 - Admin, Hjelp og Brukertest viser nå samme prosjektlogo ved overskriften når sidemenyen er åpen.
