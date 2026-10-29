@@ -1,6 +1,6 @@
 {
-  "version": 5,
-  "description": "Kuratert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken kombinerer empirisk samtaleforskning, organisasjons- og ledelsespsykologi, norsk arbeidslivsforskning, evidensbaserte intervjuprinsipper, faglige rammeverk og autoritative myndighets-/lovkilder. Ingen enkelt faggruppe behandles som universell fasit; kildetype velges etter hva slags spørsmål som vurderes.",
+  "version": 6,
+  "description": "Kuratert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken kombinerer empirisk samtaleforskning, organisasjons- og ledelsespsykologi, norsk arbeidslivsforskning, evidensbaserte intervjuprinsipper, relasjonsledelse, samtaleteknikk, faglige rammeverk og autoritative myndighets-/lovkilder. Ingen enkelt faggruppe behandles som universell fasit; kildetype velges etter hva slags spørsmål som vurderes. Versjon 6 styrker særlig menneskelig lederdialog, relasjon, aktiv lytting, anerkjennelse, feedback og framtidig offline-bruk.",
   "sources": [
     {
       "id": "DEDREU_WEINGART_2003_CONFLICT",
@@ -158,7 +158,7 @@
       "topics": [
         "Lønn og utvikling",
         "Prestasjon og utvikling",
-        "Avslutning av arbeidsforhold",
+        "Oppsigelse og avslutning av arbeidsforhold",
         "Samarbeid og kommunikasjon"
       ],
       "principles": [
@@ -863,7 +863,7 @@
       "year": 2026,
       "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/oppsigelse/",
       "topics": [
-        "Avslutning av arbeidsforhold",
+        "Oppsigelse og avslutning av arbeidsforhold",
         "Fravær og oppfølging"
       ],
       "principles": [
@@ -1148,7 +1148,7 @@
       "year": 2026,
       "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A715-1",
       "topics": [
-        "Avslutning av arbeidsforhold"
+        "Oppsigelse og avslutning av arbeidsforhold"
       ],
       "principles": [
         "Før arbeidsgiver beslutter oppsigelse skal spørsmålet så langt det er praktisk mulig drøftes med arbeidstaker, og eventuelt tillitsvalgt dersom arbeidstaker ønsker det."
@@ -1170,7 +1170,7 @@
       "year": 2026,
       "url": "https://lovdata.no/lov/2005-06-17-62/%C2%A715-7",
       "topics": [
-        "Avslutning av arbeidsforhold"
+        "Oppsigelse og avslutning av arbeidsforhold"
       ],
       "principles": [
         "Oppsigelse må være saklig begrunnet i virksomhetens, arbeidsgivers eller arbeidstakers forhold."
@@ -1314,7 +1314,7 @@
       "topics": [
         "Lønn og utvikling",
         "Prestasjon og utvikling",
-        "Avslutning av arbeidsforhold",
+        "Oppsigelse og avslutning av arbeidsforhold",
         "Fravær og oppfølging"
       ],
       "principles": [
@@ -1486,7 +1486,7 @@
         "Mobbing og trakassering",
         "Samarbeid og kommunikasjon",
         "Prestasjon og utvikling",
-        "Avslutning av arbeidsforhold"
+        "Oppsigelse og avslutning av arbeidsforhold"
       ],
       "principles": [
         "Habilitet er sentralt: den som håndterer saken bør være upartisk og uten egeninteresser i saken.",
@@ -1508,6 +1508,213 @@
       ],
       "authority": "high",
       "last_verified": "2026-10-26",
+      "time_sensitive": true
+    },
+    {
+      "id": "DFO_PERSONALSAKER_FORBEREDELSE_2026",
+      "type": "myndighets-/arbeidsgiverveiledning",
+      "title": "Forberedelse til møte",
+      "author": "DFØ / Statens arbeidsgiverportal",
+      "year": 2026,
+      "url": "https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/forberedelse-til-mote",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Oppsigelse og avslutning av arbeidsforhold"
+      ],
+      "principles": [
+        "Lederen bør forberede mål, agenda og faktagrunnlag, men samtidig gå inn i møtet med forståelse for at hele bildet ikke nødvendigvis er kjent.",
+        "Medarbeiderens versjon skal bidra til å komplettere faktagrunnlaget; gode spørsmål og reell lytting er derfor sentralt.",
+        "Neste steg og mulige tiltak bør tenkes gjennom på forhånd, uten at samtalen låses før medarbeideren er hørt."
+      ],
+      "use_when": [
+        "vanskelig samtale",
+        "personalsak",
+        "forberedelse",
+        "agenda",
+        "fakta",
+        "åpne spørsmål",
+        "lytting",
+        "medarbeiderens perspektiv",
+        "oppfølging"
+      ],
+      "authority": "high",
+      "note": "Offisiell veiledning for statlige arbeidsgivere. Brukes som praktisk samtale- og prosessstøtte, ikke som universell juridisk fasit for alle virksomheter.",
+      "last_verified": "2026-10-29",
+      "time_sensitive": true
+    },
+    {
+      "id": "DFO_PERSONALSAKER_GJENNOMFORING_2026",
+      "type": "myndighets-/arbeidsgiverveiledning",
+      "title": "Gjennomføring av møte",
+      "author": "DFØ / Statens arbeidsgiverportal",
+      "year": 2026,
+      "url": "https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/gjennomforing-av-mote",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Oppsigelse og avslutning av arbeidsforhold",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Lederen har ansvar for å skape en trygg og respektfull ramme for samtalen og tydeliggjøre hvorfor saken tas opp.",
+        "Medarbeideren bør få forklare sin versjon; lederen bør lytte, stille oppfølgingsspørsmål og være oppmerksom på følelsesmessige reaksjoner.",
+        "Det kan være naturlig å sjekke hvordan medarbeideren har det underveis og å avtale nytt møte dersom belastningen blir for stor.",
+        "Ved vurdering av tiltak bør medarbeideren inviteres til å foreslå løsninger, og videre steg bør avtales konkret."
+      ],
+      "use_when": [
+        "vanskelig samtale",
+        "trygg samtale",
+        "respekt",
+        "aktiv lytting",
+        "følelsesmessig reaksjon",
+        "hvordan har du det",
+        "medarbeiderens perspektiv",
+        "tiltak",
+        "oppfølging"
+      ],
+      "authority": "high",
+      "note": "Offisiell veiledning for statlige arbeidsgivere. Særlig relevant for menneskelig samtalestil, lytting og oppfølging.",
+      "last_verified": "2026-10-29",
+      "time_sensitive": true
+    },
+    {
+      "id": "BI_KUVAAS_AUTONOMISTOTTE_2026",
+      "type": "forskningsformidling",
+      "title": "Ledelse som virker – helt konkret",
+      "author": "Bård Kuvaas",
+      "year": 2026,
+      "url": "https://www.bi.no/forskning/business-review/articles/2026/01/ledelse-som-virker--helt-konkret/",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Livssituasjoner",
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Autonomistøttende ledelse signaliserer at lederen ønsker å forstå medarbeiderens perspektiv og støtte medarbeideren innenfor lederrollen.",
+        "Gode forklaringer og begrunnelser er ofte bedre enn korte, kontrollerende beskjeder.",
+        "Åpne spørsmål og aktiv lytting bør brukes for å forstå medarbeiderens perspektiv fremfor at lederen snakker mest eller primært stiller kontrollspørsmål.",
+        "Negative følelser og tanker kan anerkjennes uten at lederen gir avkall på tydelighet, forventninger eller ansvar.",
+        "Lederen bør være tålmodig og unngå unødvendige sammenligninger mellom enkeltmedarbeidere."
+      ],
+      "use_when": [
+        "relasjonsledelse",
+        "autonomistøttende ledelse",
+        "åpne spørsmål",
+        "aktiv lytting",
+        "anerkjennelse",
+        "negative følelser",
+        "støtte",
+        "perspektivtaking",
+        "tydelig ledelse",
+        "vanskelig samtale"
+      ],
+      "authority": "medium",
+      "note": "Forskningsformidling fra BI-professor basert på selvbestemmelsesteori og intervensjonsforskning. Brukes som praktisk samtaleperspektiv; primærforskning i SOURCEBANK har høyere vekt der den er tilgjengelig.",
+      "last_verified": "2026-10-29",
+      "time_sensitive": false
+    },
+    {
+      "id": "BI_LAI_FEEDBACK_2026",
+      "type": "forskningsformidling",
+      "title": "Medarbeidere og tilbakemeldinger",
+      "author": "Linda Lai",
+      "year": 2026,
+      "url": "https://www.bi.no/forskning/business-review/articles/2026/01/medarbeidere-og-tilbakemeldinger/",
+      "topics": [
+        "Prestasjon og utvikling",
+        "Samarbeid og kommunikasjon",
+        "Lønn og utvikling"
+      ],
+      "principles": [
+        "Tilbakemeldinger bør tilpasses situasjonen og relasjonen; samme form passer ikke nødvendigvis for alle medarbeidere.",
+        "Tillitsforhold og timing påvirker hvordan tilbakemeldinger mottas.",
+        "Korrigerende tilbakemeldinger bør gis så lite dømmende som mulig og helst én-til-én.",
+        "Når medarbeideren trenger utvikling, kan en konkret og overkommelig trinnvis plan være mer støttende enn generelle negative vurderinger."
+      ],
+      "use_when": [
+        "feedback",
+        "tilbakemelding",
+        "prestasjon",
+        "utvikling",
+        "forfremmelse",
+        "korrigerende samtale",
+        "tillit",
+        "timing",
+        "ikke-dømmende",
+        "utviklingsplan"
+      ],
+      "authority": "medium",
+      "note": "Forskningsformidling med henvisning til meta-analyse om individuelle forskjeller og reaksjoner på feedback. Samtalestøtte skal ikke diagnostisere eller personlighetstype medarbeidere.",
+      "last_verified": "2026-10-29",
+      "time_sensitive": false
+    },
+    {
+      "id": "BI_LAI_RELASJON_2022",
+      "type": "forskningsformidling",
+      "title": "God ledelse fordrer god relasjon",
+      "author": "Linda Lai",
+      "year": 2022,
+      "url": "https://www.bi.no/forskning/business-review/articles/2022/05/god-ledelse-fordrer-god-relasjon/",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Livssituasjoner"
+      ],
+      "principles": [
+        "Kvaliteten på relasjonen mellom leder og medarbeider er relevant for motivasjon, innsats, ytelse og tilknytning.",
+        "Tillit, respekt og gjensidighet er sentrale kjennetegn ved gode sosiale leder–medarbeider-relasjoner.",
+        "Relasjonell kvalitet bør ikke reduseres til formell autoritet eller et rent bytteforhold."
+      ],
+      "use_when": [
+        "relasjonsledelse",
+        "leder-medarbeider-relasjon",
+        "tillit",
+        "respekt",
+        "gjensidighet",
+        "dialog",
+        "motivasjon"
+      ],
+      "authority": "medium",
+      "note": "Forskningsformidling fra BI. SOURCEBANK inneholder også fagfellevurderte LMX-kilder som brukes som sterkere forskningsanker.",
+      "last_verified": "2026-10-29",
+      "time_sensitive": false
+    },
+    {
+      "id": "STAMI_MUST_ARBEIDSMILJO_2026",
+      "type": "forskningsbasert fagressurs",
+      "title": "Innhold i MUST",
+      "author": "Statens arbeidsmiljøinstitutt (STAMI)",
+      "year": 2026,
+      "url": "https://stami.no/vare-tjenester/medarbeiderundersokelsen-i-staten-must/temaomrader-i-must/",
+      "topics": [
+        "Samarbeid og kommunikasjon",
+        "Prestasjon og utvikling",
+        "Livssituasjoner",
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "God ledelse omfatter blant annet tydelige mål og forventninger, informasjon og feedback, involvering, hjelp til prioritering og opplevelse av at lederen bryr seg om medarbeiderens ve og vel.",
+        "Rolleklarhet handler om at mål og ansvarsområder er tydelige; rolleuklarhet og rollekonflikt kan være belastende.",
+        "Psykologisk trygghet innebærer en forventning om at det er trygt å ta mellommenneskelig risiko, som å stille spørsmål, be om hjelp eller innrømme feil.",
+        "Arbeidsmiljøet omfatter også sosial støtte, tilhørighet, rettferdighet, jobbkrav og balanse mellom arbeid og privatliv."
+      ],
+      "use_when": [
+        "psykologisk trygghet",
+        "lederstøtte",
+        "omsorg",
+        "rolleforventninger",
+        "rolleklarhet",
+        "tilhørighet",
+        "rettferdighet",
+        "arbeidsmiljø",
+        "sosial støtte",
+        "jobbkrav"
+      ],
+      "authority": "high",
+      "note": "Forskningsbasert norsk arbeidsmiljøressurs. Brukes som arbeidsmiljø- og lederkontekst, ikke som individuell diagnose.",
+      "last_verified": "2026-10-29",
       "time_sensitive": true
     }
   ]
