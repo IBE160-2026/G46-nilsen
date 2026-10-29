@@ -4,7 +4,7 @@
 **Dokumenttype:** Architecture Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert arkitektur med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.10.3  
+**Versjon ved dokumentasjon:** 20.10.9  
 **Språk:** Norsk
 
 ---
@@ -1258,7 +1258,7 @@ De viktigste arkitekturvalgene er:
 
 Arkitekturen har blitt utviklet iterativt og endret som følge av testing og feilretting.
 
-Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, men den arkitekturen prosjektet faktisk har utviklet fram til versjon 20.10.3.
+Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, men den arkitekturen prosjektet faktisk har utviklet fram til versjon 20.10.9.
 
 Framtidige mål som intern KI, lokal RAG og lukket nettverk er dokumentert separat og fremstilles ikke som ferdige deler av dagens leveranse.
 
