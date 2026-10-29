@@ -127,6 +127,40 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
   return false;
 }
 
+function contextMatchesSource(source, contextText) {
+  const text = normalize(contextText);
+  if (!text) return false;
+  return (source.useFor || []).some(term => {
+    const n = normalize(term);
+    return n && text.includes(n);
+  });
+}
+
+export function selectLegalSources({ sectorId, topic, subtopic, situation, maxSources = 6 } = {}) {
+  if (!sectorId) return [];
+  const contextText = [topic, subtopic, situation].filter(Boolean).join(" ");
+
+  return legalRegistry.sources
+    .filter(source => {
+      const sectors = source.sectors || [];
+      const appliesToSector = sectors.includes("*") || sectors.includes(sectorId);
+      if (!appliesToSector) return false;
+      if (source.contextualOnly) return contextMatchesSource(source, contextText);
+      return true;
+    })
+    .map(source => {
+      const sectors = source.sectors || [];
+      const sectorSpecific = sectors.includes(sectorId);
+      const contextMatch = contextMatchesSource(source, contextText);
+      return {
+        ...source,
+        score: (sectorSpecific ? 10 : 0) + (contextMatch ? 5 : 0)
+      };
+    })
+    .sort((a, b) => b.score - a.score || a.authority.localeCompare(b.authority, "nb"))
+    .slice(0, Math.max(1, maxSources));
+}
+
 export function resolveOccupationContext({ occupation, sectorId, topic, subtopic, situation } = {}) {
   let resolvedSectorId = sectorId || null;
   let classification = null;
@@ -148,10 +182,21 @@ export function resolveOccupationContext({ occupation, sectorId, topic, subtopic
 
   const sector = (sourceMap.sectors || []).find(item => item.id === resolvedSectorId) || null;
 
-  const sourceIds = relevant && sector
-    ? legalRegistry.sources
-        .filter(source => (source.sectors || []).includes(sector.id))
-        .map(source => source.id)
+  const legalSources = relevant && sector
+    ? selectLegalSources({
+        sectorId: sector.id,
+        topic,
+        subtopic,
+        situation
+      })
+    : [];
+
+  const authorities = relevant && sector
+    ? (sector.primaryAuthorities || []).map(item => ({
+        id: item.id,
+        label: item.label,
+        domain: item.domain
+      }))
     : [];
 
   return {
@@ -162,7 +207,10 @@ export function resolveOccupationContext({ occupation, sectorId, topic, subtopic
     occupationRelevant: relevant,
     classificationNeeded: Boolean(relevant && occupation && !resolvedSectorId),
     localClassification: classification,
-    sourceIds
+    authorities,
+    allowedDomains: authorities.map(item => item.domain),
+    sourceIds: legalSources.map(source => source.id),
+    legalSources
   };
 }
 
