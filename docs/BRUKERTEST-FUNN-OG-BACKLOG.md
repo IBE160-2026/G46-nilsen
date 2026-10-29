@@ -358,9 +358,9 @@ Pilotarbeidet gir allerede flere konkrete læringspunkter:
 
 ## Åpen backlog før samlet pilotforbedringsrunde
 
-- [~] Mobil/responsiv layout – første mobile-first implementasjon på `pilot-ux-v20.11`; gjenstår fysisk mobiltest og finjustering.
+- [x] Mobil/responsiv layout – mobile-first implementasjon fysisk testet på Samsung/Chrome 29.10.2026; PWA-installasjon og standalone-visning verifisert.
 - [ ] KI-språk – første mekaniske problem er redusert, men menneskelig/relasjonell åpning er fortsatt aktivt forbedringspunkt.
-- [~] Begrepsfasit – implementert på `pilot-ux-v20.11`; gjenstår regresjon og merge.
+- [x] Begrepsfasit – implementert på `pilot-ux-v20.11` og dekket av oppdatert pilot-UX-regresjon før produksjonsrelease.
 - [x] Hovedtema/undertema – implementert som 9 hovedtemaer og 48 undertemaer.
 - [ ] Voice – design og personvernmodell avklares før mikrofon aktiveres.
 - [ ] Spore og rette rå citation-markør i UI.
@@ -368,3 +368,23 @@ Pilotarbeidet gir allerede flere konkrete læringspunkter:
 - [ ] Vurdere anonymisert logging/telling av falske positive uten samtaletekst.
 - [ ] Samle resterende pilottilbakemeldinger før prioritering.
 - [ ] Oppdatere refleksjonsrapporten med endelige pilotmønstre når datagrunnlaget er større.
+
+
+---
+
+## 15. Sluttstatus pilotrunde 29.10.2026 – v20.11.0
+
+Den samlede mobil-/UX-runden ble testet på fysisk Samsung-mobil via Chrome. Følgende ble bekreftet i pilotvisningen:
+
+- mobil layout og navigasjon fungerer som ønsket
+- Samtalestøtte-merkevaren er tydeligere
+- Samtaleøvelse har egen synlig KI-illustrasjon
+- logo/illustrasjon kan åpnes større
+- samtaleflaten utnytter mobilbredden bedre
+- PWA kan installeres og åpnes i standalone-visning uten vanlig adresselinje
+- Hjelp inneholder komplett kildebank
+- Innstillinger er tilgjengelig i mobilnavigasjonen
+
+To viktige regresjonsfunn oppstod underveis: først ble feil responsivt element endret fordi desktop-sidefeltet ikke er aktivt på mobil; senere ble Samtaleøvelse-identiteten forenklet for langt. Begge ble oppdaget gjennom faktisk visuell brukertest og korrigert før produksjonsrelease.
+
+Voice står fortsatt som videre arbeid og er ikke del av v20.11.0.
