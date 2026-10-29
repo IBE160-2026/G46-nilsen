@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.5" />
+  <link rel="stylesheet" href="styles.css?v=20.11.7" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -79,7 +79,7 @@
     <main class="main">
       <header class="topbar">
         <div class="topbar-left">
-          <button class="topbar-brand-button" type="button" data-open-brand-logo aria-label="Vis Samtalestøtte-logoen større">
+          <button class="topbar-brand-button image-preview-trigger" type="button" aria-label="Vis Samtalestøtte-logoen større">
             <img class="topbar-brand-logo" src="assets/images/logo.png" alt="Samtalestøtte" />
             <span class="topbar-mobile-brand-lockup" aria-hidden="true">
               <img class="topbar-mobile-brand-symbol" src="assets/images/logo-symbol.png" alt="" />
@@ -130,7 +130,7 @@
             <p data-content-key="home.hero.intro">Velg tema, beskriv situasjonen anonymt og få støtte til å planlegge en profesjonell og tydelig samtale.</p>
           </div>
           <div class="hero-visual">
-            <img src="assets/images/hero-conversation-exact.png" alt="To personer i samtale på et møte" />
+            <img class="expandable-content-image" src="assets/images/hero-conversation-exact.png" alt="To personer i samtale på et møte" tabindex="0" role="button" aria-label="Vis bildet større" />
           </div>
         </section>
 
@@ -187,7 +187,7 @@
             <div id="topic-representations" class="topic-representations"></div>
           </div>
           <div class="topic-hero-visual">
-            <img src="assets/images/hero-conversation-exact.png" alt="To personer i en arbeidsrelatert samtale" />
+            <img class="expandable-content-image" src="assets/images/hero-conversation-exact.png" alt="To personer i en arbeidsrelatert samtale" tabindex="0" role="button" aria-label="Vis bildet større" />
           </div>
         </section>
 
@@ -327,7 +327,7 @@
           </div>
 
           <section class="simulation-entry simulation-entry-emphasis" id="simulation-entry">
-            <div class="simulation-entry-icon" aria-hidden="true"><img src="assets/images/logo-symbol.png" alt="" /></div>
+            <div class="simulation-entry-icon image-preview-trigger" role="button" tabindex="0" aria-label="Vis KI-illustrasjonen større"><img src="assets/images/profile-ai.png" alt="KI-profil for Samtaleøvelse" /></div>
             <div class="simulation-entry-copy">
               <span class="eyebrow">SAMTALEØVELSE</span>
               <h3>Vil du øve før den virkelige samtalen?</h3>
@@ -374,8 +374,8 @@
             </div>
             <p data-content-key="simulation.hero.intro">Tren i et eget samtalerom. Du er leder, KI-en spiller medarbeideren. Start fra en sak du allerede jobber med, eller gå rett inn i en ny øvelse.</p>
           </div>
-          <button class="simulation-logo-crop brand-preview-trigger" type="button" data-open-brand-logo aria-label="Vis Samtalestøtte-logoen større">
-            <img src="assets/images/logo-symbol.png" alt="" />
+          <button class="simulation-logo-crop image-preview-trigger" type="button" aria-label="Vis KI-illustrasjonen større">
+            <img src="assets/images/profile-ai.png" alt="KI-profil for Samtaleøvelse" />
           </button>
         </div>
         <div id="history-privacy-review-simulation" class="history-privacy-review" hidden></div>
@@ -904,7 +904,7 @@
         <span class="mobile-nav-glyph" id="mobile-nav-home-icon" aria-hidden="true"></span><span>Hjem</span>
       </button>
       <button class="nav-item mobile-nav-item" data-view="simulation" type="button">
-        <span class="mobile-nav-glyph" id="mobile-nav-simulation-icon" aria-hidden="true"></span><span>Øvelse</span>
+        <span class="mobile-nav-glyph mobile-nav-ai-glyph" aria-hidden="true"><img src="assets/images/profile-ai.png" alt="" /></span><span>Øvelse</span>
       </button>
       <button class="nav-item mobile-nav-item" data-view="history" type="button">
         <span class="mobile-nav-glyph" id="mobile-nav-history-icon" aria-hidden="true"></span><span>Historikk</span>
@@ -919,10 +919,10 @@
   </div>
 
 
-  <dialog id="brand-logo-dialog" class="brand-logo-dialog">
+  <dialog id="image-preview-dialog" class="brand-logo-dialog image-preview-dialog">
     <div class="brand-logo-dialog-card">
-      <button class="brand-logo-dialog-close" id="brand-logo-dialog-close" type="button" aria-label="Lukk">×</button>
-      <img src="assets/images/logo.png" alt="Samtalestøtte" />
+      <button class="brand-logo-dialog-close" id="image-preview-dialog-close" type="button" aria-label="Lukk">×</button>
+      <img id="image-preview-dialog-image" src="assets/images/logo.png" alt="Samtalestøtte" />
     </div>
   </dialog>
 
@@ -997,6 +997,6 @@
   <script src="src/privacy-name-data.js?v=20.10.10"></script>
   <script src="src/privacy-detector.js?v=20.10.10"></script>
   <script src="src/client-data.js?v=20.10.10"></script>
-  <script src="app.js?v=20.11.6"></script>
+  <script src="app.js?v=20.11.7"></script>
 </body>
 </html>
