@@ -7779,3 +7779,166 @@ html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
   object-fit: cover;
   border-radius: inherit;
 }
+
+
+/* COMPACT GUIDANCE + SIMULATION CTA 2026-10-29 */
+
+/* Forslag til samtalen: tallene er små markører, ikke en egen bred venstrekolonne. */
+#structured-guidance.guidance-grid {
+  gap: 10px;
+  margin-top: 18px;
+}
+
+#structured-guidance .guidance-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 14px 15px;
+  border: 1px solid var(--border);
+  border-left: 3px solid color-mix(in srgb,var(--accent) 72%,var(--border));
+  border-radius: 14px;
+  background: color-mix(in srgb,var(--surface) 96%,var(--accent-soft));
+  box-shadow: 0 3px 12px rgba(18,55,53,.035);
+}
+
+#structured-guidance .guidance-card:first-child {
+  border-top: 1px solid var(--border);
+}
+
+#structured-guidance .guidance-number {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: 1px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+  line-height: 1;
+}
+
+#structured-guidance .guidance-card h3 {
+  margin: 1px 0 6px;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+#structured-guidance .guidance-card p,
+#structured-guidance .guidance-copy {
+  line-height: 1.52;
+}
+
+#structured-guidance .guidance-card + .guidance-card {
+  margin-top: 0;
+}
+
+/* Øvingskortet: KI-hodet er en liten merkevaremarkør, teksten får plassen. */
+#simulation-entry.simulation-entry {
+  grid-template-columns: 46px minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 17px;
+}
+
+#simulation-entry .simulation-entry-icon {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: var(--surface);
+}
+
+#simulation-entry .simulation-entry-icon img {
+  width: 40px !important;
+  height: 40px !important;
+  max-width: 40px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  content: normal !important;
+}
+
+html[data-theme="dark"] #simulation-entry .simulation-entry-icon img,
+html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
+  content: normal !important;
+}
+
+#simulation-entry .simulation-entry-copy {
+  min-width: 0;
+}
+
+#simulation-entry .simulation-entry-copy h3 {
+  margin: 2px 0 4px;
+  font-size: 1.08rem;
+}
+
+#simulation-entry .simulation-entry-copy p {
+  line-height: 1.45;
+}
+
+@media (max-width:700px) {
+  #structured-guidance.guidance-grid {
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  #structured-guidance .guidance-card {
+    grid-template-columns: 26px minmax(0,1fr) !important;
+    gap: 9px !important;
+    padding: 12px 12px !important;
+    border-radius: 13px !important;
+  }
+
+  #structured-guidance .guidance-number {
+    width: 25px;
+    height: 25px;
+    border-radius: 8px;
+    font-size: .66rem;
+  }
+
+  #structured-guidance .guidance-card h3 {
+    font-size: .98rem;
+  }
+
+  #simulation-entry.simulation-entry {
+    grid-template-columns: 38px minmax(0,1fr) !important;
+    gap: 9px !important;
+    padding: 13px !important;
+    align-items: start;
+  }
+
+  #simulation-entry .simulation-entry-icon {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    margin-top: 2px;
+  }
+
+  #simulation-entry .simulation-entry-icon img {
+    width: 34px !important;
+    height: 34px !important;
+    max-width: 34px !important;
+  }
+
+  #simulation-entry .simulation-entry-copy h3 {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  #simulation-entry .simulation-entry-copy p {
+    font-size: .88rem;
+    line-height: 1.42;
+  }
+
+  #simulation-entry .primary-button {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    margin-top: 2px;
+  }
+}
