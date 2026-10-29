@@ -88,12 +88,6 @@ export function resolveOccupationContext({ occupation, sectorId, topic, subtopic
   let resolvedSectorId = sectorId || null;
   let classification = null;
 
-  if (!resolvedSectorId && occupation) {
-    classification = classifyOccupationLocally(occupation);
-    if (classification.matched) resolvedSectorId = classification.sectorId;
-  }
-
-  const sector = (sourceMap.sectors || []).find(item => item.id === resolvedSectorId) || null;
   const relevant = shouldUseOccupationContext({
     occupation,
     sectorId: resolvedSectorId,
@@ -101,6 +95,15 @@ export function resolveOccupationContext({ occupation, sectorId, topic, subtopic
     subtopic,
     situation
   });
+
+  // Viktig kostnads-/kontekstregel:
+  // Ikke bruk engang lokal/AI-klassifisering av et fritekstyrke når yrket ikke er relevant for saken.
+  if (relevant && !resolvedSectorId && occupation) {
+    classification = classifyOccupationLocally(occupation);
+    if (classification.matched) resolvedSectorId = classification.sectorId;
+  }
+
+  const sector = (sourceMap.sectors || []).find(item => item.id === resolvedSectorId) || null;
 
   const sourceIds = relevant && sector
     ? legalRegistry.sources
@@ -114,7 +117,7 @@ export function resolveOccupationContext({ occupation, sectorId, topic, subtopic
     sectorLabel: sector?.label || null,
     occupation: occupation || null,
     occupationRelevant: relevant,
-    classificationNeeded: Boolean(occupation && !resolvedSectorId),
+    classificationNeeded: Boolean(relevant && occupation && !resolvedSectorId),
     localClassification: classification,
     sourceIds
   };
