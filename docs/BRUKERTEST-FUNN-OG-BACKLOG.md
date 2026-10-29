@@ -1,6 +1,6 @@
 # Brukertest – funn og forbedringsbacklog
 
-**Oppdatert:** 28.10.2026  
+**Oppdatert:** 29.10.2026  
 **Status:** Levende arbeidsdokument under pilot  
 **Prinsipp:** Ikke endre produksjonsversjonen fortløpende for hvert enkelt innspill. Samle mønstre, rett bekreftede feil kontrollert, og planlegg en samlet pilotforbedringsrunde.
 
@@ -32,7 +32,7 @@ Dette er ikke et avvik fra opprinnelig v1-scope, siden løsningen ble utformet f
 - Kort, padding og typografi bør skaleres ned på mobil.
 - Lange KI-svar bør få bedre leseflate.
 
-**Status:** Kandidat til høy prioritet i samlet pilotforbedringsrunde.
+**Status 29.10:** Designbeslutning tatt. Første mobil-first implementasjon ligger på `pilot-ux-v20.11`: desktop-sidefelt skjules helt under 700 px, mobil får egen bunnnavigasjon, komprimert toppfelt, én-kolonneinnhold og større leseflate. Skal testes på faktiske telefoner før merge.
 
 ---
 
@@ -72,12 +72,15 @@ Flere reelle testeksempler viser at problemet er særlig tydelig i **«Forslag t
 - **Rapportert:** Brukere opplever inkonsekvens mellom «simulering», «samtale», «råd», «øvelse» og lignende begreper.
 - **Rapportert:** «Identifikatorer» oppleves som teknisk språk sammenlignet med mer forståelige formuleringer som «opplysninger som kan identifisere en person».
 
-### Kandidater
-- Vurder **«samtaleøvelse»** som gjennomgående brukerbegrep, mens teknisk kode fortsatt kan bruke `simulation`.
-- Gjennomfør klarspråkvask av personverntekster.
-- Lag en liten begrepsfasit for hele UI-et og bruk den konsekvent.
+### Begrepsfasit 29.10
+- **Samtaleøvelse** er brukerbegrepet for funksjonen.
+- **Øvelse** brukes når konteksten allerede er tydelig.
+- Knapper kan bruke handlingsspråk som **«Øv på samtalen»** og **«Start ny øvelse»**.
+- «Samtalelab» og brukerrettet «samtalesimulering» skal ikke brukes.
+- Teknisk kode kan fortsatt bruke `simulation` for å unngå unødvendig refaktorering.
+- Personvern skal beskrives med klarspråk som «opplysninger som kan identifisere en person», ikke tekniske ord når de ikke trengs.
 
-**Status:** Kandidat, middels prioritet.
+**Status 29.10:** Implementert på `pilot-ux-v20.11`; skal gjennom regresjonskontroll før merge.
 
 ---
 
@@ -108,7 +111,7 @@ Flere reelle testeksempler viser at problemet er særlig tydelig i **«Forslag t
 - Avvik/hendelse vs. ansvar/læring vs. rapportering.
 - Psykisk belastning vs. belastning/utmattelse.
 
-**Status:** Analyse ferdig, ikke implementert.
+**Status 29.10:** Hovedresultatet er implementert på `main`: 9 hovedtemaer og 48 undertemaer. Det historiske analysegrunnlaget beholdes for sporbarhet.
 
 ---
 
@@ -269,7 +272,53 @@ Visnings- og historikkbytte nullstilte ikke nettleserens aktive tekstutvalg. Nå
 
 ---
 
-## 12. Pilotprinsipp og deploy
+## 12. Voice / tale i samtaleøvelsen
+
+### Funn
+- **Rapportert 29.10.2026:** En pilotbruker etterspør mulighet til å gjennomføre samtaleøvelsen med tale i stedet for å skrive.
+- Funksjonen er særlig relevant på mobil, der skriving under en realistisk øvelse gir mindre naturlig flyt.
+
+### Teknisk status
+- Dagens webapp kan teknisk be om mikrofontilgang via nettleserens `getUserMedia`, men serveren blokkerer mikrofon eksplisitt med sikkerhetsheaderen `Permissions-Policy: microphone=()`.
+- Render kjører over HTTPS, som er et krav for nettleserens mikrofontilgang.
+- Full sanntidsvoice kan bygges over WebRTC mot en tale-/realtime-modell.
+
+### Kritisk personvernforskjell
+Dagens tekstflyt kan kontrollere teksten **før** den sendes til ekstern KI. Ved direkte cloud-voice kan rå lyd allerede være sendt til ekstern leverandør før en transkripsjon finnes og før dagens personvernfilter kan reagere. Voice kan derfor ikke behandles som bare en ny input-knapp.
+
+### Anbefalt trinnvis løsning
+1. **Første voice-MVP: trykk-og-snakk til tekst.**
+   - Mikrofon aktiveres bare etter eksplisitt brukerhandling.
+   - Tydelig visuell status: lytter / stopp / mikrofon av.
+   - Ingen bakgrunnslytting.
+   - Ingen lyd lagres som standard.
+   - Transkripsjonen vises for brukeren før sending.
+   - Eksisterende personvernkontroll kjøres på transkripsjonen.
+   - Brukeren kan rette/generaliserer før teksten sendes videre.
+   - Dersom transkripsjonen skjer hos ekstern leverandør, må det beskrives eksplisitt fordi rå lyd da behandles eksternt før tekstfilteret.
+
+2. **Tale ut fra KI.**
+   - KI-svar kan leses høyt uten å kreve mikrofontilgang.
+   - Dette er personvernmessig enklere enn tale inn og kan testes separat.
+
+3. **Full sanntids samtaleøvelse.**
+   - WebRTC / realtime voice med naturlig turtaking og avbrytelser.
+   - Krever egen personvernvurdering, oppdatert informasjon til bruker, kontroll på transkripsjoner/lagring, tydelig start/stopp/mute og avklaring av ekstern lydbehandling.
+   - For framtidig lukket/offline drift bør tale-til-tekst, modell og tekst-til-tale kunne kjøres lokalt/internt.
+
+### UX-krav
+- Mikrofon skal aldri starte automatisk ved åpning av siden.
+- Brukeren må aktivt trykke «Start taleøvelse».
+- Det skal alltid være synlig når mikrofonen er aktiv.
+- Én tydelig knapp skal stoppe/mute umiddelbart.
+- Ved nektet mikrofontillatelse skal vanlig tekstøvelse fortsatt fungere.
+- Voice skal være et tillegg, ikke et krav.
+
+**Status:** Nytt brukertestkrav. Ikke implementert. Første anbefalte prototype er trykk-og-snakk/transkripsjon med brukerbekreftelse, ikke full cloud-voice.
+
+---
+
+## 13. Pilotprinsipp og deploy
 
 - Produksjonsversjonen bør ikke endres unødvendig mens det er sannsynlig at pilotbrukere er aktive.
 - Bekreftede feil kan rettes på `main` og testes først.
@@ -278,7 +327,7 @@ Visnings- og historikkbytte nullstilte ikke nettleserens aktive tekstutvalg. Nå
 
 ---
 
-## 13. Refleksjonspunkter til rapporten
+## 14. Refleksjonspunkter til rapporten
 
 Pilotarbeidet gir allerede flere konkrete læringspunkter:
 
@@ -294,10 +343,11 @@ Pilotarbeidet gir allerede flere konkrete læringspunkter:
 
 ## Åpen backlog før samlet pilotforbedringsrunde
 
-- [ ] Mobil/responsiv layout – designbeslutning og implementeringsplan.
-- [x] KI-språk – åpninger er strammet inn til muntlig, kort og direkte språk; verifiser med nye KI-svar etter deploy.
-- [ ] Begrepsfasit – særlig samtaleøvelse/simulering og personvernord.
-- [ ] Hovedtema/undertema: ta stilling til forslagene i taksonomigjennomgangen, særlig «Oppsigelse og avslutning av arbeidsforhold», «Endret engasjement» og tydeligere skiller mellom overlappende kort.
+- [~] Mobil/responsiv layout – første mobile-first implementasjon på `pilot-ux-v20.11`; gjenstår fysisk mobiltest og finjustering.
+- [ ] KI-språk – første mekaniske problem er redusert, men menneskelig/relasjonell åpning er fortsatt aktivt forbedringspunkt.
+- [~] Begrepsfasit – implementert på `pilot-ux-v20.11`; gjenstår regresjon og merge.
+- [x] Hovedtema/undertema – implementert som 9 hovedtemaer og 48 undertemaer.
+- [ ] Voice – design og personvernmodell avklares før mikrofon aktiveres.
 - [ ] Spore og rette rå citation-markør i UI.
 - [ ] Designe trygg «ikke en personopplysning»-flyt for heuristiske funn.
 - [ ] Vurdere anonymisert logging/telling av falske positive uten samtaletekst.

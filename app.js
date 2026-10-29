@@ -2303,7 +2303,7 @@ async function saveCurrentConversation(){
   const situation=directSimulation ? simulationDirectSituation : (document.querySelector('#situation')?.value.trim()||''); if(!situation) return;
   try{
     const r=await fetch('/api/history',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtalesimulering':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{fidelity:simulationFidelity,mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
+      id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtaleøvelse':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{fidelity:simulationFidelity,mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
     })});
     if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
   }catch(_){}
@@ -2379,7 +2379,7 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
   });
   simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
-    simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'simulation'); return;
+    simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til øvelsen'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'simulation'); return;
   }
   simulationSource='current';
   setHistoryLoadedGuidanceMode(true, storedSituation);
@@ -2429,13 +2429,13 @@ const STATIC_CONTENT_SECTIONS = [
     {key:'guidance.continue.title',label:'Fortsett samtalen – overskrift',selector:'#continue-conversation h3'},
     {key:'guidance.continue.intro',label:'Fortsett samtalen – beskrivelse',selector:'#continue-conversation > p',multiline:true}
   ]},
-  {id:'simulation',title:'Samtalesimulering',fields:[
+  {id:'simulation',title:'Samtaleøvelse',fields:[
     {key:'simulation.hero.title',label:'Hovedoverskrift',selector:'#simulation-view .simulation-hero h1'},
     {key:'simulation.hero.intro',label:'Introduksjon',selector:'#simulation-view .simulation-hero p',multiline:true},
     {key:'simulation.hub.title',label:'Hvordan vil du starte?',selector:'#simulation-hub h2'},
     {key:'simulation.hub.intro',label:'Start – beskrivelse',selector:'#simulation-hub > p',multiline:true},
-    {key:'simulation.direct.title',label:'Ny simulering – overskrift',selector:'#direct-simulation-form h3'},
-    {key:'simulation.direct.intro',label:'Ny simulering – beskrivelse',selector:'#direct-simulation-form p',multiline:true},
+    {key:'simulation.direct.title',label:'Ny øvelse – overskrift',selector:'#direct-simulation-form h3'},
+    {key:'simulation.direct.intro',label:'Ny øvelse – beskrivelse',selector:'#direct-simulation-form p',multiline:true},
     {key:'simulation.setup.title',label:'Øv på samtalen',selector:'#simulation-setup h3'},
     {key:'simulation.setup.intro',label:'Øv på samtalen – beskrivelse',selector:'#simulation-setup .simulation-stage-heading p',multiline:true},
     {key:'simulation.privacy.title',label:'Personvernsjekk – overskrift',selector:'#simulation-turn-privacy strong'},
@@ -2989,7 +2989,7 @@ function resetSimulationPanel() {
 
 function openSimulationHub() {
   if(!requireLogin()) return;
-  setBreadcrumb('Samtalesimulering');
+  setBreadcrumb('Samtaleøvelse');
   showView('simulation');
   const hub = document.querySelector('#simulation-hub');
   const panel = document.querySelector('#simulation-panel');
@@ -3005,7 +3005,7 @@ function openSimulation() {
   if (!hasCurrentSimulationContext()) return;
   simulationSource = 'current';
   simulationDirectSituation = '';
-  setBreadcrumb('Samtalesimulering · eksisterende samtale');
+  setBreadcrumb('Samtaleøvelse · eksisterende samtale');
   showView('simulation');
   const hub = document.querySelector('#simulation-hub');
   if (hub) hub.hidden = true;
@@ -3093,8 +3093,8 @@ function beginDirectSimulation() {
   currentConversationId = null;
   resetSimulationPanel();
   document.querySelector('#simulation-hub').hidden = true;
-  document.querySelector('#close-simulation').textContent = 'Tilbake til simulatoren';
-  setBreadcrumb('Samtalesimulering · ny øvelse');
+  document.querySelector('#close-simulation').textContent = 'Tilbake til øvelsen';
+  setBreadcrumb('Samtaleøvelse · ny øvelse');
   document.querySelector('#simulation-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -3146,7 +3146,7 @@ function startSimulation() {
   document.querySelector('#simulation-help-result').hidden = true;
   const helpButton = document.querySelector('#toggle-simulation-help');
   helpButton.hidden = simulationMode !== 'assisted';
-  const topic = simulationSource === 'direct' ? 'Ny simulering' : (currentSubtopic || currentTopic?.title || 'Samtale');
+  const topic = simulationSource === 'direct' ? 'Ny øvelse' : (currentSubtopic || currentTopic?.title || 'Samtale');
   document.querySelector('#simulation-status').textContent = `${topic} · ${simulationFidelityLabels[simulationFidelity]} · ${simulationStyleLabels[simulationStyle]}`;
   renderSimulationThread();
   updateSimulationTurnPrivacy();
@@ -3159,7 +3159,7 @@ async function readJsonResponse(response) {
   const raw = await response.text();
   if (!contentType.includes('application/json')) {
     throw new Error(response.status === 404
-      ? 'Simulator-ruten finnes ikke på serveren. Start serveren på nytt etter oppdateringen.'
+      ? 'Øvelsesfunksjonen finnes ikke på serveren. Start serveren på nytt etter oppdateringen.'
       : 'Serveren svarte i feil format. Prøv å starte serveren på nytt.');
   }
   try { return raw ? JSON.parse(raw) : {}; }
