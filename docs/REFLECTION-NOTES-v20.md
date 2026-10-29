@@ -252,3 +252,17 @@ I stedet er CHANGELOG oppdatert og `docs/VERSJONSHISTORIKK-v20.10.md` kobler ver
 ## Åpent sikkerhetspunkt etter v20.10.9
 
 Render sitt `npm ci` rapporterer fortsatt **2 avhengighetssårbarheter (1 moderat og 1 høy)**. Dette er registrert som et åpent punkt. `npm audit fix` skal ikke kjøres blindt; avhengighetene må identifiseres og konsekvensene av eventuell oppgradering vurderes før endring.
+
+## 29.10.2026 – menneskelig lederstil før ny prompt
+
+Etter at samtaleåpningene var strammet inn til kortere og mer muntlig språk, viste ny menneskelig vurdering at flere åpninger fortsatt kunne oppleves mekaniske. Et eksempel var avslag på forfremmelse: KI-en var saklig og korrekt, men manglet noe av den naturlige relasjonelle måten en leder kan sette kontekst, anerkjenne skuffelse, signalisere støtte og invitere medarbeideren inn i samtalen.
+
+Prosjekteierens vurdering var at relevante åpninger også bør kunne bruke naturlige formuleringer som «Hvordan har du det?», «Takk for at du kom», «Jeg har forståelse for at dette kan være vanskelig» og «Er det noe vi kan forsøke å tilrettelegge en periode?». Dette skal være situasjonstilpasset, ikke en fast mal.
+
+Før selve prompten endres ble det derfor kontrollert om det faglige grunnlaget faktisk støtter denne retningen. SOURCEBANK inneholdt allerede forskning på LMX/leder–medarbeider-relasjon, aktiv lytting, coaching, psykologisk trygghet, selvbestemmelsesteori og organisatorisk rettferdighet. Samtidig viste kontrollen at flere nyere ressurser som var synlige på Hjelp-siden – DFØ, BI og STAMI – ikke lå som egne maskinlesbare kilder i SOURCEBANK.
+
+SOURCEBANK ble derfor oppgradert til v6 med seks nye lokalt kuraterte kilder. Fagpunktene lagres lokalt med tanke på framtidig lukket/offline drift, men originalsidene kopieres ikke i fulltekst. Samtidig ble seks gamle temamerkinger for «Avslutning av arbeidsforhold» rettet til dagens «Oppsigelse og avslutning av arbeidsforhold», fordi den gamle merkingen reduserte kildenes score i runtime-utvelgelsen.
+
+**Læring:** En bedre prompt bør ikke bare bygge på magefølelse om hva som høres hyggelig ut. Før språkreglene endres kan ønsket lederadferd forankres i relasjonsledelse, organisasjonspsykologi, aktiv lytting og praktisk arbeidsgiverveiledning. Menneskelig vurdering identifiserte problemet; kildebanken brukes til å begrunne og avgrense løsningen.
+
+**Status:** Faggrunnlaget er styrket først. Ny åpningsprompt og formuleringbank skal behandles som neste, separat og testbar endring.
