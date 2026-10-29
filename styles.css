@@ -7280,3 +7280,231 @@ html[data-theme="dark"] .utility-page-logo {
     max-width: 25vw !important;
   }
 }
+
+
+/* MOBILE PILOT ROUND 3 2026-10-29 */
+
+.complete-source-intro {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.complete-source-groups {
+  display: grid;
+  gap: 18px;
+}
+
+.complete-source-group h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 9px;
+  font-size: 1rem;
+}
+
+.complete-source-group h3 span {
+  font-size: .75rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.complete-source-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 19px;
+}
+
+.complete-source-list li {
+  line-height: 1.35;
+}
+
+.complete-source-list a {
+  font-weight: 700;
+}
+
+.complete-source-list small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+.install-app-featured {
+  border-color: color-mix(in srgb,var(--accent) 42%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 25%,var(--surface));
+}
+
+@media (max-width:700px) {
+  /* Bruk plassen i topplinjen bedre: større merke, breadcrumb er overflødig på mobil. */
+  .topbar-left {
+    flex: 1 1 auto !important;
+    overflow: visible !important;
+  }
+
+  .topbar-mobile-brand-lockup {
+    gap: 7px !important;
+    flex: 1 1 auto !important;
+  }
+
+  .topbar-mobile-brand-symbol {
+    width: 38px !important;
+    height: 34px !important;
+    flex-basis: 38px !important;
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: 1.04rem !important;
+    letter-spacing: -.04em;
+  }
+
+  #breadcrumb {
+    display: none !important;
+  }
+
+  /* Fem faste valg nederst; samme ikonfamilie som web. */
+  .mobile-bottom-nav {
+    grid-template-columns: repeat(5,minmax(0,1fr)) !important;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .mobile-bottom-nav .mobile-nav-item {
+    font-size: .62rem !important;
+    gap: 3px;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+  }
+
+  .mobile-nav-glyph {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+  }
+
+  .mobile-nav-glyph svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mobile-help-glyph {
+    font-size: 1.05rem;
+    font-weight: 850;
+  }
+
+  /* Samtaleøvelse: behold både webikonet og Samtalestøtte-logoen.
+     Logoen ligger i topphjørnet, mens beskrivelsen bruker hele bredden under. */
+  .simulation-hub-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 72px !important;
+    grid-template-rows: auto auto auto !important;
+    column-gap: 9px !important;
+    row-gap: 0 !important;
+    align-items: start !important;
+  }
+
+  .simulation-hub-copy {
+    display: contents !important;
+  }
+
+  .simulation-hub-copy > .eyebrow {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  .simulation-hub-title-row {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .simulation-hub-copy > p {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+    margin-top: 8px !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    display: flex !important;
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    justify-self: end;
+    width: 72px !important;
+    max-width: 72px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    overflow: hidden;
+    align-items: center;
+    justify-content: flex-end !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop img {
+    display: block;
+    width: 105px !important;
+    max-width: none !important;
+    height: auto !important;
+    object-fit: contain;
+    object-position: right center;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img {
+    content: url("assets/images/logo-light.png");
+  }
+
+  /* Selve øvelsesrommet får nesten hele skjermbredden. */
+  #simulation-view.view {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  #simulation-view .simulation-panel {
+    margin: 12px -4px 0 !important;
+    padding: 13px 8px 18px !important;
+    border-radius: 16px;
+  }
+
+  #simulation-view .simulation-stage-heading {
+    padding: 0 4px;
+  }
+
+  #simulation-view .simulation-thread {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #simulation-view .simulation-bubble-row {
+    gap: 8px !important;
+  }
+
+  #simulation-view .simulation-view .simulation-bubble,
+  #simulation-view .simulation-bubble {
+    max-width: calc(100% - 44px) !important;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  #simulation-view .simulation-form,
+  #simulation-view .simulation-help,
+  #simulation-view .simulation-live-actions {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #simulation-view .simulation-form textarea {
+    min-height: 62px;
+  }
+
+  .complete-source-bank .utility-accordion-body {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
