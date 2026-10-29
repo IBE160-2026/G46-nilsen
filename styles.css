@@ -7508,3 +7508,169 @@ html[data-theme="dark"] .utility-page-logo {
     padding-right: 12px;
   }
 }
+
+
+/* BRAND + INSTALL FIX 2026-10-29 */
+
+.topbar-brand-button,
+.simulation-logo-crop.brand-preview-trigger {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.topbar-brand-button {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.topbar-brand-button:focus-visible,
+.simulation-logo-crop.brand-preview-trigger:focus-visible {
+  outline: 3px solid color-mix(in srgb,var(--accent) 42%,transparent);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.brand-logo-dialog {
+  width: min(92vw,680px);
+  max-width: 680px;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+}
+
+.brand-logo-dialog::backdrop {
+  background: rgba(8,24,30,.68);
+  backdrop-filter: blur(4px);
+}
+
+.brand-logo-dialog-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: 38px 28px 30px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.brand-logo-dialog-card img {
+  display: block;
+  width: min(100%,520px);
+  height: auto;
+}
+
+html[data-theme="dark"] .brand-logo-dialog-card img {
+  content: url("assets/images/logo-light.png");
+}
+
+.brand-logo-dialog-close {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.install-app-help[hidden] {
+  display: none !important;
+}
+
+@media (max-width:700px) {
+  .topbar {
+    min-height: 66px !important;
+    height: 66px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .topbar-mobile-brand-lockup {
+    gap: 8px !important;
+  }
+
+  .topbar-mobile-brand-symbol {
+    width: 46px !important;
+    height: 42px !important;
+    flex-basis: 46px !important;
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: 1.13rem !important;
+    font-weight: 840 !important;
+  }
+
+  .topbar-mobile-theme,
+  .profile-avatar {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  /* Samtaleøvelse: vis selve grafiske merket, ikke ordmerket. */
+  .simulation-hub-hero {
+    grid-template-columns: minmax(0,1fr) 88px !important;
+    column-gap: 10px !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    display: grid !important;
+    place-items: center !important;
+    width: 88px !important;
+    max-width: 88px !important;
+    height: 76px !important;
+    overflow: visible !important;
+    justify-self: end !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop img {
+    width: 82px !important;
+    height: 70px !important;
+    max-width: 82px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img,
+  html[data-theme="hybrid"] .simulation-hub-hero > .simulation-logo-crop img {
+    content: url("assets/images/logo-symbol-light.png");
+  }
+
+  .brand-logo-dialog {
+    width: min(94vw,560px);
+  }
+
+  .brand-logo-dialog-card {
+    min-height: 210px;
+    padding: 34px 20px 24px;
+  }
+
+  .brand-logo-dialog-card img {
+    width: min(100%,420px);
+  }
+
+  .install-app-featured .utility-accordion-body {
+    display: grid;
+  }
+}
+
+@media (max-width:380px) {
+  .topbar-mobile-brand-symbol {
+    width: 41px !important;
+    height: 38px !important;
+    flex-basis: 41px !important;
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: 1.02rem !important;
+  }
+}
