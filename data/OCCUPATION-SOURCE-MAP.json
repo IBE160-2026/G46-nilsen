@@ -1,0 +1,750 @@
+{
+  "version": 1,
+  "description": "Lokal yrkes- og kilderuter for Samtalestøtte. Yrke/bransje er valgfritt og skal bare påvirke råd når arbeidskontekst, risiko eller regelverk faktisk er relevant.",
+  "selectionPolicy": {
+    "occupationOptional": true,
+    "noSelectionMeaning": "Bruk generell arbeidslivs- og samtalekontekst uten yrkesspesifikk tilpasning.",
+    "ignoreOccupationWhenIrrelevant": true,
+    "examplesToIgnore": [
+      "samlivsbrudd",
+      "sorg",
+      "generell livsbelastning",
+      "vanlig relasjonskonflikt uten sektorspesifikk risiko"
+    ],
+    "useOccupationWhen": [
+      "sikkerhet",
+      "arbeidstid",
+      "autorisasjon",
+      "taushetsplikt",
+      "meldeplikt",
+      "pasient-/bruker-/elevsikkerhet",
+      "transportregler",
+      "sektorbestemte HMS-krav",
+      "særregler for fartøy/offshore/havbruk"
+    ]
+  },
+  "sourceHierarchy": [
+    "Ansvarlig myndighets egen side/veileder",
+    "Lovdata – gjeldende lov/forskrift",
+    "Offentlige rundskriv/tolkningsuttalelser",
+    "Faglige kilder",
+    "Sekundærkilder bare når primærkilder ikke dekker behovet"
+  ],
+  "universalAuthorities": [
+    {
+      "id": "arbeidstilsynet",
+      "label": "Arbeidstilsynet",
+      "domain": "arbeidstilsynet.no"
+    },
+    {
+      "id": "lovdata",
+      "label": "Lovdata",
+      "domain": "lovdata.no"
+    }
+  ],
+  "sectors": [
+    {
+      "id": "education_childcare",
+      "label": "Utdanning og oppvekst",
+      "occupations": [
+        "lærer",
+        "barnehagelærer",
+        "spesialpedagog",
+        "barne- og ungdomsarbeider",
+        "SFO/AKS-medarbeider",
+        "skoleleder",
+        "barnehagestyrer",
+        "miljøarbeider"
+      ],
+      "aliases": [
+        "skole",
+        "grunnskole",
+        "videregående",
+        "barnehage",
+        "SFO",
+        "AKS",
+        "undervisning",
+        "spesialundervisning"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "udir",
+          "label": "Utdanningsdirektoratet",
+          "domain": "udir.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "opplæringsregelverk",
+        "barnehageregelverk",
+        "arbeidsmiljø",
+        "elev-/barnemiljø",
+        "taushetsplikt",
+        "varsling"
+      ],
+      "riskTriggers": [
+        "elevsikkerhet",
+        "mobbing",
+        "vold og trusler",
+        "taushetsplikt",
+        "bekymring for barn",
+        "uønsket adferd mot barn"
+      ]
+    },
+    {
+      "id": "health_care",
+      "label": "Helse og omsorg",
+      "occupations": [
+        "sykepleier",
+        "lege",
+        "helsefagarbeider",
+        "vernepleier",
+        "psykolog",
+        "tannlege",
+        "tannpleier",
+        "fysioterapeut",
+        "ergoterapeut",
+        "ambulansearbeider",
+        "pleiemedarbeider"
+      ],
+      "aliases": [
+        "sykehus",
+        "sykehjem",
+        "hjemmetjeneste",
+        "hjemmesykepleie",
+        "kommunehelse",
+        "klinikk",
+        "psykisk helse",
+        "rusbehandling"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "helsedirektoratet",
+          "label": "Helsedirektoratet",
+          "domain": "helsedirektoratet.no"
+        },
+        {
+          "id": "helsetilsynet",
+          "label": "Helsetilsynet",
+          "domain": "helsetilsynet.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "helsepersonell",
+        "forsvarlighet",
+        "taushetsplikt",
+        "dokumentasjon",
+        "pasientsikkerhet",
+        "arbeidsmiljø",
+        "autorisasjon"
+      ],
+      "riskTriggers": [
+        "pasientsikkerhet",
+        "påvirket på jobb",
+        "taushetsbrudd",
+        "journalføring",
+        "uforsvarlig helsehjelp",
+        "autorisasjon",
+        "vold og trusler"
+      ]
+    },
+    {
+      "id": "public_admin_legal",
+      "label": "Offentlig forvaltning og juss",
+      "occupations": [
+        "saksbehandler",
+        "rådgiver",
+        "jurist",
+        "advokat",
+        "HR-rådgiver",
+        "forvaltningsmedarbeider",
+        "NAV-medarbeider",
+        "kommunal rådgiver",
+        "statlig rådgiver"
+      ],
+      "aliases": [
+        "kommune",
+        "stat",
+        "forvaltning",
+        "NAV",
+        "juridisk",
+        "advokatkontor"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "advokattilsynet",
+          "label": "Advokattilsynet",
+          "domain": "advokattilsynet.no"
+        }
+      ],
+      "legalAreas": [
+        "arbeidsmiljø",
+        "forvaltning",
+        "habilitet",
+        "taushetsplikt",
+        "personvern",
+        "statsansatte",
+        "advokatregelverk"
+      ],
+      "riskTriggers": [
+        "habilitet",
+        "taushetsplikt",
+        "myndighetsutøvelse",
+        "saksbehandlingsfeil",
+        "advokatetikk"
+      ]
+    },
+    {
+      "id": "defence_police_emergency",
+      "label": "Forsvar, politi og beredskap",
+      "occupations": [
+        "Forsvaret",
+        "politi",
+        "kriminalomsorg",
+        "brann og redning",
+        "vekter",
+        "sikkerhetsmedarbeider",
+        "beredskapsmedarbeider"
+      ],
+      "aliases": [
+        "militær",
+        "forsvar",
+        "politi",
+        "fengsel",
+        "kriminalomsorg",
+        "brannvesen",
+        "vekter",
+        "sikkerhet"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "dsb",
+          "label": "Direktoratet for samfunnssikkerhet og beredskap",
+          "domain": "dsb.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "arbeidsmiljø",
+        "sikkerhet",
+        "beredskap",
+        "tjenesteplikter",
+        "taushetsplikt",
+        "varsling"
+      ],
+      "riskTriggers": [
+        "våpen",
+        "beredskap",
+        "sikkerhetskritisk arbeid",
+        "påvirket på jobb",
+        "taushetsplikt",
+        "tjenestefeil"
+      ]
+    },
+    {
+      "id": "industry_production",
+      "label": "Produksjon og industri",
+      "occupations": [
+        "produksjonsmedarbeider",
+        "prosessoperatør",
+        "industrimekaniker",
+        "sveiser",
+        "maskinoperatør",
+        "fabrikkarbeider",
+        "næringsmiddelarbeider",
+        "driftsoperatør"
+      ],
+      "aliases": [
+        "fabrikk",
+        "produksjon",
+        "industri",
+        "prosess",
+        "næringsmiddelproduksjon",
+        "verksted"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "dsb",
+          "label": "Direktoratet for samfunnssikkerhet og beredskap",
+          "domain": "dsb.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "arbeidsmiljø",
+        "maskinsikkerhet",
+        "kjemikalier",
+        "arbeidstid",
+        "HMS",
+        "internkontroll"
+      ],
+      "riskTriggers": [
+        "maskiner",
+        "kjemikalier",
+        "påvirket på jobb",
+        "verneutstyr",
+        "arbeidstid",
+        "ulykke",
+        "nestenulykke"
+      ]
+    },
+    {
+      "id": "construction_trades",
+      "label": "Bygg, anlegg og tekniske fag",
+      "occupations": [
+        "tømrer",
+        "snekker",
+        "elektriker",
+        "rørlegger",
+        "anleggsarbeider",
+        "anleggsmaskinfører",
+        "mekaniker",
+        "ingeniør",
+        "driftstekniker"
+      ],
+      "aliases": [
+        "bygg",
+        "anlegg",
+        "elektro",
+        "VVS",
+        "verksted",
+        "teknisk drift"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "dsb",
+          "label": "Direktoratet for samfunnssikkerhet og beredskap",
+          "domain": "dsb.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "arbeidsmiljø",
+        "fallsikring",
+        "maskiner",
+        "elektrisk sikkerhet",
+        "arbeidsutstyr",
+        "HMS",
+        "internkontroll"
+      ],
+      "riskTriggers": [
+        "høydearbeid",
+        "strøm",
+        "maskiner",
+        "påvirket på jobb",
+        "verneutstyr",
+        "ulykke",
+        "nestenulykke"
+      ]
+    },
+    {
+      "id": "aquaculture_fisheries_maritime",
+      "label": "Fiskeri, havbruk og sjø",
+      "occupations": [
+        "fisker",
+        "oppdrettsoperatør",
+        "driftsleder oppdrett",
+        "fiskehelsepersonell",
+        "matros",
+        "skipsfører",
+        "maskinist",
+        "fiskeindustriarbeider"
+      ],
+      "aliases": [
+        "lakseoppdrett",
+        "oppdrett",
+        "havbruk",
+        "akvakultur",
+        "fiskeri",
+        "fartøy",
+        "sjøfart",
+        "fiskebåt",
+        "settefiskanlegg"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "fiskeridirektoratet",
+          "label": "Fiskeridirektoratet",
+          "domain": "fiskeridir.no"
+        },
+        {
+          "id": "mattilsynet",
+          "label": "Mattilsynet",
+          "domain": "mattilsynet.no"
+        },
+        {
+          "id": "sdir",
+          "label": "Sjøfartsdirektoratet",
+          "domain": "sdir.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "akvakultur",
+        "fiskehelse",
+        "dyrevelferd",
+        "sjøsikkerhet",
+        "arbeidsmiljø",
+        "fartøy",
+        "HMS"
+      ],
+      "riskTriggers": [
+        "sjøsikkerhet",
+        "påvirket på jobb",
+        "rømming",
+        "fiskehelse",
+        "dyrevelferd",
+        "fartøy",
+        "maskiner",
+        "beredskap"
+      ]
+    },
+    {
+      "id": "transport_logistics",
+      "label": "Transport og logistikk",
+      "occupations": [
+        "bussjåfør",
+        "lastebilsjåfør",
+        "varebilsjåfør",
+        "lagerarbeider",
+        "logistikkmedarbeider",
+        "terminalarbeider",
+        "togpersonell",
+        "flyplassmedarbeider"
+      ],
+      "aliases": [
+        "transport",
+        "buss",
+        "lastebil",
+        "varebil",
+        "lager",
+        "logistikk",
+        "terminal",
+        "yrkessjåfør"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "vegvesen",
+          "label": "Statens vegvesen",
+          "domain": "vegvesen.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "kjøre- og hviletid",
+        "arbeidstid",
+        "trafikksikkerhet",
+        "arbeidsmiljø",
+        "HMS"
+      ],
+      "riskTriggers": [
+        "kjøretid",
+        "hviletid",
+        "påvirket på jobb",
+        "trafikksikkerhet",
+        "arbeidstid",
+        "fartsskriver"
+      ]
+    },
+    {
+      "id": "retail_hospitality_service",
+      "label": "Handel, service, hotell og servering",
+      "occupations": [
+        "butikkmedarbeider",
+        "butikkleder",
+        "selger",
+        "kundeservicemedarbeider",
+        "kokk",
+        "servitør",
+        "hotellmedarbeider",
+        "resepsjonist",
+        "renholder"
+      ],
+      "aliases": [
+        "butikk",
+        "handel",
+        "servering",
+        "restaurant",
+        "hotell",
+        "kundeservice",
+        "renhold"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "arbeidsmiljø",
+        "arbeidstid",
+        "trakassering",
+        "HMS",
+        "renhold",
+        "servering"
+      ],
+      "riskTriggers": [
+        "arbeidstid",
+        "alenearbeid",
+        "vold og trusler",
+        "trakassering",
+        "påvirket på jobb"
+      ]
+    },
+    {
+      "id": "office_finance_it",
+      "label": "Kontor, økonomi, finans og IT",
+      "occupations": [
+        "kontormedarbeider",
+        "regnskapsfører",
+        "revisor",
+        "økonom",
+        "HR-medarbeider",
+        "prosjektleder",
+        "utvikler",
+        "IT-drift",
+        "cybersikkerhet",
+        "supportmedarbeider"
+      ],
+      "aliases": [
+        "kontor",
+        "økonomi",
+        "regnskap",
+        "revisjon",
+        "HR",
+        "IT",
+        "teknologi",
+        "programvare"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "finanstilsynet",
+          "label": "Finanstilsynet",
+          "domain": "finanstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "arbeidsmiljø",
+        "personvern",
+        "informasjonssikkerhet",
+        "finansregelverk",
+        "arbeidstid"
+      ],
+      "riskTriggers": [
+        "personvern",
+        "informasjonssikkerhet",
+        "finansiell etterlevelse",
+        "taushetsplikt",
+        "interessekonflikt"
+      ]
+    },
+    {
+      "id": "veterinary_animal_health",
+      "label": "Veterinær, dyrehelse og dyr",
+      "occupations": [
+        "veterinær",
+        "dyrlege",
+        "dyrepleier",
+        "fiskehelsebiolog",
+        "dyreklinikkmedarbeider",
+        "dyreholder"
+      ],
+      "aliases": [
+        "dyrlege",
+        "veterinærklinikk",
+        "dyreklinikk",
+        "dyrehelse",
+        "dyrepleie"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "mattilsynet",
+          "label": "Mattilsynet",
+          "domain": "mattilsynet.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "dyrehelsepersonell",
+        "dyrevelferd",
+        "journalføring",
+        "legemidler til dyr",
+        "smittevern",
+        "arbeidsmiljø"
+      ],
+      "riskTriggers": [
+        "dyrevelferd",
+        "journalføring",
+        "legemidler",
+        "smitte",
+        "faglig forsvarlighet",
+        "påvirket på jobb"
+      ]
+    },
+    {
+      "id": "offshore_energy",
+      "label": "Offshore, energi og kraft",
+      "occupations": [
+        "offshorearbeider",
+        "prosessoperatør offshore",
+        "plattformarbeider",
+        "energimontør",
+        "kraftverksoperatør",
+        "petroleumsingeniør"
+      ],
+      "aliases": [
+        "offshore",
+        "plattform",
+        "petroleum",
+        "olje og gass",
+        "energi",
+        "kraft"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "havtil",
+          "label": "Havindustritilsynet",
+          "domain": "havtil.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "dsb",
+          "label": "Direktoratet for samfunnssikkerhet og beredskap",
+          "domain": "dsb.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "sikkerhet",
+        "arbeidsmiljø",
+        "beredskap",
+        "petroleumsregelverk",
+        "elektrisk sikkerhet",
+        "arbeidstid"
+      ],
+      "riskTriggers": [
+        "sikkerhetskritisk arbeid",
+        "påvirket på jobb",
+        "beredskap",
+        "arbeidstid",
+        "ulykke",
+        "nestenulykke"
+      ]
+    },
+    {
+      "id": "other",
+      "label": "Annet",
+      "occupations": [],
+      "aliases": [],
+      "freeText": true,
+      "routingPolicy": "Forsøk først lokal aliasmatching mot alle sektorer. Hvis ingen sikker treff, bruk ett klassifiseringskall og behold valgt sektor i samtalekonteksten. Ikke anta særregelverk før sektor er identifisert."
+    }
+  ]
+}
