@@ -17,7 +17,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.10.9";
+const appVersion = process.env.APP_VERSION || "20.10.10";
 const contactEmail = process.env.CONTACT_EMAIL || "";
 
 app.disable("x-powered-by");
