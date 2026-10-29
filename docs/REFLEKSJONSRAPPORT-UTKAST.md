@@ -482,3 +482,12 @@ Etter at topplinjen teknisk var gjort responsiv, viste brukertest at løsningen 
 Historikksiden ga et nytt eksempel på forskjellen mellom å flytte et element og å løse selve layoutproblemet. Logoen var tidligere plassert ved hjelp av flex og transformasjoner i samme rad som overskriften. Det kunne se akseptabelt ut i én vindusstørrelse, men den ble aldri egentlig sentrert i den ledige høyre flaten. I stedet for å legge til enda en fast margin valgte jeg å endre layoutstrukturen i CSS: teksten og logoen fikk hver sin grid-kolonne, og logoen ble sentrert med dynamisk størrelse via `clamp()`.
 
 Samtidig fjernet jeg kortutseendet rundt KI-illustrasjonen i Samtaleøvelse fordi brukertesten viste at selve merket var sterkt nok visuelt uten ekstra ramme. Dette er et lite, men tydelig eksempel på at sluttfasen ikke bare handlet om å få funksjonene til å virke, men om å forenkle visuell struktur og fjerne styling som ikke lenger hadde en funksjon.
+
+
+## Tillegg 29.10.2026 – når CSS-layout ikke er nok uten riktig HTML-struktur
+
+Historikklogoen ble først forsøkt løst med en CSS-grid rundt eksisterende markup. Visuelt så den riktigere ut i én bredde, men fordi logoen fortsatt lå inne i samme `utility-title-row` som overskriften, kunne den ved skalering wrappe til egen linje og samtidig reservere uønsket høyde. Det viste en viktig begrensning ved å «rette» strukturproblemer bare med CSS.
+
+Jeg endret derfor HTML-strukturen slik at tekstblokken og logoen ble faktiske søsken i headeren. Dermed kunne høyresiden behandles som en uavhengig visuell kolonne: logoen krymper når vinduet blir smalere, men havner aldri under overskriften. Under mobilgrensen skjules den i stedet. Dette var et tydelig eksempel på at riktig responsiv oppførsel noen ganger krever at DOM-strukturen følger det visuelle hierarkiet, ikke bare flere overstyringer.
+
+I samme runde ble det også avdekket at mørk sidemeny fikk for lys hovertilstand fra en generell regel. En eksplisitt temaspesifikk sluttregel ble lagt sist i CSS-en for å sikre stabil kontrast. Samlet illustrerer dette hvordan et stort stilark kan akkumulere regler som er lokalt riktige, men som senere kolliderer. Sluttfasen krevde derfor ikke bare nye regler, men tydeligere prioritering av hvilke regler som faktisk skal være autoritative.
