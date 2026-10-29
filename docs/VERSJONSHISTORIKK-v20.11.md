@@ -82,3 +82,12 @@ Etter produksjonssetting av 20.11.0 ble det oppdaget at Samtaleøvelse-illustras
 Rettelsen standardiserer samme `profile-ai.png` i alle temaer, begrenser desktopstørrelsen, beholder to-kolonneoppsett i intervallet 641–900 CSS-piksler og flytter hovedgrensen for mobilmodus fra 700 til 640 CSS-piksler. JavaScript-logikken for mobilnavigasjon bruker samme grense.
 
 Hotfixen er utviklet på `hotfix/v20.11.1-desktop-responsive` og de relevante regresjonsassertene er oppdatert. Lokal full testkjøring kunne ikke gjennomføres i ChatGPTs arbeidsmiljø fordi miljøet ikke kunne nå GitHub for å klone repoet; dette skal ikke fremstilles som en bestått full `npm test`.
+
+
+## v20.11.2 – kompakt desktop og finder-opprydding
+
+Et skjermbilde fra produksjon viste at en halvstor nettleserbredde kunne presse breadcrumb oppå Samtalestøtte-logoen samtidig som profilområdet ble kuttet på høyre side. Dette var en egen mellomtilstand: vinduet var for smalt for full desktop, men skulle fortsatt ikke behandles som mobil.
+
+Løsningen ble en eksplisitt kompakt desktop-topplinje. I 641–1500 CSS-piksler reduseres logo/gap kontrollert og tekst får min-width/overflow-regler; i 641–1100 kan topplinjen bruke to rader for å bevare full funksjonalitet og profilinformasjon uten kollisjon.
+
+I samme patch ble et state-problem i Finn tema-flyten rettet. Når situasjonstekst var brukt til å finne tema og deretter sendt videre til råd, ble teksten liggende i både hovedsøket og undertemasøket fordi pendingSituationText fortsatt levde videre. v20.11.2 tømmer begge finder-feltene og tilhørende forslag/personvernstatus når råd-flyten starter, samtidig som situasjonen beholdes i det egentlige råd-feltet.

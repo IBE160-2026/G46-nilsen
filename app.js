@@ -17,7 +17,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.11.1", contactEmail: "" };
+let publicConfig = { appVersion: "20.11.2", contactEmail: "" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 let surveySubmitting = false;
@@ -356,6 +356,32 @@ function resetConversationState() {
   hideAutoTopicNote();
 
   clearGuidanceSession({ clearInputs: true });
+}
+
+function clearFinderCarryoverAfterAdvice() {
+  pendingSituationText = '';
+
+  ['#topic-search', '#topic-detail-search'].forEach(selector => {
+    const field = document.querySelector(selector);
+    if (field) field.value = '';
+  });
+
+  ['#topic-suggestion', '#subtopic-suggestion'].forEach(selector => {
+    const box = document.querySelector(selector);
+    if (box) {
+      box.hidden = true;
+      box.innerHTML = '';
+    }
+  });
+
+  ['#topic-finder-privacy', '#topic-detail-privacy'].forEach(selector => {
+    const box = document.querySelector(selector);
+    if (box) {
+      box.hidden = true;
+      box.innerHTML = '';
+      box.className = 'privacy-check finder-privacy-check';
+    }
+  });
 }
 
 function createTopicCard(topic) {
@@ -2337,6 +2363,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
   clearGuidanceSession({ clearInputs: false });
   document.querySelector('#situation').value = situationText;
+  clearFinderCarryoverAfterAdvice();
   updatePrivacyCheck();
 
   const originalLabel = submitButton?.textContent || 'Få råd';
@@ -3145,7 +3172,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.1', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.2', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
