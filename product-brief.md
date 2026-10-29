@@ -41,7 +41,7 @@ KI-en skal ikke diagnostisere medarbeidere, fastslå motiv eller skyld, gi binde
 
 Samtalestøtte er ikke bare en generell chatbot pakket inn i et nytt grensesnitt. Løsningen er bygget rundt den konkrete arbeidsprosessen en leder står i når en krevende medarbeidersamtale skal forberedes, gjennomføres og reflekteres over.
 
-I en generell KI-chat må brukeren selv formulere gode prompter, gi nødvendig kontekst, sette faglige grenser og vurdere hva som bør anonymiseres. Samtalestøtte flytter mye av dette ansvaret inn i selve produktet. Lederen velger eller beskriver situasjonen og føres gjennom en domenespesifikk arbeidsflyt med forberedelse, mål, spørsmål, mulige reaksjoner, oppfølging, samtalesimulering og refleksjon. Ni hovedtemaer og 56 undertemaer gir systemet strukturert kontekst uten at brukeren trenger å kunne prompt engineering.
+I en generell KI-chat må brukeren selv formulere gode prompter, gi nødvendig kontekst, sette faglige grenser og vurdere hva som bør anonymiseres. Samtalestøtte flytter mye av dette ansvaret inn i selve produktet. Lederen velger eller beskriver situasjonen og føres gjennom en domenespesifikk arbeidsflyt med forberedelse, mål, spørsmål, mulige reaksjoner, oppfølging, samtalesimulering og refleksjon. Ni hovedtemaer og 48 undertemaer gir systemet strukturert kontekst uten at brukeren trenger å kunne prompt engineering.
 
 Personvern og faglige begrensninger er også bygget inn i arbeidsflyten. Identifiserende opplysninger kontrolleres både i klient og server før tekst sendes til ekstern KI, og modellen instrueres eksplisitt om blant annet å unngå diagnoser, antakelser om motiv og skyld, oppdiktede fakta og bastante juridiske konklusjoner.
 
@@ -63,7 +63,7 @@ Personvernkontrollen må finnes både i klient og server. Utfordringen er å red
 
 Simulatoren skal holde en konsistent medarbeiderrolle gjennom flere meldinger og reagere dynamisk på brukerens formuleringer. Samtidig må den styres slik at den ikke diagnostiserer, tillegger personer skjulte motiver eller fremstiller spekulasjoner som fakta.
 
-Prosjektet skal også ha systematisk KI-testing på flere nivåer. Benchmarkbanken dekker de 56 undertemaene med faste testsituasjoner, mens en mindre golden/fasit-bank brukes til strengere regresjonskontroll av representative og risikoutsatte saker. Et representativt utvalg skal kunne kjøres mot flere modeller for å sammenligne blant annet kvalitet, stabilitet, responstid, kostnad og kildebruk.
+Prosjektet skal også ha systematisk KI-testing på flere nivåer. Benchmarkbanken dekker de 48 gjeldende undertemaene med faste testsituasjoner, mens en mindre golden/fasit-bank brukes til strengere regresjonskontroll av representative og risikoutsatte saker. Et representativt utvalg skal kunne kjøres mot flere modeller for å sammenligne blant annet kvalitet, stabilitet, responstid, kostnad og kildebruk.
 
 Web search skal være kontrollert og sporbar. Systemet skal kunne registrere hvilke eksterne kilder som faktisk brukes, uten at selve personalsamtalen automatisk lagres i denne loggen.
 
