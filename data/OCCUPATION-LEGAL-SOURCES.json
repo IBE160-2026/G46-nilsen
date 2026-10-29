@@ -1,0 +1,233 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-10-29",
+  "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
+  "sources": [
+    {
+      "id": "AT_RULES",
+      "authority": "Arbeidstilsynet",
+      "title": "Regelverk",
+      "url": "https://www.arbeidstilsynet.no/regelverk/",
+      "sectors": [
+        "education_childcare",
+        "health_care",
+        "public_admin_legal",
+        "defence_police_emergency",
+        "industry_production",
+        "construction_trades",
+        "aquaculture_fisheries_maritime",
+        "transport_logistics",
+        "retail_hospitality_service",
+        "office_finance_it",
+        "veterinary_animal_health",
+        "offshore_energy"
+      ],
+      "useFor": [
+        "arbeidsmiljø",
+        "HMS",
+        "arbeidstid",
+        "varsling",
+        "trakassering",
+        "arbeidsutstyr"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "UDIR_SCHOOL_RULES",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Regelverk for skole og opplæring",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring",
+      "sectors": [
+        "education_childcare"
+      ],
+      "useFor": [
+        "opplæringsloven",
+        "skolemiljø",
+        "ansattes plikter",
+        "elevrelaterte rettigheter",
+        "kompetansekrav"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "UDIR_KINDERGARTEN_RULES",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Regelverk for barnehage",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/barnehage/",
+      "sectors": [
+        "education_childcare"
+      ],
+      "useFor": [
+        "barnehageloven",
+        "rammeplan",
+        "internkontroll",
+        "bemanning",
+        "barnemiljø"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "HDIR_HEALTH_PERSONNEL",
+      "authority": "Helsedirektoratet",
+      "title": "Helsepersonelloven",
+      "url": "https://www.helsedirektoratet.no/lov-og-forskrift/helsepersonelloven",
+      "sectors": [
+        "health_care"
+      ],
+      "useFor": [
+        "helsepersonell",
+        "taushetsplikt",
+        "opplysningsplikt",
+        "forsvarlighet",
+        "dokumentasjon"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
+      "authority": "Mattilsynet",
+      "title": "Dyrehelsepersonell",
+      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell",
+      "sectors": [
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "dyrehelsepersonell",
+        "journalføring",
+        "autorisasjon",
+        "legemidler til dyr",
+        "fiskehelse"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "FISKERIDIR_AQUACULTURE",
+      "authority": "Fiskeridirektoratet",
+      "title": "Akvakultur",
+      "url": "https://www.fiskeridir.no/akvakultur",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "akvakulturloven",
+        "forskrifter",
+        "rømming",
+        "NYTEK23",
+        "tillatelser",
+        "havbruk"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "SDIR_RULES",
+      "authority": "Sjøfartsdirektoratet",
+      "title": "Regelverk",
+      "url": "https://www.sdir.no/regelverk/",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "fartøy",
+        "sjøsikkerhet",
+        "forskrifter",
+        "rundskriv",
+        "internasjonalt regelverk"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "SDIR_LAWS",
+      "authority": "Sjøfartsdirektoratet",
+      "title": "Lover",
+      "url": "https://www.sdir.no/regelverk/lover/",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "skipssikkerhetsloven",
+        "skipsarbeidsloven",
+        "sjøloven"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "VEGVESEN_DRIVING_REST",
+      "authority": "Statens vegvesen",
+      "title": "Regelverk for kjøre- og hviletid",
+      "url": "https://www.vegvesen.no/kjoretoy/yrkestransport/kjore-og-hviletid/regelverk/",
+      "sectors": [
+        "transport_logistics"
+      ],
+      "useFor": [
+        "kjøre- og hviletid",
+        "arbeidstid for sjåfører",
+        "fartsskriver",
+        "arbeidsgivers organisering"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "DSB_ELECTRICAL_SAFETY",
+      "authority": "DSB",
+      "title": "Elsikkerhet",
+      "url": "https://www.dsb.no/elsikkerhet/",
+      "sectors": [
+        "construction_trades",
+        "industry_production",
+        "offshore_energy",
+        "defence_police_emergency"
+      ],
+      "useFor": [
+        "elsikkerhet",
+        "elektrofag",
+        "FSE",
+        "internkontroll",
+        "elulykker"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "HAVTIL_RULES_PDF",
+      "authority": "Havindustritilsynet",
+      "title": "Gjeldende regelverk",
+      "url": "https://www.havtil.no/regelverk/pdf-av-regelverket/",
+      "sectors": [
+        "offshore_energy"
+      ],
+      "useFor": [
+        "rammeforskriften",
+        "styringsforskriften",
+        "innretningsforskriften",
+        "aktivitetsforskriften",
+        "teknisk og operasjonell forskrift"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "FINANSTILSYNET_RULES",
+      "authority": "Finanstilsynet",
+      "title": "Regelverk",
+      "url": "https://www.finanstilsynet.no/regelverk/",
+      "sectors": [
+        "office_finance_it"
+      ],
+      "useFor": [
+        "bank",
+        "forsikring",
+        "verdipapir",
+        "regnskap",
+        "revisjon",
+        "finansforetak"
+      ],
+      "timeSensitive": true
+    }
+  ],
+  "validationRules": {
+    "requireOfficialSourceForLegalClaim": true,
+    "requireFreshCheckWhenTimeSensitive": true,
+    "doNotTreatGuidanceAsStatute": true,
+    "doNotInferSectorLawFromOccupationAlone": true,
+    "preferNarrowRelevantSourceOverBroadSearch": true
+  }
+}
