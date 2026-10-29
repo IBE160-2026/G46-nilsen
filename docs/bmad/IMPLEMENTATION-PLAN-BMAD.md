@@ -3,7 +3,7 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Revidert Implementation Plan  
 **Rammeverk:** BMAD  
-**Status:** Revidert plan og status per 26.10.2026  
+**Status:** Revidert plan og status per 29.10.2026 – produksjonsversjon 20.11.0  
 **Språk:** Norsk
 
 ---
@@ -1194,6 +1194,23 @@ Implementeringsplanen er derfor både:
 - en dokumentasjon av hvordan nye krav oppstod
 - et grunnlag for videre refleksjon og utvikling
 
-Per 26.10.2026 er kjerneproduktet, personvern, autentisering, historikk, simulator, admin, KI-testing og sentrale sikkerhetsmekanismer implementert i prototypeform. Statusen er et øyeblikksbilde, ikke en erklæring om at prosjektet er ferdig.
+Per 29.10.2026 er kjerneproduktet, personvern, autentisering, historikk, simulator, admin, KI-testing og sentrale sikkerhetsmekanismer implementert i prototypeform. Statusen er et øyeblikksbilde, ikke en erklæring om at prosjektet er ferdig.
 
 Videre arbeid gjelder særlig mer omfattende brukertesting, videre modell-/benchmarkarbeid og eventuell framtidig lukket/offline arkitektur.
+
+# 30. Samlet pilotforbedringsrunde og produksjonssetting – v20.11.0
+
+Pilotfunnene ble samlet på arbeidsgrenen pilot-ux-v20.11 i stedet for å deployes enkeltvis til produksjon. Runden omfattet særlig mobil-first UX, begrepskonsistens, merkevare, PWA/installasjon, kildevisning og regresjonstester.
+
+Arbeidsformen var:
+
+    pilotfunn
+    -> implementer på egen branch
+    -> deploy egen preview
+    -> fysisk mobiltest
+    -> oppdag responsive/cache-relaterte feil
+    -> korriger faktisk renderet komponent
+    -> oppdater regresjonstester og dokumentasjon
+    -> samlet produksjonsrelease 20.11.0
+
+Denne runden synliggjorde at grønn deploy og korrekt kode i repoet ikke alene dokumenterer at brukergrensesnittet fungerer på aktuell enhet. Fysisk mobiltest ble derfor brukt sammen med automatiserte PWA-/UX-kontroller før produksjonssetting.
