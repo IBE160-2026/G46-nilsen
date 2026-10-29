@@ -4,7 +4,7 @@
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert PRD med leveransestatus  
-**Versjon ved dokumentasjon:** 20.10.10  
+**Versjon ved dokumentasjon:** 20.11.0  
 **Språk:** Norsk
 
 ---
@@ -1088,3 +1088,19 @@ Kravet støttes av:
 - `docs/bmad/UX-DESIGN-BMAD.md`
 
 Prinsippet er at KI-støtte skal være **etterprøvbar**, ikke bare overbevisende formulert.
+
+# Produksjonstillegg – v20.11.0 mobil/PWA
+
+Pilotbruk viste at mobil er en faktisk brukerflate i prosjektet. Leveransen i v20.11.0 omfatter derfor:
+
+- responsiv mobilvisning for hovedflytene
+- egen mobilnavigasjon og mobiltilpasset toppfelt
+- bedre breddeutnyttelse i Samtaleøvelse
+- tydelig og klikkbar merkevare/illustrasjon
+- PWA-manifest, appikoner og service worker
+- installasjonsveiledning og standalone-visning i støttede nettlesere
+- komplette kildehenvisninger i Hjelp
+
+PWA er et installasjonslag rundt webapplikasjonen, ikke en separat native Android/iOS-applikasjon. Browserstøtte kan variere. Kjernefunksjonen skal fortsatt fungere som vanlig webapp dersom installasjon ikke tilbys.
+
+Fysisk mobiltest på Samsung/Chrome brukes som supplement til testene for pilot-UX og PWA, fordi statiske tester ikke kan dokumentere all faktisk nettleser- og installasjonsatferd.
