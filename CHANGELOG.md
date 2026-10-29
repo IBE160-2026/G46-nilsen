@@ -1,3 +1,13 @@
+# v20.11.2 – kompakt desktop-topplinje og ryddige Finn tema-felter
+
+- Rettet overlapping mellom Samtalestøtte-logo og breadcrumb på halvstore desktopvinduer.
+- Høyresiden i topplinjen beholder temavelger, Ny samtale og profil uten at brukerinfo presses ut av skjermen.
+- 641–1100 px bruker en to-raders kompakt desktop-topplinje fremfor mobilmodus.
+- Finn tema-feltene på forside og temaside tømmes når brukeren går videre til råd.
+- Midlertidig situasjonstekst i finder-state nullstilles samtidig, mens selve situasjonen beholdes i råd-flyten.
+- Versjon, cache og regresjonstester er synkronisert til 20.11.2.
+
+---
 # v20.11.1 – desktoplogo og senere mobilbreakpoint
 
 - Rettet Samtaleøvelse-illustrasjonen på web/desktop: samme KI-bilde brukes nå i lys, hybrid og mørk visning.
