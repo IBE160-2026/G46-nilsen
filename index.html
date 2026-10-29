@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.15" />
+  <link rel="stylesheet" href="styles.css?v=20.11.17" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -184,7 +184,8 @@
               <h1 id="topic-title"></h1>
             </div>
             <p id="topic-description"></p>
-            <div id="topic-representations" class="topic-representations"></div>
+            <div id="topic-representations" class="topic-representations" aria-label="Hurtigvalg for undertema"></div>
+            <p id="representation-filter-status" class="representation-filter-status" role="status" aria-live="polite"></p>
           </div>
           <div class="topic-hero-visual">
             <img class="expandable-content-image" src="assets/images/hero-conversation-exact.png" alt="To personer i en arbeidsrelatert samtale" tabindex="0" role="button" aria-label="Vis bildet større" />
@@ -996,6 +997,6 @@
   <script src="src/privacy-name-data.js?v=20.10.10"></script>
   <script src="src/privacy-detector.js?v=20.10.10"></script>
   <script src="src/client-data.js?v=20.10.10"></script>
-  <script src="app.js?v=20.11.16"></script>
+  <script src="app.js?v=20.11.17"></script>
 </body>
 </html>
