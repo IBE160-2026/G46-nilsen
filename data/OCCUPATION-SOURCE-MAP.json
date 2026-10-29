@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "description": "Lokal yrkes- og kilderuter for Samtalestøtte. Yrke/bransje er valgfritt og skal bare påvirke råd når arbeidskontekst, risiko eller regelverk faktisk er relevant.",
   "selectionPolicy": {
     "occupationOptional": true,
@@ -203,7 +203,7 @@
         {
           "id": "advokattilsynet",
           "label": "Advokattilsynet",
-          "domain": "advokattilsynet.no"
+          "domain": "tilsynet.no"
         }
       ],
       "legalAreas": [
