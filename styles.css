@@ -8046,3 +8046,43 @@ html[data-theme="dark"] .mobile-nav-ai-glyph img,
 html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
   border-width: 1.5px !important;
 }
+
+
+/* AI CONTOUR OUTLINE 2026-10-29 */
+
+/* Fjern tidligere ring rundt bildeflaten. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
+html[data-theme="dark"] .simulation-ai-heading-icon img,
+html[data-theme="hybrid"] .simulation-ai-heading-icon img,
+html[data-theme="dark"] .simulation-logo-crop img,
+html[data-theme="hybrid"] .simulation-logo-crop img,
+html[data-theme="dark"] .simulation-entry-icon img,
+html[data-theme="hybrid"] .simulation-entry-icon img,
+html[data-theme="dark"] .simulation-avatar img,
+html[data-theme="hybrid"] .simulation-avatar img {
+  border: 0 !important;
+  box-shadow: none !important;
+  /* Drop-shadow følger alpha-konturen i PNG-en og lager omriss rundt selve hodet. */
+  filter:
+    drop-shadow(1px 0 0 rgba(255,255,255,.92))
+    drop-shadow(-1px 0 0 rgba(255,255,255,.92))
+    drop-shadow(0 1px 0 rgba(255,255,255,.92))
+    drop-shadow(0 -1px 0 rgba(255,255,255,.92))
+    drop-shadow(.75px .75px 0 rgba(255,255,255,.78))
+    drop-shadow(-.75px .75px 0 rgba(255,255,255,.78))
+    drop-shadow(.75px -.75px 0 rgba(255,255,255,.78))
+    drop-shadow(-.75px -.75px 0 rgba(255,255,255,.78))
+    drop-shadow(0 2px 5px rgba(0,0,0,.18)) !important;
+}
+
+/* Litt tynnere på det aller minste menyikonet. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
+  filter:
+    drop-shadow(.65px 0 0 rgba(255,255,255,.92))
+    drop-shadow(-.65px 0 0 rgba(255,255,255,.92))
+    drop-shadow(0 .65px 0 rgba(255,255,255,.92))
+    drop-shadow(0 -.65px 0 rgba(255,255,255,.92))
+    drop-shadow(0 1px 3px rgba(0,0,0,.16)) !important;
+}
