@@ -4,7 +4,7 @@
 **Dokumenttype:** Epics & User Stories  
 **Rammeverk:** BMAD  
 **Status:** Revidert med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.10.3  
+**Versjon ved dokumentasjon:** 20.11.0  
 **Språk:** Norsk
 
 ---
@@ -108,7 +108,7 @@ Ni hovedtemaer finnes:
 3. Prestasjon og utvikling
 4. Lønn og utvikling
 5. Samarbeid og kommunikasjon
-6. Avslutning av arbeidsforhold
+6. Oppsigelse og avslutning av arbeidsforhold
 7. Sikkerhet og ansvar
 8. Livssituasjoner
 9. Mobbing og trakassering
@@ -1138,3 +1138,27 @@ Og eksplisitt framtidig arbeid knyttet til:
 - lukket nettverk
 
 Denne statusdelingen gjør at dokumentet kan sammenlignes direkte med kode, tester og faktisk levert applikasjon uten at framtidige ambisjoner framstår som ferdig implementert funksjonalitet.
+
+# Produksjonstillegg – Story: mobil og PWA
+
+**Status:** IMPLEMENTERT OG PILOT-TESTET
+
+**Som bruker** vil jeg kunne bruke Samtalestøtte på mobil og installere løsningen som en webapp slik at den er lett tilgjengelig i reelle arbeidssituasjoner.
+
+### Akseptansekriterier
+
+- hovedflytene er responsive på mobil
+- mobil har tydelig navigasjon og merkevare
+- Samtaleøvelse utnytter tilgjengelig skjermbredde
+- PWA-manifest og nødvendige appikoner finnes
+- service worker cacher app-shell uten å cache API-kall
+- installasjonsveiledning finnes i Innstillinger
+- vanlig webbruk fungerer selv om nettleseren ikke tilbyr installasjon
+
+### Bevis
+
+- manifest.webmanifest
+- sw.js
+- tests/test-pilot-ux.cjs
+- tests/test-pwa.cjs
+- fysisk pilot-test på Samsung/Chrome 29.10.2026

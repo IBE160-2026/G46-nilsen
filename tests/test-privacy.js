@@ -20,6 +20,8 @@ const nameCases = [
   ['Situasjonen er krevende.', null],
   ['knut er delvis tilbake i arbeid.', 'knut'],
   ['Knut er delvis tilbake i arbeid.', 'Knut'],
+  ['Lars kommer for sent.', 'Lars'],
+  ['Jeg snakket med Lars om saken.', 'Lars'],
   ['trude er delvis tilbake i arbeid.', 'trude'],
   ['Trude er delvis tilbake i arbeid.', 'Trude'],
   ['Jeg snakket med trude som ønsker et møte.', 'trude'],

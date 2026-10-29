@@ -3,7 +3,7 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** AI Test Plan / Quality Assurance  
 **Status:** Aktiv og revidert testplan  
-**Versjon ved dokumentasjon:** 20.10.10  
+**Versjon ved dokumentasjon:** 20.11.0  
 **Språk:** Norsk
 
 ---
@@ -1325,3 +1325,13 @@ Dette ga to viktige testprinsipper:
 29.10.2026 ble undertemastrukturen forenklet fra 56 til 48 undertemaer. Klientdata og serverens klassifiseringskontrakt ble synkronisert, og UI-regresjonen låser de nye navnene. Benchmarkbanken ble deretter remappet til den gjeldende taksonomien uten å kaste tidligere testsaker. To nye saker for «Konflikt med leder» ble lagt til, slik at banken nå har 114 saker og minst to per gjeldende undertema. `tests/test-benchmark-taxonomy.cjs` kontrollerer koblingen mot `src/server/topic-contracts.js`.
 
 Merk at den historiske fullkjøringen av `npm test` 26.10.2026 fortsatt dokumenteres som den siste komplette lokale kjøringen av hele pakken. Senere endringer er kontrollert med målrettede regresjoner, statiske kontraktskontroller og vellykket Render-bygg/deploy; dokumentasjonen skal ikke late som en full lokal testpakke er kjørt etter hver dokumentasjonsendring.
+
+
+## Verifisering 29.10.2026 – mobil/PWA og pilot-UX
+
+Versjon 20.11.0 legger til to deterministiske regresjonsspor for den samlede pilotforbedringen:
+
+- tests/test-pilot-ux.cjs kontrollerer sentrale brukerbegreper, mobilnavigasjon, mobiltema, Samtaleøvelse-identitet og tilstedeværelse av pilotdokumentasjon.
+- tests/test-pwa.cjs kontrollerer manifest, standalone-modus, rasterikoner, service worker, installasjons-UI og at app-shell-cachen ikke brukes for API eller ikke-GET.
+
+Disse testene er nødvendige, men ikke tilstrekkelige alene. PWA-installasjon og faktisk responsiv visning ble derfor også kontrollert fysisk på Samsung-mobil i Chrome. Dette skillet er viktig: statiske regresjonstester dokumenterer at nødvendige mekanismer finnes i koden, mens fysisk test dokumenterer faktisk nettleser- og skjermatferd i den testede konfigurasjonen.

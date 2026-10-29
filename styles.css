@@ -570,7 +570,7 @@ h1,h2,h3,p {
 
 .topic-grid {
   display: grid;
-  grid-template-columns: repeat(5,minmax(0,1fr));
+  grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 12px;
 }
 
@@ -935,7 +935,7 @@ html[data-theme="dark"] .brand-logo {
 
 @media (max-width:1420px) {
   .topic-grid {
-    grid-template-columns: repeat(4,minmax(0,1fr));
+    grid-template-columns: repeat(5,minmax(0,1fr));
   }
 
 }
@@ -6448,5 +6448,1785 @@ html[data-theme="dark"] .utility-page-logo {
 
   .sidebar-toggle {
     right: -29px !important;
+  }
+}
+
+/* ==========================================================
+   MOBILE UX PILOT v20.11
+   Mobil behandles som egen brukskontekst, ikke krympet desktop.
+   ========================================================== */
+
+.mobile-bottom-nav {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .app-shell,
+  .app-shell.sidebar-collapsed-layout,
+  .app-shell:not(.sidebar-collapsed-layout) {
+    display: block !important;
+    grid-template-columns: 1fr !important;
+    min-height: 100dvh;
+  }
+
+  .sidebar,
+  .sidebar-toggle {
+    display: none !important;
+  }
+
+  .main {
+    width: 100%;
+    min-width: 0;
+    padding-bottom: calc(72px + env(safe-area-inset-bottom));
+  }
+
+  .topbar {
+    min-height: 58px !important;
+    height: 58px !important;
+    padding: 7px 10px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    gap: 8px !important;
+  }
+
+  .topbar-left {
+    min-width: 0;
+    flex: 1 1 auto;
+    gap: 8px;
+  }
+
+  .topbar-brand-logo {
+    display: block !important;
+    width: 108px !important;
+    max-height: 34px !important;
+    flex: 0 0 auto;
+  }
+
+  #breadcrumb {
+    min-width: 0;
+    max-width: 38vw;
+    font-size: .78rem;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .topbar-right {
+    width: auto !important;
+    flex: 0 0 auto;
+    flex-wrap: nowrap !important;
+    gap: 7px !important;
+  }
+
+  .topbar .theme-switcher {
+    display: none !important;
+  }
+
+  .topbar-new-chat {
+    width: auto !important;
+    min-height: 36px;
+    padding: 7px 9px !important;
+    font-size: .76rem;
+    white-space: nowrap;
+  }
+
+  .profile-chip {
+    gap: 0;
+  }
+
+  .profile-chip .profile-text,
+  .profile-chip .profile-caret {
+    display: none !important;
+  }
+
+  .profile-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .view {
+    width: 100%;
+    padding: 12px 12px 92px !important;
+  }
+
+  .hero-panel,
+  .topic-hero-panel {
+    grid-template-columns: 1fr !important;
+    min-height: 0 !important;
+    padding: 18px !important;
+    border-radius: 18px !important;
+  }
+
+  .topic-hero-visual {
+    display: none !important;
+  }
+
+  #home-view .hero-panel {
+    overflow: hidden;
+  }
+
+  #home-view .hero-visual {
+    display: block !important;
+    width: auto;
+    height: 92px;
+    margin: 8px -18px -18px !important;
+    overflow: hidden;
+    border-radius: 0 0 18px 18px;
+  }
+
+  #home-view .hero-visual img {
+    width: 100% !important;
+    height: 92px !important;
+    object-fit: cover;
+    object-position: center 46%;
+    -webkit-mask-image: linear-gradient(to bottom,rgba(0,0,0,.72) 0%,#000 24%,#000 100%) !important;
+    mask-image: linear-gradient(to bottom,rgba(0,0,0,.72) 0%,#000 24%,#000 100%) !important;
+  }
+
+  .topic-grid,
+  .subtopic-grid,
+  .info-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  .topic-card,
+  .subtopic-card,
+  .info-card,
+  .guidance-card,
+  .settings-card {
+    border-radius: 15px !important;
+  }
+
+  .topic-card,
+  .subtopic-card,
+  .guidance-card {
+    padding-left: 14px !important;
+    padding-right: 14px !important;
+  }
+
+  .privacy-banner,
+  .simulation-privacy-banner,
+  .guidance-safety-banner,
+  .history-privacy-review {
+    padding: 12px 13px !important;
+    border-radius: 14px !important;
+  }
+
+  .simulation-hub-hero {
+    grid-template-columns: 1fr !important;
+    padding: 18px !important;
+    gap: 12px !important;
+    border-radius: 18px !important;
+  }
+
+  .simulation-hub,
+  .simulation-panel,
+  .simulation-setup,
+  .simulation-live {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .simulation-panel {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .simulation-choice-block,
+  .direct-simulation-card {
+    padding: 14px !important;
+    border-radius: 15px !important;
+  }
+
+  .simulation-thread {
+    min-height: 48dvh !important;
+    max-height: none !important;
+    padding-left: 4px !important;
+    padding-right: 4px !important;
+  }
+
+  .simulation-live.expanded .simulation-thread {
+    min-height: 58dvh !important;
+    max-height: none !important;
+  }
+
+  .simulation-view .simulation-bubble {
+    max-width: calc(100% - 54px) !important;
+  }
+
+  .simulation-avatar {
+    width: 40px !important;
+    height: 40px !important;
+    flex-basis: 40px !important;
+  }
+
+  .simulation-avatar img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  .simulation-form {
+    position: sticky;
+    bottom: calc(60px + env(safe-area-inset-bottom));
+    z-index: 30;
+    padding: 10px !important;
+    margin-left: -4px;
+    margin-right: -4px;
+    background: color-mix(in srgb,var(--bg) 94%, transparent);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid var(--border);
+  }
+
+  .simulation-form textarea {
+    min-height: 54px;
+    max-height: 120px;
+  }
+
+  .simulation-input-meta {
+    display: none;
+  }
+
+  .mobile-bottom-nav {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 250;
+    display: grid;
+    grid-template-columns: repeat(4,minmax(0,1fr));
+    gap: 2px;
+    padding: 5px 6px calc(5px + env(safe-area-inset-bottom));
+    border-top: 1px solid var(--border);
+    background: color-mix(in srgb,var(--surface) 96%, transparent);
+    backdrop-filter: blur(14px);
+    box-shadow: 0 -6px 20px rgba(20,45,60,.08);
+  }
+
+  .mobile-bottom-nav .mobile-nav-item {
+    min-width: 0;
+    display: flex !important;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 2px;
+    padding: 5px 2px !important;
+    border-radius: 11px;
+    font-size: .68rem;
+    font-weight: 700;
+    text-align: center;
+  }
+
+  .mobile-nav-glyph {
+    font-size: 1.15rem;
+    line-height: 1;
+  }
+
+  .mobile-bottom-nav .mobile-nav-item.active {
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+}
+
+
+/* MOBILE HYBRID NAV + COMPACT VISUAL IDENTITY */
+@media (max-width: 700px) {
+  .mobile-theme-cycle {
+    border: 0;
+    background: transparent;
+    color: var(--text);
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav {
+    background: linear-gradient(180deg,#123e4a 0%,#0f3440 100%);
+    border-top-color: #255766;
+    color: #edf8fa;
+    box-shadow: 0 -8px 24px rgba(11,47,58,.22);
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav .mobile-nav-item {
+    color: #d9edf1;
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav .mobile-nav-item.active {
+    background: #245d6d;
+    color: #fff;
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav .mobile-theme-cycle {
+    color: #d9edf1;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop {
+    display: flex !important;
+    width: 150px !important;
+    max-width: 52% !important;
+    height: auto !important;
+    margin: 2px 0 0 !important;
+    justify-self: start !important;
+    transform: none !important;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop img {
+    width: 150px !important;
+    height: auto !important;
+    max-width: 100% !important;
+    object-fit: contain;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero .simulation-logo-crop img {
+    content: url("assets/images/logo-light.png") !important;
+  }
+}
+
+
+/* PWA INSTALL */
+.install-app-body {
+  display: grid;
+  grid-template-columns: 76px minmax(0,1fr);
+  gap: 16px;
+  align-items: start;
+}
+
+.install-app-brand {
+  width: 72px;
+  height: 72px;
+  border-radius: 18px;
+  overflow: hidden;
+  box-shadow: var(--shadow);
+}
+
+.install-app-brand img {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.install-app-copy h2 {
+  margin: 0 0 6px;
+  font-size: 1.15rem;
+}
+
+.install-app-copy > p {
+  margin: 0 0 12px;
+}
+
+.install-app-help {
+  margin-top: 12px;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface-2);
+}
+
+.install-app-help p {
+  margin: 4px 0 0;
+}
+
+#install-app-status:empty {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .install-app-body {
+    grid-template-columns: 58px minmax(0,1fr);
+    gap: 12px;
+  }
+
+  .install-app-brand {
+    width: 56px;
+    height: 56px;
+    border-radius: 14px;
+  }
+
+  #install-app-button {
+    width: 100%;
+  }
+}
+
+
+/* MOBILE UX REFINEMENT 29.10
+   Pilotfunn: mer innholdsflate, mindre hero, tydeligere kontrast,
+   tema i toppfeltet og logo ved siden av Samtaleøvelse-overskriften. */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.topbar-mobile-theme {
+  display: none;
+}
+
+.mobile-chat-glyph svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 700px) {
+  /* Tema flyttes ut av bunnnavigasjonen og opp ved profilen. */
+  .topbar-mobile-theme {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: grid !important;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--accent);
+    font-size: 1.05rem;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  html[data-theme="hybrid"] .topbar-mobile-theme {
+    background: #123e4a;
+    border-color: #255766;
+    color: #edf8fa;
+  }
+
+  html[data-theme="dark"] .topbar-mobile-theme {
+    background: var(--surface-2);
+  }
+
+  /* Hovedtema: mindre høyde og bedre utnyttelse av mobilbredden. */
+  #topic-view .topic-hero-panel {
+    margin: 8px -4px 14px !important;
+    padding: 14px !important;
+    border-radius: 16px !important;
+  }
+
+  #topic-view .topic-hero-copy {
+    padding: 0 !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #topic-view .topic-hero-title-row {
+    gap: 10px;
+    align-items: center;
+  }
+
+  #topic-view .topic-summary-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+  }
+
+  #topic-view .topic-hero-title-row h1 {
+    font-size: clamp(1.5rem,7vw,1.9rem) !important;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+  }
+
+  #topic-view .topic-hero-copy > p {
+    margin-top: 9px;
+    max-width: none !important;
+    font-size: .91rem;
+    line-height: 1.45;
+  }
+
+  #topic-view .topic-representations {
+    margin-top: 11px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  #topic-view .topic-representations::-webkit-scrollbar {
+    display: none;
+  }
+
+  #topic-view .representation-chip {
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 5px 9px;
+    font-size: .78rem;
+  }
+
+  /* Samtaleøvelse: behold desktop-prinsippet med logo til høyre for overskriften. */
+  .simulation-hub-hero {
+    grid-template-columns: minmax(0,1fr) 108px !important;
+    align-items: start !important;
+    gap: 10px !important;
+    padding: 15px !important;
+  }
+
+  .simulation-hub-hero > div:first-child {
+    min-width: 0;
+  }
+
+  .simulation-hub-hero h1 {
+    font-size: clamp(1.55rem,7vw,1.95rem) !important;
+    line-height: 1.08;
+  }
+
+  .simulation-hub-hero p {
+    font-size: .9rem;
+    line-height: 1.45;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop {
+    display: flex !important;
+    width: 108px !important;
+    max-width: 108px !important;
+    height: 74px !important;
+    margin: 2px 0 0 !important;
+    align-items: center;
+    justify-content: flex-end !important;
+    justify-self: end !important;
+    overflow: hidden;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop img {
+    width: 108px !important;
+    max-width: 108px !important;
+    height: auto !important;
+    object-fit: contain;
+  }
+
+  /* Lys/hybrid: tydeligere primærhandlinger mot den lyse bakgrunnen. */
+  html[data-theme="light"] .primary-button,
+  html[data-theme="hybrid"] .primary-button {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  html[data-theme="light"] .primary-button:hover,
+  html[data-theme="hybrid"] .primary-button:hover {
+    background: var(--accent-strong);
+    color: #fff;
+  }
+
+  html[data-theme="light"] .topic-card,
+  html[data-theme="hybrid"] .topic-card,
+  html[data-theme="light"] .subtopic-card,
+  html[data-theme="hybrid"] .subtopic-card {
+    background: var(--surface);
+    border-color: color-mix(in srgb,var(--accent) 28%,var(--border));
+  }
+}
+
+
+/* PILOT 20.11 MOBILE CONSISTENCY 2026-10-29 */
+
+.brand-mobile-lockup {
+  display: none;
+}
+
+/* Narrow-screen page headers reuse the same web icons consistently. */
+@media (max-width: 1100px) {
+  .utility-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 11px;
+  }
+
+  .utility-title-row .utility-page-brand {
+    display: none !important;
+  }
+
+  .utility-title-row .collapsed-page-icon {
+    display: inline-flex !important;
+    order: -1;
+    transform: none !important;
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .utility-title-row h1 {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Sidebar logo: symbol stays compact while the name becomes readable. */
+  .sidebar.sidebar-collapsed .brand-logo {
+    display: none !important;
+  }
+
+  .sidebar.sidebar-collapsed .brand-button {
+    width: 100%;
+    padding: 0;
+  }
+
+  .sidebar.sidebar-collapsed .brand-mobile-lockup {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: inherit;
+  }
+
+  .brand-mobile-symbol {
+    display: block;
+    width: 38px;
+    height: 31px;
+    object-fit: contain;
+  }
+
+  html[data-theme="hybrid"] .brand-mobile-symbol,
+  html[data-theme="dark"] .brand-mobile-symbol {
+    content: url("assets/images/logo-symbol-light.png");
+  }
+
+  .brand-mobile-word {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: .66rem;
+    line-height: .94;
+    font-weight: 820;
+    letter-spacing: -.025em;
+    white-space: nowrap;
+  }
+
+  /* Topic page: small theme image beside the heading; copy uses full width below. */
+  #topic-view .topic-hero-panel {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 68px !important;
+    grid-template-rows: auto auto auto auto;
+    gap: 0 10px !important;
+    align-items: start;
+  }
+
+  #topic-view .topic-hero-copy {
+    display: contents !important;
+  }
+
+  #topic-view .topic-hero-copy > .eyebrow {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  #topic-view .topic-hero-title-row {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  #topic-view .topic-hero-copy > p {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+  }
+
+  #topic-view .topic-representations {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+
+  #topic-view .topic-hero-visual {
+    display: block !important;
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    width: 68px !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border));
+    box-shadow: 0 4px 12px rgba(20,89,107,.08);
+  }
+
+  #topic-view .topic-hero-visual::before {
+    display: none !important;
+  }
+
+  #topic-view .topic-hero-visual img {
+    width: 68px !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    object-fit: cover;
+  }
+
+  /* Samtaleøvelse: web speech icon on the left; description gets the whole width. */
+  .simulation-hub-hero {
+    display: block !important;
+    padding: 15px !important;
+  }
+
+  .simulation-hub-copy {
+    min-width: 0;
+  }
+
+  .simulation-hub-title-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .simulation-hub-title-row .simulation-heading-icon {
+    display: inline-flex !important;
+    width: 38px !important;
+    height: 38px !important;
+    flex: 0 0 38px !important;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+    border-radius: 12px !important;
+  }
+
+  .simulation-hub-title-row .simulation-heading-icon svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .simulation-hub-title-row h1 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 4px 0 7px !important;
+  }
+
+  .simulation-hub-copy > p {
+    width: 100%;
+    max-width: none !important;
+    margin-top: 7px;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    display: none !important;
+  }
+
+  .utility-title-row {
+    gap: 9px;
+  }
+
+  .utility-title-row .collapsed-page-icon {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px !important;
+    border-radius: 12px !important;
+  }
+
+  .utility-title-row .collapsed-page-icon svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    margin-top: 4px;
+    margin-bottom: 7px;
+  }
+}
+
+
+/* REAL MOBILE TOPBAR BRAND FIX 2026-10-29 */
+
+.topbar-mobile-brand-lockup {
+  display: none;
+}
+
+@media (max-width:700px) {
+  .topbar-left .topbar-brand-logo {
+    display: none !important;
+  }
+
+  .topbar-mobile-brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+
+  .topbar-mobile-brand-symbol {
+    display: block;
+    width: 29px;
+    height: 27px;
+    flex: 0 0 29px;
+    object-fit: contain;
+  }
+
+  html[data-theme="hybrid"] .topbar-mobile-brand-symbol,
+  html[data-theme="dark"] .topbar-mobile-brand-symbol {
+    content: url("assets/images/logo-symbol-light.png");
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: .88rem;
+    line-height: 1;
+    font-weight: 820;
+    letter-spacing: -.035em;
+    white-space: nowrap;
+  }
+
+  #breadcrumb {
+    flex: 1 1 auto;
+    max-width: 25vw !important;
+  }
+}
+
+
+/* MOBILE PILOT ROUND 3 2026-10-29 */
+
+.complete-source-intro {
+  margin: 0 0 14px;
+  color: var(--muted);
+}
+
+.complete-source-groups {
+  display: grid;
+  gap: 18px;
+}
+
+.complete-source-group h3 {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin: 0 0 9px;
+  font-size: 1rem;
+}
+
+.complete-source-group h3 span {
+  font-size: .75rem;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.complete-source-list {
+  display: grid;
+  gap: 8px;
+  margin: 0;
+  padding-left: 19px;
+}
+
+.complete-source-list li {
+  line-height: 1.35;
+}
+
+.complete-source-list a {
+  font-weight: 700;
+}
+
+.complete-source-list small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: .76rem;
+}
+
+.install-app-featured {
+  border-color: color-mix(in srgb,var(--accent) 42%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 25%,var(--surface));
+}
+
+@media (max-width:700px) {
+  /* Bruk plassen i topplinjen bedre: større merke, breadcrumb er overflødig på mobil. */
+  .topbar-left {
+    flex: 1 1 auto !important;
+    overflow: visible !important;
+  }
+
+  .topbar-mobile-brand-lockup {
+    gap: 7px !important;
+    flex: 1 1 auto !important;
+  }
+
+  .topbar-mobile-brand-symbol {
+    width: 38px !important;
+    height: 34px !important;
+    flex-basis: 38px !important;
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: 1.04rem !important;
+    letter-spacing: -.04em;
+  }
+
+  #breadcrumb {
+    display: none !important;
+  }
+
+  /* Fem faste valg nederst; samme ikonfamilie som web. */
+  .mobile-bottom-nav {
+    grid-template-columns: repeat(5,minmax(0,1fr)) !important;
+    padding-left: 4px;
+    padding-right: 4px;
+  }
+
+  .mobile-bottom-nav .mobile-nav-item {
+    font-size: .62rem !important;
+    gap: 3px;
+    padding-left: 1px !important;
+    padding-right: 1px !important;
+  }
+
+  .mobile-nav-glyph {
+    display: grid;
+    place-items: center;
+    width: 24px;
+    height: 24px;
+    font-size: 1rem;
+  }
+
+  .mobile-nav-glyph svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.9;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .mobile-help-glyph {
+    font-size: 1.05rem;
+    font-weight: 850;
+  }
+
+  /* Samtaleøvelse: behold både webikonet og Samtalestøtte-logoen.
+     Logoen ligger i topphjørnet, mens beskrivelsen bruker hele bredden under. */
+  .simulation-hub-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) 72px !important;
+    grid-template-rows: auto auto auto !important;
+    column-gap: 9px !important;
+    row-gap: 0 !important;
+    align-items: start !important;
+  }
+
+  .simulation-hub-copy {
+    display: contents !important;
+  }
+
+  .simulation-hub-copy > .eyebrow {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  .simulation-hub-title-row {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  .simulation-hub-copy > p {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+    margin-top: 8px !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    display: flex !important;
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    justify-self: end;
+    width: 72px !important;
+    max-width: 72px !important;
+    height: 58px !important;
+    margin: 0 !important;
+    overflow: hidden;
+    align-items: center;
+    justify-content: flex-end !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop img {
+    display: block;
+    width: 105px !important;
+    max-width: none !important;
+    height: auto !important;
+    object-fit: contain;
+    object-position: right center;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img {
+    content: url("assets/images/logo-light.png");
+  }
+
+  /* Selve øvelsesrommet får nesten hele skjermbredden. */
+  #simulation-view.view {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+  }
+
+  #simulation-view .simulation-panel {
+    margin: 12px -4px 0 !important;
+    padding: 13px 8px 18px !important;
+    border-radius: 16px;
+  }
+
+  #simulation-view .simulation-stage-heading {
+    padding: 0 4px;
+  }
+
+  #simulation-view .simulation-thread {
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  #simulation-view .simulation-bubble-row {
+    gap: 8px !important;
+  }
+
+  #simulation-view .simulation-view .simulation-bubble,
+  #simulation-view .simulation-bubble {
+    max-width: calc(100% - 44px) !important;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  #simulation-view .simulation-form,
+  #simulation-view .simulation-help,
+  #simulation-view .simulation-live-actions {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  #simulation-view .simulation-form textarea {
+    min-height: 62px;
+  }
+
+  .complete-source-bank .utility-accordion-body {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+}
+
+
+/* BRAND + INSTALL FIX 2026-10-29 */
+
+.topbar-brand-button,
+.simulation-logo-crop.brand-preview-trigger {
+  border: 0;
+  background: transparent;
+  color: inherit;
+  padding: 0;
+}
+
+.topbar-brand-button {
+  display: flex;
+  align-items: center;
+  min-width: 0;
+}
+
+.topbar-brand-button:focus-visible,
+.simulation-logo-crop.brand-preview-trigger:focus-visible {
+  outline: 3px solid color-mix(in srgb,var(--accent) 42%,transparent);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.brand-logo-dialog {
+  width: min(92vw,680px);
+  max-width: 680px;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+}
+
+.brand-logo-dialog::backdrop {
+  background: rgba(8,24,30,.68);
+  backdrop-filter: blur(4px);
+}
+
+.brand-logo-dialog-card {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 240px;
+  padding: 38px 28px 30px;
+  border: 1px solid var(--border);
+  border-radius: 24px;
+  background: var(--surface);
+  box-shadow: var(--shadow);
+}
+
+.brand-logo-dialog-card img {
+  display: block;
+  width: min(100%,520px);
+  height: auto;
+}
+
+html[data-theme="dark"] .brand-logo-dialog-card img {
+  content: url("assets/images/logo-light.png");
+}
+
+.brand-logo-dialog-close {
+  position: absolute;
+  right: 12px;
+  top: 8px;
+  width: 38px;
+  height: 38px;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.7rem;
+  line-height: 1;
+}
+
+.install-app-help[hidden] {
+  display: none !important;
+}
+
+@media (max-width:700px) {
+  .topbar {
+    min-height: 66px !important;
+    height: 66px !important;
+    padding-top: 6px !important;
+    padding-bottom: 6px !important;
+  }
+
+  .topbar-mobile-brand-lockup {
+    gap: 8px !important;
+  }
+
+  .topbar-mobile-brand-symbol {
+    width: 46px !important;
+    height: 42px !important;
+    flex-basis: 46px !important;
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: 1.13rem !important;
+    font-weight: 840 !important;
+  }
+
+  .topbar-mobile-theme,
+  .profile-avatar {
+    width: 38px !important;
+    height: 38px !important;
+  }
+
+  /* Samtaleøvelse: vis selve grafiske merket, ikke ordmerket. */
+  .simulation-hub-hero {
+    grid-template-columns: minmax(0,1fr) 88px !important;
+    column-gap: 10px !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    display: grid !important;
+    place-items: center !important;
+    width: 88px !important;
+    max-width: 88px !important;
+    height: 76px !important;
+    overflow: visible !important;
+    justify-self: end !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop img {
+    width: 82px !important;
+    height: 70px !important;
+    max-width: 82px !important;
+    object-fit: contain !important;
+    object-position: center !important;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img,
+  html[data-theme="hybrid"] .simulation-hub-hero > .simulation-logo-crop img {
+    content: url("assets/images/logo-symbol-light.png");
+  }
+
+  .brand-logo-dialog {
+    width: min(94vw,560px);
+  }
+
+  .brand-logo-dialog-card {
+    min-height: 210px;
+    padding: 34px 20px 24px;
+  }
+
+  .brand-logo-dialog-card img {
+    width: min(100%,420px);
+  }
+
+  .install-app-featured .utility-accordion-body {
+    display: grid;
+  }
+}
+
+@media (max-width:380px) {
+  .topbar-mobile-brand-symbol {
+    width: 41px !important;
+    height: 38px !important;
+    flex-basis: 41px !important;
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: 1.02rem !important;
+  }
+}
+
+
+/* KI IDENTITY + IMAGE PREVIEW + PWA 2026-10-29 */
+
+.mobile-nav-ai-glyph img {
+  display: block;
+  width: 23px;
+  height: 23px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.simulation-entry-icon {
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.simulation-entry-icon img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.simulation-logo-crop {
+  cursor: zoom-in;
+}
+
+.expandable-content-image {
+  cursor: zoom-in;
+}
+
+.expandable-content-image:focus-visible,
+.image-preview-trigger:focus-visible {
+  outline: 3px solid color-mix(in srgb,var(--accent) 42%,transparent);
+  outline-offset: 3px;
+}
+
+.image-preview-dialog .brand-logo-dialog-card {
+  min-height: min(76vh,620px);
+}
+
+.image-preview-dialog .brand-logo-dialog-card img {
+  width: auto;
+  max-width: min(86vw,720px);
+  max-height: 76vh;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
+  content: normal;
+}
+
+@media (max-width:700px) {
+  .mobile-nav-ai-glyph img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    width: 88px !important;
+    max-width: 88px !important;
+    height: 78px !important;
+    border-radius: 50% !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop img {
+    width: 74px !important;
+    height: 74px !important;
+    max-width: 74px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: 50% !important;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img,
+  html[data-theme="hybrid"] .simulation-hub-hero > .simulation-logo-crop img {
+    content: normal !important;
+  }
+
+  .image-preview-dialog .brand-logo-dialog-card {
+    min-height: 58vh;
+  }
+
+  .image-preview-dialog .brand-logo-dialog-card img {
+    max-width: 86vw;
+    max-height: 70vh;
+  }
+}
+
+
+/* SIMULATION AI HEADING IMAGE */
+.simulation-ai-heading-icon {
+  overflow: hidden;
+  cursor: zoom-in;
+  padding: 0 !important;
+}
+.simulation-ai-heading-icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+}
+
+
+/* COMPACT GUIDANCE + SIMULATION CTA 2026-10-29 */
+
+/* Forslag til samtalen: tallene er små markører, ikke en egen bred venstrekolonne. */
+#structured-guidance.guidance-grid {
+  gap: 10px;
+  margin-top: 18px;
+}
+
+#structured-guidance .guidance-card {
+  position: relative;
+  display: grid;
+  grid-template-columns: 30px minmax(0,1fr);
+  gap: 10px;
+  align-items: start;
+  padding: 14px 15px;
+  border: 1px solid var(--border);
+  border-left: 3px solid color-mix(in srgb,var(--accent) 72%,var(--border));
+  border-radius: 14px;
+  background: color-mix(in srgb,var(--surface) 96%,var(--accent-soft));
+  box-shadow: 0 3px 12px rgba(18,55,53,.035);
+}
+
+#structured-guidance .guidance-card:first-child {
+  border-top: 1px solid var(--border);
+}
+
+#structured-guidance .guidance-number {
+  display: inline-grid;
+  place-items: center;
+  width: 28px;
+  height: 28px;
+  margin-top: 1px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: .72rem;
+  font-weight: 900;
+  letter-spacing: .02em;
+  line-height: 1;
+}
+
+#structured-guidance .guidance-card h3 {
+  margin: 1px 0 6px;
+  font-size: 1rem;
+  line-height: 1.25;
+}
+
+#structured-guidance .guidance-card p,
+#structured-guidance .guidance-copy {
+  line-height: 1.52;
+}
+
+#structured-guidance .guidance-card + .guidance-card {
+  margin-top: 0;
+}
+
+/* Øvingskortet: KI-hodet er en liten merkevaremarkør, teksten får plassen. */
+#simulation-entry.simulation-entry {
+  grid-template-columns: 46px minmax(0,1fr) auto;
+  gap: 12px;
+  align-items: center;
+  padding: 16px 17px;
+}
+
+#simulation-entry .simulation-entry-icon {
+  width: 42px !important;
+  height: 42px !important;
+  min-width: 42px;
+  border-radius: 50% !important;
+  overflow: hidden !important;
+  background: var(--surface);
+}
+
+#simulation-entry .simulation-entry-icon img {
+  width: 40px !important;
+  height: 40px !important;
+  max-width: 40px !important;
+  object-fit: cover !important;
+  border-radius: 50% !important;
+  content: normal !important;
+}
+
+html[data-theme="dark"] #simulation-entry .simulation-entry-icon img,
+html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
+  content: normal !important;
+}
+
+#simulation-entry .simulation-entry-copy {
+  min-width: 0;
+}
+
+#simulation-entry .simulation-entry-copy h3 {
+  margin: 2px 0 4px;
+  font-size: 1.08rem;
+}
+
+#simulation-entry .simulation-entry-copy p {
+  line-height: 1.45;
+}
+
+@media (max-width:700px) {
+  #structured-guidance.guidance-grid {
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  #structured-guidance .guidance-card {
+    grid-template-columns: 26px minmax(0,1fr) !important;
+    gap: 9px !important;
+    padding: 12px 12px !important;
+    border-radius: 13px !important;
+  }
+
+  #structured-guidance .guidance-number {
+    width: 25px;
+    height: 25px;
+    border-radius: 8px;
+    font-size: .66rem;
+  }
+
+  #structured-guidance .guidance-card h3 {
+    font-size: .98rem;
+  }
+
+  #simulation-entry.simulation-entry {
+    grid-template-columns: 38px minmax(0,1fr) !important;
+    gap: 9px !important;
+    padding: 13px !important;
+    align-items: start;
+  }
+
+  #simulation-entry .simulation-entry-icon {
+    width: 36px !important;
+    height: 36px !important;
+    min-width: 36px !important;
+    margin-top: 2px;
+  }
+
+  #simulation-entry .simulation-entry-icon img {
+    width: 34px !important;
+    height: 34px !important;
+    max-width: 34px !important;
+  }
+
+  #simulation-entry .simulation-entry-copy h3 {
+    font-size: 1rem;
+    line-height: 1.25;
+  }
+
+  #simulation-entry .simulation-entry-copy p {
+    font-size: .88rem;
+    line-height: 1.42;
+  }
+
+  #simulation-entry .primary-button {
+    grid-column: 1 / -1 !important;
+    width: 100% !important;
+    min-height: 44px !important;
+    margin-top: 2px;
+  }
+}
+
+
+/* FINAL MOBILE GUIDANCE TIGHTENING + AI HALO 2026-10-29 */
+
+/* Rådskort: nummer og overskrift på samme linje, teksten bruker hele bredden under. */
+#structured-guidance .guidance-card {
+  display: grid !important;
+  grid-template-columns: 28px minmax(0,1fr) !important;
+  grid-template-rows: auto auto !important;
+  column-gap: 9px !important;
+  row-gap: 7px !important;
+  padding: 13px 14px 14px !important;
+}
+
+#structured-guidance .guidance-number {
+  grid-column: 1 !important;
+  grid-row: 1 !important;
+  align-self: center;
+  margin: 0 !important;
+}
+
+#structured-guidance .guidance-card > div {
+  display: contents !important;
+}
+
+#structured-guidance .guidance-card h3 {
+  grid-column: 2 !important;
+  grid-row: 1 !important;
+  align-self: center;
+  margin: 0 !important;
+  line-height: 1.25;
+}
+
+#structured-guidance .guidance-card p,
+#structured-guidance .guidance-card .guidance-copy {
+  grid-column: 1 / -1 !important;
+  grid-row: 2 !important;
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+/* KI-hodet: myk lys halo i mørk/hybrid så den mørke ansiktssiden ikke forsvinner. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
+html[data-theme="dark"] .simulation-ai-heading-icon img,
+html[data-theme="hybrid"] .simulation-ai-heading-icon img,
+html[data-theme="dark"] .simulation-logo-crop img,
+html[data-theme="hybrid"] .simulation-logo-crop img,
+html[data-theme="dark"] .simulation-entry-icon img,
+html[data-theme="hybrid"] .simulation-entry-icon img,
+html[data-theme="dark"] .simulation-avatar img,
+html[data-theme="hybrid"] .simulation-avatar img {
+  filter:
+    drop-shadow(0 0 1px rgba(255,255,255,.85))
+    drop-shadow(0 0 5px rgba(220,242,246,.48))
+    drop-shadow(0 2px 7px rgba(0,0,0,.18)) !important;
+}
+
+@media (max-width:700px) {
+  #structured-guidance .guidance-card {
+    grid-template-columns: 25px minmax(0,1fr) !important;
+    column-gap: 8px !important;
+    row-gap: 6px !important;
+    padding: 11px 11px 12px !important;
+  }
+
+  #structured-guidance .guidance-number {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  #structured-guidance .guidance-card h3 {
+    font-size: .97rem !important;
+  }
+}
+
+
+/* AI WHITE OUTLINE DARK THEMES 2026-10-29 */
+
+/* KI-hodet får samme tydelige, lyse avgrensning som de øvrige profilfigurene. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
+html[data-theme="dark"] .simulation-ai-heading-icon img,
+html[data-theme="hybrid"] .simulation-ai-heading-icon img,
+html[data-theme="dark"] .simulation-logo-crop img,
+html[data-theme="hybrid"] .simulation-logo-crop img,
+html[data-theme="dark"] .simulation-entry-icon img,
+html[data-theme="hybrid"] .simulation-entry-icon img,
+html[data-theme="dark"] .simulation-avatar img,
+html[data-theme="hybrid"] .simulation-avatar img {
+  filter: none !important;
+  border: 2px solid rgba(255,255,255,.88) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.16),
+    0 2px 8px rgba(0,0,0,.22) !important;
+  box-sizing: border-box;
+}
+
+/* Litt mykere på de aller minste ikonene. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
+  border-width: 1.5px !important;
+}
+
+
+/* AI CONTOUR OUTLINE 2026-10-29 */
+
+/* Fjern tidligere ring rundt bildeflaten. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
+html[data-theme="dark"] .simulation-ai-heading-icon img,
+html[data-theme="hybrid"] .simulation-ai-heading-icon img,
+html[data-theme="dark"] .simulation-logo-crop img,
+html[data-theme="hybrid"] .simulation-logo-crop img,
+html[data-theme="dark"] .simulation-entry-icon img,
+html[data-theme="hybrid"] .simulation-entry-icon img,
+html[data-theme="dark"] .simulation-avatar img,
+html[data-theme="hybrid"] .simulation-avatar img {
+  border: 0 !important;
+  box-shadow: none !important;
+  /* Drop-shadow følger alpha-konturen i PNG-en og lager omriss rundt selve hodet. */
+  filter:
+    drop-shadow(1px 0 0 rgba(255,255,255,.92))
+    drop-shadow(-1px 0 0 rgba(255,255,255,.92))
+    drop-shadow(0 1px 0 rgba(255,255,255,.92))
+    drop-shadow(0 -1px 0 rgba(255,255,255,.92))
+    drop-shadow(.75px .75px 0 rgba(255,255,255,.78))
+    drop-shadow(-.75px .75px 0 rgba(255,255,255,.78))
+    drop-shadow(.75px -.75px 0 rgba(255,255,255,.78))
+    drop-shadow(-.75px -.75px 0 rgba(255,255,255,.78))
+    drop-shadow(0 2px 5px rgba(0,0,0,.18)) !important;
+}
+
+/* Litt tynnere på det aller minste menyikonet. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
+  filter:
+    drop-shadow(.65px 0 0 rgba(255,255,255,.92))
+    drop-shadow(-.65px 0 0 rgba(255,255,255,.92))
+    drop-shadow(0 .65px 0 rgba(255,255,255,.92))
+    drop-shadow(0 -.65px 0 rgba(255,255,255,.92))
+    drop-shadow(0 1px 3px rgba(0,0,0,.16)) !important;
+}
+
+
+/* MOBILE NAV AUTO HIDE 2026-10-29 */
+
+@media (max-width:700px) {
+  .mobile-bottom-nav {
+    transition:
+      transform .22s ease,
+      opacity .18s ease !important;
+    will-change: transform;
+  }
+
+  body.mobile-nav-hidden .mobile-bottom-nav {
+    transform: translateY(calc(100% + env(safe-area-inset-bottom) + 8px)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.mobile-nav-hidden .simulation-form {
+    bottom: env(safe-area-inset-bottom) !important;
+  }
+
+  .simulation-hub-title-row {
+    gap: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .mobile-bottom-nav {
+    transition: none !important;
+  }
+}
+
+
+/* CLICKABLE TOPIC REPRESENTATIONS 2026-10-29 */
+
+.representation-chip {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform .16s ease,
+    background .16s ease,
+    border-color .16s ease,
+    box-shadow .16s ease;
+}
+
+.representation-chip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb,var(--accent) 48%,var(--border));
+  box-shadow: 0 4px 12px rgba(15,68,87,.08);
+}
+
+.representation-chip:focus-visible {
+  outline: 3px solid color-mix(in srgb,var(--accent) 38%,transparent);
+  outline-offset: 2px;
+}
+
+.representation-chip.active,
+.representation-chip[aria-pressed="true"] {
+  color: #fff;
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  box-shadow: 0 5px 14px rgba(15,68,87,.14);
+}
+
+.representation-filter-status {
+  min-height: 1.2em;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.subtopic-card.representation-match {
+  border-color: color-mix(in srgb,var(--accent) 42%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 40%,var(--surface));
+}
+
+@media (max-width:760px) {
+  .topic-representations {
+    gap: 7px;
+  }
+
+  .representation-chip {
+    min-height: 38px;
+    padding: 8px 11px;
+    text-align: left;
+  }
+
+  .representation-filter-status {
+    font-size: .76rem;
+  }
+}
+
+
+/* DARK QUICK FILTER CONTRAST 2026-10-29 */
+
+html[data-theme="dark"] .representation-chip.active,
+html[data-theme="dark"] .representation-chip[aria-pressed="true"],
+html[data-theme="hybrid"] .representation-chip.active,
+html[data-theme="hybrid"] .representation-chip[aria-pressed="true"] {
+  background: #245d68 !important;
+  border-color: #78aeb8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,.26) !important;
+}
+
+html[data-theme="dark"] .representation-chip.active:hover,
+html[data-theme="dark"] .representation-chip[aria-pressed="true"]:hover,
+html[data-theme="hybrid"] .representation-chip.active:hover,
+html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
+  background: #1d505a !important;
+}
+
+/* BRAND VISIBILITY PATCH: keep simulation illustration distinct from site brand */
+@media (max-width:700px) {
+  #simulation-view .simulation-hub-hero > .simulation-logo-crop {
+    display: flex !important;
+    width: 112px !important;
+    max-width: 112px !important;
+    height: 104px !important;
+    overflow: hidden !important;
+    border-radius: 18px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  #simulation-view .simulation-hub-hero > .simulation-logo-crop img {
+    display: block !important;
+    width: 112px !important;
+    max-width: none !important;
+    height: 104px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: 14px !important;
+    content: normal !important;
+  }
+  html[data-theme="dark"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img,
+  html[data-theme="hybrid"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img {
+    content: normal !important;
   }
 }

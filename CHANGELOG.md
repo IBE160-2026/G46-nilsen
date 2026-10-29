@@ -1,3 +1,18 @@
+# v20.11.0 – mobil-first pilotforbedringer og PWA
+
+- Samlet pilotgren er klargjort som produksjonsrelease etter fysisk mobiltest.
+- Mobilgrensesnittet er videreutviklet med egen mobilnavigasjon, mobiltilpasset toppfelt og bedre breddeutnyttelse i Samtaleøvelse.
+- Samtalestøtte-logoen er tydeligere på mobil og kan åpnes i større visning.
+- Samtaleøvelse har egen KI-illustrasjon med mobiltilpasset beskjæring og større forhåndsvisning.
+- PWA-støtte er lagt til med manifest, 192/512-ikoner, maskable-ikon, service worker og installasjonsveiledning.
+- Installasjon er fysisk verifisert på Samsung/Chrome med standalone-visning.
+- Hjelp viser komplett kildebank med 62 kilder.
+- Mobilmenyen inkluderer Innstillinger og bruker samme ikonfamilie som resten av produktet.
+- Regresjonstester for pilot-UX og PWA er lagt til/oppdatert.
+- Versjon er synkronisert til 20.11.0 i package, lockfil, server, klient, HTML, demo, miljøeksempel og service worker-cache.
+- Product Brief, README, BMAD-dokumentasjon, AI-testplan, AI-logg og refleksjonsutkast er oppdatert med sluttfasens pilotfunn.
+
+---
 # v20.10.10 – SOURCEBANK v6 og lokalt samtalefaglig grunnlag
 
 - SOURCEBANK er utvidet fra 56 til 62 kuraterte kilder.

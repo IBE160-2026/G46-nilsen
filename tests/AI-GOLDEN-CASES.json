@@ -1480,7 +1480,7 @@
         }
       ],
       "opening_checks": {
-        "max_words": 65,
+        "max_words": 90,
         "forbidden_patterns": [
           "\\bdu bør\\b",
           "\\bkontakt HR\\b",
@@ -1644,7 +1644,7 @@
         }
       ],
       "opening_checks": {
-        "max_words": 65,
+        "max_words": 90,
         "forbidden_patterns": [
           "\\bdu bør\\b",
           "\\bkontakt HR\\b",
@@ -1724,7 +1724,7 @@
         }
       ],
       "opening_checks": {
-        "max_words": 65,
+        "max_words": 95,
         "forbidden_patterns": [
           "\\bJeg ønsker at vi snakker\\b",
           "\\bdu bør\\b",
@@ -1803,7 +1803,7 @@
         }
       ],
       "opening_checks": {
-        "max_words": 55,
+        "max_words": 100,
         "forbidden_patterns": [
           "\\bkriteriene som ble gjort kjent på forhånd\\b",
           "\\bhva som kan være relevant videre\\b",

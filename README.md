@@ -1,5 +1,7 @@
 ﻿# Samtalestøtte
 
+**Gjeldende produksjonsversjon:** 20.11.0 · 29.10.2026  
+
 Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Løsningen er utviklet som del av IBE160 Programmering med KI ved Høgskolen i Molde.
 
 Målet er ikke at KI skal ta beslutninger for lederen, men å støtte forberedelse, formuleringer, refleksjon og praktisk øvelse.
@@ -14,11 +16,11 @@ Kildebruken er også styrt. SOURCEBANK v6 har 62 kuraterte kilder med blant anne
 
 **1. Test full funksjonalitet i nettleseren**
 
-Publisert testversjon:
+Publisert produksjonsversjon for prosjektleveransen:
 
 `https://g46-nilsen-samtalestotte.onrender.com`
 
-Den publiserte testversjonen anbefales ved vurdering av selve produktet. Den er allerede konfigurert med prosjektets KI-modell, Supabase og servermiljø, og krever derfor ikke lokal installasjon eller sensorens egen API-nøkkel.
+Den publiserte versjonen anbefales ved vurdering av selve produktet. Den er allerede konfigurert med prosjektets KI-modell, Supabase og servermiljø, og krever derfor ikke lokal installasjon eller sensorens egen API-nøkkel.
 
 Tilgang til den lukkede testversjonen gis separat sammen med innleveringen.
 
@@ -64,6 +66,8 @@ Samtalestøtte kan blant annet:
 - støtte refleksjon etter øvelsen
 - lagre historikk for innloggede brukere
 - kontrollere tekst for identifiserende opplysninger før KI-kall
+- installeres som PWA/webapp på støttede mobil- og desktopnettlesere
+- tilpasse navigasjon, merkevare og samtaleøvelse til mobilskjerm
 
 Løsningen er ikke et HR-system, journalsystem eller beslutningsverktøy.
 
@@ -138,7 +142,7 @@ SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SECRET_KEY=sb_secret_...
 
 ADMIN_EMAILS=din-admin-epost@example.com
-APP_VERSION=20.10.10
+APP_VERSION=20.11.0
 ```
 
 Ekte API-nøkler og andre hemmeligheter skal ikke legges i GitHub.
@@ -162,6 +166,23 @@ npm run dev
 ```
 
 Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
+
+## Produksjonsrelease 20.11.0 – mobil og PWA
+
+Pilotarbeidet 29.10.2026 viste at mobil måtte behandles som en reell brukerflate, ikke bare som en nedskalert desktopvisning. Versjon 20.11.0 samler derfor mobil-first UX, PWA-installasjon og merkevareforbedringer i én produksjonsrelease.
+
+Blant endringene er:
+
+- egen mobilnavigasjon og mobiltilpasset toppfelt
+- bedre utnyttelse av bredden i Samtaleøvelse
+- tydeligere Samtalestøtte-logo og egen KI-illustrasjon for Samtaleøvelse
+- klikkbare logoer/illustrasjoner med større forhåndsvisning
+- installasjon som standalone PWA med manifest, appikoner og service worker
+- synlig installasjonsveiledning i Innstillinger
+- komplett visning av de 62 kildene i Hjelp
+- regresjonstester for pilot-UX og PWA-oppsett
+
+Den installerte PWA-en er fysisk testet på Samsung-mobil i Chrome. Dette er en webapp, ikke en app distribuert gjennom Google Play eller App Store. Nettleserens støtte avgjør om en eksplisitt installasjonsknapp kan vises.
 
 ## Database
 

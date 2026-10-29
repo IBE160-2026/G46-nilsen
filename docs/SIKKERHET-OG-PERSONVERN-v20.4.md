@@ -295,3 +295,20 @@ Dette er et kompatibilitetsområde for lokal kjøring og testing. Faglærer har 
 Produksjon på Render skal fortsatt bruke `NODE_VERSION=26.12.1`. Render prioriterer denne miljøvariabelen foran `engines.node` i `package.json`. Dermed kan prosjektet være mindre restriktivt for sensor lokalt uten å senke Node-versjonen i produksjon.
 
 Node 26.12.1 ble beholdt som produksjonsversjon fordi den er en sikkerhetsrelease fra 21.10.2026. Den bredere `engines`-verdien skal derfor ikke tolkes som en anbefaling om å bruke eldre eller utgåtte Node-versjoner i produksjon.
+
+
+## Tillegg 29.10.2026 – PWA og lokal app-shell-cache i v20.11.0
+
+Versjon 20.11.0 kan installeres som PWA i støttede nettlesere. Dette endrer ikke behandlingsgrunnlag, autentisering eller server-side personverngateway, men innfører en service worker som kan lagre eksplisitte frontendressurser lokalt på enheten.
+
+Sikkerhetsprinsipper for PWA-laget:
+
+- service worker cacher bare eksplisitt app-shell og statiske ressurser
+- API-kall skal ikke caches
+- ikke-GET-forespørsler skal ikke caches
+- autentiserte samtaledata skal ikke legges i PWA-cachen
+- vanlige serverregler for autorisasjon og personvern gjelder også fra installert PWA
+- installasjon er valgfri; webappen skal fungere uten installasjon
+- brukeren bør følge virksomhetens regler for bruk av private eller administrerte enheter
+
+PWA-installasjon gjør løsningen mer app-lignende, men skal ikke beskrives som en lukket/offline variant. Ekstern KI, Supabase og øvrige serveravhengigheter er fortsatt nettbaserte i produksjonsarkitekturen.

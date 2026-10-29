@@ -4,6 +4,7 @@ if (!svgIcons || !topics) throw new Error("Mangler Samtalestøtte-klientdata.");
 let lastAiAnalysis = null;
 let lastAiGuidance = null;
 let currentUser = null;
+let deferredInstallPrompt = null;
 let currentConversationId = null;
 let conversationDirty = false;
 let pendingSituationText = '';
@@ -16,7 +17,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.10.10", contactEmail: "" };
+let publicConfig = { appVersion: "20.11.0", contactEmail: "" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 let surveySubmitting = false;
@@ -55,6 +56,9 @@ function renderStaticIcons() {
   setSvg('nav-contact-icon', svgIcons.contact);
   const adminIcon=document.querySelector('#nav-admin-icon'); if(adminIcon) adminIcon.textContent='A';
   setSvg('sidebar-message-icon', svgIcons.team);
+  setSvg('mobile-nav-home-icon', svgIcons.home);
+  setSvg('mobile-nav-history-icon', svgIcons.history);
+  setSvg('mobile-nav-settings-icon', svgIcons.settings);
 
   const pageIconMap = {
     settings: svgIcons.settings,
@@ -91,27 +95,151 @@ function updateNavState(name) {
   });
 }
 
+function setMobileNavHidden(hidden) {
+  if (window.innerWidth > 700) {
+    document.body.classList.remove('mobile-nav-hidden');
+    return;
+  }
+  document.body.classList.toggle('mobile-nav-hidden', Boolean(hidden));
+}
+
+let mobileNavLastScrollY = Math.max(0, window.scrollY);
+let mobileNavScrollTicking = false;
+
+function updateMobileNavForScroll() {
+  const y = Math.max(0, window.scrollY);
+  const delta = y - mobileNavLastScrollY;
+
+  if (window.innerWidth > 700 || y < 64) {
+    setMobileNavHidden(false);
+  } else if (delta > 7) {
+    setMobileNavHidden(true);
+  } else if (delta < -7) {
+    setMobileNavHidden(false);
+  }
+
+  mobileNavLastScrollY = y;
+  mobileNavScrollTicking = false;
+}
+
+window.addEventListener('scroll', () => {
+  if (mobileNavScrollTicking) return;
+  mobileNavScrollTicking = true;
+  requestAnimationFrame(updateMobileNavForScroll);
+}, { passive: true });
+
+window.addEventListener('resize', () => {
+  mobileNavLastScrollY = Math.max(0, window.scrollY);
+  if (window.innerWidth > 700) setMobileNavHidden(false);
+}, { passive: true });
+
+document.addEventListener('focusin', event => {
+  if (event.target?.matches?.('input, textarea, select, [contenteditable="true"]')) {
+    setMobileNavHidden(false);
+  }
+});
+
 function clearDocumentSelection() {
   const selection = window.getSelection?.();
   if (selection?.rangeCount) selection.removeAllRanges();
 }
 
-function showView(name) {
+function activeViewName() {
+  return Object.entries(views).find(([, view]) => view?.classList.contains('active-view'))?.[0] || 'home';
+}
+
+function saveCurrentHistoryScroll() {
+  const state = history.state;
+  if (!state?.samtalestotte) return;
+  history.replaceState({
+    ...state,
+    scrollY: Math.max(0, window.scrollY),
+    breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
+  }, '');
+}
+
+function showView(name, options = {}) {
+  const { historyMode = 'push', restoreScroll = null } = options;
+  if (!views[name]) return;
+
   clearDocumentSelection();
+  setMobileNavHidden(false);
+  mobileNavLastScrollY = 0;
+
+  const previousView = activeViewName();
+  const changingView = previousView !== name;
+
+  if (historyMode === 'push' && changingView) {
+    saveCurrentHistoryScroll();
+    const currentDepth = Number(history.state?.appDepth || 0);
+    history.pushState({
+      samtalestotte: true,
+      view: name,
+      appDepth: currentDepth + 1,
+      scrollY: 0,
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
+    }, '');
+  } else if (historyMode === 'replace') {
+    const currentDepth = Number(history.state?.appDepth || 0);
+    history.replaceState({
+      samtalestotte: true,
+      view: name,
+      appDepth: currentDepth,
+      scrollY: 0,
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
+    }, '');
+  }
+
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
+
   const topNew = document.querySelector('#new-conversation-button');
   if (topNew) topNew.hidden = name === 'home';
 
-  // Sekundærsider med accordion skal alltid åpne ryddig, med alle seksjoner lukket.
-  if (['settings', 'admin', 'help'].includes(name)) {
+  // Sekundærsider med accordion skal alltid åpne ryddig ved vanlig navigasjon.
+  if (historyMode !== 'none' && ['settings', 'admin', 'help'].includes(name)) {
     views[name].querySelectorAll('details[open]').forEach(detail => { detail.open = false; });
   }
 
-  requestAnimationFrame(clearDocumentSelection);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  requestAnimationFrame(() => {
+    clearDocumentSelection();
+    if (restoreScroll !== null) {
+      window.scrollTo({ top: Math.max(0, Number(restoreScroll) || 0), behavior: 'auto' });
+    } else if (changingView) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
 }
+
+function navigateAppBack(fallback) {
+  const state = history.state;
+  if (state?.samtalestotte && Number(state.appDepth || 0) > 0) {
+    saveCurrentHistoryScroll();
+    history.back();
+    return;
+  }
+  fallback?.();
+}
+
+window.addEventListener('popstate', event => {
+  const state = event.state;
+  if (!state?.samtalestotte || !views[state.view]) return;
+
+  if (state.view === 'topic') {
+    clearRepresentationFilter();
+    const filter = state.representationFilter;
+    if (filter && currentTopic?.id === filter.topicId) {
+      renderRepresentationFilter(currentTopic, Number(filter.index), { scroll: false });
+    }
+  }
+
+  setBreadcrumb(state.breadcrumb || '');
+  showView(state.view, {
+    historyMode: 'none',
+    restoreScroll: state.scrollY ?? 0
+  });
+});
 
 
 function setHistoryLoadedGuidanceMode(active, situation = '') {
@@ -255,8 +383,102 @@ function highlightTopicCard(topicId) {
   });
 }
 
+const representationSubtopicMap = Object.freeze({
+  'alkohol-rus': [[0,1,3],[2,4],[5]],
+  'fravaer-oppfolging': [[0,2,3],[1,4],[5]],
+  'prestasjon-utvikling': [[0,2],[1,3,5],[4]],
+  'lonn-utvikling': [[0,1],[2],[3]],
+  'samarbeid-kommunikasjon': [[0],[1,2,3],[4]],
+  'avslutning-arbeidsforhold': [[0,1],[2,3],[4,5]],
+  'sikkerhet-ansvar': [[0],[1],[2,3]],
+  'livssituasjoner': [[0,2],[1,3],[4]],
+  'mobbing-trakassering': [[0,1],[2,3],[4,5]]
+});
+
+function clearRepresentationFilter({ scroll = false } = {}) {
+  document.querySelectorAll('.representation-chip').forEach(button => {
+    button.classList.remove('active');
+    button.setAttribute('aria-pressed', 'false');
+  });
+  document.querySelectorAll('#subtopic-grid .subtopic-card').forEach(card => {
+    card.hidden = false;
+    card.classList.remove('representation-match');
+  });
+  const status=document.querySelector('#representation-filter-status');
+  if(status) status.textContent='';
+  if(scroll){
+    document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function renderRepresentationFilter(topic, representationIndex, { scroll = true } = {}) {
+  const mapping = representationSubtopicMap[topic.id]?.[representationIndex] || [];
+  clearRepresentationFilter();
+
+  const button = document.querySelector(`#topic-representations .representation-chip[data-representation-index="${representationIndex}"]`);
+  if (!button || !mapping.length) return;
+
+  button.classList.add('active');
+  button.setAttribute('aria-pressed', 'true');
+
+  document.querySelectorAll('#subtopic-grid .subtopic-card').forEach((card, index) => {
+    const matches = mapping.includes(index);
+    card.hidden = !matches;
+    card.classList.toggle('representation-match', matches);
+  });
+
+  const label = topic.representations?.[representationIndex] || '';
+  const status=document.querySelector('#representation-filter-status');
+  if(status) status.textContent = `Viser relevante undertemaer for «${label}». Tilbake nullstiller hurtigvalget.`;
+
+  if(scroll){
+    requestAnimationFrame(() => {
+      document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+}
+
+function applyRepresentationFilter(topic, representationIndex, button) {
+  const currentFilter = history.state?.representationFilter;
+  const sameFilter = currentFilter?.topicId === topic.id && Number(currentFilter?.index) === representationIndex;
+
+  if (sameFilter || button.classList.contains('active')) {
+    if (history.state?.samtalestotte && Number(history.state?.appDepth || 0) > 0) {
+      history.back();
+    } else {
+      clearRepresentationFilter();
+      document.querySelector('#topic-representations')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return;
+  }
+
+  const currentDepth = Number(history.state?.appDepth || 0);
+  const replacingExistingFilter = currentFilter?.topicId === topic.id;
+
+  if (replacingExistingFilter) {
+    history.replaceState({
+      ...history.state,
+      representationFilter: { topicId: topic.id, index: representationIndex },
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
+    }, '');
+  } else {
+    saveCurrentHistoryScroll();
+    history.pushState({
+      samtalestotte: true,
+      view: 'topic',
+      appDepth: currentDepth + 1,
+      scrollY: 0,
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || '',
+      representationFilter: { topicId: topic.id, index: representationIndex }
+    }, '');
+  }
+
+  renderRepresentationFilter(topic, representationIndex, { scroll: true });
+}
+
 function openTopic(topic, preservedSituation = '') {
   currentTopic = topic;
+  clearRepresentationFilter();
   const carriedSituation = String(preservedSituation || pendingSituationText || document.querySelector('#topic-search')?.value || '').trim();
   if (carriedSituation) pendingSituationText = carriedSituation;
   highlightTopicCard(topic.id);
@@ -264,7 +486,7 @@ function openTopic(topic, preservedSituation = '') {
   document.querySelector('#topic-description').textContent = contentValue(`topic.${topic.id}.description`, topic.description);
   document.querySelector('#topic-page-icon').innerHTML = svgIcons[topic.iconKey];
   document.querySelector('#topic-representations').innerHTML = topic.representations
-    .map((item,index) => `<span class="representation-chip">${escapeHtml(contentValue(`topic.${topic.id}.representation.${index}`, item))}</span>`).join('');
+    .map((item,index) => `<button type="button" class="representation-chip" data-representation-index="${index}" aria-pressed="false">${escapeHtml(contentValue(`topic.${topic.id}.representation.${index}`, item))}</button>`).join('');
 
   const topicHeroImage = document.querySelector('.topic-hero-visual img');
   if (topicHeroImage) {
@@ -294,6 +516,15 @@ function openTopic(topic, preservedSituation = '') {
     button.addEventListener('click', () => openGuidance(title, help, carriedSituation));
     grid.appendChild(button);
   });
+
+  document.querySelectorAll('#topic-representations .representation-chip').forEach(button => {
+    button.addEventListener('click', () => {
+      applyRepresentationFilter(topic, Number(button.dataset.representationIndex), button);
+    });
+  });
+
+  const representationStatus=document.querySelector('#representation-filter-status');
+  if(representationStatus) representationStatus.textContent='';
 
   showView('topic');
 }
@@ -650,13 +881,61 @@ function showAutoTopicNote(topic, subtopic, classification) {
     : classification?.confidence === 'medium'
       ? 'sannsynlig treff'
       : 'foreløpig forslag';
-  text.innerHTML = `<strong>KI foreslo ${escapeHtml(topic.title)} → ${escapeHtml(subtopic[0])}</strong><span>${confidenceText}. ${escapeHtml(classification?.reason || '')}</span>`;
+  const sourceLabel = classification?.confidence === 'local' ? 'Samtalestøtte foreslo' : 'KI foreslo';
+  text.innerHTML = `<strong>${sourceLabel} ${escapeHtml(topic.title)} → ${escapeHtml(subtopic[0])}</strong><span>${confidenceText}. ${escapeHtml(classification?.reason || '')}</span>`;
   note.hidden = false;
 }
 
 function hideAutoTopicNote() {
   const note = document.querySelector('#auto-topic-note');
   if (note) note.hidden = true;
+}
+
+function scrollFinderResultIntoView(box, inputSelector = '') {
+  const input = inputSelector ? document.querySelector(inputSelector) : null;
+  input?.blur();
+  requestAnimationFrame(() => {
+    box?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+  });
+}
+
+function openGuidanceAndGetAdvice(topic, subtopic, situation, classification = null) {
+  currentTopic = topic;
+  highlightTopicCard(topic.id);
+  openGuidance(subtopic[0], subtopic[1], situation);
+  if (classification) showAutoTopicNote(topic, subtopic, classification);
+
+  requestAnimationFrame(() => {
+    const field = document.querySelector('#situation');
+    field?.blur();
+    requestAnimationFrame(() => {
+      document.querySelector('#situation-form')?.requestSubmit();
+    });
+  });
+}
+
+function renderConfirmedTopicSuggestion(box, topic, subtopic, classification, situation, inputSelector = '') {
+  box.hidden = false;
+  box.className = 'topic-suggestion ai-topic-suggestion';
+  box.innerHTML = `
+    <span class="suggestion-kicker">Foreslått tema</span>
+    <strong>${escapeHtml(topic.title)} <span aria-hidden="true">→</span> ${escapeHtml(subtopic[0])}</strong>
+    <p>${escapeHtml(classification.reason || subtopic[1] || 'Dette ser ut til å passe best med det du beskrev.')}</p>
+    <div class="suggestion-actions">
+      <button class="primary-button" type="button" data-get-advice-now>Få råd</button>
+      <button class="ghost-button" type="button" data-review-topic>Se andre undertemaer</button>
+    </div>
+  `;
+
+  box.querySelector('[data-get-advice-now]')?.addEventListener('click', () => {
+    openGuidanceAndGetAdvice(topic, subtopic, situation, classification);
+  });
+  box.querySelector('[data-review-topic]')?.addEventListener('click', () => {
+    currentTopic = topic;
+    highlightTopicCard(topic.id);
+    openTopic(topic);
+  });
+  scrollFinderResultIntoView(box, inputSelector);
 }
 
 function renderLowConfidenceTopicChoice(box, classification, situation) {
@@ -686,10 +965,11 @@ function renderLowConfidenceTopicChoice(box, classification, situation) {
       const topic = topics.find(item => item.id === button.dataset.aiTopic);
       if (!topic) return;
       const subtopic = topicSubtopicByTitle(topic, button.dataset.aiSubtopic) || topic.subtopics[0];
-      openGuidanceFromSuggestion(topic, subtopic, situation);
-      showAutoTopicNote(topic, subtopic, { ...classification, confidence: 'low', reason: 'Du valgte temaet etter KI-forslaget.' });
+      openGuidanceAndGetAdvice(topic, subtopic, situation, { ...classification, confidence: 'low', reason: 'Du valgte temaet etter KI-forslaget.' });
     });
   });
+
+  scrollFinderResultIntoView(box);
 }
 
 async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBoxId, selectedTopicId = '' }) {
@@ -711,6 +991,7 @@ async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBox
   box.hidden = false;
   box.className = 'topic-suggestion ai-topic-suggestion loading';
   box.innerHTML = '<div class="topic-thinking"><span class="thinking-spinner" aria-hidden="true"></span><div><strong>Forstår situasjonen …</strong><p>KI vurderer hele konteksten og finner mest sannsynlige tema.</p></div></div>';
+  scrollFinderResultIntoView(box, inputId);
 
   try {
     const classification = await requestTopicClassification(situation, selectedTopicId);
@@ -723,9 +1004,8 @@ async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBox
       return;
     }
 
-    // Høy/middels sikkerhet: færre klikk. Gå direkte videre og la brukeren endre tema ved behov.
-    openGuidanceFromSuggestion(topic, subtopic, situation);
-    showAutoTopicNote(topic, subtopic, classification);
+    // Høy/middels sikkerhet: vis ett tydelig forslag og la hovedhandlingen gå direkte til rådet.
+    renderConfirmedTopicSuggestion(box, topic, subtopic, classification, situation, inputId);
   } catch (error) {
     console.warn('KI-temaforslag feilet, bruker lokal reserve:', error);
     if (selectedTopicId && currentTopic) renderSubtopicSuggestion(situation);
@@ -733,6 +1013,7 @@ async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBox
     const fallbackBox = document.querySelector(boxId);
     if (fallbackBox) {
       fallbackBox.insertAdjacentHTML('afterbegin', '<span class="suggestion-kicker">Lokal reserve</span>');
+      scrollFinderResultIntoView(fallbackBox, inputId);
     }
   }
 }
@@ -1679,12 +1960,12 @@ function renderSuggestion(query) {
         <strong>${best.topic.title} <span aria-hidden="true">→</span> ${subTitle}</strong>
         <p>${subHelp}</p>
         <div class="suggestion-actions">
-          <button class="primary-button" type="button" id="open-suggested-guidance">Bruk forslag</button>
+          <button class="primary-button" type="button" id="open-suggested-guidance">Få råd</button>
           <button class="ghost-button" type="button" id="review-suggested-topic">Se andre undertemaer</button>
           ${alternatives}
         </div>
       `;
-      box.querySelector('#open-suggested-guidance').addEventListener('click', () => openGuidanceFromSuggestion(best.topic, bestSubtopic.subtopic, trimmed));
+      box.querySelector('#open-suggested-guidance').addEventListener('click', () => openGuidanceAndGetAdvice(best.topic, bestSubtopic.subtopic, trimmed, { confidence: 'local', reason: 'Temaet er foreslått av reserveflyten.' }));
       box.querySelector('#review-suggested-topic').addEventListener('click', () => openTopic(best.topic));
     } else {
       box.innerHTML = `
@@ -1705,6 +1986,8 @@ function renderSuggestion(query) {
       if (topic) openTopic(topic);
     });
   });
+
+  scrollFinderResultIntoView(box, '#topic-search');
 }
 
 function filterTopicCards(query) {
@@ -1769,10 +2052,12 @@ function renderSubtopicSuggestion(query) {
     <strong>Foreslått undertema: ${title}</strong>
     <p>${help}</p>
     <div class="suggestion-actions">
-      <button class="primary-button" type="button" id="open-suggested-subtopic">Bruk dette undertemaet</button>
+      <button class="primary-button" type="button" id="open-suggested-subtopic">Få råd</button>
     </div>
   `;
-  box.querySelector('#open-suggested-subtopic').addEventListener('click', () => openGuidance(title, help, query));
+  box.querySelector('#open-suggested-subtopic').addEventListener('click', () => openGuidanceAndGetAdvice(currentTopic, best.subtopic, query, { confidence: 'local', reason: 'Undertemaet er foreslått av reserveflyten.' }));
+
+  scrollFinderResultIntoView(box, '#topic-detail-search');
 }
 
 function filterSubtopicCards(query) {
@@ -1794,6 +2079,19 @@ function applyTheme(theme) {
   document.querySelectorAll('[data-theme]').forEach(button => {
     button.classList.toggle('active', button.dataset.theme === theme);
   });
+  const mobileThemeIcon=document.querySelector('#mobile-theme-icon');
+  const mobileThemeLabel=document.querySelector('#mobile-theme-label');
+  const mobileThemeButton=document.querySelector('#mobile-theme-cycle');
+  const themeMeta={
+    hybrid:{icon:'◒',label:'Hybrid'},
+    dark:{icon:'☾',label:'Mørkt'},
+    light:{icon:'☀',label:'Lyst'},
+    system:{icon:'◐',label:'System'}
+  };
+  const meta=themeMeta[theme]||themeMeta.hybrid;
+  if(mobileThemeIcon) mobileThemeIcon.textContent=meta.icon;
+  if(mobileThemeLabel) mobileThemeLabel.textContent=meta.label;
+  if(mobileThemeButton) mobileThemeButton.setAttribute('aria-label', 'Bytt fargetema. Nå: '+meta.label);
 }
 
 function initTheme() {
@@ -1840,15 +2138,28 @@ initTheme();
 applySidebarState();
 setBreadcrumb('');
 updateNavState('home');
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+history.replaceState({
+  samtalestotte: true,
+  view: activeViewName(),
+  appDepth: 0,
+  scrollY: Math.max(0, window.scrollY),
+  breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
+}, '');
 
 document.querySelectorAll('[data-theme]').forEach(button => {
   button.addEventListener('click', () => applyTheme(button.dataset.theme));
+});
+document.querySelector('#mobile-theme-cycle')?.addEventListener('click', () => {
+  const current=localStorage.getItem('samtalestotte-theme') || 'hybrid';
+  const order=['hybrid','dark','light'];
+  const next=order[(Math.max(0,order.indexOf(current))+1)%order.length];
+  applyTheme(next);
 });
 
 document.querySelectorAll('.nav-item[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     if (button.dataset.view === 'home') {
-      resetConversationState();
       setBreadcrumb('');
       showView('home');
     }
@@ -1887,7 +2198,6 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
 });
 
 document.querySelector('#brand-home-button').addEventListener('click', () => {
-  resetConversationState();
   setBreadcrumb('');
   showView('home');
 });
@@ -1895,13 +2205,16 @@ document.querySelector('#brand-home-button').addEventListener('click', () => {
 document.querySelector('#sidebar-toggle').addEventListener('click', toggleSidebar);
 
 document.querySelector('#back-to-home').addEventListener('click', () => {
-  resetConversationState();
-  setBreadcrumb('');
-  showView('home');
+  navigateAppBack(() => {
+    setBreadcrumb('');
+    showView('home');
+  });
 });
 
 document.querySelector('#back-to-topic').addEventListener('click', () => {
-  if (currentTopic) openTopic(currentTopic);
+  navigateAppBack(() => {
+    if (currentTopic) openTopic(currentTopic);
+  });
 });
 
 document.querySelector('#change-auto-topic')?.addEventListener('click', () => {
@@ -1914,8 +2227,10 @@ document.querySelector('#change-auto-topic')?.addEventListener('click', () => {
 });
 
 document.querySelector('#back-from-settings').addEventListener('click', () => {
-  setBreadcrumb('');
-  showView('home');
+  navigateAppBack(() => {
+    setBreadcrumb('');
+    showView('home');
+  });
 });
 
 document.querySelector('#topic-finder-form').addEventListener('submit', async event => {
@@ -2303,7 +2618,7 @@ async function saveCurrentConversation(){
   const situation=directSimulation ? simulationDirectSituation : (document.querySelector('#situation')?.value.trim()||''); if(!situation) return;
   try{
     const r=await fetch('/api/history',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({
-      id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtalesimulering':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{fidelity:simulationFidelity,mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
+      id:currentConversationId,title:(directSimulation ? `Samtaleøvelse: ${situation.slice(0,55)}` : (currentSubtopic||currentTopic?.title||situation.slice(0,70))),topic:directSimulation?'Samtaleøvelse':(currentTopic?.title||''),subtopic:directSimulation?'Direkte øvelse':(currentSubtopic||''),situation,analysis:directSimulation?null:lastAiAnalysis,guidance:directSimulation?null:lastAiGuidance,conversation:directSimulation?[]:getConversationTurns(),simulation:{fidelity:simulationFidelity,mode:simulationMode,style:simulationStyle,turns:simulationTurns,feedback:simulationFeedback}
     })});
     if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
   }catch(_){}
@@ -2379,7 +2694,7 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
   });
   simulationFidelity=item.simulation?.fidelity||'factual'; simulationMode=item.simulation?.mode||'solo'; simulationStyle=item.simulation?.style||'open'; simulationTurns=Array.isArray(item.simulation?.turns)?item.simulation.turns:[]; simulationFeedback=item.simulation?.feedback||null;
   if(!lastAiGuidance && simulationTurns.length){
-    simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til simulatoren'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'simulation'); return;
+    simulationSource='direct'; simulationDirectSituation=item.situation||''; setBreadcrumb('Lagret samtaleøvelse'); showView('simulation'); document.querySelector('#simulation-hub').hidden=true; document.querySelector('#simulation-panel').hidden=false; document.querySelector('#simulation-setup').hidden=true; document.querySelector('#simulation-live').hidden=Boolean(simulationFeedback); document.querySelector('#simulation-feedback').hidden=!simulationFeedback; document.querySelector('#close-simulation').textContent='Tilbake til øvelsen'; if(simulationFeedback) renderSimulationFeedback(simulationFeedback); else renderSimulationThread(); if(!skipPrivacyReview) renderHistoryPrivacyReview(item,'simulation'); return;
   }
   simulationSource='current';
   setHistoryLoadedGuidanceMode(true, storedSituation);
@@ -2391,7 +2706,7 @@ function startNewConversation(force=false){
   const hasContent=Boolean(document.querySelector('#situation')?.value.trim());
   const unsaved=hasContent && (!currentUser || document.querySelector('#temporary-chat')?.checked || conversationDirty);
   if(unsaved && !force){ const msg=document.querySelector('#discard-message'); msg.textContent=currentUser?'Denne samtalen er ikke lagret. Hvis du fortsetter, kan den ikke gjenopprettes.':'Denne samtalen er ikke lagret og kan ikke gjenopprettes. Logg inn dersom du vil lagre historikk.'; document.querySelector('#discard-dialog').showModal(); return; }
-  resetConversationState(); currentConversationId=null; conversationDirty=false; setBreadcrumb(''); showView('home');
+  resetConversationState(); currentConversationId=null; conversationDirty=false; setBreadcrumb(''); showView('home', { historyMode: 'replace' });
 }
 function openLegal(which){ legalReturnView=Object.entries(views).find(([,el])=>el.classList.contains('active-view'))?.[0]||'home'; closeAuth(); setBreadcrumb(which==='privacy'?'Personvern':'Bruksvilkår'); showView(which); }
 
@@ -2429,13 +2744,13 @@ const STATIC_CONTENT_SECTIONS = [
     {key:'guidance.continue.title',label:'Fortsett samtalen – overskrift',selector:'#continue-conversation h3'},
     {key:'guidance.continue.intro',label:'Fortsett samtalen – beskrivelse',selector:'#continue-conversation > p',multiline:true}
   ]},
-  {id:'simulation',title:'Samtalesimulering',fields:[
+  {id:'simulation',title:'Samtaleøvelse',fields:[
     {key:'simulation.hero.title',label:'Hovedoverskrift',selector:'#simulation-view .simulation-hero h1'},
     {key:'simulation.hero.intro',label:'Introduksjon',selector:'#simulation-view .simulation-hero p',multiline:true},
     {key:'simulation.hub.title',label:'Hvordan vil du starte?',selector:'#simulation-hub h2'},
     {key:'simulation.hub.intro',label:'Start – beskrivelse',selector:'#simulation-hub > p',multiline:true},
-    {key:'simulation.direct.title',label:'Ny simulering – overskrift',selector:'#direct-simulation-form h3'},
-    {key:'simulation.direct.intro',label:'Ny simulering – beskrivelse',selector:'#direct-simulation-form p',multiline:true},
+    {key:'simulation.direct.title',label:'Ny øvelse – overskrift',selector:'#direct-simulation-form h3'},
+    {key:'simulation.direct.intro',label:'Ny øvelse – beskrivelse',selector:'#direct-simulation-form p',multiline:true},
     {key:'simulation.setup.title',label:'Øv på samtalen',selector:'#simulation-setup h3'},
     {key:'simulation.setup.intro',label:'Øv på samtalen – beskrivelse',selector:'#simulation-setup .simulation-stage-heading p',multiline:true},
     {key:'simulation.privacy.title',label:'Personvernsjekk – overskrift',selector:'#simulation-turn-privacy strong'},
@@ -2699,6 +3014,146 @@ async function openSurvey(){
 
 async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør database/migrations/V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminInvites();await loadAdminFeedback();await loadAdminSurvey();await loadAdminAiSettings();await loadAdminAiUsage();await loadBenchmarkConfig();}
 
+
+function isStandaloneApp(){
+  return window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+}
+
+function isIosDevice(){
+  return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+}
+
+function updateAppModeMarker(){
+  document.documentElement.dataset.appMode=isStandaloneApp() ? 'standalone' : 'browser';
+}
+
+function updateInstallAppUi(){
+  updateAppModeMarker();
+  const button=document.querySelector('#install-app-button');
+  const iosHelp=document.querySelector('#install-app-ios-help');
+  const manualHelp=document.querySelector('#install-app-manual-help');
+  const manualText=document.querySelector('#install-app-manual-text');
+  const status=document.querySelector('#install-app-status');
+  const description=document.querySelector('#install-app-description');
+  if(!button || !status) return;
+
+  if(isStandaloneApp()){
+    button.hidden=true;
+    if(iosHelp) iosHelp.hidden=true;
+    if(manualHelp) manualHelp.hidden=true;
+    if(description) description.textContent='Samtalestøtte er installert og kan åpnes som en egen app.';
+    status.textContent='Installert som app. Den skal åpnes uten vanlig nettleserlinje.';
+    return;
+  }
+
+  if(deferredInstallPrompt){
+    button.hidden=false;
+    button.textContent='Installer Samtalestøtte';
+    if(iosHelp) iosHelp.hidden=true;
+    if(manualHelp) manualHelp.hidden=true;
+    status.textContent='';
+    return;
+  }
+
+  button.hidden=false;
+  button.textContent='Vis hvordan du installerer';
+  if(isIosDevice()){
+    if(iosHelp) iosHelp.hidden=false;
+    if(manualHelp) manualHelp.hidden=true;
+    status.textContent='Installeres fra Del-menyen i Safari.';
+  }else{
+    if(iosHelp) iosHelp.hidden=true;
+    if(manualHelp) manualHelp.hidden=true;
+    const samsung=/SamsungBrowser/i.test(navigator.userAgent);
+    if(manualText) manualText.textContent=samsung
+      ? 'I Samsung Internet: bruk PWA-/installasjonsikonet og velg «Installer på appskjermen». Ikke velg bare en vanlig snarvei til startskjermen.'
+      : 'Åpne nettlesermenyen og velg «Installer app». En vanlig snarvei kan fortsatt åpnes med nettleserens egne menyer.';
+    status.textContent=samsung
+      ? 'Du kjører nå i nettleseren. Ekte appmodus skal åpnes uten Samsung Internet-linjen under Samtalestøtte-menyen.'
+      : 'Du kjører nå i nettleseren. Installer appen for å åpne den i eget appvindu.';
+  }
+}
+
+window.addEventListener('beforeinstallprompt', event => {
+  event.preventDefault();
+  deferredInstallPrompt=event;
+  updateInstallAppUi();
+});
+
+window.addEventListener('appinstalled', () => {
+  deferredInstallPrompt=null;
+  updateInstallAppUi();
+});
+
+document.querySelector('#install-app-button')?.addEventListener('click', async () => {
+  const status=document.querySelector('#install-app-status');
+  const manualHelp=document.querySelector('#install-app-manual-help');
+  const iosHelp=document.querySelector('#install-app-ios-help');
+  if(!deferredInstallPrompt){
+    if(isIosDevice()){
+      if(iosHelp) iosHelp.hidden=false;
+    }else if(manualHelp){
+      manualHelp.hidden=!manualHelp.hidden;
+    }
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  const choice=await deferredInstallPrompt.userChoice;
+  deferredInstallPrompt=null;
+  if(status) status.textContent=choice.outcome==='accepted' ? 'Installeringen er startet.' : 'Installeringen ble avbrutt.';
+  updateInstallAppUi();
+});
+
+const imagePreviewDialog=document.querySelector('#image-preview-dialog');
+const imagePreviewDialogImage=document.querySelector('#image-preview-dialog-image');
+
+function openImagePreview(sourceImage){
+  if(!imagePreviewDialog || !imagePreviewDialogImage || !sourceImage) return;
+  let src=sourceImage.getAttribute('src') || sourceImage.currentSrc || '';
+  if(sourceImage.classList.contains('topbar-brand-logo') && document.documentElement.dataset.theme==='dark'){
+    src='assets/images/logo-light.png';
+  }
+  imagePreviewDialogImage.src=src;
+  imagePreviewDialogImage.alt=sourceImage.alt || 'Forstørret bilde';
+  imagePreviewDialog.showModal();
+}
+
+document.querySelectorAll('.image-preview-trigger').forEach(trigger => {
+  trigger.addEventListener('click', () => openImagePreview(trigger.querySelector('img')));
+  trigger.addEventListener('keydown', event => {
+    if((event.key==='Enter' || event.key===' ') && trigger.tagName!=='BUTTON'){
+      event.preventDefault();
+      openImagePreview(trigger.querySelector('img'));
+    }
+  });
+});
+
+document.querySelectorAll('.expandable-content-image').forEach(image => {
+  image.addEventListener('click', () => openImagePreview(image));
+  image.addEventListener('keydown', event => {
+    if(event.key==='Enter' || event.key===' '){
+      event.preventDefault();
+      openImagePreview(image);
+    }
+  });
+});
+
+document.querySelector('#image-preview-dialog-close')?.addEventListener('click', () => imagePreviewDialog?.close());
+imagePreviewDialog?.addEventListener('click', event => {
+  if(event.target===imagePreviewDialog) imagePreviewDialog.close();
+});
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.0', { updateViaCache: 'none' }).catch(error => {
+      console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
+    });
+  });
+}
+
+window.matchMedia('(display-mode: standalone)').addEventListener?.('change', updateInstallAppUi);
+setTimeout(updateInstallAppUi,0);
+
 async function loadPublicConfig(){
   try{
     const r=await fetch('/api/public-config');
@@ -2763,11 +3218,11 @@ document.querySelector('[data-profile-action="logout"]')?.addEventListener('clic
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth();});
-document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
-document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
+document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>navigateAppBack(()=>showView('home')));
+document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(legalReturnView))));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('[data-open-help]').forEach(b=>b.addEventListener('click',()=>{infoReturnView='settings';setBreadcrumb('Hjelp');showView('help');}));
-document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
+document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(infoReturnView))));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>openAiFeedback('main-guidance'));
 
 
@@ -2989,7 +3444,7 @@ function resetSimulationPanel() {
 
 function openSimulationHub() {
   if(!requireLogin()) return;
-  setBreadcrumb('Samtalesimulering');
+  setBreadcrumb('Samtaleøvelse');
   showView('simulation');
   const hub = document.querySelector('#simulation-hub');
   const panel = document.querySelector('#simulation-panel');
@@ -3005,7 +3460,7 @@ function openSimulation() {
   if (!hasCurrentSimulationContext()) return;
   simulationSource = 'current';
   simulationDirectSituation = '';
-  setBreadcrumb('Samtalesimulering · eksisterende samtale');
+  setBreadcrumb('Samtaleøvelse · eksisterende samtale');
   showView('simulation');
   const hub = document.querySelector('#simulation-hub');
   if (hub) hub.hidden = true;
@@ -3093,8 +3548,8 @@ function beginDirectSimulation() {
   currentConversationId = null;
   resetSimulationPanel();
   document.querySelector('#simulation-hub').hidden = true;
-  document.querySelector('#close-simulation').textContent = 'Tilbake til simulatoren';
-  setBreadcrumb('Samtalesimulering · ny øvelse');
+  document.querySelector('#close-simulation').textContent = 'Tilbake til øvelsen';
+  setBreadcrumb('Samtaleøvelse · ny øvelse');
   document.querySelector('#simulation-panel')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
@@ -3146,7 +3601,7 @@ function startSimulation() {
   document.querySelector('#simulation-help-result').hidden = true;
   const helpButton = document.querySelector('#toggle-simulation-help');
   helpButton.hidden = simulationMode !== 'assisted';
-  const topic = simulationSource === 'direct' ? 'Ny simulering' : (currentSubtopic || currentTopic?.title || 'Samtale');
+  const topic = simulationSource === 'direct' ? 'Ny øvelse' : (currentSubtopic || currentTopic?.title || 'Samtale');
   document.querySelector('#simulation-status').textContent = `${topic} · ${simulationFidelityLabels[simulationFidelity]} · ${simulationStyleLabels[simulationStyle]}`;
   renderSimulationThread();
   updateSimulationTurnPrivacy();
@@ -3159,7 +3614,7 @@ async function readJsonResponse(response) {
   const raw = await response.text();
   if (!contentType.includes('application/json')) {
     throw new Error(response.status === 404
-      ? 'Simulator-ruten finnes ikke på serveren. Start serveren på nytt etter oppdateringen.'
+      ? 'Øvelsesfunksjonen finnes ikke på serveren. Start serveren på nytt etter oppdateringen.'
       : 'Serveren svarte i feil format. Prøv å starte serveren på nytt.');
   }
   try { return raw ? JSON.parse(raw) : {}; }

@@ -1,12 +1,14 @@
 # Product Brief: Samtalestøtte
 
+**Leveransestatus:** Produksjonsversjon 20.11.0 · 29.10.2026  
+
 ## Executive Summary
 
 Samtalestøtte er et KI-basert arbeidsverktøy for ledere med personalansvar som skal forberede, gjennomføre og reflektere over krevende medarbeidersamtaler. Løsningen samler strukturert veiledning, oppfølgingsdialog, samtalesimulering og refleksjon i én arbeidsflyt, med personvern og menneskelig beslutningsansvar som tydelige rammer.
 
 Prototypen dekker ni hovedtemaer: fravær, prestasjon, samarbeid, lønn, alkohol og rus, sikkerhet, livssituasjoner, mobbing og trakassering og avslutning av arbeidsforhold. KI-en kan foreslå mål, spørsmål og formuleringer, forberede lederen på mulige reaksjoner og opptre som medarbeider i en treningssamtale.
 
-Produktet skal ikke være en generell chatbot eller et automatisert HR-system. Målet er et praktisk lederverktøy som styrker forberedelse, trening og refleksjon uten å overta lederens ansvar eller erstatte relevant fagkompetanse.
+Produktet er responsivt og kan installeres som en PWA/webapp på støttede nettlesere, slik at mobilbruk ikke er avhengig av et tradisjonelt nettleservindu. Produktet skal ikke være en generell chatbot eller et automatisert HR-system. Målet er et praktisk lederverktøy som styrker forberedelse, trening og refleksjon uten å overta lederens ansvar eller erstatte relevant fagkompetanse.
 
 ## The Problem
 
@@ -86,6 +88,7 @@ Prosjektet regnes som vellykket når følgende kan etterprøves:
 5. **Alle ni hovedtemaer er representert med flere caser i den fasitbaserte KI-testingen.** Golden-banken skal ha minst to representative caser per hovedtema og ekstra dekning på definerte høyrisikotemaer. Strukturen kontrolleres av `tests/test-golden-schema.cjs`. Golden-resultater dokumenterer samsvar med prosjektets definerte fasit, kildegrunnlag og sikkerhetsregler, ikke uavhengig ekspertgodkjenning av faglig innhold.
 6. **Kjernefunksjonene kan vurderes uten API-nøkler eller ekstern database.** `npm run demo` skal starte en deterministisk sensordemo, og `npm test` skal kunne kjøres uten eksterne KI-kall. `tests/test-sensor-demo.cjs` kontrollerer den sentrale demo-flyten.
 7. **Utvidet KI-funksjonalitet kan måles separat fra kjernen.** Når live KI er konfigurert, kan systemet registrere modell, responstid, tokenbruk, estimert kostnad og kildebruk. Dette er et tillegg for sammenligning og evaluering, ikke et krav for at kjerneflyten i v1 skal fungere.
+8. **Mobilbruk er en faktisk leveranseflate.** Kjerneflyten skal fungere responsivt på mobil, og løsningen skal kunne installeres som standalone PWA i nettlesere som støtter dette. Pilot-UX og PWA-oppsett kontrolleres i egne regresjonstester, mens fysisk mobiltest brukes som supplement fordi nettleseratferd og installasjon ikke kan verifiseres fullt ut med statiske tester.
 
 Detaljert kobling mellom krav og testfiler finnes i README og `docs/ai/AI-TESTPLAN.md`.
 
@@ -100,6 +103,7 @@ Første versjon skal demonstrere en sammenhengende og fungerende arbeidsflyt for
 - øve i en dynamisk samtalesimulering og reflektere over gjennomføringen
 - bruke løsningen med personvernkontroll før tekst sendes til ekstern KI
 - logge inn, lagre egen historikk og gå tilbake til tidligere arbeid
+- bruke løsningen responsivt på mobil og installere den som PWA der nettleseren støtter dette
 
 Disse delene er bygget i prototypen. Kritiske deler av kjerneflyten er dekket av deterministiske tester og dokumenterte KI-tester, med testspor beskrevet i README og testplanen.
 
