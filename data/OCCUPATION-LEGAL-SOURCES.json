@@ -1,5 +1,5 @@
 {
-  "version": 4,
+  "version": 5,
   "verifiedAt": "2026-10-29",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -20,7 +20,9 @@
         "aktivitetsplikt",
         "fravær"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "LOVDATA_AML",
@@ -40,7 +42,9 @@
         "kontrolltiltak",
         "HMS"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "law_database"
     },
     {
       "id": "AT_RULES",
@@ -69,7 +73,9 @@
         "trakassering",
         "arbeidsutstyr"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "UDIR_SCHOOL_RULES",
@@ -86,7 +92,9 @@
         "elevrelaterte rettigheter",
         "kompetansekrav"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "UDIR_KINDERGARTEN_RULES",
@@ -103,7 +111,9 @@
         "bemanning",
         "barnemiljø"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "HDIR_HEALTH_PERSONNEL",
@@ -120,7 +130,9 @@
         "forsvarlighet",
         "dokumentasjon"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
@@ -138,7 +150,9 @@
         "legemidler til dyr",
         "fiskehelse"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "FISKERIDIR_AQUACULTURE",
@@ -156,7 +170,9 @@
         "tillatelser",
         "havbruk"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "SDIR_RULES",
@@ -173,7 +189,9 @@
         "rundskriv",
         "internasjonalt regelverk"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "SDIR_LAWS",
@@ -188,7 +206,9 @@
         "skipsarbeidsloven",
         "sjøloven"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "VEGVESEN_DRIVING_REST",
@@ -204,7 +224,9 @@
         "fartsskriver",
         "arbeidsgivers organisering"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "DSB_ELECTRICAL_SAFETY",
@@ -224,7 +246,9 @@
         "internkontroll",
         "elulykker"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "HAVTIL_RULES_PDF",
@@ -241,7 +265,9 @@
         "aktivitetsforskriften",
         "teknisk og operasjonell forskrift"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "FINANSTILSYNET_RULES",
@@ -259,7 +285,9 @@
         "revisjon",
         "finansforetak"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "LANDBRUK_REGELVERK",
@@ -276,7 +304,9 @@
         "landbruksforvaltning",
         "produksjonskrav"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "MATTILSYNET_DYREVELFERD",
@@ -294,7 +324,9 @@
         "kompetansekrav",
         "smitte"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "LUFTFART_RULES",
@@ -310,7 +342,9 @@
         "operativt regelverk",
         "informasjonssikkerhet"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "LUFTFART_FTL",
@@ -327,7 +361,9 @@
         "fatigue",
         "besetningsmedlemmer"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "DATATILSYNET_WORKPLACE_PRIVACY",
@@ -356,7 +392,9 @@
         "innsyn",
         "arbeidslivspersonvern"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "HELSETILSYNET_RULES",
@@ -374,7 +412,9 @@
         "administrative reaksjoner",
         "forsvarlighet"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     },
     {
       "id": "ADVOKATTILSYNET_PROFESSION",
@@ -393,7 +433,9 @@
         "taushetsplikt",
         "uavhengighet"
       ],
-      "timeSensitive": true
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority"
     }
   ],
   "validationRules": {
