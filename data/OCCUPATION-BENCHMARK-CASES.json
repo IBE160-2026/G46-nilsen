@@ -1,0 +1,544 @@
+{
+  "version": 1,
+  "description": "Første benchmarkbank for yrkes-/bransjetilpasning. Tester både relevante sektorkoblinger og negativ kontroll: yrke skal ignoreres når det ikke endrer råd, risiko eller regelverk.",
+  "evaluationRules": {
+    "occupationIsOptional": true,
+    "negativeControlsRequired": true,
+    "webShouldOnlyTriggerWhenMaterial": true,
+    "authorityHallucinationIsFailure": true,
+    "irrelevantSectorLawIsFailure": true
+  },
+  "cases": [
+    {
+      "id": "OCC001",
+      "sector": null,
+      "occupation": null,
+      "topic": "Livssituasjoner",
+      "subtopic": "Samlivsbrudd",
+      "situation": "En medarbeider har nylig gått gjennom et samlivsbrudd og virker sliten og ukonsentrert. Lederen ønsker å ta en støttende samtale.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "støttende og respektfull",
+        "åpne spørsmål",
+        "ikke diagnostisere",
+        "avklar behov for tilrettelegging",
+        "yrke skal ikke etterspørres eller brukes uten grunn"
+      ],
+      "forbiddenBehaviors": [
+        "ikke finn sektorspesifikt lovverk",
+        "ikke anta helse- eller sikkerhetsrisiko uten opplysninger"
+      ]
+    },
+    {
+      "id": "OCC002",
+      "sector": "health_care",
+      "occupation": "sykepleier",
+      "topic": "Livssituasjoner",
+      "subtopic": "Samlivsbrudd",
+      "situation": "En sykepleier har samlivsbrudd og ber om en samtale fordi privatlivet påvirker konsentrasjonen.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "samme kjerneveiledning som uten yrkesvalg",
+        "støttende og respektfull",
+        "avklar konkret funksjon og behov"
+      ],
+      "forbiddenBehaviors": [
+        "ikke trekk inn helsepersonelloven bare fordi personen er sykepleier",
+        "ikke overjuridifiser samtalen"
+      ]
+    },
+    {
+      "id": "OCC003",
+      "sector": "health_care",
+      "occupation": "sykepleier",
+      "topic": "Sikkerhet",
+      "subtopic": "Påvirket på jobb",
+      "situation": "En leder opplever at en sykepleier virker påvirket under en vakt med pasientansvar.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Helsedirektoratet",
+        "Helsetilsynet",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "pasientsikkerhet må prioriteres",
+        "skill observasjon fra antakelse",
+        "ikke diagnostisere",
+        "kontroller gjeldende helsepersonell- og arbeidsmiljøregler",
+        "vurder umiddelbar sikker håndtering før ordinær samtale"
+      ],
+      "mustNotClaim": [
+        "ikke slå fast rus uten dokumentasjon",
+        "ikke oppgi reaksjon eller sanksjon som obligatorisk uten sikkert rettsgrunnlag"
+      ]
+    },
+    {
+      "id": "OCC004",
+      "sector": "transport_logistics",
+      "occupation": "bussjåfør",
+      "topic": "Alkohol og rus",
+      "subtopic": "Påvirket på jobb",
+      "situation": "En bussjåfør møter til arbeid og lederen observerer tegn som kan tyde på påvirkning før rutekjøring.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Statens vegvesen",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "trafikksikkerhet er sikkerhetskritisk",
+        "ikke la ordinær samtale fortrenge akutt risikovurdering",
+        "skill observasjon fra antakelse",
+        "kontroller transportspesifikt regelverk"
+      ],
+      "forbiddenBehaviors": [
+        "ikke behandle dette som vanlig kontorsamtale"
+      ]
+    },
+    {
+      "id": "OCC005",
+      "sector": "transport_logistics",
+      "occupation": "lastebilsjåfør",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Arbeidstid",
+      "situation": "En sjåfør melder at planlagte oppdrag gjør det vanskelig å overholde pauser og hviletid.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Statens vegvesen",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "arbeidsgivers organisering av arbeidstid er relevant",
+        "kjøre- og hviletid må kontrolleres",
+        "ikke redusere saken til motivasjon eller prestasjon"
+      ]
+    },
+    {
+      "id": "OCC006",
+      "sector": "education_childcare",
+      "occupation": "lærer",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Kollegakonflikt",
+      "situation": "To lærere er uenige om arbeidsdeling og kommunikasjon i teamet.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "behandle primært som samarbeids- og lederdialog",
+        "lytting",
+        "konkretisering",
+        "avklar ansvar og forventninger"
+      ],
+      "forbiddenBehaviors": [
+        "ikke trekk inn opplæringsloven uten relevant elev-/rettighetsspørsmål"
+      ]
+    },
+    {
+      "id": "OCC007",
+      "sector": "education_childcare",
+      "occupation": "lærer",
+      "topic": "Sikkerhet",
+      "subtopic": "Elevsikkerhet",
+      "situation": "En lærer gjentar en praksis som lederen mener kan sette elever i en utrygg situasjon.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Utdanningsdirektoratet",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "elevsikkerhet og sektorregelverk kan være relevant",
+        "skill konkret hendelse fra antakelser",
+        "kontroller gjeldende skole-/arbeidsmiljøregelverk"
+      ]
+    },
+    {
+      "id": "OCC008",
+      "sector": "education_childcare",
+      "occupation": "barnehagelærer",
+      "topic": "Sikkerhet",
+      "subtopic": "Bekymring for barn",
+      "situation": "En leder er bekymret for hvordan en medarbeider håndterer barn i pressede situasjoner.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Utdanningsdirektoratet",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "barnets trygghet må inngå i vurderingen",
+        "bruk konkret observerbar atferd",
+        "ikke spekuler i motiv eller diagnose"
+      ]
+    },
+    {
+      "id": "OCC009",
+      "sector": "aquaculture_fisheries_maritime",
+      "occupation": "oppdrettsoperatør",
+      "topic": "Sikkerhet",
+      "subtopic": "Påvirket på jobb",
+      "situation": "En ansatt på et lakseoppdrettsanlegg møter til arbeid og skal jobbe med båt og teknisk utstyr, men virker påvirket.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Fiskeridirektoratet",
+        "Mattilsynet",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "sikkerhetskritisk arbeid må prioriteres",
+        "havbrukskontekst skal brukes",
+        "ikke anta at alt regelverk for sjøfart gjelder uten å avklare fartøy/rolle"
+      ]
+    },
+    {
+      "id": "OCC010",
+      "sector": "aquaculture_fisheries_maritime",
+      "occupation": "oppdrettsoperatør",
+      "topic": "Livssituasjoner",
+      "subtopic": "Samlivsbrudd",
+      "situation": "En oppdrettsoperatør forteller at et samlivsbrudd gjør arbeidshverdagen tung.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "yrket er ikke relevant uten konkrete sikkerhetsopplysninger",
+        "støttende samtale",
+        "avklar behov og arbeidsevne uten overfortolkning"
+      ],
+      "forbiddenBehaviors": [
+        "ikke hent akvakulturregelverk bare fordi yrket er valgt"
+      ]
+    },
+    {
+      "id": "OCC011",
+      "sector": "aquaculture_fisheries_maritime",
+      "occupation": "skipsfører",
+      "topic": "Fravær og oppfølging",
+      "subtopic": "Arbeidstid",
+      "situation": "En skipsfører beskriver gjentatte konflikter rundt vakter, hvile og arbeidsplan.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Sjøfartsdirektoratet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "sjøfartsspesifikt arbeidstids-/hviletidsregelverk kan være relevant",
+        "kontroller fartøy/rolle før bastante råd"
+      ]
+    },
+    {
+      "id": "OCC012",
+      "sector": "industry_production",
+      "occupation": "maskinoperatør",
+      "topic": "Alkohol og rus",
+      "subtopic": "Påvirket på jobb",
+      "situation": "En maskinoperatør virker påvirket før arbeid på produksjonsutstyr.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "maskinsikkerhet gjør situasjonen sikkerhetskritisk",
+        "skill observasjon fra antakelse",
+        "stans risiko før ordinær oppfølging"
+      ]
+    },
+    {
+      "id": "OCC013",
+      "sector": "construction_trades",
+      "occupation": "elektriker",
+      "topic": "Sikkerhet",
+      "subtopic": "Uforsvarlig praksis",
+      "situation": "En elektriker omgår en sikkerhetsrutine for å bli raskere ferdig.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "DSB",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "elektrisk sikkerhet og HMS er relevant",
+        "konkretiser hendelsen",
+        "kontroller sektorspesifikke krav"
+      ]
+    },
+    {
+      "id": "OCC014",
+      "sector": "construction_trades",
+      "occupation": "tømrer",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Uenighet",
+      "situation": "To tømrere krangler om hvem som skal gjøre hvilke oppgaver på et prosjekt, uten at sikkerhet er tema.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "behandle som samarbeidsproblem",
+        "avklar ansvar og forventninger",
+        "ikke hent byggforskrifter uten sikkerhets- eller regelverksspørsmål"
+      ]
+    },
+    {
+      "id": "OCC015",
+      "sector": "veterinary_animal_health",
+      "occupation": "veterinær",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Journalføring",
+      "situation": "En leder er bekymret for mangelfull journalføring hos en veterinær.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Mattilsynet",
+        "Lovdata",
+        "Arbeidstilsynet"
+      ],
+      "expectedPrinciples": [
+        "dyrehelsepersonellregelverk kan være relevant",
+        "bruk konkrete eksempler",
+        "ikke anta grovt pliktbrudd uten dokumentasjon"
+      ]
+    },
+    {
+      "id": "OCC016",
+      "sector": "veterinary_animal_health",
+      "occupation": "dyrepleier",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Tone",
+      "situation": "En dyrepleier og en kollega kommuniserer dårlig og skaper dårlig stemning i teamet.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "vanlig samarbeidsdialog",
+        "lytting",
+        "konkret atferd",
+        "ingen sektorspesifikk juss uten behov"
+      ]
+    },
+    {
+      "id": "OCC017",
+      "sector": "public_admin_legal",
+      "occupation": "jurist",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Kollegakonflikt",
+      "situation": "To jurister er uenige om arbeidsform og oppgavefordeling.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "yrket er ikke i seg selv juridisk trigger",
+        "behandle som arbeidsrelasjon",
+        "ikke bruke advokatregelverk uten relevans"
+      ]
+    },
+    {
+      "id": "OCC018",
+      "sector": "public_admin_legal",
+      "occupation": "advokat",
+      "topic": "Sikkerhet",
+      "subtopic": "Taushetsplikt",
+      "situation": "En leder får opplysninger om at en advokat kan ha delt konfidensiell klientinformasjon internt med uvedkommende.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Advokattilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "taushetsplikt og advokatregelverk må kontrolleres",
+        "ikke konkluder med regelbrudd før faktum er avklart"
+      ]
+    },
+    {
+      "id": "OCC019",
+      "sector": "office_finance_it",
+      "occupation": "utvikler",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Leveranser",
+      "situation": "En utvikler leverer gjentatte ganger senere enn avtalt, uten sikkerhets- eller personvernproblem.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "forventningsavklaring",
+        "utforsk årsaker",
+        "konkretiser leveranser",
+        "ikke trekk inn cybersikkerhet uten grunn"
+      ]
+    },
+    {
+      "id": "OCC020",
+      "sector": "office_finance_it",
+      "occupation": "cybersikkerhet",
+      "topic": "Sikkerhet",
+      "subtopic": "Informasjonssikkerhet",
+      "situation": "En medarbeider har omgått en sikkerhetskontroll i et system for å spare tid.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "informasjons- og virksomhetssikkerhet kan kreve spesifikke interne/eksterne regler",
+        "ikke gjett interne sikkerhetskrav",
+        "be om/henvis til virksomhetens rutiner når nødvendig"
+      ]
+    },
+    {
+      "id": "OCC021",
+      "sector": "defence_police_emergency",
+      "occupation": "Forsvaret",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Uenighet",
+      "situation": "To sivile medarbeidere i Forsvaret samarbeider dårlig om en ordinær administrativ oppgave.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "behandle som vanlig samarbeidsproblem",
+        "ikke anta gradert eller sikkerhetskritisk kontekst",
+        "ikke be om sensitive detaljer"
+      ]
+    },
+    {
+      "id": "OCC022",
+      "sector": "defence_police_emergency",
+      "occupation": "brann og redning",
+      "topic": "Alkohol og rus",
+      "subtopic": "Påvirket på jobb",
+      "situation": "En medarbeider i operativ brann- og redningstjeneste virker påvirket før vakt.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "DSB",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "beredskap og sikkerhet gjør saken sikkerhetskritisk",
+        "akutt sikkerhet før ordinær samtale",
+        "skill observasjon fra antakelse"
+      ]
+    },
+    {
+      "id": "OCC023",
+      "sector": "offshore_energy",
+      "occupation": "plattformarbeider",
+      "topic": "Fravær og oppfølging",
+      "subtopic": "Samlivsbelastning",
+      "situation": "En plattformarbeider har samlivsproblemer og ønsker en samtale. Ingen konkrete sikkerhetsproblemer er observert.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "ikke gjør offshore-regelverk relevant uten faktisk sikkerhets-/arbeidstidskobling",
+        "støttende samtale",
+        "avklar funksjon og behov"
+      ]
+    },
+    {
+      "id": "OCC024",
+      "sector": "offshore_energy",
+      "occupation": "plattformarbeider",
+      "topic": "Sikkerhet",
+      "subtopic": "Påvirket på jobb",
+      "situation": "En plattformarbeider virker påvirket før sikkerhetskritiske oppgaver.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Havindustritilsynet",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "offshore/petroleumssikkerhet må inngå",
+        "akutt risikohåndtering før ordinær samtale",
+        "kontroller gjeldende sektorregelverk"
+      ]
+    },
+    {
+      "id": "OCC025",
+      "sector": "retail_hospitality_service",
+      "occupation": "butikkmedarbeider",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Punktlighet",
+      "situation": "En butikkmedarbeider kommer ofte noen minutter for sent til vakten.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "konkretiser mønster og konsekvens",
+        "åpne spørsmål",
+        "tydelige forventninger",
+        "ikke overjuridifiser"
+      ]
+    },
+    {
+      "id": "OCC026",
+      "sector": "retail_hospitality_service",
+      "occupation": "renholder",
+      "topic": "Sikkerhet",
+      "subtopic": "Kjemikalier",
+      "situation": "En renholder bruker et kjemisk produkt i strid med virksomhetens sikkerhetsrutine.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "kjemikaliesikkerhet og HMS er relevant",
+        "kontroller produkt-/virksomhetsrutiner",
+        "ikke anta eksponering eller skade uten fakta"
+      ]
+    },
+    {
+      "id": "OCC027",
+      "sector": "other",
+      "occupation": "lakseoppdrett",
+      "topic": "Sikkerhet",
+      "subtopic": "Påvirket på jobb",
+      "situation": "Brukeren valgte Annet og skrev «lakseoppdrett». En medarbeider virker påvirket før arbeid med båt og utstyr.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedRouting": {
+        "sector": "aquaculture_fisheries_maritime",
+        "matchMode": "alias"
+      },
+      "expectedAuthorities": [
+        "Fiskeridirektoratet",
+        "Mattilsynet",
+        "Arbeidstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "aliasmatching bør skje lokalt uten klassifiseringskall",
+        "sikkerhetskritisk kontekst må brukes"
+      ]
+    },
+    {
+      "id": "OCC028",
+      "sector": "other",
+      "occupation": "bibliotekar",
+      "topic": "Livssituasjoner",
+      "subtopic": "Samlivsbrudd",
+      "situation": "Brukeren valgte Annet og skrev «bibliotekar». Medarbeideren har samlivsbrudd og trenger en støttende samtale.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "ingen klassifiserings- eller webkall er nødvendig når yrket ikke påvirker saken",
+        "støttende samtale"
+      ],
+      "forbiddenBehaviors": [
+        "ikke bruk KI-kall bare for å klassifisere yrket når yrket er irrelevant"
+      ]
+    }
+  ]
+}
