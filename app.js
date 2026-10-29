@@ -2786,7 +2786,12 @@ function isIosDevice(){
   return /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
 }
 
+function updateAppModeMarker(){
+  document.documentElement.dataset.appMode=isStandaloneApp() ? 'standalone' : 'browser';
+}
+
 function updateInstallAppUi(){
+  updateAppModeMarker();
   const button=document.querySelector('#install-app-button');
   const iosHelp=document.querySelector('#install-app-ios-help');
   const manualHelp=document.querySelector('#install-app-manual-help');
@@ -2824,9 +2829,11 @@ function updateInstallAppUi(){
     if(manualHelp) manualHelp.hidden=true;
     const samsung=/SamsungBrowser/i.test(navigator.userAgent);
     if(manualText) manualText.textContent=samsung
-      ? 'Åpne nettlesermenyen og velg «Legg til side i» / «Startskjerm» eller «Installer app», avhengig av Samsung Internet-versjonen.'
-      : 'Åpne nettlesermenyen og velg «Installer app» eller «Legg til på startskjermen».';
-    status.textContent='Nettleseren har ikke tilbudt automatisk installasjon ennå.';
+      ? 'I Samsung Internet: bruk PWA-/installasjonsikonet og velg «Installer på appskjermen». Ikke velg bare en vanlig snarvei til startskjermen.'
+      : 'Åpne nettlesermenyen og velg «Installer app». En vanlig snarvei kan fortsatt åpnes med nettleserens egne menyer.';
+    status.textContent=samsung
+      ? 'Du kjører nå i nettleseren. Ekte appmodus skal åpnes uten Samsung Internet-linjen under Samtalestøtte-menyen.'
+      : 'Du kjører nå i nettleseren. Installer appen for å åpne den i eget appvindu.';
   }
 }
 
@@ -2901,7 +2908,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.7', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.8', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
