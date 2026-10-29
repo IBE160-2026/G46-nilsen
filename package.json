@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "npm run test-local",
-    "test-local": "npm run test-syntax && npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-privacy-surfaces && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-guidance-quality && npm run test-pilot-regression && npm run test-golden-schema && npm run test-golden-utils && npm run test-benchmark-taxonomy && npm run test-sourcebank && npm run test-occupation-router && npm run test-pilot-ux && npm run test-pwa && npm run test-sensor-demo && npm run test-public-assets && npm run test-repo-structure",
+    "test-local": "npm run test-syntax && npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-privacy-surfaces && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-guidance-quality && npm run test-pilot-regression && npm run test-golden-schema && npm run test-golden-utils && npm run test-benchmark-taxonomy && npm run test-sourcebank && npm run test-occupation-router && npm run test-occupation-data && npm run test-pilot-ux && npm run test-pwa && npm run test-sensor-demo && npm run test-public-assets && npm run test-repo-structure",
     "test-ai": "node tests/test-ai.js",
     "test-ai:full": "node tests/test-ai.js --all",
     "test-ai:stress": "node tests/test-ai-stress.js",
@@ -43,7 +43,8 @@
     "generate-pwa-icons": "node scripts/generate-pwa-icons.js",
     "prestart": "npm run generate-pwa-icons",
     "predemo": "npm run generate-pwa-icons",
-    "test-occupation-router": "node tests/test-occupation-router.cjs"
+    "test-occupation-router": "node tests/test-occupation-router.cjs",
+    "test-occupation-data": "node tests/test-occupation-data.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
