@@ -1,3 +1,14 @@
+# v20.11.5 – Historikklogo uten wrapping og tydelig mørk hover
+
+- Historikk-logoen er flyttet ut av overskriftsraden og inn i en egen søskenkolonne i headeren.
+- Fra 641 px og opp krymper logoen dynamisk i høyrekolonnen og kan ikke wrappe under overskriften.
+- Logoen er flyttet tydelig høyere i den opprinnelig tomme høyre flaten og påvirker ikke headerhøyden.
+- Under 640 px skjules Historikk-logoen heller enn å havne på egen linje.
+- Mørk/hybrid sidemeny bruker eksplisitt teal hover/fokus/aktiv bakgrunn med hvit tekst og ikon, slik at valget forblir lesbart.
+- KI-illustrasjonen i Samtaleøvelse beholdes uten ramme, bakgrunn eller skygge.
+- Versjon, cache og regresjonstester er synkronisert til 20.11.5.
+
+---
 # v20.11.4 – sentrert historikklogo og ren KI-illustrasjon
 
 - Historikkoverskriften bruker nå en ekte responsiv høyrekolonne for logoen.
