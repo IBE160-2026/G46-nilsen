@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "verifiedAt": "2026-10-29",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -355,6 +355,43 @@
         "overvåking",
         "innsyn",
         "arbeidslivspersonvern"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "HELSETILSYNET_RULES",
+      "authority": "Helsetilsynet",
+      "title": "Regelverk",
+      "url": "https://www.helsetilsynet.no/regelverk/",
+      "sectors": [
+        "health_care"
+      ],
+      "useFor": [
+        "tilsyn",
+        "helsepersonell",
+        "helse- og omsorgstjenester",
+        "autorisasjon",
+        "administrative reaksjoner",
+        "forsvarlighet"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "ADVOKATTILSYNET_PROFESSION",
+      "authority": "Advokattilsynet",
+      "title": "Advokatvirksomhet",
+      "url": "https://www.tilsynet.no/advokatvirksomhet",
+      "sectors": [
+        "public_admin_legal"
+      ],
+      "useFor": [
+        "advokatloven",
+        "advokatforskriften",
+        "advokatvirksomhet",
+        "internadvokat",
+        "advokatfullmektig",
+        "taushetsplikt",
+        "uavhengighet"
       ],
       "timeSensitive": true
     }
