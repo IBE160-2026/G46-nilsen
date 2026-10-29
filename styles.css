@@ -8566,3 +8566,146 @@ html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
   object-fit: contain !important;
   content: normal !important;
 }
+
+
+/* v20.11.5 HISTORY VISUAL COLUMN
+   Never wrap the History logo below the heading. It shrinks in its own right column. */
+@media (min-width:641px) {
+  #history-view .history-header.utility-header {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) clamp(140px, 28vw, 420px) !important;
+    column-gap: clamp(18px, 4vw, 72px) !important;
+    align-items: start !important;
+    width: 100% !important;
+    min-height: 0 !important;
+    margin-bottom: 18px !important;
+    overflow: visible !important;
+  }
+
+  #history-view .history-header .utility-header-copy {
+    min-width: 0 !important;
+    max-width: 760px !important;
+  }
+
+  #history-view .history-header .utility-title-row {
+    display: flex !important;
+    flex-wrap: nowrap !important;
+    min-width: 0 !important;
+  }
+
+  #history-view .history-header .history-header-visual {
+    display: grid !important;
+    place-items: start center !important;
+    align-self: start !important;
+    justify-self: stretch !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    height: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    transform: translateY(clamp(-72px, -4.8vw, -38px)) !important;
+    pointer-events: none;
+  }
+
+  #history-view .history-header .history-header-logo {
+    display: block !important;
+    width: clamp(150px, 24vw, 360px) !important;
+    max-width: 92% !important;
+    height: auto !important;
+    margin: 0 auto !important;
+    object-fit: contain !important;
+  }
+
+  html[data-theme="dark"] #history-view .history-header .history-header-logo {
+    content: url("assets/images/logo-symbol-light.png") !important;
+  }
+}
+
+@media (min-width:641px) and (max-width:900px) {
+  #history-view .history-header.utility-header {
+    grid-template-columns: minmax(0,1fr) clamp(120px, 24vw, 190px) !important;
+    column-gap: clamp(12px, 2.5vw, 24px) !important;
+  }
+
+  #history-view .history-header .history-header-logo {
+    width: clamp(120px, 21vw, 180px) !important;
+    max-width: 100% !important;
+  }
+
+  #history-view .history-header .history-header-visual {
+    transform: translateY(-34px) !important;
+  }
+}
+
+@media (max-width:640px) {
+  #history-view .history-header-visual {
+    display: none !important;
+  }
+}
+
+/* v20.11.5 CLEAN SIMULATION MARK
+   Keep the KI illustration free of card/frame styling. */
+#simulation-view .simulation-logo-crop,
+#simulation-view .simulation-hub-hero > .simulation-logo-crop {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#simulation-view .simulation-logo-crop img,
+#simulation-view .simulation-hub-hero > .simulation-logo-crop img,
+html[data-theme="light"] #simulation-view .simulation-logo-crop img,
+html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
+html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  object-fit: contain !important;
+  content: normal !important;
+}
+
+/* v20.11.5 DARK SIDEBAR HOVER CONTRAST
+   Final override so dark/hybrid navigation never flashes white on hover. */
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled),
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible,
+html[data-theme="hybrid"] .sidebar .nav-item.active,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled),
+html[data-theme="dark"] .sidebar .nav-item:focus-visible,
+html[data-theme="dark"] .sidebar .nav-item.active {
+  background: #245d6d !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled) .nav-label,
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible .nav-label,
+html[data-theme="hybrid"] .sidebar .nav-item.active .nav-label,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled) .nav-label,
+html[data-theme="dark"] .sidebar .nav-item:focus-visible .nav-label,
+html[data-theme="dark"] .sidebar .nav-item.active .nav-label {
+  color: #ffffff !important;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled) small,
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible small,
+html[data-theme="hybrid"] .sidebar .nav-item.active small,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled) small,
+html[data-theme="dark"] .sidebar .nav-item:focus-visible small,
+html[data-theme="dark"] .sidebar .nav-item.active small {
+  color: #d9edf1 !important;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled) .nav-glyph,
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible .nav-glyph,
+html[data-theme="hybrid"] .sidebar .nav-item.active .nav-glyph,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled) .nav-glyph,
+html[data-theme="dark"] .sidebar .nav-item:focus-visible .nav-glyph,
+html[data-theme="dark"] .sidebar .nav-item.active .nav-glyph {
+  background: rgba(255,255,255,.13) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18) !important;
+}
