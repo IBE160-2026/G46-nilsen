@@ -22,7 +22,13 @@ const assert = require("assert");
 
   const salmon = router.classifyOccupationLocally("lakseoppdrett");
   assert.strictEqual(salmon.matched, true);
+  assert.strictEqual(salmon.ambiguous, false);
   assert.strictEqual(salmon.sectorId, "aquaculture_fisheries_maritime");
+
+  const workshop = router.classifyOccupationLocally("verksted");
+  assert.strictEqual(workshop.matched, false);
+  assert.strictEqual(workshop.ambiguous, true, "Tvetydige aliases skal ikke rutest vilkårlig");
+  assert(workshop.candidates.length >= 2);
 
   const unknown = router.classifyOccupationLocally("bibliotekar");
   assert.strictEqual(unknown.matched, false);
