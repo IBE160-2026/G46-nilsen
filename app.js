@@ -144,24 +144,86 @@ function clearDocumentSelection() {
   if (selection?.rangeCount) selection.removeAllRanges();
 }
 
-function showView(name) {
+function activeViewName() {
+  return Object.entries(views).find(([, view]) => view?.classList.contains('active-view'))?.[0] || 'home';
+}
+
+function saveCurrentHistoryScroll() {
+  const state = history.state;
+  if (!state?.samtalestotte) return;
+  history.replaceState({ ...state, scrollY: Math.max(0, window.scrollY) }, '');
+}
+
+function showView(name, options = {}) {
+  const { historyMode = 'push', restoreScroll = null } = options;
+  if (!views[name]) return;
+
   clearDocumentSelection();
   setMobileNavHidden(false);
   mobileNavLastScrollY = 0;
+
+  const previousView = activeViewName();
+  const changingView = previousView !== name;
+
+  if (historyMode === 'push' && changingView) {
+    saveCurrentHistoryScroll();
+    const currentDepth = Number(history.state?.appDepth || 0);
+    history.pushState({
+      samtalestotte: true,
+      view: name,
+      appDepth: currentDepth + 1,
+      scrollY: 0
+    }, '');
+  } else if (historyMode === 'replace') {
+    const currentDepth = Number(history.state?.appDepth || 0);
+    history.replaceState({
+      samtalestotte: true,
+      view: name,
+      appDepth: currentDepth,
+      scrollY: 0
+    }, '');
+  }
+
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
+
   const topNew = document.querySelector('#new-conversation-button');
   if (topNew) topNew.hidden = name === 'home';
 
-  // Sekundærsider med accordion skal alltid åpne ryddig, med alle seksjoner lukket.
-  if (['settings', 'admin', 'help'].includes(name)) {
+  // Sekundærsider med accordion skal alltid åpne ryddig ved vanlig navigasjon.
+  if (historyMode !== 'none' && ['settings', 'admin', 'help'].includes(name)) {
     views[name].querySelectorAll('details[open]').forEach(detail => { detail.open = false; });
   }
 
-  requestAnimationFrame(clearDocumentSelection);
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+  requestAnimationFrame(() => {
+    clearDocumentSelection();
+    if (restoreScroll !== null) {
+      window.scrollTo({ top: Math.max(0, Number(restoreScroll) || 0), behavior: 'auto' });
+    } else if (changingView) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
 }
+
+function navigateAppBack(fallback) {
+  const state = history.state;
+  if (state?.samtalestotte && Number(state.appDepth || 0) > 0) {
+    saveCurrentHistoryScroll();
+    history.back();
+    return;
+  }
+  fallback?.();
+}
+
+window.addEventListener('popstate', event => {
+  const state = event.state;
+  if (!state?.samtalestotte || !views[state.view]) return;
+  showView(state.view, {
+    historyMode: 'none',
+    restoreScroll: state.scrollY ?? 0
+  });
+});
 
 
 function setHistoryLoadedGuidanceMode(active, situation = '') {
@@ -1957,6 +2019,13 @@ initTheme();
 applySidebarState();
 setBreadcrumb('');
 updateNavState('home');
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+history.replaceState({
+  samtalestotte: true,
+  view: activeViewName(),
+  appDepth: 0,
+  scrollY: Math.max(0, window.scrollY)
+}, '');
 
 document.querySelectorAll('[data-theme]').forEach(button => {
   button.addEventListener('click', () => applyTheme(button.dataset.theme));
@@ -1971,7 +2040,6 @@ document.querySelector('#mobile-theme-cycle')?.addEventListener('click', () => {
 document.querySelectorAll('.nav-item[data-view]').forEach(button => {
   button.addEventListener('click', () => {
     if (button.dataset.view === 'home') {
-      resetConversationState();
       setBreadcrumb('');
       showView('home');
     }
@@ -2010,7 +2078,6 @@ document.querySelectorAll('.nav-item[data-view]').forEach(button => {
 });
 
 document.querySelector('#brand-home-button').addEventListener('click', () => {
-  resetConversationState();
   setBreadcrumb('');
   showView('home');
 });
@@ -2018,13 +2085,16 @@ document.querySelector('#brand-home-button').addEventListener('click', () => {
 document.querySelector('#sidebar-toggle').addEventListener('click', toggleSidebar);
 
 document.querySelector('#back-to-home').addEventListener('click', () => {
-  resetConversationState();
-  setBreadcrumb('');
-  showView('home');
+  navigateAppBack(() => {
+    setBreadcrumb('');
+    showView('home');
+  });
 });
 
 document.querySelector('#back-to-topic').addEventListener('click', () => {
-  if (currentTopic) openTopic(currentTopic);
+  navigateAppBack(() => {
+    if (currentTopic) openTopic(currentTopic);
+  });
 });
 
 document.querySelector('#change-auto-topic')?.addEventListener('click', () => {
@@ -2037,8 +2107,10 @@ document.querySelector('#change-auto-topic')?.addEventListener('click', () => {
 });
 
 document.querySelector('#back-from-settings').addEventListener('click', () => {
-  setBreadcrumb('');
-  showView('home');
+  navigateAppBack(() => {
+    setBreadcrumb('');
+    showView('home');
+  });
 });
 
 document.querySelector('#topic-finder-form').addEventListener('submit', async event => {
@@ -2514,7 +2586,7 @@ function startNewConversation(force=false){
   const hasContent=Boolean(document.querySelector('#situation')?.value.trim());
   const unsaved=hasContent && (!currentUser || document.querySelector('#temporary-chat')?.checked || conversationDirty);
   if(unsaved && !force){ const msg=document.querySelector('#discard-message'); msg.textContent=currentUser?'Denne samtalen er ikke lagret. Hvis du fortsetter, kan den ikke gjenopprettes.':'Denne samtalen er ikke lagret og kan ikke gjenopprettes. Logg inn dersom du vil lagre historikk.'; document.querySelector('#discard-dialog').showModal(); return; }
-  resetConversationState(); currentConversationId=null; conversationDirty=false; setBreadcrumb(''); showView('home');
+  resetConversationState(); currentConversationId=null; conversationDirty=false; setBreadcrumb(''); showView('home', { historyMode: 'replace' });
 }
 function openLegal(which){ legalReturnView=Object.entries(views).find(([,el])=>el.classList.contains('active-view'))?.[0]||'home'; closeAuth(); setBreadcrumb(which==='privacy'?'Personvern':'Bruksvilkår'); showView(which); }
 
@@ -3026,11 +3098,11 @@ document.querySelector('[data-profile-action="logout"]')?.addEventListener('clic
 document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
 document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth();});
-document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>showView('home'));
-document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>showView(legalReturnView)));
+document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>navigateAppBack(()=>showView('home')));
+document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(legalReturnView))));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('[data-open-help]').forEach(b=>b.addEventListener('click',()=>{infoReturnView='settings';setBreadcrumb('Hjelp');showView('help');}));
-document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>showView(infoReturnView)));
+document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(infoReturnView))));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>openAiFeedback('main-guidance'));
 
 
