@@ -1,8 +1,10 @@
 # Brukertest – ny gjennomgang av hovedtema og undertema
 
 **Dato:** 27.10.2026  
-**Status:** Forslag etter pilotfunn – ikke implementert  
-**Omfang:** 9 hovedtemaer og 56 undertemaer
+**Status:** Historisk beslutningsgrunnlag – hovedresultatet implementert i v20.10.9  
+**Omfang:** Gjennomgangen startet med 9 hovedtemaer og 56 undertemaer; gjeldende løsning har 9 hovedtemaer og 48 undertemaer
+
+> **Viktig status 29.10.2026:** Dette dokumentet bevares som beslutnings- og refleksjonshistorikk. Forslagene lenger ned viser mellomstadier og er ikke lenger autoritative. Gjeldende taksonomi ligger i `src/client-data.js` og `src/server/topic-contracts.js`, og er synkronisert med benchmark/regresjonstester i v20.10.9.
 
 ## Hvorfor en ny gjennomgang?
 
