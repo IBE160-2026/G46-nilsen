@@ -1,6 +1,6 @@
 # v20.10.9 – kortere undertemaer, taksonomisynk og sporbarhet
 
-- Undertemastrukturen er forenklet fra 56 til 48 undertemaer med korte, skannbare titler og mer forklarende beskrivelser.
+- Undertemastrukturen er forenklet fra 56 til 48 undertemaer etter pilotfunn om abstrakte, overlappende og vanskelige navigasjonsvalg. 48 var ikke et mål i seg selv; resultatet kom av en systematisk gjennomgang med korte, skannbare titler og mer forklarende beskrivelser.
 - Klientdata og serverens tema-/klassifiseringskontrakt er synkronisert og låst med regresjonstest.
 - Benchmarkbanken er remappet til gjeldende taksonomi uten å kaste tidligere testsaker; to nye saker dekker «Konflikt med leder». Banken har nå 114 saker og minst to per undertema.
 - Ny `tests/test-benchmark-taxonomy.cjs` kontrollerer at benchmarkcaser bruker gyldige tema/undertema-par.
