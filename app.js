@@ -2736,6 +2736,8 @@ function isIosDevice(){
 function updateInstallAppUi(){
   const button=document.querySelector('#install-app-button');
   const iosHelp=document.querySelector('#install-app-ios-help');
+  const manualHelp=document.querySelector('#install-app-manual-help');
+  const manualText=document.querySelector('#install-app-manual-text');
   const status=document.querySelector('#install-app-status');
   const description=document.querySelector('#install-app-description');
   if(!button || !status) return;
@@ -2743,6 +2745,7 @@ function updateInstallAppUi(){
   if(isStandaloneApp()){
     button.hidden=true;
     if(iosHelp) iosHelp.hidden=true;
+    if(manualHelp) manualHelp.hidden=true;
     if(description) description.textContent='Samtalestøtte er installert og kan åpnes som en egen app.';
     status.textContent='Installert på denne enheten.';
     return;
@@ -2750,18 +2753,27 @@ function updateInstallAppUi(){
 
   if(deferredInstallPrompt){
     button.hidden=false;
+    button.textContent='Installer Samtalestøtte';
     if(iosHelp) iosHelp.hidden=true;
+    if(manualHelp) manualHelp.hidden=true;
     status.textContent='';
     return;
   }
 
-  button.hidden=true;
+  button.hidden=false;
+  button.textContent='Vis hvordan du installerer';
   if(isIosDevice()){
     if(iosHelp) iosHelp.hidden=false;
-    status.textContent='iOS viser ikke den samme installasjonsdialogen som Chrome/Edge.';
+    if(manualHelp) manualHelp.hidden=true;
+    status.textContent='Installeres fra Del-menyen i Safari.';
   }else{
     if(iosHelp) iosHelp.hidden=true;
-    status.textContent='Hvis installasjonsknappen ikke vises, åpne nettlesermenyen og velg «Installer app» eller «Legg til på startskjermen».';
+    if(manualHelp) manualHelp.hidden=true;
+    const samsung=/SamsungBrowser/i.test(navigator.userAgent);
+    if(manualText) manualText.textContent=samsung
+      ? 'Åpne nettlesermenyen og velg «Legg til side i» / «Startskjerm» eller «Installer app», avhengig av Samsung Internet-versjonen.'
+      : 'Åpne nettlesermenyen og velg «Installer app» eller «Legg til på startskjermen».';
+    status.textContent='Nettleseren har ikke tilbudt automatisk installasjon ennå.';
   }
 }
 
@@ -2778,8 +2790,14 @@ window.addEventListener('appinstalled', () => {
 
 document.querySelector('#install-app-button')?.addEventListener('click', async () => {
   const status=document.querySelector('#install-app-status');
+  const manualHelp=document.querySelector('#install-app-manual-help');
+  const iosHelp=document.querySelector('#install-app-ios-help');
   if(!deferredInstallPrompt){
-    updateInstallAppUi();
+    if(isIosDevice()){
+      if(iosHelp) iosHelp.hidden=false;
+    }else if(manualHelp){
+      manualHelp.hidden=!manualHelp.hidden;
+    }
     return;
   }
   deferredInstallPrompt.prompt();
@@ -2789,9 +2807,18 @@ document.querySelector('#install-app-button')?.addEventListener('click', async (
   updateInstallAppUi();
 });
 
+const brandLogoDialog=document.querySelector('#brand-logo-dialog');
+document.querySelectorAll('[data-open-brand-logo]').forEach(button => {
+  button.addEventListener('click', () => brandLogoDialog?.showModal());
+});
+document.querySelector('#brand-logo-dialog-close')?.addEventListener('click', () => brandLogoDialog?.close());
+brandLogoDialog?.addEventListener('click', event => {
+  if(event.target===brandLogoDialog) brandLogoDialog.close();
+});
+
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.4', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.5', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
