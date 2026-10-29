@@ -62,7 +62,22 @@ Flere reelle testeksempler viser at problemet er særlig tydelig i **«Forslag t
 - Golden-testen flagger nå for lange åpninger og åpninger som ser ut som instruksjoner til lederen.
 - Egen statisk regresjonstest kontrollerer at disse kravene fortsatt finnes.
 
-**Status:** Rettet i kode på `main`; skal verifiseres med nye KI-svar etter deploy.
+### Ny menneskelig kvalitetsrunde 29.10.2026
+Etter ny manuell vurdering ble det tydelig at «kort og direkte» alene kunne gjøre åpningene kalde og mekaniske. En leder vil i relevante situasjoner ofte sette samtalen naturlig i kontekst, anerkjenne reaksjonen, vise omsorg og gi medarbeideren rom.
+
+På `pilot-ux-v20.11` er åpningskontrakten derfor justert:
+- ingen fast sekvens eller obligatorisk mal
+- normalt 50–100 ord når saken trenger en menneskelig inngang
+- situasjonstilpasset anerkjennelse og omsorg
+- «Hvordan har du det?», støtte og mulig tilrettelegging kan brukes der det passer
+- negativt utfall skal fortsatt sies tydelig og tidlig
+- sikkerhet og alvorlige formelle saker skal ikke mykes bort
+- stilreferanser brukes som toneeksempler, ikke tekst som skal kopieres
+- hard 65-ordsgrense beholdes bare i den akutte sikkerhetspiloten; andre pilotgrenser er utvidet
+
+Denne retningen er faglig forankret i SOURCEBANK v6, blant annet aktiv lytting, relasjonsledelse, autonomistøttende ledelse, feedback og DFØs samtaleveiledning.
+
+**Status:** Implementert på `pilot-ux-v20.11`; ikke deployet. Må testes med de fem pilotcasene og menneskelig vurdering før merge.
 
 ---
 

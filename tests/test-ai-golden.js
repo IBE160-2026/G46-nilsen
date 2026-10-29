@@ -102,8 +102,8 @@ function evaluate(tc, analysis, guidance) {
 
   const opening = String(guidance?.opening || "").trim();
   const openingWords = opening ? opening.split(/\s+/u).filter(Boolean).length : 0;
-  if (openingWords > 75) {
-    review.push(`Åpning: for lang (${openingWords} ord; bør normalt være maks ca. 75)`);
+  if (openingWords > 110) {
+    review.push(`Åpning: for lang (${openingWords} ord; bør normalt være maks ca. 110)`);
   }
   if (/\b(?:du bør|bør du|kontakt HR|kontakt juridisk|følg (?:virksomhetens|lokal|intern|gjeldende)?\s*prosedyre|varsle (?:ansvarlig|nærmeste)?\s*leder|kvalitetssikre)\b/iu.test(opening)) {
     review.push("Åpning: ser ut til å inneholde instruksjoner til lederen i stedet for bare replikk");
