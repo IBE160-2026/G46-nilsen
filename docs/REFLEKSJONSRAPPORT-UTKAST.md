@@ -5,8 +5,8 @@
 **Student:** Cecilie C. Nilsen  
 **Student-ID:** [fyll inn]  
 **Gruppestørrelse:** 1  
-**Status:** Utkast til individuell refleksjonsrapport  
-**Ordantall:** ca. 4400 ord (omtrentlig Markdown-ordtelling, før eventuell sluttredigering)
+**Status:** Arbeidsutkast – oppdatert med pilot og produksjonssetting v20.11.0  
+**Ordantall:** må kontrolltelles ved sluttredigering
 
 ---
 
@@ -443,3 +443,16 @@ Denne endringen viste igjen hvor lett kontekst kan bli inkonsistent i et større
 ## Tillegg 29.10.2026 – Git-historikk som dokumentasjon
 
 Jeg har også valgt å ikke omskrive Git-historikken bare for å gjøre den visuelt pen. GitHub-tilkoblingen som ble brukt i deler av den KI-assisterte utviklingen skriver enkelte filer sekvensielt, og ett versjonsløft kan derfor vises som flere små `chore: bump versjon`-commits. Disse representerer ikke flere separate funksjonsendringer. I stedet for å squash'e i etterkant har jeg beholdt den faktiske historikken og laget et eget versjons-/commitspor for v20.10.4–v20.10.9. Det gir bedre etterprøvbarhet og gjør det mulig å skille funksjonscommits, tester, dokumentasjon og tekniske versjonsoppdateringer.
+
+
+## Tillegg 29.10.2026 – fysisk mobiltest, responsiv eksekveringssti og PWA
+
+Mobilpiloten ga et konkret eksempel på hvorfor det ikke er nok å se at en kodeendring finnes i repoet eller at en deploy er grønn. Jeg ønsket å gjøre logoen tydeligere på mobil. De første endringene traff elementer som var relevante på desktop, men brukeren så ingen forskjell på telefonen. Først mistenkte jeg service worker/cache og tvang fram ny cacheversjon. Endringen var teknisk fornuftig, men løste ikke selve problemet.
+
+Ved en grundigere gjennomgang av den responsive CSS-en oppdaget jeg at desktop-sidefeltet faktisk skjules helt under mobilbredden, og at den synlige merkevaren i stedet lå i mobilens toppfelt. Jeg hadde altså endret kode som eksisterte, men ikke den eksekveringsstien brukeren faktisk så. Da toppfeltet ble korrigert, ble endringen synlig med en gang.
+
+I samme runde oppstod en regresjon fordi Samtaleøvelse-logoen/illustrasjonen ble forenklet bort til fordel for et funksjonelt ikon. Dette var teknisk ryddig, men visuelt feil for produktet. Brukeren oppdaget at merkevareidentiteten var blitt svakere. Jeg skilte derfor tydeligere mellom navigasjonsikonet, som forklarer funksjon, og den større illustrasjonen, som bygger produktidentitet. Illustrasjonen ble gjeninnført, beskåret for mobil og gjort klikkbar slik at den kan vises større.
+
+PWA-funksjonen ble også testet fysisk på Samsung-mobil. Da piloten ble åpnet i Chrome og installert som webapp, startet den i standalone-visning uten vanlig nettlesergrensesnitt. Dette ga et mer app-lignende uttrykk uten at prosjektet måtte pakkes som en separat Android-app. Manifest, rasterikoner, service worker og installasjonsveiledning ble derfor behandlet som en del av den faktiske leveransen i v20.11.0, ikke bare som et teknisk eksperiment.
+
+Denne feilsøkingen er et konkret eksempel på Context Engineering i praksis. KI-assistenten hadde mye korrekt kontekst om prosjektet, men handlet først ut fra en feil antakelse om hvilket DOM-/CSS-element som var aktivt på mobil. Læringen var at kontekst ikke bare handler om å huske krav; den må også inneholde den faktiske runtime-stien. Ved responsiv utvikling må jeg derfor kontrollere hvilken komponent som faktisk renderes på den aktuelle skjermbredden, og ved PWA må jeg kontrollere både kildekode, service worker/cache og fysisk nettleseratferd. Dette er også et eksempel på hvorfor brukerens direkte observasjon kan være et viktigere signal enn at en teknisk deploy ser vellykket ut.
