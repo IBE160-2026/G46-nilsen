@@ -13,8 +13,9 @@ assert(html.includes('id="survey-view"') && /id="survey-view"[\s\S]*?utility-pag
 assert(/width:\s*42px\s*!important/.test(css), 'Minimert ikon er ikke gjort større');
 assert(/transform:\s*translateY\(-4px\)/.test(css), 'Minimert ikon er ikke hevet');
 assert(/font-weight:\s*600\s*!important/.test(css), 'Accordion-overskrifter er ikke tonet ned');
-assert(!/<details[^>]*\sopen(?:\s|>|=)/.test(html), 'En eller flere details er åpne som standard');
-console.log('v20.10.10 UI-kontroll: OK');
+const openDetails = [...html.matchAll(/<details\b[^>]*\sopen(?:\s|>|=)[^>]*>/g)].map(match => match[0]);
+assert(openDetails.every(tag => tag.includes('id="install-app-card"')), 'Bare installasjonskortet skal være åpent som standard');
+console.log('v20.11.0 UI-kontroll: OK');
 
 
 
