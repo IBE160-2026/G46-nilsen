@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.10.10" />
+  <link rel="stylesheet" href="styles.css?v=20.11.1" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -20,6 +20,10 @@
       <div class="sidebar-top">
         <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
           <img class="brand-logo" src="assets/images/logo.png" alt="Samtalestøtte" />
+          <span class="brand-mobile-lockup" aria-hidden="true">
+            <img class="brand-mobile-symbol" src="assets/images/logo-symbol.png" alt="" />
+            <span class="brand-mobile-word"><span>Samtale</span><span>støtte</span></span>
+          </span>
         </button>
       </div>
       <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Skjul sidemeny" title="Skjul sidemeny">
@@ -356,9 +360,12 @@
       <!-- SAMTALESIMULERING -->
       <section id="simulation-view" class="view simulation-view">
         <div class="simulation-hub-hero">
-          <div>
+          <div class="simulation-hub-copy">
             <span class="eyebrow">SAMTALEØVELSE · BETA</span>
-            <h1 data-content-key="simulation.hero.title">Øv på krevende samtaler</h1>
+            <div class="simulation-hub-title-row">
+              <span class="collapsed-page-icon simulation-heading-icon" id="simulation-heading-icon" aria-hidden="true"></span>
+              <h1 data-content-key="simulation.hero.title">Øv på krevende samtaler</h1>
+            </div>
             <p data-content-key="simulation.hero.intro">Tren i et eget samtalerom. Du er leder, KI-en spiller medarbeideren. Start fra en sak du allerede jobber med, eller gå rett inn i en ny øvelse.</p>
           </div>
           <div class="simulation-logo-crop" aria-hidden="true">
@@ -520,7 +527,7 @@
       <section id="settings-view" class="view">
         <button class="back-link" id="back-from-settings" type="button">← Tilbake til hjem</button>
         <div class="content-header utility-header compact-utility-header">
-          <div class="utility-header-copy"><span class="eyebrow">INNSTILLINGER</span><div class="utility-title-row"><h1>Innstillinger</h1><span class="collapsed-page-icon" data-page-icon="settings" aria-hidden="true"></span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Tilpass utseende, konto og personvernvalg.</p></div>
+          <div class="utility-header-copy"><span class="eyebrow">INNSTILLINGER</span><div class="utility-title-row"><span class="collapsed-page-icon" data-page-icon="settings" aria-hidden="true"></span><h1>Innstillinger</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Tilpass utseende, konto og personvernvalg.</p></div>
         </div>
         <details class="settings-card utility-accordion">
           <summary>Utseende</summary>
@@ -576,7 +583,7 @@
       <section id="history-view" class="view">
         <button class="back-link" id="back-from-history" type="button">← Tilbake til hjem</button>
         <div class="content-header history-header utility-header">
-          <div class="utility-header-copy"><span class="eyebrow">DIN KONTO</span><div class="utility-title-row"><h1>Samtalehistorikk</h1><span class="collapsed-page-icon" data-page-icon="history" aria-hidden="true"></span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Her finner du samtalene du har valgt å lagre. Du kan åpne eller slette dem når du vil.</p></div>
+          <div class="utility-header-copy"><span class="eyebrow">DIN KONTO</span><div class="utility-title-row"><span class="collapsed-page-icon" data-page-icon="history" aria-hidden="true"></span><h1>Samtalehistorikk</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Her finner du samtalene du har valgt å lagre. Du kan åpne eller slette dem når du vil.</p></div>
         </div>
         <div id="history-logged-out" class="settings-card">
           <h2>Logg inn for historikk</h2>
@@ -592,7 +599,7 @@
       <!-- PERSONVERNERKLÆRING -->
       <section id="privacy-view" class="view legal-view">
         <button class="back-link legal-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">PERSONVERN</span><div class="utility-title-row"><h1>Personvernerklæring</h1><span class="collapsed-page-icon" data-page-icon="privacy" aria-hidden="true"></span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Slik behandler Samtalestøtte opplysninger i betaversjonen.</p></div></div>
+        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">PERSONVERN</span><div class="utility-title-row"><span class="collapsed-page-icon" data-page-icon="privacy" aria-hidden="true"></span><h1>Personvernerklæring</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Slik behandler Samtalestøtte opplysninger i betaversjonen.</p></div></div>
         <article class="legal-document">
           <h2>Hvilke opplysninger lagres?</h2><p>Når du oppretter konto lagres valgt brukernavn, e-postadresse og teknisk informasjon som er nødvendig for sikker innlogging. Passord lagres ikke i klartekst.</p>
           <h2>Hvorfor lagres opplysningene?</h2><p>Opplysningene brukes for å opprette og administrere kontoen, gi tilgang til samtalehistorikk og la deg logge inn igjen. Du trenger ikke bruke ditt virkelige navn som brukernavn.</p>
@@ -609,7 +616,7 @@
 
       <section id="terms-view" class="view legal-view">
         <button class="back-link legal-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">VILKÅR</span><div class="utility-title-row"><h1>Bruksvilkår</h1><span class="collapsed-page-icon" data-page-icon="terms" aria-hidden="true"></span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Rammer for trygg bruk av Samtalestøtte.</p></div></div>
+        <div class="content-header utility-header"><div class="utility-header-copy"><span class="eyebrow">VILKÅR</span><div class="utility-title-row"><span class="collapsed-page-icon" data-page-icon="terms" aria-hidden="true"></span><h1>Bruksvilkår</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Rammer for trygg bruk av Samtalestøtte.</p></div></div>
         <article class="legal-document">
           <h2>Brukerens ansvar</h2><p>Du er ansvarlig for innholdet du legger inn og for å følge eventuell taushetsplikt, sikkerhetsinstruks og arbeidsgivers interne regler.</p>
           <h2>Anonymiser så langt som mulig</h2><p>Unngå navn, kontaktinformasjon, fødselsdato, personnummer og andre unødvendige identifiserende opplysninger. Bruk rollebeskrivelser som «medarbeideren». Behold bare arbeidskontekst som er nødvendig for relevante råd.</p>
@@ -624,7 +631,7 @@
       <section id="about-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
         <div class="content-header utility-header compact-utility-header">
-          <div class="utility-header-copy"><span class="eyebrow">OM TJENESTEN</span><div class="utility-title-row"><h1>Om Samtalestøtte</h1><span class="collapsed-page-icon" data-page-icon="about" aria-hidden="true"></span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>En KI-basert prototype for forberedelse, refleksjon og trening før krevende medarbeidersamtaler.</p></div>
+          <div class="utility-header-copy"><span class="eyebrow">OM TJENESTEN</span><div class="utility-title-row"><span class="collapsed-page-icon" data-page-icon="about" aria-hidden="true"></span><h1>Om Samtalestøtte</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>En KI-basert prototype for forberedelse, refleksjon og trening før krevende medarbeidersamtaler.</p></div>
         </div>
         <div class="about-stack">
           <section class="settings-card about-section"><h2>Hva Samtalestøtte er</h2><p>Samtalestøtte er utviklet for ledere som skal forberede og øve på krevende medarbeidersamtaler. Løsningen gir strukturert støtte gjennom blant annet forslag til spørsmål og formuleringer, refleksjon og samtaleøvelse.</p></section>
@@ -643,7 +650,7 @@
            ================================================== -->
       <section id="admin-view" class="view admin-view">
         <button class="back-link" id="back-from-admin" type="button">← Tilbake til hjem</button>
-        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">ADMINISTRASJON</span><div class="utility-title-row"><h1>Admin og innhold</h1><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="admin" aria-hidden="true">A</span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Administrer innhold, tilgang, KI, kostnader og testing.</p><small class="admin-role-note">Tilgang: <span id="admin-current-role">–</span></small></div></div>
+        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">ADMINISTRASJON</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="admin" aria-hidden="true">A</span><h1>Admin og innhold</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Administrer innhold, tilgang, KI, kostnader og testing.</p><small class="admin-role-note">Tilgang: <span id="admin-current-role">–</span></small></div></div>
         <div class="admin-grid">
           <details class="settings-card utility-accordion admin-panel admin-content-card" id="admin-content-editor"><summary>Rediger innhold</summary><div class="admin-section-fields"><p>Tema- og undertematekster kan endres uten å endre den interne KI-logikken.</p><div class="admin-unsaved" id="admin-unsaved-indicator" hidden>Ulagrede endringer</div><form id="admin-content-form" class="admin-content-form"><div id="admin-content-fields"></div><div class="admin-actions admin-sticky-actions"><button class="primary-button" id="admin-save-content" type="submit" disabled>Lagre endringer</button><button class="secondary-button" id="admin-reload-content" type="button">Last inn på nytt</button></div><div class="auth-message" id="admin-content-message" aria-live="polite"></div></form></div></details>
           <details class="settings-card utility-accordion admin-panel" id="admin-users-card"><summary>Brukere og roller</summary><div class="admin-section-fields"><p><strong>Bruker</strong> bruker appen. <strong>Redaktør</strong> kan endre innhold. <strong>Admin</strong> kan i tillegg administrere roller.</p><div id="admin-users-list" class="admin-users-list"><div class="history-empty">Henter brukere …</div></div><div class="auth-message" id="admin-users-message" aria-live="polite"></div></div></details>
@@ -667,7 +674,7 @@
            ================================================== -->
       <section id="survey-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">KORT BRUKERTEST</span><div class="utility-title-row"><h1>Hvordan fungerte Samtalestøtte?</h1><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="survey" aria-hidden="true">✓</span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Samtalestøtte er utviklet som del av et skoleprosjekt i Programmering med KI ved Høgskolen i Molde. Testen tar omtrent 2 minutter, og svarene lagres uten navn eller direkte kobling til kontoen din.</p></div></div>
+        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">KORT BRUKERTEST</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="survey" aria-hidden="true">✓</span><h1>Hvordan fungerte Samtalestøtte?</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Samtalestøtte er utviklet som del av et skoleprosjekt i Programmering med KI ved Høgskolen i Molde. Testen tar omtrent 2 minutter, og svarene lagres uten navn eller direkte kobling til kontoen din.</p></div></div>
         <div id="survey-closed-message" class="settings-card survey-state-card" hidden><h2>Brukertesten er avsluttet</h2><p>Skjemaet er ikke lenger åpent for nye svar.</p></div>
         <div id="survey-completed-message" class="settings-card survey-state-card" hidden><h2>Brukertesten er sendt inn</h2><p>Takk! Svaret ditt er registrert. Brukertesten kan bare sendes inn én gang per konto. Dersom du har flere kommentarer eller forslag, bruk kontaktskjemaet.</p><button class="secondary-button" type="button" data-open-info="contact">Gå til Kontakt</button></div>
         <form id="survey-form" class="settings-card survey-form">
@@ -691,7 +698,7 @@
            ================================================== -->
       <section id="contact-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">KONTAKT</span><div class="utility-title-row"><h1>Kontakt</h1><span class="collapsed-page-icon" data-page-icon="contact" aria-hidden="true"></span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Send en kort feilrapport eller tilbakemelding. Unngå personopplysninger.</p></div></div>
+        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">KONTAKT</span><div class="utility-title-row"><span class="collapsed-page-icon" data-page-icon="contact" aria-hidden="true"></span><h1>Kontakt</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Send en kort feilrapport eller tilbakemelding. Unngå personopplysninger.</p></div></div>
         <div class="contact-compact-row"><span id="contact-email-status">Henter kontaktinformasjon …</span><a class="text-button contact-email-link" id="contact-email-link" href="#" hidden>Send e-post</a></div>
         <form class="settings-card report-form compact-report-form" id="report-form">
           <h2>Rapporter feil eller gi tilbakemelding</h2>
@@ -709,7 +716,7 @@
            ================================================== -->
       <section id="help-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><h1>Hjelp og faglige ressurser</h1><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Kort brukerveiledning og utvalgte offentlige kilder som kan være relevante når du trenger mer informasjon.</p></div></div>
+        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp og faglige ressurser</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Kort brukerveiledning og utvalgte offentlige kilder som kan være relevante når du trenger mer informasjon.</p></div></div>
         <div class="help-grid">
          <details class="settings-card utility-accordion">
   <summary>Slik bruker du Samtalestøtte</summary>
@@ -962,6 +969,6 @@
   <script src="src/privacy-name-data.js?v=20.10.10"></script>
   <script src="src/privacy-detector.js?v=20.10.10"></script>
   <script src="src/client-data.js?v=20.10.10"></script>
-  <script src="app.js?v=20.10.10"></script>
+  <script src="app.js?v=20.11.1"></script>
 </body>
 </html>
