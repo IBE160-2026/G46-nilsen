@@ -1054,7 +1054,7 @@ html[data-theme="dark"] .brand-logo {
 
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   .app-shell,.app-shell.sidebar-collapsed-layout {
     grid-template-columns: 72px 1fr;
   }
@@ -2093,7 +2093,7 @@ textarea[aria-invalid="true"] {
   text-transform: uppercase;
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   .situation-understanding .understanding-heading {
     align-items: flex-start;
   }
@@ -6441,7 +6441,7 @@ html[data-theme="dark"] .utility-page-logo {
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width:640px) {
   .app-shell.sidebar-collapsed-layout {
     grid-template-columns: 72px minmax(0, 1fr) !important;
   }
@@ -6460,7 +6460,7 @@ html[data-theme="dark"] .utility-page-logo {
   display: none;
 }
 
-@media (max-width: 700px) {
+@media (max-width:640px) {
   .app-shell,
   .app-shell.sidebar-collapsed-layout,
   .app-shell:not(.sidebar-collapsed-layout) {
@@ -6729,7 +6729,7 @@ html[data-theme="dark"] .utility-page-logo {
 
 
 /* MOBILE HYBRID NAV + COMPACT VISUAL IDENTITY */
-@media (max-width: 700px) {
+@media (max-width:640px) {
   .mobile-theme-cycle {
     border: 0;
     background: transparent;
@@ -6826,7 +6826,7 @@ html[data-theme="dark"] .utility-page-logo {
   display: none;
 }
 
-@media (max-width: 700px) {
+@media (max-width:640px) {
   .install-app-body {
     grid-template-columns: 58px minmax(0,1fr);
     gap: 12px;
@@ -6872,7 +6872,7 @@ html[data-theme="dark"] .utility-page-logo {
   stroke-linejoin: round;
 }
 
-@media (max-width: 700px) {
+@media (max-width:640px) {
   /* Tema flyttes ut av bunnnavigasjonen og opp ved profilen. */
   .topbar-mobile-theme {
     width: 36px;
@@ -7057,7 +7057,7 @@ html[data-theme="dark"] .utility-page-logo {
   }
 }
 
-@media (max-width: 700px) {
+@media (max-width:640px) {
   /* Sidebar logo: symbol stays compact while the name becomes readable. */
   .sidebar.sidebar-collapsed .brand-logo {
     display: none !important;
@@ -7241,7 +7241,7 @@ html[data-theme="dark"] .utility-page-logo {
   display: none;
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   .topbar-left .topbar-brand-logo {
     display: none !important;
   }
@@ -7335,7 +7335,7 @@ html[data-theme="dark"] .utility-page-logo {
   background: color-mix(in srgb,var(--accent-soft) 25%,var(--surface));
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   /* Bruk plassen i topplinjen bedre: større merke, breadcrumb er overflødig på mobil. */
   .topbar-left {
     flex: 1 1 auto !important;
@@ -7587,7 +7587,7 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
   display: none !important;
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   .topbar {
     min-height: 66px !important;
     height: 66px !important;
@@ -7728,7 +7728,7 @@ html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
   content: normal;
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   .mobile-nav-ai-glyph img {
     width: 22px;
     height: 22px;
@@ -7881,7 +7881,7 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
   line-height: 1.45;
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   #structured-guidance.guidance-grid {
     gap: 8px;
     margin-top: 14px;
@@ -8001,7 +8001,7 @@ html[data-theme="hybrid"] .simulation-avatar img {
     drop-shadow(0 2px 7px rgba(0,0,0,.18)) !important;
 }
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   #structured-guidance .guidance-card {
     grid-template-columns: 25px minmax(0,1fr) !important;
     column-gap: 8px !important;
@@ -8090,7 +8090,7 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
 
 /* MOBILE NAV AUTO HIDE 2026-10-29 */
 
-@media (max-width:700px) {
+@media (max-width:640px) {
   .mobile-bottom-nav {
     transition:
       transform .22s ease,
@@ -8202,7 +8202,7 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
 }
 
 /* BRAND VISIBILITY PATCH: keep simulation illustration distinct from site brand */
-@media (max-width:700px) {
+@media (max-width:640px) {
   #simulation-view .simulation-hub-hero > .simulation-logo-crop {
     display: flex !important;
     width: 112px !important;
@@ -8228,5 +8228,75 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
   html[data-theme="dark"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img,
   html[data-theme="hybrid"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img {
     content: normal !important;
+  }
+}
+
+
+/* v20.11.1 DESKTOP / TABLET RESPONSIVE NORMALIZATION
+   Mobile mode starts at 640px. Keep Samtaleøvelse visually stable above that. */
+@media (min-width:641px) {
+  #simulation-view .simulation-hub-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) clamp(150px,14vw,200px) !important;
+    align-items: center !important;
+    gap: clamp(16px,2vw,28px) !important;
+  }
+
+  #simulation-view .simulation-hub-copy {
+    display: block !important;
+    min-width: 0;
+  }
+
+  #simulation-view .simulation-logo-crop {
+    display: flex !important;
+    width: clamp(150px,14vw,200px) !important;
+    max-width: 200px !important;
+    height: clamp(126px,12vw,164px) !important;
+    min-height: 126px !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
+    justify-self: end !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 20px !important;
+    border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border)) !important;
+    background: color-mix(in srgb,var(--surface) 88%,var(--accent-soft)) !important;
+  }
+
+  #simulation-view .simulation-logo-crop img,
+  html[data-theme="light"] #simulation-view .simulation-logo-crop img,
+  html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
+  html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
+    content: normal !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border: 0 !important;
+    border-radius: 18px !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+}
+
+@media (min-width:641px) and (max-width:900px) {
+  #simulation-view .simulation-hub-hero {
+    grid-template-columns: minmax(0,1fr) 150px !important;
+  }
+
+  #simulation-view .simulation-logo-crop {
+    width: 150px !important;
+    height: 126px !important;
+  }
+
+  #simulation-view .simulation-launch-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  #simulation-view .simulation-launch-card {
+    min-height: 150px !important;
   }
 }
