@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "verifiedAt": "2026-10-29",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -22,7 +22,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": true
     },
     {
       "id": "LOVDATA_AML",
@@ -44,7 +45,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "law_database"
+      "sourceType": "law_database",
+      "contextualOnly": true
     },
     {
       "id": "AT_RULES",
@@ -75,7 +77,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "UDIR_SCHOOL_RULES",
@@ -94,7 +97,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "UDIR_KINDERGARTEN_RULES",
@@ -113,7 +117,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "HDIR_HEALTH_PERSONNEL",
@@ -132,7 +137,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
@@ -152,7 +158,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "FISKERIDIR_AQUACULTURE",
@@ -172,7 +179,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "SDIR_RULES",
@@ -191,7 +199,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "SDIR_LAWS",
@@ -208,7 +217,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "VEGVESEN_DRIVING_REST",
@@ -226,7 +236,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "DSB_ELECTRICAL_SAFETY",
@@ -248,7 +259,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "HAVTIL_RULES_PDF",
@@ -267,7 +279,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "FINANSTILSYNET_RULES",
@@ -287,7 +300,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "LANDBRUK_REGELVERK",
@@ -306,7 +320,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "MATTILSYNET_DYREVELFERD",
@@ -326,7 +341,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "LUFTFART_RULES",
@@ -344,7 +360,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "LUFTFART_FTL",
@@ -363,7 +380,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "DATATILSYNET_WORKPLACE_PRIVACY",
@@ -394,7 +412,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": true
     },
     {
       "id": "HELSETILSYNET_RULES",
@@ -414,7 +433,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "ADVOKATTILSYNET_PROFESSION",
@@ -435,7 +455,8 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
-      "sourceType": "official_authority"
+      "sourceType": "official_authority",
+      "contextualOnly": false
     }
   ],
   "validationRules": {
