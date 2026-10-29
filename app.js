@@ -374,6 +374,62 @@ function highlightTopicCard(topicId) {
   });
 }
 
+const representationSubtopicMap = Object.freeze({
+  'alkohol-rus': [[0,1,3],[2,4],[5]],
+  'fravaer-oppfolging': [[0,2,3],[1,4],[5]],
+  'prestasjon-utvikling': [[0,2],[1,3,5],[4]],
+  'lonn-utvikling': [[0,1],[2],[3]],
+  'samarbeid-kommunikasjon': [[0],[1,2,3],[4]],
+  'avslutning-arbeidsforhold': [[0,1],[2,3],[4,5]],
+  'sikkerhet-ansvar': [[0],[1],[2,3]],
+  'livssituasjoner': [[0,2],[1,3],[4]],
+  'mobbing-trakassering': [[0,1],[2,3],[4,5]]
+});
+
+function clearRepresentationFilter({ scroll = false } = {}) {
+  document.querySelectorAll('.representation-chip').forEach(button => {
+    button.classList.remove('active');
+    button.setAttribute('aria-pressed', 'false');
+  });
+  document.querySelectorAll('#subtopic-grid .subtopic-card').forEach(card => {
+    card.hidden = false;
+    card.classList.remove('representation-match');
+  });
+  const status=document.querySelector('#representation-filter-status');
+  if(status) status.textContent='';
+  if(scroll){
+    document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+}
+
+function applyRepresentationFilter(topic, representationIndex, button) {
+  const mapping = representationSubtopicMap[topic.id]?.[representationIndex] || [];
+  const alreadyActive = button.classList.contains('active');
+
+  clearRepresentationFilter();
+  if (alreadyActive) {
+    document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    return;
+  }
+
+  button.classList.add('active');
+  button.setAttribute('aria-pressed', 'true');
+
+  document.querySelectorAll('#subtopic-grid .subtopic-card').forEach((card, index) => {
+    const matches = mapping.includes(index);
+    card.hidden = !matches;
+    card.classList.toggle('representation-match', matches);
+  });
+
+  const label = topic.representations?.[representationIndex] || '';
+  const status=document.querySelector('#representation-filter-status');
+  if(status) status.textContent = `Viser relevante undertemaer for «${label}». Trykk samme hurtigvalg igjen for å vise alle.`;
+
+  requestAnimationFrame(() => {
+    document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+}
+
 function openTopic(topic, preservedSituation = '') {
   currentTopic = topic;
   const carriedSituation = String(preservedSituation || pendingSituationText || document.querySelector('#topic-search')?.value || '').trim();
@@ -383,7 +439,7 @@ function openTopic(topic, preservedSituation = '') {
   document.querySelector('#topic-description').textContent = contentValue(`topic.${topic.id}.description`, topic.description);
   document.querySelector('#topic-page-icon').innerHTML = svgIcons[topic.iconKey];
   document.querySelector('#topic-representations').innerHTML = topic.representations
-    .map((item,index) => `<span class="representation-chip">${escapeHtml(contentValue(`topic.${topic.id}.representation.${index}`, item))}</span>`).join('');
+    .map((item,index) => `<button type="button" class="representation-chip" data-representation-index="${index}" aria-pressed="false">${escapeHtml(contentValue(`topic.${topic.id}.representation.${index}`, item))}</button>`).join('');
 
   const topicHeroImage = document.querySelector('.topic-hero-visual img');
   if (topicHeroImage) {
@@ -413,6 +469,15 @@ function openTopic(topic, preservedSituation = '') {
     button.addEventListener('click', () => openGuidance(title, help, carriedSituation));
     grid.appendChild(button);
   });
+
+  document.querySelectorAll('#topic-representations .representation-chip').forEach(button => {
+    button.addEventListener('click', () => {
+      applyRepresentationFilter(topic, Number(button.dataset.representationIndex), button);
+    });
+  });
+
+  const representationStatus=document.querySelector('#representation-filter-status');
+  if(representationStatus) representationStatus.textContent='';
 
   showView('topic');
 }
