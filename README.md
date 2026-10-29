@@ -1,6 +1,6 @@
 ﻿# Samtalestøtte
 
-**Gjeldende produksjonsversjon:** 20.11.0 · 29.10.2026  
+**Gjeldende produksjonsversjon:** 20.11.1 · 29.10.2026  
 
 Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Løsningen er utviklet som del av IBE160 Programmering med KI ved Høgskolen i Molde.
 
@@ -168,6 +168,8 @@ npm run dev
 Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 
 ## Produksjonsrelease 20.11.0 – mobil og PWA
+
+**Patch 20.11.1:** desktop/tablet-responsiviteten ble justert etter produksjonskontroll. Ekte mobilmodus starter nå ved 640 CSS-piksler, Samtaleøvelse beholder to-kolonneoppsett lenger på PC/nettbrett, og samme KI-illustrasjon brukes i lys, hybrid og mørk visning.
 
 Pilotarbeidet 29.10.2026 viste at mobil måtte behandles som en reell brukerflate, ikke bare som en nedskalert desktopvisning. Versjon 20.11.0 samler derfor mobil-first UX, PWA-installasjon og merkevareforbedringer i én produksjonsrelease.
 
