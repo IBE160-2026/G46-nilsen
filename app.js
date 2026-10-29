@@ -151,7 +151,11 @@ function activeViewName() {
 function saveCurrentHistoryScroll() {
   const state = history.state;
   if (!state?.samtalestotte) return;
-  history.replaceState({ ...state, scrollY: Math.max(0, window.scrollY) }, '');
+  history.replaceState({
+    ...state,
+    scrollY: Math.max(0, window.scrollY),
+    breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
+  }, '');
 }
 
 function showView(name, options = {}) {
@@ -172,7 +176,8 @@ function showView(name, options = {}) {
       samtalestotte: true,
       view: name,
       appDepth: currentDepth + 1,
-      scrollY: 0
+      scrollY: 0,
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
     }, '');
   } else if (historyMode === 'replace') {
     const currentDepth = Number(history.state?.appDepth || 0);
@@ -180,7 +185,8 @@ function showView(name, options = {}) {
       samtalestotte: true,
       view: name,
       appDepth: currentDepth,
-      scrollY: 0
+      scrollY: 0,
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
     }, '');
   }
 
@@ -219,6 +225,7 @@ function navigateAppBack(fallback) {
 window.addEventListener('popstate', event => {
   const state = event.state;
   if (!state?.samtalestotte || !views[state.view]) return;
+  setBreadcrumb(state.breadcrumb || '');
   showView(state.view, {
     historyMode: 'none',
     restoreScroll: state.scrollY ?? 0
@@ -2024,7 +2031,8 @@ history.replaceState({
   samtalestotte: true,
   view: activeViewName(),
   appDepth: 0,
-  scrollY: Math.max(0, window.scrollY)
+  scrollY: Math.max(0, window.scrollY),
+  breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
 }, '');
 
 document.querySelectorAll('[data-theme]').forEach(button => {
