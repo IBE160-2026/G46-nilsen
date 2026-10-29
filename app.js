@@ -57,6 +57,10 @@ function renderStaticIcons() {
   const adminIcon=document.querySelector('#nav-admin-icon'); if(adminIcon) adminIcon.textContent='A';
   setSvg('sidebar-message-icon', svgIcons.team);
   setSvg('simulation-heading-icon', svgIcons.simulation);
+  setSvg('mobile-nav-home-icon', svgIcons.home);
+  setSvg('mobile-nav-simulation-icon', svgIcons.simulation);
+  setSvg('mobile-nav-history-icon', svgIcons.history);
+  setSvg('mobile-nav-settings-icon', svgIcons.settings);
 
   const pageIconMap = {
     settings: svgIcons.settings,
@@ -2757,7 +2761,7 @@ function updateInstallAppUi(){
     status.textContent='iOS viser ikke den samme installasjonsdialogen som Chrome/Edge.';
   }else{
     if(iosHelp) iosHelp.hidden=true;
-    status.textContent='Hvis nettleseren støtter appinstallasjon, vises installasjonsknappen automatisk her.';
+    status.textContent='Hvis installasjonsknappen ikke vises, åpne nettlesermenyen og velg «Installer app» eller «Legg til på startskjermen».';
   }
 }
 
@@ -2787,7 +2791,7 @@ document.querySelector('#install-app-button')?.addEventListener('click', async (
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.2', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.4', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
