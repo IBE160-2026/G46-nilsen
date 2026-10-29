@@ -54,6 +54,21 @@ for (const tc of benchmark.cases || []) {
   caseIds.add(tc.id);
   if (tc.sector && tc.sector !== "other") {
     assert(sectorIds.has(tc.sector), `${tc.id}: ukjent sektor ${tc.sector}`);
+
+    const sector = map.sectors.find(item => item.id === tc.sector);
+    const allowedAuthorities = new Set([
+      ...(sector.primaryAuthorities || []).map(item => item.label),
+      ...registry.sources
+        .filter(source => (source.sectors || []).includes("*") || (source.sectors || []).includes(tc.sector))
+        .map(source => source.authority)
+    ]);
+
+    for (const authority of tc.expectedAuthorities || []) {
+      assert(
+        allowedAuthorities.has(authority),
+        `${tc.id}: forventet myndighet "${authority}" er ikke registrert for ${tc.sector}`
+      );
+    }
   }
   assert.strictEqual(typeof tc.occupationRelevant, "boolean", `${tc.id}: occupationRelevant mangler`);
   assert.strictEqual(typeof tc.webRequired, "boolean", `${tc.id}: webRequired mangler`);
