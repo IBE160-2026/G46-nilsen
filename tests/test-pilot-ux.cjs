@@ -17,5 +17,6 @@ assert(css.includes('.mobile-bottom-nav'), 'Mobilnavigasjon mangler CSS');
 assert(css.includes('display: none !important;') && css.includes('.sidebar,'), 'Mobil skal skjule desktop-sidefeltet');
 assert(backlog.includes('## 12. Voice / tale i samtaleøvelsen'), 'Voice-funn mangler i brukertestbackloggen');
 assert(fs.existsSync('docs/VERSJONSSTRATEGI.md'), 'Versjonsstrategi mangler');
+assert(fs.existsSync('docs/VOICE-DESIGN.md'), 'Voice-design mangler');
 
 console.log('Pilot UX v20.11: begreper, mobil, voice-backlog og versjonsstrategi OK');
