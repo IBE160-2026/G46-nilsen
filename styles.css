@@ -8118,3 +8118,65 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
     transition: none !important;
   }
 }
+
+
+/* CLICKABLE TOPIC REPRESENTATIONS 2026-10-29 */
+
+.representation-chip {
+  appearance: none;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform .16s ease,
+    background .16s ease,
+    border-color .16s ease,
+    box-shadow .16s ease;
+}
+
+.representation-chip:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb,var(--accent) 48%,var(--border));
+  box-shadow: 0 4px 12px rgba(15,68,87,.08);
+}
+
+.representation-chip:focus-visible {
+  outline: 3px solid color-mix(in srgb,var(--accent) 38%,transparent);
+  outline-offset: 2px;
+}
+
+.representation-chip.active,
+.representation-chip[aria-pressed="true"] {
+  color: var(--surface);
+  background: var(--accent-strong);
+  border-color: var(--accent-strong);
+  box-shadow: 0 5px 14px rgba(15,68,87,.14);
+}
+
+.representation-filter-status {
+  min-height: 1.2em;
+  margin: 8px 0 0;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.4;
+}
+
+.subtopic-card.representation-match {
+  border-color: color-mix(in srgb,var(--accent) 42%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 40%,var(--surface));
+}
+
+@media (max-width:760px) {
+  .topic-representations {
+    gap: 7px;
+  }
+
+  .representation-chip {
+    min-height: 38px;
+    padding: 8px 11px;
+    text-align: left;
+  }
+
+  .representation-filter-status {
+    font-size: .76rem;
+  }
+}
