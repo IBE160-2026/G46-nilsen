@@ -4,7 +4,7 @@
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
 **Status:** Revidert UX-spesifikasjon med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.1  
+**Versjon ved dokumentasjon:** 20.11.2  
 **Språk:** Norsk
 
 ---
@@ -992,3 +992,10 @@ Et viktig pilotfunn var at en teknisk endring kan treffe feil responsiv komponen
 ## Hotfix 20.11.1 – grense mellom desktop/tablet og mobil
 
 Produksjonskontroll viste at responsiviteten skiftet for tidlig til et mobilpreget uttrykk på smale PC-vinduer. Hovedgrensen for mobilmodus er derfor satt til 640 CSS-piksler. Over denne bredden skal Samtaleøvelse beholde desktop/tablet-hierarki med bilde ved siden av teksten, og i 641–900 px brukes to kolonner i startvalgene fremfor én ren mobilkolonne. Samme KI-illustrasjon brukes i alle fargetemaer.
+
+
+## Hotfix 20.11.2 – kompakt desktop-topplinje
+
+Mellombredder behandles nå eksplisitt som kompakt desktop i stedet for å presses inn i enten full desktop eller mobil. I 641–1500 CSS-piksler får toppfeltet strengere plassfordeling mellom logo, breadcrumb, temavelger, ny samtale og profil. I 641–1100 kan toppfeltet bruke to rader, men beholder desktopnavigasjon og full brukerprofil.
+
+Målet er at innhold ikke skal overlappe eller forsvinne når et PC-vindu er omtrent halvstort, samtidig som mobilmodus fortsatt først starter ved 640 CSS-piksler.
