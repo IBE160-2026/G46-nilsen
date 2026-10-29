@@ -1,3 +1,12 @@
+# v20.11.3 – høyrejustert profil og bedre luft i topplinjen
+
+- Brukerprofilen er forankret til høyre kant også i kompakt desktopvisning.
+- Profilområdet tilpasser bredde med ellipsis uten å flyttes unødvendig mot venstre.
+- Temavelgeren får ekstra venstrebuffer slik at den ikke ligger opp mot sidefeltknappen.
+- Kompakt desktop beholder desktopnavigasjon og responderer uten å bli mobilvisning.
+- Versjon, cache og regresjonstester er synkronisert til 20.11.3.
+
+---
 # v20.11.2 – kompakt desktop-topplinje og ryddige Finn tema-felter
 
 - Rettet overlapping mellom Samtalestøtte-logo og breadcrumb på halvstore desktopvinduer.
