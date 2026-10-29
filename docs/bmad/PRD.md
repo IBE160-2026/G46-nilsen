@@ -4,7 +4,7 @@
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert PRD med leveransestatus  
-**Versjon ved dokumentasjon:** 20.10.3  
+**Versjon ved dokumentasjon:** 20.10.9  
 **Språk:** Norsk
 
 ---
@@ -116,7 +116,7 @@ Leveransen støtter ni hovedtemaer:
 3. Prestasjon og utvikling
 4. Lønn og utvikling
 5. Samarbeid og kommunikasjon
-6. Avslutning av arbeidsforhold
+6. Oppsigelse og avslutning av arbeidsforhold
 7. Sikkerhet og ansvar
 8. Livssituasjoner
 9. Mobbing og trakassering
