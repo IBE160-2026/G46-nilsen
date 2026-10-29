@@ -1,0 +1,65 @@
+const fs = require("fs");
+const assert = require("assert");
+
+(async () => {
+  const benchmark = JSON.parse(fs.readFileSync("data/OCCUPATION-BENCHMARK-CASES.json", "utf8"));
+  const map = JSON.parse(fs.readFileSync("data/OCCUPATION-SOURCE-MAP.json", "utf8"));
+  const registry = JSON.parse(fs.readFileSync("data/OCCUPATION-LEGAL-SOURCES.json", "utf8"));
+  const router = await import("../src/server/occupation-router.js");
+
+  assert.strictEqual(map.selectionPolicy.occupationOptional, true, "Yrke skal være valgfritt");
+  assert(map.sectors.some(s => s.id === "other" && s.freeText), "Annet med fritekst mangler");
+  assert(registry.sources.length >= 10, "For få autoritative regelverkskilder");
+
+  const noSelection = router.resolveOccupationContext({
+    topic: "Livssituasjoner",
+    subtopic: "Samlivsbrudd",
+    situation: "En medarbeider går gjennom et samlivsbrudd."
+  });
+  assert.strictEqual(noSelection.selected, false);
+  assert.strictEqual(noSelection.occupationRelevant, false);
+  assert.deepStrictEqual(noSelection.sourceIds, []);
+
+  const salmon = router.classifyOccupationLocally("lakseoppdrett");
+  assert.strictEqual(salmon.matched, true);
+  assert.strictEqual(salmon.sectorId, "aquaculture_fisheries_maritime");
+
+  const unknown = router.classifyOccupationLocally("bibliotekar");
+  assert.strictEqual(unknown.matched, false);
+
+  let checked = 0;
+  for (const tc of benchmark.cases || []) {
+    const result = router.resolveOccupationContext({
+      occupation: tc.occupation,
+      sectorId: tc.sector === "other" ? null : tc.sector,
+      topic: tc.topic,
+      subtopic: tc.subtopic,
+      situation: tc.situation
+    });
+
+    assert.strictEqual(
+      result.occupationRelevant,
+      tc.occupationRelevant,
+      `${tc.id}: feil vurdering av om yrke er relevant`
+    );
+
+    if (tc.expectedRouting?.sector) {
+      assert.strictEqual(result.sectorId, tc.expectedRouting.sector, `${tc.id}: feil lokal sektor-ruting`);
+    }
+
+    if (!tc.occupationRelevant) {
+      assert.deepStrictEqual(result.sourceIds, [], `${tc.id}: irrelevante saker skal ikke hente yrkeskilder`);
+    }
+
+    if (tc.occupationRelevant && tc.sector && tc.sector !== "other") {
+      assert(result.sectorId, `${tc.id}: relevant sak mangler sektor`);
+    }
+
+    checked += 1;
+  }
+
+  console.log(`Yrkesruter OK: ${checked} benchmark-saker · yrke er valgfritt · negative kontroller består`);
+})().catch(error => {
+  console.error(error);
+  process.exit(1);
+});
