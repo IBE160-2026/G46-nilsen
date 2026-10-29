@@ -3,8 +3,8 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Teknisk oversikt over KI-integrasjon  
 **Status:** Aktiv dokumentasjon  
-**Versjon ved dokumentasjon:** 20.10.3  
-**Sist gjennomgått:** 07.10.2026
+**Versjon ved dokumentasjon:** 20.10.10  
+**Sist gjennomgått:** 29.10.2026
 
 ---
 
@@ -807,3 +807,22 @@ En framtidig lukket versjon krever derfor lokal eller intern modelltilgang og lo
 Målet er en arkitektur der:
 
 > Samtalestøtte kan være faglig god på selve samtalen også uten offentlig internettilgang.
+---
+
+# SOURCEBANK v6 – status 29.10.2026
+
+Den lokale fagbanken er utvidet fra 56 til 62 kilder og styrket med tverrgående kilder om relasjonsledelse, aktiv lytting, autonomistøttende ledelse, feedback og arbeidsmiljø.
+
+Runtime-flyten er fortsatt den samme: `server.js` leser `data/SOURCEBANK.json`, scorer kilder mot tema og situasjon, og sender et avgrenset sett relevante kilder med metadata og lokale fagprinsipper inn i veiledningsprompten. Websøk er supplement når lokal fagbank ikke er tilstrekkelig.
+
+En ny regresjonstest, `tests/test-sourcebank.cjs`, kontrollerer at:
+
+- alle SOURCEBANK-temaer finnes i gjeldende `topicCatalog`
+- kilde-ID-er er unike
+- lokale fagprinsipper og sist-kontrollert-dato finnes
+- de nye samtalefaglige kildene finnes både i SOURCEBANK og på Hjelp-siden
+- lokalt tverrgående faggrunnlag for samtaleteknikk/relasjonsledelse finnes
+
+Det er viktig å skille dette fra full offline-funksjonalitet. Fagprinsippene er nå lokalt tilgjengelige, men dagens modellkall går fortsatt til ekstern KI-leverandør. Full offline-modus krever fortsatt lokal/intern modell og lokal retrieval/RAG.
+
+Selve prompten for «Forslag til åpning» er ikke endret i denne SOURCEBANK-oppdateringen. Faggrunnlaget styrkes først; deretter kan språk-/åpningskontrakten justeres og testes som en separat endring.
