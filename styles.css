@@ -8200,3 +8200,33 @@ html[data-theme="hybrid"] .representation-chip.active:hover,
 html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
   background: #1d505a !important;
 }
+
+/* BRAND VISIBILITY PATCH: keep simulation illustration distinct from site brand */
+@media (max-width:700px) {
+  #simulation-view .simulation-hub-hero > .simulation-logo-crop {
+    display: flex !important;
+    width: 112px !important;
+    max-width: 112px !important;
+    height: 104px !important;
+    overflow: hidden !important;
+    border-radius: 18px !important;
+    padding: 0 !important;
+    background: transparent !important;
+    align-items: center !important;
+    justify-content: center !important;
+  }
+  #simulation-view .simulation-hub-hero > .simulation-logo-crop img {
+    display: block !important;
+    width: 112px !important;
+    max-width: none !important;
+    height: 104px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: 14px !important;
+    content: normal !important;
+  }
+  html[data-theme="dark"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img,
+  html[data-theme="hybrid"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img {
+    content: normal !important;
+  }
+}
