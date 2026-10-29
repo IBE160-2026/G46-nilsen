@@ -3,8 +3,8 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Kuratert fag- og kildebank  
 **Status:** Aktiv og utvidbar  
-**Versjon ved dokumentasjon:** 20.10.3  
-**Sist faglig gjennomgått:** 26.10.2026  
+**Versjon ved dokumentasjon:** 20.10.10  
+**Sist faglig gjennomgått:** 29.10.2026  
 **Språk:** Norsk
 
 ---
@@ -1805,3 +1805,42 @@ Faggrunnlaget skal samtidig være:
 - testbart
 - egnet for framtidig lukket/offline drift
 
+
+---
+
+# SOURCEBANK v6 – relasjonsledelse, samtaleteknikk og offline-grunnlag
+
+SOURCEBANK v6 ble etablert 29.10.2026 etter en menneskelig kvalitetsgjennomgang av KI-genererte samtaleåpninger. Åpningene var blitt kortere og mindre HR-preget, men kunne fortsatt høres mekaniske ut. Gjennomgangen viste behov for sterkere eksplisitt faggrunnlag om relasjonsledelse, aktiv lytting, anerkjennelse, omsorg, feedback og organisasjonspsykologi.
+
+Seks ressurser som allerede var synlige på Hjelp-siden er derfor lagt inn som egne maskinlesbare SOURCEBANK-kilder:
+
+- DFØ / Statens arbeidsgiverportal – Forberedelse til møte
+- DFØ / Statens arbeidsgiverportal – Gjennomføring av møte
+- Bård Kuvaas / BI – Ledelse som virker – helt konkret
+- Linda Lai / BI – Medarbeidere og tilbakemeldinger
+- Linda Lai / BI – God ledelse fordrer god relasjon
+- STAMI – Innhold i MUST
+
+Helsedirektoratets kilde om motiverende intervju og samtaleteknikk var allerede i SOURCEBANK og beholdes som del av samme tverrgående grunnlag.
+
+Lokalt lagrede prinsipper omfatter blant annet:
+
+- gode forklaringer og begrunnelser fremfor bare korte beskjeder
+- åpne spørsmål og aktiv lytting
+- interesse for medarbeiderens perspektiv
+- anerkjennelse av negative følelser og reaksjoner uten å mykne bort nødvendige krav
+- støtte, omsorg og mulig tilrettelegging innenfor lederrollen
+- tillit, respekt og gjensidighet i leder–medarbeider-relasjonen
+- ikke-dømmende, situasjonstilpasset feedback
+- trygg og respektfull ramme rundt krevende samtaler
+- psykologisk trygghet, rolleklarhet, rettferdighet og sosial støtte
+
+Det tverrgående lokale faggrunnlaget er samlet i `docs/faggrunnlag/FAGGRUNNLAG-SAMTALETEKNIKK-RELASJONSLEDELSE.md`.
+
+SOURCEBANK v6 har 62 kuraterte kilder. Samtidig ble alle kilder kontrollert mot dagens ni hovedtemaer. Seks kilder brukte det tidligere temanavnet «Avslutning av arbeidsforhold» og er nå synkronisert med «Oppsigelse og avslutning av arbeidsforhold».
+
+## Offline-prinsipp
+
+De nye nettsidene er ikke kopiert i fulltekst. I stedet er kilde-ID, metadata, URL, sist-kontrollert-dato og de faglige prinsippene Samtalestøtte faktisk trenger lagret lokalt. Dette gjør prinsippene tilgjengelige for en framtidig lokal RAG-/offline-løsning uten å gjøre repoet til et uautorisert fulltekstarkiv.
+
+Originalkildene skal fortsatt kontrolleres når informasjon er tidsfølsom, ved regelverksendringer eller når mer detaljert kildegrunnlag er nødvendig.
