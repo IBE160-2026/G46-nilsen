@@ -4,7 +4,7 @@
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
 **Status:** Revidert UX-spesifikasjon med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.2  
+**Versjon ved dokumentasjon:** 20.11.3  
 **Språk:** Norsk
 
 ---
@@ -999,3 +999,8 @@ Produksjonskontroll viste at responsiviteten skiftet for tidlig til et mobilpreg
 Mellombredder behandles nå eksplisitt som kompakt desktop i stedet for å presses inn i enten full desktop eller mobil. I 641–1500 CSS-piksler får toppfeltet strengere plassfordeling mellom logo, breadcrumb, temavelger, ny samtale og profil. I 641–1100 kan toppfeltet bruke to rader, men beholder desktopnavigasjon og full brukerprofil.
 
 Målet er at innhold ikke skal overlappe eller forsvinne når et PC-vindu er omtrent halvstort, samtidig som mobilmodus fortsatt først starter ved 640 CSS-piksler.
+
+
+## Hotfix 20.11.3 – visuell forankring i kompakt desktop
+
+I kompakt desktop skal brukerprofilen fortsatt oppfattes som en global kontroll og derfor ligge helt mot høyre kant. Temavelger og øvrige handlinger komprimeres før profilen flyttes. Det er samtidig lagt inn fast venstrebuffersone for kontrollgruppen slik at den utstikkende sidefeltknappen ikke kommer visuelt for tett på temavelgeren.
