@@ -331,6 +331,7 @@ KI-bruk og kvalitetssikring er dokumentert i:
 - `docs/ai/AI-RESPONSE-CONTRACT.md`
 - `docs/ai/AI-TESTPLAN.md`
 - `docs/VERSJONSHISTORIKK-v20.10.md` – kobler v20.10.4–v20.10.10 til commitspor og forklarer fler-commit versjonsløft
+- `docs/VERSJONSHISTORIKK-v20.11.md` – dokumenterer pilotgren, PR #1, fysisk mobil/PWA-test og merge til produksjon
 
 Sikkerhet og personvern:
 
