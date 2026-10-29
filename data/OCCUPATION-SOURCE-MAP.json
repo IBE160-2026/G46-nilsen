@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "description": "Lokal yrkes- og kilderuter for Samtalestøtte. Yrke/bransje er valgfritt og skal bare påvirke råd når arbeidskontekst, risiko eller regelverk faktisk er relevant.",
   "selectionPolicy": {
     "occupationOptional": true,
@@ -736,6 +736,133 @@
         "arbeidstid",
         "ulykke",
         "nestenulykke"
+      ]
+    },
+    {
+      "id": "agriculture_nature",
+      "label": "Landbruk, skogbruk og natur",
+      "occupations": [
+        "bonde",
+        "gårdbruker",
+        "landbruksarbeider",
+        "avløser",
+        "gartner",
+        "skogbruker",
+        "skogsarbeider",
+        "reindriftsutøver"
+      ],
+      "aliases": [
+        "landbruk",
+        "jordbruk",
+        "gårdsbruk",
+        "gård",
+        "husdyrhold",
+        "skogbruk",
+        "gartneri",
+        "reindrift"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "landbruksdirektoratet",
+          "label": "Landbruksdirektoratet",
+          "domain": "landbruksdirektoratet.no"
+        },
+        {
+          "id": "mattilsynet",
+          "label": "Mattilsynet",
+          "domain": "mattilsynet.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "jordbruk",
+        "dyrevelferd",
+        "husdyrhold",
+        "skogbruk",
+        "reindrift",
+        "arbeidsmiljø",
+        "HMS",
+        "kjemikalier",
+        "maskiner"
+      ],
+      "riskTriggers": [
+        "dyrevelferd",
+        "husdyr",
+        "smitte",
+        "maskiner",
+        "kjemikalier",
+        "plantevernmidler",
+        "påvirket på jobb",
+        "ulykke",
+        "arbeidstid"
+      ]
+    },
+    {
+      "id": "aviation",
+      "label": "Luftfart",
+      "occupations": [
+        "pilot",
+        "kabinansatt",
+        "flyvert",
+        "flyvertinne",
+        "flytekniker",
+        "flymekaniker",
+        "flygeleder",
+        "bakkeoperatør",
+        "bagasjemedarbeider",
+        "luftfartsmedarbeider"
+      ],
+      "aliases": [
+        "luftfart",
+        "flyselskap",
+        "flyplass",
+        "cockpit",
+        "kabin",
+        "bakkemannskap",
+        "ground handling"
+      ],
+      "primaryAuthorities": [
+        {
+          "id": "luftfartstilsynet",
+          "label": "Luftfartstilsynet",
+          "domain": "luftfartstilsynet.no"
+        },
+        {
+          "id": "arbeidstilsynet",
+          "label": "Arbeidstilsynet",
+          "domain": "arbeidstilsynet.no"
+        },
+        {
+          "id": "lovdata",
+          "label": "Lovdata",
+          "domain": "lovdata.no"
+        }
+      ],
+      "legalAreas": [
+        "luftfartssikkerhet",
+        "arbeids- og hviletid",
+        "sertifikater",
+        "rus/påvirkning",
+        "informasjonssikkerhet",
+        "arbeidsmiljø"
+      ],
+      "riskTriggers": [
+        "flysikkerhet",
+        "påvirket på jobb",
+        "arbeidstid",
+        "hviletid",
+        "sertifikat",
+        "fatigue",
+        "sikkerhetskritisk arbeid"
       ]
     },
     {
