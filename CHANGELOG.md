@@ -1,3 +1,14 @@
+# v20.10.10 – SOURCEBANK v6 og lokalt samtalefaglig grunnlag
+
+- SOURCEBANK er utvidet fra 56 til 62 kuraterte kilder.
+- Seks Hjelp-ressurser fra DFØ, BI og STAMI er nå også maskinlesbare kilder med lokalt lagrede fagprinsipper.
+- Faggrunnlaget er styrket for relasjonsledelse, aktiv lytting, autonomistøttende ledelse, anerkjennelse/omsorg, feedback, psykologisk trygghet og organisatorisk rettferdighet.
+- Ny lokal fagfil `FAGGRUNNLAG-SAMTALETEKNIKK-RELASJONSLEDELSE.md` er laget med tanke på framtidig lukket/offline drift.
+- Seks SOURCEBANK-kilder med gammelt hovedtema «Avslutning av arbeidsforhold» er synkronisert til «Oppsigelse og avslutning av arbeidsforhold», slik at runtime-kildescoringen igjen treffer temaet fullt ut.
+- Ny `tests/test-sourcebank.cjs` kontrollerer tema-synk, kilde-ID-er, lokale fagprinsipper, Hjelp-lenker og offline-fagfil og kjøres som del av `npm test`.
+- Selve KI-prompten for samtaleåpninger er bevisst ikke endret i denne versjonen; faggrunnlaget etableres først og språkjusteringen testes separat.
+
+---
 # v20.10.9 – kortere undertemaer, taksonomisynk og sporbarhet
 
 - Undertemastrukturen er forenklet fra 56 til 48 undertemaer etter pilotfunn om abstrakte, overlappende og vanskelige navigasjonsvalg. 48 var ikke et mål i seg selv; resultatet kom av en systematisk gjennomgang med korte, skannbare titler og mer forklarende beskrivelser.
