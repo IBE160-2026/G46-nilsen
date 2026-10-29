@@ -91,3 +91,8 @@ Et skjermbilde fra produksjon viste at en halvstor nettleserbredde kunne presse 
 Løsningen ble en eksplisitt kompakt desktop-topplinje. I 641–1500 CSS-piksler reduseres logo/gap kontrollert og tekst får min-width/overflow-regler; i 641–1100 kan topplinjen bruke to rader for å bevare full funksjonalitet og profilinformasjon uten kollisjon.
 
 I samme patch ble et state-problem i Finn tema-flyten rettet. Når situasjonstekst var brukt til å finne tema og deretter sendt videre til råd, ble teksten liggende i både hovedsøket og undertemasøket fordi pendingSituationText fortsatt levde videre. v20.11.2 tømmer begge finder-feltene og tilhørende forslag/personvernstatus når råd-flyten starter, samtidig som situasjonen beholdes i det egentlige råd-feltet.
+
+
+## v20.11.3 – profilforankring og luft i kompakt desktop
+
+Etter v20.11.2 ble profilområdet korrekt synlig, men på kompakt desktop ble brukerprofilen visuelt flyttet for langt mot venstre. I tillegg lå temavelgeren for tett på den utstikkende sidefeltknappen. v20.11.3 beholder profilen som siste element helt mot høyre kant, lar profilteksten komprimeres ved behov og reserverer egen venstrebuffersone i høyresiden av topplinjen slik at sidefeltknappen ikke kolliderer visuelt med temavelgeren.
