@@ -56,6 +56,7 @@ function renderStaticIcons() {
   setSvg('nav-contact-icon', svgIcons.contact);
   const adminIcon=document.querySelector('#nav-admin-icon'); if(adminIcon) adminIcon.textContent='A';
   setSvg('sidebar-message-icon', svgIcons.team);
+  setSvg('simulation-heading-icon', svgIcons.simulation);
 
   const pageIconMap = {
     settings: svgIcons.settings,
