@@ -4,7 +4,7 @@
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
 **Status:** Revidert UX-spesifikasjon med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.3  
+**Versjon ved dokumentasjon:** 20.11.4  
 **Språk:** Norsk
 
 ---
@@ -1004,3 +1004,10 @@ Målet er at innhold ikke skal overlappe eller forsvinne når et PC-vindu er omt
 ## Hotfix 20.11.3 – visuell forankring i kompakt desktop
 
 I kompakt desktop skal brukerprofilen fortsatt oppfattes som en global kontroll og derfor ligge helt mot høyre kant. Temavelger og øvrige handlinger komprimeres før profilen flyttes. Det er samtidig lagt inn fast venstrebuffersone for kontrollgruppen slik at den utstikkende sidefeltknappen ikke kommer visuelt for tett på temavelgeren.
+
+
+## Hotfix 20.11.4 – visuell balanse i Historikk og Samtaleøvelse
+
+Historikk bruker nå en todelt header på desktop: tekstinnhold til venstre og en separat, responsiv visuell flate til høyre. Logoen sentreres i denne flaten og skalerer dynamisk, slik at den beholder balanse ved ulike vindusbredder.
+
+I Samtaleøvelse skal KI-illustrasjonen framstå som et visuelt merke, ikke som et kort. Derfor er dekorativ ramme, bakgrunn, skygge og avrundet boks fjernet rundt illustrasjonen. Responsiv størrelse og klikkbar større visning beholdes.
