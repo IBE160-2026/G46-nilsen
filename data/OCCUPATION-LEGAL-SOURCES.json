@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "verifiedAt": "2026-10-29",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -219,6 +219,103 @@
         "regnskap",
         "revisjon",
         "finansforetak"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "LANDBRUK_REGELVERK",
+      "authority": "Landbruksdirektoratet",
+      "title": "Regelverk, veiledning til regelverk og retningslinjer",
+      "url": "https://www.landbruksdirektoratet.no/nb/forvaltning/regelverk",
+      "sectors": [
+        "agriculture_nature"
+      ],
+      "useFor": [
+        "jordbruk",
+        "skogbruk",
+        "reindrift",
+        "landbruksforvaltning",
+        "produksjonskrav"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "MATTILSYNET_DYREVELFERD",
+      "authority": "Mattilsynet",
+      "title": "Dyrevelferd",
+      "url": "https://www.mattilsynet.no/dyr/dyrevelferd",
+      "sectors": [
+        "agriculture_nature",
+        "veterinary_animal_health"
+      ],
+      "useFor": [
+        "dyrevelferd",
+        "dyrehold",
+        "tilsyn og stell",
+        "kompetansekrav",
+        "smitte"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "LUFTFART_RULES",
+      "authority": "Luftfartstilsynet",
+      "title": "Lover og regler",
+      "url": "https://www.luftfartstilsynet.no/lover-og-regler/",
+      "sectors": [
+        "aviation"
+      ],
+      "useFor": [
+        "luftfartssikkerhet",
+        "sertifikater",
+        "operativt regelverk",
+        "informasjonssikkerhet"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "LUFTFART_FTL",
+      "authority": "Luftfartstilsynet",
+      "title": "Regelverk arbeidstidsbestemmelser for flygende",
+      "url": "https://www.luftfartstilsynet.no/aktorer/flyselskap/arbeidstidsbestemmelser/regelverk-arbeidstidsbestemmelser-for-flygende/",
+      "sectors": [
+        "aviation"
+      ],
+      "useFor": [
+        "flygetid",
+        "arbeidstid",
+        "hviletid",
+        "fatigue",
+        "besetningsmedlemmer"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "DATATILSYNET_WORKPLACE_PRIVACY",
+      "authority": "Datatilsynet",
+      "title": "Personvern i arbeidslivet",
+      "url": "https://www.datatilsynet.no/personvern-pa-ulike-omrader/personvern-pa-arbeidsplassen/",
+      "sectors": [
+        "public_admin_legal",
+        "office_finance_it",
+        "health_care",
+        "education_childcare",
+        "retail_hospitality_service",
+        "industry_production",
+        "construction_trades",
+        "transport_logistics",
+        "aquaculture_fisheries_maritime",
+        "veterinary_animal_health",
+        "offshore_energy",
+        "aviation",
+        "agriculture_nature"
+      ],
+      "useFor": [
+        "kontrolltiltak",
+        "personopplysninger om ansatte",
+        "overvåking",
+        "innsyn",
+        "arbeidslivspersonvern"
       ],
       "timeSensitive": true
     }
