@@ -33,6 +33,26 @@ const assert = require("assert");
   const unknown = router.classifyOccupationLocally("bibliotekar");
   assert.strictEqual(unknown.matched, false);
 
+  const healthSafety = router.resolveOccupationContext({
+    sectorId: "health_care",
+    occupation: "sykepleier",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Påvirket på jobb",
+    situation: "Sykepleieren virker påvirket under vakt med pasientansvar."
+  });
+  assert.strictEqual(healthSafety.occupationRelevant, true);
+  assert(healthSafety.allowedDomains.includes("helsedirektoratet.no"));
+  assert(healthSafety.sourceIds.includes("HDIR_HEALTH_PERSONNEL"));
+  assert(!healthSafety.sourceIds.includes("DATATILSYNET_WORKPLACE_PRIVACY"), "Personvernkilde skal ikke aktiveres uten personvernkontekst");
+
+  const sickLeaveSources = router.selectLegalSources({
+    sectorId: "health_care",
+    topic: "Fravær og oppfølging",
+    subtopic: "Langtidsfravær",
+    situation: "Oppfølging av sykmeldt medarbeider og tilrettelegging."
+  });
+  assert(sickLeaveSources.some(source => source.id === "NAV_SICK_LEAVE_FOLLOWUP"), "NAV-kilde skal aktiveres ved sykefravær");
+
   const irrelevantUnknown = router.resolveOccupationContext({
     occupation: "bibliotekar",
     topic: "Livssituasjoner",
