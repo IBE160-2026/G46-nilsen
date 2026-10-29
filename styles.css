@@ -8180,3 +8180,23 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
     font-size: .76rem;
   }
 }
+
+
+/* DARK QUICK FILTER CONTRAST 2026-10-29 */
+
+html[data-theme="dark"] .representation-chip.active,
+html[data-theme="dark"] .representation-chip[aria-pressed="true"],
+html[data-theme="hybrid"] .representation-chip.active,
+html[data-theme="hybrid"] .representation-chip[aria-pressed="true"] {
+  background: #245d68 !important;
+  border-color: #78aeb8 !important;
+  color: #ffffff !important;
+  box-shadow: 0 5px 14px rgba(0,0,0,.26) !important;
+}
+
+html[data-theme="dark"] .representation-chip.active:hover,
+html[data-theme="dark"] .representation-chip[aria-pressed="true"]:hover,
+html[data-theme="hybrid"] .representation-chip.active:hover,
+html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
+  background: #1d505a !important;
+}
