@@ -2,7 +2,7 @@
 
 **Status:** Aktiv sporbarhetslogg for sluttfasen  
 **Autoritativ branch:** `main`  
-**Omfang:** v20.10.4–v20.10.9
+**Omfang:** v20.10.4–v20.10.10
 
 Dette dokumentet kobler funksjonelle versjoner til den faktiske commitrekkefølgen i Git. `CHANGELOG.md` beskriver hva som ble levert; denne filen viser hvordan endringene faktisk ble skrevet til repoet.
 
@@ -19,6 +19,21 @@ Historikken er bevisst **ikke** omskrevet eller squash'et i etterkant. Det bevar
 - `predeploy-check-2026-10-28` inneholder tre midlertidige CI-verifikasjonscommits fra en kontrollgren. De er ikke del av produktets `main`-historikk.
 
 De to arbeidsgrenene er ikke autoritative. Tilgjengelig GitHub-tilkobling i denne arbeidsøkten støtter ikke sletting av branch-ref, så de er dokumentert eksplisitt i stedet for å flyttes eller omskrives.
+
+## v20.10.10
+
+- `b5cb41fc09` · 2026-10-29 · docs: synkroniser hoveddokumentasjon med v20.10.10
+- `2ef4b436d7` · 2026-10-29 · chore: bump samlet til v20.10.10
+- `7dce3ea05d` · 2026-10-29 · docs: legg til v20.10.10 SOURCEBANK v6
+- `1578824689` · 2026-10-29 · docs: reflekter over menneskelig lederstil og kildegrunnlag
+- `0d6abfe7be` · 2026-10-29 · docs: oppdater KI-integrasjon for SOURCEBANK v6
+- `e906026330` · 2026-10-29 · docs: dokumenter SOURCEBANK v6 og offline-prinsipper
+- `8dfc3d84f9` · 2026-10-29 · test: kjør SOURCEBANK-synk i lokal testpakke
+- `f14524534a` · 2026-10-29 · test: lås SOURCEBANK mot temaer og hjelpekilder
+- `370076a9d1` · 2026-10-29 · fag: lagre samtaleteknikk og relasjonsledelse for offline bruk
+- `58a7901682` · 2026-10-29 · fag: utvid SOURCEBANK v6 med relasjon og samtaleteknikk
+
+Denne versjonen er en faggrunnlags-/runtime-endring: KI-en får et sterkere lokalt kildegrunnlag, men selve åpningsprompten er bevisst ikke endret ennå.
 
 ## v20.10.9
 
