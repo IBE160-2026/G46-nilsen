@@ -7019,3 +7019,217 @@ html[data-theme="dark"] .utility-page-logo {
     border-color: color-mix(in srgb,var(--accent) 28%,var(--border));
   }
 }
+
+
+/* PILOT 20.11 MOBILE CONSISTENCY 2026-10-29 */
+
+.brand-mobile-lockup {
+  display: none;
+}
+
+/* Narrow-screen page headers reuse the same web icons consistently. */
+@media (max-width: 1100px) {
+  .utility-title-row {
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    gap: 11px;
+  }
+
+  .utility-title-row .utility-page-brand {
+    display: none !important;
+  }
+
+  .utility-title-row .collapsed-page-icon {
+    display: inline-flex !important;
+    order: -1;
+    transform: none !important;
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .utility-title-row h1 {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 700px) {
+  /* Sidebar logo: symbol stays compact while the name becomes readable. */
+  .sidebar.sidebar-collapsed .brand-logo {
+    display: none !important;
+  }
+
+  .sidebar.sidebar-collapsed .brand-button {
+    width: 100%;
+    padding: 0;
+  }
+
+  .sidebar.sidebar-collapsed .brand-mobile-lockup {
+    display: flex;
+    width: 100%;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    color: inherit;
+  }
+
+  .brand-mobile-symbol {
+    display: block;
+    width: 38px;
+    height: 31px;
+    object-fit: contain;
+  }
+
+  html[data-theme="hybrid"] .brand-mobile-symbol,
+  html[data-theme="dark"] .brand-mobile-symbol {
+    content: url("assets/images/logo-symbol-light.png");
+  }
+
+  .brand-mobile-word {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: .66rem;
+    line-height: .94;
+    font-weight: 820;
+    letter-spacing: -.025em;
+    white-space: nowrap;
+  }
+
+  /* Topic page: small theme image beside the heading; copy uses full width below. */
+  #topic-view .topic-hero-panel {
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) 68px !important;
+    grid-template-rows: auto auto auto auto;
+    gap: 0 10px !important;
+    align-items: start;
+  }
+
+  #topic-view .topic-hero-copy {
+    display: contents !important;
+  }
+
+  #topic-view .topic-hero-copy > .eyebrow {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+  }
+
+  #topic-view .topic-hero-title-row {
+    grid-column: 1;
+    grid-row: 2;
+  }
+
+  #topic-view .topic-hero-copy > p {
+    grid-column: 1 / -1;
+    grid-row: 3;
+    width: 100%;
+  }
+
+  #topic-view .topic-representations {
+    grid-column: 1 / -1;
+    grid-row: 4;
+  }
+
+  #topic-view .topic-hero-visual {
+    display: block !important;
+    grid-column: 2;
+    grid-row: 1 / 3;
+    align-self: center;
+    width: 68px !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border));
+    box-shadow: 0 4px 12px rgba(20,89,107,.08);
+  }
+
+  #topic-view .topic-hero-visual::before {
+    display: none !important;
+  }
+
+  #topic-view .topic-hero-visual img {
+    width: 68px !important;
+    height: 68px !important;
+    min-height: 68px !important;
+    object-fit: cover;
+  }
+
+  /* Samtaleøvelse: web speech icon on the left; description gets the whole width. */
+  .simulation-hub-hero {
+    display: block !important;
+    padding: 15px !important;
+  }
+
+  .simulation-hub-copy {
+    min-width: 0;
+  }
+
+  .simulation-hub-title-row {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+  }
+
+  .simulation-hub-title-row .simulation-heading-icon {
+    display: inline-flex !important;
+    width: 38px !important;
+    height: 38px !important;
+    flex: 0 0 38px !important;
+    align-items: center;
+    justify-content: center;
+    transform: none !important;
+    border-radius: 12px !important;
+  }
+
+  .simulation-hub-title-row .simulation-heading-icon svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .simulation-hub-title-row h1 {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 4px 0 7px !important;
+  }
+
+  .simulation-hub-copy > p {
+    width: 100%;
+    max-width: none !important;
+    margin-top: 7px;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    display: none !important;
+  }
+
+  .utility-title-row {
+    gap: 9px;
+  }
+
+  .utility-title-row .collapsed-page-icon {
+    width: 38px !important;
+    height: 38px !important;
+    flex-basis: 38px !important;
+    border-radius: 12px !important;
+  }
+
+  .utility-title-row .collapsed-page-icon svg {
+    width: 21px !important;
+    height: 21px !important;
+  }
+
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 34px;
+    margin-top: 4px;
+    margin-bottom: 7px;
+  }
+}
