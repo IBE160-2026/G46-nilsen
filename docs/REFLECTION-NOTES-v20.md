@@ -222,9 +222,13 @@ Feilene ble rettet i den deterministiske detektoren og låst med regresjonsteste
 
 **Teorikobling:** Context Engineering, non-determinisme, automatisert regresjon, human-in-the-loop og skillet mellom deterministiske kontrollkomponenter og generativ modelladferd.
 
-## 29.10.2026 – undertemaer: mindre tekst i tittelen, mer presisjon i beskrivelsen
+## 29.10.2026 – undertemaer: fra brukerfunn til enklere taksonomi
 
-Gjennomgang av alle hovedtemaene viste at flere undertematitler forsøkte å romme både situasjon, prosess og forklaring samtidig. Det gjorde menyen tung og skapte overlapp. Beslutningen ble å bruke korte, skannbare titler og la beskrivelsen forklare nyansen.
+Endringen fra 56 til 48 undertemaer startet **ikke** med et mål om å få færre kategorier. Den startet med pilot-/brukertestfunn. I brukertestbackloggen var et gjentakende funn at enkelte undertemabeskrivelser ikke hjalp godt nok med å forstå hvilket valg som passet. Flere tekster var faglig riktige, men ble oppfattet som for abstrakte, overlappende eller mer som definisjoner enn navigasjon. Pilotfeedback viste også at indirekte formuleringer kunne bli for vage; et konkret eksempel var språk rundt «på vei mot en avslutning», som gjorde at ordet **oppsigelse** ble tatt tydeligere inn i taksonomien.
+
+Først ble alle 56 undertemaene derfor gjennomgått språklig. Deretter ble selve strukturen vurdert strengere: Bruker vi ordene en leder faktisk vil lete etter? Er forskjellen mellom nabokort tydelig? Er noen kategorier så like eller smale at valget blir tilfeldig?
+
+Denne gjennomgangen viste at flere undertematitler forsøkte å romme både situasjon, prosess og forklaring samtidig. Andre kategorier overlappet eller beskrev et prosess-steg som like gjerne kunne ligge i beskrivelsen til et bredere undertema. Beslutningen ble derfor å bruke korte, skannbare titler og la beskrivelsen forklare nyansen.
 
 Eksempler på beslutninger:
 - «Forventninger til lønn» og «Nye oppgaver og ansvar» ble samlet under **Lønnskrav**
@@ -233,7 +237,7 @@ Eksempler på beslutninger:
 - livssituasjoner ble forenklet til fem undertemaer, blant annet **Utmattelse**
 - mobbing/trakassering fikk blant annet **Uønsket adferd**, **Diskriminering** og **Varslingssak**
 
-Taksonomien gikk fra 56 til **48 undertemaer**. Klient og serverkontrakt ble oppdatert samtidig, og en regresjonstest låser navnelikheten. Den eldre benchmarkbanken ble deretter remappet til den nye strukturen. Tidligere caser ble beholdt som testbevis, og to nye saker ble lagt til for «Konflikt med leder».
+Taksonomien gikk som konsekvens av denne gjennomgangen fra 56 til **48 undertemaer**. Tallet 48 var altså ikke et mål i seg selv; reduksjonen kom av at overlappende, svært smale eller prosessorienterte kategorier ble slått sammen eller flyttet inn i beskrivelser, samtidig som enkelte områder ble tydeligere skilt. Klient og serverkontrakt ble oppdatert samtidig, og en regresjonstest låser navnelikheten. Den eldre benchmarkbanken ble deretter remappet til den nye strukturen. Tidligere caser ble beholdt som testbevis, og to nye saker ble lagt til for «Konflikt med leder».
 
 **Læring:** En god informasjonsarkitektur trenger ikke flest mulig kategorier. Kategorioverskriften skal hjelpe brukeren å velge raskt; beskrivelsen kan bære presisjon og avgrensning. Samtidig må en taksonomiendring behandles som en systemendring fordi UI, klassifiseringskontrakt, benchmark, tester og dokumentasjon må holdes synkron.
 
