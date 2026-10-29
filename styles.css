@@ -8018,3 +8018,31 @@ html[data-theme="hybrid"] .simulation-avatar img {
     font-size: .97rem !important;
   }
 }
+
+
+/* AI WHITE OUTLINE DARK THEMES 2026-10-29 */
+
+/* KI-hodet får samme tydelige, lyse avgrensning som de øvrige profilfigurene. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
+html[data-theme="dark"] .simulation-ai-heading-icon img,
+html[data-theme="hybrid"] .simulation-ai-heading-icon img,
+html[data-theme="dark"] .simulation-logo-crop img,
+html[data-theme="hybrid"] .simulation-logo-crop img,
+html[data-theme="dark"] .simulation-entry-icon img,
+html[data-theme="hybrid"] .simulation-entry-icon img,
+html[data-theme="dark"] .simulation-avatar img,
+html[data-theme="hybrid"] .simulation-avatar img {
+  filter: none !important;
+  border: 2px solid rgba(255,255,255,.88) !important;
+  box-shadow:
+    0 0 0 1px rgba(255,255,255,.16),
+    0 2px 8px rgba(0,0,0,.22) !important;
+  box-sizing: border-box;
+}
+
+/* Litt mykere på de aller minste ikonene. */
+html[data-theme="dark"] .mobile-nav-ai-glyph img,
+html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
+  border-width: 1.5px !important;
+}
