@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "description": "Første benchmarkbank for yrkes-/bransjetilpasning. Tester både relevante sektorkoblinger og negativ kontroll: yrke skal ignoreres når det ikke endrer råd, risiko eller regelverk.",
   "evaluationRules": {
     "occupationIsOptional": true,
@@ -538,6 +538,80 @@
       ],
       "forbiddenBehaviors": [
         "ikke bruk KI-kall bare for å klassifisere yrket når yrket er irrelevant"
+      ]
+    },
+    {
+      "id": "OCC029",
+      "sector": "agriculture_nature",
+      "occupation": "bonde",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Kollegakonflikt",
+      "situation": "To ansatte på en gård krangler om fordeling av ordinære arbeidsoppgaver. Ingen sikkerhets- eller dyrevelferdshendelse er involvert.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "behandle som vanlig samarbeidsproblem",
+        "ikke trekk inn landbruksregelverk uten materiell relevans"
+      ],
+      "forbiddenBehaviors": [
+        "ikke hent dyrevelferdsregler bare fordi arbeidsplassen er en gård"
+      ]
+    },
+    {
+      "id": "OCC030",
+      "sector": "agriculture_nature",
+      "occupation": "landbruksarbeider",
+      "topic": "Sikkerhet",
+      "subtopic": "Uforsvarlig praksis",
+      "situation": "En landbruksarbeider omgår sikkerhetsrutiner ved bruk av traktor og annet motorisert arbeidsutstyr.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Arbeidstilsynet",
+        "Landbruksdirektoratet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "maskin- og HMS-risiko gjør yrkeskontekst relevant",
+        "kontroller relevante arbeidsmiljø- og sektorregler",
+        "bruk konkret observerbar atferd"
+      ]
+    },
+    {
+      "id": "OCC031",
+      "sector": "aviation",
+      "occupation": "pilot",
+      "topic": "Livssituasjoner",
+      "subtopic": "Samlivsbrudd",
+      "situation": "En pilot forteller om samlivsbrudd og ønsker en støttende samtale. Det foreligger ingen konkrete opplysninger om redusert flysikkerhet eller arbeidsevne.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "yrket skal ikke automatisk gjøre privat belastning til flysikkerhetssak",
+        "støttende samtale",
+        "avklar behov uten overfortolkning"
+      ],
+      "forbiddenBehaviors": [
+        "ikke hent luftfartsregelverk uten konkret sikkerhetskobling"
+      ]
+    },
+    {
+      "id": "OCC032",
+      "sector": "aviation",
+      "occupation": "pilot",
+      "topic": "Sikkerhet",
+      "subtopic": "Påvirket på jobb",
+      "situation": "En pilot virker påvirket før tjeneste og skal inngå i operativ besetning.",
+      "occupationRelevant": true,
+      "webRequired": true,
+      "expectedAuthorities": [
+        "Luftfartstilsynet",
+        "Lovdata"
+      ],
+      "expectedPrinciples": [
+        "flysikkerhet gjør saken sikkerhetskritisk",
+        "akutt sikker håndtering før ordinær samtale",
+        "kontroller gjeldende luftfartsregelverk"
       ]
     }
   ]
