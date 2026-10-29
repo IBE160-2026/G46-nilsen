@@ -200,3 +200,51 @@ Før innlevering: følg den endelige sensorveiledningen, sjekk at README, Produc
 **Teorikobling:** Brukerrolle som eksplisitt kontekst (*Context Engineering*), presis avgrensning av KI-oppgaven, kravsporing, etisk risikovurdering og differensiert regresjonstesting.
 
 **Status per 15.10.2026:** Idé godkjent for videre planlegging; ikke implementert eller testet som rollebasert funksjon.
+
+---
+
+## 28.–29.10.2026 – produksjonsflyt, personvern og ikke-determinisme
+
+**Utgangspunkt:** Pilotbruk viste at KI-en ofte skrev for lange og formelle åpninger, noen ganger som råd til lederen i stedet for ord lederen faktisk kunne si høyt. Dette ble behandlet som et kvalitetsproblem i selve samtalestøtten, ikke bare som et enkelt dårlig svar.
+
+**Tiltak:** Prompt og schema ble strammet inn til korte, muntlige åpninger (normalt 2–4 korte setninger og 30–65 ord), uten meta-instruksjoner, HR-/rapportstil eller hele samtalen i første replikk. Fem faktiske pilotcaser ble lagt inn i goldenbanken og senere utvidet til en full produksjonsflyt-test med 26 saker.
+
+**Funn:** Første fullkjøring registrerte alle 26 saker, men bare 23 nådde KI-svaret. Tre ble stoppet av personverngatewayen. Det viste at en test av «KI-kvalitet» ikke er nok dersom resten av kjeden kan hindre et ellers korrekt KI-kall.
+
+**Rotårsaker i personverndetektoren:**
+- «møtte tydelig påvirket» ble tolket som om ord etter «møtte» var personnavn
+- «med hva som har skjedd» ga falskt navnetreff på «hva»
+- «Varsleren mener …» ga falskt navnetreff på rolleordet «Varsleren»
+
+Feilene ble rettet i den deterministiske detektoren og låst med regresjonstester. Ny fullkjøring fikk **26/26 helt gjennom til KI-svar**. 25 åpninger besto automatisk kontroll; én var 67 ord mot grensen på 65, men ble manuelt vurdert som god. Jeg valgte å beholde dette som et dokumentert marginalt avvik i stedet for å justere testen bare for å få 26 grønne.
+
+**Læring om ikke-determinisme:** De samme pilotcasene fikk ulike formuleringer mellom kjøringer, men kunne fortsatt oppfylle de samme kvalitetskravene. Dette støtter forelesningens poeng om at generativ KI ikke bør testes som en deterministisk funksjon med forventning om identisk tekst. Testene bør i stedet låse egenskaper som sikkerhet, lengde, rolle, tone og forbudte mønstre, kombinert med menneskelig vurdering.
+
+**Teorikobling:** Context Engineering, non-determinisme, automatisert regresjon, human-in-the-loop og skillet mellom deterministiske kontrollkomponenter og generativ modelladferd.
+
+## 29.10.2026 – undertemaer: mindre tekst i tittelen, mer presisjon i beskrivelsen
+
+Gjennomgang av alle hovedtemaene viste at flere undertematitler forsøkte å romme både situasjon, prosess og forklaring samtidig. Det gjorde menyen tung og skapte overlapp. Beslutningen ble å bruke korte, skannbare titler og la beskrivelsen forklare nyansen.
+
+Eksempler på beslutninger:
+- «Forventninger til lønn» og «Nye oppgaver og ansvar» ble samlet under **Lønnskrav**
+- generelle samarbeidskategorier ble spisset til blant annet **Samarbeidsutfordringer**, **Konflikt med kollega**, **Konflikt med leder** og **Tillitsbrudd**
+- smale sikkerhetskategorier som egen «Rapportering» og «Risikovurdering» ble tatt inn i beskrivelsene til bredere sikkerhetstemaer
+- livssituasjoner ble forenklet til fem undertemaer, blant annet **Utmattelse**
+- mobbing/trakassering fikk blant annet **Uønsket adferd**, **Diskriminering** og **Varslingssak**
+
+Taksonomien gikk fra 56 til **48 undertemaer**. Klient og serverkontrakt ble oppdatert samtidig, og en regresjonstest låser navnelikheten. Den eldre benchmarkbanken ble deretter remappet til den nye strukturen. Tidligere caser ble beholdt som testbevis, og to nye saker ble lagt til for «Konflikt med leder».
+
+**Læring:** En god informasjonsarkitektur trenger ikke flest mulig kategorier. Kategorioverskriften skal hjelpe brukeren å velge raskt; beskrivelsen kan bære presisjon og avgrensning. Samtidig må en taksonomiendring behandles som en systemendring fordi UI, klassifiseringskontrakt, benchmark, tester og dokumentasjon må holdes synkron.
+
+## 29.10.2026 – Git-sporbarhet fremfor pen historikk
+
+Versjonsløft via GitHub-tilkoblingen oppdaterer enkelte filer sekvensielt og gir derfor flere små `chore: bump versjon`-commits for samme versjon. Jeg valgte **ikke** å omskrive eller squash'e historikken i etterkant bare for at grafen skulle se penere ut. Det ville redusert sporbarheten og endret historisk bevis.
+
+I stedet er CHANGELOG oppdatert og `docs/VERSJONSHISTORIKK-v20.10.md` kobler versjonene 20.10.4–20.10.9 til commitrekkefølgen og forklarer hvorfor ett versjonsløft kan bestå av flere commits.
+
+**Læring:** «Ryddig Git» betyr ikke nødvendigvis færrest commits. For dette prosjektet er det viktigere at historikken er ærlig, at `main` er autoritativ, at versjoner kan spores, og at dokumentasjonen forklarer automatiserte/sekvensielle commits.
+
+## Åpent sikkerhetspunkt etter v20.10.9
+
+Render sitt `npm ci` rapporterer fortsatt **2 avhengighetssårbarheter (1 moderat og 1 høy)**. Dette er registrert som et åpent punkt. `npm audit fix` skal ikke kjøres blindt; avhengighetene må identifiseres og konsekvensene av eventuell oppgradering vurderes før endring.
