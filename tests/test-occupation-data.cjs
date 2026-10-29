@@ -40,6 +40,8 @@ for (const source of registry.sources || []) {
   assert(Array.isArray(source.sectors) && source.sectors.length > 0, `${source.id}: mangler sectors`);
   assert(Array.isArray(source.useFor) && source.useFor.length > 0, `${source.id}: mangler useFor`);
   assert.strictEqual(typeof source.timeSensitive, "boolean", `${source.id}: timeSensitive må være bool`);
+  assert(/^\d{4}-\d{2}-\d{2}$/.test(source.lastVerified || ""), `${source.id}: mangler gyldig lastVerified`);
+  assert(["official_authority","law_database"].includes(source.sourceType), `${source.id}: ugyldig sourceType`);
 }
 
 for (const source of registry.sources || []) {
