@@ -225,6 +225,15 @@ function navigateAppBack(fallback) {
 window.addEventListener('popstate', event => {
   const state = event.state;
   if (!state?.samtalestotte || !views[state.view]) return;
+
+  if (state.view === 'topic') {
+    clearRepresentationFilter();
+    const filter = state.representationFilter;
+    if (filter && currentTopic?.id === filter.topicId) {
+      renderRepresentationFilter(currentTopic, Number(filter.index), { scroll: false });
+    }
+  }
+
   setBreadcrumb(state.breadcrumb || '');
   showView(state.view, {
     historyMode: 'none',
@@ -402,15 +411,12 @@ function clearRepresentationFilter({ scroll = false } = {}) {
   }
 }
 
-function applyRepresentationFilter(topic, representationIndex, button) {
+function renderRepresentationFilter(topic, representationIndex, { scroll = true } = {}) {
   const mapping = representationSubtopicMap[topic.id]?.[representationIndex] || [];
-  const alreadyActive = button.classList.contains('active');
-
   clearRepresentationFilter();
-  if (alreadyActive) {
-    document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    return;
-  }
+
+  const button = document.querySelector(`#topic-representations .representation-chip[data-representation-index="${representationIndex}"]`);
+  if (!button || !mapping.length) return;
 
   button.classList.add('active');
   button.setAttribute('aria-pressed', 'true');
@@ -423,15 +429,56 @@ function applyRepresentationFilter(topic, representationIndex, button) {
 
   const label = topic.representations?.[representationIndex] || '';
   const status=document.querySelector('#representation-filter-status');
-  if(status) status.textContent = `Viser relevante undertemaer for «${label}». Trykk samme hurtigvalg igjen for å vise alle.`;
+  if(status) status.textContent = `Viser relevante undertemaer for «${label}». Tilbake nullstiller hurtigvalget.`;
 
-  requestAnimationFrame(() => {
-    document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-  });
+  if(scroll){
+    requestAnimationFrame(() => {
+      document.querySelector('#subtopic-grid')?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  }
+}
+
+function applyRepresentationFilter(topic, representationIndex, button) {
+  const currentFilter = history.state?.representationFilter;
+  const sameFilter = currentFilter?.topicId === topic.id && Number(currentFilter?.index) === representationIndex;
+
+  if (sameFilter || button.classList.contains('active')) {
+    if (history.state?.samtalestotte && Number(history.state?.appDepth || 0) > 0) {
+      history.back();
+    } else {
+      clearRepresentationFilter();
+      document.querySelector('#topic-representations')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+    return;
+  }
+
+  const currentDepth = Number(history.state?.appDepth || 0);
+  const replacingExistingFilter = currentFilter?.topicId === topic.id;
+
+  if (replacingExistingFilter) {
+    history.replaceState({
+      ...history.state,
+      representationFilter: { topicId: topic.id, index: representationIndex },
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || ''
+    }, '');
+  } else {
+    saveCurrentHistoryScroll();
+    history.pushState({
+      samtalestotte: true,
+      view: 'topic',
+      appDepth: currentDepth + 1,
+      scrollY: 0,
+      breadcrumb: document.querySelector('#breadcrumb')?.textContent || '',
+      representationFilter: { topicId: topic.id, index: representationIndex }
+    }, '');
+  }
+
+  renderRepresentationFilter(topic, representationIndex, { scroll: true });
 }
 
 function openTopic(topic, preservedSituation = '') {
   currentTopic = topic;
+  clearRepresentationFilter();
   const carriedSituation = String(preservedSituation || pendingSituationText || document.querySelector('#topic-search')?.value || '').trim();
   if (carriedSituation) pendingSituationText = carriedSituation;
   highlightTopicCard(topic.id);
