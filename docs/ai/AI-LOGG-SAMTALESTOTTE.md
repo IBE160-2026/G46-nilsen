@@ -1318,3 +1318,16 @@ Et annet viktig valg var å gjøre situasjonsspesifikke ordtreff til **noter** i
 29.10 ledet prosjekteieren en ny taksonomigjennomgang og avviste flere KI-forslag som var for lange, belastede eller overlappende. Eksempler var preferanse for «Lønnskrav», «Samarbeidsutfordringer», skille mellom konflikt med kollega og leder, og at korte overskrifter skulle støttes av gode beskrivelser. KI-assistentens rolle var å holde oversikten, synkronisere beslutningene i klient/server/testbank og dokumentere begrunnelsene.
 
 Denne delen av prosessen viser tydelig at KI ikke bare «skrev koden». Prosjekteieren korrigerte språk, kategorier, testkriterier og graden av automatisering. KI-assistenten ble brukt som implementerings- og analyseverktøy, mens beslutningsmyndigheten lå hos prosjekteieren.
+
+
+# 14. Mobilpilot, kontekstfeil og PWA – 29.10.2026
+
+I sluttfasen ble KI-assistenten brukt til en samlet mobil-first forbedringsrunde på egen pilotgren. En konkret feil viste hvorfor KI-assistert utvikling må verifiseres mot faktisk runtime og ikke bare mot kildekoden.
+
+Oppgaven var å gjøre merkevaren tydeligere på mobil. Første endringer traff desktop-/sidebar-elementer og ble korrekt deployet, men ga ingen synlig endring på telefonen. KI-assistenten mistenkte først service worker/cache og oppdaterte cacheversjonen. Da dette fortsatt ikke endret mobilvisningen, ble den responsive CSS-en undersøkt mer systematisk. Det viste seg at sidefeltet skjules helt på mobil, mens den aktive merkevaren lå i toppfeltet. Feilen var derfor ikke at koden manglet eller at deployen hadde feilet, men at endringen traff feil eksekveringssti.
+
+En senere forenkling fjernet også den tydelige Samtaleøvelse-illustrasjonen og beholdt bare et funksjonelt ikon. Pilotbrukeren oppdaget regresjonen. Løsningen ble å skille mellom navigasjonsikon og visuell produktidentitet, gjeninnføre illustrasjonen, beskjære den for mobil og gjøre den klikkbar for større visning.
+
+PWA-oppsettet ble samtidig ferdigstilt med manifest, rasterikoner, service worker og installasjonsveiledning. Piloten ble åpnet i Chrome på Samsung, installert og verifisert i standalone-visning.
+
+Dette arbeidet illustrerer flere forelesningstemaer: context engineering, context drift, regresjonsrisiko og behovet for observability. KI-en kunne ha korrekt kunnskap om prosjektet og likevel velge feil komponent fordi den manglet presis kontekst om hvilken responsiv gren som faktisk var aktiv. Korrigerende tiltak ble derfor å inspisere den faktiske responsive regelen, verifisere deploymål, bruke egen preview-branch og kombinere automatiserte tester med fysisk enhetstest.
