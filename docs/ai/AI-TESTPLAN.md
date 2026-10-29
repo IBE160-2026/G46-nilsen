@@ -3,7 +3,7 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** AI Test Plan / Quality Assurance  
 **Status:** Aktiv og revidert testplan  
-**Versjon ved dokumentasjon:** 20.10.9  
+**Versjon ved dokumentasjon:** 20.10.10  
 **Språk:** Norsk
 
 ---

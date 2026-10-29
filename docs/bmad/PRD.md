@@ -4,7 +4,7 @@
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert PRD med leveransestatus  
-**Versjon ved dokumentasjon:** 20.10.9  
+**Versjon ved dokumentasjon:** 20.10.10  
 **Språk:** Norsk
 
 ---

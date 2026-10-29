@@ -6,7 +6,7 @@ Målet er ikke at KI skal ta beslutninger for lederen, men å støtte forberedel
 
 Det som skiller Samtalestøtte fra en vanlig KI-chat er at brukeren ikke selv må bygge hele prompten, sikkerhetsrammen og arbeidsflyten. Produktet kombinerer ni hovedtemaer og 48 undertemaer med strukturert forberedelse, oppfølging i samme kontekst, dynamisk samtalesimulering, personvernkontroll i klient og server, kuratert faggrunnlag og systematisk KI-testing.
 
-Kildebruken er også styrt. En kuratert SOURCEBANK med blant annet norske myndighetskilder, regelverk og forskningsbasert kunnskap brukes som førstevalg, mens kontrollert nettsøk fungerer som supplement når kildebanken ikke er tilstrekkelig. Kildetype skal passe til påstanden: lov- og regelverksspørsmål bør forankres i autoritative kilder, mens råd om samtaleteknikk bør bygge på relevant forskning og fagkunnskap. Samtalestøtte er dermed utviklet som et domenespesifikt arbeidsverktøy for krevende medarbeidersamtaler, ikke som et generelt chatgrensesnitt.
+Kildebruken er også styrt. SOURCEBANK v6 har 62 kuraterte kilder med blant annet norske myndighetskilder, regelverk, organisasjons- og ledelsespsykologi, relasjonsledelse og samtaleteknikk. Banken brukes som førstevalg, mens kontrollert nettsøk fungerer som supplement når kildebanken ikke er tilstrekkelig. Kildetype skal passe til påstanden: lov- og regelverksspørsmål bør forankres i autoritative kilder, mens råd om samtaleteknikk bør bygge på relevant forskning og fagkunnskap. Samtalestøtte er dermed utviklet som et domenespesifikt arbeidsverktøy for krevende medarbeidersamtaler, ikke som et generelt chatgrensesnitt.
 
 ## Rask tilgang for vurdering
 
@@ -138,7 +138,7 @@ SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SECRET_KEY=sb_secret_...
 
 ADMIN_EMAILS=din-admin-epost@example.com
-APP_VERSION=20.10.9
+APP_VERSION=20.10.10
 ```
 
 Ekte API-nøkler og andre hemmeligheter skal ikke legges i GitHub.
@@ -201,6 +201,7 @@ npm run test-clipboard
 npm run test-golden-schema
 npm run test-golden-utils
 npm run test-benchmark-taxonomy
+npm run test-sourcebank
 npm run test-sensor-demo
 npm run test-public-assets
 npm run test-repo-structure
@@ -219,7 +220,7 @@ Ved siste dokumenterte kontroll besto blant annet:
 - repo-struktur/kjørbarhet: bestått
 - package-lock-konsistens: bestått
 
-Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. **26.10.2026 ble hele `npm test`-pakken kjørt etter utvidelsen av golden-banken og besto uten feil.** Kjøringen inkluderte syntaks, 34 personverntester, 24/24 simulatorkontroller, server-personvern, UI-regresjon/UU, historikk, samtaleboble, clipboard, golden-schema, golden-matcher, sensor-demo, offentlige assets, repo-struktur, package-lock og Node-kompatibilitet. Golden/fasit-schema verifiserte **21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert provenance**. Etterpå ble det gjort mindre endringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester. Disse ble deretter kontrollert med ny lokal kjøring, og den siste gjenstående repo-strukturtesten ble korrigert for lærerens nye `CLAUDE.md`/`.claude`-verktøy og verifisert grønn. Dette beskriver den komplette lokale verifiseringen per 26.10.2026. Senere endringer i produksjonsflyt, personvern og taksonomi er dokumentert separat med målrettede regresjonskontroller; den historiske fullkjøringen skal ikke fremstilles som om den ble kjørt på v20.10.9.
+Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. **26.10.2026 ble hele `npm test`-pakken kjørt etter utvidelsen av golden-banken og besto uten feil.** Kjøringen inkluderte syntaks, 34 personverntester, 24/24 simulatorkontroller, server-personvern, UI-regresjon/UU, historikk, samtaleboble, clipboard, golden-schema, golden-matcher, sensor-demo, offentlige assets, repo-struktur, package-lock og Node-kompatibilitet. Golden/fasit-schema verifiserte **21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert provenance**. Etterpå ble det gjort mindre endringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester. Disse ble deretter kontrollert med ny lokal kjøring, og den siste gjenstående repo-strukturtesten ble korrigert for lærerens nye `CLAUDE.md`/`.claude`-verktøy og verifisert grønn. Dette beskriver den komplette lokale verifiseringen per 26.10.2026. Senere endringer i produksjonsflyt, personvern og taksonomi er dokumentert separat med målrettede regresjonskontroller; den historiske fullkjøringen skal ikke fremstilles som om den ble kjørt på dagens v20.10.10.
 
 ### Sporbarhet fra krav til test
 
@@ -308,7 +309,7 @@ KI-bruk og kvalitetssikring er dokumentert i:
 - `docs/ai/AI-SYSTEMPROMPT.md`
 - `docs/ai/AI-RESPONSE-CONTRACT.md`
 - `docs/ai/AI-TESTPLAN.md`
-- `docs/VERSJONSHISTORIKK-v20.10.md` – kobler v20.10.4–20.10.9 til commitspor og forklarer fler-commit versjonsløft
+- `docs/VERSJONSHISTORIKK-v20.10.md` – kobler v20.10.4–v20.10.10 til commitspor og forklarer fler-commit versjonsløft
 
 Sikkerhet og personvern:
 
@@ -323,6 +324,7 @@ Faggrunnlag:
 - `docs/faggrunnlag/`
 - `docs/SOURCEBANK.md`
 - `data/SOURCEBANK.json`
+- `docs/faggrunnlag/FAGGRUNNLAG-SAMTALETEKNIKK-RELASJONSLEDELSE.md` – lokalt tverrgående grunnlag for relasjonsledelse, samtaleteknikk og framtidig offline/RAG
 
 Utviklingshistorikken kan også følges i Git-historikken og `CHANGELOG.md`.
 
