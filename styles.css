@@ -570,7 +570,7 @@ h1,h2,h3,p {
 
 .topic-grid {
   display: grid;
-  grid-template-columns: repeat(5,minmax(0,1fr));
+  grid-template-columns: repeat(4,minmax(0,1fr));
   gap: 12px;
 }
 
@@ -6840,5 +6840,182 @@ html[data-theme="dark"] .utility-page-logo {
 
   #install-app-button {
     width: 100%;
+  }
+}
+
+
+/* MOBILE UX REFINEMENT 29.10
+   Pilotfunn: mer innholdsflate, mindre hero, tydeligere kontrast,
+   tema i toppfeltet og logo ved siden av Samtaleøvelse-overskriften. */
+.sr-only {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0,0,0,0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+.topbar-mobile-theme {
+  display: none;
+}
+
+.mobile-chat-glyph svg {
+  width: 20px;
+  height: 20px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.9;
+  stroke-linejoin: round;
+}
+
+@media (max-width: 700px) {
+  /* Tema flyttes ut av bunnnavigasjonen og opp ved profilen. */
+  .topbar-mobile-theme {
+    width: 36px;
+    height: 36px;
+    flex: 0 0 36px;
+    display: grid !important;
+    place-items: center;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    background: var(--surface);
+    color: var(--accent);
+    font-size: 1.05rem;
+    box-shadow: none;
+    padding: 0;
+  }
+
+  html[data-theme="hybrid"] .topbar-mobile-theme {
+    background: #123e4a;
+    border-color: #255766;
+    color: #edf8fa;
+  }
+
+  html[data-theme="dark"] .topbar-mobile-theme {
+    background: var(--surface-2);
+  }
+
+  /* Hovedtema: mindre høyde og bedre utnyttelse av mobilbredden. */
+  #topic-view .topic-hero-panel {
+    margin: 8px -4px 14px !important;
+    padding: 14px !important;
+    border-radius: 16px !important;
+  }
+
+  #topic-view .topic-hero-copy {
+    padding: 0 !important;
+    width: 100%;
+    min-width: 0;
+  }
+
+  #topic-view .topic-hero-title-row {
+    gap: 10px;
+    align-items: center;
+  }
+
+  #topic-view .topic-summary-icon {
+    width: 38px;
+    height: 38px;
+    flex: 0 0 38px;
+  }
+
+  #topic-view .topic-hero-title-row h1 {
+    font-size: clamp(1.5rem,7vw,1.9rem) !important;
+    line-height: 1.08;
+    letter-spacing: -.035em;
+  }
+
+  #topic-view .topic-hero-copy > p {
+    margin-top: 9px;
+    max-width: none !important;
+    font-size: .91rem;
+    line-height: 1.45;
+  }
+
+  #topic-view .topic-representations {
+    margin-top: 11px;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    gap: 6px;
+    padding-bottom: 2px;
+    scrollbar-width: none;
+  }
+
+  #topic-view .topic-representations::-webkit-scrollbar {
+    display: none;
+  }
+
+  #topic-view .representation-chip {
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 5px 9px;
+    font-size: .78rem;
+  }
+
+  /* Samtaleøvelse: behold desktop-prinsippet med logo til høyre for overskriften. */
+  .simulation-hub-hero {
+    grid-template-columns: minmax(0,1fr) 108px !important;
+    align-items: start !important;
+    gap: 10px !important;
+    padding: 15px !important;
+  }
+
+  .simulation-hub-hero > div:first-child {
+    min-width: 0;
+  }
+
+  .simulation-hub-hero h1 {
+    font-size: clamp(1.55rem,7vw,1.95rem) !important;
+    line-height: 1.08;
+  }
+
+  .simulation-hub-hero p {
+    font-size: .9rem;
+    line-height: 1.45;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop {
+    display: flex !important;
+    width: 108px !important;
+    max-width: 108px !important;
+    height: 74px !important;
+    margin: 2px 0 0 !important;
+    align-items: center;
+    justify-content: flex-end !important;
+    justify-self: end !important;
+    overflow: hidden;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop img {
+    width: 108px !important;
+    max-width: 108px !important;
+    height: auto !important;
+    object-fit: contain;
+  }
+
+  /* Lys/hybrid: tydeligere primærhandlinger mot den lyse bakgrunnen. */
+  html[data-theme="light"] .primary-button,
+  html[data-theme="hybrid"] .primary-button {
+    background: var(--accent);
+    color: #fff;
+    border-color: var(--accent);
+  }
+
+  html[data-theme="light"] .primary-button:hover,
+  html[data-theme="hybrid"] .primary-button:hover {
+    background: var(--accent-strong);
+    color: #fff;
+  }
+
+  html[data-theme="light"] .topic-card,
+  html[data-theme="hybrid"] .topic-card,
+  html[data-theme="light"] .subtopic-card,
+  html[data-theme="hybrid"] .subtopic-card {
+    background: var(--surface);
+    border-color: color-mix(in srgb,var(--accent) 28%,var(--border));
   }
 }

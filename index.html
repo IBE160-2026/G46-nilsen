@@ -86,6 +86,10 @@
             <button data-theme="system" type="button"><span>◐</span>System</button>
           </div>
           <button class="secondary-button topbar-new-chat" id="new-conversation-button" type="button">＋ Ny samtale</button>
+          <button class="mobile-theme-cycle topbar-mobile-theme" id="mobile-theme-cycle" type="button" aria-label="Bytt fargetema" title="Bytt fargetema">
+            <span id="mobile-theme-icon" aria-hidden="true">◒</span>
+            <span class="sr-only" id="mobile-theme-label">Hybrid</span>
+          </button>
           <div class="profile-wrap">
             <button class="profile-chip" id="profile-button" type="button" aria-label="Brukerprofil" aria-expanded="false">
               <span class="profile-avatar" id="profile-avatar">○</span>
@@ -875,16 +879,13 @@
         <span class="mobile-nav-glyph" aria-hidden="true">⌂</span><span>Hjem</span>
       </button>
       <button class="nav-item mobile-nav-item" data-view="simulation" type="button">
-        <span class="mobile-nav-glyph" aria-hidden="true">◌</span><span>Øvelse</span>
+        <span class="mobile-nav-glyph mobile-chat-glyph" aria-hidden="true"><svg viewBox="0 0 24 24" focusable="false"><path d="M5 5.5h14a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-7.2L7 20v-3.5H5a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2Z"></path></svg></span><span>Øvelse</span>
       </button>
       <button class="nav-item mobile-nav-item" data-view="history" type="button">
         <span class="mobile-nav-glyph" aria-hidden="true">↶</span><span>Historikk</span>
       </button>
       <button class="nav-item mobile-nav-item" data-view="help" type="button">
         <span class="mobile-nav-glyph" aria-hidden="true">?</span><span>Hjelp</span>
-      </button>
-      <button class="mobile-nav-item mobile-theme-cycle" id="mobile-theme-cycle" type="button" aria-label="Bytt fargetema">
-        <span class="mobile-nav-glyph" id="mobile-theme-icon" aria-hidden="true">◒</span><span id="mobile-theme-label">Hybrid</span>
       </button>
     </nav>
   </div>
