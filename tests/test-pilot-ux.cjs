@@ -10,10 +10,14 @@ assert(!html.includes('SAMTALELAB'), 'Samtalelab skal ikke være et brukerbegrep
 assert(!html.includes('Samtalesimulering'), 'Samtalesimulering skal ikke være et brukerbegrep i HTML');
 assert(html.includes('Samtaleøvelse'), 'Samtaleøvelse mangler i UI');
 assert(html.includes('mobile-bottom-nav'), 'Mobil bunnnavigasjon mangler');
+assert(html.includes('mobile-theme-cycle'), 'Mobil temasvitsj mangler');
+assert(html.includes('assets/images/logo.png') && html.includes('simulation-logo-crop'), 'Samtaleøvelse mangler full logo');
 assert(!app.includes("'Samtalesimulering'"), 'Appen lagrer fortsatt gammelt brukerbegrep');
 assert(app.includes("setBreadcrumb('Samtaleøvelse"), 'Breadcrumb bruker ikke Samtaleøvelse');
 assert(css.includes('MOBILE UX PILOT v20.11'), 'Mobile-first CSS mangler');
 assert(css.includes('.mobile-bottom-nav'), 'Mobilnavigasjon mangler CSS');
+assert(css.includes('html[data-theme="hybrid"] .mobile-bottom-nav'), 'Hybrid mobilmeny mangler mørk variant');
+assert(css.includes('#home-view .hero-visual'), 'Mobilforsiden mangler kompakt hero-bilde');
 assert(css.includes('display: none !important;') && css.includes('.sidebar,'), 'Mobil skal skjule desktop-sidefeltet');
 assert(backlog.includes('## 12. Voice / tale i samtaleøvelsen'), 'Voice-funn mangler i brukertestbackloggen');
 assert(fs.existsSync('docs/VERSJONSSTRATEGI.md'), 'Versjonsstrategi mangler');

@@ -935,7 +935,7 @@ html[data-theme="dark"] .brand-logo {
 
 @media (max-width:1420px) {
   .topic-grid {
-    grid-template-columns: repeat(4,minmax(0,1fr));
+    grid-template-columns: repeat(5,minmax(0,1fr));
   }
 
 }
@@ -6557,9 +6557,30 @@ html[data-theme="dark"] .utility-page-logo {
     border-radius: 18px !important;
   }
 
-  .hero-visual,
   .topic-hero-visual {
     display: none !important;
+  }
+
+  #home-view .hero-panel {
+    overflow: hidden;
+  }
+
+  #home-view .hero-visual {
+    display: block !important;
+    width: auto;
+    height: 92px;
+    margin: 8px -18px -18px !important;
+    overflow: hidden;
+    border-radius: 0 0 18px 18px;
+  }
+
+  #home-view .hero-visual img {
+    width: 100% !important;
+    height: 92px !important;
+    object-fit: cover;
+    object-position: center 46%;
+    -webkit-mask-image: linear-gradient(to bottom,rgba(0,0,0,.72) 0%,#000 24%,#000 100%) !important;
+    mask-image: linear-gradient(to bottom,rgba(0,0,0,.72) 0%,#000 24%,#000 100%) !important;
   }
 
   .topic-grid,
@@ -6703,5 +6724,56 @@ html[data-theme="dark"] .utility-page-logo {
   .mobile-bottom-nav .mobile-nav-item.active {
     color: var(--accent);
     background: var(--accent-soft);
+  }
+}
+
+
+/* MOBILE HYBRID NAV + COMPACT VISUAL IDENTITY */
+@media (max-width: 700px) {
+  .mobile-theme-cycle {
+    border: 0;
+    background: transparent;
+    color: var(--text);
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav {
+    background: linear-gradient(180deg,#123e4a 0%,#0f3440 100%);
+    border-top-color: #255766;
+    color: #edf8fa;
+    box-shadow: 0 -8px 24px rgba(11,47,58,.22);
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav .mobile-nav-item {
+    color: #d9edf1;
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav .mobile-nav-item.active {
+    background: #245d6d;
+    color: #fff;
+  }
+
+  html[data-theme="hybrid"] .mobile-bottom-nav .mobile-theme-cycle {
+    color: #d9edf1;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop {
+    display: flex !important;
+    width: 150px !important;
+    max-width: 52% !important;
+    height: auto !important;
+    margin: 2px 0 0 !important;
+    justify-self: start !important;
+    transform: none !important;
+  }
+
+  .simulation-hub-hero .simulation-logo-crop img {
+    width: 150px !important;
+    height: auto !important;
+    max-width: 100% !important;
+    object-fit: contain;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero .simulation-logo-crop img {
+    content: url("assets/images/logo-light.png") !important;
   }
 }

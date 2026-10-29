@@ -1794,6 +1794,19 @@ function applyTheme(theme) {
   document.querySelectorAll('[data-theme]').forEach(button => {
     button.classList.toggle('active', button.dataset.theme === theme);
   });
+  const mobileThemeIcon=document.querySelector('#mobile-theme-icon');
+  const mobileThemeLabel=document.querySelector('#mobile-theme-label');
+  const mobileThemeButton=document.querySelector('#mobile-theme-cycle');
+  const themeMeta={
+    hybrid:{icon:'◒',label:'Hybrid'},
+    dark:{icon:'☾',label:'Mørkt'},
+    light:{icon:'☀',label:'Lyst'},
+    system:{icon:'◐',label:'System'}
+  };
+  const meta=themeMeta[theme]||themeMeta.hybrid;
+  if(mobileThemeIcon) mobileThemeIcon.textContent=meta.icon;
+  if(mobileThemeLabel) mobileThemeLabel.textContent=meta.label;
+  if(mobileThemeButton) mobileThemeButton.setAttribute('aria-label', 'Bytt fargetema. Nå: '+meta.label);
 }
 
 function initTheme() {
@@ -1843,6 +1856,12 @@ updateNavState('home');
 
 document.querySelectorAll('[data-theme]').forEach(button => {
   button.addEventListener('click', () => applyTheme(button.dataset.theme));
+});
+document.querySelector('#mobile-theme-cycle')?.addEventListener('click', () => {
+  const current=localStorage.getItem('samtalestotte-theme') || 'hybrid';
+  const order=['hybrid','dark','light'];
+  const next=order[(Math.max(0,order.indexOf(current))+1)%order.length];
+  applyTheme(next);
 });
 
 document.querySelectorAll('.nav-item[data-view]').forEach(button => {
