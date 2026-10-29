@@ -27,6 +27,16 @@ const assert = require("assert");
   const unknown = router.classifyOccupationLocally("bibliotekar");
   assert.strictEqual(unknown.matched, false);
 
+  const irrelevantUnknown = router.resolveOccupationContext({
+    occupation: "bibliotekar",
+    topic: "Livssituasjoner",
+    subtopic: "Samlivsbrudd",
+    situation: "Medarbeideren står i et samlivsbrudd."
+  });
+  assert.strictEqual(irrelevantUnknown.occupationRelevant, false);
+  assert.strictEqual(irrelevantUnknown.classificationNeeded, false, "Irrelevant fritekstyrke skal ikke utløse KI-klassifisering");
+  assert.strictEqual(irrelevantUnknown.localClassification, null);
+
   let checked = 0;
   for (const tc of benchmark.cases || []) {
     const result = router.resolveOccupationContext({
