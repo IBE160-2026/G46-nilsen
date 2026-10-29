@@ -16,7 +16,7 @@ assert(/font-weight:\s*600\s*!important/.test(css), 'Accordion-overskrifter er i
 const openDetails = [...html.matchAll(/<details\b[^>]*\sopen(?:\s|>|=)[^>]*>/g)].map(match => match[0]);
 assert.equal(openDetails.length, 1, 'Nøyaktig ett details-kort skal være åpent som standard');
 assert(openDetails[0].includes('id="install-app-card"'), 'Det åpne details-kortet skal være installasjonskortet');
-console.log('v20.11.0 UI-kontroll: OK');
+console.log('v20.11.1 UI-kontroll: OK');
 
 
 
@@ -33,11 +33,11 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.11\.0/.test(html), "CSS cache-versjon er ikke 20.11.0");
-assert(/id=["']about-app-version["']>20\.11\.0</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.0");
+assert(/styles\.css\?v=20\.11\.0/.test(html), "CSS cache-versjon er ikke 20.11.1");
+assert(/id=["']about-app-version["']>20\.11\.0</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.1");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
-assert(/id=["']report-meta["']>Versjon 20\.11\.0</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.0");
+assert(/id=["']report-meta["']>Versjon 20\.11\.0</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.1");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
 assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.0["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.0["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.0["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.0["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");

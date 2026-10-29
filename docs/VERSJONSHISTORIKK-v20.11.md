@@ -73,3 +73,12 @@ Produksjonstjenesten på Render følger main og starter med npm start. Pilot-pre
 - docs/VERSJONSSTRATEGI.md
 
 Voice er fortsatt videre arbeid og er ikke del av v20.11.0.
+
+
+## v20.11.1 – desktop/tablet hotfix
+
+Etter produksjonssetting av 20.11.0 ble det oppdaget at Samtaleøvelse-illustrasjonen kunne bli svært stor på maksimerte desktopvinduer, og at eldre temaspesifikke CSS-regler gjorde at mørkt tema kunne vise en annen grafikk enn lys/hybrid. Det ble samtidig observert at overgang til mobilpreget layout skjedde for tidlig på PC.
+
+Rettelsen standardiserer samme `profile-ai.png` i alle temaer, begrenser desktopstørrelsen, beholder to-kolonneoppsett i intervallet 641–900 CSS-piksler og flytter hovedgrensen for mobilmodus fra 700 til 640 CSS-piksler. JavaScript-logikken for mobilnavigasjon bruker samme grense.
+
+Hotfixen er utviklet på `hotfix/v20.11.1-desktop-responsive` og de relevante regresjonsassertene er oppdatert. Lokal full testkjøring kunne ikke gjennomføres i ChatGPTs arbeidsmiljø fordi miljøet ikke kunne nå GitHub for å klone repoet; dette skal ikke fremstilles som en bestått full `npm test`.

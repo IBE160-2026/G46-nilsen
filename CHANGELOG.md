@@ -1,3 +1,13 @@
+# v20.11.1 – desktoplogo og senere mobilbreakpoint
+
+- Rettet Samtaleøvelse-illustrasjonen på web/desktop: samme KI-bilde brukes nå i lys, hybrid og mørk visning.
+- Fjernet eldre temaregler som kunne bytte illustrasjonen til Samtalestøtte-/logosymbol i mørkt tema.
+- Begrenset desktopillustrasjonen til en moderat, stabil størrelse slik at den ikke blåses opp på maksimerte skjermer.
+- Flyttet hovedgrensen for ekte mobilmodus fra 700 til 640 CSS-piksler i CSS og JavaScript.
+- Mellombredde 641–900 px beholder desktop/tablet-oppsett med to kolonner i Samtaleøvelse i stedet for å falle direkte til én mobilkolonne.
+- Oppdatert regresjonstester og versjons-/cacheverdier til 20.11.1.
+
+---
 # v20.11.0 – mobil-first pilotforbedringer og PWA
 
 - Samlet pilotgren er klargjort som produksjonsrelease etter fysisk mobiltest.

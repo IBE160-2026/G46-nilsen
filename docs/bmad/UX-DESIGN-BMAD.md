@@ -4,7 +4,7 @@
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
 **Status:** Revidert UX-spesifikasjon med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.0  
+**Versjon ved dokumentasjon:** 20.11.1  
 **Språk:** Norsk
 
 ---
@@ -987,3 +987,8 @@ Pilotbruk gjorde det nødvendig å behandle mobil som en egen responsiv tilstand
 - installert PWA skal oppleves som eget appvindu når nettleseren støtter standalone-visning
 
 Et viktig pilotfunn var at en teknisk endring kan treffe feil responsiv komponent. Endringer i desktop-sidefeltet ga ingen visuell effekt på mobil fordi dette elementet var skjult ved mobilbredden. Derfor er kontroll av faktisk renderet komponent og fysisk enhet nå eksplisitt del av responsiv kvalitetssikring.
+
+
+## Hotfix 20.11.1 – grense mellom desktop/tablet og mobil
+
+Produksjonskontroll viste at responsiviteten skiftet for tidlig til et mobilpreget uttrykk på smale PC-vinduer. Hovedgrensen for mobilmodus er derfor satt til 640 CSS-piksler. Over denne bredden skal Samtaleøvelse beholde desktop/tablet-hierarki med bilde ved siden av teksten, og i 641–900 px brukes to kolonner i startvalgene fremfor én ren mobilkolonne. Samme KI-illustrasjon brukes i alle fargetemaer.
