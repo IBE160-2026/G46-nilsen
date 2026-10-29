@@ -1,6 +1,6 @@
 ﻿# Samtalestøtte
 
-**Gjeldende produksjonsversjon:** 20.11.4 · 29.10.2026  
+**Gjeldende produksjonsversjon:** 20.11.5 · 29.10.2026  
 
 Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Løsningen er utviklet som del av IBE160 Programmering med KI ved Høgskolen i Molde.
 
@@ -403,3 +403,5 @@ Et naturlig neste steg ved videre produksjonsmodning er å dele disse ansvarene 
 Prosjektet er utviklet av Cecilie C. Nilsen som del av IBE160 Programmering med KI ved Høgskolen i Molde.
 
 Kontakt: **cecilie.c.nilsen@himolde.no**
+
+**Patch 20.11.5:** Historikk-logoen ligger nå i en faktisk egen høyrekolonne i HTML/CSS, krymper dynamisk uten å wrappe under overskriften og skjules i ekte mobilmodus. Logoen er flyttet høyere i den ledige høyre flaten. Mørk/hybrid sidemeny har samtidig fått eksplisitt hover-kontrast, og KI-illustrasjonen i Samtaleøvelse beholdes uten ramme/boks.

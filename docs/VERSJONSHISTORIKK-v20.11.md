@@ -103,3 +103,12 @@ Etter v20.11.2 ble profilområdet korrekt synlig, men på kompakt desktop ble br
 Produksjonskontroll av Historikk viste at logoen fortsatt lå som et element i samme rad som overskriften. Det gjorde at den ikke kunne være visuelt sentrert i den store ledige flaten til høyre. I v20.11.4 brukes derfor CSS-grid til å gjøre høyresiden til en faktisk visuell kolonne uten å endre semantisk HTML-struktur. Logoen sentreres i kolonnen og skalerer med `clamp()`, slik at plasseringen følger vindusstørrelsen i stedet for faste pikselforskyvninger.
 
 Samtidig ble kortutseendet rundt KI-illustrasjonen i Samtaleøvelse fjernet. Wrapperen er fortsatt brukt til responsiv størrelse og klikkflate, men border, bakgrunn, skygge og radius er fjernet slik at selve illustrasjonen står fritt.
+
+
+## v20.11.5 – Historikklogo som egen kolonne og mørk hover
+
+v20.11.4 forsøkte å sentrere Historikk-logoen ved å la elementet bli del av en grid-layout, men logoen lå fortsatt semantisk inne i `utility-title-row`. Ved skalering kunne den derfor fortsatt oppføre seg som del av overskriftsflyten, wrappe og etterlate uønsket tom høyde. I v20.11.5 ble den flyttet ut av tittelraden i selve HTML-strukturen og gjort til en egen søskenkolonne i headeren.
+
+Fra 641 CSS-piksler og opp har Historikk derfor alltid to kolonner. Høyrekolonnen krymper med vinduet, logoen skalerer med `clamp()`, og den plasseres høyere i den opprinnelig ledige flaten uten å påvirke tekstkolonnens høyde. Under 640 px skjules logoen i stedet for å bli en egen rad.
+
+Samme produksjonsrunde avdekket at generelle hover-regler kunne gjøre mørk sidemeny nær hvit ved peker-hover. En eksplisitt sluttregel for mørk/hybrid sidebar låser hover/fokus/aktiv til mørk teal med hvit tekst og synlig ikon.
