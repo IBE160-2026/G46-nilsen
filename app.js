@@ -656,7 +656,8 @@ function showAutoTopicNote(topic, subtopic, classification) {
     : classification?.confidence === 'medium'
       ? 'sannsynlig treff'
       : 'foreløpig forslag';
-  text.innerHTML = `<strong>KI foreslo ${escapeHtml(topic.title)} → ${escapeHtml(subtopic[0])}</strong><span>${confidenceText}. ${escapeHtml(classification?.reason || '')}</span>`;
+  const sourceLabel = classification?.confidence === 'local' ? 'Samtalestøtte foreslo' : 'KI foreslo';
+  text.innerHTML = `<strong>${sourceLabel} ${escapeHtml(topic.title)} → ${escapeHtml(subtopic[0])}</strong><span>${confidenceText}. ${escapeHtml(classification?.reason || '')}</span>`;
   note.hidden = false;
 }
 
