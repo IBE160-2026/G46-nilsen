@@ -8086,3 +8086,35 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
     drop-shadow(0 -.65px 0 rgba(255,255,255,.92))
     drop-shadow(0 1px 3px rgba(0,0,0,.16)) !important;
 }
+
+
+/* MOBILE NAV AUTO HIDE 2026-10-29 */
+
+@media (max-width:700px) {
+  .mobile-bottom-nav {
+    transition:
+      transform .22s ease,
+      opacity .18s ease !important;
+    will-change: transform;
+  }
+
+  body.mobile-nav-hidden .mobile-bottom-nav {
+    transform: translateY(calc(100% + env(safe-area-inset-bottom) + 8px)) !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+  }
+
+  body.mobile-nav-hidden .simulation-form {
+    bottom: env(safe-area-inset-bottom) !important;
+  }
+
+  .simulation-hub-title-row {
+    gap: 0 !important;
+  }
+}
+
+@media (prefers-reduced-motion:reduce) {
+  .mobile-bottom-nav {
+    transition: none !important;
+  }
+}
