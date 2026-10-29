@@ -7674,3 +7674,93 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
     font-size: 1.02rem !important;
   }
 }
+
+
+/* KI IDENTITY + IMAGE PREVIEW + PWA 2026-10-29 */
+
+.mobile-nav-ai-glyph img {
+  display: block;
+  width: 23px;
+  height: 23px;
+  object-fit: contain;
+  border-radius: 50%;
+}
+
+.simulation-entry-icon {
+  cursor: zoom-in;
+  overflow: hidden;
+}
+
+.simulation-entry-icon img {
+  width: 42px;
+  height: 42px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.simulation-logo-crop {
+  cursor: zoom-in;
+}
+
+.expandable-content-image {
+  cursor: zoom-in;
+}
+
+.expandable-content-image:focus-visible,
+.image-preview-trigger:focus-visible {
+  outline: 3px solid color-mix(in srgb,var(--accent) 42%,transparent);
+  outline-offset: 3px;
+}
+
+.image-preview-dialog .brand-logo-dialog-card {
+  min-height: min(76vh,620px);
+}
+
+.image-preview-dialog .brand-logo-dialog-card img {
+  width: auto;
+  max-width: min(86vw,720px);
+  max-height: 76vh;
+  object-fit: contain;
+  border-radius: 16px;
+}
+
+html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
+  content: normal;
+}
+
+@media (max-width:700px) {
+  .mobile-nav-ai-glyph img {
+    width: 22px;
+    height: 22px;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop {
+    width: 88px !important;
+    max-width: 88px !important;
+    height: 78px !important;
+    border-radius: 50% !important;
+  }
+
+  .simulation-hub-hero > .simulation-logo-crop img {
+    width: 74px !important;
+    height: 74px !important;
+    max-width: 74px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border-radius: 50% !important;
+  }
+
+  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img,
+  html[data-theme="hybrid"] .simulation-hub-hero > .simulation-logo-crop img {
+    content: normal !important;
+  }
+
+  .image-preview-dialog .brand-logo-dialog-card {
+    min-height: 58vh;
+  }
+
+  .image-preview-dialog .brand-logo-dialog-card img {
+    max-width: 86vw;
+    max-height: 70vh;
+  }
+}
