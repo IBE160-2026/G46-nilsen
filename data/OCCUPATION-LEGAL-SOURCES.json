@@ -1,8 +1,47 @@
 {
-  "version": 2,
+  "version": 3,
   "verifiedAt": "2026-10-29",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
+    {
+      "id": "NAV_SICK_LEAVE_FOLLOWUP",
+      "authority": "NAV",
+      "title": "Slik følger du opp sykmeldte",
+      "url": "https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "sykefravær",
+        "sykmeldt",
+        "oppfølgingsplan",
+        "dialogmøte",
+        "tilrettelegging",
+        "aktivitetsplikt",
+        "fravær"
+      ],
+      "timeSensitive": true
+    },
+    {
+      "id": "LOVDATA_AML",
+      "authority": "Lovdata",
+      "title": "Arbeidsmiljøloven",
+      "url": "https://lovdata.no/NL/lov/2005-06-17-62",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "arbeidsmiljø",
+        "arbeidstid",
+        "varsling",
+        "tilrettelegging",
+        "stillingsvern",
+        "oppsigelse",
+        "kontrolltiltak",
+        "HMS"
+      ],
+      "timeSensitive": true
+    },
     {
       "id": "AT_RULES",
       "authority": "Arbeidstilsynet",
