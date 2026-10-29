@@ -4,7 +4,7 @@ Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve p
 
 Målet er ikke at KI skal ta beslutninger for lederen, men å støtte forberedelse, formuleringer, refleksjon og praktisk øvelse.
 
-Det som skiller Samtalestøtte fra en vanlig KI-chat er at brukeren ikke selv må bygge hele prompten, sikkerhetsrammen og arbeidsflyten. Produktet kombinerer ni hovedtemaer og 56 undertemaer med strukturert forberedelse, oppfølging i samme kontekst, dynamisk samtalesimulering, personvernkontroll i klient og server, kuratert faggrunnlag og systematisk KI-testing.
+Det som skiller Samtalestøtte fra en vanlig KI-chat er at brukeren ikke selv må bygge hele prompten, sikkerhetsrammen og arbeidsflyten. Produktet kombinerer ni hovedtemaer og 48 undertemaer med strukturert forberedelse, oppfølging i samme kontekst, dynamisk samtalesimulering, personvernkontroll i klient og server, kuratert faggrunnlag og systematisk KI-testing.
 
 Kildebruken er også styrt. En kuratert SOURCEBANK med blant annet norske myndighetskilder, regelverk og forskningsbasert kunnskap brukes som førstevalg, mens kontrollert nettsøk fungerer som supplement når kildebanken ikke er tilstrekkelig. Kildetype skal passe til påstanden: lov- og regelverksspørsmål bør forankres i autoritative kilder, mens råd om samtaleteknikk bør bygge på relevant forskning og fagkunnskap. Samtalestøtte er dermed utviklet som et domenespesifikt arbeidsverktøy for krevende medarbeidersamtaler, ikke som et generelt chatgrensesnitt.
 
@@ -86,7 +86,7 @@ Prototypen har ni hovedtemaer:
 3. Prestasjon og utvikling
 4. Lønn og utvikling
 5. Samarbeid og kommunikasjon
-6. Avslutning av arbeidsforhold
+6. Oppsigelse og avslutning av arbeidsforhold
 7. Sikkerhet og ansvar
 8. Livssituasjoner
 9. Mobbing og trakassering
@@ -138,7 +138,7 @@ SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
 SUPABASE_SECRET_KEY=sb_secret_...
 
 ADMIN_EMAILS=din-admin-epost@example.com
-APP_VERSION=20.10.3
+APP_VERSION=20.10.9
 ```
 
 Ekte API-nøkler og andre hemmeligheter skal ikke legges i GitHub.
@@ -200,6 +200,7 @@ npm run test-bubble-cleanup
 npm run test-clipboard
 npm run test-golden-schema
 npm run test-golden-utils
+npm run test-benchmark-taxonomy
 npm run test-sensor-demo
 npm run test-public-assets
 npm run test-repo-structure
@@ -240,7 +241,7 @@ Dette gjør det mulig å følge sentrale krav fra PRD til konkret testbevis uten
 
 ### Fasitbasert KI-testing
 
-Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den inneholder nå **21 caser**, dekker alle ni hovedtemaer med minst to caser per tema og har ekstra dekning for de særlig risikoutsatte temaene mobbing/trakassering og avslutning av arbeidsforhold. Banken beskriver:
+Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den inneholder nå **26 caser**, dekker alle ni hovedtemaer med minst to caser per tema og har ekstra dekning for de særlig risikoutsatte temaene mobbing/trakassering og oppsigelse/avslutning av arbeidsforhold. Banken beskriver:
 
 - forventet hovedtema
 - maskinelle kontrollpunkter
@@ -264,6 +265,14 @@ npm run test-ai:golden
 Denne testen kombinerer automatisk kontroll med en eksplisitt manuell vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene. Fasiten er utarbeidet av studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI. Den er basert på prosjektets krav, kilder og sikkerhetsregler, men er **ikke uavhengig validert av relevante eksterne fagpersoner**. Hvilken kompetanse som er relevant varierer med saken og kan blant annet være organisasjonspsykologi/samtalemetodikk, HR/arbeidsliv, arbeidsrett eller HMS.
 
 Ny live golden-kjøring 26.10.2026 mot **GPT-5.6 Luna** omfattet alle **21 casene**. Maskinelt resultat var **19 OK, 2 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil**. De to flaggede casene (`G-AVSL-03` og `G-SAMARB-02`) ble manuelt gjennomgått mot MÅ-/BØR-fasiten. Begge traff de faglige hovedkravene; flagget skyldtes at responsen ikke satte `Avklaring` til ja selv om rådet ellers inneholdt relevante kontrollpunkter og en forsvarlig videre prosess. Resultatet dokumenteres derfor som 19 maskinelt OK + 2 manuelt akseptert etter kontroll, ikke som 21/21 maskinelt OK.
+
+### Nyeste produksjonsflyt-kontroll
+
+28.10.2026 ble goldenbanken utvidet med fem faktiske pilotcaser til **26 caser** og kjørt gjennom samme analyse- og veiledningsflyt som vanlige brukere. Første fullkjøring registrerte 26/26 saker, men tre ble stoppet før KI-kall av personvernfilteret på grunn av falske navnetreff. Feilen ble sporet til deterministisk navnedeteksjon, rettet i underliggende regelverk og låst med egne regresjonstester. Ved ny fullkjøring kom **26/26 helt gjennom til KI-svar**. 25 åpninger besto den automatiske kvalitetskontrollen; én åpning var 67 ord mot en satt grense på 65, men ble manuelt vurdert som innholdsmessig god.
+
+Dette er dokumentert som produksjonsflyt-regresjon, ikke som ekstern faglig validering. Kjøringen viser også modellens ikke-determinisme: samme pilotcase kan få ulik ordlyd mellom kjøringer, mens de ønskede kvalitetskravene fortsatt kan være stabile.
+
+Benchmarkbanken er i versjon 20.10.9 synkronisert med de **48 gjeldende undertemaene** og inneholder 114 faste saker. `npm run test-benchmark-taxonomy` kontrollerer at alle benchmarkcaser peker på gyldige tema/undertema-par og at hvert undertema har minst to saker.
 
 ### KI- og live-tester
 
@@ -299,6 +308,7 @@ KI-bruk og kvalitetssikring er dokumentert i:
 - `docs/ai/AI-SYSTEMPROMPT.md`
 - `docs/ai/AI-RESPONSE-CONTRACT.md`
 - `docs/ai/AI-TESTPLAN.md`
+- `docs/VERSJONSHISTORIKK-v20.10.md` – kobler v20.10.4–20.10.9 til commitspor og forklarer fler-commit versjonsløft
 
 Sikkerhet og personvern:
 
