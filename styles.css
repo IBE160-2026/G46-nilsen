@@ -8300,3 +8300,102 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
     min-height: 150px !important;
   }
 }
+
+
+/* v20.11.2 COMPACT DESKTOP TOPBAR
+   Keep desktop identity, but prevent logo/breadcrumb/profile collisions. */
+@media (min-width:641px) and (max-width:1500px) {
+  .topbar {
+    padding-left: clamp(14px,2vw,26px) !important;
+    padding-right: clamp(14px,2vw,26px) !important;
+    gap: 12px !important;
+  }
+
+  .topbar-left {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-brand-logo {
+    display: block !important;
+    width: clamp(112px,10vw,150px) !important;
+    max-width: 150px !important;
+    max-height: 48px !important;
+    flex: 0 0 auto !important;
+  }
+
+  #breadcrumb {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    font-size: clamp(.94rem,1.18vw,1.08rem) !important;
+    line-height: 1.22 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .topbar-right {
+    flex: 0 0 auto !important;
+    gap: clamp(6px,.8vw,12px) !important;
+  }
+
+  .topbar .theme-switcher button {
+    padding: 7px 8px !important;
+    font-size: .78rem !important;
+  }
+
+  .topbar-new-chat {
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .profile-chip {
+    min-width: 0 !important;
+    max-width: 190px !important;
+    gap: 8px !important;
+  }
+
+  .profile-text {
+    min-width: 0 !important;
+    max-width: 126px !important;
+  }
+
+  .profile-text strong,
+  .profile-text small {
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+@media (min-width:641px) and (max-width:1100px) {
+  .topbar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    align-items: start !important;
+    height: auto !important;
+    min-height: 0 !important;
+    row-gap: 10px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .topbar-left {
+    width: 100% !important;
+  }
+
+  .topbar-right {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+
+  .profile-chip {
+    max-width: none !important;
+  }
+
+  .profile-text {
+    max-width: 180px !important;
+  }
+}
