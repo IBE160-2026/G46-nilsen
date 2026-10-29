@@ -4,7 +4,7 @@
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
 **Status:** Revidert UX-spesifikasjon med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.10.3  
+**Versjon ved dokumentasjon:** 20.11.0  
 **Språk:** Norsk
 
 ---
@@ -55,7 +55,8 @@ Det skal ikke oppleves som en generell chatbot.
 | Historikk | Implementert |
 | Admin | Implementert |
 | Sammenleggbare seksjoner | Implementert |
-| Responsiv tilpasning | Implementert på prototypenivå |
+| Responsiv tilpasning | Implementert og fysisk pilot-testet på mobil |
+| PWA/installasjon | Implementert på støttede nettlesere |
 | Full tilgjengelighetsvalidering | Videre arbeid |
 | Fullskala brukertesting | Videre arbeid |
 
@@ -971,4 +972,18 @@ Den visuelle og funksjonelle UX-en bygger derfor på:
 - kontrollert adminflate
 - beskyttelse mot UI-regresjoner
 
-UX-spesifikasjonen beskriver den faktiske prototypen ved versjon 20.10.3, samtidig som ikke-verifiserte områder som full tilgjengelighet og fullskala brukertesting er eksplisitt markert som videre arbeid.
+UX-spesifikasjonen beskriver den faktiske prototypen ved versjon 20.11.0, samtidig som ikke-verifiserte områder som full tilgjengelighet og fullskala brukertesting er eksplisitt markert som videre arbeid.
+
+# Produksjonstillegg – mobil-first UX i v20.11.0
+
+Pilotbruk gjorde det nødvendig å behandle mobil som en egen responsiv tilstand, ikke bare som komprimert desktop. Følgende prinsipper er nå del av levert UX:
+
+- desktop-sidefelt skjules på mobil og erstattes av mobilnavigasjon
+- toppfeltet bruker en kompakt, men tydelig Samtalestøtte-identitet
+- Samtaleøvelse har egen KI-illustrasjon og skal ikke forveksles med produktlogoen
+- logo og illustrasjoner kan åpnes i større forhåndsvisning
+- samtaleflaten bruker mer av skjermbredden på små skjermer
+- installasjon som PWA er synlig i Innstillinger
+- installert PWA skal oppleves som eget appvindu når nettleseren støtter standalone-visning
+
+Et viktig pilotfunn var at en teknisk endring kan treffe feil responsiv komponent. Endringer i desktop-sidefeltet ga ingen visuell effekt på mobil fordi dette elementet var skjult ved mobilbredden. Derfor er kontroll av faktisk renderet komponent og fysisk enhet nå eksplisitt del av responsiv kvalitetssikring.
