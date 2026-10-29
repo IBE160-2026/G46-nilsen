@@ -7233,3 +7233,50 @@ html[data-theme="dark"] .utility-page-logo {
     margin-bottom: 7px;
   }
 }
+
+
+/* REAL MOBILE TOPBAR BRAND FIX 2026-10-29 */
+
+.topbar-mobile-brand-lockup {
+  display: none;
+}
+
+@media (max-width:700px) {
+  .topbar-left .topbar-brand-logo {
+    display: none !important;
+  }
+
+  .topbar-mobile-brand-lockup {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    min-width: 0;
+    flex: 0 1 auto;
+  }
+
+  .topbar-mobile-brand-symbol {
+    display: block;
+    width: 29px;
+    height: 27px;
+    flex: 0 0 29px;
+    object-fit: contain;
+  }
+
+  html[data-theme="hybrid"] .topbar-mobile-brand-symbol,
+  html[data-theme="dark"] .topbar-mobile-brand-symbol {
+    content: url("assets/images/logo-symbol-light.png");
+  }
+
+  .topbar-mobile-brand-word {
+    font-size: .88rem;
+    line-height: 1;
+    font-weight: 820;
+    letter-spacing: -.035em;
+    white-space: nowrap;
+  }
+
+  #breadcrumb {
+    flex: 1 1 auto;
+    max-width: 25vw !important;
+  }
+}
