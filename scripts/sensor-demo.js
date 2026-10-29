@@ -119,7 +119,7 @@ app.get("/src/client-data.js", (_req, res) => res.sendFile(path.join(root, "src/
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
 
 app.get("/api/public-config", (_req, res) => res.json({
-  appVersion: "20.10.3-demo",
+  appVersion: "20.11.0-preview",
   contactEmail: "",
   demoMode: true
 }));
@@ -245,7 +245,7 @@ app.delete("/api/history", (_req, res) => {
 app.get("/api/account/export", (_req, res) => {
   const payload = {
     exported_at: new Date().toISOString(),
-    app_version: "20.10.3-demo",
+    app_version: "20.11.0-preview",
     account: demoUser,
     conversations: history,
     feedback: []
@@ -268,7 +268,8 @@ app.use("/api", (_req, res) => {
 });
 app.use((_req, res) => res.status(404).send("Ikke funnet"));
 
-app.listen(port, "127.0.0.1", () => {
-  console.log(`Samtalestøtte sensor-demo kjører på http://127.0.0.1:${port}`);
+const host = process.env.HOST || "0.0.0.0";
+app.listen(port, host, () => {
+  console.log(`Samtalestøtte sensor-demo kjører på http://${host}:${port}`);
   console.log("Demoen bruker deterministiske mock-svar og ingen eksterne tjenester eller API-nøkler.");
 });
