@@ -263,6 +263,7 @@ async function createTrackedResponse(params) {
   const subtopic = params._subtopic ? String(params._subtopic).slice(0,200) : null;
   const trustedInternal = Boolean(params._trustedInternal);
   const privacyTexts = params._privacyTexts;
+  const privacyNameOverrides = params._privacyNameOverrides || [];
   // Sentral personverngateway: alle brukerinitierte KI-kall må eksplisitt levere teksten som skal kontrolleres.
   if (!trustedInternal) {
     if (!Array.isArray(privacyTexts)) {
@@ -270,7 +271,7 @@ async function createTrackedResponse(params) {
       error.code = "PRIVACY_CONTEXT_REQUIRED";
       throw error;
     }
-    const findings = privacyTexts.flatMap(serverPrivacyFindings).filter(item => SERVER_HARD_PRIVACY_TYPES.has(item.type));
+    const findings = privacyTexts.flatMap(text => serverPrivacyFindings(text, privacyNameOverrides)).filter(item => SERVER_HARD_PRIVACY_TYPES.has(item.type));
     if (findings.length) {
       const error = new Error("Personvernsjekk kreves før KI-kall.");
       error.code = "PRIVACY_REVIEW_REQUIRED";
@@ -281,7 +282,7 @@ async function createTrackedResponse(params) {
   const cleanParams = { ...params };
   delete cleanParams._functionName; delete cleanParams._userId; delete cleanParams._modelOverride;
   delete cleanParams._isTest; delete cleanParams._benchmarkRunId; delete cleanParams._benchmarkCaseId;
-  delete cleanParams._topicId; delete cleanParams._subtopic; delete cleanParams._privacyTexts; delete cleanParams._trustedInternal;
+  delete cleanParams._topicId; delete cleanParams._subtopic; delete cleanParams._privacyTexts; delete cleanParams._privacyNameOverrides; delete cleanParams._trustedInternal;
   try {
     const selectedClient = modelClient(modelUsed);
     if (!selectedClient) { const error=new Error(`API-nøkkel mangler for ${AI_MODELS[modelUsed]?.provider||'valgt provider'}.`); error.code='AI_PROVIDER_NOT_CONFIGURED'; throw error; }
@@ -1241,8 +1242,16 @@ function serverFindLikelyGivenNames(source) {
   return sharedPrivacyNameDetector.findLikelyGivenNames(source);
 }
 
-function serverPrivacyFindings(text) {
+function normalizedPrivacyNameOverrides(values = []) {
+  return new Set((Array.isArray(values) ? values : [])
+    .map(value => sharedPrivacyNameDetector.normalizeNameToken(value))
+    .filter(Boolean)
+    .slice(0, 20));
+}
+
+function serverPrivacyFindings(text, privacyNameOverrides = []) {
   const source = String(text || "");
+  const ignoredNames = normalizedPrivacyNameOverrides(privacyNameOverrides);
   const findings = [];
   const add = (type, message) => { if (!findings.some(item => item.type === type)) findings.push({ type, message }); };
   if (/\b[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}\b/i.test(source)) add("email", "Fjern e-postadresse.");
@@ -1261,7 +1270,10 @@ function serverPrivacyFindings(text) {
   if (/\b(?:fødselsnummer|personnummer|ansattnummer|ansattnr\.?|employee\s*id)\s*[:#-]?\s*[A-Z0-9-]{4,}\b/i.test(source) || /\b\d{11}\b/.test(source)) add("identifier", "Fjern identifikasjonsnummer.");
   if (/\b(?:han|hun|ham|henne|hans|hennes)\b/iu.test(source)) add("gendered_language", "Bruk kjønnsnøytral formulering, for eksempel «hen» eller «medarbeideren».");
   if (/\b[A-ZÆØÅ][a-zæøå]+(?:gate|gata|veien|vegen|allé|stien)\s+\d+[A-Za-z]?\b/.test(source)) add("address", "Fjern konkret gateadresse.");
-  for (const name of serverFindLikelyGivenNames(source)) findings.push({ type: "name", message: `Fjern mulig personnavn «${name}».` });
+  for (const name of serverFindLikelyGivenNames(source)) {
+    if (ignoredNames.has(sharedPrivacyNameDetector.normalizeNameToken(name))) continue;
+    findings.push({ type: "name", value: name, message: `Fjern mulig personnavn «${name}».` });
+  }
 
   const familyAgeCombo = /\b(?:har|med|til)\s+(?:(?:ett|to|tre|fire|fem|seks|\d+)\s+)?(?:barn|datter|døtre|sønn|sønner|gutt|gutter|jente|jenter)\b[^.!?]{0,55}\b(?:på\s+)?\d{1,2}(?:\s*(?:,|og)\s*\d{1,2})+(?:\s*år)?\b/iu;
   const singleChildAge = /\b(?:barn|datter|sønn|gutt|jente)\s+(?:som\s+er\s+|på\s+)\d{1,2}\s*år\b/iu;
@@ -1276,8 +1288,8 @@ function serverPrivacyFindings(text) {
   return findings;
 }
 
-function blockUnsafeAiText(res, texts) {
-  const findings = (Array.isArray(texts) ? texts : [texts]).flatMap(serverPrivacyFindings);
+function blockUnsafeAiText(res, texts, privacyNameOverrides = []) {
+  const findings = (Array.isArray(texts) ? texts : [texts]).flatMap(text => serverPrivacyFindings(text, privacyNameOverrides));
   const hard = findings.filter(item => SERVER_HARD_PRIVACY_TYPES.has(item.type));
   const unique = hard.filter((item, index, all) => all.findIndex(other => other.type === item.type && other.message === item.message) === index);
   if (!unique.length) return false;
@@ -1379,19 +1391,19 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
     });
   }
 
-  const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", testMode = "" } = req.body || {};
+  const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", testMode = "", privacyNameOverrides = [] } = req.body || {};
   const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
-  if (blockUnsafeAiText(res, [situation, helpRequest])) return;
+  if (blockUnsafeAiText(res, [situation, helpRequest], privacyNameOverrides)) return;
 
   const task = `\n\n## Oppgave i denne forespørselen\nAnalyser situasjonen som samtalepartner, ikke som HR-klassifiserer.\n- Gjengi bare fakta som faktisk står i brukerens tekst.\n- Identifiser det menneskelige/praktiske dilemmaet, ikke bare en kategori.\n- Relevante temaer er kun metadata og skal være maks to.\n- Still bare avklaringsspørsmål dersom svarene kan endre rådet vesentlig.\n- Lag korte klikkbare svaralternativer som dekker sannsynlige svar uten å påstå at de er sanne.
 - Sett multi_select=true når flere svaralternativer realistisk kan være sanne samtidig eller brukeren kan trenge hjelp med flere ting. Bruk false når alternativene faktisk utelukker hverandre.\n- Spør aldri om diagnose eller unødvendige sensitive opplysninger.\n- Hvis valgt tema/undertema ikke passer teksten, skal friteksten veie tyngst.\n\nValgt tema i grensesnittet: ${selectedTopic || "ikke oppgitt"}\nValgt undertema: ${selectedSubtopic || "ikke oppgitt"}\nHva brukeren ønsker hjelp til: ${helpRequest || "ikke oppgitt"}\n`;
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'analyse', _userId:req.user.id, _topicId:selectedTopic || null, _subtopic:selectedSubtopic || null, _privacyTexts:[situation, helpRequest], _isTest:adminPilotTest,
+      _functionName:'analyse', _userId:req.user.id, _topicId:selectedTopic || null, _subtopic:selectedSubtopic || null, _privacyTexts:[situation, helpRequest], _privacyNameOverrides:privacyNameOverrides, _isTest:adminPilotTest,
       instructions: systemPrompt + task,
       input: [
         {
@@ -1438,12 +1450,12 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
 
-  const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "", occupation = "", sectorId = "", employerType = "", employerContext = "" } = req.body || {};
+  const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "", occupation = "", sectorId = "", employerType = "", employerContext = "", privacyNameOverrides = [] } = req.body || {};
   const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
-  if (blockUnsafeAiText(res, [situation, ...flattenTextValues(followups)])) return;
+  if (blockUnsafeAiText(res, [situation, ...flattenTextValues(followups)], privacyNameOverrides)) return;
 
   const relevantSources = selectRelevantSources(analysis, situation);
   const occupationContext = occupationContextEnabled
@@ -1492,7 +1504,7 @@ Prestasjon/utvikling: «Jeg vil gjerne snakke med deg om noen av leveransene den
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)], _isTest:adminPilotTest,
+      _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)], _privacyNameOverrides:privacyNameOverrides, _isTest:adminPilotTest,
       tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + guidanceTask,
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
