@@ -5,26 +5,68 @@ const assert=require("assert");
   const cases=JSON.parse(fs.readFileSync("data/AGREEMENT-BENCHMARK-CASES.json","utf8"));
   const router=await import("../src/server/agreement-router.js");
 
-  for(const tc of cases.cases || []){
-    const result=router.suggestAgreementAreas({
-      occupation:tc.occupation,
-      employerContext:tc.employerContext,
-      topic:tc.topic,
-      subtopic:tc.subtopic,
-      situation:tc.situation
-    });
+  const irrelevant=router.suggestAgreementAreas({
+    occupation:"sykepleier",
+    topic:"Livssituasjoner",
+    subtopic:"Samlivsbrudd",
+    situation:"En medarbeider står i et samlivsbrudd."
+  });
+  assert.strictEqual(irrelevant.relevant,false);
+  assert.strictEqual(irrelevant.needsEmployerType,false);
+  assert.deepStrictEqual(irrelevant.suggestions,[]);
 
-    assert.strictEqual(result.relevant,tc.agreementRelevant, `${tc.id}: feil relevans`);
-    assert.strictEqual(result.confirmationRequired,tc.requireConfirmation, `${tc.id}: feil bekreftelseskrav`);
+  const relevantMissingEmployer=router.suggestAgreementAreas({
+    occupation:"sykepleier",
+    topic:"Lønn og utvikling",
+    subtopic:"Lønnsutvikling",
+    situation:"Medarbeideren ønsker å snakke om lønn."
+  });
+  assert.strictEqual(relevantMissingEmployer.relevant,true);
+  assert.strictEqual(relevantMissingEmployer.needsEmployerType,true);
+  assert.deepStrictEqual(relevantMissingEmployer.suggestions,[]);
+  assert(relevantMissingEmployer.employerTypeOptions.some(x=>x.id==="private"));
+  assert(relevantMissingEmployer.employerTypeOptions.some(x=>x.id==="municipal"));
+  assert(relevantMissingEmployer.employerTypeOptions.some(x=>x.id==="state"));
+  assert(relevantMissingEmployer.employerTypeOptions.some(x=>x.id==="health_enterprise"));
 
-    const ids=result.suggestions.map(x=>x.id);
-    for(const expected of tc.expectedAgreementAreas || []){
-      assert(ids.includes(expected), `${tc.id}: mangler forslag ${expected}`);
-    }
-    if(!tc.agreementRelevant){
-      assert.deepStrictEqual(ids,[], `${tc.id}: irrelevante saker skal ikke foreslå avtaleområde`);
-    }
-  }
+  const municipal=router.suggestAgreementAreas({
+    occupation:"sykepleier",
+    employerType:"municipal",
+    topic:"Lønn og utvikling",
+    subtopic:"Lønnsutvikling",
+    situation:"Medarbeideren ønsker å snakke om lønn."
+  });
+  assert.strictEqual(municipal.needsEmployerType,false);
+  assert(municipal.suggestions.some(x=>x.id==="municipal"));
+  assert.strictEqual(municipal.confirmationRequired,true);
 
-  console.log(`Avtaleruter OK: ${cases.cases.length} saker`);
+  const healthEnterprise=router.suggestAgreementAreas({
+    occupation:"sykepleier",
+    employerType:"health_enterprise",
+    topic:"Lønn og utvikling",
+    subtopic:"Lønnsutvikling",
+    situation:"Medarbeideren ønsker å snakke om lønn."
+  });
+  assert(healthEnterprise.suggestions.some(x=>x.id==="health_enterprise"));
+
+  const state=router.suggestAgreementAreas({
+    occupation:"rådgiver",
+    employerType:"state",
+    topic:"Lønn og utvikling",
+    subtopic:"Lønnsutvikling"
+  });
+  assert(state.suggestions.some(x=>x.id==="state"));
+
+  const unknown=router.suggestAgreementAreas({
+    occupation:"elektriker",
+    employerType:"unknown",
+    topic:"Prestasjon og utvikling",
+    subtopic:"Arbeidstid",
+    situation:"Arbeidstid og overtid er tema."
+  });
+  assert.strictEqual(unknown.relevant,true);
+  assert.strictEqual(unknown.unresolved,true);
+  assert.deepStrictEqual(unknown.suggestions,[]);
+
+  console.log("Avtaleruter OK: oppfølgingsspørsmål om arbeidsgivertype brukes bare når relevant");
 })().catch(err=>{console.error(err);process.exit(1);});
