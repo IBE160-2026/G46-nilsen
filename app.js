@@ -2291,6 +2291,7 @@ document.querySelector('#brand-home-button').addEventListener('click', () => {
 });
 
 document.querySelector('#sidebar-toggle').addEventListener('click', toggleSidebar);
+window.__SAMTALESTOTTE_READY__ = true;
 
 document.querySelector('#back-to-home').addEventListener('click', () => {
   navigateAppBack(() => {
@@ -3357,7 +3358,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.12', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.13', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
