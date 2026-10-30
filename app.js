@@ -1403,7 +1403,8 @@ function wireFollowupControls(container) {
       const id = input.dataset.followupCustomInput;
       const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
       if (field) field.dataset.answer = '';
-      updateFollowupPrivacy();
+      const privacyBox = document.querySelector('#followup-privacy');
+      if (privacyBox) { privacyBox.hidden = true; privacyBox.innerHTML = ''; }
     });
   });
 }
@@ -2306,7 +2307,8 @@ document.querySelector('#topic-finder-form').addEventListener('submit', async ev
 document.querySelector('#topic-search').addEventListener('input', event => {
   const value = event.target.value;
   const box = document.querySelector('#topic-suggestion');
-  updateFinderPrivacyCheck('#topic-search', '#topic-finder-privacy');
+  const privacyBox = document.querySelector('#topic-finder-privacy');
+  if (privacyBox) { privacyBox.hidden = true; privacyBox.innerHTML = ''; }
   // Ikke prøv å "gjette" tema mens brukeren fortsatt skriver. KI vurderer hele setningen ved innsending.
   document.querySelectorAll('.topic-card').forEach(card => {
     card.hidden = false;
@@ -2333,7 +2335,8 @@ document.querySelector('#topic-detail-search-form').addEventListener('submit', a
 
 document.querySelector('#topic-detail-search').addEventListener('input', event => {
   const value = event.target.value;
-  updateFinderPrivacyCheck('#topic-detail-search', '#topic-detail-privacy');
+  const privacyBox = document.querySelector('#topic-detail-privacy');
+  if (privacyBox) { privacyBox.hidden = true; privacyBox.innerHTML = ''; }
   document.querySelectorAll('.subtopic-card').forEach(card => {
     card.hidden = false;
     card.classList.remove('search-match');
@@ -2544,7 +2547,11 @@ document.querySelector('#continue-form')?.addEventListener('submit', event => {
   input.focus();
 });
 
-document.querySelector('#continue-input')?.addEventListener('input', updateContinuePrivacy);
+document.querySelector('#continue-input')?.addEventListener('input', event => {
+  const box = ensureContinuePrivacyBox();
+  if (box) { box.hidden = true; box.innerHTML = ''; }
+  event.currentTarget.setAttribute('aria-invalid', 'false');
+});
 
 document.querySelector('#continue-input')?.addEventListener('keydown', event => {
   if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
@@ -3324,7 +3331,10 @@ function closeAiFeedback(){document.querySelector('#ai-feedback-dialog')?.close(
 document.addEventListener('click',event=>{const button=event.target.closest('[data-report-ai-response]');if(!button)return;openAiFeedback(button.dataset.reportAiResponse||'general',button.dataset.turnIndex??null);});
 document.querySelector('#ai-feedback-cancel')?.addEventListener('click',closeAiFeedback);
 document.querySelector('#ai-feedback-include-conversation')?.addEventListener('change',updateFeedbackAttachmentPrivacy);
-document.querySelector('#ai-feedback-comment')?.addEventListener('input',updateAiFeedbackCommentPrivacy);
+document.querySelector('#ai-feedback-comment')?.addEventListener('input',()=>{
+  const box=document.querySelector('#ai-feedback-comment-privacy');
+  if(box){box.hidden=true;box.innerHTML='';}
+});
 document.querySelector('#ai-feedback-form')?.addEventListener('submit',async event=>{event.preventDefault();const category=document.querySelector('#ai-feedback-category')?.value||'Annet';const comment=document.querySelector('#ai-feedback-comment')?.value.trim()||'';const message=document.querySelector('#ai-feedback-message');const findings=detectSensitiveInfo(comment);if(splitPrivacyFindings(findings).hard.length){message.className='auth-message error';message.textContent='Fjern navn eller andre tydelige personopplysninger før tilbakemeldingen sendes.';return;}if(comment.length<3){message.className='auth-message error';message.textContent='Skriv kort hva som var problemet.';return;}const includeConversation=Boolean(document.querySelector('#ai-feedback-include-conversation')?.checked);let conversationSnapshot=null;if(includeConversation){const attachmentFindings=updateFeedbackAttachmentPrivacy();if(splitPrivacyFindings(attachmentFindings).hard.length){message.className='auth-message error';message.textContent='Samtalen må anonymiseres før den kan legges ved.';return;}conversationSnapshot=buildFeedbackConversationSnapshot(pendingAiFeedback.surface,pendingAiFeedback.turnIndex);}try{const r=await fetch('/api/ai-feedback',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({category,comment,surface:pendingAiFeedback.surface,turnIndex:pendingAiFeedback.turnIndex,conversationId:currentConversationId||null,topicId:currentTopic?.id||null,subtopic:currentSubtopic||null,includeConversation,conversationSnapshot})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke sende tilbakemeldingen.');message.className='auth-message success';message.textContent=includeConversation?'Takk. Tilbakemeldingen og samtalen er lagret.':'Takk. Tilbakemeldingen er lagret uten samtaleteksten.';setTimeout(closeAiFeedback,800);}catch(error){message.className='auth-message error';message.textContent=error.message;}});
 
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
@@ -3806,7 +3816,10 @@ document.querySelector('#simulation-new-direct')?.addEventListener('click', open
 document.querySelector('#simulation-history')?.addEventListener('click', openHistory);
 document.querySelector('#cancel-direct-simulation')?.addEventListener('click', () => { document.querySelector('#direct-simulation-form').hidden = true; showDirectSimulationPrivacy([]); });
 document.querySelector('#direct-simulation-form')?.addEventListener('submit', event => { event.preventDefault(); beginDirectSimulation(); });
-document.querySelector('#direct-simulation-situation')?.addEventListener('input', event => showDirectSimulationPrivacy(detectSensitiveInfo(event.currentTarget.value)));
+document.querySelector('#direct-simulation-situation')?.addEventListener('input', event => {
+  showDirectSimulationPrivacy([]);
+  event.currentTarget.setAttribute('aria-invalid', 'false');
+});
 document.querySelector('#close-simulation')?.addEventListener('click', closeSimulation);
 document.querySelectorAll('[data-sim-fidelity]').forEach(button => button.addEventListener('click', () => {
   simulationFidelity = button.dataset.simFidelity;
@@ -3866,7 +3879,18 @@ document.querySelector('#simulation-form')?.addEventListener('submit', async eve
   updateSimulationTurnPrivacy();
   await submitSimulationTurn(text);
 });
-document.querySelector('#simulation-input')?.addEventListener('input', updateSimulationTurnPrivacy);
+document.querySelector('#simulation-input')?.addEventListener('input', event => {
+  const input = event.currentTarget;
+  const box = document.querySelector('#simulation-turn-privacy');
+  const submit = document.querySelector('#simulation-submit');
+  input.setAttribute('aria-invalid', 'false');
+  if (submit) submit.disabled = !input.value.trim();
+  if (box) {
+    box.hidden = true;
+    box.innerHTML = '';
+    box.className = 'privacy-check simulation-turn-privacy';
+  }
+});
 document.querySelector('#simulation-input')?.addEventListener('keydown', event => {
   if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
   event.preventDefault();
@@ -3979,7 +4003,10 @@ document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
   }
 });
 
-document.querySelectorAll('#survey-form textarea[name="improvement_text"], #survey-form textarea[name="most_useful_text"]').forEach(input=>input.addEventListener('input',updateSurveyPrivacy));
+document.querySelectorAll('#survey-form textarea[name="improvement_text"], #survey-form textarea[name="most_useful_text"]').forEach(input=>input.addEventListener('input',()=>{
+  const box=document.querySelector('#survey-privacy');
+  if(box){box.hidden=true;box.innerHTML='';}
+}));
 
 document.querySelector('#admin-survey-enabled')?.addEventListener('change',async event=>{
   const msg=document.querySelector('#admin-survey-toggle-message'); if(msg){msg.className='auth-message';msg.textContent='Lagrer …';}
