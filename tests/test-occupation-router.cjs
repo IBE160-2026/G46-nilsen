@@ -63,6 +63,24 @@ const assert = require("assert");
   assert.strictEqual(irrelevantUnknown.classificationNeeded, false, "Irrelevant fritekstyrke skal ikke utløse KI-klassifisering");
   assert.strictEqual(irrelevantUnknown.localClassification, null);
 
+  const explicitNoSafetyIssue = router.resolveOccupationContext({
+    sectorId: "construction_trades",
+    occupation: "tømrer",
+    topic: "Samarbeid og kommunikasjon",
+    subtopic: "Uenighet",
+    situation: "To tømrere krangler om oppgavefordeling, uten at sikkerhet er tema."
+  });
+  assert.strictEqual(explicitNoSafetyIssue.occupationRelevant, false, "Eksplisitt fravær av sikkerhetsproblem skal ikke aktivere yrkeskontekst");
+
+  const missingSafetyRoutine = router.resolveOccupationContext({
+    sectorId: "construction_trades",
+    occupation: "tømrer",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Sikkerhetsrutiner",
+    situation: "Medarbeideren har ikke fulgt sikkerhetsrutinen ved arbeid i høyden."
+  });
+  assert.strictEqual(missingSafetyRoutine.occupationRelevant, true, "Brudd på sikkerhetsrutine skal fortsatt aktivere yrkeskontekst");
+
   let checked = 0;
   for (const tc of benchmark.cases || []) {
     const result = router.resolveOccupationContext({
