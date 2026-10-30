@@ -388,3 +388,57 @@ Den samlede mobil-/UX-runden ble testet på fysisk Samsung-mobil via Chrome. Fø
 To viktige regresjonsfunn oppstod underveis: først ble feil responsivt element endret fordi desktop-sidefeltet ikke er aktivt på mobil; senere ble Samtaleøvelse-identiteten forenklet for langt. Begge ble oppdaget gjennom faktisk visuell brukertest og korrigert før produksjonsrelease.
 
 Voice står fortsatt som videre arbeid og er ikke del av v20.11.0.
+
+
+---
+
+## 16. Samlede pilotfunn 30.10.2026 – e-post, fritekst og survey
+
+Denne seksjonen samler konkrete pilottilbakemeldinger som tidligere var diskutert i utviklingschat, men ikke fullt ut bevart i Git. Testerne anonymiseres; målet er å bevare funnene og hvilke produktbeslutninger de utløste.
+
+### Pilotbruker A – helhetsbruk, mobil, begreper og reset
+- Løsningen ble opplevd som «veldig ferdig og smidig», med lite å utsette på interaksjonsdesignet.
+- Mobil fungerte ikke ideelt og viste at mobil måtte behandles som en reell brukerflate.
+- Begreper var inkonsistente, særlig «simulering» kontra samtale/øvelse/råd. Brukeren anbefalte å droppe «simulering» i brukerrettet språk.
+- Personvernspråket vekslet mellom «identifiserende opplysninger» og «identifikatorer».
+- Brukertestskjemaet kunne oppleves som sendt før brukeren faktisk trykket Send.
+- Tekst fra tidligere sak ble stående når nytt tema ble valgt. Forventningen var blanke felt ved ny samtale.
+- KI-språket kunne være robotaktig. Formuleringen «det var ikke meningen å stemple deg» ble trukket frem som konkret eksempel.
+
+### Pilotbruker B – faglig nytte, svarenes tyngde og skjermflate
+- Konseptet ble vurdert som nyttig både for erfarne og uerfarne personer som skal gjennomføre krevende samtaler.
+- Kategoriene og oppbygningen av råd ble opplevd som logisk.
+- Noen råd ble opplevd som for passive og vage: de «treffer litt i utkanten av skiva» uten å gi nok tyngde i vanskelige samtaler.
+- Stor side- og toppflate tok for mye plass fra svarene, særlig på telefon.
+- Forslag: toppfelt kan trekke seg tilbake ved scrolling, og sidestolpen bør kunne minimeres helt mens åpneknappen fortsatt er tilgjengelig.
+- Tilbakemeldingen understreket at mobilbruk må forventes.
+
+### Pilotbruker C – yrke/bransje, lovverk og overenskomst
+- Ønsket valgfri tilpasning etter næring/yrke for mer realistiske og mindre generelle KI-svar.
+- Ønsket at relevant lovverk og eventuell overenskomst/tariff kunne foreslås ut fra valgt yrke/bransje.
+- Dette utløste videre arbeid med yrkes-/bransjekontekst, kildekart og tariff-/avtalelogikk. Funksjonen skal ikke aktiveres i produksjon før personvern, kildepresisjon og UI er verifisert.
+
+### Survey-funn 27.–30.10
+De innsendte svarene peker særlig på:
+- samtaleøvelsen/agentdialogen oppleves som nyttig
+- informasjonen kan bli for omfattende og bør prioriteres bedre
+- forsiden kan oppleves som «mye» når flere elementer ser handlingsbare ut samtidig
+- ikonbruk og visuell konsistens bør forbedres
+- personvernvarsler bør ikke avbryte skrivingen
+- det bør være tydeligere når brukeren er ferdig
+- utskrift av situasjon + råd er ønsket
+
+### UX-runde 30.10 – status i main
+Følgende tiltak er implementert i kode som direkte svar på pilotmønstrene:
+- sidestolpen er minimert som standard for nye brukere, men brukerens eget valg huskes
+- tooltips vises på sidebar-ikoner i minimert modus
+- Samtaleøvelse-profilen får tydeligere lys kontur i mørk/hybrid sidebar
+- Samarbeid og kommunikasjon bruker snakkebobleikon
+- Fravær og oppfølging bruker klokkeikon
+- Innstillinger bruker et flatt justeringsikon
+- nederste informasjonskort på forsiden bruker enkle linjeikoner og tydeligere tekst
+- Hjelp skiller mellom «Hjelp til å bruke Samtalestøtte» og «Ressurser og lenker»
+- råd kan skrives ut som situasjon + tema/undertema + råd, uten resten av UI-et
+- oppfølgingsdialogen genererer nye forslag til neste spørsmål etter hvert KI-svar
+
+Tiltakene skal verifiseres med regresjonstest og produksjonskontroll før de regnes som ferdig levert.
