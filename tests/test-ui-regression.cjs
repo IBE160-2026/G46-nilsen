@@ -56,14 +56,14 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.11\.6/.test(html), "CSS cache-versjon er ikke 20.11.8");
+assert(/styles\\.css\\?v=20\\.11\\.9/.test(html), "CSS cache-versjon er ikke 20.11.9");
 assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.8");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
 assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.8");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
-assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.5["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.5["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.5["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.5["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
+assert(/<script src=["']src\\/privacy-name-data\\.js\\?v=20\\.11\\.9["']><\/script>[\s\S]*<script src=["']src\\/privacy-detector\\.js\\?v=20\\.11\\.9["']><\/script>[\s\S]*<script src=["']src\\/client-data\\.js\\?v=20\\.11\\.9["']><\/script>[\s\S]*<script src=["']app\\.js\\?v=20\\.11\\.9["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
 console.log("Klientmodul-innlasting: OK");
 
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
