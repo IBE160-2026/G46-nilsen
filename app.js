@@ -3357,7 +3357,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.11', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.12', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
