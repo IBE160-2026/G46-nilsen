@@ -8,7 +8,7 @@ const css = fs.readFileSync('styles.css', "utf8");
 const checks = [
   ["UI har Øv på samtalen", html.includes("Øv på samtalen")],
   ["Simulator har egen hovedvisning", html.includes(`id="simulation-view"`)],
-  ["Simulator finnes i sidemenyen", html.includes("Samtalesimulering") && app.includes("openSimulationHub")],
+  ["Simulator finnes i sidemenyen", html.includes("Samtaleøvelse") && app.includes("openSimulationHub")],
   ["Direkte simulering finnes", html.includes(`id="direct-simulation-form"`) && app.includes("beginDirectSimulation")],
   ["Tidligere øvelser er tilgjengelig", html.includes(`id="simulation-history"`)],
   ["Direkte simulering bruker personvernkontroll", app.includes("detectSensitiveInfo(text)")],
