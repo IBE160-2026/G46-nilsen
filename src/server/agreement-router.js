@@ -14,8 +14,13 @@ const normalize = value => String(value || "")
   .trim();
 
 const agreementTerms = [
-  "lønn","lonn","overtid","tillegg","turnus","arbeidstid","vakt","beredskap",
+  "lønn","lonn","overtid","tillegg","turnus","arbeidstid","beredskap",
   "arbeidsplan","reise","forhandling","opprykk","tariff","overenskomst"
+];
+
+const agreementVaktTerms = [
+  "vaktordning","vaktplan","vakttillegg","vaktgodtgjørelse","vaktgodtgjoring",
+  "vaktbelastning","vaktbytte","vaktordninger"
 ];
 
 export const employerTypeOptions = [
@@ -29,7 +34,13 @@ export const employerTypeOptions = [
 export function shouldUseAgreementContext({ topic, subtopic, situation } = {}) {
   const text = normalize([topic, subtopic, situation].filter(Boolean).join(" "));
   if (!text) return false;
-  return agreementTerms.some(term => text.includes(normalize(term)));
+
+  if (agreementTerms.some(term => text.includes(normalize(term)))) return true;
+
+  // "Vakt" alene er ikke tariffrelevant. Formuleringer som "under vakt" eller
+  // "på vakt" beskriver ofte bare arbeidssituasjonen. Aktiver avtaleområdet
+  // først når teksten faktisk handler om vaktordning, plan, tillegg eller lignende.
+  return agreementVaktTerms.some(term => text.includes(normalize(term)));
 }
 
 function agreementAreasForEmployerType(employerType) {
