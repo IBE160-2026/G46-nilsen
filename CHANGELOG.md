@@ -1,3 +1,19 @@
+# Pågående – pilotdrevet UX-runde 30.10.2026
+
+- Nye brukere får minimert desktop-sidebar som standard; eksplisitt brukerpreferanse huskes fortsatt.
+- Minimert sidebar viser tooltips ved hover og tastaturfokus.
+- Temaikonene er justert: klokke for Fravær og oppfølging og snakkeboble for Samarbeid og kommunikasjon.
+- Innstillinger bruker et flatt justeringsikon i stedet for et visuelt tyngre tannhjul.
+- Samtaleøvelse-profilen får tydeligere lys kontur i mørk/hybrid sidemeny.
+- Forsidens to informasjonskort bruker enkle linjeikoner og tydeligere tekst.
+- Hjelp skiller tydelig mellom brukerveiledning og eksterne ressurser/lenker.
+- Råd kan skrives ut som en ren visning med situasjon, tema/undertema og selve rådene.
+- Oppfølgingsdialogen foreslår nye, kontekstuelle spørsmål etter hvert KI-svar.
+- Pilotfunn fra e-post, fritekst og survey er synkronisert til backlog, PRD, UX-spesifikasjon og refleksjonsdokumentasjon.
+- Klientcache er bumpet til 20.11.9 for å hindre at gammel app.js blir liggende etter deploy.
+- Yrke/bransje-funksjonen er fortsatt avslått i produksjon og inngår ikke i denne deployrunden.
+
+---
 # v20.11.5 – Historikklogo uten wrapping og tydelig mørk hover
 
 - Historikk-logoen er flyttet ut av overskriftsraden og inn i en egen søskenkolonne i headeren.
