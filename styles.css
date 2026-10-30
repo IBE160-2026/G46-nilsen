@@ -8587,3 +8587,26 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   .info-card { padding: 14px 15px; gap: 12px; }
   .help-section-heading { padding-left: 0; padding-right: 0; }
 }
+
+
+.guidance-complete {
+  margin: 0 0 14px;
+  padding: 10px 13px;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 32%,var(--surface));
+  color: var(--text);
+  font-size: .9rem;
+  line-height: 1.45;
+}
+@media (max-width:640px) {
+  .topbar {
+    transition: transform .22s ease, opacity .18s ease;
+    will-change: transform;
+  }
+  body.mobile-nav-hidden .topbar {
+    transform: translateY(calc(-100% - 8px));
+    opacity: .05;
+    pointer-events: none;
+  }
+}
