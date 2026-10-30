@@ -2746,14 +2746,22 @@ function setAppLocked(locked){
   }
 }
 async function refreshAuth() {
-  try { const r=await fetch('/api/auth/me',{credentials:'include',cache:'no-store'}); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    const r = await fetch('/api/auth/me', { credentials:'include', cache:'no-store', signal:controller.signal });
+    const p = await r.json();
+    currentUser = p.user || null;
+  } catch (_) {
+    currentUser = null;
+  } finally {
+    clearTimeout(timeout);
+  }
   updateAuthUi();
-  if(currentUser)setTimeout(ensurePrivacyAcknowledgement,150);
-  if(currentUser){
+  if (currentUser) {
+    setTimeout(ensurePrivacyAcknowledgement,150);
     closeAuth(true);
     setAppLocked(false);
-  }else{
-    setAppLocked(true);
   }
 }
 function openAuth(mode='login', required = !currentUser) {
@@ -3336,7 +3344,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.5', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.10', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
