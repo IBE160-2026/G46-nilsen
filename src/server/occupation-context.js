@@ -37,17 +37,33 @@ export function buildOccupationGuidanceContext({
   }
 
   if (!occupationResult.occupationRelevant) {
+    const lines = [
+      "## Yrkes-/næringskontekst",
+      `Brukeren har oppgitt yrke/næring: ${occupation || occupationResult.sectorLabel || "ukjent"}.`,
+      "Denne yrkeskonteksten er ikke materiell for den aktuelle saken.",
+      "Ikke trekk inn sektorlovverk, sikkerhetsregler eller yrkesmetadata bare fordi yrket er valgt.",
+      "Gi vanlig, menneskelig lederstøtte ut fra selve situasjonen."
+    ];
+
+    // Tariff/avtale kan være relevant selv når yrket i seg selv ikke er det,
+    // for eksempel i en lønns- eller arbeidstidssak. Hold disse vurderingene adskilt.
+    if (agreementResult.relevant) {
+      if (agreementResult.needsEmployerType) {
+        lines.push("Tariff/overenskomst kan være relevant, men arbeidsgivertype mangler.");
+        lines.push("Ikke gjett avtaleområde. Dersom tariff faktisk påvirker rådet, be om ett kort avklaringssvar: Privat, kommune/fylkeskommune, stat, helseforetak eller usikker.");
+      } else if (agreementResult.suggestions.length) {
+        lines.push("Mulig avtaleområde er bare et forslag og må bekreftes før konkrete tariffrettigheter brukes.");
+        for (const area of agreementResult.suggestions.slice(0, 2)) {
+          lines.push(`- Mulig avtaleområde: ${area.label}`);
+        }
+      }
+    }
+
     return {
       enabled: true,
       occupation: occupationResult,
       agreement: agreementResult,
-      prompt: [
-        "## Yrkes-/næringskontekst",
-        `Brukeren har oppgitt yrke/næring: ${occupation || occupationResult.sectorLabel || "ukjent"}.`,
-        "Denne yrkeskonteksten er ikke materiell for den aktuelle saken.",
-        "Ikke trekk inn sektorlovverk, tariff, sikkerhetsregler eller yrkesmetadata bare fordi yrket er valgt.",
-        "Gi vanlig, menneskelig lederstøtte ut fra selve situasjonen."
-      ].join("\n")
+      prompt: lines.join("\n")
     };
   }
 
