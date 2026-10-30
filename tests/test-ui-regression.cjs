@@ -28,10 +28,10 @@ assert(/id="history-view"[\s\S]*?utility-title-row[\s\S]*?utility-page-logo/.tes
 assert(css.includes('.utility-title-row') && css.includes('flex-wrap: nowrap;'), 'Felles utility-header mangler stabil desktop-layout');
 assert(css.includes('.utility-title-row .utility-page-logo') && css.includes('width: 132px !important;'), 'Felles utility-logo mangler forventet desktopstørrelse');
 assert(css.includes('#simulation-view .simulation-logo-crop') && css.includes('border: 0 !important;') && css.includes('background: transparent !important;'), 'Samtaleøvelse har fortsatt kort/ramme rundt KI-merket');
-assert(css.includes('v20.11.5 DARK SIDEBAR HOVER CONTRAST'), 'Mørk sidebar-hover mangler sluttregel');
+assert(css.includes('v20.11.7 DARK SIDEBAR HOVER CONTRAST'), 'Mørk sidebar-hover mangler sluttregel');
 assert(css.includes('background: #245d6d !important;') && css.includes('color: #ffffff !important;'), 'Mørk sidebar-hover mangler tydelig kontrast');
 assert(css.includes('@media (max-width: 760px)') && css.includes('.utility-title-row .utility-page-logo'), 'Felles utility-logo mangler responsiv regel');
-console.log('v20.11.5 UI-kontroll: OK');
+console.log('v20.11.7 UI-kontroll: OK');
 
 
 
@@ -48,11 +48,11 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.11\.6/.test(html), "CSS cache-versjon er ikke 20.11.6");
-assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.5");
+assert(/styles\.css\?v=20\.11\.6/.test(html), "CSS cache-versjon er ikke 20.11.7");
+assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.7");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
-assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.5");
+assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.7");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
 assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.5["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.5["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.5["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.5["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
