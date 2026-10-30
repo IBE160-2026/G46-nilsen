@@ -15,7 +15,29 @@
     "han","hun","hen","ham","henne","den","det","dette","disse",
     "man","noen","noe","alle","andre","hverandre","en","et",
     "hva","hvem","hvilken","hvilke","varsler","varsleren",
-    "vårt","våre","mitt","mine","ditt","dine","sitt","sine","deres"
+    "vårt","våre","mitt","mine","ditt","dine","sitt","sine","deres",
+
+    // Roller, yrker og gruppeord er arbeidskontekst – ikke personnavn.
+    "pasient","pasienten","pasienter","pasientene",
+    "bruker","brukeren","brukere","brukerne",
+    "elev","eleven","elever","elevene",
+    "kunde","kunden","kunder","kundene",
+    "sykepleier","sykepleieren","sykepleiere","sykepleierne",
+    "lege","legen","leger","legene",
+    "lærer","læreren","lærere","lærerne",
+    "elektriker","elektrikeren","elektrikere","elektrikerne",
+    "tømrer","tømreren","tømrere","tømrerne",
+    "sjåfør","sjåføren","sjåfører","sjåførene",
+    "pilot","piloten","piloter","pilotene",
+    "jurist","juristen","jurister","juristene",
+    "rådgiver","rådgiveren","rådgivere","rådgiverne",
+    "ingeniør","ingeniøren","ingeniører","ingeniørene",
+    "operatør","operatøren","operatører","operatørene",
+    "tekniker","teknikeren","teknikere","teknikerne",
+    "leder","lederen","ledere","lederne",
+    "medarbeider","medarbeideren","medarbeidere","medarbeiderne",
+    "kollega","kollegaen","kollegaer","kollegaene",
+    "ansatt","ansatte","ansatten","personen","personer"
   ]);
 
   const TOKEN = "[\\p{L}][\\p{L}'’\\-]{1,39}";
