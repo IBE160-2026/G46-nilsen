@@ -19,7 +19,7 @@ assert(!app.includes("speech-tail-fixed"));
 assert(app.includes("function clearDocumentSelection()"), 'Mangler nullstilling av nettleserens tekstmarkering');
 assert(app.includes("selection.removeAllRanges()"), 'Tekstmarkering blir ikke faktisk fjernet');
 assert(/function loadHistoryItem[\s\S]*?clearDocumentSelection\(\)/.test(app), 'Historikkbytte nullstiller ikke gammel tekstmarkering');
-assert(/function showView[\s\S]*?requestAnimationFrame\(clearDocumentSelection\)/.test(app), 'Visningsbytte rydder ikke tekstmarkering etter rendring');
+assert(/function showView[\s\S]*?requestAnimationFrame\([\s\S]*?clearDocumentSelection\(\)/.test(app), 'Visningsbytte rydder ikke tekstmarkering etter rendring');
 
 console.log('Historikk/samtale-hotfix OK');
 
