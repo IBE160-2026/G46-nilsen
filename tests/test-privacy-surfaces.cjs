@@ -12,7 +12,8 @@ for(const id of ['topic-search','topic-detail-search','situation','continue-inpu
 
 assert(includesAll(app,["#topic-search","updateFinderPrivacyCheck"]),'topic-search mangler live personvernsjekk');
 assert(includesAll(app,["#topic-detail-search","updateFinderPrivacyCheck"]),'topic-detail-search mangler live personvernsjekk');
-assert(includesAll(app,["#situation","updatePrivacyCheck"]),'situation mangler live personvernsjekk');
+assert(app.includes("document.querySelector('#situation-form').addEventListener('submit'") && app.includes('const privacyFindings = updatePrivacyCheck() || []'),'situation mangler personvernsjekk ved Få råd');
+assert(app.includes('Personvern sjekkes når du trykker «Få råd».'),'situation mangler rolig personvernstatus under skriving');
 assert(app.includes('privacy-not-personal-button') && app.includes('Ikke personopplysninger'),'situation mangler eksplisitt falsk-positiv kontroll for navnetreff');
 assert(app.includes('data-finder-not-personal'),'temafinner mangler eksplisitt falsk-positiv kontroll for navnetreff');
 assert(app.includes('splitPrivacyFindings(privacyFindings).hard.length'),'hovedskjema blokkerer fortsatt på myke personvernfunn');
