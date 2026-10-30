@@ -17,7 +17,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.11.0", contactEmail: "" };
+let publicConfig = { appVersion: "20.11.5", contactEmail: "" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 let surveySubmitting = false;
@@ -72,6 +72,13 @@ function renderStaticIcons() {
     const key = icon.dataset.pageIcon;
     if (pageIconMap[key]) icon.innerHTML = pageIconMap[key];
   });
+
+  document.querySelectorAll('#sidebar .nav-item[data-view]').forEach(button => {
+    const label = button.querySelector('.nav-label')?.textContent?.trim();
+    if (!label) return;
+    button.dataset.tooltip = label;
+    button.setAttribute('title', label);
+  });
 }
 
 function setBreadcrumb(text) {
@@ -96,7 +103,7 @@ function updateNavState(name) {
 }
 
 function setMobileNavHidden(hidden) {
-  if (window.innerWidth > 700) {
+  if (window.innerWidth > 640) {
     document.body.classList.remove('mobile-nav-hidden');
     return;
   }
@@ -110,7 +117,7 @@ function updateMobileNavForScroll() {
   const y = Math.max(0, window.scrollY);
   const delta = y - mobileNavLastScrollY;
 
-  if (window.innerWidth > 700 || y < 64) {
+  if (window.innerWidth > 640 || y < 64) {
     setMobileNavHidden(false);
   } else if (delta > 7) {
     setMobileNavHidden(true);
@@ -130,7 +137,7 @@ window.addEventListener('scroll', () => {
 
 window.addEventListener('resize', () => {
   mobileNavLastScrollY = Math.max(0, window.scrollY);
-  if (window.innerWidth > 700) setMobileNavHidden(false);
+  if (window.innerWidth > 640) setMobileNavHidden(false);
 }, { passive: true });
 
 document.addEventListener('focusin', event => {
@@ -193,6 +200,12 @@ function showView(name, options = {}) {
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
+
+  // Temakort skal bare fremstå valgt mens brukeren faktisk er inne på et tema.
+  // Ved retur til forsiden skal ingen tidligere valgt kategori henge igjen visuelt.
+  if (name === 'home') {
+    document.querySelectorAll('.topic-card').forEach(card => card.classList.remove('active-card'));
+  }
 
   const topNew = document.querySelector('#new-conversation-button');
   if (topNew) topNew.hidden = name === 'home';
@@ -295,6 +308,7 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
   if (thread) thread.innerHTML = '';
   const continueInput = document.querySelector('#continue-input');
   if (continueInput) continueInput.value = '';
+  renderContinueSuggestions();
 
   simulationTurns = [];
   simulationFeedback = null;
@@ -356,6 +370,32 @@ function resetConversationState() {
   hideAutoTopicNote();
 
   clearGuidanceSession({ clearInputs: true });
+}
+
+function clearFinderCarryoverAfterAdvice() {
+  pendingSituationText = '';
+
+  ['#topic-search', '#topic-detail-search'].forEach(selector => {
+    const field = document.querySelector(selector);
+    if (field) field.value = '';
+  });
+
+  ['#topic-suggestion', '#subtopic-suggestion'].forEach(selector => {
+    const box = document.querySelector(selector);
+    if (box) {
+      box.hidden = true;
+      box.innerHTML = '';
+    }
+  });
+
+  ['#topic-finder-privacy', '#topic-detail-privacy'].forEach(selector => {
+    const box = document.querySelector(selector);
+    if (box) {
+      box.hidden = true;
+      box.innerHTML = '';
+      box.className = 'privacy-check finder-privacy-check';
+    }
+  });
 }
 
 function createTopicCard(topic) {
@@ -564,6 +604,19 @@ function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
 const privacyNameDetector = window.SamtalestottePrivacyDetector;
 if (!privacyNameDetector) throw new Error('Personvernmodulen for navnedeteksjon mangler.');
 const { findLikelyGivenName, findLikelyGivenNames } = privacyNameDetector;
+const privacyNameOverrideKeys = new Set();
+
+function privacyNameOverrideKey(text, name) {
+  return `${String(text || '').trim()}\u0000${String(name || '').toLocaleLowerCase('nb-NO')}`;
+}
+
+function privacyNameOverridesForText(text) {
+  const prefix = `${String(text || '').trim()}\u0000`;
+  return [...privacyNameOverrideKeys]
+    .filter(key => key.startsWith(prefix))
+    .map(key => key.slice(prefix.length))
+    .filter(Boolean);
+}
 
 
 function detectSensitiveInfo(text) {
@@ -621,8 +674,10 @@ function detectSensitiveInfo(text) {
 
   const likelyNames = findLikelyGivenNames(source);
   likelyNames.forEach(likelyName => {
+    if (privacyNameOverrideKeys.has(privacyNameOverrideKey(source, likelyName))) return;
     findings.push({
       type: 'name',
+      value: likelyName,
       label: `Mulig personnavn: «${likelyName}»`,
       message: 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».'
     });
@@ -753,6 +808,7 @@ function updatePrivacyCheck() {
       <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
       <div class="privacy-fix-actions">
         <button type="button" class="secondary-button compact-fix-button" id="privacy-fix-button">Fiks personvern</button>
+        ${visible.some(item => item.type === 'name') ? '<button type="button" class="text-button" id="privacy-not-personal-button">Ikke personopplysninger</button>' : ''}
         <small>Erstatter bare opplysninger kontrollen har flagget. Les gjennom teksten før du sender.</small>
       </div>
     `;
@@ -769,6 +825,13 @@ function updatePrivacyCheck() {
     `;
   }
   box.querySelector('#privacy-fix-button')?.addEventListener('click', applyPrivacyFix);
+  box.querySelector('#privacy-not-personal-button')?.addEventListener('click', () => {
+    visible.filter(item => item.type === 'name' && item.value).forEach(item => {
+      privacyNameOverrideKeys.add(privacyNameOverrideKey(text, item.value));
+    });
+    updatePrivacyCheck();
+    document.querySelector('#situation')?.focus();
+  });
   return findings;
 }
 
@@ -801,6 +864,7 @@ function updateFinderPrivacyCheck(inputId, boxId) {
     <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
     <div class="privacy-fix-actions">
       <button type="button" class="secondary-button compact-fix-button" data-finder-privacy-fix>Fiks personvern</button>
+      ${visible.some(item => item.type === 'name') ? '<button type="button" class="text-button" data-finder-not-personal>Ikke personopplysninger</button>' : ''}
       <small>Temaforslaget kjøres først etter at tydelige identifikatorer er fjernet.</small>
     </div>
   ` : `
@@ -815,6 +879,13 @@ function updateFinderPrivacyCheck(inputId, boxId) {
 
   box.querySelector('[data-finder-privacy-fix]')?.addEventListener('click', () => {
     input.value = autoFixPrivacyText(input.value, findings);
+    updateFinderPrivacyCheck(inputId, boxId);
+    input.focus();
+  });
+  box.querySelector('[data-finder-not-personal]')?.addEventListener('click', () => {
+    visible.filter(item => item.type === 'name' && item.value).forEach(item => {
+      privacyNameOverrideKeys.add(privacyNameOverrideKey(input.value, item.value));
+    });
     updateFinderPrivacyCheck(inputId, boxId);
     input.focus();
   });
@@ -856,7 +927,7 @@ async function requestTopicClassification(situation, selectedTopicId = '') {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ situation, selectedTopicId })
+    body: JSON.stringify({ situation, selectedTopicId, privacyNameOverrides: privacyNameOverridesForText(situation) })
   });
   if (!response.ok) {
     let payload = {};
@@ -1177,7 +1248,8 @@ async function requestAiSituationAnalysis(situation, helpRequest) {
       situation,
       helpRequest,
       selectedTopic: currentTopic?.title || '',
-      selectedSubtopic: currentSubtopic || ''
+      selectedSubtopic: currentSubtopic || '',
+      privacyNameOverrides: privacyNameOverridesForText(situation)
     })
   });
 
@@ -1197,7 +1269,7 @@ async function requestAiGuidance(situation, analysis, followups) {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '' })
+    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '', privacyNameOverrides: privacyNameOverridesForText(situation) })
   });
   if (!response.ok) {
     let payload = {};
@@ -1345,7 +1417,8 @@ function wireFollowupControls(container) {
       const id = input.dataset.followupCustomInput;
       const field = container.querySelector(`[data-followup-question="${CSS.escape(id)}"]`);
       if (field) field.dataset.answer = '';
-      updateFollowupPrivacy();
+      const privacyBox = document.querySelector('#followup-privacy');
+      if (privacyBox) { privacyBox.hidden = true; privacyBox.innerHTML = ''; }
     });
   });
 }
@@ -1878,6 +1951,7 @@ async function appendConversationTurn(question) {
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div><button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
+    renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
     conversationDirty = true;
     await saveCurrentConversation();
@@ -1885,6 +1959,7 @@ async function appendConversationTurn(question) {
     const reply = buildContinuationReply(question);
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
     setConversationTurnText(assistant, 'assistant', reply);
+    renderContinueSuggestions(localContinuationSuggestions(question, reply));
     queueSpeechBubbleRefresh();
   }
 }
@@ -2094,6 +2169,17 @@ function applyTheme(theme) {
   if(mobileThemeButton) mobileThemeButton.setAttribute('aria-label', 'Bytt fargetema. Nå: '+meta.label);
 }
 
+const UX_DEFAULTS_VERSION = '20.11.11';
+
+function applyUxDefaultsMigration() {
+  const appliedVersion = localStorage.getItem('samtalestotte-ux-defaults-version');
+  if (appliedVersion === UX_DEFAULTS_VERSION) return;
+
+  localStorage.setItem('samtalestotte-theme', 'hybrid');
+  localStorage.setItem('samtalestotte-sidebar', 'collapsed');
+  localStorage.setItem('samtalestotte-ux-defaults-version', UX_DEFAULTS_VERSION);
+}
+
 function initTheme() {
   applyTheme(localStorage.getItem('samtalestotte-theme') || 'hybrid');
 }
@@ -2111,14 +2197,15 @@ function setSidebarCollapsed(collapsed) {
 const sidebarNarrowQuery = window.matchMedia('(max-width: 1100px)');
 
 function applySidebarState() {
-  const storedCollapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
+  const storedState = localStorage.getItem('samtalestotte-sidebar');
+  const collapsed = storedState ? storedState === 'collapsed' : true;
 
   if (sidebarNarrowQuery.matches) {
     setSidebarCollapsed(true);
     return;
   }
 
-  setSidebarCollapsed(storedCollapsed);
+  setSidebarCollapsed(collapsed);
 }
 
 function toggleSidebar() {
@@ -2134,6 +2221,7 @@ function toggleSidebar() {
 renderStaticIcons();
 renderTopics();
 resetConversationState();
+applyUxDefaultsMigration();
 initTheme();
 applySidebarState();
 setBreadcrumb('');
@@ -2248,7 +2336,8 @@ document.querySelector('#topic-finder-form').addEventListener('submit', async ev
 document.querySelector('#topic-search').addEventListener('input', event => {
   const value = event.target.value;
   const box = document.querySelector('#topic-suggestion');
-  updateFinderPrivacyCheck('#topic-search', '#topic-finder-privacy');
+  const privacyBox = document.querySelector('#topic-finder-privacy');
+  if (privacyBox) { privacyBox.hidden = true; privacyBox.innerHTML = ''; }
   // Ikke prøv å "gjette" tema mens brukeren fortsatt skriver. KI vurderer hele setningen ved innsending.
   document.querySelectorAll('.topic-card').forEach(card => {
     card.hidden = false;
@@ -2275,7 +2364,8 @@ document.querySelector('#topic-detail-search-form').addEventListener('submit', a
 
 document.querySelector('#topic-detail-search').addEventListener('input', event => {
   const value = event.target.value;
-  updateFinderPrivacyCheck('#topic-detail-search', '#topic-detail-privacy');
+  const privacyBox = document.querySelector('#topic-detail-privacy');
+  if (privacyBox) { privacyBox.hidden = true; privacyBox.innerHTML = ''; }
   document.querySelectorAll('.subtopic-card').forEach(card => {
     card.hidden = false;
     card.classList.remove('search-match');
@@ -2313,7 +2403,28 @@ function autoGrowTextarea(textarea, maxHeight = 220) {
 function handleSituationInput(event) {
   conversationDirty = true;
   autoGrowTextarea(event.target, event.target.id === 'situation' ? 220 : 150);
-  updatePrivacyCheck();
+
+  // Ikke avbryt skrivingen med personvernvarsler underveis.
+  // Kontrollen kjøres når brukeren aktivt trykker «Få råd».
+  const box = document.querySelector('#privacy-check');
+  if (box) {
+    box.hidden = true;
+    box.innerHTML = '';
+    box.className = 'privacy-check';
+  }
+
+  const text = event.target.value || '';
+  const submitButton = document.querySelector('#understand-submit');
+  const note = document.querySelector('#privacy-submit-note');
+  if (submitButton && submitButton.dataset.loading !== 'true') {
+    submitButton.disabled = !text.trim();
+  }
+  if (note) {
+    note.textContent = text.trim()
+      ? '🛡 Personvern sjekkes når du trykker «Få råd».'
+      : 'Beskriv situasjonen for å gå videre.';
+    note.classList.remove('ok', 'soft-warning');
+  }
 }
 
 ['situation'].forEach(id => {
@@ -2330,13 +2441,14 @@ document.querySelector('#situation-form').addEventListener('submit', async event
   const helpRequest = '';
   const submitButton = event.currentTarget.querySelector('button[type="submit"]');
 
-  if (privacyFindings.length) {
+  if (splitPrivacyFindings(privacyFindings).hard.length) {
     document.querySelector('#privacy-check')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
 
   clearGuidanceSession({ clearInputs: false });
   document.querySelector('#situation').value = situationText;
+  clearFinderCarryoverAfterAdvice();
   updatePrivacyCheck();
 
   const originalLabel = submitButton?.textContent || 'Få råd';
@@ -2408,6 +2520,93 @@ document.querySelector('#show-guidance-anyway').addEventListener('click', showSt
 
 
 
+const DEFAULT_CONTINUE_SUGGESTIONS = [
+  'Hva hvis medarbeideren blir sint?',
+  'Hva hvis medarbeideren blir veldig lei seg?',
+  'Hvordan kan jeg formulere dette tydeligere?',
+  'Hva bør jeg ikke si?'
+];
+
+function localContinuationSuggestions(question = '', reply = '') {
+  const text = `${question} ${reply}`.toLowerCase();
+  const candidates = [];
+
+  if (/sint|irritert|uenig|urettferdig|provosert/.test(text)) {
+    candidates.push('Hvordan får jeg samtalen tilbake på sporet?', 'Hva hvis hen fortsatt er uenig?');
+  }
+  if (/lei seg|trist|skuffet|gråt|vanskelig/.test(text)) {
+    candidates.push('Hvordan viser jeg forståelse uten å bli utydelig?', 'Når bør jeg ta en pause i samtalen?');
+  }
+  if (/formuler|si|åpne|tydelig|ordlegge/.test(text)) {
+    candidates.push('Hva kan jeg si rett etter denne formuleringen?', 'Hvordan avslutter jeg dette på en god måte?');
+  }
+  if (/regel|lov|jurid|formell|advarsel|oppsig/.test(text)) {
+    candidates.push('Hva bør jeg avklare før jeg går videre?', 'Hva bør jeg dokumentere etter samtalen?');
+  }
+
+  candidates.push(
+    'Hva er viktigst å få fram nå?',
+    'Hvilket spørsmål bør jeg stille videre?',
+    'Hva hvis medarbeideren blir stille?',
+    'Hvordan kan jeg avslutte samtalen tydelig?'
+  );
+
+  const asked = String(question || '').trim().toLowerCase();
+  return [...new Set(candidates)]
+    .filter(item => item.toLowerCase() !== asked)
+    .slice(0, 4);
+}
+
+function renderContinueSuggestions(suggestions = DEFAULT_CONTINUE_SUGGESTIONS) {
+  const container = document.querySelector('#continue-suggestions');
+  if (!container) return;
+  const normalized = (Array.isArray(suggestions) ? suggestions : [])
+    .map(item => String(item || '').trim())
+    .filter(Boolean)
+    .slice(0, 4);
+  const items = normalized.length ? normalized : DEFAULT_CONTINUE_SUGGESTIONS;
+  container.innerHTML = items.map(item => `<button type="button" class="continue-chip">${escapeHtml(item)}</button>`).join('');
+  container.querySelectorAll('.continue-chip').forEach(button => {
+    button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
+  });
+}
+
+function printCurrentGuidance() {
+  const situation = document.querySelector('#situation')?.value.trim() || '';
+  const guidance = document.querySelector('#structured-guidance');
+  if (!situation || !guidance?.children.length) return;
+
+  const topicLine = [currentTopic?.title, currentSubtopic].filter(Boolean).join(' · ');
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
+  try { printWindow.opener = null; } catch (_) {}
+
+  const adviceHtml = [...guidance.children].map(card => {
+    const title = card.querySelector('h3')?.textContent?.trim() || '';
+    const copy = card.querySelector('.guidance-copy')?.innerHTML || '';
+    return `<section><h2>${escapeHtml(title)}</h2><div>${copy}</div></section>`;
+  }).join('');
+
+  printWindow.document.write(`<!doctype html><html lang="no"><head><meta charset="utf-8"><title>Samtalestøtte – råd</title>
+    <style>
+      body{font-family:Arial,sans-serif;max-width:820px;margin:36px auto;padding:0 28px;color:#172a2f;line-height:1.5}
+      h1{font-size:24px;margin:0 0 6px} .meta{color:#5f7075;margin:0 0 28px}
+      .situation{padding:16px 18px;border:1px solid #d7e0e2;border-radius:10px;margin-bottom:24px;white-space:pre-wrap}
+      section{break-inside:avoid;margin:0 0 20px} h2{font-size:17px;margin:0 0 8px}
+      p{margin:6px 0} ul{margin:6px 0;padding-left:22px} a{color:inherit;text-decoration:none}
+      details{display:block} details summary{font-weight:700;margin-bottom:6px}
+      @media print{body{margin:0 auto;padding:0 12mm}.no-print{display:none}}
+    </style></head><body>
+    <h1>Forslag til samtalen</h1>
+    ${topicLine ? `<p class="meta">${escapeHtml(topicLine)}</p>` : ''}
+    <h2>Situasjon</h2><div class="situation">${escapeHtml(situation)}</div>
+    ${adviceHtml}
+    </body></html>`);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
 function ensureContinuePrivacyBox() {
   let box = document.querySelector('#continue-privacy');
   if (box) return box;
@@ -2464,7 +2663,11 @@ document.querySelector('#continue-form')?.addEventListener('submit', event => {
   input.focus();
 });
 
-document.querySelector('#continue-input')?.addEventListener('input', updateContinuePrivacy);
+document.querySelector('#continue-input')?.addEventListener('input', event => {
+  const box = ensureContinuePrivacyBox();
+  if (box) { box.hidden = true; box.innerHTML = ''; }
+  event.currentTarget.setAttribute('aria-invalid', 'false');
+});
 
 document.querySelector('#continue-input')?.addEventListener('keydown', event => {
   if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
@@ -2472,9 +2675,9 @@ document.querySelector('#continue-input')?.addEventListener('keydown', event => 
   document.querySelector('#continue-form')?.requestSubmit();
 });
 
-document.querySelectorAll('.continue-chip').forEach(button => {
-  button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
-});
+renderContinueSuggestions();
+
+document.querySelector('#print-guidance')?.addEventListener('click', printCurrentGuidance);
 
 
 
@@ -2555,14 +2758,23 @@ function setAppLocked(locked){
   }
 }
 async function refreshAuth() {
-  try { const r=await fetch('/api/auth/me',{credentials:'include',cache:'no-store'}); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+  try {
+    const r = await fetch('/api/auth/me', { credentials:'include', cache:'no-store', signal:controller.signal });
+    const p = await r.json();
+    currentUser = p.user || null;
+  } catch (_) {
+    currentUser = null;
+  } finally {
+    clearTimeout(timeout);
+  }
   updateAuthUi();
-  if(currentUser)setTimeout(ensurePrivacyAcknowledgement,150);
-  if(currentUser){
+  if (currentUser) {
+    setTimeout(ensurePrivacyAcknowledgement,150);
     closeAuth(true);
+    document.body.classList.remove('auth-open');
     setAppLocked(false);
-  }else{
-    setAppLocked(true);
   }
 }
 function openAuth(mode='login', required = !currentUser) {
@@ -3145,7 +3357,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.0', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.11', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
@@ -3244,7 +3456,10 @@ function closeAiFeedback(){document.querySelector('#ai-feedback-dialog')?.close(
 document.addEventListener('click',event=>{const button=event.target.closest('[data-report-ai-response]');if(!button)return;openAiFeedback(button.dataset.reportAiResponse||'general',button.dataset.turnIndex??null);});
 document.querySelector('#ai-feedback-cancel')?.addEventListener('click',closeAiFeedback);
 document.querySelector('#ai-feedback-include-conversation')?.addEventListener('change',updateFeedbackAttachmentPrivacy);
-document.querySelector('#ai-feedback-comment')?.addEventListener('input',updateAiFeedbackCommentPrivacy);
+document.querySelector('#ai-feedback-comment')?.addEventListener('input',()=>{
+  const box=document.querySelector('#ai-feedback-comment-privacy');
+  if(box){box.hidden=true;box.innerHTML='';}
+});
 document.querySelector('#ai-feedback-form')?.addEventListener('submit',async event=>{event.preventDefault();const category=document.querySelector('#ai-feedback-category')?.value||'Annet';const comment=document.querySelector('#ai-feedback-comment')?.value.trim()||'';const message=document.querySelector('#ai-feedback-message');const findings=detectSensitiveInfo(comment);if(splitPrivacyFindings(findings).hard.length){message.className='auth-message error';message.textContent='Fjern navn eller andre tydelige personopplysninger før tilbakemeldingen sendes.';return;}if(comment.length<3){message.className='auth-message error';message.textContent='Skriv kort hva som var problemet.';return;}const includeConversation=Boolean(document.querySelector('#ai-feedback-include-conversation')?.checked);let conversationSnapshot=null;if(includeConversation){const attachmentFindings=updateFeedbackAttachmentPrivacy();if(splitPrivacyFindings(attachmentFindings).hard.length){message.className='auth-message error';message.textContent='Samtalen må anonymiseres før den kan legges ved.';return;}conversationSnapshot=buildFeedbackConversationSnapshot(pendingAiFeedback.surface,pendingAiFeedback.turnIndex);}try{const r=await fetch('/api/ai-feedback',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({category,comment,surface:pendingAiFeedback.surface,turnIndex:pendingAiFeedback.turnIndex,conversationId:currentConversationId||null,topicId:currentTopic?.id||null,subtopic:currentSubtopic||null,includeConversation,conversationSnapshot})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke sende tilbakemeldingen.');message.className='auth-message success';message.textContent=includeConversation?'Takk. Tilbakemeldingen og samtalen er lagret.':'Takk. Tilbakemeldingen er lagret uten samtaleteksten.';setTimeout(closeAiFeedback,800);}catch(error){message.className='auth-message error';message.textContent=error.message;}});
 
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
@@ -3726,7 +3941,10 @@ document.querySelector('#simulation-new-direct')?.addEventListener('click', open
 document.querySelector('#simulation-history')?.addEventListener('click', openHistory);
 document.querySelector('#cancel-direct-simulation')?.addEventListener('click', () => { document.querySelector('#direct-simulation-form').hidden = true; showDirectSimulationPrivacy([]); });
 document.querySelector('#direct-simulation-form')?.addEventListener('submit', event => { event.preventDefault(); beginDirectSimulation(); });
-document.querySelector('#direct-simulation-situation')?.addEventListener('input', event => showDirectSimulationPrivacy(detectSensitiveInfo(event.currentTarget.value)));
+document.querySelector('#direct-simulation-situation')?.addEventListener('input', event => {
+  showDirectSimulationPrivacy([]);
+  event.currentTarget.setAttribute('aria-invalid', 'false');
+});
 document.querySelector('#close-simulation')?.addEventListener('click', closeSimulation);
 document.querySelectorAll('[data-sim-fidelity]').forEach(button => button.addEventListener('click', () => {
   simulationFidelity = button.dataset.simFidelity;
@@ -3786,7 +4004,18 @@ document.querySelector('#simulation-form')?.addEventListener('submit', async eve
   updateSimulationTurnPrivacy();
   await submitSimulationTurn(text);
 });
-document.querySelector('#simulation-input')?.addEventListener('input', updateSimulationTurnPrivacy);
+document.querySelector('#simulation-input')?.addEventListener('input', event => {
+  const input = event.currentTarget;
+  const box = document.querySelector('#simulation-turn-privacy');
+  const submit = document.querySelector('#simulation-submit');
+  input.setAttribute('aria-invalid', 'false');
+  if (submit) submit.disabled = !input.value.trim();
+  if (box) {
+    box.hidden = true;
+    box.innerHTML = '';
+    box.className = 'privacy-check simulation-turn-privacy';
+  }
+});
 document.querySelector('#simulation-input')?.addEventListener('keydown', event => {
   if (event.key !== 'Enter' || event.shiftKey || event.isComposing) return;
   event.preventDefault();
@@ -3841,8 +4070,8 @@ sidebarNarrowQuery.addEventListener('change', event => {
   if (event.matches) {
     setSidebarCollapsed(true);
   } else {
-    const storedCollapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
-    setSidebarCollapsed(storedCollapsed);
+    const storedState = localStorage.getItem('samtalestotte-sidebar');
+    setSidebarCollapsed(storedState ? storedState === 'collapsed' : true);
   }
 });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
@@ -3899,7 +4128,10 @@ document.querySelector('#survey-form')?.addEventListener('submit',async event=>{
   }
 });
 
-document.querySelectorAll('#survey-form textarea[name="improvement_text"], #survey-form textarea[name="most_useful_text"]').forEach(input=>input.addEventListener('input',updateSurveyPrivacy));
+document.querySelectorAll('#survey-form textarea[name="improvement_text"], #survey-form textarea[name="most_useful_text"]').forEach(input=>input.addEventListener('input',()=>{
+  const box=document.querySelector('#survey-privacy');
+  if(box){box.hidden=true;box.innerHTML='';}
+}));
 
 document.querySelector('#admin-survey-enabled')?.addEventListener('change',async event=>{
   const msg=document.querySelector('#admin-survey-toggle-message'); if(msg){msg.className='auth-message';msg.textContent='Lagrer …';}
