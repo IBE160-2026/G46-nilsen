@@ -72,6 +72,10 @@ function renderStaticIcons() {
     const key = icon.dataset.pageIcon;
     if (pageIconMap[key]) icon.innerHTML = pageIconMap[key];
   });
+  document.querySelectorAll('#sidebar .nav-item[data-view]').forEach(button => {
+    const label = button.querySelector('.nav-label')?.textContent?.trim();
+    if (label) button.dataset.tooltip = label;
+  });
 }
 
 function setBreadcrumb(text) {
@@ -301,6 +305,8 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
   if (thread) thread.innerHTML = '';
   const continueInput = document.querySelector('#continue-input');
   if (continueInput) continueInput.value = '';
+  document.querySelector('#structured-guidance')?.classList.remove('guidance-expanded');
+  renderContinueSuggestions();
 
   simulationTurns = [];
   simulationFeedback = null;
@@ -1274,6 +1280,73 @@ async function requestAiGuidance(situation, analysis, followups) {
   return response.json();
 }
 
+function applyGuidanceDisclosure() {
+  const grid = document.querySelector('#structured-guidance');
+  if (!grid) return;
+  grid.querySelectorAll('.guidance-show-more').forEach(node => node.remove());
+  const cards = [...grid.querySelectorAll('.guidance-card')];
+  cards.forEach((card, index) => card.classList.toggle('guidance-secondary', index >= 4));
+  if (cards.length <= 4) return;
+  const button = document.createElement('button');
+  button.type = 'button';
+  button.className = 'secondary-button guidance-show-more';
+  button.textContent = 'Vis flere råd';
+  button.addEventListener('click', () => {
+    const expanded = grid.classList.toggle('guidance-expanded');
+    button.textContent = expanded ? 'Vis færre råd' : 'Vis flere råd';
+  });
+  grid.appendChild(button);
+}
+
+const DEFAULT_CONTINUE_SUGGESTIONS = [
+  'Hva hvis medarbeideren blir sint?',
+  'Hva hvis medarbeideren blir veldig lei seg?',
+  'Hvordan kan jeg formulere dette tydeligere?',
+  'Hva bør jeg ikke si?'
+];
+
+function localContinuationSuggestions(question = '', reply = '') {
+  const text = `${question} ${reply}`.toLowerCase();
+  const candidates = [];
+  if (/sint|irritert|uenig|urettferdig|provosert/.test(text)) candidates.push('Hvordan får jeg samtalen tilbake på sporet?', 'Hva hvis hen fortsatt er uenig?');
+  if (/lei seg|trist|skuffet|gråt|vanskelig/.test(text)) candidates.push('Hvordan viser jeg forståelse uten å bli utydelig?', 'Når bør jeg ta en pause i samtalen?');
+  if (/formuler|si|åpne|tydelig|ordlegge/.test(text)) candidates.push('Hva kan jeg si rett etter denne formuleringen?', 'Hvordan avslutter jeg dette på en god måte?');
+  candidates.push('Hva er viktigst å få fram nå?', 'Hvilket spørsmål bør jeg stille videre?', 'Hva hvis medarbeideren blir stille?', 'Hvordan kan jeg avslutte samtalen tydelig?');
+  const asked = String(question || '').trim().toLowerCase();
+  return [...new Set(candidates)].filter(item => item.toLowerCase() !== asked).slice(0, 4);
+}
+
+function renderContinueSuggestions(suggestions = DEFAULT_CONTINUE_SUGGESTIONS) {
+  const container = document.querySelector('#continue-suggestions');
+  if (!container) return;
+  const normalized = (Array.isArray(suggestions) ? suggestions : []).map(item => String(item || '').trim()).filter(Boolean).slice(0,4);
+  const items = normalized.length ? normalized : DEFAULT_CONTINUE_SUGGESTIONS;
+  container.innerHTML = items.map(item => `<button type="button" class="continue-chip">${escapeHtml(item)}</button>`).join('');
+  container.querySelectorAll('.continue-chip').forEach(button => {
+    button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
+  });
+}
+
+function printCurrentGuidance() {
+  const situation = document.querySelector('#situation')?.value.trim() || '';
+  const guidance = document.querySelector('#structured-guidance');
+  if (!situation || !guidance) return;
+  const cards = [...guidance.querySelectorAll('.guidance-card')];
+  if (!cards.length) return;
+  const topicLine = [currentTopic?.title, currentSubtopic].filter(Boolean).join(' · ');
+  const printWindow = window.open('', '_blank');
+  if (!printWindow) return;
+  const adviceHtml = cards.map(card => {
+    const title = card.querySelector('h3')?.textContent?.trim() || '';
+    const copy = card.querySelector('.guidance-copy')?.innerHTML || card.querySelector('p')?.innerHTML || '';
+    return `<section><h2>${escapeHtml(title)}</h2><div>${copy}</div></section>`;
+  }).join('');
+  printWindow.document.write(`<!doctype html><html lang="no"><head><meta charset="utf-8"><title>Samtalestøtte – råd</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:36px auto;padding:0 28px;color:#172a2f;line-height:1.5}h1{font-size:24px;margin:0 0 6px}.meta{color:#5f7075;margin:0 0 28px}.situation{padding:16px 18px;border:1px solid #d7e0e2;border-radius:10px;margin-bottom:24px;white-space:pre-wrap}section{break-inside:avoid;margin:0 0 20px}h2{font-size:17px;margin:0 0 8px}p{margin:6px 0}ul{margin:6px 0;padding-left:22px}a{color:inherit;text-decoration:none}@media print{body{margin:0 auto;padding:0 12mm}}</style></head><body><h1>Forslag til samtalen</h1>${topicLine ? `<p class="meta">${escapeHtml(topicLine)}</p>` : ''}<h2>Situasjon</h2><div class="situation">${escapeHtml(situation)}</div>${adviceHtml}</body></html>`);
+  printWindow.document.close();
+  printWindow.focus();
+  printWindow.print();
+}
+
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
   const reactionHtml = (guidance.reactions || []).map(item => `
@@ -1302,6 +1375,7 @@ function renderAiGuidance(guidance) {
       <span class="guidance-number">${String(index + 1).padStart(2, '0')}</span>
       <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
     </article>`).join('');
+  applyGuidanceDisclosure();
   const intro = document.querySelector('#result-intro');
   if (intro) intro.textContent = 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Sensitive eller formelle punkter bør kvalitetssikres mot relevante kilder, virksomhetens rutiner og riktig fagkompetanse før en endelig beslutning tas.';
 }
@@ -1775,6 +1849,7 @@ function renderStructuredGuidance() {
     </article>
   `).join('');
 
+  applyGuidanceDisclosure();
   const intro = document.querySelector('#result-intro');
   if (intro) {
     if (crossThemeSections) {
@@ -1943,6 +2018,7 @@ async function appendConversationTurn(question) {
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div><button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
+    renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
     conversationDirty = true;
     await saveCurrentConversation();
@@ -1950,6 +2026,7 @@ async function appendConversationTurn(question) {
     const reply = buildContinuationReply(question);
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
     setConversationTurnText(assistant, 'assistant', reply);
+    renderContinueSuggestions(localContinuationSuggestions(question, reply));
     queueSpeechBubbleRefresh();
   }
 }
@@ -2200,6 +2277,14 @@ function toggleSidebar() {
 renderStaticIcons();
 renderTopics();
 resetConversationState();
+try {
+  const defaultsVersion = '20.11.15';
+  if (localStorage.getItem('samtalestotte-ui-defaults-version') !== defaultsVersion) {
+    localStorage.setItem('samtalestotte-theme', 'hybrid');
+    localStorage.setItem('samtalestotte-sidebar', 'collapsed');
+    localStorage.setItem('samtalestotte-ui-defaults-version', defaultsVersion);
+  }
+} catch (_) {}
 initTheme();
 applySidebarState();
 setBreadcrumb('');
@@ -2566,9 +2651,8 @@ document.querySelector('#continue-input')?.addEventListener('keydown', event => 
   document.querySelector('#continue-form')?.requestSubmit();
 });
 
-document.querySelectorAll('.continue-chip').forEach(button => {
-  button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
-});
+renderContinueSuggestions();
+document.querySelector('#print-guidance')?.addEventListener('click', printCurrentGuidance);
 
 
 
