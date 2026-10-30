@@ -2565,8 +2565,9 @@ function printCurrentGuidance() {
   if (!situation || !guidance?.children.length) return;
 
   const topicLine = [currentTopic?.title, currentSubtopic].filter(Boolean).join(' · ');
-  const printWindow = window.open('', '_blank', 'noopener,noreferrer');
+  const printWindow = window.open('', '_blank');
   if (!printWindow) return;
+  try { printWindow.opener = null; } catch (_) {}
 
   const adviceHtml = [...guidance.children].map(card => {
     const title = card.querySelector('h3')?.textContent?.trim() || '';
