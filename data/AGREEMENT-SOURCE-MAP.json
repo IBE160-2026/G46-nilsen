@@ -1,0 +1,294 @@
+{
+  "version": 1,
+  "description": "Forslagskart for tariff-/overenskomstkontekst. Systemet skal aldri anta at en arbeidstaker er omfattet av en bestemt avtale bare ut fra yrke; det skal foreslå mulige avtaleområder og be om bekreftelse når tariffkontekst faktisk er relevant.",
+  "policy": {
+    "assumeAgreement": false,
+    "requireConfirmationBeforeUse": true,
+    "useOnlyWhenRelevant": true,
+    "relevantWhen": [
+      "lønn",
+      "arbeidstid",
+      "turnus",
+      "overtid",
+      "tillegg",
+      "reise",
+      "vakt",
+      "beredskap",
+      "arbeidsplan",
+      "forhandling",
+      "opprykk",
+      "lokale bestemmelser"
+    ],
+    "irrelevantExamples": [
+      "samlivsbrudd",
+      "sorg",
+      "vanlig kollegakonflikt",
+      "generell kommunikasjon uten avtale-/arbeidstidskobling"
+    ],
+    "wordingRule": "Bruk formuleringer som «kan være omfattet av» eller «relevant avtale kan være», aldri «du følger denne avtalen» uten bekreftet grunnlag."
+  },
+  "agreementAreas": [
+    {
+      "id": "state",
+      "label": "Staten",
+      "employerContexts": [
+        "statlig virksomhet",
+        "departement",
+        "direktorat",
+        "etat",
+        "Forsvaret"
+      ],
+      "occupationHints": [
+        "rådgiver",
+        "saksbehandler",
+        "jurist",
+        "ingeniør",
+        "administrasjon",
+        "Forsvaret"
+      ],
+      "primarySources": [
+        {
+          "label": "Regjeringen / Statens personalhåndbok",
+          "domain": "regjeringen.no"
+        },
+        {
+          "label": "DFØ",
+          "domain": "dfo.no"
+        }
+      ],
+      "notes": [
+        "Hovedtariffavtale og lokale avtaler kan variere med organisasjon og virksomhet.",
+        "Ikke anta hvilken hovedsammenslutning arbeidstaker tilhører."
+      ]
+    },
+    {
+      "id": "municipal",
+      "label": "Kommune/fylkeskommune",
+      "employerContexts": [
+        "kommune",
+        "fylkeskommune",
+        "kommunal virksomhet",
+        "skole",
+        "barnehage",
+        "sykehjem",
+        "hjemmetjeneste"
+      ],
+      "occupationHints": [
+        "lærer",
+        "barnehagelærer",
+        "sykepleier",
+        "helsefagarbeider",
+        "vernepleier",
+        "rådgiver",
+        "renholder"
+      ],
+      "primarySources": [
+        {
+          "label": "KS",
+          "domain": "ks.no"
+        }
+      ],
+      "notes": [
+        "Avtaleområde kan avhenge av arbeidsgiver og organisasjon.",
+        "Sjekk om virksomheten faktisk følger KS-området før råd gis."
+      ]
+    },
+    {
+      "id": "health_enterprise",
+      "label": "Helseforetak/Spekter",
+      "employerContexts": [
+        "helseforetak",
+        "sykehus",
+        "HF",
+        "RHF"
+      ],
+      "occupationHints": [
+        "sykepleier",
+        "lege",
+        "psykolog",
+        "helsefagarbeider",
+        "bioingeniør",
+        "radiograf"
+      ],
+      "primarySources": [
+        {
+          "label": "Spekter",
+          "domain": "spekter.no"
+        }
+      ],
+      "notes": [
+        "Overenskomststruktur varierer mellom områder og forbund.",
+        "Må bekreftes før konkrete rettigheter eller satser omtales."
+      ]
+    },
+    {
+      "id": "private_trade_service",
+      "label": "Privat handel/service",
+      "employerContexts": [
+        "butikk",
+        "handel",
+        "hotell",
+        "restaurant",
+        "servering",
+        "renhold",
+        "kundeservice"
+      ],
+      "occupationHints": [
+        "butikkmedarbeider",
+        "butikkleder",
+        "servitør",
+        "kokk",
+        "hotellmedarbeider",
+        "renholder"
+      ],
+      "primarySources": [
+        {
+          "label": "Virke",
+          "domain": "virke.no"
+        },
+        {
+          "label": "NHO",
+          "domain": "nho.no"
+        }
+      ],
+      "notes": [
+        "Mange private virksomheter er ikke tariffbundet.",
+        "Foreslå mulige avtaler, men krev bekreftelse."
+      ]
+    },
+    {
+      "id": "construction_industry",
+      "label": "Bygg, anlegg og industri",
+      "employerContexts": [
+        "bygg",
+        "anlegg",
+        "verksted",
+        "industri",
+        "produksjon",
+        "elektro"
+      ],
+      "occupationHints": [
+        "tømrer",
+        "elektriker",
+        "rørlegger",
+        "mekaniker",
+        "sveiser",
+        "prosessoperatør"
+      ],
+      "primarySources": [
+        {
+          "label": "NHO",
+          "domain": "nho.no"
+        },
+        {
+          "label": "Fellesforbundet",
+          "domain": "fellesforbundet.no"
+        },
+        {
+          "label": "EL og IT Forbundet",
+          "domain": "elogit.no"
+        }
+      ],
+      "notes": [
+        "Avtale avhenger sterkt av fagområde og virksomhet.",
+        "Allmenngjorte minstekrav må holdes adskilt fra tariffavtale."
+      ]
+    },
+    {
+      "id": "transport",
+      "label": "Transport",
+      "employerContexts": [
+        "transport",
+        "buss",
+        "lastebil",
+        "terminal",
+        "logistikk"
+      ],
+      "occupationHints": [
+        "bussjåfør",
+        "lastebilsjåfør",
+        "lagerarbeider",
+        "terminalarbeider"
+      ],
+      "primarySources": [
+        {
+          "label": "NHO Transport",
+          "domain": "transport.no"
+        },
+        {
+          "label": "Fellesforbundet",
+          "domain": "fellesforbundet.no"
+        }
+      ],
+      "notes": [
+        "Kjøre-/hviletid er lov/forskrift og må ikke blandes sammen med tariffbestemt arbeidstid/tillegg."
+      ]
+    },
+    {
+      "id": "maritime_fisheries",
+      "label": "Maritimt/fiskeri/havbruk",
+      "employerContexts": [
+        "fartøy",
+        "sjøfart",
+        "fiskeri",
+        "havbruk",
+        "oppdrett"
+      ],
+      "occupationHints": [
+        "matros",
+        "skipsfører",
+        "maskinist",
+        "fisker",
+        "oppdrettsoperatør"
+      ],
+      "primarySources": [
+        {
+          "label": "NHO Sjøfart",
+          "domain": "nhosjofart.no"
+        },
+        {
+          "label": "Norsk Sjømannsforbund",
+          "domain": "sjomannsforbundet.no"
+        }
+      ],
+      "notes": [
+        "Tariffområde kan variere betydelig mellom fartøytype, rederi og stilling.",
+        "Havbruk på land/sjø kan falle i andre avtaleområder enn tradisjonell sjøfart."
+      ]
+    },
+    {
+      "id": "finance",
+      "label": "Finans",
+      "employerContexts": [
+        "bank",
+        "forsikring",
+        "finans"
+      ],
+      "occupationHints": [
+        "bankrådgiver",
+        "økonom",
+        "finansrådgiver",
+        "kundebehandler"
+      ],
+      "primarySources": [
+        {
+          "label": "Finans Norge",
+          "domain": "finansnorge.no"
+        }
+      ],
+      "notes": [
+        "Ikke anta tariffdekning ut fra bransje alene."
+      ]
+    },
+    {
+      "id": "unknown",
+      "label": "Uavklart avtaleområde",
+      "employerContexts": [],
+      "occupationHints": [],
+      "primarySources": [],
+      "notes": [
+        "Be om arbeidsgivertype eller avtalenavn bare når tariffkontekst faktisk påvirker rådet."
+      ]
+    }
+  ]
+}
