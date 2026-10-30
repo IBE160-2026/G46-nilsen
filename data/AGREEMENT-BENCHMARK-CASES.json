@@ -1,58 +1,92 @@
 {
-  "version": 1,
-  "description": "Golden standards for tariff-/overenskomstkontekst. Tester forslag uten antakelser.",
+  "version": 2,
+  "description": "Golden standards for tariff-/overenskomstkontekst. Tester at arbeidsgivertype spørres som oppfølging bare når relevant, og at avtaleområde aldri antas uten bekreftelse.",
   "cases": [
     {
       "id": "AGR001",
       "occupation": "sykepleier",
-      "employerContext": "kommune",
       "topic": "Lønn og utvikling",
+      "subtopic": "Lønnsutvikling",
       "agreementRelevant": true,
-      "expectedAgreementAreas": [
-        "municipal"
-      ],
-      "requireConfirmation": true,
+      "employerType": null,
+      "expectNeedsEmployerType": true,
+      "expectedAgreementAreas": [],
       "mustNotClaim": [
-        "ikke slå fast at KS-avtale gjelder uten bekreftelse"
+        "ikke anta kommune, stat, helseforetak eller privat bare ut fra yrket"
       ]
     },
     {
       "id": "AGR002",
       "occupation": "sykepleier",
-      "employerContext": "sykehus",
+      "employerType": "municipal",
       "topic": "Lønn og utvikling",
+      "subtopic": "Lønnsutvikling",
       "agreementRelevant": true,
+      "expectNeedsEmployerType": false,
+      "expectedAgreementAreas": [
+        "municipal"
+      ],
+      "requireConfirmation": true
+    },
+    {
+      "id": "AGR003",
+      "occupation": "sykepleier",
+      "employerType": "health_enterprise",
+      "topic": "Lønn og utvikling",
+      "subtopic": "Lønnsutvikling",
+      "agreementRelevant": true,
+      "expectNeedsEmployerType": false,
       "expectedAgreementAreas": [
         "health_enterprise"
       ],
       "requireConfirmation": true
     },
     {
-      "id": "AGR003",
+      "id": "AGR004",
       "occupation": "lærer",
-      "employerContext": "kommune",
-      "topic": "Samliv og familie",
+      "topic": "Livssituasjoner",
+      "subtopic": "Samlivsbrudd",
       "agreementRelevant": false,
+      "expectNeedsEmployerType": false,
       "expectedAgreementAreas": [],
-      "requireConfirmation": false
+      "mustNotAsk": [
+        "ikke spør om privat/kommune/stat når tariff ikke er relevant"
+      ]
     },
     {
-      "id": "AGR004",
+      "id": "AGR005",
       "occupation": "elektriker",
-      "employerContext": "privat elektrobedrift",
-      "topic": "Arbeidstid",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Arbeidstid",
+      "situation": "Arbeidstid og overtid er tema.",
       "agreementRelevant": true,
+      "employerType": null,
+      "expectNeedsEmployerType": true,
+      "expectedAgreementAreas": []
+    },
+    {
+      "id": "AGR006",
+      "occupation": "elektriker",
+      "employerType": "private",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Arbeidstid",
+      "situation": "Arbeidstid og overtid er tema.",
+      "agreementRelevant": true,
+      "expectNeedsEmployerType": false,
       "expectedAgreementAreas": [
         "construction_industry"
       ],
       "requireConfirmation": true
     },
     {
-      "id": "AGR005",
+      "id": "AGR007",
       "occupation": "bussjåfør",
-      "employerContext": "privat busselskap",
-      "topic": "Arbeidstid",
+      "employerType": "private",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Arbeidstid",
+      "situation": "Arbeidstid, overtid og kjøre-/hviletid er tema.",
       "agreementRelevant": true,
+      "expectNeedsEmployerType": false,
       "expectedAgreementAreas": [
         "transport"
       ],
@@ -63,20 +97,13 @@
       ]
     },
     {
-      "id": "AGR006",
-      "occupation": "oppdrettsoperatør",
-      "employerContext": "lakseoppdrett",
-      "topic": "Samarbeid og kommunikasjon",
-      "agreementRelevant": false,
-      "expectedAgreementAreas": [],
-      "requireConfirmation": false
-    },
-    {
-      "id": "AGR007",
+      "id": "AGR008",
       "occupation": "rådgiver",
-      "employerContext": "statlig etat",
+      "employerType": "state",
       "topic": "Lønn og utvikling",
+      "subtopic": "Lønnsutvikling",
       "agreementRelevant": true,
+      "expectNeedsEmployerType": false,
       "expectedAgreementAreas": [
         "state"
       ],
@@ -84,6 +111,27 @@
       "mustNotClaim": [
         "ikke anta hovedsammenslutning eller fagforening"
       ]
+    },
+    {
+      "id": "AGR009",
+      "occupation": "oppdrettsoperatør",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Samarbeidsutfordringer",
+      "agreementRelevant": false,
+      "expectNeedsEmployerType": false,
+      "expectedAgreementAreas": []
+    },
+    {
+      "id": "AGR010",
+      "occupation": "pilot",
+      "employerType": "unknown",
+      "topic": "Prestasjon og utvikling",
+      "subtopic": "Arbeidstid",
+      "situation": "Arbeidstid og vaktbelastning er tema.",
+      "agreementRelevant": true,
+      "expectNeedsEmployerType": false,
+      "expectedAgreementAreas": [],
+      "unresolved": true
     }
   ]
 }
