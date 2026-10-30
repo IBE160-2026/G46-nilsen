@@ -4,7 +4,9 @@ window.SamtalestotteClientData = Object.freeze({
   home: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 11.5 12 4l9 7.5"></path><path d="M5.5 10.5V20h13V10.5"></path></svg>`,
   prepare: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4.5h8"></path><path d="M8 8.5h8"></path><path d="M8 12.5h8"></path><path d="M8 16.5h5"></path><path d="M6 3.5h12a2 2 0 0 1 2 2v13a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-13a2 2 0 0 1 2-2Z"></path></svg>`,
   history: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 7v5l3 2"></path><path d="M12 21a9 9 0 1 0-9-9"></path></svg>`,
-  settings: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 8.5a3.5 3.5 0 1 1 0 7 3.5 3.5 0 0 1 0-7Z"></path><path d="m19.4 15 .8 1.4-1.6 2.8-1.7-.4a7.9 7.9 0 0 1-1.8 1l-.4 1.7H9.3l-.4-1.7a7.9 7.9 0 0 1-1.8-1l-1.7.4-1.6-2.8.8-1.4a8.5 8.5 0 0 1 0-2l-.8-1.4 1.6-2.8 1.7.4a7.9 7.9 0 0 1 1.8-1l.4-1.7h3.4l.4 1.7a7.9 7.9 0 0 1 1.8 1l1.7-.4 1.6 2.8-.8 1.4a8.5 8.5 0 0 1 0 2Z"></path></svg>`,
+  settings: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7h7"></path><path d="M15 7h5"></path><circle cx="13" cy="7" r="2"></circle><path d="M4 17h5"></path><path d="M13 17h7"></path><circle cx="11" cy="17" r="2"></circle></svg>`,
+  clock: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"></circle><path d="M12 7.5V12l3.2 2"></path></svg>`,
+  chatBubble: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5.5h14a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-7l-4.5 3v-3H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2Z"></path><path d="M7.5 10h9M7.5 13h6"></path></svg>`,
   about: `<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"></circle><path d="M12 10.5V17"></path><path d="M12 7h.01"></path></svg>`,
   contact: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5h16v13H4z"></path><path d="m4.5 6 7.5 6 7.5-6"></path></svg>`,
   simulation: `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h11a3 3 0 0 1 3 3v5a3 3 0 0 1-3 3H9l-4 3v-3H4a2 2 0 0 1-2-2V7a2 2 0 0 1 2-2Z"></path><path d="M8 9h6M8 12h4"></path></svg>`,
@@ -51,7 +53,7 @@ window.SamtalestotteClientData = Object.freeze({
   {
     id: 'fravaer-oppfolging',
     title: 'Fravær og oppfølging',
-    iconKey: 'calendarClock',
+    iconKey: 'clock',
     image: 'assets/images/topics/topic-fravaer-oppfolging.png',
     imageAlt: 'Oppfølgingssamtale mellom leder og medarbeider i et lyst kontormiljø',
     description: 'Støtte til gode samtaler om sykefravær, oppmøte, planlagt fravær, tilbakekomst, arbeidsevne og tilrettelegging – med fokus på arbeidssituasjonen fremfor diagnose.',
@@ -103,7 +105,7 @@ window.SamtalestotteClientData = Object.freeze({
   {
     id: 'samarbeid-kommunikasjon',
     title: 'Samarbeid og kommunikasjon',
-    iconKey: 'chatPeople',
+    iconKey: 'chatBubble',
     image: 'assets/images/topics/topic-samarbeid-kommunikasjon.png',
     imageAlt: 'Flere kolleger samarbeider rundt en laptop i et moderne kontor',
     description: 'Støtte til samtaler som skal styrke kommunikasjon, tillit, rolleforståelse og samspill når samarbeidet har blitt krevende.',
