@@ -1536,6 +1536,21 @@ Prestasjon/utvikling: «Jeg vil gjerne snakke med deg om noen av leveransene den
 });
 
 
+const continuationSchema = {
+  type: 'object',
+  additionalProperties: false,
+  properties: {
+    reply: { type: 'string' },
+    suggestions: {
+      type: 'array',
+      minItems: 2,
+      maxItems: 4,
+      items: { type: 'string' }
+    }
+  },
+  required: ['reply', 'suggestions']
+};
+
 app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) => {
   if (!hasAnyAiClient()) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
@@ -1552,15 +1567,27 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
 - Bruk maksimalt 4 korte avsnitt eller 3 korte punkter.
 - Gi høyst 1–2 konkrete formuleringseksempler.
 - Ikke bruk nummererte mini-kapitler med mindre brukeren uttrykkelig ber om en stegvis gjennomgang.
-- Ikke gjenta risikovarsler, HR-råd eller sikkerhetsforbehold som allerede er gitt, med mindre de er direkte relevante for oppfølgingsspørsmålet.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nRelevante kilder i fagbanken: ${JSON.stringify(relevantSources)}\n`;
+- Ikke gjenta risikovarsler, HR-råd eller sikkerhetsforbehold som allerede er gitt, med mindre de er direkte relevante for oppfølgingsspørsmålet.
+- Foreslå 2–4 korte neste spørsmål brukeren naturlig kan ønske å utforske etter svaret.
+- Neste spørsmål skal bygge videre på akkurat denne saken og siste spørsmål, ikke bare gjenta de generelle startforslagene.
+- Unngå å foreslå samme spørsmål som brukeren nettopp stilte.\n\nSituasjon: ${situation || ""}\nAnalyse: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\nTidligere råd: ${JSON.stringify(guidance || {})}\nRelevante kilder i fagbanken: ${JSON.stringify(relevantSources)}\n`;
   try {
     const response = await createTrackedResponse({
       _functionName:'oppfolging', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, question, ...flattenTextValues(followups)],
       tools: [{ type: "web_search", search_context_size: "low" }],
       instructions: systemPrompt + continueTask,
-      input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }]
+      input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }],
+      text: {
+        format: {
+          type: "json_schema",
+          name: "samtalestotte_oppfolging",
+          strict: true,
+          schema: continuationSchema
+        }
+      }
     });
-    return res.json({ reply: response.output_text, ai: true, model: responseModel(response) });
+    const parsed = JSON.parse(response.output_text);
+    return res.json({ reply: parsed.reply, suggestions: parsed.suggestions, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI continuation failed:", error);
     const status = Number(error?.status) || 500;
