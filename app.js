@@ -2773,6 +2773,7 @@ async function refreshAuth() {
   if (currentUser) {
     setTimeout(ensurePrivacyAcknowledgement,150);
     closeAuth(true);
+    document.body.classList.remove('auth-open');
     setAppLocked(false);
   }
 }
