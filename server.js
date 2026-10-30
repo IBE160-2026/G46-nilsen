@@ -854,10 +854,14 @@ app.post("/api/survey", requireUser, async (req,res)=>{
   if([row.usability,row.navigation,row.ai_relevance,row.practical_usefulness,row.privacy,row.would_use].some(v=>v===null)) return res.status(400).json({error:'INVALID_SURVEY',message:'Svar på alle obligatoriske spørsmål fra 1 til 5.'});
   const privacyFindings=serverPrivacyFindings(`${row.improvement_text} ${row.most_useful_text}`).filter(x=>SERVER_HARD_PRIVACY_TYPES.has(x.type));
   if(privacyFindings.length)return res.status(400).json({error:'PRIVACY_REVIEW_REQUIRED',message:'Fjern navn eller andre tydelige personopplysninger fra friteksten.'});
+  const saved=await supabaseAdmin.from('survey_responses').insert(row).select('id').single();
+  if(saved.error)return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kunne ikke lagre brukertesten.'});
   const mark=await supabaseAdmin.from('survey_participation').insert({user_id:req.user.id});
-  if(mark.error){if(/duplicate|unique/i.test(String(mark.error.message||'')))return res.status(409).json({error:'SURVEY_ALREADY_COMPLETED',message:'Du har allerede sendt inn brukertesten. Dersom du har flere tilbakemeldinger, bruk kontaktskjemaet.'});return res.status(503).json({error:'SURVEY_SCHEMA_MISSING',message:'Kjør database/migrations/V20-6-SUPABASE-MIGRATION.sql i Supabase først.'});}
-  const saved=await supabaseAdmin.from('survey_responses').insert(row);
-  if(saved.error){await supabaseAdmin.from('survey_participation').delete().eq('user_id',req.user.id);return res.status(503).json({error:'SURVEY_TABLE_MISSING',message:'Kunne ikke lagre brukertesten.'});}
+  if(mark.error){
+    await supabaseAdmin.from('survey_responses').delete().eq('id',saved.data?.id);
+    if(/duplicate|unique/i.test(String(mark.error.message||'')))return res.status(409).json({error:'SURVEY_ALREADY_COMPLETED',message:'Du har allerede sendt inn brukertesten. Dersom du har flere tilbakemeldinger, bruk kontaktskjemaet.'});
+    return res.status(503).json({error:'SURVEY_SCHEMA_MISSING',message:'Kunne ikke registrere at brukertesten er sendt inn.'});
+  }
   res.json({ok:true});
 });
 app.get("/api/admin/survey", requireAdmin, async (_req,res)=>{
