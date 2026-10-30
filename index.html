@@ -12,10 +12,10 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.1" />
+  <link rel="stylesheet" href="styles.css?v=20.11.11" />
 </head>
 <body>
-  <div class="app-shell" inert aria-hidden="true">
+  <div class="app-shell">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
         <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
@@ -70,8 +70,7 @@
           </button>
         </nav>
         <div class="sidebar-message">
-          <div class="sidebar-message-icon" id="sidebar-message-icon"></div>
-          <p>Sammen skaper<br>vi bedre arbeidsplasser</p>
+          <p>Bedre samtaler.<br>Et bedre arbeidsmiljø.</p>
         </div>
       </div>
     </aside>
@@ -125,7 +124,7 @@
       <section id="home-view" class="view active-view">
         <section class="hero-panel">
           <div class="hero-copy">
-            <span class="eyebrow" data-content-key="home.hero.eyebrow">BEDRE SAMTALER. ET STERKERE ARBEIDSLIV.</span>
+            <span class="eyebrow" data-content-key="home.hero.eyebrow">BEDRE SAMTALER. ET BEDRE ARBEIDSMILJØ.</span>
             <h1 data-content-key="home.hero.title">Forbered vanskelige samtaler med trygghet og struktur</h1>
             <p data-content-key="home.hero.intro">Velg tema, beskriv situasjonen anonymt og få støtte til å planlegge en profesjonell og tydelig samtale.</p>
           </div>
@@ -157,17 +156,21 @@
 
         <section class="info-grid" aria-label="Viktig informasjon">
           <article class="info-card info-card-blue">
-            <div class="info-icon">🔒</div>
+            <div class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>
+            </div>
             <div>
-              <strong>Ikke skriv navn eller andre identifiserende opplysninger.</strong>
-              <p>Beskriv situasjonen anonymt.</p>
+              <strong>Hold situasjonen anonym</strong>
+              <p>Unngå navn og andre opplysninger som kan gjøre en person lett gjenkjennelig.</p>
             </div>
           </article>
           <article class="info-card info-card-warm">
-            <div class="info-icon">💡</div>
+            <div class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 5.5h14a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-7l-4.5 3v-3H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2Z"></path><path d="M7.5 10h9M7.5 13h6"></path></svg>
+            </div>
             <div>
-              <strong>Når du velger et tema, får du støtte til:</strong>
-              <p>åpning, spørsmål, mulige reaksjoner og ting å være oppmerksom på.</p>
+              <strong>Få hjelp til å forberede samtalen</strong>
+              <p>Du får forslag til åpning, spørsmål, mulige reaksjoner og hva du bør være oppmerksom på.</p>
             </div>
           </article>
         </section>
@@ -323,6 +326,7 @@
           <p class="result-intro" id="result-intro">Forslaget er tilpasset det du har skrevet.</p>
           <div id="structured-guidance" class="guidance-grid"></div>
           <div class="conversation-utility-bar">
+            <button class="secondary-button compact-action-button" id="print-guidance" type="button">Skriv ut råd</button>
             <button class="secondary-button compact-action-button" id="report-from-conversation" type="button">Rapporter svar</button>
             <button class="secondary-button compact-action-button" id="result-new-conversation" type="button">＋ Ny samtale</button>
           </div>
@@ -384,7 +388,7 @@
           <span class="simulation-privacy-icon" aria-hidden="true">◈</span>
           <div>
             <strong data-content-key="simulation.privacy.title">Hold øvelsen anonym</strong>
-            <p data-content-key="simulation.privacy.text">Ikke skriv navn eller andre opplysninger som gjør medarbeideren lett gjenkjennelig. Beskriv situasjonen generelt. Samtaleøvelseen er et øvingsverktøy – ikke et system for lagring av personalsaker.</p>
+            <p data-content-key="simulation.privacy.text">Ikke skriv navn eller andre opplysninger som gjør medarbeideren lett gjenkjennelig. Beskriv situasjonen generelt. Samtaleøvelsen er et øvingsverktøy – ikke et system for lagring av personalsaker.</p>
           </div>
           <button class="text-button simulation-privacy-link" type="button" data-open-legal="privacy">Personvern</button>
         </div>
@@ -401,7 +405,7 @@
             </button>
             <button class="simulation-launch-card" id="simulation-history" type="button">
               <strong>Se tidligere øvelser</strong>
-              <span>Åpne lagrede samtaler og simuleringer fra historikken.</span>
+              <span>Åpne lagrede samtaler og samtaleøvelser fra historikken.</span>
             </button>
           </div>
 
@@ -650,7 +654,7 @@
           <section class="settings-card about-section"><h2>Personvern og ansvarlig bruk</h2><p>Brukeren skal ikke legge inn navn eller andre unødvendige opplysninger som kan identifisere virkelige personer. Personvernkontrollene reduserer risikoen for at identifiserende informasjon sendes videre, men kan ikke garantere at alle slike opplysninger oppdages.</p></section>
           <section class="settings-card about-section"><h2>Om prosjektet</h2><p>Samtalestøtte er utviklet som del av en prosjektoppgave ved Høgskolen i Molde. Studenten har hatt ansvar for behovsforståelse, krav, faglig retning, innhold og produktvalg. ChatGPT fra OpenAI er brukt som støtte i blant annet idéutvikling, programmering, dokumentasjon, testing og kvalitetssikring.</p><p><strong>Status:</strong> Betaversjon – under utvikling og testing.</p></section>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">20.11.0</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.11.5</strong></p>
         </div>
       </section>
 
@@ -693,7 +697,7 @@
           <fieldset><legend>2. Hvor enkelt var det å finne frem og gjennomføre hovedflyten uten hjelp?</legend><div class="survey-scale"><label><input type="radio" name="navigation" value="1" required><span>1</span></label><label><input type="radio" name="navigation" value="2"><span>2</span></label><label><input type="radio" name="navigation" value="3"><span>3</span></label><label><input type="radio" name="navigation" value="4"><span>4</span></label><label><input type="radio" name="navigation" value="5"><span>5</span></label></div></fieldset>
           <fieldset><legend>3. Hvor relevant og balansert opplevde du KI-veiledningen for situasjonen du testet?</legend><div class="survey-scale"><label><input type="radio" name="ai_relevance" value="1" required><span>1</span></label><label><input type="radio" name="ai_relevance" value="2"><span>2</span></label><label><input type="radio" name="ai_relevance" value="3"><span>3</span></label><label><input type="radio" name="ai_relevance" value="4"><span>4</span></label><label><input type="radio" name="ai_relevance" value="5"><span>5</span></label></div></fieldset>
           <fieldset><legend>4. Hvor konkret og praktisk nyttig opplevde du rådene?</legend><div class="survey-scale"><label><input type="radio" name="practical_usefulness" value="1" required><span>1</span></label><label><input type="radio" name="practical_usefulness" value="2"><span>2</span></label><label><input type="radio" name="practical_usefulness" value="3"><span>3</span></label><label><input type="radio" name="practical_usefulness" value="4"><span>4</span></label><label><input type="radio" name="practical_usefulness" value="5"><span>5</span></label></div></fieldset>
-          <fieldset><legend>5. Hvor nyttig opplevde du samtaleøvelseen som trening?</legend><div class="survey-scale"><label><input type="radio" name="simulation" value=""><span>Ikke testet</span></label><label><input type="radio" name="simulation" value="1"><span>1</span></label><label><input type="radio" name="simulation" value="2"><span>2</span></label><label><input type="radio" name="simulation" value="3"><span>3</span></label><label><input type="radio" name="simulation" value="4"><span>4</span></label><label><input type="radio" name="simulation" value="5"><span>5</span></label></div></fieldset>
+          <fieldset><legend>5. Hvor nyttig opplevde du samtaleøvelsen som trening?</legend><div class="survey-scale"><label><input type="radio" name="simulation" value=""><span>Ikke testet</span></label><label><input type="radio" name="simulation" value="1"><span>1</span></label><label><input type="radio" name="simulation" value="2"><span>2</span></label><label><input type="radio" name="simulation" value="3"><span>3</span></label><label><input type="radio" name="simulation" value="4"><span>4</span></label><label><input type="radio" name="simulation" value="5"><span>5</span></label></div></fieldset>
           <fieldset><legend>6. Hvor tydelig var informasjonen om personvern og hva du bør unngå å skrive inn?</legend><div class="survey-scale"><label><input type="radio" name="privacy" value="1" required><span>1</span></label><label><input type="radio" name="privacy" value="2"><span>2</span></label><label><input type="radio" name="privacy" value="3"><span>3</span></label><label><input type="radio" name="privacy" value="4"><span>4</span></label><label><input type="radio" name="privacy" value="5"><span>5</span></label></div></fieldset>
           <fieldset><legend>7. Hvis du hadde leder- eller personalansvar, hvor sannsynlig er det at du ville brukt Samtalestøtte i en reell situasjon?</legend><div class="survey-scale"><label><input type="radio" name="would_use" value="1" required><span>1</span></label><label><input type="radio" name="would_use" value="2"><span>2</span></label><label><input type="radio" name="would_use" value="3"><span>3</span></label><label><input type="radio" name="would_use" value="4"><span>4</span></label><label><input type="radio" name="would_use" value="5"><span>5</span></label></div></fieldset>
           <label>8. Hva er det viktigste vi bør forbedre?<textarea name="improvement_text" rows="4" maxlength="1200" placeholder="Kort svar. Har du relevant leder- eller fagbakgrunn, kommenter gjerne også på råd og samtaleteknikk. Ikke skriv personopplysninger."></textarea></label>
@@ -715,7 +719,7 @@
           <p class="muted-note"><strong>Personvern:</strong> Ikke skriv navn, fødselsdato, kontaktopplysninger eller andre opplysninger som kan identifisere medarbeidere. Beskriv problemet generelt.</p>
           <div class="compact-form-grid"><label>Hva gjelder det?<select id="report-category"><option>Teknisk feil</option><option>Uklart eller dårlig KI-svar</option><option>Feil eller manglende kilde</option><option>Personvern</option><option>Forslag til forbedring</option><option>Annet spørsmål</option></select></label><label>Beskriv kort hva som skjedde<textarea id="report-description" rows="4" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea></label></div>
           <label class="report-log-option"><input id="report-include-log" type="checkbox" checked><span>Ta med teknisk logg <small>Ingen samtaletekst tas med automatisk.</small></span></label>
-          <div class="report-meta" id="report-meta">Versjon 20.11.0</div>
+          <div class="report-meta" id="report-meta">Versjon 20.11.5</div>
           <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
           <div class="auth-message" id="report-message" aria-live="polite"></div>
         </form>
@@ -726,8 +730,13 @@
            ================================================== -->
       <section id="help-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp og faglige ressurser</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Kort brukerveiledning og utvalgte offentlige kilder som kan være relevante når du trenger mer informasjon.</p></div></div>
+        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Finn enten hjelp til å bruke Samtalestøtte eller gå videre til faglige ressurser og eksterne lenker.</p></div></div>
         <div class="help-grid">
+          <div class="help-section-heading">
+            <span class="eyebrow">BRUK AV SAMTALESTØTTE</span>
+            <h2>Hjelp til å bruke Samtalestøtte</h2>
+            <p>Kort veiledning til de viktigste funksjonene i løsningen.</p>
+          </div>
          <details class="settings-card utility-accordion">
   <summary>Slik bruker du Samtalestøtte</summary>
 
@@ -736,11 +745,17 @@
       <li>Velg et tema eller beskriv situasjonen med egne ord.</li>
       <li>Unngå navn og identifiserende opplysninger.</li>
       <li>Bruk KI-rådene som støtte, ikke som fasit.</li>
-      <li>Øv gjerne i samtaleøvelseen.</li>
+      <li>Øv gjerne i samtaleøvelsen.</li>
       <li>Ved alvorlige eller formelle saker: følg virksomhetens rutiner og involver riktig fagstøtte.</li>
     </ol>
   </div>
 </details>
+
+<div class="help-section-heading help-resource-heading">
+  <span class="eyebrow">EKSTERNE KILDER</span>
+  <h2>Ressurser og lenker</h2>
+  <p>Faglige kilder, regelverk og veiledere som kan være relevante ved behov.</p>
+</div>
 
 <details class="settings-card utility-accordion">
   <summary>Arbeidsmiljø, mobbing og trakassering</summary>
@@ -994,9 +1009,9 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-  <script src="src/privacy-name-data.js?v=20.11.0"></script>
-  <script src="src/privacy-detector.js?v=20.11.0"></script>
-  <script src="src/client-data.js?v=20.11.0"></script>
-  <script src="app.js?v=20.11.0"></script>
+  <script src="src/privacy-name-data.js?v=20.11.11"></script>
+  <script src="src/privacy-detector.js?v=20.11.11"></script>
+  <script src="src/client-data.js?v=20.11.11"></script>
+  <script src="app.js?v=20.11.11"></script>
 </body>
 </html>
