@@ -39,7 +39,7 @@ assert(app.includes('function renderContinueSuggestions('), 'Dynamiske oppfølgi
 assert(server.includes('continuationSchema') && server.includes('suggestions'), 'KI-oppfølging returnerer ikke nye forslag til neste spørsmål');
 assert(css.includes('.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after'), 'Minimert sidestolpe mangler tooltips');
 assert(css.includes('drop-shadow(0 0 1px rgba(255,255,255'), 'Samtaleøvelse-ikonet mangler lys profilkontur i mørk sidebar');
-console.log('v20.11.9 UI-kontroll: OK');
+console.log('v20.11.10 UI-kontroll: OK');
 
 
 
@@ -56,14 +56,14 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.11\.9/.test(html), "CSS cache-versjon er ikke 20.11.9");
+assert(/styles\.css\?v=20\.11\.10/.test(html), "CSS cache-versjon er ikke 20.11.10");
 assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.8");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
 assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.8");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
-assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.9["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.9["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.9["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.9["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
+assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.10["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.10["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.10["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.10["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
 console.log("Klientmodul-innlasting: OK");
 
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
@@ -105,7 +105,7 @@ console.log('Brukertest dobbel-submit-regresjon: OK');
 const clientDataSource = fs.readFileSync('src/client-data.js', 'utf8');
 assert(/id:\s*'fravaer-oppfolging'[\s\S]*?iconKey:\s*'clock'/.test(clientDataSource), 'Fravær og oppfølging skal bruke klokkeikon');
 assert(/id:\s*'samarbeid-kommunikasjon'[\s\S]*?iconKey:\s*'chatBubble'/.test(clientDataSource), 'Samarbeid og kommunikasjon skal bruke snakkebobleikon');
-assert(clientDataSource.includes('settings: `<svg') && clientDataSource.includes('<circle cx="13" cy="7" r="2"></circle>'), 'Innstillinger skal bruke flatt justeringsikon');
+assert(clientDataSource.includes('settings: `<svg') && clientDataSource.includes('<circle cx="12" cy="12" r="3"></circle>'), 'Innstillinger skal bruke et vanlig flatt 2D-tannhjul');
 const topicContractSource = fs.readFileSync('src/server/topic-contracts.js', 'utf8');
 const expectedSubtopics = {
   'Alkohol og rus': ['Alkoholbruk','Andre rusmidler','Påvirket på jobb','Fungering på jobb','Rus og sikkerhet','Videre oppfølging'],
