@@ -112,3 +112,20 @@ v20.11.4 forsøkte å sentrere Historikk-logoen ved å la elementet bli del av e
 Fra 641 CSS-piksler og opp har Historikk derfor alltid to kolonner. Høyrekolonnen krymper med vinduet, logoen skalerer med `clamp()`, og den plasseres høyere i den opprinnelig ledige flaten uten å påvirke tekstkolonnens høyde. Under 640 px skjules logoen i stedet for å bli en egen rad.
 
 Samme produksjonsrunde avdekket at generelle hover-regler kunne gjøre mørk sidemeny nær hvit ved peker-hover. En eksplisitt sluttregel for mørk/hybrid sidebar låser hover/fokus/aktiv til mørk teal med hvit tekst og synlig ikon.
+
+
+## Arbeidsrunde 30.10.2026 – pilotdrevet UX-forbedring etter v20.11.5
+
+Etter nye pilotkommentarer ble en samlet forbedringsrunde startet på main.
+
+Endringene omfatter:
+- minimert sidebar som standard for nye brukere
+- tooltip på ikoner i minimert sidebar
+- forbedret kontrast for Samtaleøvelse-profil i mørk/hybrid
+- ny ikonretning: klokke for Fravær og oppfølging, snakkeboble for Samarbeid og kommunikasjon og flatt justeringsikon for Innstillinger
+- redesign av de to nederste informasjonskortene på forsiden med enkle linjeikoner
+- tydelig todeling av Hjelp i brukerveiledning og ressurser/lenker
+- utskriftsfunksjon som begrenser utskriften til situasjon, tema/undertema og råd
+- dynamiske forslag til videre spørsmål etter hvert KI-svar i oppfølgingsdialogen
+
+Bakgrunnen er dokumentert i docs/BRUKERTEST-FUNN-OG-BACKLOG.md. Denne arbeidsrunden skal ikke regnes som ferdig produksjonsrelease før tester og faktisk deploy er verifisert.
