@@ -2176,14 +2176,15 @@ function setSidebarCollapsed(collapsed) {
 const sidebarNarrowQuery = window.matchMedia('(max-width: 1100px)');
 
 function applySidebarState() {
-  const storedCollapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
+  const storedState = localStorage.getItem('samtalestotte-sidebar');
+  const collapsed = storedState ? storedState === 'collapsed' : true;
 
   if (sidebarNarrowQuery.matches) {
     setSidebarCollapsed(true);
     return;
   }
 
-  setSidebarCollapsed(storedCollapsed);
+  setSidebarCollapsed(collapsed);
 }
 
 function toggleSidebar() {
@@ -3951,8 +3952,8 @@ sidebarNarrowQuery.addEventListener('change', event => {
   if (event.matches) {
     setSidebarCollapsed(true);
   } else {
-    const storedCollapsed = localStorage.getItem('samtalestotte-sidebar') === 'collapsed';
-    setSidebarCollapsed(storedCollapsed);
+    const storedState = localStorage.getItem('samtalestotte-sidebar');
+    setSidebarCollapsed(storedState ? storedState === 'collapsed' : true);
   }
 });
 window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => {
