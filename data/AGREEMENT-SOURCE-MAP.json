@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "description": "Forslagskart for tariff-/overenskomstkontekst. Systemet skal aldri anta at en arbeidstaker er omfattet av en bestemt avtale bare ut fra yrke; det skal foreslå mulige avtaleområder og be om bekreftelse når tariffkontekst faktisk er relevant.",
   "policy": {
     "assumeAgreement": false,
@@ -25,7 +25,19 @@
       "vanlig kollegakonflikt",
       "generell kommunikasjon uten avtale-/arbeidstidskobling"
     ],
-    "wordingRule": "Bruk formuleringer som «kan være omfattet av» eller «relevant avtale kan være», aldri «du følger denne avtalen» uten bekreftet grunnlag."
+    "wordingRule": "Bruk formuleringer som «kan være omfattet av» eller «relevant avtale kan være», aldri «du følger denne avtalen» uten bekreftet grunnlag.",
+    "followUpFlow": {
+      "trigger": "Still spørsmål om arbeidsgivertype bare når tariff/overenskomst faktisk kan påvirke rådet.",
+      "question": "For å finne riktig avtaleområde: jobber du privat, i kommune/fylkeskommune, staten eller helseforetak?",
+      "options": [
+        "Privat",
+        "Kommune/fylkeskommune",
+        "Stat",
+        "Helseforetak",
+        "Usikker / vet ikke"
+      ],
+      "doNotAskWhenIrrelevant": true
+    }
   },
   "agreementAreas": [
     {
