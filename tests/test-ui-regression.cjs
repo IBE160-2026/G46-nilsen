@@ -48,7 +48,7 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.11\.5/.test(html), "CSS cache-versjon er ikke 20.11.5");
+assert(/styles\.css\?v=20\.11\.6/.test(html), "CSS cache-versjon er ikke 20.11.6");
 assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.5");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
