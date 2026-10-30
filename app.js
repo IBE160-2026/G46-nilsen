@@ -2169,6 +2169,17 @@ function applyTheme(theme) {
   if(mobileThemeButton) mobileThemeButton.setAttribute('aria-label', 'Bytt fargetema. Nå: '+meta.label);
 }
 
+const UX_DEFAULTS_VERSION = '20.11.11';
+
+function applyUxDefaultsMigration() {
+  const appliedVersion = localStorage.getItem('samtalestotte-ux-defaults-version');
+  if (appliedVersion === UX_DEFAULTS_VERSION) return;
+
+  localStorage.setItem('samtalestotte-theme', 'hybrid');
+  localStorage.setItem('samtalestotte-sidebar', 'collapsed');
+  localStorage.setItem('samtalestotte-ux-defaults-version', UX_DEFAULTS_VERSION);
+}
+
 function initTheme() {
   applyTheme(localStorage.getItem('samtalestotte-theme') || 'hybrid');
 }
@@ -2210,6 +2221,7 @@ function toggleSidebar() {
 renderStaticIcons();
 renderTopics();
 resetConversationState();
+applyUxDefaultsMigration();
 initTheme();
 applySidebarState();
 setBreadcrumb('');
@@ -3344,7 +3356,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.10', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.11', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
