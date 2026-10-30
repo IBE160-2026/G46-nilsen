@@ -12,10 +12,10 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.13" />
+  <link rel="stylesheet" href="styles.css?v=20.11.8" />
 </head>
 <body>
-  <div class="app-shell">
+  <div class="app-shell" inert aria-hidden="true">
     <aside class="sidebar" id="sidebar">
       <div class="sidebar-top">
         <button class="brand brand-button" id="brand-home-button" type="button" aria-label="Gå til hjem">
@@ -156,21 +156,17 @@
 
         <section class="info-grid" aria-label="Viktig informasjon">
           <article class="info-card info-card-blue">
-            <div class="info-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>
-            </div>
+            <div class="info-icon">🔒</div>
             <div>
-              <strong>Hold situasjonen anonym</strong>
-              <p>Unngå navn og andre opplysninger som kan gjøre en person lett gjenkjennelig.</p>
+              <strong>Ikke skriv navn eller andre identifiserende opplysninger.</strong>
+              <p>Beskriv situasjonen anonymt.</p>
             </div>
           </article>
           <article class="info-card info-card-warm">
-            <div class="info-icon" aria-hidden="true">
-              <svg viewBox="0 0 24 24"><path d="M5 5.5h14a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-7l-4.5 3v-3H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2Z"></path><path d="M7.5 10h9M7.5 13h6"></path></svg>
-            </div>
+            <div class="info-icon">💡</div>
             <div>
-              <strong>Få hjelp til å forberede samtalen</strong>
-              <p>Du får forslag til åpning, spørsmål, mulige reaksjoner og hva du bør være oppmerksom på.</p>
+              <strong>Når du velger et tema, får du støtte til:</strong>
+              <p>åpning, spørsmål, mulige reaksjoner og ting å være oppmerksom på.</p>
             </div>
           </article>
         </section>
@@ -326,7 +322,6 @@
           <p class="result-intro" id="result-intro">Forslaget er tilpasset det du har skrevet.</p>
           <div id="structured-guidance" class="guidance-grid"></div>
           <div class="conversation-utility-bar">
-            <button class="secondary-button compact-action-button" id="print-guidance" type="button">Skriv ut råd</button>
             <button class="secondary-button compact-action-button" id="report-from-conversation" type="button">Rapporter svar</button>
             <button class="secondary-button compact-action-button" id="result-new-conversation" type="button">＋ Ny samtale</button>
           </div>
@@ -730,13 +725,8 @@
            ================================================== -->
       <section id="help-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Finn enten hjelp til å bruke Samtalestøtte eller gå videre til faglige ressurser og eksterne lenker.</p></div></div>
+        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp og faglige ressurser</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Kort brukerveiledning og utvalgte offentlige kilder som kan være relevante når du trenger mer informasjon.</p></div></div>
         <div class="help-grid">
-          <div class="help-section-heading">
-            <span class="eyebrow">BRUK AV SAMTALESTØTTE</span>
-            <h2>Hjelp til å bruke Samtalestøtte</h2>
-            <p>Kort veiledning til de viktigste funksjonene i løsningen.</p>
-          </div>
          <details class="settings-card utility-accordion">
   <summary>Slik bruker du Samtalestøtte</summary>
 
@@ -745,17 +735,11 @@
       <li>Velg et tema eller beskriv situasjonen med egne ord.</li>
       <li>Unngå navn og identifiserende opplysninger.</li>
       <li>Bruk KI-rådene som støtte, ikke som fasit.</li>
-      <li>Øv gjerne i samtaleøvelsen.</li>
+      <li>Øv gjerne i samtaleøvelseen.</li>
       <li>Ved alvorlige eller formelle saker: følg virksomhetens rutiner og involver riktig fagstøtte.</li>
     </ol>
   </div>
 </details>
-
-<div class="help-section-heading help-resource-heading">
-  <span class="eyebrow">EKSTERNE KILDER</span>
-  <h2>Ressurser og lenker</h2>
-  <p>Faglige kilder, regelverk og veiledere som kan være relevante ved behov.</p>
-</div>
 
 <details class="settings-card utility-accordion">
   <summary>Arbeidsmiljø, mobbing og trakassering</summary>
@@ -1009,67 +993,9 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-  <script>
-    // Critical shell defaults must not depend on app.js completing successfully.
-    (() => {
-      try {
-        const defaultsVersion = '20.11.13';
-        if (localStorage.getItem('samtalestotte-shell-defaults-version') !== defaultsVersion) {
-          localStorage.setItem('samtalestotte-theme', 'hybrid');
-          localStorage.setItem('samtalestotte-sidebar', 'collapsed');
-          localStorage.setItem('samtalestotte-shell-defaults-version', defaultsVersion);
-        }
-        document.documentElement.dataset.theme = localStorage.getItem('samtalestotte-theme') || 'hybrid';
-        const sidebar = document.querySelector('#sidebar');
-        const shell = document.querySelector('.app-shell');
-        if (localStorage.getItem('samtalestotte-sidebar') !== 'expanded') {
-          sidebar?.classList.add('sidebar-collapsed');
-          shell?.classList.add('sidebar-collapsed-layout');
-        }
-      } catch (_) {
-        document.documentElement.dataset.theme = 'hybrid';
-        document.querySelector('#sidebar')?.classList.add('sidebar-collapsed');
-        document.querySelector('.app-shell')?.classList.add('sidebar-collapsed-layout');
-      }
-    })();
-  </script>
-  <script src="src/privacy-name-data.js?v=20.11.13"></script>
-  <script src="src/privacy-detector.js?v=20.11.13"></script>
-  <script src="src/client-data.js?v=20.11.13"></script>
-  <script src="app.js?v=20.11.13"></script>
-  <script>
-    // Emergency navigation fallback: only activates if app.js never reaches its ready marker.
-    setTimeout(() => {
-      if (window.__SAMTALESTOTTE_READY__) return;
-
-      const views = [...document.querySelectorAll('.view[id]')];
-      const showFallbackView = name => {
-        const targetId = name === 'prepare' ? 'home-view' : `${name}-view`;
-        const target = document.getElementById(targetId);
-        if (!target) return;
-        views.forEach(view => view.classList.remove('active-view'));
-        target.classList.add('active-view');
-        document.querySelectorAll('.nav-item[data-view]').forEach(item => {
-          item.classList.toggle('active', item.dataset.view === name || (name === 'prepare' && item.dataset.view === 'home'));
-        });
-      };
-
-      document.querySelector('#sidebar-toggle')?.addEventListener('click', () => {
-        const sidebar = document.querySelector('#sidebar');
-        const shell = document.querySelector('.app-shell');
-        const collapsed = !sidebar?.classList.contains('sidebar-collapsed');
-        sidebar?.classList.toggle('sidebar-collapsed', collapsed);
-        shell?.classList.toggle('sidebar-collapsed-layout', collapsed);
-        try { localStorage.setItem('samtalestotte-sidebar', collapsed ? 'collapsed' : 'expanded'); } catch (_) {}
-      });
-
-      document.querySelectorAll('.nav-item[data-view], .mobile-nav-item[data-view]').forEach(button => {
-        button.addEventListener('click', () => showFallbackView(button.dataset.view));
-      });
-
-      document.querySelector('#brand-home-button')?.addEventListener('click', () => showFallbackView('home'));
-      console.error('[startup] Hovedscriptet fullførte ikke initialisering. Fallback-navigasjon er aktivert.');
-    }, 800);
-  </script>
+  <script src="src/privacy-name-data.js?v=20.11.8"></script>
+  <script src="src/privacy-detector.js?v=20.11.8"></script>
+  <script src="src/client-data.js?v=20.11.8"></script>
+  <script src="app.js?v=20.11.8"></script>
 </body>
 </html>
