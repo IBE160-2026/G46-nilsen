@@ -8523,3 +8523,67 @@ html[data-theme="dark"] .sidebar .nav-item.active .nav-glyph {
   color: #ffffff !important;
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.18) !important;
 }
+
+
+/* SAFE UX REBUILD 2026-10-30 */
+.info-icon {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  border-radius: 50%;
+  font-size: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.info-icon svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.info-card { align-items: center; cursor: default; }
+.info-card:hover { transform: none; }
+.help-section-heading { padding: 12px 4px 6px; margin-top: 4px; }
+.help-section-heading h2 { margin: 4px 0; font-size: clamp(1.25rem,1.7vw,1.5rem); }
+.help-section-heading p { margin: 0; color: var(--muted); line-height: 1.5; }
+.help-resource-heading { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--border); }
+
+html[data-theme="hybrid"] .sidebar .nav-logo-glyph img,
+html[data-theme="dark"] .sidebar .nav-logo-glyph img {
+  filter: drop-shadow(0 0 1px rgba(255,255,255,.96)) drop-shadow(0 0 1px rgba(255,255,255,.78));
+}
+
+.sidebar.sidebar-collapsed .nav-item[data-tooltip] { position: relative; overflow: visible; }
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-3px);
+  padding: 7px 10px;
+  border-radius: 9px;
+  background: #102f38;
+  color: #fff;
+  font-size: .8rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .12s ease, transform .12s ease;
+  z-index: 80;
+}
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]:hover::after,
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  transform: translateY(-50%);
+}
+@media (max-width: 760px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .info-card { padding: 14px 15px; gap: 12px; }
+  .help-section-heading { padding-left: 0; padding-right: 0; }
+}
