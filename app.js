@@ -590,6 +590,19 @@ function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
 const privacyNameDetector = window.SamtalestottePrivacyDetector;
 if (!privacyNameDetector) throw new Error('Personvernmodulen for navnedeteksjon mangler.');
 const { findLikelyGivenName, findLikelyGivenNames } = privacyNameDetector;
+const privacyNameOverrideKeys = new Set();
+
+function privacyNameOverrideKey(text, name) {
+  return `${String(text || '').trim()}\u0000${String(name || '').toLocaleLowerCase('nb-NO')}`;
+}
+
+function privacyNameOverridesForText(text) {
+  const prefix = `${String(text || '').trim()}\u0000`;
+  return [...privacyNameOverrideKeys]
+    .filter(key => key.startsWith(prefix))
+    .map(key => key.slice(prefix.length))
+    .filter(Boolean);
+}
 
 
 function detectSensitiveInfo(text) {
@@ -647,8 +660,10 @@ function detectSensitiveInfo(text) {
 
   const likelyNames = findLikelyGivenNames(source);
   likelyNames.forEach(likelyName => {
+    if (privacyNameOverrideKeys.has(privacyNameOverrideKey(source, likelyName))) return;
     findings.push({
       type: 'name',
+      value: likelyName,
       label: `Mulig personnavn: «${likelyName}»`,
       message: 'Fjern navnet og bruk for eksempel «medarbeideren», «kollegaen» eller «lederen».'
     });
@@ -779,6 +794,7 @@ function updatePrivacyCheck() {
       <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
       <div class="privacy-fix-actions">
         <button type="button" class="secondary-button compact-fix-button" id="privacy-fix-button">Fiks personvern</button>
+        ${visible.some(item => item.type === 'name') ? '<button type="button" class="text-button" id="privacy-not-personal-button">Ikke personopplysninger</button>' : ''}
         <small>Erstatter bare opplysninger kontrollen har flagget. Les gjennom teksten før du sender.</small>
       </div>
     `;
@@ -795,6 +811,13 @@ function updatePrivacyCheck() {
     `;
   }
   box.querySelector('#privacy-fix-button')?.addEventListener('click', applyPrivacyFix);
+  box.querySelector('#privacy-not-personal-button')?.addEventListener('click', () => {
+    visible.filter(item => item.type === 'name' && item.value).forEach(item => {
+      privacyNameOverrideKeys.add(privacyNameOverrideKey(text, item.value));
+    });
+    updatePrivacyCheck();
+    document.querySelector('#situation')?.focus();
+  });
   return findings;
 }
 
@@ -1203,7 +1226,8 @@ async function requestAiSituationAnalysis(situation, helpRequest) {
       situation,
       helpRequest,
       selectedTopic: currentTopic?.title || '',
-      selectedSubtopic: currentSubtopic || ''
+      selectedSubtopic: currentSubtopic || '',
+      privacyNameOverrides: privacyNameOverridesForText(situation)
     })
   });
 
@@ -1223,7 +1247,7 @@ async function requestAiGuidance(situation, analysis, followups) {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '' })
+    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '', privacyNameOverrides: privacyNameOverridesForText(situation) })
   });
   if (!response.ok) {
     let payload = {};
@@ -2356,7 +2380,7 @@ document.querySelector('#situation-form').addEventListener('submit', async event
   const helpRequest = '';
   const submitButton = event.currentTarget.querySelector('button[type="submit"]');
 
-  if (privacyFindings.length) {
+  if (splitPrivacyFindings(privacyFindings).hard.length) {
     document.querySelector('#privacy-check')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
     return;
   }
