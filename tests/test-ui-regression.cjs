@@ -39,7 +39,7 @@ assert(app.includes('function renderContinueSuggestions('), 'Dynamiske oppfølgi
 assert(server.includes('continuationSchema') && server.includes('suggestions'), 'KI-oppfølging returnerer ikke nye forslag til neste spørsmål');
 assert(css.includes('.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after'), 'Minimert sidestolpe mangler tooltips');
 assert(css.includes('drop-shadow(0 0 1px rgba(255,255,255'), 'Samtaleøvelse-ikonet mangler lys profilkontur i mørk sidebar');
-console.log('v20.11.11 UI-kontroll: OK');
+console.log('v20.11.12 UI-kontroll: OK');
 
 
 
@@ -56,14 +56,14 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/styles\.css\?v=20\.11\.11/.test(html), "CSS cache-versjon er ikke 20.11.11");
+assert(/styles\.css\?v=20\.11\.12/.test(html), "CSS cache-versjon er ikke 20.11.12");
 assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.8");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
 assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.8");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
-assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.11["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.11["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.11["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.11["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
+assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.12["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.12["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.12["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.12["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
 console.log("Klientmodul-innlasting: OK");
 
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
@@ -133,6 +133,10 @@ for (const [theme, subtopics] of Object.entries(expectedSubtopics)) {
 }
 console.log('Undertemastruktur: OK');
 
-assert(app.includes("const UX_DEFAULTS_VERSION = '20.11.11';"), 'Mangler versjonert reset av UX-standarder');
+assert(app.includes("const UX_DEFAULTS_VERSION = '20.11.12';"), 'Mangler versjonert reset av UX-standarder');
 assert(app.includes("localStorage.setItem('samtalestotte-theme', 'hybrid')"), 'UX-reset setter ikke Hybrid som standard');
 assert(app.includes("localStorage.setItem('samtalestotte-sidebar', 'collapsed')"), 'UX-reset setter ikke minimert sidemeny som standard');
+
+const swSource = fs.readFileSync('sw.js', 'utf8');
+assert(swSource.includes('NETWORK_FIRST_PATHS'), 'Service worker mangler network-first for aktiv frontendkode');
+assert(!/APP_SHELL = \[[\s\S]*?'\/app\.js'/.test(swSource), 'app.js skal ikke precaches i APP_SHELL');
