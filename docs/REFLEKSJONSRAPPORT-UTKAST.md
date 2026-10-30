@@ -491,3 +491,14 @@ Historikklogoen ble først forsøkt løst med en CSS-grid rundt eksisterende mar
 Jeg endret derfor HTML-strukturen slik at tekstblokken og logoen ble faktiske søsken i headeren. Dermed kunne høyresiden behandles som en uavhengig visuell kolonne: logoen krymper når vinduet blir smalere, men havner aldri under overskriften. Under mobilgrensen skjules den i stedet. Dette var et tydelig eksempel på at riktig responsiv oppførsel noen ganger krever at DOM-strukturen følger det visuelle hierarkiet, ikke bare flere overstyringer.
 
 I samme runde ble det også avdekket at mørk sidemeny fikk for lys hovertilstand fra en generell regel. En eksplisitt temaspesifikk sluttregel ble lagt sist i CSS-en for å sikre stabil kontrast. Samlet illustrerer dette hvordan et stort stilark kan akkumulere regler som er lokalt riktige, men som senere kolliderer. Sluttfasen krevde derfor ikke bare nye regler, men tydeligere prioritering av hvilke regler som faktisk skal være autoritative.
+
+
+## Pilotfunn 30.10.2026 – fra tilbakemelding til produktendring
+
+Pilotfasen viste tydelig forskjellen mellom teknisk testing og faktisk brukeropplevelse. Flere brukere vurderte løsningen som ferdig, smidig og nyttig, samtidig som de pekte på problemer som de automatiserte testene ikke kunne avdekke alene.
+
+Én bruker opplevde inkonsistent språk mellom «simulering», «samtale» og «råd», tekniske ord som «identifikatorer», tekst som ble stående fra forrige sak og enkelte robotaktige KI-formuleringer. En annen beskrev råd som tidvis for passive og vage og pekte på at sidefelt og toppfelt tok for mye plass fra selve innholdet, særlig på mobil. En tredje foreslo at yrke eller bransje kunne brukes som valgfri kontekst slik at KI-råd, relevant lovverk og eventuell overenskomst kunne bli mer situasjonsnære.
+
+Tilbakemeldingene ble ikke behandlet som enkeltstående ønsker som automatisk skulle bygges inn. Jeg så etter mønstre og vurderte hvilke forslag som støttet produktets formål. Det førte blant annet til en mer nedtonet standardnavigasjon, mer konsistent ikonbruk, tydeligere skille mellom brukerveiledning og faglige lenker, ren utskrift av situasjon og råd og en oppfølgingsdialog som foreslår nye spørsmål etter hvert KI-svar. Yrke/bransje ble derimot behandlet som et større arkitekturspor og holdes avslått i produksjon inntil personvern, kildepresisjon og UI er kontrollert.
+
+Dette er et konkret eksempel på at KI-assistert utvikling fortsatt krever produktstyring. KI kunne implementere forslag raskt, men menneskelig vurdering måtte avgjøre hvilke funn som var reelle problemer, hvilke som var preferanser, hvordan de skulle prioriteres, og hvilke endringer som krevde nye tester eller sikkerhetsvurderinger. Pilotfunnene ble derfor gjort sporbare i brukertestbacklog, PRD, UX-spesifikasjon, refleksjonsnotater og versjonshistorikk i stedet for bare å bli liggende i chatten.
