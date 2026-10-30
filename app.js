@@ -194,6 +194,12 @@ function showView(name, options = {}) {
   views[name].classList.add('active-view');
   updateNavState(name);
 
+  // Temakort skal bare fremstå valgt mens brukeren faktisk er inne på et tema.
+  // Ved retur til forsiden skal ingen tidligere valgt kategori henge igjen visuelt.
+  if (name === 'home') {
+    document.querySelectorAll('.topic-card').forEach(card => card.classList.remove('active-card'));
+  }
+
   const topNew = document.querySelector('#new-conversation-button');
   if (topNew) topNew.hidden = name === 'home';
 
