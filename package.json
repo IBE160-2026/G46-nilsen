@@ -48,7 +48,8 @@
     "test-agreement-router": "node tests/test-agreement-router.cjs",
     "test-occupation-standard": "node tests/test-occupation-standard.cjs",
     "test-natural-response-standard": "node tests/test-natural-response-standard.cjs",
-    "test-occupation-context": "node tests/test-occupation-context.cjs"
+    "test-occupation-context": "node tests/test-occupation-context.cjs",
+    "test-ai:occupation": "node tests/test-ai-occupation.js"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
