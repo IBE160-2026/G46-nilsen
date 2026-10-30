@@ -1318,11 +1318,12 @@ app.post("/api/classify-topic", aiLimiter, requireUser, async (req, res) => {
 
   const situation = String(req.body?.situation || "").trim();
   const selectedTopicId = String(req.body?.selectedTopicId || "").trim();
+  const privacyNameOverrides = Array.isArray(req.body?.privacyNameOverrides) ? req.body.privacyNameOverrides : [];
 
   if (situation.length < 4) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Beskriv situasjonen litt mer før tema foreslås." });
   }
-  if (blockUnsafeAiText(res, situation)) return;
+  if (blockUnsafeAiText(res, situation, privacyNameOverrides)) return;
 
   const catalogText = topicCatalog.map(topic =>
     `- ${topic.id} | ${topic.title}: ${topic.description}\n  Undertemaer: ${topic.subtopics.join(" | ")}`
@@ -1348,7 +1349,7 @@ Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
 
   try {
     const response = await createTrackedResponse({
-      _functionName:'tema', _userId:req.user.id, _topicId:selectedTopicId || null, _privacyTexts:[situation],
+      _functionName:'tema', _userId:req.user.id, _topicId:selectedTopicId || null, _privacyTexts:[situation], _privacyNameOverrides:privacyNameOverrides,
       instructions: classificationInstructions,
       input: [{ role: "user", content: [{ type: "input_text", text: situation }] }],
       text: {
