@@ -82,6 +82,7 @@ assert(html.includes('id="survey-completed-message"') && html.includes('Brukerte
 assert(!app.includes('setTimeout(()=>openSurvey(),250)'), 'Brukertest skal ikke åpnes på nytt rett etter vellykket innsending');
 assert(app.includes("pendingSituationText = '';"), 'Ny/full reset skal nullstille bevart situasjonstekst');
 assert(app.includes("if (detailSearch) detailSearch.value = '';"), 'Temadetaljfelt skal være tomt etter full reset');
+assert(/if \(name === 'home'\) \{[\s\S]*?classList\.remove\('active-card'\)/.test(app), 'Valgt temakort skal ikke forbli uthevet etter retur til forsiden');
 assert(app.includes('function clearFinderCarryoverAfterAdvice()'), 'Mangler eksplisitt opprydding av Finn tema-felter etter råd');
 assert(app.includes("['#topic-search', '#topic-detail-search']"), 'Finn tema-opprydding dekker ikke begge søkefeltene');
 assert(/clearGuidanceSession\(\{ clearInputs: false \}\);[\s\S]*clearFinderCarryoverAfterAdvice\(\);/.test(app), 'Finn tema-feltene tømmes ikke når råd startes');
