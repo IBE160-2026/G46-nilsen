@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "npm run test-local",
-    "test-local": "npm run test-syntax && npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-privacy-surfaces && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-guidance-quality && npm run test-pilot-regression && npm run test-golden-schema && npm run test-golden-utils && npm run test-benchmark-taxonomy && npm run test-sourcebank && npm run test-occupation-router && npm run test-occupation-data && npm run test-pilot-ux && npm run test-pwa && npm run test-sensor-demo && npm run test-public-assets && npm run test-repo-structure",
+    "test-local": "npm run test-syntax && npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-privacy-surfaces && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-guidance-quality && npm run test-pilot-regression && npm run test-golden-schema && npm run test-golden-utils && npm run test-benchmark-taxonomy && npm run test-sourcebank && npm run test-occupation-router && npm run test-occupation-data && npm run test-agreement-router && npm run test-pilot-ux && npm run test-pwa && npm run test-sensor-demo && npm run test-public-assets && npm run test-repo-structure",
     "test-ai": "node tests/test-ai.js",
     "test-ai:full": "node tests/test-ai.js --all",
     "test-ai:stress": "node tests/test-ai-stress.js",
@@ -30,7 +30,7 @@
     "test-benchmark-taxonomy": "node tests/test-benchmark-taxonomy.cjs",
     "demo": "node scripts/sensor-demo.js",
     "test-sensor-demo": "node tests/test-sensor-demo.cjs",
-    "test-syntax": "node --check app.js && node --check server.js && node --check scripts/create-invite.js && node --check scripts/sensor-demo.js && node --check scripts/generate-pwa-icons.js && node --check scripts/update-privacy-names.js && node --check src/privacy-name-data.js && node --check src/privacy-detector.js && node --check src/client-data.js && node --check src/server/topic-contracts.js && node --check src/server/ai-schemas.js && node --check src/server/occupation-router.js",
+    "test-syntax": "node --check app.js && node --check server.js && node --check scripts/create-invite.js && node --check scripts/sensor-demo.js && node --check scripts/generate-pwa-icons.js && node --check scripts/update-privacy-names.js && node --check src/privacy-name-data.js && node --check src/privacy-detector.js && node --check src/client-data.js && node --check src/server/topic-contracts.js && node --check src/server/ai-schemas.js && node --check src/server/occupation-router.js && node --check src/server/agreement-router.js",
     "test-repo-structure": "node tests/test-repo-structure.cjs",
     "test-public-assets": "node tests/test-public-assets.cjs",
     "update-privacy-names": "node scripts/update-privacy-names.js",
@@ -44,7 +44,8 @@
     "prestart": "npm run generate-pwa-icons",
     "predemo": "npm run generate-pwa-icons",
     "test-occupation-router": "node tests/test-occupation-router.cjs",
-    "test-occupation-data": "node tests/test-occupation-data.cjs"
+    "test-occupation-data": "node tests/test-occupation-data.cjs",
+    "test-agreement-router": "node tests/test-agreement-router.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
