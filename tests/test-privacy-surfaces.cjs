@@ -10,19 +10,21 @@ for(const id of ['topic-search','topic-detail-search','situation','continue-inpu
   assert(html.includes('id="'+id+'"') || html.includes("id='"+id+"'"),id+': felt/varsel mangler i HTML');
 }
 
-assert(includesAll(app,["#topic-search","updateFinderPrivacyCheck"]),'topic-search mangler live personvernsjekk');
-assert(includesAll(app,["#topic-detail-search","updateFinderPrivacyCheck"]),'topic-detail-search mangler live personvernsjekk');
+assert(includesAll(app,["classifyAndContinueFromFinder","updateFinderPrivacyCheck"]),'temafinner mangler personvernsjekk ved innsending');
 assert(app.includes("document.querySelector('#situation-form').addEventListener('submit'") && app.includes('const privacyFindings = updatePrivacyCheck() || []'),'situation mangler personvernsjekk ved Få råd');
 assert(app.includes('Personvern sjekkes når du trykker «Få råd».'),'situation mangler rolig personvernstatus under skriving');
 assert(app.includes('privacy-not-personal-button') && app.includes('Ikke personopplysninger'),'situation mangler eksplisitt falsk-positiv kontroll for navnetreff');
 assert(app.includes('data-finder-not-personal'),'temafinner mangler eksplisitt falsk-positiv kontroll for navnetreff');
 assert(app.includes('splitPrivacyFindings(privacyFindings).hard.length'),'hovedskjema blokkerer fortsatt på myke personvernfunn');
-assert(includesAll(app,["data-followup-custom-input","updateFollowupPrivacy"]),'avklaringsfritekst mangler live personvernsjekk');
-assert(includesAll(app,["#continue-input","updateContinuePrivacy"]),'oppfølging mangler live personvernsjekk');
-assert(includesAll(app,["#direct-simulation-situation","showDirectSimulationPrivacy"]),'direkte simulering mangler personvernsjekk');
-assert(includesAll(app,["#simulation-input","updateSimulationTurnPrivacy"]),'simulatormelding mangler live personvernsjekk');
-assert(includesAll(app,["#survey-form textarea","updateSurveyPrivacy"]),'brukertestfritekst mangler live personvernsjekk');
-assert(includesAll(app,["#ai-feedback-comment","updateAiFeedbackCommentPrivacy"]),'KI-feedback mangler live personvernsjekk');
+assert(includesAll(app,["showStructuredGuidance","updateFollowupPrivacy"]),'avklaringsfritekst mangler personvernsjekk ved videre handling');
+assert(includesAll(app,["#continue-form","updateContinuePrivacy"]),'oppfølging mangler personvernsjekk ved sending');
+assert(includesAll(app,["beginDirectSimulation","showDirectSimulationPrivacy"]),'direkte samtaleøvelse mangler personvernsjekk ved start');
+assert(includesAll(app,["#simulation-form","updateSimulationTurnPrivacy"]),'samtaleøvelsemelding mangler personvernsjekk ved sending');
+assert(includesAll(app,["#survey-form","updateSurveyPrivacy"]),'brukertestfritekst mangler personvernsjekk ved innsending');
+assert(includesAll(app,["#ai-feedback-form","detectSensitiveInfo(comment)"]),'KI-feedback mangler personvernsjekk ved innsending');
+assert(!app.includes("document.querySelector('#simulation-input')?.addEventListener('input', updateSimulationTurnPrivacy)"),'samtaleøvelse kjører fortsatt live personvernsjekk mens brukeren skriver');
+assert(!app.includes("input.addEventListener('input',updateSurveyPrivacy)"),'brukertest kjører fortsatt live personvernsjekk mens brukeren skriver');
+assert(!app.includes("document.querySelector('#ai-feedback-comment')?.addEventListener('input',updateAiFeedbackCommentPrivacy)"),'KI-feedback kjører fortsatt live personvernsjekk mens brukeren skriver');
 
 const apiParts=[
   ["tema","_privacyTexts:[situation]"],
