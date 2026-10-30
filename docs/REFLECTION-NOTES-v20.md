@@ -266,3 +266,15 @@ SOURCEBANK ble derfor oppgradert til v6 med seks nye lokalt kuraterte kilder. Fa
 **Læring:** En bedre prompt bør ikke bare bygge på magefølelse om hva som høres hyggelig ut. Før språkreglene endres kan ønsket lederadferd forankres i relasjonsledelse, organisasjonspsykologi, aktiv lytting og praktisk arbeidsgiverveiledning. Menneskelig vurdering identifiserte problemet; kildebanken brukes til å begrunne og avgrense løsningen.
 
 **Status:** Faggrunnlaget er styrket først. Ny åpningsprompt og formuleringbank skal behandles som neste, separat og testbar endring.
+
+
+## 30.10.2026 – pilotfunn endret både UX og funksjon
+
+En viktig læring i pilotfasen var at tilbakemeldingene ikke bare handlet om kosmetikk. Tre ulike kilder pekte på forskjellige lag i produktet: én bruker fremhevet begrepskonsistens, reset-feil og robotaktig språk; en annen pekte på for passive råd og for liten innholdsflate på mobil; en tredje foreslo yrke/bransje som kontekst for mer realistiske svar og relevant lovverk/overenskomst.
+
+Dette førte til at forbedringsarbeidet ble delt i tre spor:
+1. visuell ro og navigasjon – minimert sidebar, bedre tooltips, mer konsistente ikoner og tydeligere Hjelp-struktur
+2. samtaleflyt – utskrift av bare situasjon og råd, samt nye kontekstuelle oppfølgingsforslag etter hvert KI-svar
+3. kontekstuell faglighet – yrkes-/bransjearkitektur utvikles som et separat, kontrollert lag og holdes avslått i produksjon til kilde- og personvernkrav er verifisert
+
+Pilotdata viste også hvorfor kvalitative kommentarer må lagres sammen med kodehistorikken. En grønn automatisk test kunne ikke fortelle at «identifikatorer» virket teknisk, at «stemple» hørtes unaturlig ut, eller at en fast sidebar gjorde forsiden mer overveldende. Disse funnene ble derfor gjort om til eksplisitte UX-krav og regresjonsassert der det var mulig.
