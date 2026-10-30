@@ -15,12 +15,14 @@ const allowedRootFiles = new Set([
   "app.js",
   "CHANGELOG.md",
   "index.html",
+  "manifest.webmanifest",
   "package-lock.json",
   "package.json",
   "product-brief.md",
   "README.md",
   "server.js",
   "styles.css",
+  "sw.js",
   "tilbakemelding-product-brief.md"
 ]);
 const allowedRootDirs = new Set([".claude", ".logs", "assets", "data", "database", "docs", "scripts", "src", "tests"]);
