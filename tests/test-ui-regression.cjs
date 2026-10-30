@@ -23,14 +23,14 @@ assert(css.includes('v20.11.3 COMPACT DESKTOP ALIGNMENT'), 'Høyrejustert kompak
 assert(css.includes('justify-content: flex-end !important;'), 'Kompakt desktop skal høyrejustere topbar-høyresiden');
 assert(css.includes('padding-left: 44px !important;'), 'Kompakt desktop mangler avstand fra sidefeltknappen');
 assert(css.includes('.topbar-right .profile-wrap') && css.includes('margin-left: auto !important;'), 'Profilen er ikke forankret til høyre');
-assert(css.includes('v20.11.5 HISTORY VISUAL COLUMN'), 'Historikk mangler egen visuell høyrekolonne');
-assert(html.includes('class="history-header-visual"') && html.includes('class="history-header-logo utility-page-logo"'), 'Historikklogoen ligger ikke i egen søskenkolonne');
-assert(css.includes('grid-template-columns: minmax(0, 1fr) clamp(140px, 28vw, 420px) !important;'), 'Historikk mangler stabil to-kolonne-layout');
-assert(css.includes('width: clamp(150px, 24vw, 360px) !important;'), 'Historikklogo har ikke dynamisk desktopstørrelse');
+assert(/id="history-view"[\s\S]*?class="content-header history-header utility-header"/.test(html), 'Historikk mangler felles utility-header');
+assert(/id="history-view"[\s\S]*?utility-title-row[\s\S]*?utility-page-logo/.test(html), 'Historikklogoen mangler i felles utility-title-row');
+assert(css.includes('.utility-title-row') && css.includes('flex-wrap: nowrap;'), 'Felles utility-header mangler stabil desktop-layout');
+assert(css.includes('.utility-title-row .utility-page-logo') && css.includes('width: 132px !important;'), 'Felles utility-logo mangler forventet desktopstørrelse');
 assert(css.includes('#simulation-view .simulation-logo-crop') && css.includes('border: 0 !important;') && css.includes('background: transparent !important;'), 'Samtaleøvelse har fortsatt kort/ramme rundt KI-merket');
 assert(css.includes('v20.11.5 DARK SIDEBAR HOVER CONTRAST'), 'Mørk sidebar-hover mangler sluttregel');
 assert(css.includes('background: #245d6d !important;') && css.includes('color: #ffffff !important;'), 'Mørk sidebar-hover mangler tydelig kontrast');
-assert(css.includes('@media (max-width:640px)') && css.includes('#history-view .history-header-visual'), 'Historikklogo mangler mobilregel');
+assert(css.includes('@media (max-width: 760px)') && css.includes('.utility-title-row .utility-page-logo'), 'Felles utility-logo mangler responsiv regel');
 console.log('v20.11.5 UI-kontroll: OK');
 
 
