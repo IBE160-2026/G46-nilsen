@@ -4568,8 +4568,9 @@ body.auth-open {
   box-shadow: none !important;
 }
 
+/* Login-overlayet ligger selv over appen. Ikke slå av pointer-events på hele app-skallet:
+   en hengende auth-open-klasse skal aldri kunne gjøre all navigasjon død. */
 body.auth-open .app-shell {
-  pointer-events: none;
   user-select: none;
 }
 
