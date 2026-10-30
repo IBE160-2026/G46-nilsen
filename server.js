@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
+import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
@@ -19,6 +20,7 @@ const app = express();
 const port = process.env.PORT || 3000;
 const appVersion = process.env.APP_VERSION || "20.11.5";
 const contactEmail = process.env.CONTACT_EMAIL || "";
+const occupationContextEnabled = String(process.env.OCCUPATION_CONTEXT_ENABLED || "false").toLowerCase() === "true";
 
 app.disable("x-powered-by");
 app.set("trust proxy", 1);
@@ -1436,7 +1438,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
 
-  const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "" } = req.body || {};
+  const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "", occupation = "", sectorId = "", employerType = "", employerContext = "" } = req.body || {};
   const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
@@ -1444,6 +1446,18 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
   if (blockUnsafeAiText(res, [situation, ...flattenTextValues(followups)])) return;
 
   const relevantSources = selectRelevantSources(analysis, situation);
+  const occupationContext = occupationContextEnabled
+    ? buildOccupationGuidanceContext({
+        occupation,
+        sectorId,
+        employerType,
+        employerContext,
+        topic: analysis?.primary_topic || analysis?.topic || topicId || "",
+        subtopic: analysis?.primary_subtopic || subtopic || "",
+        situation
+      })
+    : { enabled:false, prompt:"", occupation:null, agreement:null };
+  const occupationPrompt = occupationContext?.prompt ? "\n\n" + occupationContext.prompt + "\n" : "";
   const guidanceTask = `\n\n## Oppgave: lag konkret, menneskelig samtalestøtte\nDu skal lage støtte som en leder faktisk kan bruke i en virkelig samtale om kort tid. Ikke skriv som et HR-notat, vedtak, rapport eller KI-assistent. Ikke bruk standardråd som kunne passet enhver leder.\n\n## Forslag til åpning – menneskelig lederdialog
 - opening skal KUN være ord lederen faktisk kan si høyt direkte til medarbeideren som starten på samtalen.
 - Skriv som en god leder snakker ansikt til ansikt: vanlig muntlig norsk, tydelig, respektfullt og relasjonelt. Det skal ikke høres ut som et HR-notat, vedtak, referat eller ferdigskrevet KI-manus.
@@ -1474,7 +1488,7 @@ Prestasjon/utvikling: «Jeg vil gjerne snakke med deg om noen av leveransene den
 - Stilreferansene er eksempler på naturlig tone, ikke fasitsvar. Tilpass til fakta i saken og varier formuleringene.
 - Før du svarer, gjør en intern språksjekk: «Ville en god leder faktisk sagt dette høyt til et menneske uten å føle at hen leser fra et manus?» Hvis nei, skriv opening om.
 
-## Resten av veiledningen\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Prioriter konkret fremfor komplett, muntlig fremfor formelt og kort fremfor uttømmende.\n- questions: gi 2–3 målrettede spørsmål. Hvert spørsmål skal ha en tydelig funksjon i akkurat saken.\n- reactions: gi normalt 2–3 plausible, situasjonsspesifikke reaksjoner. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- check_before_meeting: maks 3 konkrete forberedelser.\n- attention: maks 3 ting lederen særlig må passe på.\n- next_steps: maks 3 konkrete neste steg.\n- Ikke gjenta samme råd i flere seksjoner. Legg hvert poeng der det hører best hjemme.\n- Skill tydelig mellom hva lederen bør AVKLARE før møtet, hva lederen faktisk kan SI, og hva som eventuelt må kvalitetssikres faglig/juridisk.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk den kuraterte fagbanken som førstevalg og kvalitetsanker. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør støttes av relevante kilder.\n- source_ids må kun inneholde ID-er fra den oppgitte fagbanken. Velg 1–4 presise kilder når de faktisk passer.\n- Fagbanken er IKKE en lukket liste. Dersom saken trenger en mer presis, nyere eller manglende kilde, kan du bruke nettsøk og supplere med inntil 2 kilder. Prioriter norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning. Unngå blogger, markedsføring og tilfeldige rådssider.\n- supplementary_sources skal bare inneholde kilder du faktisk har funnet og brukt gjennom nettsøk. Ikke konstruer titler, forfattere eller lenker. Bruk tom liste hvis fagbanken er tilstrekkelig.\n- Kildepresisjon: En kilde må støtte den konkrete påstanden den står ved. Ikke bruk en side bare fordi den nevner et beslektet tema.\n- Organisasjonsattribusjon: Skriv bare «Akan anbefaler», «Arbeidstilsynet sier» eller tilsvarende når kilden faktisk er fra den organisasjonen eller tydelig dokumenterer akkurat den attribusjonen. Ellers formuler rådet uten organisasjonsnavn.\n- Hvis fagbanken allerede dekker påstanden godt, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridisk sensitivitet: prioriter gjeldende norsk lov/myndighetskilde og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring når nødvendig, uten å konkludere definitivt. For andre faglige spørsmål skal kompetansen matches til problemet, for eksempel samtalefag/organisasjonspsykologi, HMS, HR/arbeidsliv eller helse.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n`;
+## Resten av veiledningen\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Prioriter konkret fremfor komplett, muntlig fremfor formelt og kort fremfor uttømmende.\n- questions: gi 2–3 målrettede spørsmål. Hvert spørsmål skal ha en tydelig funksjon i akkurat saken.\n- reactions: gi normalt 2–3 plausible, situasjonsspesifikke reaksjoner. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- check_before_meeting: maks 3 konkrete forberedelser.\n- attention: maks 3 ting lederen særlig må passe på.\n- next_steps: maks 3 konkrete neste steg.\n- Ikke gjenta samme råd i flere seksjoner. Legg hvert poeng der det hører best hjemme.\n- Skill tydelig mellom hva lederen bør AVKLARE før møtet, hva lederen faktisk kan SI, og hva som eventuelt må kvalitetssikres faglig/juridisk.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk den kuraterte fagbanken som førstevalg og kvalitetsanker. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør støttes av relevante kilder.\n- source_ids må kun inneholde ID-er fra den oppgitte fagbanken. Velg 1–4 presise kilder når de faktisk passer.\n- Fagbanken er IKKE en lukket liste. Dersom saken trenger en mer presis, nyere eller manglende kilde, kan du bruke nettsøk og supplere med inntil 2 kilder. Prioriter norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning. Unngå blogger, markedsføring og tilfeldige rådssider.\n- supplementary_sources skal bare inneholde kilder du faktisk har funnet og brukt gjennom nettsøk. Ikke konstruer titler, forfattere eller lenker. Bruk tom liste hvis fagbanken er tilstrekkelig.\n- Kildepresisjon: En kilde må støtte den konkrete påstanden den står ved. Ikke bruk en side bare fordi den nevner et beslektet tema.\n- Organisasjonsattribusjon: Skriv bare «Akan anbefaler», «Arbeidstilsynet sier» eller tilsvarende når kilden faktisk er fra den organisasjonen eller tydelig dokumenterer akkurat den attribusjonen. Ellers formuler rådet uten organisasjonsnavn.\n- Hvis fagbanken allerede dekker påstanden godt, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridisk sensitivitet: prioriter gjeldende norsk lov/myndighetskilde og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring når nødvendig, uten å konkludere definitivt. For andre faglige spørsmål skal kompetansen matches til problemet, for eksempel samtalefag/organisasjonspsykologi, HMS, HR/arbeidsliv eller helse.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n${occupationPrompt}\n`;
 
   try {
     const response = await createTrackedResponse({
@@ -1496,7 +1510,7 @@ Prestasjon/utvikling: «Jeg vil gjerne snakke med deg om noen av leveransene den
     const usedWebUrls = webSourceUrls(response);
     const supplementary = (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
       .filter(source => source?.url && usedWebUrls.has(source.url));
-    return res.json({ ...parsed, evidence_sources: [...curated, ...supplementary], ai: true, model: responseModel(response) });
+    return res.json({ ...parsed, evidence_sources: [...curated, ...supplementary], occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
