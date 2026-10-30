@@ -156,17 +156,21 @@
 
         <section class="info-grid" aria-label="Viktig informasjon">
           <article class="info-card info-card-blue">
-            <div class="info-icon">🔒</div>
+            <div class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M12 3.5 19 6v5.2c0 4.3-2.8 7.5-7 9.3-4.2-1.8-7-5-7-9.3V6l7-2.5Z"></path><path d="m8.5 12 2.2 2.2 4.8-5"></path></svg>
+            </div>
             <div>
-              <strong>Ikke skriv navn eller andre identifiserende opplysninger.</strong>
-              <p>Beskriv situasjonen anonymt.</p>
+              <strong>Hold situasjonen anonym</strong>
+              <p>Unngå navn og andre opplysninger som kan gjøre en person lett gjenkjennelig.</p>
             </div>
           </article>
           <article class="info-card info-card-warm">
-            <div class="info-icon">💡</div>
+            <div class="info-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M5 5.5h14a2 2 0 0 1 2 2v7.5a2 2 0 0 1-2 2h-7l-4.5 3v-3H5a2 2 0 0 1-2-2V7.5a2 2 0 0 1 2-2Z"></path><path d="M7.5 10h9M7.5 13h6"></path></svg>
+            </div>
             <div>
-              <strong>Når du velger et tema, får du støtte til:</strong>
-              <p>åpning, spørsmål, mulige reaksjoner og ting å være oppmerksom på.</p>
+              <strong>Få hjelp til å forberede samtalen</strong>
+              <p>Du får forslag til åpning, spørsmål, mulige reaksjoner og hva du bør være oppmerksom på.</p>
             </div>
           </article>
         </section>
@@ -322,6 +326,7 @@
           <p class="result-intro" id="result-intro">Forslaget er tilpasset det du har skrevet.</p>
           <div id="structured-guidance" class="guidance-grid"></div>
           <div class="conversation-utility-bar">
+            <button class="secondary-button compact-action-button" id="print-guidance" type="button">Skriv ut råd</button>
             <button class="secondary-button compact-action-button" id="report-from-conversation" type="button">Rapporter svar</button>
             <button class="secondary-button compact-action-button" id="result-new-conversation" type="button">＋ Ny samtale</button>
           </div>
@@ -725,8 +730,13 @@
            ================================================== -->
       <section id="help-view" class="view">
         <button class="back-link info-back" type="button">← Tilbake</button>
-        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp og faglige ressurser</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Kort brukerveiledning og utvalgte offentlige kilder som kan være relevante når du trenger mer informasjon.</p></div></div>
+        <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Finn enten hjelp til å bruke Samtalestøtte eller gå videre til faglige ressurser og eksterne lenker.</p></div></div>
         <div class="help-grid">
+          <div class="help-section-heading">
+            <span class="eyebrow">BRUK AV SAMTALESTØTTE</span>
+            <h2>Hjelp til å bruke Samtalestøtte</h2>
+            <p>Kort veiledning til de viktigste funksjonene i løsningen.</p>
+          </div>
          <details class="settings-card utility-accordion">
   <summary>Slik bruker du Samtalestøtte</summary>
 
@@ -735,11 +745,17 @@
       <li>Velg et tema eller beskriv situasjonen med egne ord.</li>
       <li>Unngå navn og identifiserende opplysninger.</li>
       <li>Bruk KI-rådene som støtte, ikke som fasit.</li>
-      <li>Øv gjerne i samtaleøvelseen.</li>
+      <li>Øv gjerne i samtaleøvelsen.</li>
       <li>Ved alvorlige eller formelle saker: følg virksomhetens rutiner og involver riktig fagstøtte.</li>
     </ol>
   </div>
 </details>
+
+<div class="help-section-heading help-resource-heading">
+  <span class="eyebrow">EKSTERNE KILDER</span>
+  <h2>Ressurser og lenker</h2>
+  <p>Faglige kilder, regelverk og veiledere som kan være relevante ved behov.</p>
+</div>
 
 <details class="settings-card utility-accordion">
   <summary>Arbeidsmiljø, mobbing og trakassering</summary>
