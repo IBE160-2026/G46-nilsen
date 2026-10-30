@@ -72,13 +72,6 @@ function renderStaticIcons() {
     const key = icon.dataset.pageIcon;
     if (pageIconMap[key]) icon.innerHTML = pageIconMap[key];
   });
-
-  document.querySelectorAll('#sidebar .nav-item[data-view]').forEach(button => {
-    const label = button.querySelector('.nav-label')?.textContent?.trim();
-    if (!label) return;
-    button.dataset.tooltip = label;
-    button.setAttribute('title', label);
-  });
 }
 
 function setBreadcrumb(text) {
@@ -308,7 +301,6 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
   if (thread) thread.innerHTML = '';
   const continueInput = document.querySelector('#continue-input');
   if (continueInput) continueInput.value = '';
-  renderContinueSuggestions();
 
   simulationTurns = [];
   simulationFeedback = null;
@@ -1951,7 +1943,6 @@ async function appendConversationTurn(question) {
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div><button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
-    renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
     conversationDirty = true;
     await saveCurrentConversation();
@@ -1959,7 +1950,6 @@ async function appendConversationTurn(question) {
     const reply = buildContinuationReply(question);
     assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(reply)}</div><small>Lokal reserve</small>`;
     setConversationTurnText(assistant, 'assistant', reply);
-    renderContinueSuggestions(localContinuationSuggestions(question, reply));
     queueSpeechBubbleRefresh();
   }
 }
@@ -2169,17 +2159,6 @@ function applyTheme(theme) {
   if(mobileThemeButton) mobileThemeButton.setAttribute('aria-label', 'Bytt fargetema. Nå: '+meta.label);
 }
 
-const UX_DEFAULTS_VERSION = '20.11.11';
-
-function applyUxDefaultsMigration() {
-  const appliedVersion = localStorage.getItem('samtalestotte-ux-defaults-version');
-  if (appliedVersion === UX_DEFAULTS_VERSION) return;
-
-  localStorage.setItem('samtalestotte-theme', 'hybrid');
-  localStorage.setItem('samtalestotte-sidebar', 'collapsed');
-  localStorage.setItem('samtalestotte-ux-defaults-version', UX_DEFAULTS_VERSION);
-}
-
 function initTheme() {
   applyTheme(localStorage.getItem('samtalestotte-theme') || 'hybrid');
 }
@@ -2221,7 +2200,6 @@ function toggleSidebar() {
 renderStaticIcons();
 renderTopics();
 resetConversationState();
-applyUxDefaultsMigration();
 initTheme();
 applySidebarState();
 setBreadcrumb('');
@@ -2291,7 +2269,6 @@ document.querySelector('#brand-home-button').addEventListener('click', () => {
 });
 
 document.querySelector('#sidebar-toggle').addEventListener('click', toggleSidebar);
-window.__SAMTALESTOTTE_READY__ = true;
 
 document.querySelector('#back-to-home').addEventListener('click', () => {
   navigateAppBack(() => {
@@ -2521,93 +2498,6 @@ document.querySelector('#show-guidance-anyway').addEventListener('click', showSt
 
 
 
-const DEFAULT_CONTINUE_SUGGESTIONS = [
-  'Hva hvis medarbeideren blir sint?',
-  'Hva hvis medarbeideren blir veldig lei seg?',
-  'Hvordan kan jeg formulere dette tydeligere?',
-  'Hva bør jeg ikke si?'
-];
-
-function localContinuationSuggestions(question = '', reply = '') {
-  const text = `${question} ${reply}`.toLowerCase();
-  const candidates = [];
-
-  if (/sint|irritert|uenig|urettferdig|provosert/.test(text)) {
-    candidates.push('Hvordan får jeg samtalen tilbake på sporet?', 'Hva hvis hen fortsatt er uenig?');
-  }
-  if (/lei seg|trist|skuffet|gråt|vanskelig/.test(text)) {
-    candidates.push('Hvordan viser jeg forståelse uten å bli utydelig?', 'Når bør jeg ta en pause i samtalen?');
-  }
-  if (/formuler|si|åpne|tydelig|ordlegge/.test(text)) {
-    candidates.push('Hva kan jeg si rett etter denne formuleringen?', 'Hvordan avslutter jeg dette på en god måte?');
-  }
-  if (/regel|lov|jurid|formell|advarsel|oppsig/.test(text)) {
-    candidates.push('Hva bør jeg avklare før jeg går videre?', 'Hva bør jeg dokumentere etter samtalen?');
-  }
-
-  candidates.push(
-    'Hva er viktigst å få fram nå?',
-    'Hvilket spørsmål bør jeg stille videre?',
-    'Hva hvis medarbeideren blir stille?',
-    'Hvordan kan jeg avslutte samtalen tydelig?'
-  );
-
-  const asked = String(question || '').trim().toLowerCase();
-  return [...new Set(candidates)]
-    .filter(item => item.toLowerCase() !== asked)
-    .slice(0, 4);
-}
-
-function renderContinueSuggestions(suggestions = DEFAULT_CONTINUE_SUGGESTIONS) {
-  const container = document.querySelector('#continue-suggestions');
-  if (!container) return;
-  const normalized = (Array.isArray(suggestions) ? suggestions : [])
-    .map(item => String(item || '').trim())
-    .filter(Boolean)
-    .slice(0, 4);
-  const items = normalized.length ? normalized : DEFAULT_CONTINUE_SUGGESTIONS;
-  container.innerHTML = items.map(item => `<button type="button" class="continue-chip">${escapeHtml(item)}</button>`).join('');
-  container.querySelectorAll('.continue-chip').forEach(button => {
-    button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
-  });
-}
-
-function printCurrentGuidance() {
-  const situation = document.querySelector('#situation')?.value.trim() || '';
-  const guidance = document.querySelector('#structured-guidance');
-  if (!situation || !guidance?.children.length) return;
-
-  const topicLine = [currentTopic?.title, currentSubtopic].filter(Boolean).join(' · ');
-  const printWindow = window.open('', '_blank');
-  if (!printWindow) return;
-  try { printWindow.opener = null; } catch (_) {}
-
-  const adviceHtml = [...guidance.children].map(card => {
-    const title = card.querySelector('h3')?.textContent?.trim() || '';
-    const copy = card.querySelector('.guidance-copy')?.innerHTML || '';
-    return `<section><h2>${escapeHtml(title)}</h2><div>${copy}</div></section>`;
-  }).join('');
-
-  printWindow.document.write(`<!doctype html><html lang="no"><head><meta charset="utf-8"><title>Samtalestøtte – råd</title>
-    <style>
-      body{font-family:Arial,sans-serif;max-width:820px;margin:36px auto;padding:0 28px;color:#172a2f;line-height:1.5}
-      h1{font-size:24px;margin:0 0 6px} .meta{color:#5f7075;margin:0 0 28px}
-      .situation{padding:16px 18px;border:1px solid #d7e0e2;border-radius:10px;margin-bottom:24px;white-space:pre-wrap}
-      section{break-inside:avoid;margin:0 0 20px} h2{font-size:17px;margin:0 0 8px}
-      p{margin:6px 0} ul{margin:6px 0;padding-left:22px} a{color:inherit;text-decoration:none}
-      details{display:block} details summary{font-weight:700;margin-bottom:6px}
-      @media print{body{margin:0 auto;padding:0 12mm}.no-print{display:none}}
-    </style></head><body>
-    <h1>Forslag til samtalen</h1>
-    ${topicLine ? `<p class="meta">${escapeHtml(topicLine)}</p>` : ''}
-    <h2>Situasjon</h2><div class="situation">${escapeHtml(situation)}</div>
-    ${adviceHtml}
-    </body></html>`);
-  printWindow.document.close();
-  printWindow.focus();
-  printWindow.print();
-}
-
 function ensureContinuePrivacyBox() {
   let box = document.querySelector('#continue-privacy');
   if (box) return box;
@@ -2676,9 +2566,9 @@ document.querySelector('#continue-input')?.addEventListener('keydown', event => 
   document.querySelector('#continue-form')?.requestSubmit();
 });
 
-renderContinueSuggestions();
-
-document.querySelector('#print-guidance')?.addEventListener('click', printCurrentGuidance);
+document.querySelectorAll('.continue-chip').forEach(button => {
+  button.addEventListener('click', () => appendConversationTurn(button.textContent.trim()));
+});
 
 
 
@@ -2759,23 +2649,14 @@ function setAppLocked(locked){
   }
 }
 async function refreshAuth() {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 5000);
-  try {
-    const r = await fetch('/api/auth/me', { credentials:'include', cache:'no-store', signal:controller.signal });
-    const p = await r.json();
-    currentUser = p.user || null;
-  } catch (_) {
-    currentUser = null;
-  } finally {
-    clearTimeout(timeout);
-  }
+  try { const r=await fetch('/api/auth/me',{credentials:'include',cache:'no-store'}); const p=await r.json(); currentUser=p.user||null; } catch(_) { currentUser=null; }
   updateAuthUi();
-  if (currentUser) {
-    setTimeout(ensurePrivacyAcknowledgement,150);
+  if(currentUser)setTimeout(ensurePrivacyAcknowledgement,150);
+  if(currentUser){
     closeAuth(true);
-    document.body.classList.remove('auth-open');
     setAppLocked(false);
+  }else{
+    setAppLocked(true);
   }
 }
 function openAuth(mode='login', required = !currentUser) {
@@ -3358,7 +3239,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.13', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.5', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
