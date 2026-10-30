@@ -68,5 +68,23 @@ const assert=require("assert");
   assert.strictEqual(unknown.unresolved,true);
   assert.deepStrictEqual(unknown.suggestions,[]);
 
+  const incidentalDuty=router.suggestAgreementAreas({
+    occupation:"sykepleier",
+    topic:"Sikkerhet og ansvar",
+    subtopic:"Påvirket på jobb",
+    situation:"Sykepleieren virker påvirket under vakt med pasientansvar."
+  });
+  assert.strictEqual(incidentalDuty.relevant,false, "Vanlig omtale av å være under vakt skal ikke utløse tariffspørsmål");
+  assert.strictEqual(incidentalDuty.needsEmployerType,false);
+
+  const dutyArrangement=router.suggestAgreementAreas({
+    occupation:"sykepleier",
+    topic:"Prestasjon og utvikling",
+    subtopic:"Arbeidstid",
+    situation:"Medarbeideren vil diskutere vaktplan og vakttillegg."
+  });
+  assert.strictEqual(dutyArrangement.relevant,true, "Vaktplan/vakttillegg skal fortsatt være avtale-relevant");
+  assert.strictEqual(dutyArrangement.needsEmployerType,true);
+
   console.log("Avtaleruter OK: oppfølgingsspørsmål om arbeidsgivertype brukes bare når relevant");
 })().catch(err=>{console.error(err);process.exit(1);});
