@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.12" />
+  <link rel="stylesheet" href="styles.css?v=20.11.13" />
 </head>
 <body>
   <div class="app-shell">
@@ -1009,9 +1009,67 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
-  <script src="src/privacy-name-data.js?v=20.11.12"></script>
-  <script src="src/privacy-detector.js?v=20.11.12"></script>
-  <script src="src/client-data.js?v=20.11.12"></script>
-  <script src="app.js?v=20.11.12"></script>
+  <script>
+    // Critical shell defaults must not depend on app.js completing successfully.
+    (() => {
+      try {
+        const defaultsVersion = '20.11.13';
+        if (localStorage.getItem('samtalestotte-shell-defaults-version') !== defaultsVersion) {
+          localStorage.setItem('samtalestotte-theme', 'hybrid');
+          localStorage.setItem('samtalestotte-sidebar', 'collapsed');
+          localStorage.setItem('samtalestotte-shell-defaults-version', defaultsVersion);
+        }
+        document.documentElement.dataset.theme = localStorage.getItem('samtalestotte-theme') || 'hybrid';
+        const sidebar = document.querySelector('#sidebar');
+        const shell = document.querySelector('.app-shell');
+        if (localStorage.getItem('samtalestotte-sidebar') !== 'expanded') {
+          sidebar?.classList.add('sidebar-collapsed');
+          shell?.classList.add('sidebar-collapsed-layout');
+        }
+      } catch (_) {
+        document.documentElement.dataset.theme = 'hybrid';
+        document.querySelector('#sidebar')?.classList.add('sidebar-collapsed');
+        document.querySelector('.app-shell')?.classList.add('sidebar-collapsed-layout');
+      }
+    })();
+  </script>
+  <script src="src/privacy-name-data.js?v=20.11.13"></script>
+  <script src="src/privacy-detector.js?v=20.11.13"></script>
+  <script src="src/client-data.js?v=20.11.13"></script>
+  <script src="app.js?v=20.11.13"></script>
+  <script>
+    // Emergency navigation fallback: only activates if app.js never reaches its ready marker.
+    setTimeout(() => {
+      if (window.__SAMTALESTOTTE_READY__) return;
+
+      const views = [...document.querySelectorAll('.view[id]')];
+      const showFallbackView = name => {
+        const targetId = name === 'prepare' ? 'home-view' : `${name}-view`;
+        const target = document.getElementById(targetId);
+        if (!target) return;
+        views.forEach(view => view.classList.remove('active-view'));
+        target.classList.add('active-view');
+        document.querySelectorAll('.nav-item[data-view]').forEach(item => {
+          item.classList.toggle('active', item.dataset.view === name || (name === 'prepare' && item.dataset.view === 'home'));
+        });
+      };
+
+      document.querySelector('#sidebar-toggle')?.addEventListener('click', () => {
+        const sidebar = document.querySelector('#sidebar');
+        const shell = document.querySelector('.app-shell');
+        const collapsed = !sidebar?.classList.contains('sidebar-collapsed');
+        sidebar?.classList.toggle('sidebar-collapsed', collapsed);
+        shell?.classList.toggle('sidebar-collapsed-layout', collapsed);
+        try { localStorage.setItem('samtalestotte-sidebar', collapsed ? 'collapsed' : 'expanded'); } catch (_) {}
+      });
+
+      document.querySelectorAll('.nav-item[data-view], .mobile-nav-item[data-view]').forEach(button => {
+        button.addEventListener('click', () => showFallbackView(button.dataset.view));
+      });
+
+      document.querySelector('#brand-home-button')?.addEventListener('click', () => showFallbackView('home'));
+      console.error('[startup] Hovedscriptet fullførte ikke initialisering. Fallback-navigasjon er aktivert.');
+    }, 800);
+  </script>
 </body>
 </html>
