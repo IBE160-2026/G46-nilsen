@@ -115,7 +115,35 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
   const text = normalize([topic, subtopic, situation].filter(Boolean).join(" "));
   if (!text) return false;
 
-  const hasRiskTrigger = riskTerms.some(term => text.includes(normalize(term)));
+  const hasRiskTrigger = riskTerms.some(term => {
+    const needle = normalize(term);
+    let fromIndex = 0;
+
+    while (needle && fromIndex < text.length) {
+      const index = text.indexOf(needle, fromIndex);
+      if (index < 0) break;
+
+      // Ikke aktiver yrkeskontekst bare fordi brukeren eksplisitt sier at
+      // et risiko-/regelverkstema IKKE er til stede, f.eks.
+      // "uten at sikkerhet er tema" eller "ingen konkrete sikkerhetsproblemer".
+      const clauseStart = Math.max(
+        text.lastIndexOf(".", index),
+        text.lastIndexOf("!", index),
+        text.lastIndexOf("?", index),
+        text.lastIndexOf(";", index),
+        text.lastIndexOf(":", index)
+      ) + 1;
+      const prefix = text.slice(clauseStart, index).trim();
+      const explicitlyAbsent =
+        /\buten(?:\s+at)?\b[^.!?;:]{0,80}$/u.test(prefix) ||
+        /\bingen\b[^.!?;:]{0,100}$/u.test(prefix);
+
+      if (!explicitlyAbsent) return true;
+      fromIndex = index + needle.length;
+    }
+
+    return false;
+  });
   if (hasRiskTrigger) return true;
 
   const topicKey = normalize(topic);
