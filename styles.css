@@ -8610,3 +8610,15 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     pointer-events: none;
   }
 }
+
+
+/* SAFE UX: progressive disclosure + full collapsed desktop width */
+#structured-guidance .guidance-card.guidance-secondary { display: none; }
+#structured-guidance.guidance-expanded .guidance-card.guidance-secondary { display: grid; }
+#structured-guidance .guidance-show-more {
+  justify-self: start;
+  margin-top: 2px;
+}
+@media (min-width:981px) {
+  .app-shell.sidebar-collapsed-layout { grid-template-columns: 84px minmax(0,1fr); }
+}
