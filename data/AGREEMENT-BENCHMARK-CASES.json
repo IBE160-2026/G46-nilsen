@@ -1,0 +1,89 @@
+{
+  "version": 1,
+  "description": "Golden standards for tariff-/overenskomstkontekst. Tester forslag uten antakelser.",
+  "cases": [
+    {
+      "id": "AGR001",
+      "occupation": "sykepleier",
+      "employerContext": "kommune",
+      "topic": "Lønn og utvikling",
+      "agreementRelevant": true,
+      "expectedAgreementAreas": [
+        "municipal"
+      ],
+      "requireConfirmation": true,
+      "mustNotClaim": [
+        "ikke slå fast at KS-avtale gjelder uten bekreftelse"
+      ]
+    },
+    {
+      "id": "AGR002",
+      "occupation": "sykepleier",
+      "employerContext": "sykehus",
+      "topic": "Lønn og utvikling",
+      "agreementRelevant": true,
+      "expectedAgreementAreas": [
+        "health_enterprise"
+      ],
+      "requireConfirmation": true
+    },
+    {
+      "id": "AGR003",
+      "occupation": "lærer",
+      "employerContext": "kommune",
+      "topic": "Samliv og familie",
+      "agreementRelevant": false,
+      "expectedAgreementAreas": [],
+      "requireConfirmation": false
+    },
+    {
+      "id": "AGR004",
+      "occupation": "elektriker",
+      "employerContext": "privat elektrobedrift",
+      "topic": "Arbeidstid",
+      "agreementRelevant": true,
+      "expectedAgreementAreas": [
+        "construction_industry"
+      ],
+      "requireConfirmation": true
+    },
+    {
+      "id": "AGR005",
+      "occupation": "bussjåfør",
+      "employerContext": "privat busselskap",
+      "topic": "Arbeidstid",
+      "agreementRelevant": true,
+      "expectedAgreementAreas": [
+        "transport"
+      ],
+      "requireConfirmation": true,
+      "mustSeparate": [
+        "lovbestemt kjøre-/hviletid",
+        "tariffbestemt arbeidstid og tillegg"
+      ]
+    },
+    {
+      "id": "AGR006",
+      "occupation": "oppdrettsoperatør",
+      "employerContext": "lakseoppdrett",
+      "topic": "Samarbeid og kommunikasjon",
+      "agreementRelevant": false,
+      "expectedAgreementAreas": [],
+      "requireConfirmation": false
+    },
+    {
+      "id": "AGR007",
+      "occupation": "rådgiver",
+      "employerContext": "statlig etat",
+      "topic": "Lønn og utvikling",
+      "agreementRelevant": true,
+      "expectedAgreementAreas": [
+        "state"
+      ],
+      "requireConfirmation": true,
+      "mustNotClaim": [
+        "ikke anta hovedsammenslutning eller fagforening"
+      ]
+    }
+  ]
+}
