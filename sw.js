@@ -1,14 +1,9 @@
-const CACHE_NAME = 'samtalestotte-shell-v20-11-11';
+const CACHE_NAME = 'samtalestotte-shell-v20-11-12';
 
 const APP_SHELL = [
   '/',
   '/index.html',
-  '/styles.css',
-  '/app.js',
   '/manifest.webmanifest',
-  '/src/client-data.js',
-  '/src/privacy-name-data.js',
-  '/src/privacy-detector.js',
   '/assets/icons/app-icon.svg',
   '/assets/icons/app-icon-maskable-512.png',
   '/assets/icons/app-icon-512.png',
@@ -23,6 +18,14 @@ const APP_SHELL = [
   '/assets/images/profile-human.png',
   '/assets/images/profile-human-light.png'
 ];
+
+const NETWORK_FIRST_PATHS = new Set([
+  '/styles.css',
+  '/app.js',
+  '/src/client-data.js',
+  '/src/privacy-name-data.js',
+  '/src/privacy-detector.js'
+]);
 
 self.addEventListener('install', event => {
   event.waitUntil(
@@ -58,6 +61,21 @@ self.addEventListener('fetch', event => {
           return response;
         })
         .catch(() => caches.match('/'))
+    );
+    return;
+  }
+
+  if (NETWORK_FIRST_PATHS.has(url.pathname)) {
+    event.respondWith(
+      fetch(request)
+        .then(response => {
+          if (response && response.ok) {
+            const copy = response.clone();
+            caches.open(CACHE_NAME).then(cache => cache.put(request, copy));
+          }
+          return response;
+        })
+        .catch(() => caches.match(request))
     );
     return;
   }
