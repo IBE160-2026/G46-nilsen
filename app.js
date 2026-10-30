@@ -3323,7 +3323,7 @@ imagePreviewDialog?.addEventListener('click', event => {
 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
-    navigator.serviceWorker.register('/sw.js?v=20.11.5', { updateViaCache: 'none' }).catch(error => {
+    navigator.serviceWorker.register('/sw.js?v=20.11.15', { updateViaCache: 'none' }).catch(error => {
       console.warn('[pwa] Service worker kunne ikke registreres:', error?.message || error);
     });
   });
