@@ -1104,3 +1104,26 @@ Pilotbruk viste at mobil er en faktisk brukerflate i prosjektet. Leveransen i v2
 PWA er et installasjonslag rundt webapplikasjonen, ikke en separat native Android/iOS-applikasjon. Browserstøtte kan variere. Kjernefunksjonen skal fortsatt fungere som vanlig webapp dersom installasjon ikke tilbys.
 
 Fysisk mobiltest på Samsung/Chrome brukes som supplement til testene for pilot-UX og PWA, fordi statiske tester ikke kan dokumentere all faktisk nettleser- og installasjonsatferd.
+
+
+# Pilotkrav 30.10.2026
+
+## FR-19 – Videre oppfølgingsflyt
+Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+Etter et oppfølgingsspørsmål skal brukeren ikke måtte finne neste spørsmål helt alene. Systemet skal kunne foreslå 2–4 korte, situasjonsnære neste spørsmål basert på siste spørsmål og svar. Forslagene skal ikke erstatte fritekst.
+
+## FR-20 – Utskrift av samtalestøtte
+Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+Brukeren skal kunne skrive ut en enkel samtalemal som kun inneholder situasjonsbeskrivelse, tema/undertema når tilgjengelig og genererte råd. Navigasjon, personvernvarsler, rapporteringsknapper, samtaleøvelse og øvrige UI-elementer skal ikke inngå.
+
+## FR-21 – Rolig standardnavigasjon
+Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+På desktop skal sidebaren være minimert som standard for nye brukere. Brukerens eksplisitte valg om å åpne/lukke menyen skal lagres lokalt. Minimert modus skal ha forståelige tooltips.
+
+## FR-22 – Yrke/bransje som valgfri kontekst
+Status: UNDER UTVIKLING / IKKE AKTIVERT I PRODUKSJON
+
+Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Systemet skal ikke anta tariffområde bare ut fra yrkestittel, og skal ikke gjøre yrkeskontekst til et obligatorisk steg når den ikke tilfører verdi.
