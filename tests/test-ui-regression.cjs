@@ -3,6 +3,7 @@ const assert = require('assert');
 const html = fs.readFileSync('index.html', 'utf8');
 const css = fs.readFileSync('styles.css', 'utf8');
 const app = fs.readFileSync('app.js', 'utf8');
+const server = fs.readFileSync('server.js', 'utf8');
 
 for (const page of ['admin', 'help', 'survey']) {
   assert(html.includes(`data-page-icon="${page}"`), `${page}: mangler minimert sideikon`);
@@ -31,6 +32,13 @@ assert(css.includes('#simulation-view .simulation-logo-crop') && css.includes('b
 assert(css.includes('v20.11.8 DARK SIDEBAR HOVER CONTRAST'), 'Mørk sidebar-hover mangler sluttregel');
 assert(css.includes('background: #245d6d !important;') && css.includes('color: #ffffff !important;'), 'Mørk sidebar-hover mangler tydelig kontrast');
 assert(css.includes('@media (max-width: 760px)') && css.includes('.utility-title-row .utility-page-logo'), 'Felles utility-logo mangler responsiv regel');
+assert(html.includes('Hjelp til å bruke Samtalestøtte') && html.includes('Ressurser og lenker'), 'Hjelp skiller ikke tydelig mellom brukerveiledning og eksterne ressurser');
+assert(html.includes('id="print-guidance"'), 'Rådsvisningen mangler utskriftsknapp');
+assert(app.includes('function printCurrentGuidance()'), 'Utskriftsfunksjonen mangler');
+assert(app.includes('function renderContinueSuggestions('), 'Dynamiske oppfølgingsforslag mangler i klienten');
+assert(server.includes('continuationSchema') && server.includes('suggestions'), 'KI-oppfølging returnerer ikke nye forslag til neste spørsmål');
+assert(css.includes('.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after'), 'Minimert sidestolpe mangler tooltips');
+assert(css.includes('drop-shadow(0 0 1px rgba(255,255,255'), 'Samtaleøvelse-ikonet mangler lys profilkontur i mørk sidebar');
 console.log('v20.11.8 UI-kontroll: OK');
 
 
@@ -95,6 +103,9 @@ console.log('Brukertest dobbel-submit-regresjon: OK');
 
 
 const clientDataSource = fs.readFileSync('src/client-data.js', 'utf8');
+assert(/id:\s*'fravaer-oppfolging'[\s\S]*?iconKey:\s*'clock'/.test(clientDataSource), 'Fravær og oppfølging skal bruke klokkeikon');
+assert(/id:\s*'samarbeid-kommunikasjon'[\s\S]*?iconKey:\s*'chatBubble'/.test(clientDataSource), 'Samarbeid og kommunikasjon skal bruke snakkebobleikon');
+assert(clientDataSource.includes('settings: `<svg') && clientDataSource.includes('<circle cx="13" cy="7" r="2"></circle>'), 'Innstillinger skal bruke flatt justeringsikon');
 const topicContractSource = fs.readFileSync('src/server/topic-contracts.js', 'utf8');
 const expectedSubtopics = {
   'Alkohol og rus': ['Alkoholbruk','Andre rusmidler','Påvirket på jobb','Fungering på jobb','Rus og sikkerhet','Videre oppfølging'],
