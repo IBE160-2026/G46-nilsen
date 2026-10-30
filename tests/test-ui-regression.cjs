@@ -29,7 +29,7 @@ assert(/id="history-view"[\s\S]*?utility-title-row[\s\S]*?utility-page-logo/.tes
 assert(css.includes('.utility-title-row') && css.includes('flex-wrap: nowrap;'), 'Felles utility-header mangler stabil desktop-layout');
 assert(css.includes('.utility-title-row .utility-page-logo') && css.includes('width: 132px !important;'), 'Felles utility-logo mangler forventet desktopstørrelse');
 assert(css.includes('#simulation-view .simulation-logo-crop') && css.includes('border: 0 !important;') && css.includes('background: transparent !important;'), 'Samtaleøvelse har fortsatt kort/ramme rundt KI-merket');
-assert(css.includes('v20.11.8 DARK SIDEBAR HOVER CONTRAST'), 'Mørk sidebar-hover mangler sluttregel');
+assert(css.includes('v20.11.5 DARK SIDEBAR HOVER CONTRAST'), 'Mørk sidebar-hover mangler sluttregel');
 assert(css.includes('background: #245d6d !important;') && css.includes('color: #ffffff !important;'), 'Mørk sidebar-hover mangler tydelig kontrast');
 assert(css.includes('@media (max-width: 760px)') && css.includes('.utility-title-row .utility-page-logo'), 'Felles utility-logo mangler responsiv regel');
 assert(html.includes('Hjelp til å bruke Samtalestøtte') && html.includes('Ressurser og lenker'), 'Hjelp skiller ikke tydelig mellom brukerveiledning og eksterne ressurser');
