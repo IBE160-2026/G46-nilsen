@@ -850,6 +850,7 @@ function updateFinderPrivacyCheck(inputId, boxId) {
     <ul class="privacy-findings">${visible.map(item => `<li><b>${escapeHtml(item.label)}:</b> ${escapeHtml(item.message)}</li>`).join('')}</ul>
     <div class="privacy-fix-actions">
       <button type="button" class="secondary-button compact-fix-button" data-finder-privacy-fix>Fiks personvern</button>
+      ${visible.some(item => item.type === 'name') ? '<button type="button" class="text-button" data-finder-not-personal>Ikke personopplysninger</button>' : ''}
       <small>Temaforslaget kjøres først etter at tydelige identifikatorer er fjernet.</small>
     </div>
   ` : `
@@ -864,6 +865,13 @@ function updateFinderPrivacyCheck(inputId, boxId) {
 
   box.querySelector('[data-finder-privacy-fix]')?.addEventListener('click', () => {
     input.value = autoFixPrivacyText(input.value, findings);
+    updateFinderPrivacyCheck(inputId, boxId);
+    input.focus();
+  });
+  box.querySelector('[data-finder-not-personal]')?.addEventListener('click', () => {
+    visible.filter(item => item.type === 'name' && item.value).forEach(item => {
+      privacyNameOverrideKeys.add(privacyNameOverrideKey(input.value, item.value));
+    });
     updateFinderPrivacyCheck(inputId, boxId);
     input.focus();
   });
@@ -905,7 +913,7 @@ async function requestTopicClassification(situation, selectedTopicId = '') {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ situation, selectedTopicId })
+    body: JSON.stringify({ situation, selectedTopicId, privacyNameOverrides: privacyNameOverridesForText(situation) })
   });
   if (!response.ok) {
     let payload = {};
