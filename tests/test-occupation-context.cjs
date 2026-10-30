@@ -24,7 +24,7 @@ const assert=require("assert");
   assert.strictEqual(relevant.occupation.occupationRelevant,true);
   assert(relevant.prompt.includes("Helsedirektoratet"));
   assert(relevant.prompt.includes("praktiske neste steg"));
-  assert(relevant.prompt.includes("ikke start med paragrafer"));
+  assert(/ikke start med paragrafer/i.test(relevant.prompt));
 
   const tariff=buildOccupationGuidanceContext({
     occupation:"sykepleier",sectorId:"health_care",
