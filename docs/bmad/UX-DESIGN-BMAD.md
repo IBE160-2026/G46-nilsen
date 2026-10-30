@@ -1018,3 +1018,19 @@ I Samtaleøvelse skal KI-illustrasjonen framstå som et visuelt merke, ikke som 
 Historikklogoen skal aldri konkurrere med eller wrappe under overskriften. På desktop og kompakt desktop ligger den derfor i en egen høyrekolonne fra 641 CSS-piksler og opp. Kolonnen og logoen krymper dynamisk med tilgjengelig bredde, mens mobil under 640 px skjuler den dekorative logoen. Den visuelle plasseringen ligger høyt i den ledige høyre flaten og skal ikke skape ekstra vertikal høyde i tekstinnholdet.
 
 På mørk og hybrid sidemeny skal hover/fokus/aktiv tilstand bevare høy kontrast. Raden bruker mørk teal bakgrunn, hvit tekst og tydelig ikon i stedet for lys/hvit hoverflate.
+
+
+## Pilottillegg 30.10.2026 – redusert visuell belastning og bedre videreflyt
+
+Ny pilottilbakemelding konkretiserte prinsippet om progressiv kompleksitet.
+
+- Desktop-sidebar skal være minimert som standard for nye brukere, samtidig som brukerens eget valg huskes.
+- Når sidebaren er minimert skal alle ikoner ha tekstlig tooltip ved hover og tastaturfokus.
+- Ikoner skal bruke et konsistent, flatt linjespråk. Temaikoner skal være semantisk lette å forstå; blant annet klokke for fravær/oppfølging og snakkeboble for samarbeid/kommunikasjon.
+- Samtaleøvelse-ikonet må beholde lesbar profilkontur i mørk og hybrid sidebar.
+- Informasjonskort på forsiden skal se informative ut, ikke som falske handlingskort, og ikonformen skal være stabilt rund.
+- Hjelp skal visuelt skille mellom brukerveiledning og eksterne fagressurser.
+- Utskrift fra rådssiden skal være en ren arbeidsflate: situasjon, tema/undertema og råd. Navigasjon, varsler, knapper og øvrig UI skal ikke skrives ut.
+- Fortsett samtalen skal ikke stoppe etter første oppfølgingsspørsmål. Etter hvert KI-svar skal nye relevante forslag kunne presenteres, samtidig som fritekst alltid er tilgjengelig.
+
+Disse kravene stammer fra faktisk pilotbruk og skal derfor behandles som UX-regresjonskrav, ikke som dekorative preferanser.
