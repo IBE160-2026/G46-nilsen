@@ -16,7 +16,7 @@ assert(app.includes("async function runPilotRegression(mode='pilot')"),'Klienten
 assert(app.includes("runPilotRegression('full')"),'Full produksjonsflyt-test er ikke koblet til klienten');
 assert(app.includes("mode==='full'?'production-regression':'pilot-regression'"),'Fulltesten merkes ikke som egen testmodus');
 assert(app.includes("notes.push('Automatisk ordtreff"),'Ordtreff behandles fortsatt som hard feil i åpningen');
-assert(app.includes("testMode:'pilot-regression'"),'Pilotkall merkes ikke som testtrafikk');
+assert(app.includes("const testMode=mode==='full'?'production-regression':'pilot-regression'") && app.includes("JSON.stringify({situation:testCase.input,testMode})") && app.includes("JSON.stringify({situation:testCase.input,analysis,followups:{},testMode})"),'Pilot/fulltest sender ikke testMode til begge KI-kall');
 assert(app.includes("fetch('/api/analyze-situation'"),'Pilotkjøringen bruker ikke ekte analyse-endepunkt');
 assert(app.includes("fetch('/api/generate-guidance'"),'Pilotkjøringen bruker ikke ekte veilednings-endepunkt');
 assert(server.includes("app.get('/api/admin/pilot-regression/cases'"),'Serveren eksponerer ikke pilotcaser til admin');
