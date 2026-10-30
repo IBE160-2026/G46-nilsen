@@ -2371,7 +2371,28 @@ function autoGrowTextarea(textarea, maxHeight = 220) {
 function handleSituationInput(event) {
   conversationDirty = true;
   autoGrowTextarea(event.target, event.target.id === 'situation' ? 220 : 150);
-  updatePrivacyCheck();
+
+  // Ikke avbryt skrivingen med personvernvarsler underveis.
+  // Kontrollen kjøres når brukeren aktivt trykker «Få råd».
+  const box = document.querySelector('#privacy-check');
+  if (box) {
+    box.hidden = true;
+    box.innerHTML = '';
+    box.className = 'privacy-check';
+  }
+
+  const text = event.target.value || '';
+  const submitButton = document.querySelector('#understand-submit');
+  const note = document.querySelector('#privacy-submit-note');
+  if (submitButton && submitButton.dataset.loading !== 'true') {
+    submitButton.disabled = !text.trim();
+  }
+  if (note) {
+    note.textContent = text.trim()
+      ? '🛡 Personvern sjekkes når du trykker «Få råd».'
+      : 'Beskriv situasjonen for å gå videre.';
+    note.classList.remove('ok', 'soft-warning');
+  }
 }
 
 ['situation'].forEach(id => {
