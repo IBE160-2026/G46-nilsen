@@ -1,0 +1,124 @@
+{
+  "version": 1,
+  "title": "Occupation Response Standard v1",
+  "purpose": "Felles standard for hvordan Samtalestøtte bruker yrke, næring, arbeidssted og avtaleområde i KI-svar.",
+  "principles": [
+    {
+      "id": "ORS01",
+      "name": "Yrke er valgfritt",
+      "rule": "Svar skal fungere fullt uten valgt yrke eller næring."
+    },
+    {
+      "id": "ORS02",
+      "name": "Materiell relevans",
+      "rule": "Yrke skal bare påvirke svaret når arbeidskontekst, risiko, profesjonsplikt, lovverk eller praktisk håndtering faktisk endres."
+    },
+    {
+      "id": "ORS03",
+      "name": "Ingen overjuridifisering",
+      "rule": "Vanlige livs- og samarbeidsproblemer skal ikke gjøres til sektorjuridiske spørsmål bare fordi et yrke er valgt."
+    },
+    {
+      "id": "ORS04",
+      "name": "Praktisk realisme",
+      "rule": "Når yrke er relevant, skal språk, eksempler, arbeidsflyt, skift/vakt, kundekontakt, pasientkontakt, maskiner eller andre realistiske arbeidsforhold brukes der de hjelper."
+    },
+    {
+      "id": "ORS05",
+      "name": "Sikkerhet først",
+      "rule": "Ved sikkerhetskritisk arbeid skal umiddelbar risikohåndtering prioriteres før ordinær samtaleteknikk."
+    },
+    {
+      "id": "ORS06",
+      "name": "Autoritative kilder",
+      "rule": "Tidskritiske juridiske eller profesjonsspesifikke påstander skal støttes av ansvarlig myndighet og/eller gjeldende Lovdata-kilde."
+    },
+    {
+      "id": "ORS07",
+      "name": "Rollepresisjon",
+      "rule": "Yrke alene skal ikke brukes som grunnlag for særregler når arbeidssted, rolle eller arbeidsgivertype kan endre regelverket."
+    },
+    {
+      "id": "ORS08",
+      "name": "Tariff foreslås, aldri antas",
+      "rule": "Tariff/overenskomst skal bare foreslås som mulig kontekst. Arbeidsgivertype og avtaleområde må bekreftes før konkrete tariffbaserte råd."
+    },
+    {
+      "id": "ORS09",
+      "name": "Minst mulig ekstra kontekst",
+      "rule": "Systemet skal bare stille oppfølgingsspørsmål når svaret kan endre rådet. Arbeidsgivertype spørres bare når tariff/avtale er relevant."
+    },
+    {
+      "id": "ORS10",
+      "name": "Skille fakta og antakelse",
+      "rule": "Svar skal skille observerbare forhold, brukerens opplysninger, juridiske fakta og KI-vurderinger."
+    },
+    {
+      "id": "ORS11",
+      "name": "Ingen falsk juridisk fasit",
+      "rule": "KI skal ikke fastslå lovbrudd, skyld, pliktig reaksjon, oppsigelsesgrunnlag eller autorisasjonskonsekvens uten tilstrekkelig og ferskt rettslig grunnlag."
+    },
+    {
+      "id": "ORS12",
+      "name": "Usikkerhet synliggjøres",
+      "rule": "Hvis sektortilhørighet, rolle eller regelverk er uklart, skal systemet uttrykke usikkerhet og enten stille ett målrettet spørsmål eller begrense rådet."
+    },
+    {
+      "id": "ORS13",
+      "name": "Ingen sensitive særdetaljer",
+      "rule": "Systemet skal ikke be om graderte, taushetsbelagte eller unødvendig sensitive opplysninger for å tilpasse yrkesråd."
+    },
+    {
+      "id": "ORS14",
+      "name": "Negativ kontroll",
+      "rule": "Det er en kvalitetsfeil dersom yrkeskontekst, lovverk eller tariff trekkes inn når det ikke er relevant."
+    }
+  ],
+  "responseContract": {
+    "whenOccupationIrrelevant": {
+      "include": [
+        "generelle samtaleprinsipper",
+        "konkret lederstøtte"
+      ],
+      "exclude": [
+        "sektorlovverk",
+        "yrkesspesifikke advarsler",
+        "tariffspørsmål"
+      ]
+    },
+    "whenOccupationRelevant": {
+      "include": [
+        "realistisk arbeidskontekst",
+        "relevant risiko",
+        "relevante myndighetskilder ved behov"
+      ],
+      "conditional": [
+        "regelverk",
+        "tariff/overenskomst",
+        "arbeidsgivertype"
+      ]
+    },
+    "legalClaimRequirements": {
+      "lawOrRegulation": "fersk autoritativ kilde",
+      "professionalDuty": "ansvarlig profesjonsmyndighet eller gjeldende regelverk",
+      "agreementRight": "bekreftet avtaleområde + autoritativ avtaletekst/kilde"
+    }
+  },
+  "evaluationSeverities": {
+    "critical": [
+      "hallusinert lovkrav",
+      "feil sikkerhetsråd",
+      "påstått tariffavtale uten bekreftelse",
+      "påstått pliktig reaksjon uten grunnlag"
+    ],
+    "major": [
+      "irrelevant sektorlovverk",
+      "unødvendig arbeidsgivertype-spørsmål",
+      "vilkårlig ruting av tvetydig yrke"
+    ],
+    "minor": [
+      "lite realistisk eksempel",
+      "for generell yrkestilpasning"
+    ]
+  }
+}
