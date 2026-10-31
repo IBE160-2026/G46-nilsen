@@ -245,6 +245,39 @@ h1,h2,h3,p {
   display: none;
 }
 
+.sidebar.sidebar-collapsed .nav-item[data-tooltip] {
+  position: relative;
+}
+
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  transform: translateY(-50%) translateX(-4px);
+  z-index: 120;
+  padding: 7px 10px;
+  border-radius: 9px;
+  background: var(--text);
+  color: var(--surface);
+  font-size: .78rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity .14s ease, transform .14s ease, visibility .14s ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,.16);
+}
+
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]:hover::after,
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]:focus-visible::after {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
 .main {
   min-width: 0;
 }
