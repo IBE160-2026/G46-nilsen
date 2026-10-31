@@ -78,6 +78,63 @@ function renderStaticIcons() {
   });
 }
 
+
+function initSidebarTooltips() {
+  let tooltip = document.querySelector('#sidebar-tooltip');
+  if (!tooltip) {
+    tooltip = document.createElement('div');
+    tooltip.id = 'sidebar-tooltip';
+    tooltip.className = 'sidebar-floating-tooltip';
+    tooltip.setAttribute('role', 'tooltip');
+    tooltip.hidden = true;
+    document.body.appendChild(tooltip);
+  }
+
+  const hideTooltip = () => {
+    tooltip.hidden = true;
+    tooltip.textContent = '';
+  };
+
+  const showTooltip = (button) => {
+    const sidebar = document.querySelector('#sidebar');
+    if (!sidebar?.classList.contains('sidebar-collapsed') || window.innerWidth <= 640) {
+      hideTooltip();
+      return;
+    }
+
+    const label = button.dataset.tooltip || button.querySelector('.nav-label')?.textContent?.trim();
+    if (!label) return;
+
+    const rect = button.getBoundingClientRect();
+    const gap = 6;
+    tooltip.textContent = label;
+    tooltip.hidden = false;
+
+    requestAnimationFrame(() => {
+      const tooltipRect = tooltip.getBoundingClientRect();
+      const left = Math.min(rect.right + gap, window.innerWidth - tooltipRect.width - 8);
+      const top = Math.max(8, Math.min(
+        rect.top + (rect.height - tooltipRect.height) / 2,
+        window.innerHeight - tooltipRect.height - 8
+      ));
+      tooltip.style.left = `${Math.round(left)}px`;
+      tooltip.style.top = `${Math.round(top)}px`;
+    });
+  };
+
+  document.querySelectorAll('#sidebar .nav-item[data-view]').forEach(button => {
+    button.addEventListener('mouseenter', () => showTooltip(button));
+    button.addEventListener('mouseleave', hideTooltip);
+    button.addEventListener('focus', () => showTooltip(button));
+    button.addEventListener('blur', hideTooltip);
+    button.addEventListener('click', hideTooltip);
+  });
+
+  document.querySelector('#sidebar-toggle')?.addEventListener('click', hideTooltip);
+  window.addEventListener('resize', hideTooltip, { passive: true });
+  window.addEventListener('scroll', hideTooltip, { passive: true });
+}
+
 function setBreadcrumb(text) {
   document.querySelector('#breadcrumb').textContent = text;
 }
@@ -2275,6 +2332,7 @@ function toggleSidebar() {
 }
 
 renderStaticIcons();
+initSidebarTooltips();
 renderTopics();
 resetConversationState();
 try {
