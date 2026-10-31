@@ -8678,3 +8678,71 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .sidebar-floating-tooltip[hidden] {
   display: none !important;
 }
+
+
+/* Tydelig avslutning av vanlig Samtalestøtte */
+.conversation-end-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.conversation-end-button {
+  min-height: 42px;
+}
+
+.conversation-end-panel {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.conversation-end-panel > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.conversation-end-panel strong {
+  font-size: 1rem;
+}
+
+.conversation-end-panel span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.conversation-end-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  .conversation-end-row {
+    justify-content: stretch;
+  }
+
+  .conversation-end-button {
+    width: 100%;
+  }
+
+  .conversation-end-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .conversation-end-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .conversation-end-actions button {
+    width: 100%;
+  }
+}
