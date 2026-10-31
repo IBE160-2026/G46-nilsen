@@ -8653,3 +8653,28 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     z-index: 400;
   }
 }
+
+
+/* Flytende sidebar-tooltip rendres i body for å unngå clipping/overflow. */
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
+  display: none !important;
+}
+
+.sidebar-floating-tooltip {
+  position: fixed;
+  z-index: 1000;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #102f38;
+  color: #ffffff;
+  font-size: .76rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 6px 16px rgba(0,0,0,.16);
+}
+
+.sidebar-floating-tooltip[hidden] {
+  display: none !important;
+}
