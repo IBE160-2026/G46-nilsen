@@ -252,23 +252,23 @@ h1,h2,h3,p {
 .sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
   content: attr(data-tooltip);
   position: absolute;
-  left: calc(100% + 10px);
+  left: calc(100% + 5px);
   top: 50%;
-  transform: translateY(-50%) translateX(-4px);
-  z-index: 120;
-  padding: 7px 10px;
-  border-radius: 9px;
+  transform: translateY(-50%) translateX(-2px);
+  z-index: 140;
+  padding: 6px 8px;
+  border-radius: 8px;
   background: var(--text);
   color: var(--surface);
-  font-size: .78rem;
+  font-size: .76rem;
   font-weight: 700;
   line-height: 1;
   white-space: nowrap;
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transition: opacity .14s ease, transform .14s ease, visibility .14s ease;
-  box-shadow: 0 8px 20px rgba(0,0,0,.16);
+  transition: opacity .12s ease, transform .12s ease, visibility .12s ease;
+  box-shadow: 0 6px 16px rgba(0,0,0,.14);
 }
 
 .sidebar.sidebar-collapsed .nav-item[data-tooltip]:hover::after,
@@ -276,6 +276,10 @@ h1,h2,h3,p {
   opacity: 1;
   visibility: visible;
   transform: translateY(-50%) translateX(0);
+}
+
+.sidebar.sidebar-collapsed {
+  overflow-x: visible;
 }
 
 .main {
