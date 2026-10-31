@@ -362,6 +362,14 @@ function clearGuidanceSession({ clearInputs = true } = {}) {
   if (thread) thread.innerHTML = '';
   const continueInput = document.querySelector('#continue-input');
   if (continueInput) continueInput.value = '';
+  const continueForm = document.querySelector('#continue-form');
+  if (continueForm) continueForm.hidden = false;
+  const continueSuggestions = document.querySelector('#continue-suggestions');
+  if (continueSuggestions) continueSuggestions.hidden = false;
+  const endButton = document.querySelector('#end-guidance-conversation');
+  if (endButton) { endButton.hidden = false; endButton.disabled = false; }
+  const endPanel = document.querySelector('#conversation-end-panel');
+  if (endPanel) endPanel.hidden = true;
   document.querySelector('#structured-guidance')?.classList.remove('guidance-expanded');
   renderContinueSuggestions();
 
@@ -2708,6 +2716,30 @@ document.querySelector('#continue-input')?.addEventListener('keydown', event => 
   event.preventDefault();
   document.querySelector('#continue-form')?.requestSubmit();
 });
+
+async function endGuidanceConversation() {
+  const panel = document.querySelector('#conversation-end-panel');
+  const button = document.querySelector('#end-guidance-conversation');
+  const form = document.querySelector('#continue-form');
+  const suggestions = document.querySelector('#continue-suggestions');
+  if (!panel || !button) return;
+
+  button.disabled = true;
+  try { await saveCurrentConversation(); } catch (_) {}
+
+  if (form) form.hidden = true;
+  if (suggestions) suggestions.hidden = true;
+  button.hidden = true;
+  panel.hidden = false;
+  panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+}
+
+document.querySelector('#end-guidance-conversation')?.addEventListener('click', endGuidanceConversation);
+document.querySelector('#end-conversation-home')?.addEventListener('click', () => {
+  setBreadcrumb('');
+  showView('home');
+});
+document.querySelector('#end-conversation-new')?.addEventListener('click', () => startNewConversation());
 
 renderContinueSuggestions();
 document.querySelector('#print-guidance')?.addEventListener('click', printCurrentGuidance);
