@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.18" />
+  <link rel="stylesheet" href="styles.css?v=20.11.20" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -351,6 +351,19 @@
               <textarea id="continue-input" rows="2" autocomplete="off" aria-label="Spør videre i samtalen" placeholder="Skriv for eksempel: Hva gjør jeg hvis hen sier at dette er urettferdig?"></textarea>
               <button type="submit" class="primary-button">Spør videre</button>
             </form>
+            <div class="conversation-end-row">
+              <button class="secondary-button conversation-end-button" id="end-guidance-conversation" type="button">Avslutt samtale</button>
+            </div>
+            <div class="conversation-end-panel" id="conversation-end-panel" hidden role="status">
+              <div>
+                <strong>Samtalen er avsluttet</strong>
+                <span>Rådene og samtalen er beholdt. Du kan gå tilbake til forsiden eller starte en ny samtale.</span>
+              </div>
+              <div class="conversation-end-actions">
+                <button class="secondary-button" id="end-conversation-home" type="button">Til forsiden</button>
+                <button class="primary-button" id="end-conversation-new" type="button">＋ Ny samtale</button>
+              </div>
+            </div>
           </section>
           <div class="survey-invite" id="survey-invite" hidden>
             <div><strong>Vil du gi en kort tilbakemelding?</strong><span>Det tar omtrent 2 minutter.</span></div>
@@ -994,6 +1007,6 @@
   <script src="src/privacy-name-data.js?v=20.11.15"></script>
   <script src="src/privacy-detector.js?v=20.11.15"></script>
   <script src="src/client-data.js?v=20.11.15"></script>
-  <script src="app.js?v=20.11.18"></script>
+  <script src="app.js?v=20.11.20"></script>
 </body>
 </html>
