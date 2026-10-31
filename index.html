@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.15" />
+  <link rel="stylesheet" href="styles.css?v=20.11.16" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -31,20 +31,20 @@
       </button>
 
       <nav class="nav" aria-label="Hovedmeny">
-        <button class="nav-item active" data-view="home" type="button">
+        <button class="nav-item active" data-view="home" type="button" data-tooltip="Hjem">
           <span class="nav-glyph" id="nav-home-icon"></span>
           <span class="nav-label">Hjem</span>
         </button>
-        <button class="nav-item" data-view="simulation" type="button">
+        <button class="nav-item" data-view="simulation" type="button" data-tooltip="Samtaleøvelse">
           <span class="nav-glyph nav-logo-glyph" id="nav-simulation-icon" aria-hidden="true"><img src="assets/images/profile-ai.png" alt="" /></span>
           <span class="nav-label">Samtaleøvelse</span>
         </button>
-        <button class="nav-item" data-view="history" type="button">
+        <button class="nav-item" data-view="history" type="button" data-tooltip="Historikk">
           <span class="nav-glyph" id="nav-history-icon"></span>
           <span class="nav-label">Historikk</span>
           <small id="history-nav-note">logg inn</small>
         </button>
-        <button class="nav-item" data-view="help" type="button">
+        <button class="nav-item" data-view="help" type="button" data-tooltip="Hjelp">
           <span class="nav-glyph" id="nav-help-icon">?</span>
           <span class="nav-label">Hjelp</span>
         </button>
@@ -52,19 +52,19 @@
 
       <div class="sidebar-bottom">
         <nav class="nav nav-secondary" aria-label="Om og kontakt">
-          <button class="nav-item" data-view="about" type="button">
+          <button class="nav-item" data-view="about" type="button" data-tooltip="Om">
             <span class="nav-glyph" id="nav-about-icon"></span>
             <span class="nav-label">Om</span>
           </button>
-          <button class="nav-item" data-view="survey" type="button">
+          <button class="nav-item" data-view="survey" type="button" data-tooltip="Gi tilbakemelding">
             <span class="nav-glyph">✓</span>
             <span class="nav-label">Gi tilbakemelding</span>
           </button>
-          <button class="nav-item" data-view="settings" type="button">
+          <button class="nav-item" data-view="settings" type="button" data-tooltip="Innstillinger">
             <span class="nav-glyph" id="nav-settings-icon"></span>
             <span class="nav-label">Innstillinger</span>
           </button>
-          <button class="nav-item admin-only" data-view="admin" id="nav-admin" type="button" hidden>
+          <button class="nav-item admin-only" data-view="admin" id="nav-admin" type="button" data-tooltip="Admin" hidden>
             <span class="nav-glyph" id="nav-admin-icon"></span>
             <span class="nav-label">Admin</span>
           </button>
