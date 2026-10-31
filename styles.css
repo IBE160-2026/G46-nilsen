@@ -8594,31 +8594,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   filter: drop-shadow(0 0 1px rgba(255,255,255,.96)) drop-shadow(0 0 1px rgba(255,255,255,.78));
 }
 
-.sidebar.sidebar-collapsed .nav-item[data-tooltip] { position: relative; overflow: visible; }
-.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  left: calc(100% + 10px);
-  top: 50%;
-  transform: translateY(-50%) translateX(-3px);
-  padding: 7px 10px;
-  border-radius: 9px;
-  background: #102f38;
-  color: #fff;
-  font-size: .8rem;
-  font-weight: 700;
-  line-height: 1;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity .12s ease, transform .12s ease;
-  z-index: 80;
-}
-.sidebar.sidebar-collapsed .nav-item[data-tooltip]:hover::after,
-.sidebar.sidebar-collapsed .nav-item[data-tooltip]:focus-visible::after {
-  opacity: 1;
-  transform: translateY(-50%);
-}
 @media (max-width: 760px) {
   .info-grid { grid-template-columns: 1fr; }
   .info-card { padding: 14px 15px; gap: 12px; }
@@ -8658,4 +8633,23 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 }
 @media (min-width:981px) {
   .app-shell.sidebar-collapsed-layout { grid-template-columns: 84px minmax(0,1fr); }
+}
+
+/* Tooltip-fasit for minimert sidemeny.
+   Nav må tillate at etiketten stikker ut mot høyre på desktop/mellombredde. */
+@media (min-width: 641px) {
+  .sidebar.sidebar-collapsed,
+  .sidebar.sidebar-collapsed .nav {
+    overflow: visible !important;
+  }
+
+  .sidebar.sidebar-collapsed .nav-item[data-tooltip] {
+    position: relative;
+    overflow: visible !important;
+  }
+
+  .sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
+    left: calc(100% + 5px);
+    z-index: 400;
+  }
 }
