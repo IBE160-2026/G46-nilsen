@@ -220,3 +220,81 @@ Denne tredelingen gjør det enklere å:
 - holde offline-pakken liten
 - oppdatere ett felles regelverk uten å endre alle yrkesbankene
 - la AI-en hente riktig kunnskapstype for den konkrete saken
+
+
+## Brukervisning av kilder
+
+Kildegrunnlaget skal ikke vises som én flat oppramsing. Brukervisningen deles i to nivåer.
+
+### A. Kildegrunnlag i et konkret KI-svar
+
+Vis bare kildene som faktisk var relevante eller ble brukt i den konkrete saken. Gruppér dem etter kunnskapstype:
+
+1. **Regelverk og administrative bestemmelser**
+   - for eksempel arbeidsmiljøloven, Arbeidstilsynet, NAV, Datatilsynet, Akan og relevant avtaleverk
+
+2. **Samtaleteknikk og ledelse**
+   - for eksempel aktiv lytting, feedback, psykologisk trygghet, konflikt og krevende samtaler
+
+3. **Yrkes-/sektorkilder**
+   - bare når valgt yrke/sektor faktisk påvirket rådet
+   - gruppen navngis med aktuell sektor, for eksempel **Helse og omsorg** eller **Utdanning og oppvekst**
+
+Kilder som ikke ble brukt i svaret skal ikke vises bare fordi de finnes i banken.
+
+### B. Egen samlet kildeoversikt
+
+En separat kildeoversikt kan vise hele kunnskapsgrunnlaget. Her skal yrkeskildene organiseres etter alle sektorene i taksonomien:
+
+- Utdanning og oppvekst
+- Helse og omsorg
+- Offentlig forvaltning og juss
+- Forsvar, politi og beredskap
+- Produksjon og industri
+- Bygg, anlegg og tekniske fag
+- Fiskeri, havbruk og sjø
+- Transport og logistikk
+- Handel, service, hotell og servering
+- Kontor, økonomi, finans og IT
+- Veterinær, dyrehelse og dyr
+- Offshore, energi og kraft
+- Landbruk, skogbruk og natur
+- Luftfart
+
+Hver sektor kan åpnes/kollapses og vise:
+- navn på kilde/myndighet
+- kort beskrivelse av hva kilden brukes til
+- lenke
+- sist kontrollert
+- om kilden er tidskritisk
+- tydelig kildetype, for eksempel lov, myndighetsveileder, spesialisert arbeidslivsveiledning eller forskning
+
+### Visningsprinsipp
+
+Målet er at brukeren skal kunne forstå **hvorfor en kilde vises**, ikke bare se en lang liste med lenker.
+
+En mulig struktur:
+
+```
+Kildegrunnlag
+  Regelverk og administrative bestemmelser
+    Arbeidsmiljøloven
+    Arbeidstilsynet
+    NAV
+    Akan
+
+  Samtaleteknikk og ledelse
+    Aktiv lytting
+    Feedback
+    Psykologisk trygghet
+
+  Yrkes-/sektorkilder
+    Helse og omsorg
+      Helsedirektoratet
+      Helsetilsynet
+
+    Utdanning og oppvekst
+      Utdanningsdirektoratet
+```
+
+I et konkret råd vises bare relevante grupper. I den samlede kildeoversikten kan alle sektorene vises.
