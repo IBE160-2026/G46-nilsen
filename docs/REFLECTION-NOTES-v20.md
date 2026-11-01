@@ -315,3 +315,12 @@ Etter at rådsseksjonene ble endret fra vanlige overskrifter til `details/summar
 Utskriften ble oppdatert til å hente overskrift fra den faktiske komponenten, åpne sammenfoldet innhold i utskriftsversjonen og ta med videre spørsmål/svar som egen seksjon.
 
 **Læring:** En UI-refaktorering er ikke komplett før sekundære flater som utskrift, historikk og tilgjengelighet er kontrollert. DOM-kontrakter kan være en skjult avhengighet selv når hovedvisningen ser riktig ut.
+
+
+## 01.11.2026 – senere brukertest bekreftet en konkret rettelse
+
+En ny surveyrespons kom fra en person uten ledererfaring. Personen ga svært høye skårer på brukervennlighet, navigasjon, relevans, praktisk nytte, personvern og sannsynlighet for bruk, men dette skal ikke behandles som representativ eller faglig validering.
+
+Det mest interessante funnet var mer konkret: testpersonen beskrev at søketeksten ved første utprøving tidligere ble stående etter valg av nytt tema, men at dette ikke lenger skjedde. Dette var en feil som allerede var identifisert og rettet i arbeidsrunden rundt finder-state.
+
+**Læring:** Brukertesting kan dokumentere mer enn nye problemer. En senere test kan også gi uavhengig indikasjon på at en tidligere observert UX-feil faktisk er forbedret i brukeropplevelsen. Samtidig må positive skårer tolkes forsiktig når utvalget er lite og testpersonen ikke representerer primærmålgruppen fullt ut.
