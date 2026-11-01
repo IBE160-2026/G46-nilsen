@@ -9136,16 +9136,26 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 
 
-/* v20.11.41 ONLY INTRO GETS EXTRA WIDTH
-   Kun den lille teksten under hovedoverskriften får bruke bredden under bildet
-   i minimert desktop. Hero, bilde, eyebrow og h1 er uendret. */
-@media (min-width:641px) {
+/* v20.11.43 INTRO WIDTH ONLY WHEN BELOW IMAGE
+   Kun den lille introteksten får ekstra bredde, og bare i vindusområdet
+   der den faktisk har falt under bildet. Overskrift og bilde er urørt. */
+@media (min-width:641px) and (max-width:1150px) {
   .app-shell:has(.sidebar.sidebar-collapsed) #home-view
   .hero-copy > p[data-content-key="home.hero.intro"] {
     width: 217.4% !important;
     max-width: none !important;
   }
+}
 
+@media (min-width:1151px) {
+  .app-shell #home-view
+  .hero-copy > p[data-content-key="home.hero.intro"] {
+    width: auto !important;
+    max-width: 560px !important;
+  }
+}
+
+@media (min-width:641px) {
   .app-shell:not(:has(.sidebar.sidebar-collapsed)) #home-view
   .hero-copy > p[data-content-key="home.hero.intro"] {
     width: auto !important;
