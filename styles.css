@@ -8967,3 +8967,21 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .guidance-collapsible > .guidance-copy {
   padding: 2px 14px 14px 56px;
 }
+
+
+/* Fiks åpent trekkspill: innholdet skal starte under overskriftsraden */
+.guidance-collapsible[open] > summary {
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 0;
+}
+
+.guidance-collapsible > .guidance-copy {
+  display: block;
+  position: static;
+  clear: both;
+  padding: 12px 14px 14px 56px;
+}
+
+.guidance-collapsible[open] > .guidance-copy {
+  margin-top: 0;
+}
