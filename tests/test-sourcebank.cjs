@@ -4,6 +4,7 @@ const assert = require('assert');
 (async () => {
   const sourceBank = JSON.parse(fs.readFileSync('data/SOURCEBANK.json', 'utf8'));
   const html = fs.readFileSync('index.html', 'utf8');
+  const server = fs.readFileSync('server.js', 'utf8');
   const { topicCatalog } = await import('../src/server/topic-contracts.js');
 
   assert(Number(sourceBank.version) >= 6, 'SOURCEBANK skal være minst versjon 6');
@@ -37,13 +38,15 @@ const assert = require('assert');
   for (const id of required) {
     assert(ids.has(id), 'SOURCEBANK mangler ny samtalefaglig kilde: ' + id);
     const source = sourceBank.sources.find(item => item.id === id);
-    assert(source.url && html.includes(source.url), 'Hjelp-siden mangler lenken for ' + id);
+    assert(source.url, id + ': mangler URL');
+    assert(server.includes('publicSourceMeta') && server.includes('/api/knowledge-sources'), 'Kildeoversikten er ikke koblet til strukturert kilde-API');
   }
 
   assert(fs.existsSync('docs/faggrunnlag/FAGGRUNNLAG-SAMTALETEKNIKK-RELASJONSLEDELSE.md'),
     'Lokalt tverrgående faggrunnlag for samtaleteknikk/relasjonsledelse mangler');
 
-  console.log('SOURCEBANK OK: v' + sourceBank.version + ' · ' + sourceBank.sources.length + ' kilder · temaer og Hjelp-lenker synkronisert');
+  assert(html.includes('id="sources-view"') && html.includes('data-open-sources'), 'Kategorisert kildevisning mangler i brukergrensesnittet');
+  console.log('SOURCEBANK OK: v' + sourceBank.version + ' · ' + sourceBank.sources.length + ' kilder · temaer og kategorisert kildevisning synkronisert');
 })().catch(error => {
   console.error(error);
   process.exit(1);
