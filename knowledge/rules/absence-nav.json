@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "category": "regelverk_og_administrative_bestemmelser",
+  "label": "Fravær, sykefravær og NAV-oppfølging",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "NAV_SICK_LEAVE_FOLLOWUP",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "RULE-NAV-01",
+      "principle": "Sykefraværsoppfølging skal skille mellom lederens oppfølgingsansvar og medisinske vurderinger som lederen ikke skal gjøre.",
+      "source_ids": [
+        "NAV_SICK_LEAVE_FOLLOWUP"
+      ],
+      "time_sensitive": true,
+      "offline_safe": true
+    },
+    {
+      "id": "RULE-NAV-02",
+      "principle": "Konkrete frister, plikter og unntak må kontrolleres mot oppdatert NAV-/regelverkskilde når nettilgang er tilgjengelig.",
+      "source_ids": [
+        "NAV_SICK_LEAVE_FOLLOWUP",
+        "LOVDATA_AML"
+      ],
+      "time_sensitive": true,
+      "offline_safe": true
+    }
+  ]
+}
