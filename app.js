@@ -1448,7 +1448,6 @@ function renderOccupationSuggestion(situation){
   const panel=document.querySelector('#occupation-context-panel');
   const summary=document.querySelector('#occupation-context-summary');
   const fields=document.querySelector('#occupation-context-fields');
-  const editButton=document.querySelector('#occupation-context-edit');
   if(!panel || !summary) return;
 
   const suggestion=inferOccupationSuggestion(situation);
@@ -1459,14 +1458,17 @@ function renderOccupationSuggestion(situation){
     if(occupationInput) occupationInput.value=suggestion.occupation;
     updateOccupationDatalist();
     summary.textContent=`${suggestion.occupation} · ${suggestion.sectorLabel}`;
-    if(editButton) editButton.textContent='Endre';
+
   }else{
     summary.textContent='Ingen yrkeskontekst foreslått';
-    if(editButton) editButton.textContent='Legg til yrke';
+
   }
 
-  if(fields) fields.hidden=true;
+  if(fields) fields.hidden=false;
   panel.hidden=false;
+  requestAnimationFrame(() => {
+    panel.scrollIntoView({ behavior:'smooth', block:'center' });
+  });
 }
 
 async function requestAiSituationAnalysis(situation, helpRequest) {
@@ -4480,9 +4482,3 @@ document.querySelector('#privacy-ack-confirm')?.addEventListener('click',async()
 document.querySelector('#privacy-ack-read-more')?.addEventListener('click',()=>{document.querySelector('#privacy-ack-dialog')?.close();openLegal('privacy');});
 
 
-document.querySelector('#occupation-context-edit')?.addEventListener('click', () => {
-  const fields=document.querySelector('#occupation-context-fields');
-  if(!fields) return;
-  fields.hidden=!fields.hidden;
-  if(!fields.hidden) document.querySelector('#occupation-title')?.focus();
-});
