@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "sectorId": "construction_trades",
+  "label": "Bygg, anlegg og tekniske fag",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "AT_RULES",
+    "DSB_ELECTRICAL_SAFETY",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "CONST-01",
+      "principle": "Ved arbeid i høyden, elektrisk arbeid eller maskinbruk skal konkret fare håndteres før samtalen om ansvar eller prestasjon.",
+      "source_ids": [
+        "AT_RULES",
+        "DSB_ELECTRICAL_SAFETY"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "CONST-02",
+      "principle": "Ikke anta at et sikkerhetsavvik bare skyldes medarbeideren; vurder også kompetanse, planlegging, utstyr og etablerte rutiner.",
+      "source_ids": [
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
