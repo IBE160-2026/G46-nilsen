@@ -8932,3 +8932,38 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     width: 100%;
   }
 }
+
+
+/* Kompakt trekkspill for råd fra punkt 4 og utover */
+.guidance-collapsible > summary {
+  min-height: 46px;
+  padding: 10px 14px;
+  grid-template-columns: auto minmax(0,1fr) auto;
+  gap: 10px;
+}
+
+.guidance-collapsible > summary h3 {
+  font-size: .94rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.guidance-collapsible > summary .guidance-number {
+  min-width: 32px;
+}
+
+.guidance-expand-indicator {
+  font-size: 1rem;
+  transform: rotate(0deg);
+  transition: transform .16s ease;
+}
+
+.guidance-collapsible[open] .guidance-expand-indicator {
+  transform: rotate(90deg);
+}
+
+.guidance-collapsible > .guidance-copy {
+  padding: 2px 14px 14px 56px;
+}
