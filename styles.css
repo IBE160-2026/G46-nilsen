@@ -9137,3 +9137,34 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .guidance-section-details[open] > summary::before {
   transform: rotate(90deg);
 }
+
+
+/* Samme kompakte knappestil for Spør videre og Avslutt samtale */
+.continue-form .continue-submit-button,
+.conversation-end-row .conversation-end-button {
+  box-sizing: border-box;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: none;
+  font-size: .9rem;
+  font-weight: 700;
+  transition: .18s ease;
+}
+
+.continue-form .continue-submit-button:hover,
+.conversation-end-row .conversation-end-button:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb,var(--accent) 42%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 38%,var(--surface));
+}
+
+.continue-form .continue-submit-button:focus-visible,
+.conversation-end-row .conversation-end-button:focus-visible {
+  outline: 2px solid color-mix(in srgb,var(--accent) 55%,transparent);
+  outline-offset: 2px;
+}
