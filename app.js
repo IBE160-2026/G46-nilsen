@@ -1436,15 +1436,10 @@ function renderAiGuidance(guidance) {
         <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
       </article>`;
     }
-    return `<article class="guidance-card guidance-card-compact">
-      <span class="guidance-number">${number}</span>
-      <div class="guidance-compact-content">
-        <details class="evidence-details guidance-section-details">
-          <summary>${title}</summary>
-          <div class="guidance-copy">${content}</div>
-        </details>
-      </div>
-    </article>`;
+    return `<details class="evidence-details guidance-section-details">
+      <summary><span class="guidance-summary-number">${number}</span><span class="guidance-summary-title">${title}</span></summary>
+      <div class="guidance-copy guidance-section-body">${content}</div>
+    </details>`;
   }).join('');
 
   applyGuidanceDisclosure();
