@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "sectorId": "education_childcare",
+  "label": "Utdanning og oppvekst",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "UDIR_SCHOOL_RULES",
+    "UDIR_KINDERGARTEN_RULES",
+    "UDIR_CONFIDENTIALITY",
+    "AT_RULES",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "EDU-01",
+      "principle": "Når saken berører elever eller barn, skill personalsamtalen fra plikter knyttet til elev-/barnemiljø og sikkerhet.",
+      "source_ids": [
+        "UDIR_SCHOOL_RULES",
+        "UDIR_KINDERGARTEN_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "EDU-02",
+      "principle": "Ikke bruk eller del personlige opplysninger om elever, barn eller familier utover det som er nødvendig og lovlig i den konkrete oppgaven.",
+      "source_ids": [
+        "UDIR_CONFIDENTIALITY"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "EDU-03",
+      "principle": "Ved vold, trusler eller alvorlig uønsket adferd må arbeidsgiver også vurdere arbeidsmiljø- og sikkerhetsoppfølging, ikke bare kommunikasjon mellom personer.",
+      "source_ids": [
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
