@@ -1116,7 +1116,7 @@ Etter et oppfølgingsspørsmål skal brukeren ikke måtte finne neste spørsmål
 ## FR-20 – Utskrift av samtalestøtte
 Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
 
-Brukeren skal kunne skrive ut en enkel samtalemal som kun inneholder situasjonsbeskrivelse, tema/undertema når tilgjengelig og genererte råd. Navigasjon, personvernvarsler, rapporteringsknapper, samtaleøvelse og øvrige UI-elementer skal ikke inngå.
+Brukeren skal kunne skrive ut en enkel samtalemal som inneholder situasjonsbeskrivelse, tema/undertema når tilgjengelig, genererte hovedråd og eventuelle videre spørsmål/svar fra oppfølgingsdialogen. Sammenfoldet innhold skal presenteres lesbart i utskriftsversjonen. Navigasjon, personvernvarsler, rapporteringsknapper, samtaleøvelse og øvrige UI-elementer skal ikke inngå.
 
 ## FR-21 – Rolig standardnavigasjon
 Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
@@ -1127,3 +1127,18 @@ På desktop skal sidebaren være minimert som standard for nye brukere. Brukeren
 Status: UNDER UTVIKLING / IKKE AKTIVERT I PRODUKSJON
 
 Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Systemet skal ikke anta tariffområde bare ut fra yrkestittel, og skal ikke gjøre yrkeskontekst til et obligatorisk steg når den ikke tilfører verdi.
+
+
+## FR-23 – Direkte samtale som alternativ inngang
+Status: VIDERE ARBEID / HYPOTESE – IKKE FERDIG FUNKSJON
+
+Prosjektet kan teste en mer direkte samtaleinngang der brukeren beskriver en krevende arbeidssituasjon og starter KI-dialog uten først å gå gjennom hele den strukturerte tema-/undertemaflyten.
+
+Dette skal ikke beskrives som en unik funksjon eller som implementert før faktisk kode og bruker-/regresjonstest foreligger.
+
+En eventuell prototype skal vurderes mot:
+- om brukeren kommer raskere til relevant støtte
+- om svarene blir for generelle uten strukturert temakontekst
+- om personvern og rollegrenser ivaretas like godt
+- om arbeidslivskontekst og kildebruk beholdes
+- om direkte samtale bør være alternativ inngang eller supplement til eksisterende flyt
