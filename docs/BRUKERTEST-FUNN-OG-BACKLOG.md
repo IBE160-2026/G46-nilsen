@@ -466,3 +466,28 @@ Utskriften ble justert slik at:
 - videre spørsmål og KI-svar kan tas med under «Videre råd»
 
 **Status:** Dette er en aktiv arbeidsrunde og skal ikke fremstilles som sluttverifisert før samlet regresjonstest og produksjonskontroll er gjennomført.
+
+
+### Pilotbruker D – navigasjon, målgruppe og bekreftet forbedring (01.11.2026)
+
+Ny surveyrespons 01.11.2026 kom fra en testperson uten lederrolle eller ledererfaring.
+
+Skårer:
+- brukervennlighet: 5/5
+- navigasjon: 5/5
+- KI-relevans: 5/5
+- praktisk nytte: 5/5
+- personvern: 5/5
+- ville brukt: 5/5
+- samtaleøvelse: ikke besvart
+
+Kvalitativt funn:
+- testpersonen opplevde siden som lett å orientere seg i
+- design og tematikk ga god oversikt
+- løsningen ble vurdert som potensielt nyttig både for uerfarne og erfarne ledere
+- testpersonen hadde ved første utprøving reagert på at søketekst ble stående etter valg av nytt tema
+- ved ny utprøving var dette problemet borte
+
+Dette er spesielt nyttig som prosessbevis: en konkret UX-feil som tidligere var observert av pilotbrukere ble rettet i produktet, og en senere testperson la uoppfordret merke til at problemet ikke lenger var til stede.
+
+**Metodisk begrensning:** Ett svært positivt svar skal ikke tolkes som representativ validering eller faglig ekspertgodkjenning. Testpersonen oppgir selv at hen ikke har ledererfaring. Verdien ligger særlig i brukbarhetsobservasjonen og i bekreftelsen av at en tidligere UX-feil er borte.
