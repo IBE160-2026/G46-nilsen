@@ -9095,3 +9095,35 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     max-width: none !important;
   }
 }
+
+
+/* v20.11.34 GUIDANCE COLUMN COMPLETION
+   Fullfør samme kolonnebredde for alle relevante blokker i veiledningsvisningen. */
+@media (min-width:761px) {
+  #guidance-view > .content-header,
+  #guidance-view > .auto-topic-note,
+  #guidance-view > .history-privacy-review,
+  #guidance-view > .privacy-banner,
+  #guidance-view > .history-loaded-situation,
+  #guidance-view > .situation-form,
+  #guidance-view > .temporary-chat-option,
+  #guidance-view > .ai-thinking,
+  #guidance-view > .situation-understanding,
+  #guidance-view > .followup-panel,
+  #guidance-view > .prototype-result {
+    width: min(100%, 980px) !important;
+    max-width: 980px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #guidance-view > .content-header p,
+  #guidance-view > .content-header h1 {
+    max-width: none !important;
+  }
+
+  #guidance-view .privacy-submit-note {
+    max-width: 980px !important;
+  }
+}
