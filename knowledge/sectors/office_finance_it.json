@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "sectorId": "office_finance_it",
+  "label": "Kontor, økonomi, finans og IT",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "DATATILSYNET_WORKPLACE_PRIVACY",
+    "FINANSTILSYNET_RULES",
+    "AT_RULES",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "OFFICE-01",
+      "principle": "Ikke trekk finans- eller sikkerhetsregelverk inn i vanlig kontorarbeid med mindre faktisk rolle, virksomhet eller hendelse gjør det relevant.",
+      "source_ids": [
+        "FINANSTILSYNET_RULES",
+        "DATATILSYNET_WORKPLACE_PRIVACY"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "OFFICE-02",
+      "principle": "Kontroll, overvåking eller innsyn i ansattes digitale aktivitet krever særskilt personvern- og arbeidslivsvurdering.",
+      "source_ids": [
+        "DATATILSYNET_WORKPLACE_PRIVACY"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
