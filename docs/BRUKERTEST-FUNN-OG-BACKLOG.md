@@ -470,7 +470,7 @@ Utskriften ble justert slik at:
 
 ### Pilotbruker D – navigasjon, målgruppe og bekreftet forbedring (01.11.2026)
 
-Ny surveyrespons 01.11.2026 kom fra en testperson uten lederrolle eller ledererfaring.
+Ny surveyrespons 01.11.2026 kom fra en deltaker uten lederrolle eller ledererfaring. Databasen inneholder nå fire innsendte surveyresponser, men `survey_participation` viser tre deltakere. Det betyr at én av de tre har sendt inn skjemaet to ganger. Siden selve surveyresponsene ikke lagres med direkte brukerkobling, kan det ikke dokumenteres sikkert hvilken av responsene som tilhører samme person.
 
 Skårer:
 - brukervennlighet: 5/5
@@ -488,6 +488,6 @@ Kvalitativt funn:
 - testpersonen hadde ved første utprøving reagert på at søketekst ble stående etter valg av nytt tema
 - ved ny utprøving var dette problemet borte
 
-Dette er spesielt nyttig som prosessbevis: en konkret UX-feil som tidligere var observert av pilotbrukere ble rettet i produktet, og en senere testperson la uoppfordret merke til at problemet ikke lenger var til stede.
+Dette er spesielt nyttig som prosessbevis: en konkret UX-feil som tidligere var observert i brukertestingen ble rettet i produktet, og en senere surveyrespons beskrev uoppfordret at problemet ikke lenger var til stede.
 
-**Metodisk begrensning:** Ett svært positivt svar skal ikke tolkes som representativ validering eller faglig ekspertgodkjenning. Testpersonen oppgir selv at hen ikke har ledererfaring. Verdien ligger særlig i brukbarhetsobservasjonen og i bekreftelsen av at en tidligere UX-feil er borte.
+**Metodisk begrensning:** Fire surveyinnsendelser representerer tre deltakere, ikke fire ulike personer. Ett svært positivt svar skal heller ikke tolkes som representativ validering eller faglig ekspertgodkjenning. Deltakeren oppgir selv at hen ikke har ledererfaring. Verdien ligger særlig i brukbarhetsobservasjonen og i bekreftelsen av at en tidligere UX-feil er borte.
