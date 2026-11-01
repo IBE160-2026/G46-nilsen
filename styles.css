@@ -9097,3 +9097,33 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     padding-left: 0 !important;
   }
 }
+
+
+/* v20.11.27 COLLAPSED HEADER LOGO GAP
+   Hindre breadcrumb/overskrift i å legge seg over logoen i minimert visning. */
+@media (min-width:641px) {
+  .app-shell.sidebar-collapsed-layout .topbar-left {
+    display: grid !important;
+    grid-template-columns: auto minmax(0,1fr) !important;
+    column-gap: 18px !important;
+    align-items: center !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-brand-button {
+    flex: 0 0 auto !important;
+    max-width: 170px !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-brand-logo {
+    width: clamp(118px,11vw,160px) !important;
+    max-width: 160px !important;
+    min-width: 118px !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #breadcrumb {
+    min-width: 0 !important;
+    max-width: none !important;
+    padding-left: 2px !important;
+    overflow-wrap: anywhere !important;
+  }
+}
