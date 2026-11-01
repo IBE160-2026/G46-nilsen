@@ -32,7 +32,7 @@ assert(css.includes('#simulation-view .simulation-logo-crop') && css.includes('b
 assert(css.includes('v20.11.5 DARK SIDEBAR HOVER CONTRAST'), 'Mørk sidebar-hover mangler sluttregel');
 assert(css.includes('background: #245d6d !important;') && css.includes('color: #ffffff !important;'), 'Mørk sidebar-hover mangler tydelig kontrast');
 assert(css.includes('@media (max-width: 760px)') && css.includes('.utility-title-row .utility-page-logo'), 'Felles utility-logo mangler responsiv regel');
-assert(html.includes('Hjelp til å bruke Samtalestøtte') && html.includes('Ressurser og lenker'), 'Hjelp skiller ikke tydelig mellom brukerveiledning og eksterne ressurser');
+assert(html.includes('Hjelp til å bruke Samtalestøtte') && html.includes('Kilder og faggrunnlag') && html.includes('data-open-sources'), 'Hjelp skiller ikke tydelig mellom brukerveiledning og kategorisert faggrunnlag');
 assert(html.includes('id="print-guidance"'), 'Rådsvisningen mangler utskriftsknapp');
 assert(app.includes('function printCurrentGuidance()'), 'Utskriftsfunksjonen mangler');
 assert(app.includes('function renderContinueSuggestions('), 'Dynamiske oppfølgingsforslag mangler i klienten');
