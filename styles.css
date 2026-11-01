@@ -9043,3 +9043,29 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     flex: 0 0 auto !important;
   }
 }
+
+
+/* v20.11.24 GUIDANCE COLUMN ALIGNMENT
+   Hold input-/oppsummeringsfelt og resultat i samme visuelle kolonne. */
+@media (min-width:761px) {
+  #guidance-view .situation-form,
+  #guidance-view .temporary-chat-option,
+  #guidance-view .ai-thinking,
+  #guidance-view .situation-understanding,
+  #guidance-view .followup-panel,
+  #guidance-view .prototype-result {
+    width: min(100%, 980px) !important;
+    max-width: 980px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+
+  #guidance-view .situation-form .main-situation-field,
+  #guidance-view .situation-form .situation-input-shell,
+  #guidance-view .situation-form textarea,
+  #guidance-view .followup-question-field,
+  #guidance-view .followup-question-field textarea {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
