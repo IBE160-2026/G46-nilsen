@@ -1,8 +1,8 @@
 {
-  "version": 1,
+  "version": 2,
   "packageId": "samtalestotte-occupation-knowledge",
   "generatedAt": "2026-11-01",
-  "description": "Versjonert offline-kunnskapspakke for yrkes-/sektorkontekst. Inneholder korte kuraterte prinsipper og peker til autoritative kilder; full kildetekst lagres ikke.",
+  "description": "Versjonert offline-kunnskapspakke med tre hovedlag: regelverk/administrative bestemmelser, samtaleteknikk/ledelse og yrkes-/sektorkilder.",
   "syncPolicy": {
     "bundledBaseline": true,
     "lastKnownGood": true,
@@ -34,12 +34,22 @@
     "aviation"
   ],
   "files": {
-    "core": [
-      "knowledge/core/worklife.json"
+    "rules": [
+      "knowledge/rules/employment-work-environment.json",
+      "knowledge/rules/absence-nav.json",
+      "knowledge/rules/substance-akan.json",
+      "knowledge/rules/privacy-controls.json"
+    ],
+    "conversation": [
+      "knowledge/conversation/listening.json",
+      "knowledge/conversation/feedback.json",
+      "knowledge/conversation/difficult-conversations.json",
+      "knowledge/conversation/psychological-safety.json",
+      "knowledge/conversation/conflict.json"
     ],
     "research": [
       "knowledge/research/evidence.json"
     ],
-    "sectors": "knowledge/sectors/<sector-id>.json"
+    "occupations": "knowledge/sectors/<sector-id>.json"
   }
 }
