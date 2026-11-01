@@ -1436,18 +1436,16 @@ function renderAiGuidance(guidance) {
         <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
       </article>`;
     }
-    return `<details class="guidance-card guidance-collapsible">
-      <summary><span class="guidance-number">${number}</span><h3>${title}</h3><span class="guidance-expand-indicator" aria-hidden="true">＋</span></summary>
-      <div class="guidance-copy">${content}</div>
-    </details>`;
+    return `<article class="guidance-card guidance-card-compact">
+      <span class="guidance-number">${number}</span>
+      <div class="guidance-compact-content">
+        <details class="evidence-details guidance-section-details">
+          <summary>${title}</summary>
+          <div class="guidance-copy">${content}</div>
+        </details>
+      </div>
+    </article>`;
   }).join('');
-
-  grid.querySelectorAll('.guidance-collapsible').forEach(detail => {
-    detail.addEventListener('toggle', () => {
-      const indicator = detail.querySelector('.guidance-expand-indicator');
-      if (indicator) indicator.textContent = detail.open ? '−' : '＋';
-    });
-  });
 
   applyGuidanceDisclosure();
   const intro = document.querySelector('#result-intro');
