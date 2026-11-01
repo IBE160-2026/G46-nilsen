@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "category": "samtaleteknikk_og_ledelse",
+  "label": "Konflikt og samarbeid",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "DEDREU_WEINGART_2003_CONFLICT",
+    "ONEILL_2013_TEAM_CONFLICT_META"
+  ],
+  "principles": [
+    {
+      "id": "CONV-CONFLICT-01",
+      "principle": "Skill mellom sak, prosess og relasjon; konflikt skal ikke automatisk omtales som konstruktiv.",
+      "source_ids": [
+        "DEDREU_WEINGART_2003_CONFLICT",
+        "ONEILL_2013_TEAM_CONFLICT_META"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    }
+  ]
+}
