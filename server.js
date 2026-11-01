@@ -1199,6 +1199,121 @@ const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/SOURCEB
 const sourceIds = sourceBank.sources.map(source => source.id);
 const guidanceSchema = createGuidanceSchema(sourceIds);
 
+const occupationLegalSourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/OCCUPATION-LEGAL-SOURCES.json"), "utf8"));
+const occupationSourceMap = JSON.parse(fs.readFileSync(path.join(__dirname, "data/OCCUPATION-SOURCE-MAP.json"), "utf8"));
+const knowledgeManifest = JSON.parse(fs.readFileSync(path.join(__dirname, "knowledge/manifest.json"), "utf8"));
+
+function readKnowledgeFile(relativePath) {
+  return JSON.parse(fs.readFileSync(path.join(__dirname, relativePath), "utf8"));
+}
+
+function publicSourceMeta(sourceId) {
+  const legal = occupationLegalSourceBank.sources.find(source => source.id === sourceId);
+  if (legal) {
+    return {
+      id: legal.id,
+      title: legal.title,
+      author: legal.authority,
+      url: legal.url,
+      type: legal.sourceType || "official_authority",
+      lastVerified: legal.lastVerified || occupationLegalSourceBank.verifiedAt || null,
+      timeSensitive: Boolean(legal.timeSensitive),
+      useFor: legal.useFor || []
+    };
+  }
+  const research = sourceBank.sources.find(source => source.id === sourceId);
+  if (!research) return null;
+  return {
+    id: research.id,
+    title: research.title,
+    author: research.author || "",
+    url: research.url || (research.doi ? `https://doi.org/${research.doi}` : ""),
+    type: research.type || "research",
+    lastVerified: research.last_verified || null,
+    timeSensitive: Boolean(research.time_sensitive),
+    useFor: research.use_when || []
+  };
+}
+
+function uniquePublicSources(sourceIds = []) {
+  const seen = new Set();
+  return sourceIds
+    .map(publicSourceMeta)
+    .filter(Boolean)
+    .filter(source => {
+      if (seen.has(source.id)) return false;
+      seen.add(source.id);
+      return true;
+    });
+}
+
+function knowledgeGroupsFromFiles(paths = []) {
+  return paths.map(relativePath => {
+    const file = readKnowledgeFile(relativePath);
+    const sourceIds = [...new Set([
+      ...(file.source_ids || []),
+      ...((file.principles || []).flatMap(item => item.source_ids || []))
+    ])];
+    return {
+      id: relativePath.replace(/^.*\//, "").replace(/\.json$/, ""),
+      label: file.label || file.category || relativePath,
+      description: file.source_note || "",
+      verifiedAt: file.verifiedAt || null,
+      sources: uniquePublicSources(sourceIds)
+    };
+  });
+}
+
+app.get("/api/knowledge-sources", requireUser, (_req, res) => {
+  try {
+    const ruleGroups = knowledgeGroupsFromFiles(knowledgeManifest.files?.rules || []);
+    const conversationGroups = knowledgeGroupsFromFiles(knowledgeManifest.files?.conversation || []);
+    const occupationGroups = (occupationSourceMap.sectors || [])
+      .filter(sector => sector.id !== "other")
+      .map(sector => {
+        const relativePath = `knowledge/sectors/${sector.id}.json`;
+        const file = readKnowledgeFile(relativePath);
+        const sourceIds = [...new Set([
+          ...(file.primary_source_ids || []),
+          ...((file.principles || []).flatMap(item => item.source_ids || []))
+        ])];
+        return {
+          id: sector.id,
+          label: sector.label,
+          occupations: sector.occupations || [],
+          verifiedAt: file.verifiedAt || null,
+          sources: uniquePublicSources(sourceIds)
+        };
+      });
+
+    res.json({
+      version: knowledgeManifest.version || 1,
+      generatedAt: knowledgeManifest.generatedAt || null,
+      categories: {
+        rules: {
+          label: "Regelverk og administrative bestemmelser",
+          description: "Lov, myndighetsveiledning og spesialisert arbeidslivsstøtte.",
+          groups: ruleGroups
+        },
+        conversation: {
+          label: "Samtaleteknikk og ledelse",
+          description: "Forskning og faggrunnlag for dialog, lytting, feedback, konflikt og trygghet.",
+          groups: conversationGroups
+        },
+        occupations: {
+          label: "Yrkes- og sektorkilder",
+          description: "Norske fag- og myndighetskilder sortert etter arbeidsområde.",
+          groups: occupationGroups
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Kunne ikke bygge kildeoversikt:", error?.message || error);
+    res.status(500).json({ error:"SOURCE_LIBRARY_FAILED", message:"Kunne ikke hente kildegrunnlaget." });
+  }
+});
+
+
 function selectRelevantSources(analysis = {}, situation = "") {
   const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
   const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || [])]
