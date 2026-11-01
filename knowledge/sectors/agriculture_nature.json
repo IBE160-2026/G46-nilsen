@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "sectorId": "agriculture_nature",
+  "label": "Landbruk, skogbruk og natur",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "LANDBRUK_REGELVERK",
+    "MATTILSYNET_DYREVELFERD",
+    "AT_RULES",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "AGR-01",
+      "principle": "Ved arbeid med dyr, maskiner, plantevernmidler eller skogbruk må konkret HMS- og velferdsrisiko vurderes før ordinær personaloppfølging.",
+      "source_ids": [
+        "MATTILSYNET_DYREVELFERD",
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "AGR-02",
+      "principle": "Ikke generaliser én type landbruksregelverk til hele sektoren; identifiser faktisk aktivitet før konkrete regelpåstander.",
+      "source_ids": [
+        "LANDBRUK_REGELVERK"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
