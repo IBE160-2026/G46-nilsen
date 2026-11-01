@@ -263,6 +263,23 @@
             </div>
           </label>
 
+          <details class="occupation-context-panel" id="occupation-context-panel" hidden>
+            <summary>Tilpass til yrke / arbeidsområde <small>valgfritt</small></summary>
+            <div class="occupation-context-fields">
+              <label>Arbeidsområde
+                <select id="occupation-sector"><option value="">Ikke valgt</option></select>
+              </label>
+              <label>Yrke / stilling
+                <input id="occupation-title" type="text" list="occupation-title-options" autocomplete="off" placeholder="For eksempel sykepleier, lærer eller tømrer">
+                <datalist id="occupation-title-options"></datalist>
+              </label>
+              <label>Arbeidsgivertype <small>bare hvis relevant, f.eks. lønn eller tariff</small>
+                <select id="occupation-employer-type"><option value="">Ikke oppgitt</option></select>
+              </label>
+              <p class="occupation-context-note">Yrket brukes bare når det faktisk endrer risiko, regelverk eller praktiske råd. Det skal ikke gjøre vanlige samtaler unødvendig juridiske.</p>
+            </div>
+          </details>
+
           <div id="privacy-check" class="privacy-check" role="status" aria-live="polite" hidden></div>
           <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
         </form>
