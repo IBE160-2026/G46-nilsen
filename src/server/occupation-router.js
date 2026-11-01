@@ -182,7 +182,7 @@ export function selectLegalSources({ sectorId, topic, subtopic, situation, maxSo
       const contextMatch = contextMatchesSource(source, contextText);
       return {
         ...source,
-        score: (sectorSpecific ? 10 : 0) + (contextMatch ? 5 : 0)
+        score: (contextMatch ? 20 : 0) + (sectorSpecific ? 10 : 0)
       };
     })
     .sort((a, b) => b.score - a.score || a.authority.localeCompare(b.authority, "nb"))
