@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.23" />
+  <link rel="stylesheet" href="styles.css?v=20.11.24" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -263,23 +263,6 @@
             </div>
           </label>
 
-          <details class="occupation-context-panel" id="occupation-context-panel" open>
-            <summary>Yrke / arbeidsområde <small>valgfritt – testfunksjon</small></summary>
-            <div class="occupation-context-fields">
-              <label>Arbeidsområde
-                <select id="occupation-sector"><option value="">Ikke valgt</option></select>
-              </label>
-              <label>Yrke / stilling
-                <input id="occupation-title" type="text" list="occupation-title-options" autocomplete="off" placeholder="For eksempel sykepleier, lærer eller tømrer">
-                <datalist id="occupation-title-options"></datalist>
-              </label>
-              <label>Arbeidsgivertype <small>bare hvis relevant, f.eks. lønn eller tariff</small>
-                <select id="occupation-employer-type"><option value="">Ikke oppgitt</option></select>
-              </label>
-              <p class="occupation-context-note" id="occupation-context-note">Velg arbeidsområde og eventuelt yrke hvis du vil teste tilpassede råd. Yrket brukes bare når det faktisk endrer risiko, regelverk eller praktiske råd.</p>
-            </div>
-          </details>
-
           <div id="privacy-check" class="privacy-check" role="status" aria-live="polite" hidden></div>
           <span class="privacy-submit-note" id="privacy-submit-note">Personvernkontrollen må være godkjent før teksten kan sendes.</span>
         </form>
@@ -309,6 +292,27 @@
             <span id="understanding-confidence" class="understanding-confidence"></span>
           </div>
           <div id="understanding-content" class="understanding-content"></div>
+        </section>
+
+        <section id="occupation-context-panel" class="occupation-context-panel occupation-context-suggestion" hidden>
+          <div class="occupation-suggestion-row">
+            <div>
+              <span class="eyebrow">ARBEIDSKONTEKST</span>
+              <p id="occupation-context-note">Foreslått ut fra situasjonen din.</p>
+              <strong id="occupation-context-summary"></strong>
+            </div>
+            <button type="button" class="secondary-button" id="occupation-context-edit">Endre</button>
+          </div>
+          <div class="occupation-context-fields" id="occupation-context-fields" hidden>
+            <label>Arbeidsområde
+              <select id="occupation-sector"><option value="">Ikke valgt</option></select>
+            </label>
+            <label>Yrke / stilling
+              <input id="occupation-title" type="text" list="occupation-title-options" autocomplete="off" placeholder="For eksempel sykepleier, lærer eller tømrer">
+              <datalist id="occupation-title-options"></datalist>
+            </label>
+            <input id="occupation-employer-type" type="hidden" value="">
+          </div>
         </section>
 
         <section id="followup-panel" class="followup-panel" hidden>
@@ -906,6 +910,6 @@
   <script src="src/privacy-name-data.js?v=20.11.16"></script>
   <script src="src/privacy-detector.js?v=20.11.16"></script>
   <script src="src/client-data.js?v=20.11.16"></script>
-  <script src="app.js?v=20.11.23"></script>
+  <script src="app.js?v=20.11.24"></script>
 </body>
 </html>
