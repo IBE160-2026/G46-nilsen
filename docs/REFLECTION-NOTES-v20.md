@@ -324,3 +324,37 @@ En ny surveyrespons kom fra en deltaker uten ledererfaring. Databasen har nå fi
 Det mest interessante funnet var mer konkret: testpersonen beskrev at søketeksten ved første utprøving tidligere ble stående etter valg av nytt tema, men at dette ikke lenger skjedde. Dette var en feil som allerede var identifisert og rettet i arbeidsrunden rundt finder-state.
 
 **Læring:** Brukertesting kan dokumentere mer enn nye problemer. En senere test kan også gi uavhengig indikasjon på at en tidligere observert UX-feil faktisk er forbedret i brukeropplevelsen. Samtidig må positive skårer tolkes forsiktig når utvalget er lite og testpersonen ikke representerer primærmålgruppen fullt ut.
+
+
+## 01.11.2026 – produktet utviklet seg etter behov, ikke etter en låst plan
+
+En viktig refleksjon i sluttfasen er at flere av de mest synlige funksjonene ikke fantes i den opprinnelige planen. De kom til som resultat av pilotbruk, egne ideer underveis og nye behov som ble tydelige først når løsningen faktisk ble brukt.
+
+Eksempler er PWA, mobiltilpasninger, minimert sidebar, utskrift, videre oppfølgingsforslag, yrkes-/sektorkontekst og nå vurdering av direkte samtale og tale.
+
+Dette er ikke et avvik fra prosjektet, men et uttrykk for iterativ produktutvikling. Hver ny idé har måttet vurderes opp mot:
+- faktisk brukerbehov
+- kompleksitet
+- personvern
+- teknisk risiko
+- testbarhet
+- om funksjonen styrker kjerneproblemet eller bare gjør produktet større
+
+**Læring:** Det er lett å tro at god prosjektstyring betyr å følge første plan. I praksis har den viktigste styringen vært å kunne endre planen uten å miste produktets retning.
+
+## 01.11.2026 – mulig skrivefriksjon i samtaleøvelse
+
+Surveydataene viser at noen testpersoner ikke har vurdert samtaleøvelse. Datagrunnlaget er for lite til å konkludere med hvorfor, og manglende skår kan også skyldes at funksjonen ikke ble testet.
+
+En mulig produktforklaring er likevel **skrivefriksjon**. Hovedveiledningen krever relativt lite innsats etter at situasjonen er skrevet inn, mens samtaleøvelse og videre dialog krever gjentatte tekstsvar. På mobil kan dette være en reell terskel.
+
+Dette ga ideen om tale som alternativ inputkanal. Det viktige er at tale ikke skal omgå personvernløsningen.
+
+Planlagt pilotflyt:
+**mikrofon → kort lydopptak → transkripsjon → eksisterende personvernsjekk → KI → tekstsvar → valgfri opplesning**
+
+Lyd skal ikke brukes som direkte inngang til hoved-KI-en i første prototype. Først skal den gjøres om til tekst, slik at samme personvernbarriere som allerede finnes kan brukes.
+
+**Hypotese som skal testes:** Dersom skrivearbeidet reduseres, kan flere være villige til å bruke samtaleøvelse og videre dialog.
+
+Dette må testes før det omtales som en faktisk effekt.
