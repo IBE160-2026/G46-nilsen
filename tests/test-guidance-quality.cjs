@@ -6,9 +6,12 @@ const schema = fs.readFileSync('src/server/ai-schemas.js', 'utf8');
 
 assert(server.includes('## Forslag til åpning – menneskelig lederdialog'), 'Mangler menneskelig åpningskontrakt');
 assert(server.includes('opening skal KUN være ord lederen faktisk kan si høyt direkte til medarbeideren'), 'Åpningen er ikke eksplisitt avgrenset til muntlig replikk');
-assert(server.includes('50–100 ord') && server.includes('Ikke gjør den kunstig kort'), 'Mangler fleksibel lengdestyring for menneskelig åpning');
+assert(server.includes('60–120 ord') && server.includes('Ikke gjør den kunstig kort'), 'Mangler fleksibel lengdestyring for menneskelig åpning');
 assert(server.includes('opening skal aldri inneholde instruksjoner TIL lederen'), 'Mangler vern mot lederinstruksjoner i opening');
-assert(server.includes('Det finnes IKKE én fast mal') && server.includes('Hvordan har du det?') && server.includes('tilrettelegge en periode'), 'Mangler situasjonstilpasset omsorg og variasjon');
+assert(server.includes('Det finnes IKKE én fast mal') && server.includes('tilrettelegge en periode') && server.includes('ivaretatt personen'), 'Mangler situasjonstilpasset omsorg og variasjon');
+assert(server.includes('Åpningen skal ha menneskelig kontakt') && server.includes('Ikke dikt opp innsats, følelser eller betydning'), 'Mangler eksplisitt medmenneskelighet uten oppdiktet empati');
+assert(server.includes('Ved negativt utfall') && server.includes('inviter til spørsmål'), 'Mangler tydelig standard for skuffende utfall');
+assert(server.includes('ett eller flere kriterier er ikke oppfylt'), 'Mangler vern mot mekanisk kriteriespråk');
 assert(server.includes('Ikke gjenta samme råd i flere seksjoner'), 'Mangler regel mot gjentakelser i veiledningen');
 
 assert(/questions:\s*\{[\s\S]*?minItems:\s*2,\s*maxItems:\s*3[\s\S]*?\},\s*reactions:/.test(schema), 'Spørsmål er ikke begrenset til 2–3');
