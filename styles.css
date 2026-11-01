@@ -9127,3 +9127,75 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     overflow-wrap: anywhere !important;
   }
 }
+
+
+/* v20.11.29 COLLAPSED HOME HERO TEXT UNDER IMAGE
+   I minimert desktopvisning ligger introen under bildet i stedet for å bli klemt ved tittelen. */
+@media (min-width:641px) {
+  .app-shell.sidebar-collapsed-layout #home-view .hero-panel {
+    display: grid !important;
+    grid-template-columns: minmax(320px,.9fr) minmax(420px,1.1fr) !important;
+    grid-template-rows: auto auto !important;
+    column-gap: 24px !important;
+    row-gap: 10px !important;
+    align-items: stretch !important;
+    padding: 22px 24px 20px !important;
+    overflow: hidden !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #home-view .hero-copy {
+    display: contents !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > .eyebrow {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: start !important;
+    margin: 4px 0 0 !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > h1 {
+    grid-column: 1 !important;
+    grid-row: 1 !important;
+    align-self: center !important;
+    margin-top: 28px !important;
+    max-width: none !important;
+    min-width: 0 !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #home-view .hero-visual {
+    grid-column: 2 !important;
+    grid-row: 1 !important;
+    margin: -22px -24px 0 0 !important;
+    min-width: 0 !important;
+    min-height: 180px !important;
+    align-self: stretch !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #home-view .hero-visual img {
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 180px !important;
+    object-fit: cover !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > p {
+    grid-column: 2 !important;
+    grid-row: 2 !important;
+    width: 100% !important;
+    max-width: none !important;
+    min-width: 0 !important;
+    margin: 2px 0 0 !important;
+    line-height: 1.5 !important;
+    white-space: normal !important;
+    overflow-wrap: normal !important;
+    word-break: normal !important;
+  }
+}
+
+@media (min-width:641px) and (max-width:900px) {
+  .app-shell.sidebar-collapsed-layout #home-view .hero-panel {
+    grid-template-columns: minmax(250px,.85fr) minmax(300px,1.15fr) !important;
+    column-gap: 18px !important;
+  }
+}
