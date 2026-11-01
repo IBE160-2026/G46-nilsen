@@ -1,0 +1,45 @@
+{
+  "version": 1,
+  "packageId": "samtalestotte-occupation-knowledge",
+  "generatedAt": "2026-11-01",
+  "description": "Versjonert offline-kunnskapspakke for yrkes-/sektorkontekst. Inneholder korte kuraterte prinsipper og peker til autoritative kilder; full kildetekst lagres ikke.",
+  "syncPolicy": {
+    "bundledBaseline": true,
+    "lastKnownGood": true,
+    "onlineManifestCheck": true,
+    "replaceOnlyAfterValidation": true,
+    "keepPreviousOnFailure": true,
+    "legalClaimsRequireFreshCheckWhenOnline": true
+  },
+  "provenanceLevels": [
+    "official_authority",
+    "law_database",
+    "peer_reviewed_research",
+    "curated_principle"
+  ],
+  "sectors": [
+    "education_childcare",
+    "health_care",
+    "public_admin_legal",
+    "defence_police_emergency",
+    "industry_production",
+    "construction_trades",
+    "aquaculture_fisheries_maritime",
+    "transport_logistics",
+    "retail_hospitality_service",
+    "office_finance_it",
+    "veterinary_animal_health",
+    "offshore_energy",
+    "agriculture_nature",
+    "aviation"
+  ],
+  "files": {
+    "core": [
+      "knowledge/core/worklife.json"
+    ],
+    "research": [
+      "knowledge/research/evidence.json"
+    ],
+    "sectors": "knowledge/sectors/<sector-id>.json"
+  }
+}
