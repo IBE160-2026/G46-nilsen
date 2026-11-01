@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "sectorId": "offshore_energy",
+  "label": "Offshore, energi og kraft",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "HAVTIL_RULES_PDF",
+    "AT_RULES",
+    "DSB_ELECTRICAL_SAFETY"
+  ],
+  "principles": [
+    {
+      "id": "OFFSHORE-01",
+      "principle": "Fatigue, arbeidstid, beredskap og andre sikkerhetskritiske forhold må vurderes som system- og sikkerhetsrisiko, ikke bare som individuell prestasjon.",
+      "source_ids": [
+        "HAVTIL_RULES_PDF",
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "OFFSHORE-02",
+      "principle": "Lokale prosedyrer og virksomhetens styringssystem kan være avgjørende; Samtalestøtte skal ikke gjette innholdet i dem.",
+      "source_ids": [
+        "HAVTIL_RULES_PDF"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
