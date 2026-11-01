@@ -8985,3 +8985,46 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .guidance-collapsible[open] > .guidance-copy {
   margin-top: 0;
 }
+
+
+/* Samme kompakte details-stil som opprinnelig Faglig grunnlag */
+.guidance-card-compact {
+  align-items: center;
+  padding-top: 12px;
+  padding-bottom: 12px;
+}
+
+.guidance-compact-content {
+  min-width: 0;
+}
+
+.guidance-section-details > summary {
+  font-size: .94rem;
+  line-height: 1.2;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.guidance-section-details[open] > summary {
+  margin-bottom: 10px;
+}
+
+.guidance-section-details > .guidance-copy {
+  padding: 0;
+}
+
+/* Spør videre og Avslutt samtale skal ha samme mål */
+.continue-form .continue-submit-button,
+.conversation-end-row .conversation-end-button {
+  width: 158px;
+  min-width: 158px;
+}
+
+@media (max-width:720px) {
+  .continue-form .continue-submit-button,
+  .conversation-end-row .conversation-end-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
