@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-11-01",
+  "evidence": [
+    {
+      "id": "RESEARCH-LISTENING",
+      "source_ids": [
+        "LISTENING_META_2024"
+      ],
+      "supports": [
+        "aktiv lytting",
+        "perspektivtaking",
+        "relasjonskvalitet"
+      ],
+      "use": "Støtter dialog før råd og konklusjon."
+    },
+    {
+      "id": "RESEARCH-FEEDBACK",
+      "source_ids": [
+        "KLUGER_DENISI_1996_FEEDBACK",
+        "KUVAAS_2011_FEEDBACK"
+      ],
+      "supports": [
+        "konkret tilbakemelding",
+        "oppgave-/atferdsfokus",
+        "regelmessig oppfølging"
+      ],
+      "use": "Unngå personkarakteristikker; gjør feedback konkret og handlingsrettet."
+    },
+    {
+      "id": "RESEARCH-PSYCH-SAFETY",
+      "source_ids": [
+        "EDMONDSON_1999_PSYCH_SAFETY",
+        "FRAZIER_2017_PSYCH_SAFETY_META"
+      ],
+      "supports": [
+        "å si fra",
+        "læring",
+        "trygghet i team"
+      ],
+      "use": "Relevant når ansatte må kunne melde feil, bekymringer eller uenighet."
+    },
+    {
+      "id": "RESEARCH-JDR",
+      "source_ids": [
+        "BAKKER_DEMEROUTI_2007_JDR"
+      ],
+      "supports": [
+        "arbeidskrav",
+        "ressurser",
+        "belastning"
+      ],
+      "use": "Vurder organisatoriske krav og ressurser før problemet gjøres til et rent individproblem."
+    },
+    {
+      "id": "RESEARCH-JUSTICE",
+      "source_ids": [
+        "COLQUITT_2001_JUSTICE"
+      ],
+      "supports": [
+        "prosessrettferdighet",
+        "beslutninger",
+        "lønn",
+        "forfremmelse"
+      ],
+      "use": "Forklar kriterier, prosess og beslutningsgrunnlag på en forståelig måte."
+    },
+    {
+      "id": "RESEARCH-CONFLICT",
+      "source_ids": [
+        "DEDREU_WEINGART_2003_CONFLICT",
+        "ONEILL_2013_TEAM_CONFLICT_META"
+      ],
+      "supports": [
+        "konflikt",
+        "team"
+      ],
+      "use": "Ikke anta at konflikt automatisk er konstruktiv; skill sak, prosess og relasjon."
+    }
+  ]
+}
