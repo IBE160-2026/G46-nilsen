@@ -1430,13 +1430,8 @@ function renderAiGuidance(guidance) {
 
   grid.innerHTML = sections.map(([title, content], index) => {
     const number = String(index + 1).padStart(2, '0');
-    if (index < 3) {
-      return `<article class="guidance-card">
-        <span class="guidance-number">${number}</span>
-        <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
-      </article>`;
-    }
-    return `<details class="evidence-details guidance-section-details">
+    const openByDefault = index < 3 ? ' open' : '';
+    return `<details class="evidence-details guidance-section-details"${openByDefault}>
       <summary><span class="guidance-summary-number">${number}</span><span class="guidance-summary-title">${title}</span></summary>
       <div class="guidance-copy guidance-section-body">${content}</div>
     </details>`;
