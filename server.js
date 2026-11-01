@@ -1537,7 +1537,7 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
-  if (blockUnsafeAiText(res, [situation, helpRequest], privacyNameOverrides)) return;
+  if (blockUnsafeAiText(res, [situation, helpRequest, occupation], privacyNameOverrides)) return;
 
   const task = `\n\n## Oppgave i denne forespørselen\nAnalyser situasjonen som samtalepartner, ikke som HR-klassifiserer.\n- Gjengi bare fakta som faktisk står i brukerens tekst.\n- Identifiser det menneskelige/praktiske dilemmaet, ikke bare en kategori.\n- Relevante temaer er kun metadata og skal være maks to.\n- Still bare avklaringsspørsmål dersom svarene kan endre rådet vesentlig.\n- Lag korte klikkbare svaralternativer som dekker sannsynlige svar uten å påstå at de er sanne.
 - Sett multi_select=true når flere svaralternativer realistisk kan være sanne samtidig eller brukeren kan trenge hjelp med flere ting. Bruk false når alternativene faktisk utelukker hverandre.\n- Spør aldri om diagnose eller unødvendige sensitive opplysninger.\n- Hvis valgt tema/undertema ikke passer teksten, skal friteksten veie tyngst.\n\nValgt tema i grensesnittet: ${selectedTopic || "ikke oppgitt"}\nValgt undertema: ${selectedSubtopic || "ikke oppgitt"}\nValgt yrke/stilling: ${occupation || "ikke oppgitt"}\nValgt arbeidsområde: ${sectorId || "ikke oppgitt"}\nArbeidsgivertype: ${employerType || "ikke oppgitt"}\nYrkesopplysninger skal bare påvirke analysen når de faktisk endrer risiko, regelverk eller praktisk råd. Ikke overjuridifiser en ordinær samtale.\nHva brukeren ønsker hjelp til: ${helpRequest || "ikke oppgitt"}\n`;
@@ -1596,7 +1596,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
-  if (blockUnsafeAiText(res, [situation, ...flattenTextValues(followups)], privacyNameOverrides)) return;
+  if (blockUnsafeAiText(res, [situation, occupation, ...flattenTextValues(followups)], privacyNameOverrides)) return;
 
   const relevantSources = selectRelevantSources(analysis, situation);
   const occupationContext = occupationContextEnabled
