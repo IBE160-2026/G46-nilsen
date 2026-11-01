@@ -405,6 +405,20 @@ Korte avsnitt og tydelige overskrifter skal gjøre innholdet skannbart.
 
 ---
 
+## 13.1 Progressivt rådshierarki
+
+Rådssiden skal bevare tydelige, markerte kort rundt hver hovedseksjon. Sammenfolding skal redusere informasjonsmengde uten å fjerne den visuelle strukturen.
+
+Gjeldende prinsipp:
+- de viktigste innledende delene kan være åpne som standard
+- øvrige råd kan være lukket som standard
+- samme etablerte details-/summary-mønster skal gjenbrukes på tvers av hovedseksjoner
+- nye trekkspillvarianter skal ikke introduseres uten eksplisitt designbehov
+- understrukturer, som «Mulige reaksjoner», kan bruke en mer dempet visuell variant slik at de ikke konkurrerer med hovedseksjonene
+- «Kildegrunnlag» skal være tydelig skilt fra «Faglig / regelverk»
+
+Dette er et eksempel på progressiv kompleksitet: brukeren skal se det viktigste først, men kunne åpne mer detaljer ved behov.
+
 # 14. Primære handlinger etter KI-veiledning
 
 Etter hovedveiledningen skal brukeren enkelt kunne:
@@ -1030,7 +1044,7 @@ Ny pilottilbakemelding konkretiserte prinsippet om progressiv kompleksitet.
 - Samtaleøvelse-ikonet må beholde lesbar profilkontur i mørk og hybrid sidebar.
 - Informasjonskort på forsiden skal se informative ut, ikke som falske handlingskort, og ikonformen skal være stabilt rund.
 - Hjelp skal visuelt skille mellom brukerveiledning og eksterne fagressurser.
-- Utskrift fra rådssiden skal være en ren arbeidsflate: situasjon, tema/undertema og råd. Navigasjon, varsler, knapper og øvrig UI skal ikke skrives ut.
+- Utskrift fra rådssiden skal være en ren arbeidsflate: situasjon, tema/undertema, hovedråd og eventuelle videre råd. Sammenfoldet innhold skal åpnes i utskriftsversjonen. Navigasjon, varsler, knapper og øvrig UI skal ikke skrives ut.
 - Fortsett samtalen skal ikke stoppe etter første oppfølgingsspørsmål. Etter hvert KI-svar skal nye relevante forslag kunne presenteres, samtidig som fritekst alltid er tilgjengelig.
 
 Disse kravene stammer fra faktisk pilotbruk og skal derfor behandles som UX-regresjonskrav, ikke som dekorative preferanser.
