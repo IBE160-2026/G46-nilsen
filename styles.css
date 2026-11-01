@@ -9134,69 +9134,15 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 
 
-/* v20.11.40 INTRO FLOW AROUND IMAGE ONLY
-   Minimert desktop: bildet flyter i samme kontekst som introen.
-   Eyebrow og h1 beholder eksisterende regler og påvirkes ikke av floaten. */
+
+
+/* v20.11.41 ONLY INTRO GETS EXTRA WIDTH
+   Kun den lille teksten under hovedoverskriften får bruke bredden under bildet
+   i minimert desktop. Hero, bilde, eyebrow og h1 er uendret. */
 @media (min-width:641px) {
-  .app-shell.sidebar-collapsed-layout #home-view .hero-panel {
-    display: block !important;
-    padding: 0 0 0 24px !important;
-    min-height: 220px !important;
-    overflow: hidden !important;
-  }
-
-  .app-shell.sidebar-collapsed-layout #home-view .hero-copy {
-    display: block !important;
-    padding: 22px 10px 22px 0 !important;
-    position: relative !important;
-    z-index: 2 !important;
-    min-height: 220px !important;
-  }
-
-  .app-shell.sidebar-collapsed-layout #home-view .hero-visual-flow {
-    float: right !important;
-    width: 54% !important;
-    height: 220px !important;
-    margin: -132px -10px 10px 24px !important;
-    overflow: hidden !important;
-  }
-
-  .app-shell.sidebar-collapsed-layout #home-view .hero-visual-flow img {
-    display: block !important;
-    width: calc(100% + 56px) !important;
-    height: 220px !important;
-    object-fit: cover !important;
-    object-position: center center !important;
-    -webkit-mask-image: linear-gradient(to right,transparent 0%,rgba(0,0,0,.24) 8%,#000 24%,#000 100%) !important;
-    mask-image: linear-gradient(to right,transparent 0%,rgba(0,0,0,.24) 8%,#000 24%,#000 100%) !important;
-  }
-
-  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > p[data-content-key="home.hero.intro"] {
+  .app-shell.sidebar-collapsed-layout #home-view
+  .hero-copy > p[data-content-key="home.hero.intro"] {
+    width: 217.4% !important;
     max-width: none !important;
-    margin: 10px 0 0 !important;
-    line-height: 1.45 !important;
-    white-space: normal !important;
-  }
-}
-
-@media (max-width:640px) {
-  #home-view .hero-panel {
-    display: grid !important;
-  }
-
-  #home-view .hero-visual-flow {
-    float: none !important;
-    width: auto !important;
-    height: 92px !important;
-    margin: 8px -18px -18px !important;
-  }
-
-  #home-view .hero-visual-flow img {
-    width: 100% !important;
-    height: 92px !important;
-    object-fit: cover !important;
-    object-position: center 46% !important;
-    -webkit-mask-image: linear-gradient(to bottom,rgba(0,0,0,.72) 0%,#000 24%,#000 100%) !important;
-    mask-image: linear-gradient(to bottom,rgba(0,0,0,.72) 0%,#000 24%,#000 100%) !important;
   }
 }
