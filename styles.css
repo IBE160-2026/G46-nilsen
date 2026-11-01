@@ -9000,3 +9000,46 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     font-size: .97rem;
   }
 }
+
+
+/* v20.11.23 COLLAPSED TOPBAR LAYOUT
+   I minimert sidemeny får overskrift/logo øverste rad.
+   Tema og profil ligger samlet på raden under, helt til høyre. */
+@media (min-width:641px) and (max-width:1100px) {
+  .app-shell.sidebar-collapsed-layout .topbar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    grid-template-rows: auto auto !important;
+    align-items: start !important;
+    row-gap: 8px !important;
+    height: auto !important;
+    min-height: 0 !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-left {
+    grid-row: 1 !important;
+    width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-right {
+    grid-row: 2 !important;
+    width: 100% !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    flex-wrap: nowrap !important;
+    gap: clamp(8px,1vw,14px) !important;
+    padding-left: 0 !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-right .theme-switcher {
+    margin-left: 0 !important;
+    flex: 0 0 auto !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-right .profile-wrap {
+    margin-left: 0 !important;
+    flex: 0 0 auto !important;
+  }
+}
