@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "sectorId": "aviation",
+  "label": "Luftfart",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "LUFTFART_RULES",
+    "LUFTFART_FTL",
+    "AT_RULES"
+  ],
+  "principles": [
+    {
+      "id": "AVI-01",
+      "principle": "Ved påvirkning, fatigue, sertifikat- eller annen flysikkerhetsrisiko må operativ sikkerhet håndteres før ordinær personalsamtale.",
+      "source_ids": [
+        "LUFTFART_RULES",
+        "LUFTFART_FTL"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "AVI-02",
+      "principle": "Arbeids-/hviletidsregler avhenger av rolle og operasjon; ikke generaliser reglene for flygende personell til alle luftfartsansatte.",
+      "source_ids": [
+        "LUFTFART_FTL"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
