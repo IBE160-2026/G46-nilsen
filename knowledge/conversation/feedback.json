@@ -1,0 +1,30 @@
+{
+  "version": 1,
+  "category": "samtaleteknikk_og_ledelse",
+  "label": "Tilbakemelding og prestasjon",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "KLUGER_DENISI_1996_FEEDBACK",
+    "KUVAAS_2011_FEEDBACK"
+  ],
+  "principles": [
+    {
+      "id": "CONV-FB-01",
+      "principle": "Tilbakemeldinger bør være konkrete og knyttet til observerbar adferd, oppgave eller effekt framfor personkarakteristikker.",
+      "source_ids": [
+        "KLUGER_DENISI_1996_FEEDBACK"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    },
+    {
+      "id": "CONV-FB-02",
+      "principle": "Oppfølging over tid er viktigere enn å behandle én formell samtale som et isolert tiltak.",
+      "source_ids": [
+        "KUVAAS_2011_FEEDBACK"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    }
+  ]
+}
