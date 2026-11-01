@@ -1335,3 +1335,33 @@ Versjon 20.11.0 legger til to deterministiske regresjonsspor for den samlede pil
 - tests/test-pwa.cjs kontrollerer manifest, standalone-modus, rasterikoner, service worker, installasjons-UI og at app-shell-cachen ikke brukes for API eller ikke-GET.
 
 Disse testene er nødvendige, men ikke tilstrekkelige alene. PWA-installasjon og faktisk responsiv visning ble derfor også kontrollert fysisk på Samsung-mobil i Chrome. Dette skillet er viktig: statiske regresjonstester dokumenterer at nødvendige mekanismer finnes i koden, mens fysisk test dokumenterer faktisk nettleser- og skjermatferd i den testede konfigurasjonen.
+
+
+## Verifiseringsbehov 01.11.2026 – rådshierarki, utskrift og videre råd
+
+Arbeidsrunden 30.10–01.11 endret hvordan hovedråd presenteres og hvordan utskrift bygges fra DOM-en. Dette skaper nye regresjonsflater som må verifiseres før sluttinnlevering.
+
+Følgende bør dekkes av målrettede eller manuelle kontroller:
+- alle hovedråd beholder markert `guidance-card`-struktur
+- sammenfolding gjenbruker etablert details-/summary-mønster
+- de viktigste seksjonene har korrekt standardtilstand
+- «Kildegrunnlag» og «Faglig / regelverk» er tydelig separate
+- «Mulige reaksjoner» beholder reaksjon, plausibilitet og lederrespons
+- utskriftsfunksjonen finner overskrifter fra dagens DOM-struktur
+- sammenfoldet innhold blir synlig i utskrift
+- videre bruker-/assistentturer kommer med under «Videre råd»
+- utskrift inneholder ikke navigasjon, rapporteringsknapper eller øvrig app-UI
+
+Disse punktene er **testbehov**, ikke dokumentasjon på at en ny full testkjøring er gjennomført.
+
+## Verifiseringsbehov – direkte samtale
+
+Hvis direkte samtale implementeres, skal den testes mot minst:
+- samme case i strukturert flyt og direkte flyt
+- relevans og konkret nytte
+- personvern før KI-kall
+- korrekt bruk av arbeidslivskontekst
+- risiko for generiske svar
+- overgang fra direkte dialog til strukturert råd/simulering dersom funksjonen støtter dette
+
+Direkte samtale skal ikke inn i ferdig-funksjonslisten før denne testen er gjennomført.
