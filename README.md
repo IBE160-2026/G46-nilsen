@@ -108,9 +108,10 @@ Samtalestøtte kan blant annet:
 - hjelpe brukeren å strukturere en krevende samtale
 - foreslå åpning, spørsmål og videre formuleringer
 - forberede brukeren på mulige reaksjoner
-- fortsette KI-dialog om samme situasjon
+- fortsette KI-dialog om samme situasjon og få nye forslag til videre spørsmål
 - simulere en samtale med en medarbeider
 - støtte refleksjon etter øvelsen
+- skrive ut situasjon, hovedråd og videre råd i et eget dokumentoppsett
 - lagre historikk for innloggede brukere
 - kontrollere tekst for identifiserende opplysninger før KI-kall
 - installeres som PWA/webapp på støttede mobil- og desktopnettlesere
