@@ -32,6 +32,7 @@ Brukeren velger et hovedtema og undertema eller beskriver situasjonen med egne o
 - oppfølgingsdialog med KI
 - refleksjon og neste steg
 - dynamisk samtalesimulering
+- utskrift av situasjon, hovedråd og videre råd for praktisk bruk før samtalen
 
 Innloggede brukere skal kunne ha egen historikk og gå tilbake til tidligere arbeid.
 
@@ -53,7 +54,9 @@ Dette gir løsningen et mer avgrenset og kontrollert kunnskapsgrunnlag enn en ge
 
 HR-maler og interne rutiner kan være mer autoritative for virksomhetens egne regler og prosesser, men er i hovedsak statiske. Kurs og ledertrening kan gi større faglig dybde og menneskelig veiledning, men er ikke nødvendigvis tilgjengelig i det øyeblikket lederen står foran en konkret samtale. Generelle KI-verktøy er på sin side mer fleksible enn Samtalestøtte og kan brukes til langt flere oppgaver.
 
-Samtalestøttes særpreg ligger derfor i kombinasjonen: **situasjonsspesifikk KI-støtte, en fast lederrettet arbeidsflyt, dynamisk samtaletrening, innebygget personvern, faglige sikkerhetsgrenser og systematisk kvalitetstesting i én løsning.** Målet er ikke å erstatte fagpersoner eller lederens skjønn, men å gjøre det enklere å gå fra «jeg må ta en vanskelig samtale» til konkret forberedelse og øvelse på en mer strukturert og ansvarlig måte.
+En viktig nyanse er forskjellen mellom **kurs/trening** og **løpende støtte i behovsøyeblikket**. Norske tilbud som DFØs «Den vanskelige samtalen» og Verdi CoachLab viser at digital samtaletrening og KI-basert øvelse allerede finnes. Verdi-appen viser også at løpende KI-samtale med utgangspunkt i brukerens egen situasjon ikke i seg selv er unikt. Samtalestøtte skal derfor ikke bygge produktpåstanden på at andre mangler KI eller dialog.
+
+Samtalestøttes særpreg ligger derfor i kombinasjonen: **situasjonsspesifikk KI-støtte, en fast lederrettet arbeidsflyt, dynamisk samtaletrening, innebygget personvern, faglige sikkerhetsgrenser og systematisk kvalitetstesting i én løsning.** I tillegg er løsningen ment å kunne brukes når en konkret arbeidssituasjon faktisk oppstår, ikke bare som et læringsløp på forhånd. Målet er ikke å erstatte fagpersoner eller lederens skjønn, men å gjøre det enklere å gå fra «jeg må ta en vanskelig samtale» til konkret forberedelse og øvelse på en mer strukturert og ansvarlig måte.
 
 ## Project Complexity
 
@@ -130,6 +133,12 @@ Følgende ligger utenfor kjernen i studentprototypen:
 - automatiserte personalbeslutninger eller andre beslutningsstøttefunksjoner som overtar lederens ansvar
 
 Løsningen skal ikke være et HR-system, journalsystem eller automatisert beslutningssystem. Den skal ikke fatte personalavgjørelser, stille diagnoser, fastslå skyld eller motiv, gi bindende juridiske råd eller erstatte HR, juridisk bistand eller annen relevant fagkompetanse.
+
+### Planlagt utprøving: direkte samtale
+
+En mulig videreutvikling er en mer direkte samtaleinngang der brukeren kan beskrive en krevende arbeidssituasjon og starte dialog uten å gå gjennom hele den strukturerte flyten først. Dette er **ikke en ferdig eller verifisert funksjon i nåværende produkt**, og skal behandles som en hypotese.
+
+Testen bør undersøke om en slik inngang gir raskere og mer naturlig støtte uten at løsningen mister fordelene ved strukturert temakontekst, personvern, arbeidslivsavgrensning og kildebruk. Den bør også sammenlignes eksplisitt med generell KI-chat og norske digitale samtalepartnere.
 
 ## Vision
 
