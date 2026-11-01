@@ -1413,3 +1413,25 @@ Jeg valgte derfor en todelt visningsmodell:
 - En egen samlet kildeoversikt kan vise alle yrkesgrupper og kildene under hver sektor.
 
 Dette gjør kildegrunnlaget mer transparent uten å gjøre hvert råd unødvendig langt.
+
+
+### 01.11.2026 – implementering av kildeoversikt og yrkeskontekst
+
+Etter at kildebanken ble strukturert i tre lag, ble brukergrensesnittet endret slik at den gamle flate kildelisten fjernes. Hjelp-siden peker nå videre til en egen kildeoversikt som grupperer innholdet i:
+- regelverk og administrative bestemmelser
+- samtaleteknikk og ledelse
+- yrkes- og sektorkilder
+
+Yrkesdelen viser kilder under hver sektor, mens kilder i konkrete KI-svar fortsatt skal begrenses til det som faktisk er relevant for saken.
+
+På samme feature-branch ble valgfri yrkes-/sektorkontekst koblet inn bak feature flagg. Brukeren kan oppgi arbeidsområde, yrke/stilling og arbeidsgivertype. Opplysningene sendes bare til KI når pilotfunksjonen er aktivert. Lokale sektorprinsipper fra offline-banken legges da inn i yrkeskonteksten før generering av råd.
+
+Personvernkravet ble utvidet til også å omfatte fritekstfeltet for yrke/stilling, slik at feltet ikke blir en alternativ vei rundt eksisterende personvernkontroll.
+
+Kontroll etter endring:
+- app.js kunne parses uten syntaksfeil
+- ny kildevisning finnes én gang
+- gammel flat kildevisning er fjernet
+- yrkespanelet finnes én gang
+- API for kildeoversikt og yrkesvalg finnes
+- lokal sektorbank er koblet til occupation-context
