@@ -9207,3 +9207,60 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     border-radius: 18px;
   }
 }
+
+
+/* Endelig topplinje-fiks: reserver plass til Samtalestøtte-logo */
+.app-shell.sidebar-collapsed-layout .topbar-left {
+  display: grid;
+  grid-template-columns: 210px minmax(0,1fr);
+  align-items: center;
+  gap: 16px;
+  min-width: 0;
+}
+
+.app-shell.sidebar-collapsed-layout .topbar-brand-logo {
+  display: block;
+  width: 210px;
+  max-width: 210px;
+  min-width: 210px;
+  justify-self: start;
+}
+
+.app-shell.sidebar-collapsed-layout #breadcrumb {
+  min-width: 0;
+  max-width: 100%;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.25;
+}
+
+@media (max-width: 1180px) {
+  .app-shell.sidebar-collapsed-layout .topbar-left {
+    grid-template-columns: 180px minmax(0,1fr);
+    gap: 12px;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-brand-logo {
+    width: 180px;
+    max-width: 180px;
+    min-width: 180px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell.sidebar-collapsed-layout .topbar-left {
+    grid-template-columns: 150px minmax(0,1fr);
+    gap: 10px;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-brand-logo {
+    width: 150px;
+    max-width: 150px;
+    min-width: 150px;
+  }
+
+  .app-shell.sidebar-collapsed-layout #breadcrumb {
+    font-size: .9rem;
+  }
+}
