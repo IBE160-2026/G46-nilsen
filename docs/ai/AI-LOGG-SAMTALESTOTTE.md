@@ -1357,3 +1357,48 @@ Parallelt ble produktdokumentasjonen styrket. Norske sammenlignbare tilbud ble i
 Den planlagte direkte samtalefunksjonen er derfor dokumentert som en **hypotese som skal testes**, ikke som en unik eller ferdig funksjon.
 
 **Læring:** Git-historikk er ikke bare et sikkerhetsnett for kode. Den kan også brukes som presis spesifikasjon når verbal kontekst har sklidd ut. Dokumentasjon blir samtidig et produktverktøy: den tvinger frem mer nøkterne påstander om hva som faktisk er ferdig, hva som er planlagt og hva som skiller produktet fra eksisterende tilbud.
+
+
+## 01.11.2026 – offline yrkeskildebank
+
+### Behov som oppstod underveis
+
+Da yrkes-/sektortilpasning skulle nærme seg implementering, ble det tydelig at bare et nettbasert kilderegister ikke var tilstrekkelig. Et tidligere produktmål er at Samtalestøtte også skal kunne fungere i en offline-modus. Dette førte til en ny idé: små lokale, kuraterte kildebanker per sektor som kan følge appen og oppdateres når nettilgang er tilgjengelig.
+
+Dette var ikke en del av den opprinnelige funksjonsplanen, men oppstod gjennom videre produktutvikling og behovstilpasning.
+
+### KI-bidrag
+
+KI ble brukt til å:
+- kartlegge relevante norske myndighets- og fagkilder
+- skille autoritative regelverkskilder fra forskningsgrunnlag
+- foreslå en versjonert mini-bank per sektor
+- foreslå `last_verified`, `time_sensitive` og `offline_safe` som metadata
+- utforme en synkmodell med bundled baseline, last known good og ferskt online-oppslag
+- lage første strukturerte kunnskapspakke på egen feature-branch
+
+### Min styring og avgrensning
+
+Jeg ønsket eksplisitt egne små kildebanker fordi offline-modus er et produktmål. Full kopiering av nettsider ble ikke valgt. I stedet lagres korte prinsipper med sporbare kilde-ID-er.
+
+Det ble også besluttet at automatiske online-oppdateringer ikke skal få omskrive faginnhold ukontrollert. En ny pakke må kunne valideres før den erstatter siste fungerende versjon.
+
+### Resultat
+
+På `feature/occupation-context` ble det opprettet:
+- manifest for offline-kunnskapspakken
+- felles arbeidslivsbank
+- forskningsbank
+- sektorbanker for alle 14 aktive sektorgrupper
+- utvidet register med mer presise norske primærkilder
+
+Teknisk kontroll etter opprettelsen:
+- 16 kunnskapsfiler kunne parses
+- 37 kuraterte sektor-/kjerneprinsipper
+- 29 autoritative yrkes-/regelverkskilder
+- 62 eksisterende forsknings-/fagkilder
+- 0 manglende interne kilde-ID-er
+
+### Læring
+
+Offline-funksjonalitet påvirker ikke bare teknisk caching. Den påvirker selve kunnskapsarkitekturen. Faggrunnlaget må være lite nok til å distribueres lokalt, tydelig versjonert og sporbar, samtidig som tidskritiske regelverksopplysninger kan oppdateres eller verifiseres når nettet er tilgjengelig.
