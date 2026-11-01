@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "verifiedAt": "2026-11-01",
+  "scope": "all_sectors",
+  "principles": [
+    {
+      "id": "CORE-01",
+      "principle": "Start med observerbare fakta og lederens ansvar, ikke antakelser om motiv, diagnose eller personlighet.",
+      "topics": [
+        "prestasjon",
+        "samarbeid",
+        "fravær",
+        "rus",
+        "konflikt"
+      ],
+      "source_ids": [
+        "LOVDATA_AML",
+        "DFO_PERSONNEL_MEETING"
+      ],
+      "offline_safe": true,
+      "time_sensitive": false
+    },
+    {
+      "id": "CORE-02",
+      "principle": "Gi medarbeideren reell mulighet til å beskrive sin versjon; bruk lytting og oppfølgingsspørsmål før konklusjoner.",
+      "topics": [
+        "vanskelig samtale",
+        "konflikt",
+        "prestasjon"
+      ],
+      "source_ids": [
+        "DFO_PERSONNEL_MEETING",
+        "LISTENING_META_2024"
+      ],
+      "offline_safe": true,
+      "time_sensitive": false
+    },
+    {
+      "id": "CORE-03",
+      "principle": "Avtal konkrete neste steg, ansvar og oppfølging når samtalen gjelder endring eller forbedring.",
+      "topics": [
+        "prestasjon",
+        "oppfølging",
+        "personalsak"
+      ],
+      "source_ids": [
+        "DFO_PERSONNEL_MEETING",
+        "KUVAAS_2011_FEEDBACK"
+      ],
+      "offline_safe": true,
+      "time_sensitive": false
+    },
+    {
+      "id": "CORE-04",
+      "principle": "Skill mellom vanlig samarbeids-/personalsak og mulig varsling, trakassering, sikkerhets- eller lovbruddssak.",
+      "topics": [
+        "varsling",
+        "trakassering",
+        "sikkerhet"
+      ],
+      "source_ids": [
+        "AT_RULES",
+        "LOVDATA_AML"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "CORE-05",
+      "principle": "Bruk personopplysninger om ansatte etter nødvendighetsprinsippet og unngå unødig innsamling eller deling.",
+      "topics": [
+        "personvern",
+        "kontrolltiltak"
+      ],
+      "source_ids": [
+        "DATATILSYNET_WORKPLACE_PRIVACY"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
