@@ -1348,19 +1348,9 @@ async function requestAiGuidance(situation, analysis, followups) {
 function applyGuidanceDisclosure() {
   const grid = document.querySelector('#structured-guidance');
   if (!grid) return;
+  grid.classList.remove('guidance-expanded');
   grid.querySelectorAll('.guidance-show-more').forEach(node => node.remove());
-  const cards = [...grid.querySelectorAll('.guidance-card')];
-  cards.forEach((card, index) => card.classList.toggle('guidance-secondary', index >= 4));
-  if (cards.length <= 4) return;
-  const button = document.createElement('button');
-  button.type = 'button';
-  button.className = 'secondary-button guidance-show-more';
-  button.textContent = 'Vis flere råd';
-  button.addEventListener('click', () => {
-    const expanded = grid.classList.toggle('guidance-expanded');
-    button.textContent = expanded ? 'Vis færre råd' : 'Vis flere råd';
-  });
-  grid.appendChild(button);
+  grid.querySelectorAll('.guidance-card').forEach(card => card.classList.remove('guidance-secondary'));
 }
 
 const DEFAULT_CONTINUE_SUGGESTIONS = [
