@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "category": "samtaleteknikk_og_ledelse",
+  "label": "Krevende samtaler",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "DFO_PERSONNEL_MEETING",
+    "AKAN_MODEL",
+    "LISTENING_META_2024"
+  ],
+  "principles": [
+    {
+      "id": "CONV-DIFF-01",
+      "principle": "Forbered formål og fakta, vær tydelig om hva samtalen gjelder, inviter den andre inn og avtal konkret videre oppfølging.",
+      "source_ids": [
+        "DFO_PERSONNEL_MEETING"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    },
+    {
+      "id": "CONV-DIFF-02",
+      "principle": "Ved bekymring er det ofte bedre å beskrive hva lederen faktisk har observert enn å vente på bevis for en antatt årsak.",
+      "source_ids": [
+        "AKAN_MODEL"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    }
+  ]
+}
