@@ -1,6 +1,7 @@
 ﻿# Samtalestøtte
 
 **Gjeldende produksjonsversjon:** 20.11.5 · 29.10.2026  
+**Pågående arbeidsrunde:** 30.10–01.11.2026 · dokumentasjon og videre forbedringer etter v20.11.5, ikke egen fullverifisert release  
 
 Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Løsningen er utviklet som del av IBE160 Programmering med KI ved Høgskolen i Molde.
 
@@ -271,33 +272,50 @@ npm run test-syntax
 npm run test-privacy
 npm run test-simulation
 npm run test-server-privacy
+npm run test-privacy-surfaces
 npm run test-ui-regression
 npm run test-history-hotfix
 npm run test-bubble-cleanup
 npm run test-clipboard
+npm run test-guidance-quality
+npm run test-pilot-regression
 npm run test-golden-schema
 npm run test-golden-utils
 npm run test-benchmark-taxonomy
 npm run test-sourcebank
+npm run test-occupation-router
+npm run test-occupation-data
+npm run test-agreement-router
+npm run test-occupation-standard
+npm run test-natural-response-standard
+npm run test-occupation-context
+npm run test-pilot-ux
+npm run test-pwa
 npm run test-sensor-demo
 npm run test-public-assets
 npm run test-repo-structure
 ```
 
-Ved siste dokumenterte kontroll besto blant annet:
+### Dokumentert teststatus
 
-- personverntester: 33/33
-- simuleringstester: 24/24
-- historikk-regresjonstest
-- snakkeboble-regresjonstest
-- golden matcher-regresjonstest
-- syntakskontroll av hovedkode
-- lokal sensor-demo-regresjon: bestått
-- produksjonsserverens offentlige frontend-assets: bestått
-- repo-struktur/kjørbarhet: bestått
-- package-lock-konsistens: bestått
+Den siste **komplette dokumenterte lokale kjøringen av hele `npm test`-pakken** ble gjort 26.10.2026 og besto uten feil på koden som forelå da. Kjøringen omfattet blant annet syntaks, personvern, 24/24 simulatorkontroller, server-personvern, UI-regresjon, historikk, samtaleboble, clipboard, golden-schema, sensor-demo, offentlige assets og repo-struktur.
 
-Personverntestsettet inkluderer regresjonscaser for tvetydige navn/vanlige ord som `Dag` og `dag`. **26.10.2026 ble hele `npm test`-pakken kjørt etter utvidelsen av golden-banken og besto uten feil.** Kjøringen inkluderte syntaks, 34 personverntester, 24/24 simulatorkontroller, server-personvern, UI-regresjon/UU, historikk, samtaleboble, clipboard, golden-schema, golden-matcher, sensor-demo, offentlige assets, repo-struktur, package-lock og Node-kompatibilitet. Golden/fasit-schema verifiserte **21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert provenance**. Etterpå ble det gjort mindre endringer i flerfaglig runtime-tekst, brukertest-retensjon og tilhørende regresjonstester. Disse ble deretter kontrollert med ny lokal kjøring, og den siste gjenstående repo-strukturtesten ble korrigert for lærerens nye `CLAUDE.md`/`.claude`-verktøy og verifisert grønn. Dette beskriver den komplette lokale verifiseringen per 26.10.2026. Senere endringer i produksjonsflyt, personvern og taksonomi er dokumentert separat med målrettede regresjonskontroller; den historiske fullkjøringen skal ikke fremstilles som om den ble kjørt på dagens v20.10.10.
+Testpakken er senere utvidet betydelig. Dagens `npm test` inkluderer nå også blant annet:
+- personvernflater
+- guidance-quality
+- pilot-regresjon
+- SOURCEBANK-kontroll
+- yrkesrouter og yrkesdata
+- avtalerouter
+- occupation-response-standard
+- natural-response-standard
+- occupation-context
+- pilot-UX
+- PWA
+
+Personverntestene inneholder regresjonscaser for tvetydige navn og vanlige ord som `Dag` og `dag`. Testsett og antall testcaser har blitt utvidet etter den historiske fullkjøringen, og README skal derfor **ikke bruke gamle enkelttall som om de beskriver dagens totale testpakke**.
+
+Senere endringer, blant annet produksjonsflyt, pilotcaser, personvernregler, taksonomi, mobil/PWA, menneskelig KI-språk, yrkesarkitektur og rådshierarki, er dokumentert med målrettede tester og kontroller der dette faktisk er gjennomført. Arbeidsrunden 30.10–01.11.2026 skal ikke fremstilles som fulltestet før en ny komplett `npm test` er kjørt på den endelige koden.
 
 ### Sporbarhet fra krav til test
 
