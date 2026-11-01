@@ -9140,9 +9140,15 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
    Kun den lille teksten under hovedoverskriften får bruke bredden under bildet
    i minimert desktop. Hero, bilde, eyebrow og h1 er uendret. */
 @media (min-width:641px) {
-  .app-shell.sidebar-collapsed-layout #home-view
+  .app-shell:has(.sidebar.sidebar-collapsed) #home-view
   .hero-copy > p[data-content-key="home.hero.intro"] {
     width: 217.4% !important;
     max-width: none !important;
+  }
+
+  .app-shell:not(:has(.sidebar.sidebar-collapsed)) #home-view
+  .hero-copy > p[data-content-key="home.hero.intro"] {
+    width: auto !important;
+    max-width: 560px !important;
   }
 }
