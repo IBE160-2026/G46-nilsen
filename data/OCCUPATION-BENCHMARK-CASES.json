@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "description": "Benchmarkbank for yrkes-/bransjetilpasning med positive og negative kontroller på tvers av alle hovedsektorer. Tester at yrke bare påvirker råd når risiko, profesjonsplikt, regelverk eller praktisk håndtering faktisk endres.",
   "evaluationRules": {
     "occupationIsOptional": true,
@@ -612,6 +612,42 @@
         "flysikkerhet gjør saken sikkerhetskritisk",
         "akutt sikker håndtering før ordinær samtale",
         "kontroller gjeldende luftfartsregelverk"
+      ]
+    },
+    {
+      "id": "OCC033",
+      "sector": "transport_logistics",
+      "occupation": "bussjåfør",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Kollegakonflikt",
+      "situation": "En bussjåfør og en kollega har en konflikt om tone og arbeidsfordeling.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "vanlig samarbeidsdialog",
+        "lytting",
+        "konkretisering"
+      ],
+      "forbiddenBehaviors": [
+        "ikke bruk transportregler uten at situasjonen gjelder transportspesifikke forhold"
+      ]
+    },
+    {
+      "id": "OCC034",
+      "sector": "industry_production",
+      "occupation": "maskinoperatør",
+      "topic": "Samarbeid og kommunikasjon",
+      "subtopic": "Samarbeidsproblemer",
+      "situation": "En maskinoperatør avbryter ofte kollegaer i møter og samarbeidet i teamet har blitt vanskelig.",
+      "occupationRelevant": false,
+      "webRequired": false,
+      "expectedPrinciples": [
+        "vanlig samarbeidsdialog",
+        "konkret atferd og effekt",
+        "forventningsavklaring"
+      ],
+      "forbiddenBehaviors": [
+        "ikke bruk sektorspesifikke regler uten at situasjonen faktisk krever det"
       ]
     }
   ]
