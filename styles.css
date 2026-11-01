@@ -9066,3 +9066,34 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     max-width: none !important;
   }
 }
+
+
+/* v20.11.26 HOME TOPBAR EXCEPTION
+   På hovedsiden skal tema og profil ligge øverst til høyre som tidligere.
+   To-raders minimert layout gjelder bare undersider. */
+@media (min-width:641px) {
+  .app-shell.sidebar-collapsed-layout .topbar.topbar-home-view {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    min-height: 92px !important;
+    height: 92px !important;
+    row-gap: 0 !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar.topbar-home-view .topbar-left {
+    width: auto !important;
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar.topbar-home-view .topbar-right {
+    width: auto !important;
+    flex: 0 0 auto !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    margin-left: auto !important;
+    padding-left: 0 !important;
+  }
+}
