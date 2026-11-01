@@ -1466,12 +1466,24 @@ function renderOccupationSuggestion(situation){
 
   if(fields) fields.hidden=false;
   panel.hidden=false;
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => {
-      panel.scrollIntoView({ behavior:'smooth', block:'center' });
-      document.querySelector('#occupation-title')?.focus({ preventScroll:true });
-    });
-  });
+}
+
+
+function scrollToOccupationContextAfterRender(){
+  const target=document.querySelector('#occupation-title') || document.querySelector('#occupation-context-panel');
+  if(!target) return;
+  let attempts=0;
+  const settle=()=>{
+    attempts+=1;
+    const rect=target.getBoundingClientRect();
+    if(rect.height>0 || attempts>6){
+      target.scrollIntoView({ behavior:'smooth', block:'center' });
+      if(target.matches?.('input,select,textarea,button')) target.focus({ preventScroll:true });
+      return;
+    }
+    requestAnimationFrame(settle);
+  };
+  setTimeout(()=>requestAnimationFrame(settle),180);
 }
 
 async function requestAiSituationAnalysis(situation, helpRequest) {
@@ -2863,11 +2875,13 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
     if (count > 0) {
       document.querySelector('#followup-panel').hidden = false;
+      scrollToOccupationContextAfterRender();
     } else {
       // Ingen nødvendige avklaringer: hopp over avklaringsseksjonen og gå rett til rådet.
       document.querySelector('#followup-panel').hidden = true;
       directGuidance = true;
       await showStructuredGuidance();
+      scrollToOccupationContextAfterRender();
     }
   } catch (error) {
     lastAiAnalysis = null;
@@ -2880,9 +2894,11 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     if (localQuestions.length) {
       renderFollowupQuestions(localQuestions);
       document.querySelector('#followup-panel').hidden = false;
+      scrollToOccupationContextAfterRender();
     } else {
       followupContainer.innerHTML = '';
       document.querySelector('#followup-panel').hidden = true;
+      scrollToOccupationContextAfterRender();
     }
 
     const note = document.createElement('div');
