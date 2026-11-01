@@ -254,7 +254,6 @@ function showView(name, options = {}) {
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
-  document.querySelector('.topbar')?.classList.toggle('topbar-home-view', name === 'home');
 
   // Temakort skal bare fremstå valgt mens brukeren faktisk er inne på et tema.
   // Ved retur til forsiden skal ingen tidligere valgt kategori henge igjen visuelt.
@@ -2445,7 +2444,6 @@ initTheme();
 applySidebarState();
 setBreadcrumb('');
 updateNavState('home');
-document.querySelector('.topbar')?.classList.add('topbar-home-view');
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 history.replaceState({
   samtalestotte: true,
