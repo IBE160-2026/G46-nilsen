@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.20" />
+  <link rel="stylesheet" href="styles.css?v=20.11.21" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -340,13 +340,13 @@
               </div>
               <p>Still et oppfølgingsspørsmål om akkurat denne situasjonen.</p>
             </div>
-            <div class="continue-suggestions" id="continue-suggestions">
+            <div id="conversation-thread" class="conversation-thread" aria-live="polite"></div>
+            <div class="continue-suggestions" id="continue-suggestions" aria-label="Forslag til oppfølgingsspørsmål">
               <button type="button" class="continue-chip">Hva hvis medarbeideren blir sint?</button>
               <button type="button" class="continue-chip">Hva hvis medarbeideren blir veldig lei seg?</button>
               <button type="button" class="continue-chip">Hvordan kan jeg formulere dette tydeligere?</button>
               <button type="button" class="continue-chip">Hva bør jeg ikke si?</button>
             </div>
-            <div id="conversation-thread" class="conversation-thread" aria-live="polite"></div>
             <form id="continue-form" class="continue-form" autocomplete="off">
               <textarea id="continue-input" rows="2" autocomplete="off" aria-label="Spør videre i samtalen" placeholder="Skriv for eksempel: Hva gjør jeg hvis hen sier at dette er urettferdig?"></textarea>
               <button type="submit" class="primary-button">Spør videre</button>
@@ -1007,6 +1007,6 @@
   <script src="src/privacy-name-data.js?v=20.11.15"></script>
   <script src="src/privacy-detector.js?v=20.11.15"></script>
   <script src="src/client-data.js?v=20.11.15"></script>
-  <script src="app.js?v=20.11.20"></script>
+  <script src="app.js?v=20.11.21"></script>
 </body>
 </html>
