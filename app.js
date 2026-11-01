@@ -1405,13 +1405,13 @@ function printCurrentGuidance() {
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
   const reactionHtml = (guidance.reactions || []).map((item, index) => `
-    <section class="reaction-card">
-      <div class="reaction-card-title"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(item.reaction)}</strong></div>
+    <details class="reaction-card reaction-detail"${index === 0 ? ' open' : ''}>
+      <summary class="reaction-card-title"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(item.reaction)}</strong></summary>
       <div class="reaction-card-body">
         <div><small>Hvorfor dette kan skje</small><p>${escapeHtml(item.why_plausible)}</p></div>
         <div><small>Slik kan du møte det</small><p>${escapeHtml(item.leader_response)}</p></div>
       </div>
-    </section>`).join('');
+    </details>`).join('');
   const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
   const evidence = (guidance.evidence_sources || []).length
     ? `<div class="evidence-list">${guidance.evidence_sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong><span>${escapeHtml(source.author)}${source.year ? ` (${escapeHtml(String(source.year))})` : ''} · ${escapeHtml(source.type)}</span></a>`).join('')}</div>`
