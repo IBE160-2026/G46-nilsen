@@ -346,6 +346,24 @@ Samtidig skal systemet være bevisst på:
 
 ---
 
+# 15.1 Dynamiske forslag i videre dialog
+
+Etter et oppfølgingsspørsmål kan systemet presentere nye, korte forslag til neste spørsmål basert på siste spørsmål og KI-svar. Forslagene skal være støtte, ikke en låst meny; fritekst skal alltid være tilgjengelig.
+
+Videre dialog lagres som egne bruker-/assistentturer og kan inngå i historikk og utskrift.
+
+# 15.2 Yrkes-/sektorkontekst
+
+Prosjektet inneholder et separat yrkes-/regelverkslag med lokal ruting, kildekart og avtale-/arbeidsgiverlogikk. Dette laget er feature-flagget og skal ikke omtales som aktiv produksjonsfunksjon når `OCCUPATION_CONTEXT_ENABLED=false`.
+
+Hovedregelen er at yrke bare skal påvirke svaret når det faktisk endrer risiko, relevant regelverk eller praktisk anbefaling. Systemet skal unngå å «overjuridifisere» vanlige samtaler bare fordi et yrke er valgt.
+
+# 15.3 Direkte samtale – planlagt utprøving
+
+En mer åpen samtaleinngang vurderes som videre arbeid. Formålet er å teste om brukeren kan komme raskere til relevant støtte uten å miste fordelene ved strukturert kontekst, personverngateway, arbeidslivsavgrensning og kildebruk.
+
+Dette er ikke en ferdig integrasjon og skal ikke beskrives som implementert.
+
 # 16. Simulering
 
 Samtalestøtte inneholder også simuleringsfunksjon.
