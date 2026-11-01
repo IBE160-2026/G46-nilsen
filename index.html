@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.21" />
+  <link rel="stylesheet" href="styles.css?v=20.11.22" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -349,7 +349,7 @@
             </div>
             <form id="continue-form" class="continue-form" autocomplete="off">
               <textarea id="continue-input" rows="2" autocomplete="off" aria-label="Spør videre i samtalen" placeholder="Skriv for eksempel: Hva gjør jeg hvis hen sier at dette er urettferdig?"></textarea>
-              <button type="submit" class="primary-button">Spør videre</button>
+              <button type="submit" class="primary-button continue-submit-button">Spør videre</button>
             </form>
             <div class="conversation-end-row">
               <button class="secondary-button conversation-end-button" id="end-guidance-conversation" type="button">Avslutt samtale</button>
@@ -1004,9 +1004,20 @@
   <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
     <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
+
+  <dialog id="end-conversation-dialog" class="confirm-dialog">
+    <div class="confirm-dialog-card">
+      <h2>Avslutte samtalen?</h2>
+      <p>Er du sikker på at du vil avslutte denne samtalen? Rådene og samtalen beholdes i historikken når lagring er aktiv.</p>
+      <div class="confirm-dialog-actions">
+        <button class="secondary-button" id="cancel-end-conversation" type="button">Fortsett samtalen</button>
+        <button class="primary-button" id="confirm-end-conversation" type="button">Ja, avslutt samtalen</button>
+      </div>
+    </div>
+  </dialog>
   <script src="src/privacy-name-data.js?v=20.11.15"></script>
   <script src="src/privacy-detector.js?v=20.11.15"></script>
   <script src="src/client-data.js?v=20.11.15"></script>
-  <script src="app.js?v=20.11.21"></script>
+  <script src="app.js?v=20.11.22"></script>
 </body>
 </html>
