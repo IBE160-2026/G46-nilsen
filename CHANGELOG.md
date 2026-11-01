@@ -1726,3 +1726,26 @@ Første lokale testkjøring avdekket at testen kunne være grønn samtidig som n
 - Utvider grammatikklisten med norske eiendomsord som `vårt`, `våre`, `mitt`, `mine`, `ditt`, `dine`, `sitt`, `sine` og `deres`.
 - Regresjon lagt til for «Dette ligger innenfor vårt ansvarsområde.» og «Våre rutiner gjelder her.»
 - `Vår` beholdes som mulig faktisk fornavn og håndteres fortsatt kontekstuelt.
+
+
+## Arbeidsrunde 2026-11-01 – dokumentasjon og rådshierarki
+
+**Status:** løpende arbeid etter v20.11.5; ikke egen fullverifisert release.
+
+### Endret
+- KI-åpninger er strammet inn mot mer menneskelig og muntlig lederstil.
+- Rådssiden er reorganisert med sammenfoldbare seksjoner, samtidig som historisk markert kortstruktur er gjenopprettet.
+- «Faglig grunnlag» er omdøpt til «Kildegrunnlag» for tydeligere skille mot «Faglig / regelverk».
+- «Mulige reaksjoner» er forberedt for mer progressiv visning.
+- Utskriftsfunksjonen er tilpasset dagens details-/summary-struktur.
+- Utskrift kan ta med videre spørsmål og KI-svar under «Videre råd».
+- README og Product Brief beskriver nå konkrete norske sammenlignbare tilbud og skiller mellom kurs/trening og løpende støtte i behovsøyeblikket.
+- Direkte samtale er dokumentert som planlagt hypotese, ikke ferdig funksjon.
+- AI-logg, refleksjonsnotater, brukertest-backlog og versjonshistorikk er oppdatert.
+- Egen dokumentasjonssjekkliste er opprettet for sluttfasen.
+
+### Læring / regresjon
+En UI-runde introduserte flere nye trekkspillvarianter som ikke fulgte ønsket gjenbruk. Historisk Git-kode ble brukt som autoritativ fasit for å gjenopprette `guidance-card` + `evidence-details`.
+
+### Teststatus
+Ingen ny komplett lokal `npm test`-kjøring skal impliseres av denne changelog-posten. Endringene krever samlet regresjonskontroll før de kan regnes som ny fullverifisert release.
