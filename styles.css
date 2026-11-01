@@ -9112,3 +9112,28 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .guidance-section-details[open] > .guidance-section-body {
   padding-top: 2px;
 }
+
+
+/* Gjenopprett tydelig details-pil uten å endre eksisterende seksjonslayout */
+.guidance-section-details > summary {
+  list-style: none;
+}
+
+.guidance-section-details > summary::-webkit-details-marker {
+  display: none;
+}
+
+.guidance-section-details > summary::before {
+  content: "›";
+  display: inline-block;
+  flex: 0 0 auto;
+  color: var(--muted);
+  font-size: 1.15rem;
+  line-height: 1;
+  transform: rotate(0deg);
+  transition: transform .16s ease;
+}
+
+.guidance-section-details[open] > summary::before {
+  transform: rotate(90deg);
+}
