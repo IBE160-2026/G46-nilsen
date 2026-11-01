@@ -1,0 +1,33 @@
+{
+  "version": 1,
+  "sectorId": "transport_logistics",
+  "label": "Transport og logistikk",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "VEGVESEN_DRIVING_REST",
+    "VEGVESEN_EMPLOYER_DRIVING_REST",
+    "AT_RULES",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "TRANS-01",
+      "principle": "Arbeidsgiver har et selvstendig ansvar for å organisere relevant yrkeskjøring slik at kjøre- og hviletidsregler kan følges.",
+      "source_ids": [
+        "VEGVESEN_EMPLOYER_DRIVING_REST"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "TRANS-02",
+      "principle": "Ved påvirkning, fatigue eller annen trafikksikkerhetsrisiko må umiddelbar sikkerhet komme før ordinær personaldialog.",
+      "source_ids": [
+        "VEGVESEN_DRIVING_REST",
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
