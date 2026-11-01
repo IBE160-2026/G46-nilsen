@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "sectorId": "veterinary_animal_health",
+  "label": "Veterinær, dyrehelse og dyr",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
+    "MATTILSYNET_ANIMAL_JOURNAL",
+    "MATTILSYNET_DYREVELFERD",
+    "AT_RULES"
+  ],
+  "principles": [
+    {
+      "id": "VET-01",
+      "principle": "Dyrehelsepersonells journalføring og dokumentasjon inngår i forsvarlig tjenesteutøvelse og kan derfor være relevant ved faglig oppfølging.",
+      "source_ids": [
+        "MATTILSYNET_ANIMAL_JOURNAL",
+        "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "VET-02",
+      "principle": "Ved mulig dyrevelferds- eller faglig forsvarlighetsrisiko må dette skilles fra en ordinær relasjons- eller prestasjonssamtale.",
+      "source_ids": [
+        "MATTILSYNET_DYREVELFERD",
+        "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
