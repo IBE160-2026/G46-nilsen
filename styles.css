@@ -9151,11 +9151,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     z-index: 2 !important;
   }
 
-  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > .eyebrow,
-  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > h1 {
-    max-width: min(48%, 610px) !important;
-  }
-
   .app-shell.sidebar-collapsed-layout #home-view .hero-visual {
     display: none !important;
   }
@@ -9200,5 +9195,15 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
   #home-view .hero-visual {
     display: block !important;
+  }
+}
+
+
+/* v20.11.36 KEEP HERO HEADING UNTOUCHED
+   Overskrift/eyebrow bruker eksisterende regler. Kun introteksten har særregel. */
+@media (min-width:641px) {
+  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > .eyebrow,
+  .app-shell.sidebar-collapsed-layout #home-view .hero-copy > h1 {
+    max-width: revert !important;
   }
 }
