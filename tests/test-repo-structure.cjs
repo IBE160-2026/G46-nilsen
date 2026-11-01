@@ -25,7 +25,7 @@ const allowedRootFiles = new Set([
   "sw.js",
   "tilbakemelding-product-brief.md"
 ]);
-const allowedRootDirs = new Set([".claude", ".logs", "assets", "data", "database", "docs", "scripts", "src", "tests"]);
+const allowedRootDirs = new Set([".claude", ".github", ".logs", "assets", "data", "database", "docs", "knowledge", "scripts", "src", "tests"]);
 
 // Lærerens Claude-/sesjonslogg-verktøy ligger bevisst i repoet og kan opprette .logs/ senere.
 const trackedRootItems = [...new Set(tracked.map(file => file.split("/")[0]))].sort();
