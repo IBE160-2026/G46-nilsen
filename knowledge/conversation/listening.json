@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "category": "samtaleteknikk_og_ledelse",
+  "label": "Lytting og dialog",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "LISTENING_META_2024",
+    "WEGER_CASTLE_EMMETT_2010_ACTIVE_LISTENING",
+    "DFO_PERSONNEL_MEETING"
+  ],
+  "principles": [
+    {
+      "id": "CONV-LISTEN-01",
+      "principle": "Bruk åpne spørsmål, parafrasering og korte oppsummeringer for å kontrollere forståelse før råd eller konklusjon.",
+      "source_ids": [
+        "LISTENING_META_2024",
+        "WEGER_CASTLE_EMMETT_2010_ACTIVE_LISTENING"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    },
+    {
+      "id": "CONV-LISTEN-02",
+      "principle": "I personalsamtaler bør medarbeideren få beskrive sin versjon før lederen konkluderer.",
+      "source_ids": [
+        "DFO_PERSONNEL_MEETING"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    }
+  ]
+}
