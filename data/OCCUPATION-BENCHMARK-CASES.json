@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "description": "Første benchmarkbank for yrkes-/bransjetilpasning. Tester både relevante sektorkoblinger og negativ kontroll: yrke skal ignoreres når det ikke endrer råd, risiko eller regelverk.",
+  "version": 3,
+  "description": "Benchmarkbank for yrkes-/bransjetilpasning med positive og negative kontroller på tvers av alle hovedsektorer. Tester at yrke bare påvirker råd når risiko, profesjonsplikt, regelverk eller praktisk håndtering faktisk endres.",
   "evaluationRules": {
     "occupationIsOptional": true,
     "negativeControlsRequired": true,
