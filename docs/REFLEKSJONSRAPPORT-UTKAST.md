@@ -502,3 +502,26 @@ Pilotfasen viste tydelig forskjellen mellom teknisk testing og faktisk brukeropp
 Tilbakemeldingene ble ikke behandlet som enkeltstående ønsker som automatisk skulle bygges inn. Jeg så etter mønstre og vurderte hvilke forslag som støttet produktets formål. Det førte blant annet til en mer nedtonet standardnavigasjon, mer konsistent ikonbruk, tydeligere skille mellom brukerveiledning og faglige lenker, ren utskrift av situasjon og råd og en oppfølgingsdialog som foreslår nye spørsmål etter hvert KI-svar. Yrke/bransje ble derimot behandlet som et større arkitekturspor og holdes avslått i produksjon inntil personvern, kildepresisjon og UI er kontrollert.
 
 Dette er et konkret eksempel på at KI-assistert utvikling fortsatt krever produktstyring. KI kunne implementere forslag raskt, men menneskelig vurdering måtte avgjøre hvilke funn som var reelle problemer, hvilke som var preferanser, hvordan de skulle prioriteres, og hvilke endringer som krevde nye tester eller sikkerhetsvurderinger. Pilotfunnene ble derfor gjort sporbare i brukertestbacklog, PRD, UX-spesifikasjon, refleksjonsnotater og versjonshistorikk i stedet for bare å bli liggende i chatten.
+
+
+## Tillegg 01.11.2026 – konkrete norske sammenligninger og støtte i behovsøyeblikket
+
+Et punkt i tilbakemeldingen på prosjektet var behovet for å vise til tilsvarende produkter og forklare tydeligere hva som skiller Samtalestøtte. Jeg ønsket å unngå en enkel og lite troverdig påstand om at løsningen er «unik fordi den bruker KI». En gjennomgang av norske tilbud viste at flere eksisterende produkter dekker deler av samme behov.
+
+**DFØ – Den vanskelige samtalen** er en digital treningsarena for ledere i staten med ferdige treningsøkter og simulerte medarbeidersamtaler. **Verdi CoachLab** bruker KI i fiktiv samtaletrening og læringsløp. **Verdi-appen** er særlig relevant som sammenligningsgrunnlag fordi den tilbyr en løpende digital samtalepartner der brukeren kan beskrive egen situasjon. **Bjørnson MODUS** dekker bredere lederutvikling, øvelser og systematisk medarbeideroppfølging.
+
+Gjennomgangen gjorde at jeg endret måten jeg beskriver produktforskjellen på. Samtalestøtte er ikke nødvendigvis unik på enkeltfunksjoner som KI, simulering eller dialog. Forskjellen ligger i større grad i **kombinasjonen og bruksøyeblikket**:
+
+- brukerens egen konkrete medarbeidersituasjon er utgangspunktet
+- løsningen gir strukturert forberedelse fremfor et tomt chatfelt
+- videre spørsmål beholder konteksten fra saken
+- brukeren kan gå videre til dynamisk samtaleøvelse
+- personvernkontroll er bygget inn før KI-kall
+- arbeidslivstema, faglige grenser og kildegrunnlag er del av samme arbeidsflyt
+- historikk, utskrift og PWA gjør løsningen til et gjenbrukbart arbeidsverktøy
+
+Et viktig skille er derfor mellom **kurs/trening** og **løpende støtte i behovsøyeblikket**. Et kurs kan gi generell kompetanse og mengdetrening før en situasjon oppstår. Samtalestøtte er ment å brukes når lederen faktisk står foran en konkret samtale og trenger støtte til akkurat denne saken. Jeg ser derfor ikke disse løsningene bare som konkurrenter; flere av dem kan være komplementære.
+
+Prosjektet vurderer også en mer direkte samtaleinngang. Også her er det viktig å ikke beskrive selve KI-chatten som innovasjonen, siden slike løsninger allerede finnes. Hypotesen er i stedet om en åpen dialog kan gi merverdi når den kobles til Samtalestøttes arbeidslivskontekst, personvern, faglige avgrensninger og mulighet til å gå videre til strukturert råd eller simulering. Funksjonen skal derfor omtales som planlagt utprøving inntil den faktisk er implementert og testet.
+
+**Refleksjon:** Denne sammenligningen gjorde produktbeskrivelsen mer nøktern. Jeg gikk fra å lete etter én funksjon som kunne kalles unik, til å beskrive hvor og når produktet faktisk skal gi verdi. Det er også et eksempel på hvordan dokumentasjon kan korrigere produktforståelsen, ikke bare beskrive den i etterkant.
