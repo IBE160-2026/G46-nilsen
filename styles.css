@@ -9002,10 +9002,10 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 }
 
 
-/* v20.11.23 COLLAPSED TOPBAR LAYOUT
+/* v20.11.25 COLLAPSED TOPBAR LAYOUT
    I minimert sidemeny får overskrift/logo øverste rad.
-   Tema og profil ligger samlet på raden under, helt til høyre. */
-@media (min-width:641px) and (max-width:1100px) {
+   Tema og profil ligger på raden under, helt til høyre – på alle desktopbredder. */
+@media (min-width:641px) {
   .app-shell.sidebar-collapsed-layout .topbar {
     display: grid !important;
     grid-template-columns: minmax(0,1fr) !important;
@@ -9020,6 +9020,7 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     grid-row: 1 !important;
     width: 100% !important;
     min-width: 0 !important;
+    justify-self: stretch !important;
   }
 
   .app-shell.sidebar-collapsed-layout .topbar-right {
@@ -9031,19 +9032,15 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     flex-wrap: nowrap !important;
     gap: clamp(8px,1vw,14px) !important;
     padding-left: 0 !important;
+    justify-self: stretch !important;
   }
 
-  .app-shell.sidebar-collapsed-layout .topbar-right .theme-switcher {
-    margin-left: 0 !important;
-    flex: 0 0 auto !important;
-  }
-
+  .app-shell.sidebar-collapsed-layout .topbar-right .theme-switcher,
   .app-shell.sidebar-collapsed-layout .topbar-right .profile-wrap {
     margin-left: 0 !important;
     flex: 0 0 auto !important;
   }
 }
-
 
 /* v20.11.24 GUIDANCE COLUMN ALIGNMENT
    Hold input-/oppsummeringsfelt og resultat i samme visuelle kolonne. */
