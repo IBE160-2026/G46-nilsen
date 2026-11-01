@@ -9066,3 +9066,32 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
+
+
+/* v20.11.33 GUIDANCE PRE-RESULT WIDTH ALIGNMENT
+   Hold alle felter før «Forslag til samtalen» i samme visuelle kolonne. */
+@media (min-width:761px) {
+  #guidance-view .privacy-banner,
+  #guidance-view .guidance-safety-banner,
+  #guidance-view .privacy-check,
+  #guidance-view .finder-privacy-check,
+  #guidance-view .situation-form,
+  #guidance-view .temporary-chat-option,
+  #guidance-view .ai-thinking,
+  #guidance-view .situation-understanding,
+  #guidance-view .followup-panel,
+  #guidance-view .prototype-result,
+  #guidance-view .history-loaded-situation {
+    width: min(100%, 980px) !important;
+    max-width: 980px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #guidance-view .privacy-banner > *,
+  #guidance-view .guidance-safety-banner > *,
+  #guidance-view .privacy-check > * {
+    max-width: none !important;
+  }
+}
