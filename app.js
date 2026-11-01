@@ -1414,7 +1414,7 @@ function renderAiGuidance(guidance) {
     </section>`).join('');
   const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
   const evidence = (guidance.evidence_sources || []).length
-    ? `<details class="evidence-details"><summary>Faglig grunnlag</summary><div class="evidence-list">${guidance.evidence_sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong><span>${escapeHtml(source.author)}${source.year ? ` (${escapeHtml(String(source.year))})` : ''} · ${escapeHtml(source.type)}</span></a>`).join('')}</div></details>`
+    ? `<div class="evidence-list">${guidance.evidence_sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong><span>${escapeHtml(source.author)}${source.year ? ` (${escapeHtml(String(source.year))})` : ''} · ${escapeHtml(source.type)}</span></a>`).join('')}</div>`
     : '';
 
   const sections = [
@@ -1425,7 +1425,7 @@ function renderAiGuidance(guidance) {
     ['Faglig / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>')],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
     ['Videre oppfølging', list(guidance.next_steps)],
-    ['Dokumentert grunnlag', evidence]
+    ['Faglig grunnlag', evidence]
   ].filter(([,content]) => content);
 
   grid.innerHTML = sections.map(([title, content], index) => {
