@@ -9028,3 +9028,15 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .source-kind-badge{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:2px 7px;background:var(--surface-2)}
 .source-item-use{margin:2px 0 0;color:var(--muted);font-size:.9rem;line-height:1.45}
 @media(max-width:680px){.source-entry-card{align-items:flex-start;flex-direction:column}.source-entry-card .secondary-button{width:100%}.source-library-tabs{display:grid;grid-template-columns:1fr}.source-library-tab{text-align:left;border-radius:12px}.source-group>summary{align-items:flex-start;flex-direction:column;gap:3px}}
+
+
+/* Valgfri yrkes-/sektorkontekst */
+.occupation-context-panel{margin:10px 0 2px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);overflow:hidden}
+.occupation-context-panel>summary{cursor:pointer;padding:12px 14px;font-weight:800;display:flex;align-items:center;gap:7px}
+.occupation-context-panel>summary small{font-weight:600;color:var(--muted)}
+.occupation-context-fields{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;padding:0 14px 14px}
+.occupation-context-fields label{display:grid;gap:5px;font-weight:700}
+.occupation-context-fields label small{font-weight:500;color:var(--muted)}
+.occupation-context-fields select,.occupation-context-fields input{width:100%}
+.occupation-context-note{grid-column:1/-1;margin:0;color:var(--muted);font-size:.88rem;line-height:1.45}
+@media(max-width:760px){.occupation-context-fields{grid-template-columns:1fr}}
