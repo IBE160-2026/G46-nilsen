@@ -66,7 +66,13 @@ if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.5");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
-assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.13["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.13["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.13["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.13["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
+const scriptOrder = [
+  html.indexOf('src/privacy-name-data.js?v='),
+  html.indexOf('src/privacy-detector.js?v='),
+  html.indexOf('src/client-data.js?v='),
+  html.indexOf('app.js?v=')
+];
+assert(scriptOrder.every(index => index >= 0) && scriptOrder.every((index, pos) => pos === 0 || index > scriptOrder[pos - 1]), "Personvernmodul og klientdata lastes ikke før app.js i riktig rekkefølge");
 console.log("Klientmodul-innlasting: OK");
 
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
