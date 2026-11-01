@@ -1425,7 +1425,7 @@ function renderAiGuidance(guidance) {
     ['Faglig / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>')],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
     ['Videre oppfølging', list(guidance.next_steps)],
-    ['Faglig grunnlag', evidence]
+    ['Kildegrunnlag', evidence]
   ].filter(([,content]) => content);
 
   grid.innerHTML = sections.map(([title, content], index) => {
