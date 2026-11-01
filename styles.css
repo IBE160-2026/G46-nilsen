@@ -9264,3 +9264,48 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     font-size: .9rem;
   }
 }
+
+
+/* Hold tema + innlogging samlet til høyre, også med minimert sidebar */
+.app-shell.sidebar-collapsed-layout .topbar {
+  display: grid;
+  grid-template-columns: minmax(0,1fr) max-content;
+  align-items: center;
+  column-gap: 24px;
+}
+
+.app-shell.sidebar-collapsed-layout .topbar-left {
+  grid-column: 1;
+  min-width: 0;
+}
+
+.app-shell.sidebar-collapsed-layout .topbar-right {
+  grid-column: 2;
+  justify-self: end;
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  flex-wrap: nowrap;
+  min-width: max-content;
+}
+
+@media (max-width: 1180px) {
+  .app-shell.sidebar-collapsed-layout .topbar {
+    column-gap: 14px;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-right {
+    gap: 10px;
+  }
+}
+
+@media (max-width: 900px) {
+  .app-shell.sidebar-collapsed-layout .topbar {
+    grid-template-columns: minmax(0,1fr) max-content;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-right {
+    justify-self: end;
+  }
+}
