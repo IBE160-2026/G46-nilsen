@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "sectorId": "retail_hospitality_service",
+  "label": "Handel, service, hotell og servering",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "AT_RULES",
+    "LOVDATA_AML",
+    "DATATILSYNET_WORKPLACE_PRIVACY"
+  ],
+  "principles": [
+    {
+      "id": "SERVICE-01",
+      "principle": "Krevende kundesituasjoner, alenearbeid, tidspress, vold/trusler eller trakassering bør vurderes som arbeidsmiljøforhold og ikke bare som individuell mestring.",
+      "source_ids": [
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "SERVICE-02",
+      "principle": "Ved prestasjonsproblemer bør leder skille mellom medarbeiderens handlinger og forhold som bemanning, arbeidsmengde, opplæring og organisering.",
+      "source_ids": [
+        "AT_RULES",
+        "BAKKER_DEMEROUTI_2007_JDR"
+      ],
+      "offline_safe": true,
+      "time_sensitive": false
+    }
+  ]
+}
