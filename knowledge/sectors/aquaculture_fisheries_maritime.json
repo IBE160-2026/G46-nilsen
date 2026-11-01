@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "sectorId": "aquaculture_fisheries_maritime",
+  "label": "Fiskeri, havbruk og sjø",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "FISKERIDIR_AQUACULTURE",
+    "FISKERIDIR_IK_AQUACULTURE",
+    "SDIR_RULES",
+    "SDIR_LAWS",
+    "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL"
+  ],
+  "principles": [
+    {
+      "id": "AQUA-01",
+      "principle": "Havbrukets internkontroll bygger på tydelige roller, oppdatert kompetanse, risikokartlegging, avvikshåndtering og systematisk forbedring.",
+      "source_ids": [
+        "FISKERIDIR_IK_AQUACULTURE"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "AQUA-02",
+      "principle": "Når saken gjelder fartøy eller sjøoperasjon, må sjø- og arbeidssikkerhet vurderes før ordinær personaloppfølging.",
+      "source_ids": [
+        "SDIR_RULES",
+        "SDIR_LAWS"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "AQUA-03",
+      "principle": "Ved fiskehelse/dyrevelferd må relevant profesjons- og myndighetsansvar skilles fra den generelle personalsamtalen.",
+      "source_ids": [
+        "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
+        "FISKERIDIR_AQUACULTURE"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
