@@ -1409,7 +1409,11 @@ async function loadOccupationOptions(){
     const response=await fetch('/api/occupation-options',{credentials:'include',cache:'no-store'});
     const payload=await response.json();
     if(!response.ok) throw new Error(payload.message||'Kunne ikke hente yrkesvalg.');
-    if(!payload.enabled){panel.hidden=true;return;}
+    if(!payload.enabled){
+      const note=document.querySelector('#occupation-context-note');
+      if(note) note.textContent='Yrkesfunksjonen er ikke aktivert i dette miljøet.';
+      return;
+    }
     occupationOptionsLoaded=true;
     occupationOptionsCache=(payload.sectors||[]).filter(item=>item.id!=='other');
     const sectorSelect=document.querySelector('#occupation-sector');
@@ -1423,8 +1427,10 @@ async function loadOccupationOptions(){
     }
     updateOccupationDatalist();
     panel.hidden=false;
-  }catch(_){
-    panel.hidden=true;
+  }catch(error){
+    panel.hidden=false;
+    const note=document.querySelector('#occupation-context-note');
+    if(note) note.textContent='Yrkesvalgene kunne ikke lastes automatisk. Du kan fortsatt skrive yrke/stilling manuelt i feltet under.';
   }
 }
 
