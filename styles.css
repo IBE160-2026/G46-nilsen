@@ -8625,12 +8625,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 
 /* SAFE UX: progressive disclosure + full collapsed desktop width */
-#structured-guidance .guidance-card.guidance-secondary { display: none; }
-#structured-guidance.guidance-expanded .guidance-card.guidance-secondary { display: grid; }
-#structured-guidance .guidance-show-more {
-  justify-self: start;
-  margin-top: 2px;
-}
 @media (min-width:981px) {
   .app-shell.sidebar-collapsed-layout { grid-template-columns: 84px minmax(0,1fr); }
 }
@@ -8745,4 +8739,30 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   .conversation-end-actions button {
     width: 100%;
   }
+}
+
+
+/* Fortsett samtalen: forslag vises ved siste svar og avslutningspanelet respekterer hidden. */
+.continue-suggestions {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.conversation-end-panel[hidden] {
+  display: none !important;
+}
+
+.conversation-end-row,
+.conversation-end-actions {
+  align-items: center;
+}
+
+.conversation-end-row .conversation-end-button,
+.conversation-end-actions .primary-button,
+.conversation-end-actions .secondary-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 14px;
+  font-size: .92rem;
+  font-weight: 700;
 }
