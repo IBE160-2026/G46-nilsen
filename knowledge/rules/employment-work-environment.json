@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "category": "regelverk_og_administrative_bestemmelser",
+  "label": "Arbeidsmiljø, HMS og arbeidsgiveransvar",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "LOVDATA_AML",
+    "AT_RULES"
+  ],
+  "principles": [
+    {
+      "id": "RULE-AML-01",
+      "principle": "Arbeidsmiljø, HMS, varsling, arbeidstid og stillingsvern skal forankres i gjeldende regelverk og ikke i modellens hukommelse alene.",
+      "source_ids": [
+        "LOVDATA_AML",
+        "AT_RULES"
+      ],
+      "time_sensitive": true,
+      "offline_safe": true
+    },
+    {
+      "id": "RULE-AML-02",
+      "principle": "Ved sikkerhets- eller arbeidsmiljørisiko skal organisatoriske forhold og arbeidsgiveransvar vurderes i tillegg til individuell adferd.",
+      "source_ids": [
+        "AT_RULES"
+      ],
+      "time_sensitive": true,
+      "offline_safe": true
+    }
+  ]
+}
