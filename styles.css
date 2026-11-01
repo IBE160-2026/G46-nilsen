@@ -9079,3 +9079,36 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .guidance-expand-indicator {
   display: none !important;
 }
+
+
+/* Maks plassbesparelse når råd 4+ er lukket */
+.guidance-section-details:not([open]) {
+  padding: 0;
+  margin: 0;
+}
+
+.guidance-section-details:not([open]) > summary {
+  min-height: 32px;
+  padding: 4px 0;
+  line-height: 1.1;
+  gap: 6px;
+}
+
+.guidance-section-details:not([open]) .guidance-summary-number {
+  min-width: 24px;
+  font-size: .72rem;
+}
+
+.guidance-section-details:not([open]) .guidance-summary-title {
+  font-size: .9rem;
+  line-height: 1.1;
+}
+
+/* Åpen tilstand får litt mer luft for lesbarhet */
+.guidance-section-details[open] > summary {
+  padding: 8px 0 6px;
+}
+
+.guidance-section-details[open] > .guidance-section-body {
+  padding-top: 2px;
+}
