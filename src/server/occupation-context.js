@@ -1,5 +1,20 @@
+import fs from "node:fs";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { resolveOccupationContext } from "./occupation-router.js";
 import { suggestAgreementAreas } from "./agreement-router.js";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const knowledgeRoot = path.resolve(__dirname, "../../knowledge/sectors");
+
+function loadSectorKnowledge(sectorId) {
+  if (!sectorId || sectorId === "other") return null;
+  try {
+    return JSON.parse(fs.readFileSync(path.join(knowledgeRoot, `${sectorId}.json`), "utf8"));
+  } catch (_) {
+    return null;
+  }
+}
 
 export function buildOccupationGuidanceContext({
   occupation = "",
@@ -67,6 +82,8 @@ export function buildOccupationGuidanceContext({
     };
   }
 
+  const sectorKnowledge = loadSectorKnowledge(occupationResult.sectorId);
+
   const lines = [
     "## Yrkes-/næringskontekst",
     `Yrke/næring: ${occupation || "ikke spesifisert"}.`,
@@ -76,6 +93,14 @@ export function buildOccupationGuidanceContext({
     "Hvis regelverk er relevant, forklar hva det betyr i praksis og skill mellom lov/forskrift, tariff/overenskomst og lokale rutiner.",
     "Ikke anta innholdet i virksomhetens lokale rutiner, personalreglement, HMS-rutiner eller lokale avtaler."
   ];
+
+  if (sectorKnowledge?.principles?.length) {
+    lines.push("Lokalt kuraterte sektorprinsipper for offline/standardkontekst:");
+    for (const item of sectorKnowledge.principles.slice(0, 5)) {
+      lines.push(`- ${item.principle}`);
+    }
+    lines.push("Disse prinsippene er støtte, ikke erstatning for fersk kontroll av tidskritisk regelverk.");
+  }
 
   if (occupationResult.legalSources.length) {
     lines.push("Godkjente autoritative startkilder ved behov:");
