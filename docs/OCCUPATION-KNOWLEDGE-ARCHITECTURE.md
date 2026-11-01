@@ -131,3 +131,48 @@ Feil som skal regnes som alvorlige:
 4. Koble ruteren til serverens kontekstbygging bak feature flagg.
 5. Kjør full lokal regressjon før UI kobles på.
 6. Først deretter legge inn valgfritt arbeidsområde/yrke i grensesnittet.
+
+
+## Lokal mini-kildebank og offline-modus
+
+Yrkeslaget er utvidet med en versjonert lokal kunnskapspakke under `knowledge/`.
+
+Strukturen skiller mellom:
+- `knowledge/core/` – felles arbeidslivsprinsipper
+- `knowledge/sectors/` – små sektorbanker for alle støttede yrkesgrupper
+- `knowledge/research/` – forskningsgrunnlag som forklarer hvorfor generelle samtaleprinsipper anbefales
+- `knowledge/manifest.json` – versjon, filer og synkroniseringspolicy
+
+Sektorbankene lagrer ikke kopier av hele nettsider. De inneholder korte kuraterte prinsipper og `source_ids` som peker til autoritative kilder eller eksisterende forskningskilder. Dette reduserer duplisering, gjør pakken egnet for offline-bruk og gjør det mulig å kontrollere hvor et råd kommer fra.
+
+### Foreslått synkronisering
+
+Tre kunnskapsnivåer skal kunne eksistere samtidig:
+
+1. **Bundled baseline** – følger appen og virker uten nett.
+2. **Last known good** – siste validerte kunnskapspakke som ble lastet ned mens appen var online.
+3. **Fresh online lookup** – ferskt autoritativt oppslag når saken krever oppdatert rettslig eller sikkerhetskritisk informasjon.
+
+Når appen er online kan den senere kontrollere et lite versjonsmanifest. En ny kunnskapspakke skal først tas i bruk etter validering. Hvis oppdateringen feiler, beholdes forrige fungerende pakke.
+
+Kilder og prinsipper som er merket `time_sensitive: true` skal ikke brukes til bastante påstander om gjeldende rett dersom fersk kontroll er nødvendig og nettilgang er tilgjengelig.
+
+### Første kunnskapspakke
+
+Første struktur omfatter alle sektorene i gjeldende taksonomi:
+- utdanning og oppvekst
+- helse og omsorg
+- offentlig forvaltning og juss
+- forsvar, politi og beredskap
+- produksjon og industri
+- bygg, anlegg og tekniske fag
+- fiskeri, havbruk og sjø
+- transport og logistikk
+- handel, service, hotell og servering
+- kontor, økonomi, finans og IT
+- veterinær, dyrehelse og dyr
+- offshore, energi og kraft
+- landbruk, skogbruk og natur
+- luftfart
+
+Ved etablering av pakken ble alle interne `source_ids` kontrollert mot enten `OCCUPATION-LEGAL-SOURCES.json` eller `SOURCEBANK.json`.
