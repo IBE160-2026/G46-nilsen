@@ -1,0 +1,43 @@
+{
+  "version": 1,
+  "sectorId": "health_care",
+  "label": "Helse og omsorg",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "HDIR_HEALTH_PERSONNEL",
+    "HDIR_QUALITY_LEADERSHIP",
+    "HELSETILSYNET_RULES",
+    "AT_RULES",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "HEALTH-01",
+      "principle": "Ved mulig risiko for pasient-/brukersikkerhet må umiddelbar sikkerhet vurderes før ordinær personaloppfølging.",
+      "source_ids": [
+        "HDIR_HEALTH_PERSONNEL",
+        "HDIR_QUALITY_LEADERSHIP"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "HEALTH-02",
+      "principle": "Skill mellom lederens observasjoner og kliniske/medisinske vurderinger; Samtalestøtte skal ikke diagnostisere medarbeideren.",
+      "source_ids": [
+        "HDIR_HEALTH_PERSONNEL"
+      ],
+      "offline_safe": true,
+      "time_sensitive": false
+    },
+    {
+      "id": "HEALTH-03",
+      "principle": "Avvik og uønskede hendelser bør behandles som grunnlag for læring, korrigering og forbedring, samtidig som eventuell individuell oppfølging håndteres separat.",
+      "source_ids": [
+        "HDIR_QUALITY_LEADERSHIP"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
