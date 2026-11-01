@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "category": "regelverk_og_administrative_bestemmelser",
+  "label": "Personvern og kontroll i arbeidslivet",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "DATATILSYNET_WORKPLACE_PRIVACY",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "RULE-PRIV-01",
+      "principle": "Kontroll, overvåking, innsyn og behandling av personopplysninger om ansatte krever særskilt vurdering av nødvendighet og rettslig grunnlag.",
+      "source_ids": [
+        "DATATILSYNET_WORKPLACE_PRIVACY",
+        "LOVDATA_AML"
+      ],
+      "time_sensitive": true,
+      "offline_safe": true
+    }
+  ]
+}
