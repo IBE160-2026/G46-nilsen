@@ -1467,7 +1467,10 @@ function renderOccupationSuggestion(situation){
   if(fields) fields.hidden=false;
   panel.hidden=false;
   requestAnimationFrame(() => {
-    panel.scrollIntoView({ behavior:'smooth', block:'center' });
+    requestAnimationFrame(() => {
+      panel.scrollIntoView({ behavior:'smooth', block:'center' });
+      document.querySelector('#occupation-title')?.focus({ preventScroll:true });
+    });
   });
 }
 
