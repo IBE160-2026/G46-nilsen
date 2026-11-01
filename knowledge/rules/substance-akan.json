@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "category": "regelverk_og_administrative_bestemmelser",
+  "label": "Rus, avhengighet og Akan",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "AKAN_MODEL",
+    "AKAN_HELP_EMPLOYEE",
+    "LOVDATA_AML",
+    "AT_RULES"
+  ],
+  "source_note": "Akan er spesialisert arbeidslivsveiledning, ikke lov. Virksomhetens egne policyer og gjeldende regelverk må skilles fra Akan-anbefalinger.",
+  "principles": [
+    {
+      "id": "RULE-AKAN-01",
+      "principle": "Ved bekymring bør lederen ta utgangspunkt i observerbare endringer i fravær, adferd eller arbeidsutførelse, ikke kreve innrømmelse eller stille diagnose.",
+      "source_ids": [
+        "AKAN_MODEL"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    },
+    {
+      "id": "RULE-AKAN-02",
+      "principle": "Akan-modellen skiller mellom forebyggende policy, den nødvendige samtalen og mulig individuell oppfølging/hjelp.",
+      "source_ids": [
+        "AKAN_MODEL",
+        "AKAN_HELP_EMPLOYEE"
+      ],
+      "time_sensitive": true,
+      "offline_safe": true
+    },
+    {
+      "id": "RULE-AKAN-03",
+      "principle": "Ved påvirkning i sikkerhetskritisk arbeid må umiddelbar sikkerhet håndteres før ordinær samtaleoppfølging.",
+      "source_ids": [
+        "AKAN_MODEL",
+        "AT_RULES"
+      ],
+      "time_sensitive": true,
+      "offline_safe": true
+    }
+  ]
+}
