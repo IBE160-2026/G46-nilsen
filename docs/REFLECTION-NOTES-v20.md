@@ -319,7 +319,7 @@ Utskriften ble oppdatert til å hente overskrift fra den faktiske komponenten, �
 
 ## 01.11.2026 – senere brukertest bekreftet en konkret rettelse
 
-En ny surveyrespons kom fra en person uten ledererfaring. Personen ga svært høye skårer på brukervennlighet, navigasjon, relevans, praktisk nytte, personvern og sannsynlighet for bruk, men dette skal ikke behandles som representativ eller faglig validering.
+En ny surveyrespons kom fra en deltaker uten ledererfaring. Databasen har nå fire surveyinnsendelser, men bare tre registrerte deltakere; én deltaker har altså sendt inn to ganger. Surveyresponsene er ikke direkte koblet til brukeridentitet, så det kan ikke fastslås sikkert hvilke to innsendelser som kommer fra samme person. Den nye responsen ga svært høye skårer på brukervennlighet, navigasjon, relevans, praktisk nytte, personvern og sannsynlighet for bruk, men dette skal ikke behandles som representativ eller faglig validering.
 
 Det mest interessante funnet var mer konkret: testpersonen beskrev at søketeksten ved første utprøving tidligere ble stående etter valg av nytt tema, men at dette ikke lenger skjedde. Dette var en feil som allerede var identifisert og rettet i arbeidsrunden rundt finder-state.
 
