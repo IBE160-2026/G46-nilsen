@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "category": "samtaleteknikk_og_ledelse",
+  "label": "Psykologisk trygghet og det å si fra",
+  "verifiedAt": "2026-11-01",
+  "source_ids": [
+    "EDMONDSON_1999_PSYCH_SAFETY",
+    "FRAZIER_2017_PSYCH_SAFETY_META"
+  ],
+  "principles": [
+    {
+      "id": "CONV-PSY-01",
+      "principle": "Lederatferd som gjør det mulig å stille spørsmål, melde feil og uttrykke uenighet uten unødig sosial risiko støtter læring og åpenhet.",
+      "source_ids": [
+        "EDMONDSON_1999_PSYCH_SAFETY",
+        "FRAZIER_2017_PSYCH_SAFETY_META"
+      ],
+      "time_sensitive": false,
+      "offline_safe": true
+    }
+  ]
+}
