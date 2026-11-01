@@ -9040,3 +9040,133 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .occupation-context-fields select,.occupation-context-fields input{width:100%}
 .occupation-context-note{grid-column:1/-1;margin:0;color:var(--muted);font-size:.88rem;line-height:1.45}
 @media(max-width:760px){.occupation-context-fields{grid-template-columns:1fr}}
+
+
+/* Pilot UI: ryddigere arbeidskontekst og responsiv topplinje */
+.topbar {
+  height: auto;
+  min-height: 92px;
+  flex-wrap: wrap;
+  row-gap: 10px;
+}
+
+.topbar-left {
+  min-width: 0;
+  flex: 1 1 430px;
+  flex-wrap: wrap;
+}
+
+.topbar-right {
+  min-width: 0;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.topbar-brand-logo {
+  flex: 0 0 auto;
+}
+
+#breadcrumb {
+  min-width: 0;
+  flex: 1 1 220px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  line-height: 1.25;
+}
+
+.occupation-context-suggestion {
+  margin: 18px 0 22px;
+  padding: 18px 20px 20px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: color-mix(in srgb,var(--accent-soft) 22%,var(--surface));
+  box-shadow: 0 4px 14px rgba(20,40,74,.04);
+}
+
+.occupation-suggestion-row {
+  display: block;
+  margin-bottom: 16px;
+}
+
+.occupation-suggestion-row p {
+  margin: 3px 0 6px;
+  color: var(--muted);
+  font-size: .9rem;
+  line-height: 1.45;
+}
+
+#occupation-context-summary {
+  display: block;
+  margin-top: 4px;
+  font-size: .98rem;
+  line-height: 1.4;
+}
+
+.occupation-context-fields {
+  display: grid;
+  grid-template-columns: repeat(2,minmax(0,1fr));
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.occupation-context-fields label {
+  display: grid;
+  gap: 7px;
+  min-width: 0;
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.occupation-context-fields select,
+.occupation-context-fields input[type="text"] {
+  width: 100%;
+  min-height: 46px;
+  box-sizing: border-box;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 10px 12px;
+  font: inherit;
+  font-size: .94rem;
+  font-weight: 500;
+  line-height: 1.35;
+  outline: none;
+}
+
+.occupation-context-fields select:focus,
+.occupation-context-fields input[type="text"]:focus {
+  border-color: color-mix(in srgb,var(--accent) 58%,var(--border));
+  box-shadow: 0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent);
+}
+
+@media (max-width: 980px) {
+  .topbar {
+    align-items: flex-start;
+    padding-top: 14px;
+    padding-bottom: 14px;
+  }
+
+  .topbar-left,
+  .topbar-right {
+    flex: 1 1 100%;
+  }
+
+  .topbar-right {
+    justify-content: flex-end;
+  }
+}
+
+@media (max-width: 650px) {
+  .occupation-context-fields {
+    grid-template-columns: 1fr;
+  }
+
+  .occupation-context-suggestion {
+    padding: 16px;
+    border-radius: 18px;
+  }
+}
