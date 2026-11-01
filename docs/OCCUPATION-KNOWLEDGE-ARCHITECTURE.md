@@ -176,3 +176,47 @@ Første struktur omfatter alle sektorene i gjeldende taksonomi:
 - luftfart
 
 Ved etablering av pakken ble alle interne `source_ids` kontrollert mot enten `OCCUPATION-LEGAL-SOURCES.json` eller `SOURCEBANK.json`.
+
+
+## Kategorisering av kildegrunnlaget
+
+Kunnskapsbanken organiseres nå etter **hva slags kunnskap kilden representerer**, ikke bare etter yrke.
+
+### 1. Regelverk og administrative bestemmelser
+Eksempler:
+- arbeidsmiljøloven og Arbeidstilsynet
+- NAV og sykefraværsoppfølging
+- Datatilsynet og kontroll/personvern i arbeidslivet
+- Akan kompetansesenter for rus- og avhengighetsproblematikk i arbeidslivet
+- tariff-/avtaleverk og sektorbestemte formelle regler
+
+Kildetype skal være eksplisitt. Akan er for eksempel en spesialisert arbeidslivskilde og ikke en lovkilde.
+
+### 2. Samtaleteknikk og ledelse
+Eksempler:
+- aktiv lytting
+- åpne spørsmål
+- feedback
+- krevende samtaler
+- psykologisk trygghet
+- konflikt og samarbeid
+- motivasjon og rettferdig prosess
+
+Dette laget bygger primært på fagfellevurdert forskning og anerkjente norske fag-/arbeidsgiverkilder.
+
+### 3. Yrkes-/sektorkilder
+Sektorfilene inneholder:
+- relevante myndigheter
+- konkrete lenker/kilde-ID-er
+- risikotriggere
+- korte kuraterte prinsipper
+- metadata om ferskhet og offline-bruk
+
+Generell AML-, NAV-, Akan- eller samtaleteknikk skal ikke dupliseres i hver yrkesbank. Yrkeslaget skal bare tilføre det som faktisk er sektorspesifikt.
+
+Denne tredelingen gjør det enklere å:
+- forklare hvorfor en kilde brukes
+- unngå at faglig veiledning fremstilles som lov
+- holde offline-pakken liten
+- oppdatere ett felles regelverk uten å endre alle yrkesbankene
+- la AI-en hente riktig kunnskapstype for den konkrete saken
