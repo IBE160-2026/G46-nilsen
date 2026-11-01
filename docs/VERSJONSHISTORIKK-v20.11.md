@@ -129,3 +129,25 @@ Endringene omfatter:
 - dynamiske forslag til videre spørsmål etter hvert KI-svar i oppfølgingsdialogen
 
 Bakgrunnen er dokumentert i docs/BRUKERTEST-FUNN-OG-BACKLOG.md. Denne arbeidsrunden skal ikke regnes som ferdig produksjonsrelease før tester og faktisk deploy er verifisert.
+
+
+## Arbeidsrunde 01.11.2026 – rådshierarki, utskrift og dokumentasjon
+
+Videre arbeid etter v20.11.5 har vært gjort direkte på main som en iterativ arbeidsrunde, ikke som en ny navngitt produksjonsrelease.
+
+Arbeidet omfatter:
+- mer menneskelig språk i KI-genererte åpninger
+- tydeligere struktur i «Forslag til samtalen»
+- sammenfoldbare råd basert på eksisterende details-komponent
+- gjenopprettet markert kortstruktur etter UI-regresjon
+- tydeligere skille mellom «Faglig / regelverk» og «Kildegrunnlag»
+- eksperiment med sammenfolding av «Mulige reaksjoner»
+- forbedret utskriftslayout
+- utskrift av videre spørsmål og KI-svar under «Videre råd»
+- konkret sammenligning med norske, beslektede produkter i README
+
+Arbeidsrunden ga også et dokumentert regresjonseksempel: flere nye trekkspillvarianter ble først introdusert, men ble senere forkastet til fordel for gjenbruk av historisk `guidance-card` + `evidence-details`. Git-historikken ble brukt som autoritativ referanse for ønsket tidligere uttrykk.
+
+Direkte samtalefunksjon og yrkes-/sektortilpasning skal fortsatt beskrives som planlagt/under utprøving dersom de ikke er aktivert og verifisert i produksjon.
+
+Denne arbeidsrunden må ikke omtales som fulltestet release før samlet regresjonstest er kjørt på den aktuelle koden.
