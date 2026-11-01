@@ -733,6 +733,7 @@ function openGuidance(title, help, initialSituation = '') {
   }
   updatePrivacyCheck();
   showView('guidance');
+  loadOccupationOptions();
 }
 
 function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
@@ -1380,6 +1381,53 @@ function renderSituationUnderstanding(analysis) {
 }
 
 
+let occupationOptionsLoaded=false;
+let occupationOptionsCache=[];
+
+function currentOccupationContext(){
+  return {
+    sectorId: document.querySelector('#occupation-sector')?.value || '',
+    occupation: document.querySelector('#occupation-title')?.value.trim() || '',
+    employerType: document.querySelector('#occupation-employer-type')?.value || ''
+  };
+}
+
+function updateOccupationDatalist(){
+  const sectorId=document.querySelector('#occupation-sector')?.value || '';
+  const datalist=document.querySelector('#occupation-title-options');
+  if(!datalist) return;
+  const sector=occupationOptionsCache.find(item=>item.id===sectorId);
+  const occupations=sector?.occupations || occupationOptionsCache.flatMap(item=>item.occupations||[]);
+  datalist.innerHTML=[...new Set(occupations)].sort((a,b)=>a.localeCompare(b,'nb')).map(item=>`<option value="${escapeHtml(item)}"></option>`).join('');
+}
+
+async function loadOccupationOptions(){
+  if(occupationOptionsLoaded) return;
+  const panel=document.querySelector('#occupation-context-panel');
+  if(!panel) return;
+  try{
+    const response=await fetch('/api/occupation-options',{credentials:'include',cache:'no-store'});
+    const payload=await response.json();
+    if(!response.ok) throw new Error(payload.message||'Kunne ikke hente yrkesvalg.');
+    if(!payload.enabled){panel.hidden=true;return;}
+    occupationOptionsLoaded=true;
+    occupationOptionsCache=(payload.sectors||[]).filter(item=>item.id!=='other');
+    const sectorSelect=document.querySelector('#occupation-sector');
+    const employerSelect=document.querySelector('#occupation-employer-type');
+    if(sectorSelect){
+      sectorSelect.innerHTML='<option value="">Ikke valgt</option>'+occupationOptionsCache.map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)}</option>`).join('')+'<option value="other">Annet</option>';
+      sectorSelect.addEventListener('change',updateOccupationDatalist,{once:false});
+    }
+    if(employerSelect){
+      employerSelect.innerHTML=(payload.employerTypes||[]).map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)}</option>`).join('');
+    }
+    updateOccupationDatalist();
+    panel.hidden=false;
+  }catch(_){
+    panel.hidden=true;
+  }
+}
+
 async function requestAiSituationAnalysis(situation, helpRequest) {
   const response = await fetch('/api/analyze-situation', {
     method: 'POST',
@@ -1390,6 +1438,7 @@ async function requestAiSituationAnalysis(situation, helpRequest) {
       helpRequest,
       selectedTopic: currentTopic?.title || '',
       selectedSubtopic: currentSubtopic || '',
+      ...currentOccupationContext(),
       privacyNameOverrides: privacyNameOverridesForText(situation)
     })
   });
@@ -1410,7 +1459,7 @@ async function requestAiGuidance(situation, analysis, followups) {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '', privacyNameOverrides: privacyNameOverridesForText(situation) })
+    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '', ...currentOccupationContext(), privacyNameOverrides: privacyNameOverridesForText(situation) })
   });
   if (!response.ok) {
     let payload = {};
