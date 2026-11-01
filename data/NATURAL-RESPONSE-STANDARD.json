@@ -42,6 +42,22 @@
     {
       "id": "NRS10",
       "rule": "Avslutt helst med konkret neste steg eller en mulig formulering, ikke med en ren juridisk oppsummering."
+    },
+    {
+      "id": "NRS11",
+      "rule": "Ved skuffende eller belastende budskap skal åpningen normalt ivareta personen med en kort, situasjonstilpasset anerkjennelse før eller tett rundt hovedbudskapet, uten å pakke bort tydeligheten."
+    },
+    {
+      "id": "NRS12",
+      "rule": "Ikke dikt opp innsats, følelser, håp eller betydning. Anerkjenn bare det situasjonen faktisk gir grunnlag for."
+    },
+    {
+      "id": "NRS13",
+      "rule": "Ved negative utfall skal lederen gi utfallet tydelig, forklare vurderingen konkret uten unødvendig sammenligning med andre, og invitere til spørsmål eller reaksjon."
+    },
+    {
+      "id": "NRS14",
+      "rule": "Unngå HR- og vedtaksspråk i muntlige forslag. Foretrekk vanlig norsk som en leder faktisk ville brukt ansikt til ansikt."
     }
   ],
   "qualityFailures": [
@@ -50,6 +66,9 @@
     "irrelevant regelverk",
     "yrkeskontekst presentert som metadata",
     "lange generiske punktlister der naturlig språk er bedre",
-    "juridisk korrekt svar uten praktisk lederstøtte"
+    "juridisk korrekt svar uten praktisk lederstøtte",
+    "kald eller mekanisk åpning ved belastende beskjed",
+    "påstått empati eller innsats uten grunnlag",
+    "vedtaksspråk presentert som muntlig lederdialog"
   ]
 }
