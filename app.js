@@ -1388,15 +1388,102 @@ function printCurrentGuidance() {
   if (!situation || !guidance) return;
   const cards = [...guidance.querySelectorAll('.guidance-card')];
   if (!cards.length) return;
+
   const topicLine = [currentTopic?.title, currentSubtopic].filter(Boolean).join(' · ');
   const printWindow = window.open('', '_blank');
   if (!printWindow) return;
-  const adviceHtml = cards.map(card => {
-    const title = card.querySelector('h3')?.textContent?.trim() || '';
-    const copy = card.querySelector('.guidance-copy')?.innerHTML || card.querySelector('p')?.innerHTML || '';
-    return `<section><h2>${escapeHtml(title)}</h2><div>${copy}</div></section>`;
+
+  const adviceHtml = cards.map((card, index) => {
+    const title = card.querySelector(':scope > div > details > summary')?.textContent?.trim()
+      || card.querySelector('summary')?.textContent?.trim()
+      || card.querySelector('h3')?.textContent?.trim()
+      || `Råd ${index + 1}`;
+
+    const copy = card.querySelector('.guidance-copy');
+    const clone = copy?.cloneNode(true);
+    clone?.querySelectorAll('details').forEach(detail => { detail.open = true; });
+
+    return `<section class="advice-section">
+      <h2><span>${String(index + 1).padStart(2, '0')}</span>${escapeHtml(title)}</h2>
+      <div class="advice-body">${clone?.innerHTML || ''}</div>
+    </section>`;
   }).join('');
-  printWindow.document.write(`<!doctype html><html lang="no"><head><meta charset="utf-8"><title>Samtalestøtte – råd</title><style>body{font-family:Arial,sans-serif;max-width:820px;margin:36px auto;padding:0 28px;color:#172a2f;line-height:1.5}h1{font-size:24px;margin:0 0 6px}.meta{color:#5f7075;margin:0 0 28px}.situation{padding:16px 18px;border:1px solid #d7e0e2;border-radius:10px;margin-bottom:24px;white-space:pre-wrap}section{break-inside:avoid;margin:0 0 20px}h2{font-size:17px;margin:0 0 8px}p{margin:6px 0}ul{margin:6px 0;padding-left:22px}a{color:inherit;text-decoration:none}@media print{body{margin:0 auto;padding:0 12mm}}</style></head><body><h1>Forslag til samtalen</h1>${topicLine ? `<p class="meta">${escapeHtml(topicLine)}</p>` : ''}<h2>Situasjon</h2><div class="situation">${escapeHtml(situation)}</div>${adviceHtml}</body></html>`);
+
+  const turns = getConversationTurns();
+  const followupPairs = [];
+  for (let i = 0; i < turns.length; i += 1) {
+    if (turns[i]?.role !== 'user') continue;
+    const answer = turns.slice(i + 1).find(turn => turn.role === 'assistant');
+    if (!answer) continue;
+    followupPairs.push({ question: turns[i].text, answer: answer.text });
+    i = turns.indexOf(answer);
+  }
+
+  const followupHtml = followupPairs.length
+    ? `<section class="followup-section">
+        <h2 class="followup-heading">Videre råd</h2>
+        ${followupPairs.map((pair, index) => `
+          <article class="followup-item">
+            <h3>${index + 1}. ${escapeHtml(pair.question)}</h3>
+            <div>${formatContinuationReply(pair.answer)}</div>
+          </article>`).join('')}
+      </section>`
+    : '';
+
+  printWindow.document.write(`<!doctype html>
+<html lang="no">
+<head>
+<meta charset="utf-8">
+<title>Samtalestøtte – råd</title>
+<style>
+  *{box-sizing:border-box}
+  body{font-family:Arial,sans-serif;max-width:820px;margin:32px auto;padding:0 28px;color:#172a2f;line-height:1.45}
+  h1{font-size:25px;margin:0 0 4px}
+  .meta{color:#5f7075;margin:0 0 22px}
+  .situation-title{font-size:16px;margin:0 0 6px}
+  .situation{padding:13px 15px;border:1px solid #d7e0e2;border-radius:10px;margin:0 0 22px;white-space:pre-wrap;background:#fafcfc}
+  .advice-section{break-inside:avoid;border-top:1px solid #d7e0e2;padding:13px 0 0;margin:0 0 15px}
+  .advice-section h2{display:flex;align-items:center;gap:8px;font-size:17px;line-height:1.25;margin:0 0 5px;color:#173f47}
+  .advice-section h2 span{font-size:11px;min-width:23px;height:23px;display:inline-flex;align-items:center;justify-content:center;border:1px solid #b8d3d7;border-radius:7px}
+  .advice-body{margin:0;padding:0}
+  .advice-body p{margin:4px 0}
+  .advice-body details{display:block}
+  .advice-body summary{font-weight:700;margin:7px 0 4px}
+  .advice-body details>summary{list-style:none}
+  .advice-body details>summary::-webkit-details-marker{display:none}
+  .reaction-card{border:1px solid #d7e0e2;border-radius:9px;padding:9px 11px;margin:7px 0}
+  .reaction-card-title{margin:0 0 5px}
+  .reaction-card-body{display:block}
+  .reaction-card-body>div{margin:5px 0}
+  .reaction-card-body small{font-weight:700}
+  .evidence-list{display:grid;gap:6px}
+  .evidence-list a{display:block;border:1px solid #d7e0e2;border-radius:8px;padding:8px 10px;color:inherit;text-decoration:none}
+  .evidence-list span{display:block;color:#5f7075;font-size:12px}
+  .followup-section{border-top:2px solid #7aa8af;margin-top:26px;padding-top:15px}
+  .followup-heading{font-size:20px;margin:0 0 12px;color:#173f47}
+  .followup-item{break-inside:avoid;margin:0 0 16px;padding:0 0 14px;border-bottom:1px solid #e0e6e8}
+  .followup-item h3{font-size:15px;margin:0 0 6px;color:#173f47}
+  .followup-item p{margin:4px 0}
+  .followup-item h4{font-size:14px;margin:8px 0 4px}
+  .followup-item ul{margin:4px 0 6px;padding-left:20px}
+  ul{margin:5px 0;padding-left:21px}
+  a{color:inherit}
+  @media print{
+    body{margin:0 auto;padding:0 10mm}
+    .advice-section,.followup-item{break-inside:avoid}
+  }
+</style>
+</head>
+<body>
+  <h1>Forslag til samtalen</h1>
+  ${topicLine ? `<p class="meta">${escapeHtml(topicLine)}</p>` : ''}
+  <h2 class="situation-title">Situasjon</h2>
+  <div class="situation">${escapeHtml(situation)}</div>
+  ${adviceHtml}
+  ${followupHtml}
+</body>
+</html>`);
+
   printWindow.document.close();
   printWindow.focus();
   printWindow.print();
