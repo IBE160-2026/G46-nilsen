@@ -38,9 +38,87 @@ const views = {
   about: document.querySelector('#about-view'),
   contact: document.querySelector('#contact-view'),
   help: document.querySelector('#help-view'),
+  sources: document.querySelector('#sources-view'),
   survey: document.querySelector('#survey-view'),
   admin: document.querySelector('#admin-view')
 };
+
+function sourceTypeLabel(type='') {
+  const value=String(type||'').toLowerCase();
+  if(value==='law_database') return 'Lov / regelverk';
+  if(value==='official_authority') return 'Myndighetskilde';
+  if(value==='specialist_worklife_guidance') return 'Faglig arbeidslivsveiledning';
+  if(value.includes('meta')) return 'Fagfellevurdert meta-analyse';
+  if(value.includes('fagfelle')) return 'Fagfellevurdert forskning';
+  if(value.includes('forskning')) return 'Forskning';
+  if(value.includes('evidens')) return 'Evidensgrunnlag';
+  return type || 'Fagkilde';
+}
+
+function renderSourceItem(source) {
+  const verified=source.lastVerified ? `Sist kontrollert ${escapeHtml(source.lastVerified)}` : '';
+  const freshness=source.timeSensitive ? 'Tidskritisk kilde' : '';
+  const meta=[source.author,verified,freshness].filter(Boolean).map(item=>`<span>${escapeHtml(item)}</span>`).join('');
+  const use=(source.useFor||[]).slice(0,6).join(', ');
+  const title=escapeHtml(source.title||source.id||'Kilde');
+  const link=source.url ? `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${title}</a>` : `<strong>${title}</strong>`;
+  return `<div class="source-item">
+    ${link}
+    <div class="source-item-meta"><span class="source-kind-badge">${escapeHtml(sourceTypeLabel(source.type))}</span>${meta}</div>
+    ${use ? `<p class="source-item-use">Brukes blant annet ved: ${escapeHtml(use)}</p>` : ''}
+  </div>`;
+}
+
+function renderSourceGroup(group, occupation=false) {
+  const occupations=occupation && (group.occupations||[]).length
+    ? `<small>${escapeHtml((group.occupations||[]).slice(0,8).join(', '))}${group.occupations.length>8?' …':''}</small>`
+    : `<small>${(group.sources||[]).length} kilder</small>`;
+  const description=group.description ? `<p class="source-item-use">${escapeHtml(group.description)}</p>` : '';
+  return `<details class="source-group">
+    <summary><span>${escapeHtml(group.label||group.id)}</span>${occupations}</summary>
+    <div class="source-group-body">${description}${(group.sources||[]).map(renderSourceItem).join('') || '<p class="muted-note">Ingen kilder registrert.</p>'}</div>
+  </details>`;
+}
+
+async function loadSourceLibrary() {
+  const root=document.querySelector('#source-library');
+  const status=document.querySelector('#source-library-status');
+  if(!root) return;
+  root.innerHTML='<div class="settings-card">Henter kildegrunnlag …</div>';
+  try{
+    const response=await fetch('/api/knowledge-sources',{credentials:'include',cache:'no-store'});
+    const payload=await response.json();
+    if(!response.ok) throw new Error(payload.message||'Kunne ikke hente kildegrunnlaget.');
+    const categories=payload.categories||{};
+    const tabs=[
+      ['rules',categories.rules],
+      ['conversation',categories.conversation],
+      ['occupations',categories.occupations]
+    ].filter(([,cat])=>cat);
+    const buttons=tabs.map(([id,cat],index)=>`<button class="source-library-tab" type="button" role="tab" aria-selected="${index===0?'true':'false'}" data-source-tab="${id}">${escapeHtml(cat.label)}</button>`).join('');
+    const panels=tabs.map(([id,cat],index)=>`<section class="source-category-panel" data-source-panel="${id}" ${index===0?'':'hidden'}>
+      <div class="source-category-heading"><h2>${escapeHtml(cat.label)}</h2><p>${escapeHtml(cat.description||'')}</p></div>
+      ${(cat.groups||[]).map(group=>renderSourceGroup(group,id==='occupations')).join('')}
+    </section>`).join('');
+    root.innerHTML=`<div class="source-library-tabs" role="tablist" aria-label="Kildekategorier">${buttons}</div>${panels}`;
+    root.querySelectorAll('[data-source-tab]').forEach(button=>button.addEventListener('click',()=>{
+      const id=button.dataset.sourceTab;
+      root.querySelectorAll('[data-source-tab]').forEach(tab=>tab.setAttribute('aria-selected',String(tab===button)));
+      root.querySelectorAll('[data-source-panel]').forEach(panel=>{panel.hidden=panel.dataset.sourcePanel!==id;});
+    }));
+    if(status) status.textContent=`Kunnskapspakke v${payload.version||1}${payload.generatedAt?' · oppdatert '+payload.generatedAt:''}`;
+  }catch(error){
+    root.innerHTML=`<div class="settings-card"><strong>Kunne ikke hente kildegrunnlaget</strong><p class="muted-note">${escapeHtml(error.message)}</p></div>`;
+    if(status) status.textContent='Kildeoversikten er ikke tilgjengelig akkurat nå.';
+  }
+}
+
+function openSources(){
+  infoReturnView=activeViewName()==='help'?'help':(activeViewName()||'home');
+  setBreadcrumb('Kilder og faggrunnlag');
+  showView('sources');
+  loadSourceLibrary();
+}
 
 function setSvg(targetId, svg) {
   const el = document.querySelector(`#${targetId}`);
@@ -3588,6 +3666,8 @@ document.querySelector('#history-login-button')?.addEventListener('click',()=>op
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(legalReturnView))));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
 document.querySelectorAll('[data-open-help]').forEach(b=>b.addEventListener('click',()=>{infoReturnView='settings';setBreadcrumb('Hjelp');showView('help');}));
+document.querySelectorAll('[data-open-sources]').forEach(b=>b.addEventListener('click',openSources));
+document.querySelectorAll('.sources-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(infoReturnView))));
 document.querySelectorAll('.info-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(infoReturnView))));
 document.querySelector('#report-from-conversation')?.addEventListener('click',()=>openAiFeedback('main-guidance'));
 
