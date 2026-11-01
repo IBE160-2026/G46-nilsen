@@ -1409,11 +1409,7 @@ async function loadOccupationOptions(){
     const response=await fetch('/api/occupation-options',{credentials:'include',cache:'no-store'});
     const payload=await response.json();
     if(!response.ok) throw new Error(payload.message||'Kunne ikke hente yrkesvalg.');
-    if(!payload.enabled){
-      const note=document.querySelector('#occupation-context-note');
-      if(note) note.textContent='Yrkesfunksjonen er ikke aktivert i dette miljøet.';
-      return;
-    }
+    if(!payload.enabled) return;
     occupationOptionsLoaded=true;
     occupationOptionsCache=(payload.sectors||[]).filter(item=>item.id!=='other');
     const sectorSelect=document.querySelector('#occupation-sector');
@@ -1426,12 +1422,46 @@ async function loadOccupationOptions(){
       employerSelect.innerHTML=(payload.employerTypes||[]).map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)}</option>`).join('');
     }
     updateOccupationDatalist();
-    panel.hidden=false;
   }catch(error){
-    panel.hidden=false;
-    const note=document.querySelector('#occupation-context-note');
-    if(note) note.textContent='Yrkesvalgene kunne ikke lastes automatisk. Du kan fortsatt skrive yrke/stilling manuelt i feltet under.';
+    panel.hidden=true;
   }
+}
+
+
+function inferOccupationSuggestion(situation){
+  const text=String(situation||'').toLocaleLowerCase('nb-NO');
+  if(!text || !occupationOptionsCache.length) return null;
+  let best=null;
+  for(const sector of occupationOptionsCache){
+    for(const occupation of (sector.occupations||[])){
+      const needle=String(occupation||'').toLocaleLowerCase('nb-NO');
+      if(needle && text.includes(needle)){
+        const score=needle.length;
+        if(!best || score>best.score) best={sectorId:sector.id,sectorLabel:sector.label,occupation,score};
+      }
+    }
+  }
+  return best;
+}
+
+function renderOccupationSuggestion(situation){
+  const panel=document.querySelector('#occupation-context-panel');
+  const summary=document.querySelector('#occupation-context-summary');
+  const fields=document.querySelector('#occupation-context-fields');
+  if(!panel || !summary) return;
+  const suggestion=inferOccupationSuggestion(situation);
+  if(!suggestion){
+    panel.hidden=true;
+    return;
+  }
+  const sectorSelect=document.querySelector('#occupation-sector');
+  const occupationInput=document.querySelector('#occupation-title');
+  if(sectorSelect) sectorSelect.value=suggestion.sectorId;
+  if(occupationInput) occupationInput.value=suggestion.occupation;
+  updateOccupationDatalist();
+  summary.textContent=`${suggestion.occupation} · ${suggestion.sectorLabel}`;
+  if(fields) fields.hidden=true;
+  panel.hidden=false;
 }
 
 async function requestAiSituationAnalysis(situation, helpRequest) {
@@ -4440,3 +4470,10 @@ document.querySelector('#admin-create-invite')?.addEventListener('click',async()
 document.querySelector('#privacy-ack-confirm')?.addEventListener('click',async()=>{try{const r=await fetch('/api/privacy-ack',{method:'POST',credentials:'include'});if(r.ok)document.querySelector('#privacy-ack-dialog')?.close();}catch(_){}});
 document.querySelector('#privacy-ack-read-more')?.addEventListener('click',()=>{document.querySelector('#privacy-ack-dialog')?.close();openLegal('privacy');});
 
+
+document.querySelector('#occupation-context-edit')?.addEventListener('click', () => {
+  const fields=document.querySelector('#occupation-context-fields');
+  if(!fields) return;
+  fields.hidden=!fields.hidden;
+  if(!fields.hidden) document.querySelector('#occupation-title')?.focus();
+});
