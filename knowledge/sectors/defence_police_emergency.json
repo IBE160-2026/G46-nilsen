@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "sectorId": "defence_police_emergency",
+  "label": "Forsvar, politi og beredskap",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "NSM_EMPLOYMENT_SECURITY",
+    "DSB_FIRE_RESCUE",
+    "AT_RULES",
+    "DSB_ELECTRICAL_SAFETY"
+  ],
+  "principles": [
+    {
+      "id": "DPE-01",
+      "principle": "Når saken kan berøre sikkerhetskritisk funksjon, tilgang eller beredskap, skill ordinær personaloppfølging fra virksomhetens formelle sikkerhetsprosesser.",
+      "source_ids": [
+        "NSM_EMPLOYMENT_SECURITY"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "DPE-02",
+      "principle": "Ikke be om eller rekonstruer graderte, operative eller andre skjermingsverdige detaljer i Samtalestøtte.",
+      "source_ids": [
+        "NSM_EMPLOYMENT_SECURITY"
+      ],
+      "offline_safe": true,
+      "time_sensitive": false
+    },
+    {
+      "id": "DPE-03",
+      "principle": "I beredskapsarbeid er kompetanse, tydelige ansvarslinjer, øvelse, evaluering og læring sentrale lederoppgaver.",
+      "source_ids": [
+        "DSB_FIRE_RESCUE"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
