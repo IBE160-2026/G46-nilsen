@@ -9130,3 +9130,42 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 
 
+
+
+/* v20.11.38 INTRO WRAP ONLY
+   KUN den lille introteksten får egne regler i minimert desktop.
+   Overskrift, eyebrow, bilde og hero-layout er urørt. */
+@media (min-width:641px) {
+  .app-shell.sidebar-collapsed-layout #home-view
+  .hero-copy > p[data-content-key="home.hero.intro"] {
+    position: relative !important;
+    z-index: 3 !important;
+    width: calc(217.4% + 56px) !important;
+    max-width: none !important;
+    box-sizing: border-box !important;
+    margin-top: 10px !important;
+    padding-right: 10px !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #home-view
+  .hero-copy > p[data-content-key="home.hero.intro"]::before {
+    content: "" !important;
+    float: right !important;
+    width: calc(54% + 56px) !important;
+    height: 118px !important;
+    margin: 0 0 0 18px !important;
+    shape-outside: inset(0) !important;
+  }
+}
+
+@media (max-width:640px) {
+  #home-view .hero-copy > p[data-content-key="home.hero.intro"] {
+    width: auto !important;
+    max-width: 560px !important;
+    padding-right: 0 !important;
+  }
+
+  #home-view .hero-copy > p[data-content-key="home.hero.intro"]::before {
+    content: none !important;
+  }
+}
