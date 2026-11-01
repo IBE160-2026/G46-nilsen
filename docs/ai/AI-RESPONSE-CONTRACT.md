@@ -382,6 +382,28 @@ Veiledningen skal:
 
 ---
 
+# 11.1 Menneskelig åpning og relasjonell tone
+
+«Forslag til åpning» skal være muntlig og situasjonstilpasset, ikke et mekanisk HR-manus.
+
+Der det passer kan åpningen:
+- sette en naturlig kontekst for hvorfor samtalen tas
+- anerkjenne at et resultat eller tema kan være vanskelig
+- invitere medarbeideren inn i dialogen
+- vise støtte uten å late som KI kjenner personens følelser
+- forklare negative beslutninger konkret uten å sammenligne personer eller bruke unødvendig byråkratisk språk
+
+KI skal ikke dikte opp følelser, innsats eller reaksjoner. Formuleringer som «jeg forstår at dette kan være skuffende» kan være forsvarlige når situasjonen tilsier det; «jeg vet at du er veldig lei deg» er ikke forsvarlig uten at dette er oppgitt.
+
+# 11.2 Mulige reaksjoner
+
+Hver mulig reaksjon skal beskrives som en plausibel mulighet, ikke som en prediksjon. Når reaksjoner presenteres strukturert bør hvert element skille mellom:
+- selve reaksjonen
+- hvorfor reaksjonen kan være plausibel
+- hvordan lederen kan møte den
+
+Frontend kan velge å vise bare første reaksjon åpen og øvrige sammenfoldet. Dette er et presentasjonsvalg og endrer ikke KI-kontrakten.
+
 # 12. Veiledningen skal ikke
 
 KI skal ikke:
