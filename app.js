@@ -1404,12 +1404,14 @@ function printCurrentGuidance() {
 
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
-  const reactionHtml = (guidance.reactions || []).map(item => `
-    <div class="reaction-pair">
-      <strong>${escapeHtml(item.reaction)}</strong>
-      <p>${escapeHtml(item.why_plausible)}</p>
-      <p><b>Slik kan du møte det:</b> ${escapeHtml(item.leader_response)}</p>
-    </div>`).join('');
+  const reactionHtml = (guidance.reactions || []).map((item, index) => `
+    <section class="reaction-card">
+      <div class="reaction-card-title"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(item.reaction)}</strong></div>
+      <div class="reaction-card-body">
+        <div><small>Hvorfor dette kan skje</small><p>${escapeHtml(item.why_plausible)}</p></div>
+        <div><small>Slik kan du møte det</small><p>${escapeHtml(item.leader_response)}</p></div>
+      </div>
+    </section>`).join('');
   const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
   const evidence = (guidance.evidence_sources || []).length
     ? `<details class="evidence-details"><summary>Faglig grunnlag</summary><div class="evidence-list">${guidance.evidence_sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong><span>${escapeHtml(source.author)}${source.year ? ` (${escapeHtml(String(source.year))})` : ''} · ${escapeHtml(source.type)}</span></a>`).join('')}</div></details>`
@@ -1425,11 +1427,28 @@ function renderAiGuidance(guidance) {
     ['Videre oppfølging', list(guidance.next_steps)],
     ['Dokumentert grunnlag', evidence]
   ].filter(([,content]) => content);
-  grid.innerHTML = sections.map(([title, content], index) => `
-    <article class="guidance-card">
-      <span class="guidance-number">${String(index + 1).padStart(2, '0')}</span>
-      <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
-    </article>`).join('');
+
+  grid.innerHTML = sections.map(([title, content], index) => {
+    const number = String(index + 1).padStart(2, '0');
+    if (index < 3) {
+      return `<article class="guidance-card">
+        <span class="guidance-number">${number}</span>
+        <div><h3>${title}</h3><div class="guidance-copy">${content}</div></div>
+      </article>`;
+    }
+    return `<details class="guidance-card guidance-collapsible">
+      <summary><span class="guidance-number">${number}</span><h3>${title}</h3><span class="guidance-expand-indicator" aria-hidden="true">＋</span></summary>
+      <div class="guidance-copy">${content}</div>
+    </details>`;
+  }).join('');
+
+  grid.querySelectorAll('.guidance-collapsible').forEach(detail => {
+    detail.addEventListener('toggle', () => {
+      const indicator = detail.querySelector('.guidance-expand-indicator');
+      if (indicator) indicator.textContent = detail.open ? '−' : '＋';
+    });
+  });
+
   applyGuidanceDisclosure();
   const intro = document.querySelector('#result-intro');
   if (intro) intro.textContent = 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Sensitive eller formelle punkter bør kvalitetssikres mot relevante kilder, virksomhetens rutiner og riktig fagkompetanse før en endelig beslutning tas.';
@@ -2724,7 +2743,16 @@ async function endGuidanceConversation() {
   panel.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 }
 
-document.querySelector('#end-guidance-conversation')?.addEventListener('click', endGuidanceConversation);
+document.querySelector('#end-guidance-conversation')?.addEventListener('click', () => {
+  document.querySelector('#end-conversation-dialog')?.showModal();
+});
+document.querySelector('#cancel-end-conversation')?.addEventListener('click', () => {
+  document.querySelector('#end-conversation-dialog')?.close();
+});
+document.querySelector('#confirm-end-conversation')?.addEventListener('click', async () => {
+  document.querySelector('#end-conversation-dialog')?.close();
+  await endGuidanceConversation();
+});
 document.querySelector('#end-conversation-home')?.addEventListener('click', () => {
   setBreadcrumb('');
   showView('home');
