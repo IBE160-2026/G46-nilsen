@@ -33,19 +33,19 @@ Planlagte funksjoner skal aldri beskrives som ferdige før de er implementert og
 
 ### Må gjennomgås og synkroniseres
 
-- [ ] README: kjernefunksjonslisten må eksplisitt nevne utskrift og videre råd
+- [x] README: kjernefunksjonslisten nevner utskrift og videre råd
 - [ ] README: kontrollere at versjonsnummer/dato fortsatt beskriver riktig produksjonsrelease
 - [ ] README: kontrollere alle historiske testtall mot hvilken versjon de faktisk gjelder
-- [ ] product-brief.md: legge inn utskrift som faktisk funksjon
-- [ ] product-brief.md: beskrive videre KI-dialog og støtte i behovsøyeblikket tydeligere
-- [ ] product-brief.md: direkte samtale kun som hypotese/videre arbeid
-- [ ] product-brief.md: kontrollere produktdifferensiering mot den nye norske sammenligningen
+- [x] product-brief.md: utskrift lagt inn som faktisk funksjon
+- [x] product-brief.md: støtte i behovsøyeblikket og videre KI-dialog tydeliggjort
+- [x] product-brief.md: direkte samtale tydelig merket som hypotese/videre arbeid
+- [x] product-brief.md: produktdifferensiering nyansert mot norske sammenlignbare tilbud
 - [ ] REFLEKSJONSRAPPORT-UTKAST.md: integrere 01.11-læring fra refleksjonsnotatene i hovedteksten
-- [ ] REFLEKSJONSRAPPORT-UTKAST.md: ta inn konkret sammenligning med norske tilbud
-- [ ] REFLEKSJONSRAPPORT-UTKAST.md: tydelig skille kurs/trening fra løpende støttefunksjon
-- [ ] REFLEKSJONSRAPPORT-UTKAST.md: omtale direkte samtale som testbar hypotese, ikke ferdig produktfordel
+- [x] REFLEKSJONSRAPPORT-UTKAST.md: konkret sammenligning med norske tilbud lagt inn
+- [x] REFLEKSJONSRAPPORT-UTKAST.md: tydelig skille mellom kurs/trening og løpende støttefunksjon
+- [x] REFLEKSJONSRAPPORT-UTKAST.md: direkte samtale omtalt som testbar hypotese
 - [ ] REFLEKSJONSRAPPORT-UTKAST.md: kontrollere ordantall og fjerne overlapp/gjentakelser før levering
-- [ ] BRUKERTEST-FUNN-OG-BACKLOG.md: legge inn nye funn om informasjonsmengde, sammenfolding og utskrift
+- [x] BRUKERTEST-FUNN-OG-BACKLOG.md: nye funn om informasjonsmengde, sammenfolding og utskrift lagt inn
 - [ ] BRUKERTEST-FUNN-OG-BACKLOG.md: skille tydelig mellom implementert, under arbeid og forkastet
 - [ ] PRD: kontrollere at utskrift, videre råd, PWA og eventuell direkte samtale har riktig status
 - [ ] UX-dokumentasjon: beskrive dagens rådshierarki og hvorfor første deler vises åpne
