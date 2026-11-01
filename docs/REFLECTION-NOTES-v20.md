@@ -278,3 +278,40 @@ Dette førte til at forbedringsarbeidet ble delt i tre spor:
 3. kontekstuell faglighet – yrkes-/bransjearkitektur utvikles som et separat, kontrollert lag og holdes avslått i produksjon til kilde- og personvernkrav er verifisert
 
 Pilotdata viste også hvorfor kvalitative kommentarer må lagres sammen med kodehistorikken. En grønn automatisk test kunne ikke fortelle at «identifikatorer» virket teknisk, at «stemple» hørtes unaturlig ut, eller at en fast sidebar gjorde forsiden mer overveldende. Disse funnene ble derfor gjort om til eksplisitte UX-krav og regresjonsassert der det var mulig.
+
+
+## 01.11.2026 – gjenbruk før redesign
+
+En UI-endring viste tydelig hvor lett en KI-assistent kan overtolke en oppgave. Målet var å gjenbruke en eksisterende sammenfoldbar løsning, men assistenten introduserte flere nye visuelle varianter. Dette skapte unødvendige regresjoner og gjorde at tidligere kortstruktur forsvant.
+
+Prosjekteieren stoppet arbeidet og krevde at tidligere kode skulle brukes som fasit. Git-historikken ble deretter brukt til å finne versjonen fra før endringen, og den konkrete implementasjonen av `guidance-card` og `evidence-details` ble hentet frem.
+
+**Læring:** Når en fungerende komponent allerede finnes, bør standardvalget være gjenbruk fremfor ny design. Ved uenighet mellom verbal beskrivelse og faktisk historikk bør siste kjente gode implementasjon brukes som kilde. Dette er også et konkret eksempel på context drift: KI-en hadde tilgang til prosjektkontekst, men mistet den viktigste begrensningen – «ikke redesign».
+
+## 01.11.2026 – dokumentasjon som kvalitetskontroll
+
+Sammenligning med norske tilbud ble utvidet til konkrete produkter: DFØs digitale treningsarena, Verdi CoachLab, Verdi-appen og Bjørnson MODUS.
+
+Det ble bevisst unngått å fremstille Samtalestøtte som unik bare fordi løsningen bruker KI, simulering eller dialog. Flere eksisterende tilbud har slike elementer. Differensieringen beskrives i stedet som kombinasjonen av:
+- brukerens egen konkrete arbeidssituasjon
+- strukturert forberedelse
+- videre råd i samme kontekst
+- samtaleøvelse
+- personvernbarrierer
+- arbeidslivsspesifikk struktur
+- kildegrunnlag
+- historikk og utskrift
+- PWA/installasjon
+- planlagt yrkes-/sektorkontekst
+
+Et viktig skille er også mellom **kurs/trening** og **løpende støtte i behovsøyeblikket**. Kurs bygger generell kompetanse, mens Samtalestøtte er ment å kunne brukes når en konkret sak faktisk oppstår.
+
+**Læring:** Produktdokumentasjon er ikke bare presentasjon. Når forskjeller må formuleres konkret, blir det tydeligere hvilke egenskaper som faktisk er dokumenterbare og hvilke som bare er antakelser eller planer.
+
+## 01.11.2026 – utskrift må følge informasjonsarkitekturen
+
+Etter at rådsseksjonene ble endret fra vanlige overskrifter til `details/summary`, brukte utskriftsfunksjonen fortsatt gammel DOM-struktur og fant derfor ikke overskriftene riktig. Dette ga uoversiktlig utskrift og rare mellomrom.
+
+Utskriften ble oppdatert til å hente overskrift fra den faktiske komponenten, åpne sammenfoldet innhold i utskriftsversjonen og ta med videre spørsmål/svar som egen seksjon.
+
+**Læring:** En UI-refaktorering er ikke komplett før sekundære flater som utskrift, historikk og tilgjengelighet er kontrollert. DOM-kontrakter kan være en skjult avhengighet selv når hovedvisningen ser riktig ut.
