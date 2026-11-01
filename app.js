@@ -2445,6 +2445,7 @@ initTheme();
 applySidebarState();
 setBreadcrumb('');
 updateNavState('home');
+document.querySelector('.topbar')?.classList.add('topbar-home-view');
 if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
 history.replaceState({
   samtalestotte: true,
