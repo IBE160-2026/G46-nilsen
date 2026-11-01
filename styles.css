@@ -8943,3 +8943,60 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   outline: 2px solid color-mix(in srgb,var(--accent) 55%,transparent);
   outline-offset: 2px;
 }
+
+
+/* GJENOPPRETT HISTORISK RÅDSKORT-UTSEENDE (fasit fra b5e3acb) */
+#structured-guidance .guidance-card {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 30px minmax(0,1fr) !important;
+  gap: 10px !important;
+  align-items: start !important;
+  padding: 14px 15px !important;
+  border: 1px solid var(--border) !important;
+  border-left: 3px solid color-mix(in srgb,var(--accent) 72%,var(--border)) !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb,var(--surface) 96%,var(--accent-soft)) !important;
+  box-shadow: 0 3px 12px rgba(18,55,53,.035) !important;
+}
+
+#structured-guidance .guidance-card > div {
+  display: block !important;
+  min-width: 0;
+}
+
+#structured-guidance .guidance-card .evidence-details {
+  width: 100%;
+}
+
+#structured-guidance .guidance-card .evidence-details > summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--accent-strong);
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 1px 0 0;
+}
+
+#structured-guidance .guidance-card .evidence-details[open] > summary {
+  margin-bottom: 6px;
+}
+
+#structured-guidance .guidance-card .guidance-copy {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+@media (max-width:640px) {
+  #structured-guidance .guidance-card {
+    grid-template-columns: 25px minmax(0,1fr) !important;
+    gap: 8px !important;
+    padding: 11px 11px 12px !important;
+    border-radius: 13px !important;
+  }
+
+  #structured-guidance .guidance-card .evidence-details > summary {
+    font-size: .97rem;
+  }
+}
