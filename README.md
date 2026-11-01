@@ -10,6 +10,53 @@ Det som skiller Samtalestøtte fra en vanlig KI-chat er at brukeren ikke selv m�
 
 Kildebruken er også styrt. SOURCEBANK v6 har 62 kuraterte kilder med blant annet norske myndighetskilder, regelverk, organisasjons- og ledelsespsykologi, relasjonsledelse og samtaleteknikk. Banken brukes som førstevalg, mens kontrollert nettsøk fungerer som supplement når kildebanken ikke er tilstrekkelig. Kildetype skal passe til påstanden: lov- og regelverksspørsmål bør forankres i autoritative kilder, mens råd om samtaleteknikk bør bygge på relevant forskning og fagkunnskap. Samtalestøtte er dermed utviklet som et domenespesifikt arbeidsverktøy for krevende medarbeidersamtaler, ikke som et generelt chatgrensesnitt.
 
+## Sammenlignbare norske tilbud og produktavgrensning
+
+Samtalestøtte er ikke utviklet som en erstatning for kurs, lederutviklingsprogrammer eller faglig rådgivning. Flere norske tilbud dekker deler av det samme behovet, men med ulikt formål og ulik brukssituasjon. Det er derfor mer presist å se dem som **beslektede og delvis komplementære tilbud** enn som direkte konkurrenter.
+
+| Tilbud | Hovedformål | Samtale / simulering | Egen konkret situasjon | Viktig forskjell fra Samtalestøtte |
+|---|---|---|---|---|
+| [DFØ – Den vanskelige samtalen](https://laeringsplattformen.dfo.no/kursoversikt/den-vanskelige-samtalen-en-digital-treningsarena-ledere-i-staten) | Digital treningsarena for ledere i staten | Ja. Ni treningsøkter, hvorav fem simulerte samtaler med ferdige medarbeidere | Primært forhåndsdefinerte treningssituasjoner | Sterk på mengdetrening, refleksjon, verktøy og ekspertråd. Samtalestøtte tar utgangspunkt i brukerens egen aktuelle sak og genererer situasjonstilpasset støtte fortløpende. |
+| [Verdi CoachLab](https://verdivekst.no/no/coachlab.html) | Praktisk samtaletrening for ledere, HR og andre som hjelper mennesker | Ja. AI brukes til fiktiv trening og tilbakemelding i læringsløp | Hovedsakelig fiktive treningssituasjoner | CoachLab er først og fremst et lærings- og treningsmiljø. Samtalestøtte er tenkt som et arbeidsverktøy som også brukes når en konkret medarbeidersamtale faktisk skal forberedes. |
+| [Verdi-appen](https://verdivekst.no/no/verdi.html) | Digital coachinspirert samtalepartner for personlig refleksjon og utvikling | Ja. Løpende AI-samtale | Ja | Dette er den tydeligste norske parallellen til løpende KI-støtte. Forskjellen ligger særlig i domenet: Verdi retter seg mot personlig refleksjon og utvikling, mens Samtalestøtte avgrenses til lederrollen, arbeidsliv, krevende medarbeidersamtaler, personvern og arbeidslivsrelevant fag-/regelverkskontekst. |
+| [Bjørnson MODUS](https://www.bjornson.no/produkter-og-tjenester/bjornson-modus) | Digital ledertrening og systematisk medarbeideroppfølging | Praktiske øvelser og samtaleverktøy; åpen KI-dialog er ikke dokumentert i offentlig produktinformasjon | Delvis, gjennom mål, tiltak og medarbeideroppfølging | MODUS dekker bredere lederutvikling og systematisk oppfølging over tid. Samtalestøtte er smalere og mer situasjonsnært rettet mot krevende samtaler. |
+
+### Kurs versus støtte i behovsøyeblikket
+
+En viktig produktforskjell er **når** løsningen brukes.
+
+Kurs og treningsarenaer bygger generell kompetanse før en konkret situasjon oppstår. De kan lære lederen prinsipper, gi mengdetrening og gjøre lederen tryggere på vanskelige samtaler. Samtalestøtte er i større grad utviklet som **løpende støtte i behovsøyeblikket**: brukeren beskriver en aktuell situasjon og får hjelp til å forberede akkurat denne samtalen.
+
+Dette betyr at løsningene kan utfylle hverandre. Et kurs kan bygge kompetansen over tid, mens Samtalestøtte kan støtte anvendelsen av kompetansen når en konkret sak oppstår.
+
+### Hva som faktisk skiller Samtalestøtte
+
+Prosjektet skal ikke bygge differensiering på påstanden om at andre løsninger mangler KI eller samtalefunksjoner. Det finnes norske produkter med både digital samtale og AI-basert trening. Den tydeligste forskjellen ligger i **kombinasjonen av funksjoner i én arbeidsflyt**:
+
+- brukerens egen konkrete medarbeidersituasjon som utgangspunkt
+- strukturert forberedelse med forslag til åpning, spørsmål og mulige reaksjoner
+- videre KI-dialog som beholder konteksten fra saken
+- dynamisk samtalesimulering med en fiktiv medarbeider
+- personvernkontroll før tekst sendes til KI
+- arbeidslivsspesifikk tema- og undertemastruktur
+- kuratert kildegrunnlag og tydelig skille mellom råd og formelle/faglige forhold
+- historikk, utskrift og installasjon som PWA/webapp
+- planlagt yrkes-, sektor- og arbeidsgivertilpasning der dette faktisk er relevant
+
+### Direkte samtale – planlagt utprøving
+
+Prosjektet vurderer også å teste en mer direkte samtalefunksjon der brukeren kan starte en åpen dialog om en krevende arbeidssituasjon uten først å gå gjennom hele den strukturerte forberedelsesflyten.
+
+En slik funksjon skal **ikke** beskrives som unik i seg selv. Verdi-appen viser allerede at en norsk tjeneste kan tilby løpende KI-basert samtalestøtte. Hypotesen som skal testes i Samtalestøtte er om direkte dialog gir merverdi når den kombineres med prosjektets eksisterende arbeidslivskontekst, personvernregler, tema-/regelverksstruktur, kildegrunnlag, videre forberedelse og samtalesimulering.
+
+Dersom funksjonen tas videre, bør den evalueres mot minst disse spørsmålene:
+
+1. Finner brukeren raskere frem til nyttig støtte enn gjennom den strukturerte flyten?
+2. Blir svarene for generelle når tema og undertema ikke er valgt på forhånd?
+3. Klarer løsningen fortsatt å ivareta personvern, rollegrenser og relevante arbeidslivsregler?
+4. Bør direkte samtale være en alternativ inngang til Samtalestøtte, eller bare et supplement etter at en sak er opprettet?
+5. Gir funksjonen en reell produktfordel sammenlignet med en generell KI-chat og andre norske digitale samtalepartnere?
+
 ## Rask tilgang for vurdering
 
 ### Anbefalt sensorløp
