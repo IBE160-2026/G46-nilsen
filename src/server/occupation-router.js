@@ -112,7 +112,12 @@ export function classifyOccupationLocally(value) {
 export function shouldUseOccupationContext({ occupation, sectorId, topic, subtopic, situation } = {}) {
   if (!normalize(occupation) && !normalize(sectorId)) return false;
 
-  const text = normalize([topic, subtopic, situation].filter(Boolean).join(" "));
+  const occupationNeedle = normalize(occupation);
+  const situationText = normalize(situation);
+  const sanitizedSituation = occupationNeedle
+    ? situationText.replaceAll(occupationNeedle, " ").replace(/\s+/g, " ").trim()
+    : situationText;
+  const text = normalize([topic, subtopic, sanitizedSituation].filter(Boolean).join(" "));
   if (!text) return false;
 
   const hasRiskTrigger = riskTerms.some(term => {
