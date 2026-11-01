@@ -151,3 +151,35 @@ Arkitekturen skal også kunne støtte en lukket variant med intern språkmodell,
 På lengre sikt kan Samtalestøtte brukes både som støtte før reelle medarbeidersamtaler og som treningsverktøy der ledere kan øve på krevende situasjoner før de møter en faktisk medarbeider.
 
 Ambisjonen er å utvikle et verktøy som gjør det enklere å forberede seg godt, øve på krevende samtaler og bruke kvalitetssikret støtte når behovet oppstår.
+
+
+## Iterativ produktutvikling og behov som oppstod underveis
+
+Flere av funksjonene som nå inngår i eller vurderes for Samtalestøtte var **ikke planlagt i den opprinnelige produktideen**. De har oppstått gjennom faktisk bruk, egne observasjoner under utviklingen og tilbakemeldinger fra testpersoner.
+
+Eksempler:
+- PWA/installasjon som app-lignende webapp oppstod fordi mobil viste seg å være en reell brukerflate.
+- Minimert sidebar, bedre ikoner og roligere informasjonsstruktur kom fra pilotfunn om at grensesnittet kunne oppleves som omfattende.
+- Utskrift ble foreslått av testbruker som ønsket å ta med samtalemalen videre.
+- Videre råd og nye oppfølgingsforslag ble utviklet fordi brukeren ellers måtte finne neste spørsmål alene.
+- Yrkes-/sektorkontekst og mulig kobling mot relevant regelverk/avtaleverk kom fra brukertest.
+- Direkte samtale vurderes fordi en mer åpen inngang kan redusere friksjon for brukere som ikke ønsker å gå gjennom hele strukturen først.
+- Tale vurderes som ny inputkanal fordi samtaleøvelse og videre dialog krever mye skriving.
+
+Dette viser at produktet ikke har fulgt en fast funksjonsliste fra start. Arbeidsformen har vært iterativ: behov har blitt oppdaget, vurdert og enten implementert, forkastet eller lagt som kontrollert videre arbeid.
+
+### Hypotese: tale kan redusere terskelen for samtaleøvelse
+
+Surveydataene viser at ikke alle testpersonene har brukt eller vurdert samtaleøvelsen. Datagrunnlaget er lite og sier ikke sikkert hvorfor.
+
+En mulig forklaring er likevel at samtaleøvelse og videre dialog krever relativt mye tekstinntasting. Det kan skape høyere terskel enn hovedveiledningen, særlig på mobil.
+
+Derfor vurderes en pilot der brukeren kan:
+1. aktivere mikrofon manuelt
+2. snakke inn en ytring
+3. få lyd transkribert til tekst
+4. få transkripsjonen kontrollert av samme personvernfilter som øvrige tekstfelt
+5. sende godkjent tekst videre til Samtalestøtte
+6. få KI-svaret lest opp med naturlig tale
+
+Dette skal testes som en separat pilot og ikke regnes som del av produksjonsløsningen før nytte, personvern, transkripsjonskvalitet og brukeropplevelse er verifisert.
