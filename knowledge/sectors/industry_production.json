@@ -1,0 +1,31 @@
+{
+  "version": 1,
+  "sectorId": "industry_production",
+  "label": "Produksjon og industri",
+  "verifiedAt": "2026-11-01",
+  "primary_source_ids": [
+    "AT_RULES",
+    "DSB_ELECTRICAL_SAFETY",
+    "LOVDATA_AML"
+  ],
+  "principles": [
+    {
+      "id": "IND-01",
+      "principle": "Ved maskin-, kjemikalie- eller annen konkret HMS-risiko må sikkerhet sikres før ordinær prestasjons- eller konfliktsamtale.",
+      "source_ids": [
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    },
+    {
+      "id": "IND-02",
+      "principle": "Skill individuell etterlevelse fra systemfaktorer som opplæring, bemanning, utstyr, prosedyrer og risikovurdering.",
+      "source_ids": [
+        "AT_RULES"
+      ],
+      "offline_safe": true,
+      "time_sensitive": true
+    }
+  ]
+}
