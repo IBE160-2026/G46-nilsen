@@ -34,8 +34,8 @@ Planlagte funksjoner skal aldri beskrives som ferdige før de er implementert og
 ### Må gjennomgås og synkroniseres
 
 - [x] README: kjernefunksjonslisten nevner utskrift og videre råd
-- [ ] README: kontrollere at versjonsnummer/dato fortsatt beskriver riktig produksjonsrelease
-- [ ] README: kontrollere alle historiske testtall mot hvilken versjon de faktisk gjelder
+- [x] README: 20.11.5 kontrollert mot package/server/.env; pågående arbeidsrunde etter release er tydelig merket
+- [x] README: historiske testtall ryddet og skilt tydelig fra dagens utvidede testpakke
 - [x] product-brief.md: utskrift lagt inn som faktisk funksjon
 - [x] product-brief.md: støtte i behovsøyeblikket og videre KI-dialog tydeliggjort
 - [x] product-brief.md: direkte samtale tydelig merket som hypotese/videre arbeid
@@ -47,13 +47,13 @@ Planlagte funksjoner skal aldri beskrives som ferdige før de er implementert og
 - [ ] REFLEKSJONSRAPPORT-UTKAST.md: kontrollere ordantall og fjerne overlapp/gjentakelser før levering
 - [x] BRUKERTEST-FUNN-OG-BACKLOG.md: nye funn om informasjonsmengde, sammenfolding og utskrift lagt inn
 - [ ] BRUKERTEST-FUNN-OG-BACKLOG.md: skille tydelig mellom implementert, under arbeid og forkastet
-- [ ] PRD: kontrollere at utskrift, videre råd, PWA og eventuell direkte samtale har riktig status
-- [ ] UX-dokumentasjon: beskrive dagens rådshierarki og hvorfor første deler vises åpne
-- [ ] AI-INTEGRATION.md: kontrollere at dagens kildebruk, videre dialog og yrkeslag er korrekt beskrevet
-- [ ] AI-RESPONSE-CONTRACT.md: kontrollere samsvar med menneskelig åpningsstil og reaksjonsstruktur
-- [ ] AI-TESTPLAN.md: legge til/oppdatere tester for rådshierarki, utskrift og videre råd der dette er hensiktsmessig
-- [ ] SOURCEBANK.md: kontrollere at alle kilder som omtales som runtime-kilder faktisk finnes i maskinlesbar bank
-- [ ] CHANGELOG.md: samle 30.10–01.11-endringer uten å late som arbeidsrunden er en fullverifisert release
+- [x] PRD: utskrift/videre råd/PWA kontrollert; direkte samtale lagt inn som hypotese/videre arbeid
+- [x] UX-dokumentasjon: progressivt rådshierarki og standardtilstand dokumentert
+- [x] AI-INTEGRATION.md: videre dialog, yrkeslag/feature flagg og direkte samtale-hypotese synkronisert
+- [x] AI-RESPONSE-CONTRACT.md: menneskelig åpningsstil og reaksjonsstruktur dokumentert
+- [x] AI-TESTPLAN.md: nye verifiseringsbehov for rådshierarki, utskrift, videre råd og direkte samtale lagt inn
+- [x] SOURCEBANK: maskinlesbar bank kontrollert til 62 kilder, samsvarer med SOURCEBANK v6-dokumentasjonen
+- [x] CHANGELOG.md: arbeidsrunden 01.11 dokumentert eksplisitt som ikke-fullverifisert release
 - [ ] VERSJONSHISTORIKK-v20.11.md: oppdatere når arbeidsrunden eventuelt får eget releasenummer
 
 ### Funksjoner som må omtales forsiktig
