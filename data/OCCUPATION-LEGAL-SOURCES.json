@@ -1,5 +1,5 @@
 {
-  "version": 7,
+  "version": 8,
   "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -624,6 +624,50 @@
       "lastVerified": "2026-11-01",
       "sourceType": "official_authority",
       "contextualOnly": false
+    },
+    {
+      "id": "AKAN_MODEL",
+      "authority": "Akan kompetansesenter",
+      "title": "Akan-modellen – forebygging, den nødvendige samtalen og individuell oppfølging",
+      "url": "https://www.akan.no/akan-modellen/forebyggende-arbeid-og-tiltak-etter-akan-modellen",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "alkohol",
+        "rusmidler",
+        "legemidler",
+        "spill",
+        "doping",
+        "bekymringssamtale",
+        "policy",
+        "individuell Akan-avtale",
+        "arbeidsliv"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "specialist_worklife_guidance",
+      "contextualOnly": true
+    },
+    {
+      "id": "AKAN_HELP_EMPLOYEE",
+      "authority": "Akan kompetansesenter",
+      "title": "Hvordan hjelpe en medarbeider med et rus- eller spilleproblem?",
+      "url": "https://www.akan.no/hjelpe-en-medarbeider",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "rusproblem",
+        "spilleproblem",
+        "individuell Akan-avtale",
+        "oppfølging",
+        "hjelpetiltak"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "specialist_worklife_guidance",
+      "contextualOnly": true
     }
   ],
   "validationRules": {
