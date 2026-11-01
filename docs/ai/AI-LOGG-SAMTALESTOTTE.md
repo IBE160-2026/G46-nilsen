@@ -1331,3 +1331,29 @@ En senere forenkling fjernet også den tydelige Samtaleøvelse-illustrasjonen og
 PWA-oppsettet ble samtidig ferdigstilt med manifest, rasterikoner, service worker og installasjonsveiledning. Piloten ble åpnet i Chrome på Samsung, installert og verifisert i standalone-visning.
 
 Dette arbeidet illustrerer flere forelesningstemaer: context engineering, context drift, regresjonsrisiko og behovet for observability. KI-en kunne ha korrekt kunnskap om prosjektet og likevel velge feil komponent fordi den manglet presis kontekst om hvilken responsiv gren som faktisk var aktiv. Korrigerende tiltak ble derfor å inspisere den faktiske responsive regelen, verifisere deploymål, bruke egen preview-branch og kombinere automatiserte tester med fysisk enhetstest.
+
+
+## 2026-11-01 – UI-regresjon, historisk kode som fasit og tydeligere produktdokumentasjon
+
+En omfattende UI-runde ga et nytt eksempel på en kjent svakhet ved KI-assistert utvikling: KI-assistenten begynte å lage nye varianter av en komponent i stedet for å gjenbruke en eksisterende løsning som prosjekteieren eksplisitt hadde pekt ut som fasit.
+
+Oppgaven var å gjøre flere rådseksjoner sammenfoldbare ved å gjenbruke uttrykket som allerede fantes i «Faglig grunnlag». I flere iterasjoner introduserte KI-assistenten egne trekkspillvarianter, egne piler og nye CSS-overstyringer. Resultatet ble inkonsistent visuelt hierarki og regresjoner der kortmarkeringer og forventet uttrykk forsvant.
+
+Prosjekteieren korrigerte retningen flere ganger og krevde at eksisterende kode skulle brukes fremfor ny design. Til slutt ble Git-historikken brukt aktivt: commit fra før sammenfoldingsarbeidet ble hentet frem og brukt som visuell og teknisk fasit. Den historiske løsningen viste at:
+- hvert råd lå i et eget markert `guidance-card`
+- «Faglig grunnlag» brukte eksisterende `evidence-details`
+- samme etablerte details-mekanisme kunne gjenbrukes uten å introdusere en ny komponentfamilie
+
+Dette ga en viktig læring om **context drift og overproduksjon**. KI-assistenten hadde nok lokal informasjon til å løse oppgaven, men prioriterte nye løsninger fremfor eksplisitt gjenbruk. Korrigerende tiltak var å stoppe videre designendringer, finne siste kjente gode commit og bruke faktisk historisk kode som autoritativ referanse.
+
+Samme arbeidsrunde avdekket også at utskriftsfunksjonen var blitt hengende etter UI-endringene. Utskriftskoden lette fortsatt etter `h3`, mens overskriftene nå lå i `summary`. Utskriften ble derfor gjort mer robust og utvidet slik at videre spørsmål og KI-svar kan tas med under «Videre råd».
+
+Parallelt ble produktdokumentasjonen styrket. Norske sammenlignbare tilbud ble identifisert og dokumentert, blant annet DFØs «Den vanskelige samtalen», Verdi CoachLab, Verdi-appen og Bjørnson MODUS. Et viktig valg var å unngå en overdrevet påstand om at Samtalestøtte er unik fordi den bruker KI eller dialog. Dokumentasjonen skiller i stedet mellom:
+- kurs og treningsarenaer
+- løpende støtte i behovsøyeblikket
+- åpne KI-samtalepartnere
+- domenespesifikk støtte for krevende medarbeidersamtaler
+
+Den planlagte direkte samtalefunksjonen er derfor dokumentert som en **hypotese som skal testes**, ikke som en unik eller ferdig funksjon.
+
+**Læring:** Git-historikk er ikke bare et sikkerhetsnett for kode. Den kan også brukes som presis spesifikasjon når verbal kontekst har sklidd ut. Dokumentasjon blir samtidig et produktverktøy: den tvinger frem mer nøkterne påstander om hva som faktisk er ferdig, hva som er planlagt og hva som skiller produktet fra eksisterende tilbud.
