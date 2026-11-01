@@ -1402,3 +1402,14 @@ Teknisk kontroll etter opprettelsen:
 ### Læring
 
 Offline-funksjonalitet påvirker ikke bare teknisk caching. Den påvirker selve kunnskapsarkitekturen. Faggrunnlaget må være lite nok til å distribueres lokalt, tydelig versjonert og sporbar, samtidig som tidskritiske regelverksopplysninger kan oppdateres eller verifiseres når nettet er tilgjengelig.
+
+
+### 01.11.2026 – kildevisning for bruker
+
+Etter at kildebanken ble delt i regelverk, samtaleteknikk og yrkes-/sektorkilder, oppstod et nytt UX-behov: en flat liste over alle kilder ville bli vanskelig å forstå.
+
+Jeg valgte derfor en todelt visningsmodell:
+- I et konkret KI-svar skal bare kildene som faktisk er relevante for svaret vises, gruppert etter kunnskapstype.
+- En egen samlet kildeoversikt kan vise alle yrkesgrupper og kildene under hver sektor.
+
+Dette gjør kildegrunnlaget mer transparent uten å gjøre hvert råd unødvendig langt.
