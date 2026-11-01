@@ -442,3 +442,27 @@ Følgende tiltak er implementert i kode som direkte svar på pilotmønstrene:
 - oppfølgingsdialogen genererer nye forslag til neste spørsmål etter hvert KI-svar
 
 Tiltakene skal verifiseres med regresjonstest og produksjonskontroll før de regnes som ferdig levert.
+
+
+---
+
+## 17. Arbeidsfunn 01.11.2026 – informasjonsmengde, sammenfolding og utskrift
+
+Videre gjennomgang av rådssiden bekreftet et tidligere pilotmønster: innholdet kan bli for omfattende når alle deler vises samtidig. Dette er ikke bare et estetisk problem; det påvirker hvor raskt brukeren finner det viktigste før en krevende samtale.
+
+Følgende produktvalg ble diskutert og delvis implementert:
+- de første rådsseksjonene skal være lett tilgjengelige og kunne åpnes/lukkes
+- øvrige seksjoner kan være lukket som standard for å redusere visuell belastning
+- eksisterende rådskort skal beholdes som tydelig visuelt hierarki
+- samme etablerte details-komponent skal gjenbrukes fremfor nye trekkspillvarianter
+- «Mulige reaksjoner» vurderes som en egen understruktur der første reaksjon vises og øvrige kan foldes ut
+- «Faglig grunnlag» er omdøpt til «Kildegrunnlag» for å unngå forveksling med «Faglig / regelverk»
+
+Arbeidsrunden viste samtidig at en UX-forbedring kan skape nye regresjoner dersom komponentstrukturen endres uten at utskrift og andre sekundærflater følger med. Utskriftsfunksjonen brukte fortsatt gammel overskriftsstruktur og ble derfor uoversiktlig etter rådsendringene.
+
+Utskriften ble justert slik at:
+- seksjonsoverskriften ligger tydelig rett over rådet
+- sammenfoldet innhold åpnes i utskriftsversjonen
+- videre spørsmål og KI-svar kan tas med under «Videre råd»
+
+**Status:** Dette er en aktiv arbeidsrunde og skal ikke fremstilles som sluttverifisert før samlet regresjonstest og produksjonskontroll er gjennomført.
