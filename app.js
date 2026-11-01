@@ -1448,18 +1448,23 @@ function renderOccupationSuggestion(situation){
   const panel=document.querySelector('#occupation-context-panel');
   const summary=document.querySelector('#occupation-context-summary');
   const fields=document.querySelector('#occupation-context-fields');
+  const editButton=document.querySelector('#occupation-context-edit');
   if(!panel || !summary) return;
+
   const suggestion=inferOccupationSuggestion(situation);
-  if(!suggestion){
-    panel.hidden=true;
-    return;
+  if(suggestion){
+    const sectorSelect=document.querySelector('#occupation-sector');
+    const occupationInput=document.querySelector('#occupation-title');
+    if(sectorSelect) sectorSelect.value=suggestion.sectorId;
+    if(occupationInput) occupationInput.value=suggestion.occupation;
+    updateOccupationDatalist();
+    summary.textContent=`${suggestion.occupation} · ${suggestion.sectorLabel}`;
+    if(editButton) editButton.textContent='Endre';
+  }else{
+    summary.textContent='Ingen yrkeskontekst foreslått';
+    if(editButton) editButton.textContent='Legg til yrke';
   }
-  const sectorSelect=document.querySelector('#occupation-sector');
-  const occupationInput=document.querySelector('#occupation-title');
-  if(sectorSelect) sectorSelect.value=suggestion.sectorId;
-  if(occupationInput) occupationInput.value=suggestion.occupation;
-  updateOccupationDatalist();
-  summary.textContent=`${suggestion.occupation} · ${suggestion.sectorLabel}`;
+
   if(fields) fields.hidden=true;
   panel.hidden=false;
 }
@@ -2844,6 +2849,8 @@ document.querySelector('#situation-form').addEventListener('submit', async event
   try {
     const aiAnalysis = await requestAiSituationAnalysis(situationText, helpRequest);
     lastAiAnalysis = aiAnalysis;
+    await loadOccupationOptions();
+    renderOccupationSuggestion(situationText);
     renderAiSituationUnderstanding(aiAnalysis);
     const count = aiAnalysis.needs_clarification
       ? renderAiFollowupQuestions(aiAnalysis.clarifications)
@@ -2859,6 +2866,8 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     }
   } catch (error) {
     lastAiAnalysis = null;
+    await loadOccupationOptions();
+    renderOccupationSuggestion(situationText);
     const localAnalysis = analyzeSituation(situationText);
     const localQuestions = buildFollowupQuestions(situationText);
     renderSituationUnderstanding(localAnalysis);
