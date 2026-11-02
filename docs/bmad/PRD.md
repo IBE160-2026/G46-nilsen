@@ -3,8 +3,8 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
-**Status:** Revidert PRD med leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.0  
+**Status:** Revidert PRD, synkronisert mot faktisk leveransestatus 02.11.2026  
+**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 med senere dokumenterte patcher  
 **Språk:** Norsk
 
 ---
@@ -122,6 +122,8 @@ Leveransen støtter ni hovedtemaer:
 9. Mobbing og trakassering
 
 Hvert tema kan ha undertemaer som brukes som kontekst for KI-en.
+
+Den gjeldende V1-taksonomien består av **48 undertemaer**. Tidligere versjoner hadde 56. Reduksjonen kom etter klarspråkgjennomgang, pilotbruk og tilbakemeldinger som viste at enkelte kategorier var for vage, overlappende eller unødvendig smale. De ble slått sammen, omformulert eller fjernet. Dette er en produktforbedring, ikke bare et scope-kutt: målet er at brukeren lettere skal kjenne igjen egen situasjon samtidig som KI-en får tilstrekkelig kontekst.
 
 Brukeren skal ikke være låst til en rigid menystruktur dersom situasjonen beskrives bedre med egne ord.
 
@@ -283,7 +285,7 @@ Systemet skal ikke love full anonymitet.
 ### Testbevis
 
 - `tests/test-privacy.js`
-- siste kontroll: **33/33 kontroller bestått**
+- historisk kontroll: **33/33**; senere dokumentert personvernspakke: **56/56**
 
 ---
 
@@ -514,7 +516,7 @@ Dette finnes som:
 
 ## FR-17 – Brukertesting
 
-**Status:** DELVIS / VIDERE ARBEID
+**Status:** PILOT GJENNOMFØRT / VIDERE EVALUERING
 
 Produktet skal kunne brukertestes systematisk.
 
@@ -526,9 +528,9 @@ Brukertesting skal undersøke blant annet:
 - om simulatoren oppleves realistisk
 - om personverninformasjonen forstås
 
-Fullskala brukertesting er ikke definert som ferdig leveransekrav.
+Pilot-/brukertesting er gjennomført med et begrenset kvalitativt utvalg. Funnene brukes som produktinnsikt, men skal ikke fremstilles som statistisk representativ brukerforskning eller ekstern faglig validering.
 
-Resultater fra brukertesting kan brukes til videre revisjon av krav og UX.
+Resultater fra brukertesting har allerede ført til konkrete revisjoner av krav, UX og taksonomi, blant annet reduksjonen fra 56 til 48 undertemaer, tydeligere språk, mobil/PWA-arbeid, utskrift og videre oppfølgingsflyt.
 
 ---
 
@@ -1124,9 +1126,11 @@ Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
 På desktop skal sidebaren være minimert som standard for nye brukere. Brukerens eksplisitte valg om å åpne/lukke menyen skal lagres lokalt. Minimert modus skal ha forståelige tooltips.
 
 ## FR-22 – Yrke/bransje som valgfri kontekst
-Status: UNDER UTVIKLING / IKKE AKTIVERT I PRODUKSJON
+Status: DELVIS IMPLEMENTERT I MAIN / FEATURE-FLAGGET / IKKE AKTIVERT I PRODUKSJONS-UI
 
-Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Systemet skal ikke anta tariffområde bare ut fra yrkestittel, og skal ikke gjøre yrkeskontekst til et obligatorisk steg når den ikke tilfører verdi.
+Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Backend-, kilde- og rutinglaget finnes i `main`, blant annet gjennom `occupation-context`, `occupation-router` og tilhørende data/tester. Produksjonsserveren styrer laget med `OCCUPATION_CONTEXT_ENABLED`, som som standard er avslått, og dagens produksjons-UI eksponerer ikke feltet som ferdig brukerfunksjon.
+
+Systemet skal ikke anta tariffområde bare ut fra yrkestittel, og skal ikke gjøre yrkeskontekst til et obligatorisk steg når den ikke tilfører verdi.
 
 
 ## FR-23 – Direkte samtale som alternativ inngang
