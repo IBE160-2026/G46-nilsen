@@ -1,5 +1,13 @@
 # Yrkes- og regelverkslag i Samtalestøtte
 
+## Implementasjonsstatus per 02.11.2026
+
+Yrkes-/regelverkslaget er **delvis implementert i `main`** som backend-, data- og testarkitektur. Det finnes blant annet lokal yrkesruting, kildekart, avtale-/arbeidsgiverlogikk og egne tester.
+
+Laget styres av feature flagg på serveren og er avslått som standard. Dagens produksjons-UI eksponerer derfor ikke yrkesfeltet som en ferdig sluttbrukerfunksjon. Dokumentet skal ikke brukes som bevis på at hele brukerflyten er produksjonsverifisert.
+
+Skillet er bevisst: arkitektur og testgrunnlag kan utvikles og kvalitetssikres før funksjonen aktiveres for brukere.
+
 ## Formål
 
 Dette laget skal gjøre Samtalestøtte i stand til å tilpasse råd til arbeidsområde, yrke og relevant regelverk uten å gjøre yrkesvalg obligatorisk eller overstyre den menneskelige samtalen.
