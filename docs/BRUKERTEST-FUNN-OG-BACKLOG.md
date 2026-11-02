@@ -1,8 +1,10 @@
 # Brukertest – funn og forbedringsbacklog
 
-**Oppdatert:** 29.10.2026  
-**Status:** Levende arbeidsdokument under pilot  
+**Oppdatert:** 02.11.2026  
+**Status:** Historisk pilot-/brukertestbacklog med senere implementeringsstatus  
 **Prinsipp:** Ikke endre produksjonsversjonen fortløpende for hvert enkelt innspill. Samle mønstre, rett bekreftede feil kontrollert, og planlegg en samlet pilotforbedringsrunde.
+
+**Statuspresisering 02.11.2026:** Dokumentet bevarer funn og mellomtilstander slik de oppstod. Flere punkter som står som pilot-/kandidatstatus i de daterte delene ble senere implementert, mens andre fortsatt er videre arbeid. Gjeldende produktstatus skal derfor leses sammen med `docs/DOKUMENTASJON-SYNK-2026-11-02.md`, PRD og faktisk kode. Taksonomien er nå 9 hovedtemaer og 48 undertemaer.
 
 ## Statusforklaring
 
