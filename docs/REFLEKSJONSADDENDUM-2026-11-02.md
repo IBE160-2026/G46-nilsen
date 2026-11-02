@@ -182,3 +182,88 @@ Flere valg underveis legger bevisst til rette for at eksterne tjenester senere k
 Dette betyr ikke at dagens løsning er offline. Dagens prototype bruker eksterne tjenester. Poenget er at arkitekturen i størst mulig grad unngår å låse produktet til disse tjenestene.
 
 Læring: Offline-kravet påvirket ikke bare framtidsvisjonen. Det påvirket hvordan kunnskap, provider-avhengighet, logging og personvern ble strukturert allerede i prototypen.
+
+
+## 13. Kunnskapsstrategien som produktvalg
+
+Kildegrunnlaget utviklet seg fra å være en samling relevante lenker til å bli en bevisst **kunnskapsstrategi** for produktet.
+
+Målet er ikke at Samtalestøtte skal hente «mest mulig informasjon», men at den skal bruke **riktig type kunnskap til riktig type råd**. Derfor er kildene strukturert etter flere prinsipper:
+
+### Norske regler og myndighetskilder først når rådet handler om plikter og formelle prosesser
+Når spørsmålet gjelder arbeidsmiljø, fravær, tilrettelegging, varsling, sikkerhet eller andre formelle forhold, skal norske lover, forskrifter og myndighetskilder prioriteres. Det reduserer risikoen for at KI-en gir råd basert på utenlandske regler eller generelle nettartikler som ikke passer norsk arbeidsliv.
+
+Eksempler er Lovdata, Arbeidstilsynet, NAV, Likestillings- og diskrimineringsombudet og relevante fagmyndigheter.
+
+### God forskning foran tilfeldige kilder på nett
+Når rådet handler om samtaleteknikk, feedback, motivasjon, konflikthåndtering, relasjon, psykologisk trygghet eller organisatorisk rettferdighet, er ikke lovtekst nok.
+
+Her skal løsningen foretrekke fagfellevurdert forskning, evidensgjennomganger og anerkjente faglige veiledere framfor blogginnlegg, kommersielle HR-sider eller tilfeldige søkeresultater. Nettsøk kan fortsatt brukes som supplement, men søket skal ikke likestille alle treff.
+
+Dette er en viktig endring i hvordan jeg tenkte om KI-kilder: språkmodellen skal ikke bare kunne «finne en kilde». Den må bruke en kilde som faktisk passer til påstanden den gir.
+
+### Flerfaglighet framfor én universell fasit
+Samtalestøtte dekker situasjoner der flere fagområder møtes. Derfor er det metodisk feil å gjøre HR, jus, psykologi eller én samtalemetode til universell fasit.
+
+Kildetype må avhenge av spørsmålet:
+- juridisk/formelt spørsmål → lovverk og myndighetskilder
+- samtaleteknikk → relevant forskning og faglig veiledning
+- feedback/prestasjon → organisasjonspsykologi og feedbackforskning
+- konflikt/varsling → både arbeidsmiljøregelverk, kontradiksjon, habilitet og ikke-ledende faktainnhenting
+- rusproblematikk → relevante norske fagmiljøer som AKAN i tillegg til generelle samtaleprinsipper
+
+Dette gjør også begrensningene tydeligere. KI-en kan støtte, men ikke erstatte jurist, HR, BHT eller annen relevant fagkompetanse når saken krever det.
+
+## 14. Kildegrunnlaget som forberedelse til offline/lukket drift
+
+Kildearbeidet er også gjort med tanke på at Samtalestøtte på sikt skal kunne brukes i et miljø der direkte internettilgang ikke er ønskelig eller mulig.
+
+Derfor er kunnskapen i størst mulig grad gjort eksplisitt og strukturert:
+- SOURCEBANK med metadata og kildekategorier
+- temaspecifikke faggrunnlag
+- lokale regler for hvilken type kilde som passer til ulike råd
+- lagring av hvilke domener/kildetyper systemet faktisk trenger
+- skille mellom tidsfølsomme og mer stabile kilder
+- plan for versjonert lokal fagpakke
+- framtidig lokal søk/RAG over godkjente dokumenter
+
+Dette gir en mulig utviklingsvei fra dagens nettprototype til en intern løsning:
+
+**kuratert kunnskapsbank → lokalt dokumentlager → lokal RAG → intern språkmodell**
+
+Poenget er ikke at dagens løsning allerede er offline. Poenget er at kunnskapsarkitekturen utvikles slik at avhengigheten av tilfeldig nettsøk og én ekstern språkmodell kan reduseres senere.
+
+## 15. Yrkesrettede råd uten å låse KI-en til yrkestittelen
+
+Brukertest viste at yrke eller bransje kan være nyttig kontekst. Det kan gjøre råd mer realistiske når arbeidsmiljø, risiko, arbeidstid, sikkerhetskrav, profesjonsregler eller avtaleverk faktisk varierer mellom sektorer.
+
+Derfor har prosjektet utviklet et eget yrkes-/sektorlag med blant annet:
+- yrke og arbeidsområde som mulig kontekst
+- arbeidsgivertype der dette er relevant
+- lokal yrkesruting
+- kildekart for sektorer
+- avtale-/regelverksspor
+- tester som kontrollerer at yrke bare påvirker rådet når det faktisk tilfører verdi
+
+Dette laget skal **ikke** gjøre KI-en mer skråsikker. En yrkestittel alene skal for eksempel ikke brukes til å anta tariffavtale, arbeidsgiver, sikkerhetsnivå eller juridisk handlingsrom.
+
+Tanken er derfor å gi KI-en **spor**, ikke fasit:
+- «Dette yrket kan ha særskilte HMS-forhold»
+- «Denne sektoren kan ha egne prosedyrer»
+- «Dette arbeidsgiverområdet kan gjøre bestemte kilder mer relevante»
+
+KI-en må fortsatt kontrollere om sporet faktisk gjelder situasjonen før det påvirker rådet.
+
+Dette er også en del av offline-retningen. Yrkes- og sektorkunnskap kan senere ligge lokalt som egne, versjonerte kunnskapspakker i stedet for å hentes fra nettet i hver samtale.
+
+## 16. Hva kunnskapsstrategien samlet forsøker å oppnå
+
+Kunnskapsstrategien kan oppsummeres som fem mål:
+
+1. **Norsk kontekst:** råd om plikter og formelle forhold skal bygge på norsk regelverk og norske myndighetskilder.
+2. **Faglig kvalitet:** forskning og evidens skal foretrekkes framfor tilfeldige nettartikler når rådet handler om menneskelig samhandling og ledelse.
+3. **Kildepresisjon:** kilden må støtte akkurat den typen råd som gis.
+4. **Kontekst uten overtolkning:** yrke, sektor og arbeidsgivertype kan gi relevante spor, men skal ikke brukes til å dikte opp regler eller avtaler.
+5. **Framtidig uavhengighet:** kunnskapen organiseres slik at den senere kan flyttes til lokal RAG, intern modell og lukket drift.
+
+Dette er etter min vurdering en av de viktigste endringene i prosjektet. Samtalestøtte gikk fra å være en KI som kunne gi arbeidslivsråd, til å bli et system som forsøker å kontrollere **hva slags kunnskap KI-en får lov til å støtte seg på, hvorfor den kunnskapen er relevant, og hvordan den senere kan flyttes til et mer lukket miljø**.
