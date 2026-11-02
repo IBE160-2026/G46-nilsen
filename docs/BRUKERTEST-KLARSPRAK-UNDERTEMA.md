@@ -4,6 +4,8 @@
 **Dato:** 27.10.2026  
 **Omfang:** Alle 56 undertemaer i `src/client-data.js`
 
+**Historisk statusnotat 02.11.2026:** Dette dokumentet beskriver klarspråkgjennomgangen før den senere taksonomirevisjonen. Etter pilot-/brukerfunn ble flere vage, overlappende eller unødvendig smale undertemaer slått sammen, omformulert eller fjernet. Gjeldende V1-struktur har **9 hovedtemaer og 48 undertemaer**. Dagens autoritative taksonomi ligger i `src/client-data.js` og `src/server/topic-contracts.js`. Resten av dokumentet beholdes som historisk beslutningsgrunnlag.
+
 ## Bakgrunn
 
 Pilotbrukere har meldt at enkelte undertemabeskrivelser er vanskelige å forstå eller skille fra hverandre. Formålet med denne gjennomgangen er derfor ikke bare å «språkvaske» tekstene, men å kontrollere om hvert kort faktisk hjelper en vanlig leder å velge riktig inngang.
