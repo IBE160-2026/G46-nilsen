@@ -63,6 +63,7 @@ Produktet skal:
 6. gi innloggede brukere tilgang til egen historikk
 7. støtte kvalitetssikring av KI gjennom testing og modellvurdering
 8. kunne videreutvikles uten å være låst til én enkelt KI-provider
+9. strukturere kunnskap og arkitektur slik at en framtidig lukket/offline variant kan bruke lokal fagbank, lokal RAG og intern KI
 
 ---
 
@@ -500,6 +501,14 @@ Golden/fasittesten knytter representative KI-caser til eksplisitte kravreferanse
 
 Produktet skal ha dokumentert faglig grunnlag.
 
+Kunnskapsstrategien skal følge prinsippet **riktig kildetype til riktig type råd**:
+
+- norske lover, forskrifter og myndighetskilder prioriteres ved plikter, rettigheter og formelle prosesser
+- fagfellevurdert forskning, evidensgjennomganger og anerkjent faglig veiledning prioriteres foran tilfeldige nettartikler ved samtaleteknikk, feedback, motivasjon, konflikt og ledelse
+- nettsøk brukes som supplement når den kuraterte fagbanken ikke dekker behovet, ikke som erstatning for kildekritikk
+- kilden skal faktisk støtte den konkrete påstanden eller anbefalingen som gis
+- faggrunnlaget skal organiseres slik at det senere kan inngå i lokal kunnskapsbank/RAG ved lukket eller offline drift
+
 Dette finnes som:
 
 - felles SOURCEBANK
@@ -704,9 +713,9 @@ Kommando:
 npm run test-privacy
 ```
 
-Siste kontroll:
+Siste dokumenterte kontroll:
 
-**33/33 bestått**
+**56/56 bestått**
 
 ---
 
@@ -786,7 +795,11 @@ npm run test-golden-schema
 
 KI-testene gjør faktiske modellkall og krever API-konfigurasjon.
 
-Siste verifiserte golden/fasittest etter testkalibrering: **9/9 OK mot GPT-5.6 Luna**, med 0 bør sjekkes, 0 kritiske avvik og 0 tekniske feil. Alle ni hovedtemaer er eksplisitt representert i fasitbanken.
+Golden/fasitbanken inneholder nå **26 caser** og dekker alle ni hovedtemaer med ekstra dekning på risikoområder.
+
+Den dokumenterte live-kjøringen 26.10.2026 omfattet **21 caser** mot GPT-5.6 Luna og ga **19 maskinelt OK + 2 manuelt akseptert etter kontroll**, 0 kritiske avvik og 0 tekniske feil.
+
+Etter senere utvidelse til 26 caser ble hele produksjonsflyten kjørt. Første kjøring avdekket tre falske personverntreff før KI-kall; etter retting nådde **26/26** fram til KI-svar. Historiske 9/9-resultater beholdes som tidligere teststeg, men skal ikke beskrives som dagens testbank.
 
 ---
 
@@ -822,6 +835,8 @@ Leveransen anses som funksjonelt komplett som prosjektprototype når følgende e
 14. automatiserte tester finnes
 15. sentrale personvern- og simulator-tester består
 16. dokumentasjon gjør løsning og prosess etterprøvbar
+17. gjeldende taksonomi består av 9 hovedtemaer og 48 undertemaer
+18. mobil/PWA-flyten fungerer som installasjonslag på støttede nettlesere uten å være avhengig av en native app
 
 ---
 
@@ -832,20 +847,20 @@ Leveransen anses som funksjonelt komplett som prosjektprototype når følgende e
 | Webapplikasjon | Implementert | `app.js`, `index.html`, `server.js` |
 | KI-veiledning | Implementert | server + systemprompt |
 | 9 hovedtemaer | Implementert | app + faggrunnlag |
-| Personverngateway | Implementert/testet | 33/33 tester |
+| Personverngateway | Implementert/testet | 56/56 i siste dokumenterte personvernpakke |
 | Simulator | Implementert/testet | 24/24 tester |
 | Autentisering | Implementert | Supabase/server |
 | Historikk | Implementert | Supabase/regresjonstest |
 | Roller | Implementert | app/server |
 | Admin | Implementert | app/server |
 | Modellvalg | Implementert i prototypeform | admin/server |
-| Benchmark | Prototype/testform | benchmarkfiler |
-| KI-testing | Implementert | `tests/` |
+| Benchmark | Prototype/testform | 114 saker synkronisert med 48 undertemaer |
+| KI-testing | Implementert | 26 golden/pilotcaser + øvrige testspor i `tests/` |
 | Faggrunnlag | Implementert | `docs/faggrunnlag/` |
 | SOURCEBANK | Implementert | `docs/`, `data/` |
-| Brukertesting | Delvis/videre arbeid | testopplegg |
+| Brukertesting | Pilot gjennomført / videre evaluering | brukertestplan, backlog og dokumenterte produktendringer |
 | Web/kildeanalyse | Delvis/prototype | server/admin |
-| Lukket/offline løsning | Videre arbeid | arkitekturdokumentasjon |
+| Lukket/offline løsning | Videre arbeid, men arkitektur er tilrettelagt | provider-abstraksjon, SOURCEBANK, lokal RAG-/intern KI-målarkitektur |
 
 ---
 
@@ -856,7 +871,7 @@ Leveransen er en prototype og har derfor bevisste avgrensninger.
 Blant annet:
 
 - full produksjonsherding er ikke gjennomført
-- fullskala brukertesting gjenstår
+- fullskala/representativ brukertesting gjenstår; gjennomført pilot er kvalitativ og begrenset
 - lukket/offline løsning er ikke implementert
 - modellbenchmark er et test- og prototypeområde
 - enkelte admin- og analysefunksjoner kan videreutvikles
@@ -909,7 +924,9 @@ Tiltak:
 
 - provider-abstraksjon
 - konfigurerbart modellvalg
-- dokumentert framtidig lokal arkitektur
+- kuratert og flyttbar SOURCEBANK
+- dokumentert framtidig lokal RAG/intern KI-arkitektur
+- bruk av nettsøk som supplement fremfor eneste kunnskapsgrunnlag
 
 ---
 
@@ -937,7 +954,8 @@ Følgende er eksplisitt videre arbeid og ikke nødvendige ferdigkrav for dagens 
 - intern KI-modell
 - intern database/autentisering
 - full lukket nettverksvariant
-- ytterligere mobiltilpasning eller egen mobilapp
+- tale/voice i samtaleøvelse, trinnvis fra opplesing og trykk-og-snakk til eventuell realtime/WebRTC etter særskilt personvernvurdering
+- videre mobil/PWA-verifisering og eventuelle framtidige native-løsninger dersom et reelt behov oppstår
 - videre sikkerhetsherding før eventuell ordinær produksjonsbruk
 
 ---
