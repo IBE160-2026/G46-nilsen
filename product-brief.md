@@ -164,7 +164,7 @@ Eksempler:
 - Minimert sidebar, bedre ikoner og roligere informasjonsstruktur kom fra pilotfunn om at grensesnittet kunne oppleves som omfattende.
 - Utskrift ble foreslått av testbruker som ønsket å ta med samtalemalen videre.
 - Videre råd og nye oppfølgingsforslag ble utviklet fordi brukeren ellers måtte finne neste spørsmål alene.
-- Yrkes-/sektorkontekst og mulig kobling mot relevant regelverk/avtaleverk kom fra brukertest. Backend-, kilde- og rutinglaget finnes nå i `main`, men funksjonen er feature-flagget og skal ikke omtales som aktiv produksjonsfunksjon før UI/runtime og personvern er verifisert.
+- Yrkes-/sektorkontekst og mulig kobling mot relevant regelverk/avtaleverk kom fra brukertest. Backend-, kilde- og rutinglaget finnes nå i `main`, men funksjonen er feature-flagget og skal ikke omtales som aktiv produksjonsfunksjon før UI/runtime og personvern er verifisert. Backend-, kilde- og rutinglaget finnes nå i `main`, men funksjonen er feature-flagget og skal ikke omtales som aktiv produksjonsfunksjon før UI/runtime og personvern er verifisert.
 - Direkte samtale vurderes fordi en mer åpen inngang kan redusere friksjon for brukere som ikke ønsker å gå gjennom hele strukturen først.
 - Tale vurderes som ny inputkanal fordi samtaleøvelse og videre dialog krever mye skriving.
 
