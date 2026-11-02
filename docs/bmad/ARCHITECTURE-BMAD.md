@@ -4,7 +4,7 @@
 **Dokumenttype:** Architecture Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert arkitektur med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.0  
+**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 02.11.2026  
 **Språk:** Norsk
 
 ---
@@ -1353,3 +1353,8 @@ PWA-funksjonaliteten er lagt som et klientnært installasjons- og cachelag over 
 Service workeren cacher bare eksplisitte frontendressurser og skal ikke fungere som cache for API-kall eller ikke-GET-forespørsler. Dette reduserer risikoen for at autentiserte eller dynamiske API-svar blir liggende i app-shell-cachen. Produksjonsserverens vanlige sikkerhets- og personverngrenser gjelder uendret når løsningen åpnes som installert PWA.
 
 PWA-laget endrer dermed distribusjonsopplevelsen, men ikke tillitsgrensen: serveren er fortsatt kontrollpunkt for autentisering, autorisasjon, personverngateway, hemmeligheter og KI-kall.
+
+
+## Status for yrkes-/sektorlaget per 02.11.2026
+
+Yrkes-/sektorarkitekturen finnes i `main` som et separat backend- og kunnskapslag med ruting, kildekart, avtaleområder og egne tester. Laget er feature-flagget og er ikke en ferdig aktiv produksjons-UI. Dette skillet er viktig: arkitekturen er implementert, men sluttbrukerflyten skal ikke omtales som produksjonsverifisert før den faktisk er aktivert og testet gjennom hele kjeden.
