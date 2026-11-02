@@ -121,3 +121,64 @@ Den endelige refleksjonsrapporten bør bruke disse eksemplene som bevis på:
 - forskjellen mellom kodefeil, testfeil og kontekstfeil
 - iterativ produktutvikling
 - ærlig avgrensning av hva testene faktisk beviser
+
+
+## 9. Mobil/PWA – brukerfunn som endret selve leveranseflaten
+
+Mobil/PWA bør omtales som en av de største produktendringene som kom fra faktisk bruk, ikke bare som responsiv CSS.
+
+Den opprinnelige løsningen var i praksis utviklet med desktop som hovedflate. Under pilotbruk valgte flere brukere spontant mobil. Det viste et gap mellom antatt og faktisk brukskontekst. Som følge av dette ble mobil gjort til en reell leveranseflate med egen navigasjon, kompakt toppfelt, endret breddebruk, mobiltilpasset Samtaleøvelse og fysisk test på Samsung/Chrome.
+
+PWA kom som en naturlig videreføring: dersom brukeren faktisk skal bruke Samtalestøtte i behovsøyeblikket, er det nyttig at løsningen kan installeres og oppleves mer som et arbeidsverktøy enn som en tilfeldig nettside. Manifest, appikoner, service worker og standalone-visning ble derfor del av leveransen.
+
+Læring: Brukertesting endret ikke bare detaljer i UI. Den endret hvor og hvordan produktet skulle kunne brukes.
+
+## 10. Utvidet kildegrunnlag – fra «har kilder» til riktig kunnskapsgrunnlag
+
+Faglærers tilbakemelding gjorde en viktig metodisk svakhet tydelig: prosjektets egen golden-fasit og faggrunnlag kunne ikke behandles som uavhengig ekspertvalidering, og HR/jus alene er heller ikke en universell fasit for alle råd Samtalestøtte gir.
+
+Kildegrunnlaget ble derfor utvidet og gjort mer flerfaglig. SOURCEBANK skiller nå tydeligere mellom hva slags kunnskap som bør støtte ulike typer råd:
+- lovverk og myndighetskilder for plikter, rettigheter og formelle prosesser
+- organisasjonspsykologi og feedbackforskning for prestasjons- og utviklingssamtaler
+- aktiv lytting, åpne spørsmål og relevante deler av motiverende intervju for samtalemetodikk
+- evidensbaserte intervjuprinsipper ved faktainnhenting før konklusjon
+- forskning på organisatorisk rettferdighet ved utvelgelse, avslag og forfremmelse
+- arbeidsmiljøregelverk, kontradiksjon og habilitet ved varsling og trakassering
+
+Eksempler som ble lagt til eller tydeligere brukt er Helsedirektoratets veiledning om motiverende intervju, College of Policing sine generelle prinsipper for ikke-ledende faktainnhenting og CIPD-evidens om fair selection og performance feedback.
+
+Den viktigste læringen var at «har en kilde» ikke betyr «har riktig kilde». Kilden må både være troverdig og faktisk støtte den konkrete typen påstand som gis.
+
+Dette styrket også grunnlaget for en framtidig lokal kunnskapsbank: jo mer eksplisitt og kuratert kildegrunnlaget er, desto mindre avhengig blir løsningen av modellens generelle kunnskap og tilfeldig nettsøk.
+
+## 11. Tale/live – brukerbehov, ikke teknologidemonstrasjon
+
+Ideen om tale kom fra pilotbruk og observasjonen av at Samtaleøvelse og videre dialog krever mye skriving, særlig på mobil. Målet er derfor ikke å legge til «voice» fordi teknologien finnes, men å redusere friksjon i den delen av produktet som faktisk skal ligne en samtale.
+
+Det er skissert en trinnvis utvikling:
+1. opplesing av KI-svar
+2. trykk-og-snakk til tekst, der transkripsjonen vises og går gjennom eksisterende personvernkontroll før sending
+3. eventuell full realtime tale-til-tale over WebRTC med naturlig turtaking og avbrytelser
+
+Full realtime kan ikke bare kobles på dagens løsning. I en cloud-basert voice-flyt kan rå lyd sendes til ekstern leverandør før dagens tekstbaserte personverngateway har fått kontrollert en transkripsjon. Derfor krever funksjonen egen vurdering av lydbehandling, lagring, samtykke/informasjon, mikrofontilgang og teknisk arkitektur.
+
+Voice skal dessuten være for **øvelse mot KI-medarbeideren**, ikke opptak eller analyse av en reell medarbeidersamtale.
+
+Læring: En funksjon kan være svært relevant for brukeropplevelsen og samtidig måtte utsettes fordi den endrer personvernmodellen fundamentalt.
+
+## 12. Offline/lukket drift som gjennomgående arkitekturretning
+
+Offline/lukket drift bør beskrives som en gjennomgående retning i prosjektet, ikke bare som en framtidig idé i arkitekturdokumentet.
+
+Flere valg underveis legger bevisst til rette for at eksterne tjenester senere kan erstattes:
+- KI-provider er abstrahert slik at modellen kan byttes
+- SOURCEBANK og temaspecifikke faggrunnlag gjør kunnskapen mer eksplisitt og flyttbar
+- weboppslag logges som kilde-/domeneinformasjon uten å bruke samtaleteksten som profil, slik at man kan lære hvilke kilder en framtidig lokal fagpakke bør inneholde
+- lokal RAG er skissert som framtidig alternativ til nettsøk
+- intern PostgreSQL/SSO/LLM kan erstatte Supabase og eksterne KI-leverandører
+- voice-design vurderer lokal/intern tale-til-tekst og full lokal voice-stack som det mest personvernbevarende langsiktige målbildet
+- kildebanken skiller mellom tidsfølsomme og mer stabile kilder og skisserer en versjonert offline fagpakke som kan oppdateres kontrollert
+
+Dette betyr ikke at dagens løsning er offline. Dagens prototype bruker eksterne tjenester. Poenget er at arkitekturen i størst mulig grad unngår å låse produktet til disse tjenestene.
+
+Læring: Offline-kravet påvirket ikke bare framtidsvisjonen. Det påvirket hvordan kunnskap, provider-avhengighet, logging og personvern ble strukturert allerede i prototypen.
