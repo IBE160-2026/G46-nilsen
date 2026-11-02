@@ -4,7 +4,7 @@
 **Dokumenttype:** Epics & User Stories  
 **Rammeverk:** BMAD  
 **Status:** Revidert med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** 20.11.0  
+**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 02.11.2026  
 **Språk:** Norsk
 
 ---
@@ -1070,7 +1070,7 @@ Denne matrisen er en navigasjonshjelp. Detaljerte krav og statuser ligger fortsa
 | FR-11 Roller | Epic 8 | Implementert | server-side rollevalidering |
 | FR-12 Admin | Epic 11 | Implementert | app/server/admin |
 | FR-13 Modellvalg | Epic 12 | Prototypeform | provider-/modelllogikk i `server.js` |
-| FR-14 Modellbenchmark | Epic 14 | Prototype/testform | 112 benchmark-caser, `tests/test-model-compare.js`; full fler-modell-kjøring ikke dokumentert |
+| FR-14 Modellbenchmark | Epic 14 | Prototype/testform | 114 benchmark-caser synkronisert med 48 gjeldende undertemaer, `tests/test-model-compare.js`; full fler-modell-kjøring ikke dokumentert |
 | FR-15 Automatisert KI-testing | Epic 13 | Implementert/testet | KI-/stress-/golden-tester; siste golden 9/9 |
 | FR-16 Faggrunnlag | Epic 16 | Implementert | `docs/faggrunnlag/`, SOURCEBANK |
 | FR-17 Brukertesting | Epic 21 | Delvis/videre arbeid | testopplegg og feedbackfunksjon; fullskala test gjenstår |
@@ -1162,3 +1162,10 @@ Denne statusdelingen gjør at dokumentet kan sammenlignes direkte med kode, test
 - tests/test-pilot-ux.cjs
 - tests/test-pwa.cjs
 - fysisk pilot-test på Samsung/Chrome 29.10.2026
+
+
+## Taksonomirevisjon etter pilotbruk
+
+Den gjeldende V1-strukturen har **9 hovedtemaer og 48 undertemaer**. Tidligere versjoner hadde 56 undertemaer. Reduksjonen ble gjort etter klarspråkgjennomgang og pilot-/brukerfunn som viste at enkelte kategorier var vage, overlappende eller unødvendig smale. Stories og testgrunnlag skal derfor vurderes mot dagens 48 undertemaer, mens eldre tall beholdes som historikk der de beskriver en faktisk tidligere fase.
+
+Benchmarkbanken er remappet til den gjeldende strukturen og inneholder **114 saker**, minst to per undertema.
