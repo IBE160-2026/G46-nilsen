@@ -986,7 +986,7 @@ Den visuelle og funksjonelle UX-en bygger derfor på:
 - kontrollert adminflate
 - beskyttelse mot UI-regresjoner
 
-UX-spesifikasjonen beskriver den faktiske prototypen ved versjon 20.11.0, samtidig som ikke-verifiserte områder som full tilgjengelighet og fullskala brukertesting er eksplisitt markert som videre arbeid.
+UX-spesifikasjonen beskriver produksjonsgrunnlaget ved versjon 20.11.5, med senere dokumenterte UI/PWA-patcher gjennom 02.11.2026, samtidig som ikke-verifiserte områder som full tilgjengelighet og fullskala brukertesting er eksplisitt markert som videre arbeid.
 
 # Produksjonstillegg – mobil-first UX i v20.11.0
 
@@ -1048,3 +1048,10 @@ Ny pilottilbakemelding konkretiserte prinsippet om progressiv kompleksitet.
 - Fortsett samtalen skal ikke stoppe etter første oppfølgingsspørsmål. Etter hvert KI-svar skal nye relevante forslag kunne presenteres, samtidig som fritekst alltid er tilgjengelig.
 
 Disse kravene stammer fra faktisk pilotbruk og skal derfor behandles som UX-regresjonskrav, ikke som dekorative preferanser.
+
+
+## Taksonomi og klarspråk etter pilot
+
+Pilot-/brukerfunn viste at enkelte undertemaer var faglig forståelige, men for vage, overlappende eller lite skannbare i faktisk navigasjon. Taksonomien ble derfor redusert fra 56 til **48 undertemaer**. Prinsippet ble «kort tittel, presis beskrivelse»: tittelen skal bruke ord lederen sannsynligvis vil lete etter, mens nyanser og avgrensninger ligger i beskrivelsen.
+
+Endringen er et UX- og informasjonsarkitekturvalg, ikke bare reduksjon av scope.
