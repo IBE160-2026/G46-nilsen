@@ -2,6 +2,8 @@
 
 **Formål:** Gjøre det mulig å se hva testene faktisk forventer, hvilke krav de dekker, og hvordan KI-svar vurderes.
 
+**Status 02.11.2026:** Golden/pilotbanken inneholder **26 caser** og dekker alle 9 hovedtemaer med flere representative saker. Den bredere benchmarkbanken inneholder **114 saker** og er synkronisert med de **48 gjeldende undertemaene**. Den dokumenterte live golden-kjøringen 26.10 omfattet 21 caser og skal beholdes som et datert historisk testresultat, ikke omskrives til 26.
+
 ## 1. Hvorfor en fasitbank?
 
 Et KI-svar har ikke nødvendigvis én korrekt ordlyd. Samtidig er det utilstrekkelig å teste bare om modellen returnerer et svar.
@@ -108,7 +110,8 @@ Rapporten viser både maskinelle funn og den menneskelige fasiten for hver case.
 | Kritiske KI-saker | FR-03 / FR-15 / AI-01–04 | `tests/test-ai-stress.js`, `tests/cases/AI-STRESS-CASES.json` |
 | Golden/fasit | FR-03 / FR-15 / AI-01–04 | `tests/test-ai-golden.js`, `tests/AI-GOLDEN-CASES.json` |
 | Modellvalg | FR-13 / FR-14 | `tests/test-model-compare.js` |
-| Bred benchmark | FR-14 | `data/BENCHMARK-CASES.json` |
+| Bred benchmark | FR-14 | `data/BENCHMARK-CASES.json`, `tests/test-benchmark-taxonomy.cjs` |
+| Yrkes-/sektorkontekst, feature-flagget lag | FR-22 | `tests/test-occupation-router.cjs`, `tests/test-occupation-data.cjs`, `tests/test-occupation-context.cjs`, `tests/test-occupation-standard.cjs` |
 
 ## 8. Kvalitetsprinsipp
 
