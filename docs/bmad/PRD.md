@@ -3,7 +3,7 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
-**Status:** Revidert PRD, synkronisert mot faktisk leveransestatus 02.11.2026  
+**Status:** Revidert PRD, sluttkontrollert mot faktisk leveransestatus 05.11.2026  
 **Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 med senere dokumenterte patcher  
 **Språk:** Norsk
 
@@ -232,7 +232,7 @@ Brukeren skal kunne fortsette dialogen med KI etter første veiledning.
 
 ---
 
-## FR-05 – Samtalesimulering
+## FR-05 – Samtaleøvelse (samtalesimulering)
 
 **Status:** IMPLEMENTERT
 
@@ -848,7 +848,7 @@ Leveransen anses som funksjonelt komplett som prosjektprototype når følgende e
 | KI-veiledning | Implementert | server + systemprompt |
 | 9 hovedtemaer | Implementert | app + faggrunnlag |
 | Personverngateway | Implementert/testet | 56/56 i siste dokumenterte personvernpakke |
-| Simulator | Implementert/testet | 24/24 tester |
+| Samtaleøvelse | Implementert/testet | 24/24 tester |
 | Autentisering | Implementert | Supabase/server |
 | Historikk | Implementert | Supabase/regresjonstest |
 | Roller | Implementert | app/server |
@@ -1027,7 +1027,7 @@ Kjerneleveransen består av:
 - ni hovedtemaer
 - oppfølgingsdialog
 - personverngateway
-- samtalesimulator
+- samtaleøvelse
 - autentisering
 - historikk
 - roller og admin
