@@ -1,202 +1,109 @@
-﻿# Samtalestøtte
+# Samtalestøtte
 
-**Gjeldende produksjonsversjon:** 20.11.5 · 29.10.2026  
-**Pågående arbeidsrunde:** 30.10–01.11.2026 · dokumentasjon og videre forbedringer etter v20.11.5, ikke egen fullverifisert release  
+Samtalestøtte er en KI-basert webapplikasjon utviklet i IBE160 Programmering med KI ved Høgskolen i Molde.
 
-Samtalestøtte er en webbasert prototype for ledere som skal forberede og øve på krevende samtaler med medarbeidere. Løsningen er utviklet som del av IBE160 Programmering med KI ved Høgskolen i Molde.
+Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeidersamtaler. Den støtter blant annet strukturering av situasjonen, forslag til åpning og spørsmål, oppfølging i samme kontekst, samtaleøvelse, refleksjon og personvernkontroll før KI-kall.
 
-Målet er ikke at KI skal ta beslutninger for lederen, men å støtte forberedelse, formuleringer, refleksjon og praktisk øvelse.
-
-Det som skiller Samtalestøtte fra en vanlig KI-chat er at brukeren ikke selv må bygge hele prompten, sikkerhetsrammen og arbeidsflyten. Produktet kombinerer ni hovedtemaer og 48 undertemaer med strukturert forberedelse, oppfølging i samme kontekst, dynamisk samtalesimulering, personvernkontroll i klient og server, kuratert faggrunnlag og systematisk KI-testing.
-
-Kildebruken er også styrt. SOURCEBANK v6 har 62 kuraterte kilder med blant annet norske myndighetskilder, regelverk, organisasjons- og ledelsespsykologi, relasjonsledelse og samtaleteknikk. Banken brukes som førstevalg, mens kontrollert nettsøk fungerer som supplement når kildebanken ikke er tilstrekkelig. Kildetype skal passe til påstanden: lov- og regelverksspørsmål bør forankres i autoritative kilder, mens råd om samtaleteknikk bør bygge på relevant forskning og fagkunnskap. Samtalestøtte er dermed utviklet som et domenespesifikt arbeidsverktøy for krevende medarbeidersamtaler, ikke som et generelt chatgrensesnitt.
-
-## Sammenlignbare norske tilbud og produktavgrensning
-
-Samtalestøtte er ikke utviklet som en erstatning for kurs, lederutviklingsprogrammer eller faglig rådgivning. Flere norske tilbud dekker deler av det samme behovet, men med ulikt formål og ulik brukssituasjon. Det er derfor mer presist å se dem som **beslektede og delvis komplementære tilbud** enn som direkte konkurrenter.
-
-| Tilbud | Hovedformål | Samtale / simulering | Egen konkret situasjon | Viktig forskjell fra Samtalestøtte |
-|---|---|---|---|---|
-| [DFØ – Den vanskelige samtalen](https://laeringsplattformen.dfo.no/kursoversikt/den-vanskelige-samtalen-en-digital-treningsarena-ledere-i-staten) | Digital treningsarena for ledere i staten | Ja. Ni treningsøkter, hvorav fem simulerte samtaler med ferdige medarbeidere | Primært forhåndsdefinerte treningssituasjoner | Sterk på mengdetrening, refleksjon, verktøy og ekspertråd. Samtalestøtte tar utgangspunkt i brukerens egen aktuelle sak og genererer situasjonstilpasset støtte fortløpende. |
-| [Verdi CoachLab](https://verdivekst.no/no/coachlab.html) | Praktisk samtaletrening for ledere, HR og andre som hjelper mennesker | Ja. AI brukes til fiktiv trening og tilbakemelding i læringsløp | Hovedsakelig fiktive treningssituasjoner | CoachLab er først og fremst et lærings- og treningsmiljø. Samtalestøtte er tenkt som et arbeidsverktøy som også brukes når en konkret medarbeidersamtale faktisk skal forberedes. |
-| [Verdi-appen](https://verdivekst.no/no/verdi.html) | Digital coachinspirert samtalepartner for personlig refleksjon og utvikling | Ja. Løpende AI-samtale | Ja | Dette er den tydeligste norske parallellen til løpende KI-støtte. Forskjellen ligger særlig i domenet: Verdi retter seg mot personlig refleksjon og utvikling, mens Samtalestøtte avgrenses til lederrollen, arbeidsliv, krevende medarbeidersamtaler, personvern og arbeidslivsrelevant fag-/regelverkskontekst. |
-| [Bjørnson MODUS](https://www.bjornson.no/produkter-og-tjenester/bjornson-modus) | Digital ledertrening og systematisk medarbeideroppfølging | Praktiske øvelser og samtaleverktøy; åpen KI-dialog er ikke dokumentert i offentlig produktinformasjon | Delvis, gjennom mål, tiltak og medarbeideroppfølging | MODUS dekker bredere lederutvikling og systematisk oppfølging over tid. Samtalestøtte er smalere og mer situasjonsnært rettet mot krevende samtaler. |
-
-### Kurs versus støtte i behovsøyeblikket
-
-En viktig produktforskjell er **når** løsningen brukes.
-
-Kurs og treningsarenaer bygger generell kompetanse før en konkret situasjon oppstår. De kan lære lederen prinsipper, gi mengdetrening og gjøre lederen tryggere på vanskelige samtaler. Samtalestøtte er i større grad utviklet som **løpende støtte i behovsøyeblikket**: brukeren beskriver en aktuell situasjon og får hjelp til å forberede akkurat denne samtalen.
-
-Dette betyr at løsningene kan utfylle hverandre. Et kurs kan bygge kompetansen over tid, mens Samtalestøtte kan støtte anvendelsen av kompetansen når en konkret sak oppstår.
-
-### Hva som faktisk skiller Samtalestøtte
-
-Prosjektet skal ikke bygge differensiering på påstanden om at andre løsninger mangler KI eller samtalefunksjoner. Det finnes norske produkter med både digital samtale og AI-basert trening. Den tydeligste forskjellen ligger i **kombinasjonen av funksjoner i én arbeidsflyt**:
-
-- brukerens egen konkrete medarbeidersituasjon som utgangspunkt
-- strukturert forberedelse med forslag til åpning, spørsmål og mulige reaksjoner
-- videre KI-dialog som beholder konteksten fra saken
-- dynamisk samtalesimulering med en fiktiv medarbeider
-- personvernkontroll før tekst sendes til KI
-- arbeidslivsspesifikk tema- og undertemastruktur
-- kuratert kildegrunnlag og tydelig skille mellom råd og formelle/faglige forhold
-- historikk, utskrift og installasjon som PWA/webapp
-- planlagt yrkes-, sektor- og arbeidsgivertilpasning der dette faktisk er relevant
-
-### Direkte samtale – planlagt utprøving
-
-Prosjektet vurderer også å teste en mer direkte samtalefunksjon der brukeren kan starte en åpen dialog om en krevende arbeidssituasjon uten først å gå gjennom hele den strukturerte forberedelsesflyten.
-
-En slik funksjon skal **ikke** beskrives som unik i seg selv. Verdi-appen viser allerede at en norsk tjeneste kan tilby løpende KI-basert samtalestøtte. Hypotesen som skal testes i Samtalestøtte er om direkte dialog gir merverdi når den kombineres med prosjektets eksisterende arbeidslivskontekst, personvernregler, tema-/regelverksstruktur, kildegrunnlag, videre forberedelse og samtalesimulering.
-
-Dersom funksjonen tas videre, bør den evalueres mot minst disse spørsmålene:
-
-1. Finner brukeren raskere frem til nyttig støtte enn gjennom den strukturerte flyten?
-2. Blir svarene for generelle når tema og undertema ikke er valgt på forhånd?
-3. Klarer løsningen fortsatt å ivareta personvern, rollegrenser og relevante arbeidslivsregler?
-4. Bør direkte samtale være en alternativ inngang til Samtalestøtte, eller bare et supplement etter at en sak er opprettet?
-5. Gir funksjonen en reell produktfordel sammenlignet med en generell KI-chat og andre norske digitale samtalepartnere?
+Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy. KI-en skal støtte lederens vurdering, ikke erstatte lederens ansvar eller relevant fagkompetanse.
 
 ## Rask tilgang for vurdering
 
-### Anbefalt sensorløp
+### Publisert løsning
 
-**1. Test full funksjonalitet i nettleseren**
-
-Publisert produksjonsversjon for prosjektleveransen:
+Produksjonsversjonen kan åpnes her:
 
 `https://g46-nilsen-samtalestotte.onrender.com`
 
-Den publiserte versjonen anbefales ved vurdering av selve produktet. Den er allerede konfigurert med prosjektets KI-modell, Supabase og servermiljø, og krever derfor ikke lokal installasjon eller sensorens egen API-nøkkel.
+Tilgang til lukket testbruker gis separat ved behov.
 
-Tilgang til den lukkede testversjonen gis separat sammen med innleveringen.
+Render kan bruke litt tid på første oppstart etter inaktivitet.
 
-Render kan gå i dvale ved inaktivitet, så første oppstart kan ta litt ekstra tid.
+### Lokal demomodus uten nøkler
 
-**2. Kjør appen lokalt uten nøkler eller ekstern infrastruktur**
+Installer avhengigheter:
 
-Etter `npm install` kan sensor starte en separat lokal demomodus:
+```bash
+npm install
+```
+
+Start sensordemo:
 
 ```bash
 npm run demo
 ```
 
-Åpne deretter:
+Åpne:
 
 ```text
 http://127.0.0.1:3000
 ```
 
-Demomodus bruker samme frontend som produktet, men erstatter Supabase og ekte KI-kall med deterministiske mock-svar og midlertidig minnehistorikk. Den krever ingen `.env`, ingen API-nøkkel, ingen betalt konto og ingen ekstern database. Den er laget for kjørbarhet og vurdering – **ikke** for å dokumentere kvaliteten på den ekte KI-en.
+Demomodus bruker samme frontend som prosjektet, men erstatter eksterne KI-kall og databaseavhengigheter med deterministiske mock-svar. Den krever ingen `.env`, API-nøkler eller ekstern database.
 
-**3. Kontroller deterministiske tester lokalt**
+### Kjør lokale tester
 
 ```bash
 npm test
 ```
 
-`npm test` krever ikke OpenAI-/OpenRouter-nøkkel og gjør ingen eksterne KI-kall. Testpakken inkluderer også en regresjonstest som starter den lokale sensordemoen og kontrollerer kjerneendepunktene.
+Den deterministiske testpakken gjør ingen eksterne KI-kall.
 
-**4. Ekte KI-kall lokalt er valgfritt**
-
-Bare dersom sensor ønsker å kjøre de faktiske live KI-testene lokalt, for eksempel `npm run test-ai:golden`, kreves egen gyldig API-konfigurasjon. De siste verifiserte golden-resultatene er dokumentert i repoet.
+Live KI-tester, som `npm run test-ai:golden`, krever gyldig API-konfigurasjon og er valgfrie ved vurdering.
 
 ## Kjernefunksjoner
 
-Samtalestøtte kan blant annet:
+Prototypen omfatter:
 
-- hjelpe brukeren å strukturere en krevende samtale
-- foreslå åpning, spørsmål og videre formuleringer
-- forberede brukeren på mulige reaksjoner
-- fortsette KI-dialog om samme situasjon og få nye forslag til videre spørsmål
-- simulere en samtale med en medarbeider
-- støtte refleksjon etter øvelsen
-- skrive ut situasjon, hovedråd og videre råd i et eget dokumentoppsett
-- lagre historikk for innloggede brukere
-- kontrollere tekst for identifiserende opplysninger før KI-kall
-- installeres som PWA/webapp på støttede mobil- og desktopnettlesere
-- tilpasse navigasjon, merkevare og samtaleøvelse til mobilskjerm
+- strukturert støtte til krevende medarbeidersamtaler
+- 9 hovedtemaer og 48 undertemaer
+- videre KI-dialog i samme sak
+- Samtaleøvelse med KI-medarbeider
+- personverngateway i klient og server
+- innlogging, historikk og roller
+- kuratert faggrunnlag og kildebruk
+- utskrift av situasjon og råd
+- mobiltilpasset grensesnitt og PWA/installasjon
+- automatiserte regresjons- og KI-tester
 
-Løsningen er ikke et HR-system, journalsystem eller beslutningsverktøy.
+## Faglig og etisk avgrensning
 
-## Veiledning – ikke faglig fasit
+KI-råd kan være ufullstendige eller feil. Samtalestøtte skal ikke:
 
-Samtalestøtte skal brukes som **støtte til forberedelse, refleksjon og trening**, ikke som en autoritativ fasit på hvordan en krevende samtale skal håndteres.
+- stille diagnoser
+- fastslå skyld eller motiv
+- gi bindende juridiske råd
+- ta personalbeslutninger
+- erstatte HR, jurist, BHT eller annet relevant fagmiljø
 
-Gode medarbeidersamtaler berører flere fagområder. Formelle spørsmål kan kreve arbeidsrettslig, HR- eller HMS-kompetanse, mens selve samtaleføringen også bygger på kunnskap fra blant annet organisasjonspsykologi, aktiv lytting, feedback, veiledning, motiverende intervju og evidensbaserte intervjuprinsipper. Ingen enkelt faggruppe behandles som universell fasit.
+Prosjektets golden/fasit-bank er utviklet som prosjektets eget testgrunnlag og er ikke uavhengig ekspertvalidering.
 
-Prosjektets golden/fasit-bank er utarbeidet av studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI og bygger på prosjektets krav, kuraterte kilder og sikkerhetsregler. Den er **ikke uavhengig ekspertvalidert**. KI-svar kan derfor være ufullstendige, unøyaktige eller lite egnet i den konkrete situasjonen.
+## Teknologi
 
-Brukeren må alltid gjøre en selvstendig vurdering og bruke relevant fagkompetanse, virksomhetens rutiner og gjeldende regelverk når saken krever det. Samtalestøtte skal ikke stille diagnoser, fastslå skyld eller motiv, gi bindende juridiske råd eller ta personalbeslutninger.
+- HTML, CSS og JavaScript
+- Node.js / Express
+- Supabase
+- OpenAI / OpenRouter
+- Git / GitHub
+- Render
 
-## Temaer
+## Lokal kjøring med full funksjonalitet
 
-Prototypen har ni hovedtemaer:
-
-1. Alkohol og rus
-2. Fravær og oppfølging
-3. Prestasjon og utvikling
-4. Lønn og utvikling
-5. Samarbeid og kommunikasjon
-6. Oppsigelse og avslutning av arbeidsforhold
-7. Sikkerhet og ansvar
-8. Livssituasjoner
-9. Mobbing og trakassering
-
-## Kjør prosjektet lokalt
-
-### Forutsetninger
-
-Prosjektet er utviklet og testet med:
-
-- Node.js 22–26 for lokal kjøring og testing (Node 24 LTS anbefales)
-- npm 11.x (følger med støttet Node.js-versjon)
-- Git
-
-### Node-versjon for Render
-
-`package.json` angir `>=22 <27` som kompatibilitetsområde for lokal kjøring og vurdering. Faglærer har verifisert at `npm ci` og `npm test` består på Node 23.11. Produksjon på Render skal fortsatt bruke den sikkerhetspatchede Node-versjonen `26.12.1` via miljøvariabelen `NODE_VERSION`, slik at lokal kompatibilitet og produksjonssikkerhet holdes adskilt.
-
-### Klon repoet
+Klon repoet:
 
 ```bash
 git clone https://github.com/IBE160-2026/G46-nilsen.git
 cd G46-nilsen
 ```
 
-### Installer avhengigheter
+Installer:
 
 ```bash
 npm install
 ```
 
-### Opprett `.env`
+Kopier `.env.example` til `.env` og fyll inn nødvendig konfigurasjon.
 
-Kopier `.env.example` til en ny fil som heter `.env`.
-
-Eksempel:
-
-```env
-OPENAI_API_KEY=
-OPENROUTER_API_KEY=
-OPENAI_MODEL=gpt-5.6-luna
-
-PORT=3000
-NODE_ENV=development
-APP_BASE_URL=http://localhost:3000
-
-SUPABASE_URL=https://ditt-prosjekt.supabase.co
-SUPABASE_PUBLISHABLE_KEY=sb_publishable_...
-SUPABASE_SECRET_KEY=sb_secret_...
-
-ADMIN_EMAILS=din-admin-epost@example.com
-APP_VERSION=20.11.4
-```
-
-Ekte API-nøkler og andre hemmeligheter skal ikke legges i GitHub.
-
-### Start appen
+Start:
 
 ```bash
 npm start
@@ -208,223 +115,65 @@ npm start
 http://localhost:3000
 ```
 
-For utvikling:
-
-```bash
-npm run dev
-```
-
 Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 
-## Produksjonsrelease 20.11.0 – mobil og PWA
+## Viktig dokumentasjon
 
-**Patch 20.11.1:** desktop/tablet-responsiviteten ble justert etter produksjonskontroll. Ekte mobilmodus starter nå ved 640 CSS-piksler, Samtaleøvelse beholder to-kolonneoppsett lenger på PC/nettbrett, og samme KI-illustrasjon brukes i lys, hybrid og mørk visning.
+### Produkt og krav
 
-**Patch 20.11.2:** topplinjen fikk en egen kompakt desktoptilstand for mellomstore vinduer slik at logo, breadcrumb, temavelger, Ny samtale og profil ikke overlapper eller kuttes. Finn tema-feltene tømmes også når brukeren går videre til råd, slik at en tidligere situasjonsbeskrivelse ikke blir hengende igjen i søkefeltene.
+- `product-brief.md` – produktproblem, målgruppe, scope og produktretning
+- `docs/bmad/PRD.md` – funksjonelle og ikke-funksjonelle krav
+- `docs/bmad/ARCHITECTURE-BMAD.md` – teknisk arkitektur
+- `docs/bmad/UX-DESIGN-BMAD.md` – UX-prinsipper og designvalg
+- `docs/bmad/EPICS-AND-STORIES-BMAD.md` – epics, stories og sporbarhet
+- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md` – utviklings- og implementeringsforløp
 
-**Patch 20.11.3:** profilen er igjen forankret til høyre kant på kompakt desktop, mens temavelgeren har reservert luft mot sidefeltknappen. Innholdet komprimeres uten å flytte brukerprofilen unødvendig mot venstre.
+### KI, testing og faggrunnlag
 
-**Patch 20.11.4:** Historikk-logoen er flyttet inn i en ekte, responsiv høyrekolonne og sentreres dynamisk med vindusstørrelsen. KI-illustrasjonen i Samtaleøvelse vises uten kort, kant eller bakgrunn rundt selve merket.
+- `docs/ai/AI-TESTPLAN.md` – teststrategi for KI og kvalitet
+- `docs/ai/AI-LOGG-SAMTALESTOTTE.md` – dokumentert KI-bruk i utviklingen
+- `docs/ai/TEST-FASIT-OG-SPORBARHET.md` – golden/fasit og kravspor
+- `docs/SOURCEBANK.md` – kuratert kilde- og faggrunnlag
+- `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` – sikkerhet og personvern
 
-Pilotarbeidet 29.10.2026 viste at mobil måtte behandles som en reell brukerflate, ikke bare som en nedskalert desktopvisning. Versjon 20.11.0 samler derfor mobil-first UX, PWA-installasjon og merkevareforbedringer i én produksjonsrelease.
+### Refleksjon og utviklingshistorikk
 
-Blant endringene er:
+- `docs/REFLEKSJONSRAPPORT-UTKAST.md`
+- `docs/REFLECTION-NOTES-v20.md`
+- `docs/REFLEKSJONSADDENDUM-2026-11-02.md`
+- `docs/DOKUMENTASJON-SYNK-2026-11-02.md`
+- `CHANGELOG.md`
+- `docs/VERSJONSHISTORIKK-v20.11.md`
 
-- egen mobilnavigasjon og mobiltilpasset toppfelt
-- bedre utnyttelse av bredden i Samtaleøvelse
-- tydeligere Samtalestøtte-logo og egen KI-illustrasjon for Samtaleøvelse
-- klikkbare logoer/illustrasjoner med større forhåndsvisning
-- installasjon som standalone PWA med manifest, appikoner og service worker
-- synlig installasjonsveiledning i Innstillinger
-- komplett visning av de 62 kildene i Hjelp
-- regresjonstester for pilot-UX og PWA-oppsett
+## Testgrunnlag
 
-Den installerte PWA-en er fysisk testet på Samsung-mobil i Chrome. Dette er en webapp, ikke en app distribuert gjennom Google Play eller App Store. Nettleserens støtte avgjør om en eksplisitt installasjonsknapp kan vises.
+Prosjektet har blant annet tester for:
 
-## Database
+- personvern i klient og server
+- samtaleøvelse
+- historikk
+- UI-regresjon
+- kildebank
+- taksonomi og benchmark
+- yrkes-/sektorkontekst
+- PWA og mobil
+- golden/fasitbasert KI-kvalitet
 
-Grunnoppsett for Supabase ligger i:
+Den brede benchmarkbanken inneholder 114 saker synkronisert med de 48 gjeldende undertemaene. Golden/pilotbanken inneholder 26 caser.
 
-`database/SUPABASE-SETUP.sql`
+## Videre arbeid
 
-Migreringer ligger i:
+Noen funksjoner er bevisst holdt utenfor dagens ferdige leveranse, blant annet:
 
-`database/migrations/`
+- full lukket/offline variant
+- lokal RAG og intern KI
+- tale/voice i Samtaleøvelse
+- videre yrkes-/sektortilpasning i produksjons-UI
+- fullskala representativ brukertesting
 
-## Testing
+Disse områdene er dokumentert som videre arbeid og skal ikke tolkes som ferdige funksjoner.
 
-### Lokale tester
-
-Disse er deterministiske og gjør ikke eksterne KI-kall. De kan kjøres uten OpenAI- eller OpenRouter-nøkkel.
-
-Kjør hele den lokale testpakken med én kommando:
-
-```bash
-npm test
-```
-
-`npm test` er alias for `npm run test-local` og kjører de sentrale deterministiske regresjonstestene sekvensielt. `tests/test-sensor-demo.cjs` kontrollerer at `scripts/sensor-demo.js` kan starte uten hemmeligheter og levere mock-svar for kjerneflyten.
-
-Testene kan også kjøres enkeltvis:
-
-```bash
-npm run test-syntax
-npm run test-privacy
-npm run test-simulation
-npm run test-server-privacy
-npm run test-privacy-surfaces
-npm run test-ui-regression
-npm run test-history-hotfix
-npm run test-bubble-cleanup
-npm run test-clipboard
-npm run test-guidance-quality
-npm run test-pilot-regression
-npm run test-golden-schema
-npm run test-golden-utils
-npm run test-benchmark-taxonomy
-npm run test-sourcebank
-npm run test-occupation-router
-npm run test-occupation-data
-npm run test-agreement-router
-npm run test-occupation-standard
-npm run test-natural-response-standard
-npm run test-occupation-context
-npm run test-pilot-ux
-npm run test-pwa
-npm run test-sensor-demo
-npm run test-public-assets
-npm run test-repo-structure
-```
-
-### Dokumentert teststatus
-
-Den siste **komplette dokumenterte lokale kjøringen av hele `npm test`-pakken** ble gjort 26.10.2026 og besto uten feil på koden som forelå da. Kjøringen omfattet blant annet syntaks, personvern, 24/24 simulatorkontroller, server-personvern, UI-regresjon, historikk, samtaleboble, clipboard, golden-schema, sensor-demo, offentlige assets og repo-struktur.
-
-Testpakken er senere utvidet betydelig. Dagens `npm test` inkluderer nå også blant annet:
-- personvernflater
-- guidance-quality
-- pilot-regresjon
-- SOURCEBANK-kontroll
-- yrkesrouter og yrkesdata
-- avtalerouter
-- occupation-response-standard
-- natural-response-standard
-- occupation-context
-- pilot-UX
-- PWA
-
-Personverntestene inneholder regresjonscaser for tvetydige navn og vanlige ord som `Dag` og `dag`. Testsett og antall testcaser har blitt utvidet etter den historiske fullkjøringen, og README skal derfor **ikke bruke gamle enkelttall som om de beskriver dagens totale testpakke**.
-
-Senere endringer, blant annet produksjonsflyt, pilotcaser, personvernregler, taksonomi, mobil/PWA, menneskelig KI-språk, yrkesarkitektur og rådshierarki, er dokumentert med målrettede tester og kontroller der dette faktisk er gjennomført. Arbeidsrunden 30.10–01.11.2026 skal ikke fremstilles som fulltestet før en ny komplett `npm test` er kjørt på den endelige koden.
-
-### Sporbarhet fra krav til test
-
-Sentrale krav i `docs/bmad/PRD.md` har direkte testspor:
-
-| Krav | Testbevis |
-|---|---|
-| FR-05 Samtalesimulering | `tests/test-simulation.js` |
-| FR-06 Personverngateway – klient | `tests/test-privacy.js` |
-| FR-06 Personverngateway – server | `tests/test-server-privacy.cjs` |
-| FR-09 Historikk | `tests/test-history-hotfix.cjs` |
-| UI-regresjon | `tests/test-ui-regression.cjs` |
-| Simulator-UI/regresjon | `tests/test-bubble-cleanup.cjs` |
-| Clipboard/kopieringsfunksjoner | `tests/test-clipboard.cjs` |
-| FR-03 / FR-15 / AI-01–04 – Golden/fasitbasert KI-kvalitet | `tests/AI-GOLDEN-CASES.json`, `tests/test-ai-golden.js` |
-| Fasitbankens struktur og 9/9 temadekning | `tests/test-golden-schema.cjs` |
-
-Dette gjør det mulig å følge sentrale krav fra PRD til konkret testbevis uten eksterne KI-kall.
-
-### Fasitbasert KI-testing
-
-Prosjektet har en egen golden/fasit-bank i `tests/AI-GOLDEN-CASES.json`. Den inneholder nå **26 caser**, dekker alle ni hovedtemaer med minst to caser per tema og har ekstra dekning for de særlig risikoutsatte temaene mobbing/trakassering og oppsigelse/avslutning av arbeidsforhold. Banken beskriver:
-
-- forventet hovedtema
-- maskinelle kontrollpunkter
-- hva svaret **må** inneholde
-- hva svaret **bør** inneholde
-- hvilke feil som regnes som kritiske
-- hvilke PRD/KI-krav casen tester
-
-Selve fasitstrukturen kan kontrolleres uten API-nøkkel:
-
-```bash
-npm run test-golden-schema
-```
-
-Ekte KI-svar kan deretter testes mot samme fasit med:
-
-```bash
-npm run test-ai:golden
-```
-
-Denne testen kombinerer automatisk kontroll med en eksplisitt manuell vurderingsfasit, fordi faglig kvalitet og nyanser ikke bør avgjøres av nøkkelord alene. Fasiten er utarbeidet av studenten/prosjekteieren med KI-støtte fra ChatGPT/OpenAI. Den er basert på prosjektets krav, kilder og sikkerhetsregler, men er **ikke uavhengig validert av relevante eksterne fagpersoner**. Hvilken kompetanse som er relevant varierer med saken og kan blant annet være organisasjonspsykologi/samtalemetodikk, HR/arbeidsliv, arbeidsrett eller HMS.
-
-Ny live golden-kjøring 26.10.2026 mot **GPT-5.6 Luna** omfattet alle **21 casene**. Maskinelt resultat var **19 OK, 2 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil**. De to flaggede casene (`G-AVSL-03` og `G-SAMARB-02`) ble manuelt gjennomgått mot MÅ-/BØR-fasiten. Begge traff de faglige hovedkravene; flagget skyldtes at responsen ikke satte `Avklaring` til ja selv om rådet ellers inneholdt relevante kontrollpunkter og en forsvarlig videre prosess. Resultatet dokumenteres derfor som 19 maskinelt OK + 2 manuelt akseptert etter kontroll, ikke som 21/21 maskinelt OK.
-
-### Nyeste produksjonsflyt-kontroll
-
-28.10.2026 ble goldenbanken utvidet med fem faktiske pilotcaser til **26 caser** og kjørt gjennom samme analyse- og veiledningsflyt som vanlige brukere. Første fullkjøring registrerte 26/26 saker, men tre ble stoppet før KI-kall av personvernfilteret på grunn av falske navnetreff. Feilen ble sporet til deterministisk navnedeteksjon, rettet i underliggende regelverk og låst med egne regresjonstester. Ved ny fullkjøring kom **26/26 helt gjennom til KI-svar**. 25 åpninger besto den automatiske kvalitetskontrollen; én åpning var 67 ord mot en satt grense på 65, men ble manuelt vurdert som innholdsmessig god.
-
-Dette er dokumentert som produksjonsflyt-regresjon, ikke som ekstern faglig validering. Kjøringen viser også modellens ikke-determinisme: samme pilotcase kan få ulik ordlyd mellom kjøringer, mens de ønskede kvalitetskravene fortsatt kan være stabile.
-
-Benchmarkbanken er i versjon 20.10.9 synkronisert med de **48 gjeldende undertemaene** og inneholder 114 faste saker. `npm run test-benchmark-taxonomy` kontrollerer at alle benchmarkcaser peker på gyldige tema/undertema-par og at hvert undertema har minst to saker.
-
-### KI- og live-tester
-
-Disse krever gyldig API-konfigurasjon og gjør faktiske modellkall:
-
-```bash
-npm run test-ai
-npm run test-ai:full
-npm run test-ai:golden
-npm run test-ai:stress
-npm run test-ai:stress:full
-npm run test-ai:stress:problems
-npm run test-simulation:live
-npm run test-model-compare
-```
-
-KI-testene kan bruke mer tid og medføre API-kostnader.
-
-## Prosess og dokumentasjon
-
-Planlegging og utvikling er dokumentert gjennom BMAD:
-
-- `product-brief.md`
-- `docs/bmad/PRD.md`
-- `docs/bmad/ARCHITECTURE-BMAD.md`
-- `docs/bmad/UX-DESIGN-BMAD.md`
-- `docs/bmad/EPICS-AND-STORIES-BMAD.md`
-- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
-
-KI-bruk og kvalitetssikring er dokumentert i:
-
-- `docs/ai/AI-LOGG-SAMTALESTOTTE.md`
-- `docs/ai/AI-SYSTEMPROMPT.md`
-- `docs/ai/AI-RESPONSE-CONTRACT.md`
-- `docs/ai/AI-TESTPLAN.md`
-- `docs/VERSJONSHISTORIKK-v20.10.md` – kobler v20.10.4–v20.10.10 til commitspor og forklarer fler-commit versjonsløft
-- `docs/VERSJONSHISTORIKK-v20.11.md` – dokumenterer pilotgren, PR #1, fysisk mobil/PWA-test og merge til produksjon
-
-Sikkerhet og personvern:
-
-- `docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
-
-Brukertesting:
-
-- `docs/BRUKERTEST-PLAN.md` – felles pilotopplegg, personvern, tolkning og metodiske begrensninger
-
-Faggrunnlag:
-
-- `docs/faggrunnlag/`
-- `docs/SOURCEBANK.md`
-- `data/SOURCEBANK.json`
-- `docs/faggrunnlag/FAGGRUNNLAG-SAMTALETEKNIKK-RELASJONSLEDELSE.md` – lokalt tverrgående grunnlag for relasjonsledelse, samtaleteknikk og framtidig offline/RAG
-
-Utviklingshistorikken kan også følges i Git-historikken og `CHANGELOG.md`.
-
-## Mappestruktur
+## Repo-struktur
 
 ```text
 G46-nilsen/
@@ -432,42 +181,16 @@ G46-nilsen/
 ├── data/
 ├── database/
 ├── docs/
-│   ├── ai/
-│   ├── bmad/
-│   └── faggrunnlag/
 ├── scripts/
 ├── src/
-│   ├── client-data.js
-│   └── server/
-│       ├── topic-contracts.js
-│       └── ai-schemas.js
 ├── tests/
-│   └── cases/
 ├── app.js
 ├── index.html
 ├── server.js
 ├── styles.css
 ├── package.json
 ├── product-brief.md
-├── CHANGELOG.md
-├── .env.example
 └── README.md
 ```
 
-Hovedkoden ligger i rotmappen, mens dokumentasjon, tester, bilder og databasefiler er skilt ut i egne mapper. Klientens tema-/ikondata ligger separat i `src/client-data.js`, slik at `app.js` i større grad inneholder faktisk bruker- og tilstandslogikk. Tilsvarende ligger serverens tema-/KI-kontrakter i `src/server/`, mens autentisering, database- og API-flyt fortsatt ligger samlet i `server.js`.
-
-Repoet inneholder også lærer-/kursverktøy for Claude-basert sesjonslogging (`CLAUDE.md` og `.claude/`). Disse er lagt inn av faglærer og er derfor eksplisitt tillatt av repo-strukturtesten. Verktøyet kan senere opprette `.logs/` med sesjonslogger; dette regnes også som et forventet rotområde, ikke som løs prosjektstøy.
-
-## Kjent teknisk gjeld
-
-Prototypen fungerer og er dekket av regresjonstester, men hovedfilene er fortsatt store: `app.js` er omtrent 3 400 linjer og `server.js` omtrent 1 600 linjer. En kontrollert sluttmodularisering flyttet statiske klientdata og serverens tema-/KI-kontrakter til `src/`, men autentisering, databaseflyt, API-ruter og mye klienttilstand ligger fortsatt samlet i hovedfilene.
-
-Et naturlig neste steg ved videre produksjonsmodning er å dele disse ansvarene i mindre moduler med tydeligere grenser. En større refaktorering er bevisst ikke gjort rett før innlevering, fordi den ville økt regresjonsrisikoen i en fungerende prototype uten å endre kjerneverdien i produktet. Denne begrensningen er også dokumentert i arkitekturen og refleksjonsrapporten.
-
-## Kontakt
-
 Prosjektet er utviklet av Cecilie C. Nilsen som del av IBE160 Programmering med KI ved Høgskolen i Molde.
-
-Kontakt: **cecilie.c.nilsen@himolde.no**
-
-**Patch 20.11.5:** Historikk-logoen ligger nå i en faktisk egen høyrekolonne i HTML/CSS, krymper dynamisk uten å wrappe under overskriften og skjules i ekte mobilmodus. Logoen er flyttet høyere i den ledige høyre flaten. Mørk/hybrid sidemeny har samtidig fått eksplisitt hover-kontrast, og KI-illustrasjonen i Samtaleøvelse beholdes uten ramme/boks.
