@@ -1,5 +1,5 @@
 {
-  "version": 13,
+  "version": 14,
   "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Kilder kan avgrenses både til sektor og konkrete yrker. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -74,12 +74,14 @@
       "contextualOnly": false
     },
     {
-      "id": "AT_MINIMUM_WAGE_TRANSPORT",
+      "id": "AT_MINIMUM_WAGE_OVERVIEW",
       "authority": "Arbeidstilsynet",
-      "title": "Allmenngjort minstelønn i godstransport og persontransport",
+      "title": "Allmenngjort minstelønn – bransjer med lovfestede minstekrav",
       "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/lonn/minstelonn",
       "sectors": [
-        "transport_logistics"
+        "transport_logistics",
+        "retail_hospitality_service",
+        "agriculture_nature"
       ],
       "occupations": [
         "bussjåfør",
@@ -87,29 +89,15 @@
         "varebilsjåfør",
         "taxisjåfør",
         "sjåfør",
-        "budbilsjåfør"
-      ],
-      "useFor": [
-        "lønn",
-        "minstelønn",
-        "arbeidsvilkår",
-        "godstransport",
-        "persontransport"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "AT_MINIMUM_WAGE_AGRICULTURE",
-      "authority": "Arbeidstilsynet",
-      "title": "Allmenngjort minstelønn i jordbruk og gartneri",
-      "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/lonn/minstelonn",
-      "sectors": [
-        "agriculture_nature"
-      ],
-      "occupations": [
+        "budbilsjåfør",
+        "kokk",
+        "servitør",
+        "hotellmedarbeider",
+        "resepsjonist",
+        "renholder",
+        "barista",
+        "kantinemedarbeider",
+        "renholdsoperatør",
         "bonde",
         "gårdbruker",
         "landbruksarbeider",
@@ -119,47 +107,22 @@
       "useFor": [
         "lønn",
         "minstelønn",
+        "allmenngjøring",
         "arbeidsvilkår",
-        "overtid",
+        "godstransport",
+        "persontransport",
+        "overnatting",
+        "servering",
+        "renhold",
         "jordbruk",
         "gartneri"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "AT_MINIMUM_WAGE_HOSPITALITY_CLEANING",
-      "authority": "Arbeidstilsynet",
-      "title": "Allmenngjort minstelønn i overnatting, servering og renhold",
-      "url": "https://www.arbeidstilsynet.no/lonn-og-ansettelse/lonn/minstelonn",
-      "sectors": [
-        "retail_hospitality_service"
-      ],
-      "occupations": [
-        "kokk",
-        "servitør",
-        "hotellmedarbeider",
-        "resepsjonist",
-        "renholder",
-        "barista",
-        "kantinemedarbeider",
-        "renholdsoperatør"
-      ],
-      "useFor": [
-        "lønn",
-        "minstelønn",
-        "arbeidsvilkår",
-        "reisetid",
-        "overnatting",
-        "servering",
-        "renhold"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_to_binding_minimum_rules"
     },
     {
       "id": "POLITI_INSTRUCTION",
@@ -320,6 +283,27 @@
       "lastVerified": "2026-11-08",
       "sourceType": "regulation",
       "contextualOnly": true
+    },
+    {
+      "id": "AT_RULES",
+      "authority": "Arbeidstilsynet",
+      "title": "Arbeidstilsynets regelverk",
+      "url": "https://www.arbeidstilsynet.no/regelverk/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "arbeidsmiljø",
+        "HMS",
+        "arbeidstid",
+        "varsling",
+        "trakassering",
+        "arbeidsutstyr"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false
     },
     {
       "id": "AT_ASBEST_BUILDING",
@@ -626,6 +610,33 @@
       "contextualOnly": true
     },
     {
+      "id": "FINANSTILSYNET_RULES",
+      "authority": "Finanstilsynet",
+      "title": "Finanstilsynets regelverk",
+      "url": "https://www.finanstilsynet.no/regelverk/",
+      "sectors": [
+        "office_finance_it"
+      ],
+      "useFor": [
+        "bank",
+        "forsikring",
+        "verdipapir",
+        "regnskap",
+        "revisjon",
+        "finansforetak"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "occupations": [
+        "regnskapsfører",
+        "revisor",
+        "bankrådgiver",
+        "forsikringsrådgiver"
+      ]
+    },
+    {
       "id": "HAIRDRESSER_HYGIENE",
       "authority": "Lovdata",
       "title": "Forskrift om hygienekrav for frisør- og hudpleievirksomhet",
@@ -696,33 +707,6 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "regulation",
-      "contextualOnly": true
-    },
-    {
-      "id": "FORSVARET_LEADERSHIP",
-      "authority": "Forsvaret",
-      "title": "Forsvarets grunnsyn på ledelse",
-      "url": "https://www.forsvaret.no/soldater-og-ansatte/regelverk/Forsvarets-grunnsyn-ledelse.pdf",
-      "sectors": [
-        "defence_police_emergency"
-      ],
-      "occupations": [
-        "Forsvaret",
-        "soldat",
-        "offiser",
-        "befal"
-      ],
-      "useFor": [
-        "ledelse",
-        "tilbakemelding",
-        "ansvar",
-        "oppdragsbasert ledelse",
-        "lederforventninger",
-        "kultur"
-      ],
-      "timeSensitive": false,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_guideline",
       "contextualOnly": true
     },
     {
@@ -816,47 +800,6 @@
       "contextualOnly": true
     },
     {
-      "id": "HAVTIL_RULES_PDF",
-      "authority": "Havindustritilsynet",
-      "title": "Gjeldende regelverk",
-      "url": "https://www.havtil.no/regelverk/pdf-av-regelverket/",
-      "sectors": [
-        "offshore_energy"
-      ],
-      "useFor": [
-        "rammeforskriften",
-        "styringsforskriften",
-        "innretningsforskriften",
-        "aktivitetsforskriften",
-        "teknisk og operasjonell forskrift"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false
-    },
-    {
-      "id": "DFO_PERSONNEL_MEETING",
-      "authority": "DFØ / Statens arbeidsgiverportal",
-      "title": "Gjennomføring av møte i personalsaker",
-      "url": "https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/gjennomforing-av-mote",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "personalsak",
-        "vanskelig samtale",
-        "lytting",
-        "oppfølgingsspørsmål",
-        "referat",
-        "oppfølging"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-01",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
       "id": "CLEANING_APPROVAL",
       "authority": "Arbeidstilsynet",
       "title": "Godkjenningsordning for renholdsvirksomheter",
@@ -882,6 +825,26 @@
       "contextualOnly": true
     },
     {
+      "id": "HAVTIL_RULES_PDF",
+      "authority": "Havindustritilsynet",
+      "title": "Havindustritilsynets gjeldende regelverk",
+      "url": "https://www.havtil.no/regelverk/pdf-av-regelverket/",
+      "sectors": [
+        "offshore_energy"
+      ],
+      "useFor": [
+        "rammeforskriften",
+        "styringsforskriften",
+        "innretningsforskriften",
+        "aktivitetsforskriften",
+        "teknisk og operasjonell forskrift"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
       "id": "HDIR_HEALTH_PERSONNEL",
       "authority": "Helsedirektoratet",
       "title": "Helsepersonelloven",
@@ -895,6 +858,27 @@
         "opplysningsplikt",
         "forsvarlighet",
         "dokumentasjon"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "HELSETILSYNET_RULES",
+      "authority": "Helsetilsynet",
+      "title": "Helsetilsynets regelverk",
+      "url": "https://www.helsetilsynet.no/regelverk/",
+      "sectors": [
+        "health_care"
+      ],
+      "useFor": [
+        "tilsyn",
+        "helsepersonell",
+        "helse- og omsorgstjenester",
+        "autorisasjon",
+        "administrative reaksjoner",
+        "forsvarlighet"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
@@ -1316,24 +1300,6 @@
       "contextualOnly": false
     },
     {
-      "id": "SDIR_LAWS",
-      "authority": "Sjøfartsdirektoratet",
-      "title": "Lover",
-      "url": "https://www.sdir.no/regelverk/lover/",
-      "sectors": [
-        "aquaculture_fisheries_maritime"
-      ],
-      "useFor": [
-        "skipssikkerhetsloven",
-        "skipsarbeidsloven",
-        "sjøloven"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false
-    },
-    {
       "id": "LUFTFART_RULES",
       "authority": "Luftfartstilsynet",
       "title": "Lover og regler",
@@ -1558,95 +1524,6 @@
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
       "contextualOnly": true
-    },
-    {
-      "id": "AT_RULES",
-      "authority": "Arbeidstilsynet",
-      "title": "Regelverk",
-      "url": "https://www.arbeidstilsynet.no/regelverk/",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "arbeidsmiljø",
-        "HMS",
-        "arbeidstid",
-        "varsling",
-        "trakassering",
-        "arbeidsutstyr"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false
-    },
-    {
-      "id": "SDIR_RULES",
-      "authority": "Sjøfartsdirektoratet",
-      "title": "Regelverk",
-      "url": "https://www.sdir.no/regelverk/",
-      "sectors": [
-        "aquaculture_fisheries_maritime"
-      ],
-      "useFor": [
-        "fartøy",
-        "sjøsikkerhet",
-        "forskrifter",
-        "rundskriv",
-        "internasjonalt regelverk"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false
-    },
-    {
-      "id": "FINANSTILSYNET_RULES",
-      "authority": "Finanstilsynet",
-      "title": "Regelverk",
-      "url": "https://www.finanstilsynet.no/regelverk/",
-      "sectors": [
-        "office_finance_it"
-      ],
-      "useFor": [
-        "bank",
-        "forsikring",
-        "verdipapir",
-        "regnskap",
-        "revisjon",
-        "finansforetak"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "occupations": [
-        "regnskapsfører",
-        "revisor",
-        "bankrådgiver",
-        "forsikringsrådgiver"
-      ]
-    },
-    {
-      "id": "HELSETILSYNET_RULES",
-      "authority": "Helsetilsynet",
-      "title": "Regelverk",
-      "url": "https://www.helsetilsynet.no/regelverk/",
-      "sectors": [
-        "health_care"
-      ],
-      "useFor": [
-        "tilsyn",
-        "helsepersonell",
-        "helse- og omsorgstjenester",
-        "autorisasjon",
-        "administrative reaksjoner",
-        "forsvarlighet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false
     },
     {
       "id": "LUFTFART_FTL",
@@ -1991,6 +1868,44 @@
       "contextualOnly": true
     },
     {
+      "id": "SDIR_LAWS",
+      "authority": "Sjøfartsdirektoratet",
+      "title": "Sjøfartsdirektoratet – sentrale lover",
+      "url": "https://www.sdir.no/regelverk/lover/",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "skipssikkerhetsloven",
+        "skipsarbeidsloven",
+        "sjøloven"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "SDIR_RULES",
+      "authority": "Sjøfartsdirektoratet",
+      "title": "Sjøfartsdirektoratets regelverk",
+      "url": "https://www.sdir.no/regelverk/",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "fartøy",
+        "sjøsikkerhet",
+        "forskrifter",
+        "rundskriv",
+        "internasjonalt regelverk"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
       "id": "UDIR_SCHOOL_ACTIVITY_DUTY",
       "authority": "Utdanningsdirektoratet",
       "title": "Skolens aktivitetsplikt for et trygt og godt skolemiljø",
@@ -2020,28 +1935,6 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "NAV_SICK_LEAVE_FOLLOWUP",
-      "authority": "NAV",
-      "title": "Slik følger du opp sykmeldte",
-      "url": "https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "sykefravær",
-        "sykmeldt",
-        "oppfølgingsplan",
-        "dialogmøte",
-        "tilrettelegging",
-        "aktivitetsplikt",
-        "fravær"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
       "contextualOnly": true
     },
@@ -2315,38 +2208,6 @@
         "brann og redning",
         "brannkonstabel"
       ]
-    },
-    {
-      "id": "AT_VIOLENCE_SERVICE",
-      "authority": "Arbeidstilsynet",
-      "title": "Vold og trusler i utsatte serviceyrker",
-      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/vold-og-trusler/",
-      "sectors": [
-        "retail_hospitality_service"
-      ],
-      "occupations": [
-        "butikkmedarbeider",
-        "butikkleder",
-        "selger",
-        "kundeservicemedarbeider",
-        "servitør",
-        "hotellmedarbeider",
-        "resepsjonist",
-        "kassemedarbeider",
-        "butikkansatt"
-      ],
-      "useFor": [
-        "vold",
-        "trusler",
-        "alenearbeid",
-        "kundeatferd",
-        "sikkerhet",
-        "beredskap"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
     },
     {
       "id": "DRIVER_PROFESSIONAL_QUALIFICATION",
