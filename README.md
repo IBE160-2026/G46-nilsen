@@ -163,7 +163,7 @@ Prosjektet har blant annet tester for:
 - PWA og mobil
 - golden/fasitbasert KI-kvalitet
 
-Den brede benchmarkbanken inneholder 114 saker synkronisert med de 48 gjeldende undertemaene. Golden/pilotbanken inneholder 26 caser.
+Den brede benchmarkbanken inneholder 114 saker synkronisert med de 48 gjeldende undertemaene. Golden/fasitbanken inneholder nå 66 caser: 26 tidligere generelle/pilotcaser + 40 strenge yrke/sektor/tariff/kilde-caser. De 40 nye består av 28 sektorcaser, 8 arbeidsgiver-/tariffcaser og 4 kildelekkasjecaser.
 
 ## Videre arbeid
 
@@ -218,3 +218,25 @@ Se:
 - `tests/test-source-policy.cjs` – regresjonsvern mot duplikater, feil kildehierarki og feil tariff-/arbeidsgiveravgrensning
 
 KI-en skiller nå eksplisitt mellom lov/forskrift, tariff/hovedavtale, myndighetsveiledning, arbeidslivsveiledning, forskning og faglige rammeverk.
+
+
+## Verifikasjonsrunde 08.11.2026
+
+Etter utvidelsen med yrke, sektor, arbeidsgivertype og tariff ble teststrategien skjerpet fra «har svaret faggrunnlag?» til også å kontrollere **om riktig kilde brukes og feil kilde holdes ute**.
+
+Automatisk quality gate på `main` kjører:
+- full `npm test`
+- syntaks av både produksjonskode og testfiler
+- 73 personverntester
+- 114 benchmark-saker / 48 undertemaer
+- 66-case golden-schema
+- 28/28 deterministiske sektor-golden-rutinger
+- kilde-/tariff-/yrkespolicy
+- UI/PWA/simulator/regresjoner
+- `npm audit --omit=dev --audit-level=high`
+
+Siste dokumenterte grønne quality-gate i verifikasjonsrunden: GitHub Actions run **42531396584**, commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`.
+
+Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` for metode, funn, feilklassifisering, tiltak, begrensninger og sporbarhet.
+
+**Viktig avgrensning:** 40 nye strenge yrkes-golden-caser er strukturelt og deterministisk validert, men skal ikke omtales som bestått mot en ekstern live språkmodell før en faktisk live-kjøring er gjennomført.
