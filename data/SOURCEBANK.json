@@ -1,6 +1,6 @@
 {
-  "version": 7,
-  "description": "Kuratert fagbank for Samtalestøtte. Versjon 7 skiller eksplisitt mellom empirisk samtale-/ledelsesforskning, faglige rammeverk og autoritative lov-/myndighetskilder. Kilder er avgrenset etter funksjon og kontekst; forskning og rammeverk skal ikke brukes som rettsgrunnlag, og arbeidsgiver-/yrkes-/tariffkilder håndteres i egne registre.",
+  "version": 8,
+  "description": "Kuratert fagbank for Samtalestøtte. Versjon 8 prioriterer sterkere og mer direkte relevant evidens: empirisk arbeidslivs-/samtaleforskning, faglige rammeverk og autoritative lov-/myndighetskilder. Små eller kontekstuelt fjerne studier fjernes når sterkere evidens dekker samme behov. Forskning og rammeverk skal ikke brukes som rettsgrunnlag; arbeidsgiver-/yrkes-/tariffkilder håndteres i egne registre.",
   "sources": [
     {
       "id": "DEDREU_WEINGART_2003_CONFLICT",
@@ -117,33 +117,6 @@
         "motivasjon"
       ],
       "authority": "high",
-      "last_verified": "2026-10-07",
-      "time_sensitive": false
-    },
-    {
-      "id": "BURKE_ARKOWITZ_MENCHOLA_2003_MI",
-      "type": "fagfellevurdert forskning",
-      "title": "The efficacy of motivational interviewing: a meta-analysis of controlled clinical trials",
-      "author": "Burke, Arkowitz & Menchola",
-      "year": 2003,
-      "doi": "10.1037/0022-006X.71.5.843",
-      "url": "https://doi.org/10.1037/0022-006X.71.5.843",
-      "topics": [
-        "Alkohol og rus",
-        "Prestasjon og utvikling",
-        "Livssituasjoner"
-      ],
-      "principles": [
-        "Motiverende intervju bygger på samarbeid, utforsking av ambivalens og støtte til personens egen motivasjon fremfor konfrontasjon."
-      ],
-      "use_when": [
-        "ambivalens",
-        "motivasjon",
-        "endring",
-        "rus"
-      ],
-      "authority": "research",
-      "note": "Meta-analysen er klinisk/endringsorientert. Bruk relevante samtaleprinsipper med varsomhet i ledersamtaler; Samtalestøtte skal ikke fremstille ordinær lederdialog som terapi eller fullverdig motiverende intervju.",
       "last_verified": "2026-10-07",
       "time_sensitive": false
     },
@@ -519,33 +492,6 @@
         "relasjonskonflikt"
       ],
       "authority": "high",
-      "last_verified": "2026-10-07",
-      "time_sensitive": false
-    },
-    {
-      "id": "WEGER_CASTLE_EMMETT_2010_ACTIVE_LISTENING",
-      "type": "fagfellevurdert forskning",
-      "title": "Active Listening in Peer Interviews: The Influence of Message Paraphrasing on Perceptions of Listening Skill",
-      "author": "Harry Weger Jr., Gina R. Castle & Melissa C. Emmett",
-      "year": 2010,
-      "doi": "10.1080/10904010903466311",
-      "url": "https://doi.org/10.1080/10904010903466311",
-      "topics": [
-        "Samarbeid og kommunikasjon",
-        "Prestasjon og utvikling"
-      ],
-      "principles": [
-        "Aktiv lytting innebærer mer enn å være stille; parafrasering og respons på budskapet kan bidra til opplevelsen av å bli lyttet til.",
-        "Lytteteknikker bør brukes naturlig og situasjonstilpasset, ikke mekanisk."
-      ],
-      "use_when": [
-        "aktiv lytting",
-        "parafrasering",
-        "oppsummering",
-        "åpne spørsmål",
-        "samtaleteknikk"
-      ],
-      "authority": "research",
       "last_verified": "2026-10-07",
       "time_sensitive": false
     },
