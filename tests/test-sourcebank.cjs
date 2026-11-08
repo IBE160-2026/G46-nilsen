@@ -4,6 +4,8 @@ const assert = require('assert');
 (async () => {
   const sourceBank = JSON.parse(fs.readFileSync('data/SOURCEBANK.json', 'utf8'));
   const html = fs.readFileSync('index.html', 'utf8');
+  const app = fs.readFileSync('app.js', 'utf8');
+  const server = fs.readFileSync('server.js', 'utf8');
   const { topicCatalog } = await import('../src/server/topic-contracts.js');
 
   assert(Number(sourceBank.version) >= 6, 'SOURCEBANK skal være minst versjon 6');
@@ -37,8 +39,13 @@ const assert = require('assert');
   for (const id of required) {
     assert(ids.has(id), 'SOURCEBANK mangler ny samtalefaglig kilde: ' + id);
     const source = sourceBank.sources.find(item => item.id === id);
-    assert(source.url && html.includes(source.url), 'Hjelp-siden mangler lenken for ' + id);
+    assert(source.url, id + ': mangler URL');
   }
+
+  assert(html.includes('complete-source-library'), 'Hjelp-siden mangler dynamisk kildebibliotek');
+  assert(app.includes('loadCompleteSourceLibrary'), 'Klienten laster ikke dynamisk kildebibliotek');
+  assert(server.includes('/api/help-source-library'), 'Serveren mangler API for kildebibliotek');
+  assert(server.includes('allCuratedSourceById') && server.includes('agreementCuratedSources'), 'KI-kildekontrakten samler ikke generelle, yrkes- og tariffkilder');
 
   assert(fs.existsSync('docs/faggrunnlag/FAGGRUNNLAG-SAMTALETEKNIKK-RELASJONSLEDELSE.md'),
     'Lokalt tverrgående faggrunnlag for samtaleteknikk/relasjonsledelse mangler');
