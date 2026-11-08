@@ -1320,17 +1320,18 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
 });
 
 function sourceTier(source = {}) {
-  const type = String(source.type || source.sourceType || source.sourceRole || "").toLowerCase();
-  if (source.sourceRole === "primary_regulation" || /lovverk|law_database|regulation/.test(type)) return "primary_law";
-  if (source.sourceRole === "collective_agreement" || /collective_agreement/.test(type)) return "collective_agreement";
-  if (source.sourceRole === "official_employer_reference") return "official_employer_reference";
+  const role = source.sourceRole || source.source_role || "";
+  const type = String(source.type || source.sourceType || role || "").toLowerCase();
+  if (role === "primary_regulation" || /lovverk|law_database|regulation/.test(type)) return "primary_law";
+  if (role === "collective_agreement" || /collective_agreement/.test(type)) return "collective_agreement";
+  if (role === "official_employer_reference") return "official_employer_reference";
   if (/myndighet|official_authority|authority_guidance/.test(type)) return "authority_guidance";
   if (/meta-analyse|fagfelle|forskning|evidens/.test(type)) return "research_evidence";
   if (/specialist_worklife_guidance|worklife_framework/.test(type)) return "specialist_guidance";
   return "professional_framework";
 }
 
-function selectRelevantSources(analysis = {}, situation = "", { employerType = "", topic = "", subtopic = "" } = {}) {
+function selectRelevantSources(analysis = {}, situation = "", { employerType = "", sectorId = "", occupation = "", topic = "", subtopic = "" } = {}) {
   const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
   if (topic) topics.add(topic);
   const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || []), subtopic]
@@ -1350,10 +1351,24 @@ function selectRelevantSources(analysis = {}, situation = "", { employerType = "
   const seen = new Set();
   const scored = [];
 
+  const normalizedOccupation = String(occupation || "").toLocaleLowerCase("nb-NO");
   for (const source of candidates) {
     if (!source?.id || seen.has(source.id)) continue;
-    seen.add(source.id);
 
+    const scopedSectors = Array.isArray(source.sectors) ? source.sectors.filter(id => id !== "*") : [];
+    if (scopedSectors.length && (!sectorId || !scopedSectors.includes(sectorId))) continue;
+    const scopedOccupations = Array.isArray(source.occupations) ? source.occupations : [];
+    if (scopedOccupations.length && normalizedOccupation) {
+      const occupationMatch = scopedOccupations.some(value => {
+        const n = String(value || "").toLocaleLowerCase("nb-NO");
+        return n && (normalizedOccupation === n || normalizedOccupation.includes(n) || n.includes(normalizedOccupation));
+      });
+      if (!occupationMatch) continue;
+    } else if (scopedOccupations.length && !normalizedOccupation) {
+      continue;
+    }
+
+    seen.add(source.id);
     let score = 0;
     let matched = false;
     for (const sourceTopic of source.topics || []) {
@@ -1398,7 +1413,7 @@ function publicSources(ids = []) {
     year: source.year || "",
     type: source.type || source.sourceType || source.sourceRole || "fagkilde",
     sourceTier: sourceTier(source),
-    bindingStatus: source.bindingStatus || null,
+    bindingStatus: source.bindingStatus || source.binding_status || null,
     url: source.url || "",
     doi: source.doi || null
   }));
@@ -1697,7 +1712,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
 
   const resolvedTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const resolvedSubtopic = analysis?.primary_subtopic || subtopic || "";
-  const relevantSources = selectRelevantSources(analysis, situation, { employerType, topic:resolvedTopic, subtopic:resolvedSubtopic });
+  const relevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic });
   const occupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({
         occupation,
@@ -1813,7 +1828,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   if (blockUnsafeAiText(res, [situation, question, ...flattenTextValues(followups)])) return;
   const continueTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const continueSubtopic = analysis?.primary_subtopic || subtopic || "";
-  const relevantSources = selectRelevantSources(analysis, `${situation || ""} ${question || ""}`, { employerType, topic:continueTopic, subtopic:continueSubtopic });
+  const relevantSources = selectRelevantSources(analysis, `${situation || ""} ${question || ""}`, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic });
   const continueOccupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:`${situation || ""} ${question || ""}` })
     : { prompt:"" };
