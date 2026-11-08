@@ -11,8 +11,13 @@ const __dirname = path.dirname(__filename);
 const data = JSON.parse(fs.readFileSync(path.join(__dirname, "AI-GOLDEN-CASES.json"), "utf8"));
 const allCases = data.cases || [];
 const pilotOnly = process.argv.includes("--pilot");
+const occupationOnly = process.argv.includes("--occupation");
 const requestedLimit = Number(process.env.AI_TEST_LIMIT || 0);
-const selectedCases = pilotOnly ? allCases.filter(tc => tc.pilot_regression) : allCases;
+const selectedCases = pilotOnly
+  ? allCases.filter(tc => tc.pilot_regression)
+  : occupationOnly
+    ? allCases.filter(tc => tc.golden_group)
+    : allCases;
 const cases = requestedLimit > 0 ? selectedCases.slice(0, requestedLimit) : selectedCases;
 const port = 3203;
 const base = `http://127.0.0.1:${port}`;
@@ -23,7 +28,13 @@ if (!process.env.OPENAI_API_KEY && !process.env.OPENROUTER_API_KEY) {
 }
 
 console.log("\nSamtalestøtte – fasitbasert KI-test");
-console.log(pilotOnly ? `Kjører ${cases.length} pilot-regresjonscaser.` : `Kjører ${cases.length} av ${allCases.length} golden cases.`);
+console.log(
+  pilotOnly
+    ? `Kjører ${cases.length} pilot-regresjonscaser.`
+    : occupationOnly
+      ? `Kjører ${cases.length} strenge yrke/sektor/tariff/kilde-golden-caser.`
+      : `Kjører ${cases.length} av ${allCases.length} golden cases.`
+);
 console.log("Hver case vurderes mot maskinell fasit og en eksplisitt menneskelig vurderingsfasit.\n");
 
 const server = spawn(process.execPath, [path.join(__dirname, "../server.js")], {
