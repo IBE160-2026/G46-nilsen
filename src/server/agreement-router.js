@@ -46,7 +46,8 @@ function containsNonNegatedTerm(textValue, termValue) {
       /\bingen\b[^.!?;:]{0,120}$/u.test(prefix) ||
       /\bgjelder\s+ikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
       /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,120}$/u.test(prefix) ||
-      /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak)\b[^.!?;:]{0,120}$/u.test(prefix);
+      /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak)\b[^.!?;:]{0,120}$/u.test(prefix) ||
+      /\bikke\b(?:\s+[a-z0-9æøå]+){0,8}$/u.test(prefix);
 
     if (!explicitlyAbsent) return true;
     fromIndex = index + needle.length;
