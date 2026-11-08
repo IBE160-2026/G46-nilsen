@@ -10,7 +10,7 @@ Målet er ikke å gi hvert yrke en kunstig egen lov. Mange stillinger reguleres 
 
 ## Kildemodell
 
-Registeret har nå 85 autoritative startkilder.
+Registeret har nå 86 autoritative arbeidsgiver-/yrkes-/sektorkilder.
 
 En kilde kan avgrenses til:
 - hele sektoren
@@ -33,7 +33,7 @@ Yrker: ambulansearbeider, apotektekniker, bioingeniør, ergoterapeut, fotterapeu
 Helsepersonelloven og autorisasjons-/lisensreglene er sentrale. `fotterapeut` ble flyttet hit fra Handel/service. Hjemmehjelp og pleiemedarbeider er ikke automatisk autorisert helsepersonell og skal derfor ikke få autorisasjonskilden bare på stillingstittel.
 
 ### Offentlig forvaltning og juss
-Yrker: saksbehandler, rådgiver, jurist, advokat, HR-rådgiver, forvaltningsmedarbeider, NAV-medarbeider, kommunal rådgiver, statlig rådgiver, konsulent, førstekonsulent, seniorkonsulent, sekretær, arkivar.
+Yrker: saksbehandler, rådgiver, jurist, advokat, HR-rådgiver, forvaltningsmedarbeider, NAV-medarbeider, kommunal rådgiver, statlig rådgiver, konsulent, førstekonsulent, seniorkonsulent, arkivar. «Statlig sekretær»/«kommunal sekretær» håndteres som presise alias fremfor at generisk «sekretær» plasseres i to sektorer.
 
 Forvaltningsloven er lagt inn for relevante forvaltningsroller. Statsansatteloven og statens etiske retningslinjer er avgrenset til statlige roller. Advokat har egen profesjonskilde.
 
@@ -167,3 +167,32 @@ Ny dekning omfatter blant annet:
 - luftfart: bakgrunnssjekk/vandel for adgang til sikkerhetsområder
 
 Registeret har etter denne balanserte gjennomgangen 85 autoritative startkilder.
+
+
+## Tillegg – quality-gate-funn etter den balanserte kilderevisjonen
+
+Den balanserte gjennomgangen tidligere 08.11 løftet registeret til 85 kilder. Senere i samme verifikasjonsrunde ble overordnet personopplysningslov/GDPR lagt til og gjeldende register er **86 kilder**.
+
+Streng integritets- og golden-testing avdekket deretter:
+
+1. **Generisk «sekretær» lå i to sektorer.**
+   - beholdt i kontor/administrasjon
+   - offentlig kontekst uttrykkes med presise alias
+   - tre offentlige kildeposter ble synkronisert etter endringen
+
+2. **Brede authority_index-kilder kunne lekke innen samme sektor.**
+   - authority_index krever nå faktisk situasjonstreff
+   - Udirs skole- og barnehageoversikter har eksplisitt yrkesomfang
+
+3. **Minstelønnskilden var for bred.**
+   - taxisjåfør er fjernet som generell dekning
+   - generisk trigger «lønn» er fjernet
+   - kilden aktiveres nå av konkret minstelønn/allmenngjøring/bransjekontekst
+
+4. **Yrkesrelevans var for avhengig av hardkodede risikoord.**
+   - ruteren kan nå også aktivere yrkeskontekst fra et reelt `useFor`-treff i profesjonskilden
+   - matching er negasjonsbevisst
+
+De 28 sektor-golden-casene kjører disse prinsippene direkte mot ruteren og besto **28/28** etter retting.
+
+Detaljert verifikasjon: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
