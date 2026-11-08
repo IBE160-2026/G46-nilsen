@@ -566,6 +566,8 @@ Regler:
 - Ved sektor- eller profesjonssærregler skal den mest spesifikke relevante regelen vurderes sammen med generelt arbeidslivsregelverk.
 - Ved motstrid mellom generell veiledning og gjeldende lov/forskrift skal lov/forskrift ha forrang.
 - En myndighetsveiledning kan forklare hvordan regelverket praktiseres, men skal ikke tillegges sterkere rettslig status enn den har.
+- En kilde merket `authority_index` er en oppslagsinngang til regelverket. Finn den konkrete loven, forskriften eller veiledningen før en presis plikt eller rettighet formuleres.
+- Forskningsformidling kan gjøre forskning tilgjengelig og praktisk, men fagfellevurdert originalforskning, meta-analyser og evidensgjennomganger har høyere evidensvekt når de dekker samme påstand.
 - Ved tidskritiske retts-, tariff- eller myndighetsspørsmål skal fersk autoritativ kilde brukes når systemet har tilgang til nettsøk.
 - Skriv bare «Arbeidstilsynet sier», «NAV opplyser», «Akan anbefaler» osv. når den konkrete kilden faktisk støtter utsagnet.
 - Ikke legg til kilder bare for å få svaret til å fremstå mer troverdig.
