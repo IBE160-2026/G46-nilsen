@@ -254,7 +254,9 @@ function showView(name, options = {}) {
   Object.values(views).forEach(view => view.classList.remove('active-view'));
   views[name].classList.add('active-view');
   updateNavState(name);
-  if (name === 'help') loadHelpSourceLibrary();
+  if (name === 'help') {
+    loadHelpSectorSummary();
+  }
 
   // Temakort skal bare fremstå valgt mens brukeren faktisk er inne på et tema.
   // Ved retur til forsiden skal ingen tidligere valgt kategori henge igjen visuelt.
@@ -1772,6 +1774,23 @@ function escapeHtml(value) {
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&#039;');
+}
+
+async function loadHelpSectorSummary(){
+  const host=document.querySelector('#help-sector-source-summary');
+  if(!host) return;
+  try{
+    const response=await fetch('/api/help-source-library',{credentials:'include',cache:'no-store'});
+    const payload=await response.json();
+    if(!response.ok) throw new Error(payload.message||'Kunne ikke hente sektorkilder.');
+    const groups=payload.categories?.occupations?.groups||[];
+    host.innerHTML=groups.map(group=>`<details class="help-mini-source-group">
+      <summary>${escapeHtml(group.label||group.id)} <small>${(group.sources||[]).length} kilder</small></summary>
+      <ul class="resource-links">${(group.sources||[]).slice(0,5).map(source=>`<li><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.author||source.title||'Kilde')}</a></li>`).join('')}</ul>
+    </details>`).join('') || '<p class="muted-note">Ingen sektorkilder registrert.</p>';
+  }catch(error){
+    host.innerHTML=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
+  }
 }
 
 function helpSourceTypeLabel(type=''){
