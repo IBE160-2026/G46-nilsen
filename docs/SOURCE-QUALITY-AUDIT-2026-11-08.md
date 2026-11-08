@@ -143,7 +143,15 @@ Tariff skal behandles separat fra lov.
 
 ### Staten
 
-Kuraterte kilder:
+Statlig arbeidsgiverkontekst består av to forskjellige lag:
+
+**Lov/arbeidsgiverstyring**
+- statsansatteloven – primær rettskilde når arbeidsforholdet omfattes av loven
+- etiske retningslinjer for statstjenesten – offisiell arbeidsgiver-/etikkreferanse, ikke lov
+
+Begge filtreres på `employerType=state`, ikke på yrkestittel.
+
+**Tariff/partssamarbeid**
 - Hovedtariffavtalene i staten 2026–2028
 - Hovedavtalen i staten, forlenget ut 2026
 - Statens personalhåndbok
@@ -426,7 +434,7 @@ Testen inngår i `npm run test-local`.
 Etter kvalitetsryddingen består kildegrunnlaget av tre forskjellige lag:
 
 - 58 generelle fag-, forsknings-, lov- og myndighetskilder
-- ca. 86 overordnede arbeidsgiver-/yrkes-/sektorkilder
+- 86 overordnede arbeidsgiver-/yrkes-/sektorkilder
 - 7 konkrete kuraterte tariff-/hovedavtale-/arbeidsgiverreferanser
 
 Tallene skal **ikke** brukes som kvalitetsmål. Viktigere er at:
