@@ -132,7 +132,7 @@ Feil som skal regnes som alvorlige:
 
 ## Status etter kildegjennomgang 08.11.2026
 
-Det autoritative yrkes-/sektorregisteret er utvidet fra 31 til 62 kilder. Alle yrkene i kildekartet er gjennomgått. Prinsippet er at et yrke bare skal få egen profesjonskilde når det faktisk finnes særregler, sertifikatkrav, autorisasjon, etiske retningslinjer eller tilsvarende som kan endre rådet. Vanlige stillingstitler skal ikke få kunstige «egne lover» dersom generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå.
+Det autoritative yrkes-/sektorregisteret er utvidet fra 31 til 85 kilder. Alle yrkene i kildekartet er gjennomgått. Prinsippet er at et yrke bare skal få egen profesjonskilde når det faktisk finnes særregler, sertifikatkrav, autorisasjon, etiske retningslinjer eller tilsvarende som kan endre rådet. Vanlige stillingstitler skal ikke få kunstige «egne lover» dersom generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå.
 
 Detaljert gjennomgang: `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md`.
 
