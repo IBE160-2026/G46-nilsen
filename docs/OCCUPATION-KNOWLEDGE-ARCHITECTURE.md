@@ -1,12 +1,10 @@
 # Yrkes- og regelverkslag i Samtalestøtte
 
-## Implementasjonsstatus per 02.11.2026
+## Implementasjonsstatus per 08.11.2026
 
-Yrkes-/regelverkslaget er **delvis implementert i `main`** som backend-, data- og testarkitektur. Det finnes blant annet lokal yrkesruting, kildekart, avtale-/arbeidsgiverlogikk og egne tester.
+Yrkes-/regelverkslaget er implementert i `main` som data-, ruting-, server-, UI- og testarkitektur. Det finnes lokal yrkesruting, kildekart, yrkesavgrensede særkilder og egne regresjonstester. Serveren beholder feature flagget `OCCUPATION_CONTEXT_ENABLED` som driftskontroll, men produksjonskoden har nå det valgfri yrkesfeltet og hele kjeden fra brukerinput til kildekontekst.
 
-Laget styres av feature flagg på serveren og er avslått som standard. Dagens produksjons-UI eksponerer derfor ikke yrkesfeltet som en ferdig sluttbrukerfunksjon. Dokumentet skal ikke brukes som bevis på at hele brukerflyten er produksjonsverifisert.
-
-Skillet er bevisst: arkitektur og testgrunnlag kan utvikles og kvalitetssikres før funksjonen aktiveres for brukere.
+08.11.2026 ble kildemodellen utvidet slik at én kilde kan avgrenses til konkrete yrker via `occupations`. Dette hindrer at regler for eksempelvis politi, revisor eller elektriker lekker til andre yrker i samme brede sektor.
 
 ## Formål
 
@@ -38,6 +36,7 @@ Inneholder godkjente autoritative startkilder:
 - myndighet
 - offisiell URL
 - hvilke sektorer kilden gjelder
+- valgfri avgrensning til konkrete yrker (`occupations`)
 - hvilke rettslige spørsmål kilden egner seg for
 - om kilden er tidskritisk
 
@@ -50,7 +49,7 @@ Ruteren avgjør:
 2. om yrket er relevant for den konkrete situasjonen
 3. om fritekstyrket kan klassifiseres lokalt
 4. om uttrykket er tvetydig
-5. hvilke sektorkilder som kan være aktuelle
+5. hvilke sektor- og profesjonskilder som kan være aktuelle
 
 Ruteren skal unngå unødvendige KI-kall. Hvis brukeren skriver «bibliotekar» i en samtale om samlivsbrudd, skal systemet ikke bruke et KI-kall bare for å klassifisere yrket.
 
@@ -131,11 +130,16 @@ Feil som skal regnes som alvorlige:
 - modellen presenterer veiledning som bindende lov
 - modellen gir bastante juridiske konklusjoner uten fersk autoritativ kilde
 
+## Status etter kildegjennomgang 08.11.2026
+
+Det autoritative yrkes-/sektorregisteret er utvidet fra 31 til 58 kilder. Alle yrkene i kildekartet er gjennomgått. Prinsippet er at et yrke bare skal få egen profesjonskilde når det faktisk finnes særregler, sertifikatkrav, autorisasjon, etiske retningslinjer eller tilsvarende som kan endre rådet. Vanlige stillingstitler skal ikke få kunstige «egne lover» dersom generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå.
+
+Detaljert gjennomgang: `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md`.
+
 ## Videre arbeid
 
-1. Utvide kilderegisteret per sektor.
-2. Legge til flere negative kontroller.
-3. Lage kildeferskhetskontroll.
-4. Koble ruteren til serverens kontekstbygging bak feature flagg.
-5. Kjør full lokal regressjon før UI kobles på.
-6. Først deretter legge inn valgfritt arbeidsområde/yrke i grensesnittet.
+1. Ferskhetskontroll for tidskritiske rettskilder.
+2. Flere negative kontroller når nye profesjonskilder legges inn.
+3. Manuell/ekspertfaglig kvalitetssikring av de mest risikofylte sektorene.
+4. Utvide dekning bare der gjennomgangen finner reelle profesjonskrav.
+5. Fortsette å teste at ordinære mellommenneskelige samtaler ikke overjuridifiseres.
