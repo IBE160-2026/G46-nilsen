@@ -9221,3 +9221,51 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 @media(max-width:680px){
   #help-source-library .help-source-category>summary{align-items:flex-start;flex-direction:column;gap:3px}
 }
+
+
+/* v20.11.49 TYDELIG KILDEBANK MED PILER */
+#help-source-library .help-source-category>summary,
+#help-source-library .source-group>summary{
+  position:relative;
+  padding-right:46px;
+  cursor:pointer;
+  user-select:none;
+}
+#help-source-library .help-source-category>summary::after,
+#help-source-library .source-group>summary::after{
+  content:"›";
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%) rotate(90deg);
+  transform-origin:center;
+  font-size:1.45rem;
+  line-height:1;
+  font-weight:800;
+  color:var(--accent);
+  transition:transform .18s ease;
+}
+#help-source-library .help-source-category[open]>summary::after,
+#help-source-library .source-group[open]>summary::after{
+  transform:translateY(-50%) rotate(270deg);
+}
+#help-source-library .help-source-category>summary{
+  min-height:54px;
+  font-size:1rem;
+  border-radius:14px;
+}
+#help-source-library .help-source-category>summary span{
+  font-weight:850;
+}
+#help-source-library .source-group>summary{
+  min-height:46px;
+  font-size:.95rem;
+}
+#help-source-library .help-source-category>summary::-webkit-details-marker,
+#help-source-library .source-group>summary::-webkit-details-marker{
+  display:none;
+}
+#help-source-library .help-source-category>summary::marker,
+#help-source-library .source-group>summary::marker{
+  content:"";
+}
