@@ -1234,3 +1234,80 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     max-width:none !important;
   }
 }
+
+
+/* v20.11.62 KILDEHIERARKI - GAMMEL PIL PÅ HOVEDKATEGORI, LITEN PIL KUN PÅ KILDER */
+/* De fire hovedkategoriene bruker den gamle venstrepilen. */
+#help-view #complete-source-library .source-bank-top-category>summary{
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+}
+#help-view #complete-source-library .source-bank-top-category>summary::before{
+  content:"›" !important;
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  width:auto !important;
+  height:auto !important;
+  margin:0 !important;
+  color:var(--muted) !important;
+  font-size:1.15rem !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  transform:rotate(0deg) !important;
+  transition:transform .18s ease !important;
+}
+#help-view #complete-source-library .source-bank-top-category[open]>summary::before{
+  transform:rotate(90deg) !important;
+}
+#help-view #complete-source-library .source-bank-top-title::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Sektornivået skal ikke ha samme pil som kildene. */
+#help-view #complete-source-library .source-bank-sector-title::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Den lille inline-pilen beholdes kun på konkrete kilder. */
+#help-view #complete-source-library .compact-source-title::after{
+  content:"›" !important;
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  color:var(--muted) !important;
+  font-size:.92em !important;
+  line-height:1 !important;
+  font-weight:600 !important;
+  transform:rotate(0deg) !important;
+  transition:transform .18s ease !important;
+}
+#help-view #complete-source-library .compact-source-row[open]>summary .compact-source-title::after{
+  transform:rotate(90deg) !important;
+}
+
+/* Konkrete kilder skal være små og IKKE bold. Gjelder alle kategorier. */
+#help-view #complete-source-library .compact-source-row>summary,
+#help-view #complete-source-library .source-bank-sector-body .compact-source-row>summary{
+  padding:5px 0 !important;
+  color:var(--text) !important;
+  font-size:.76rem !important;
+  font-weight:400 !important;
+  line-height:1.28 !important;
+}
+#help-view #complete-source-library .compact-source-title{
+  font-size:inherit !important;
+  font-weight:400 !important;
+}
+#help-view #complete-source-library .compact-source-detail{
+  padding:0 0 7px 11px !important;
+}
+#help-view #complete-source-library .compact-source-detail p,
+#help-view #complete-source-library .compact-source-detail a{
+  font-size:.76rem !important;
+  line-height:1.35 !important;
+}
+#help-view #complete-source-library .compact-source-detail a{
+  font-weight:500 !important;
+}
