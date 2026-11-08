@@ -1256,6 +1256,11 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
     });
 
     const all = (sourceBank.sources || []).map(normalizePublicSource).filter(source => source.url);
+    const generalRules = all.filter(source =>
+      ["primary_law","authority_guidance","official_employer_reference","collective_agreement","authority_index"].includes(source.sourceTier)
+    );
+    const research = all.filter(source => source.sourceTier === "research_evidence");
+    const generalFrameworks = all.filter(source => !generalRules.includes(source) && !research.includes(source));
     const globalEmployer = (occupationLegalSourceBank.sources || [])
       .filter(source => (source.sectors || []).includes("*"))
       .map(normalizePublicSource)
@@ -1270,14 +1275,12 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
     );
     const globalFrameworks = globalEmployer.filter(source => !globalRules.includes(source));
     const authorityAndLaw = dedupePublic([
-      ...all.filter(source => /lovverk|myndighet/i.test(source.type)),
+      ...generalRules,
       ...globalRules,
       ...agreementSources
     ]);
-    const research = all.filter(source => /forskning|fagfelle|evidens/i.test(source.type));
-    const used = new Set([...authorityAndLaw, ...research].map(source => source.id));
     const frameworks = dedupePublic([
-      ...all.filter(source => !used.has(source.id)),
+      ...generalFrameworks,
       ...globalFrameworks
     ]);
 
@@ -1333,6 +1336,7 @@ function sourceTier(source = {}) {
   if (role === "collective_agreement" || /collective_agreement/.test(type)) return "collective_agreement";
   if (role === "official_employer_reference") return "official_employer_reference";
   if (role === "authority_index") return "authority_index";
+  if (["professional_framework","international_framework"].includes(role)) return "professional_framework";
   if (/myndighet|official_authority|authority_guidance/.test(type)) return "authority_guidance";
   if (/meta-analyse|fagfelle|forskning|evidens/.test(type)) return "research_evidence";
   if (["specialist_guidance","worklife_framework"].includes(role) || /specialist_worklife_guidance|worklife_framework/.test(type)) return "specialist_guidance";
