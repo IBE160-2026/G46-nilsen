@@ -1,5 +1,5 @@
 {
-  "version": 20,
+  "version": 21,
   "verifiedAt": "2026-11-08",
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
@@ -840,7 +840,6 @@
         "konsulent",
         "førstekonsulent",
         "seniorkonsulent",
-        "sekretær",
         "arkivar"
       ],
       "useFor": [
@@ -1114,7 +1113,6 @@
         "konsulent",
         "førstekonsulent",
         "seniorkonsulent",
-        "sekretær",
         "arkivar"
       ],
       "useFor": [
@@ -1489,7 +1487,6 @@
         "konsulent",
         "førstekonsulent",
         "seniorkonsulent",
-        "sekretær",
         "arkivar"
       ],
       "useFor": [
