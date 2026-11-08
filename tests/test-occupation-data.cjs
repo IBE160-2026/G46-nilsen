@@ -41,10 +41,18 @@ for (const source of registry.sources || []) {
   assert(Array.isArray(source.useFor) && source.useFor.length > 0, `${source.id}: mangler useFor`);
   assert.strictEqual(typeof source.timeSensitive, "boolean", `${source.id}: timeSensitive må være bool`);
   assert(/^\d{4}-\d{2}-\d{2}$/.test(source.lastVerified || ""), `${source.id}: mangler gyldig lastVerified`);
-  assert(["official_authority","law_database"].includes(source.sourceType), `${source.id}: ugyldig sourceType`);
+  assert(["official_authority","law_database","official_guideline","regulation"].includes(source.sourceType), `${source.id}: ugyldig sourceType`);
+  if (source.occupations !== undefined) assert(Array.isArray(source.occupations) && source.occupations.length > 0, `${source.id}: occupations må være en ikke-tom liste når feltet brukes`);
 }
 
 for (const source of registry.sources || []) {
+  if (Array.isArray(source.occupations)) {
+    for (const occupation of source.occupations) {
+      const owners = occupationOwners.get(String(occupation).toLowerCase().trim()) || [];
+      assert(owners.length > 0, `${source.id}: ukjent occupation ${occupation}`);
+      assert(owners.some(owner => (source.sectors || []).includes(owner)), `${source.id}: occupation ${occupation} tilhører ikke en av kildens sektorer`);
+    }
+  }
   for (const sectorId of source.sectors || []) {
     assert(sectorId === "*" || sectorIds.has(sectorId), `${source.id}: ukjent sektor ${sectorId}`);
   }
