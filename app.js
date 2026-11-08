@@ -255,7 +255,7 @@ function showView(name, options = {}) {
   views[name].classList.add('active-view');
   updateNavState(name);
   if (name === 'help') {
-    // Hjelp-siden bruker den kuraterte, statiske kildevisningen for bedre oversikt.
+    loadCompleteSourceLibrary();
   }
 
   // Temakort skal bare fremstå valgt mens brukeren faktisk er inne på et tema.
@@ -3162,11 +3162,6 @@ document.querySelector('#end-conversation-new')?.addEventListener('click', () =>
 
 renderContinueSuggestions();
 document.querySelector('#print-guidance')?.addEventListener('click', printCurrentGuidance);
-document.querySelector('#complete-source-bank')?.addEventListener('toggle', event => {
-  if (event.currentTarget.open) loadCompleteSourceLibrary();
-});
-
-
 
 function formatInlineReplyMarkdown(text) {
   let safe = escapeHtml(String(text || ''));
