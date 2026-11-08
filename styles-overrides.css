@@ -1116,3 +1116,121 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view .compact-source-detail a{display:inline-block;margin-top:5px;color:var(--accent);font-weight:700;text-decoration:none}
 #help-view .compact-source-detail a:hover{text-decoration:underline}
 
+
+
+/* v20.11.61 KILDEBANK - SMALERE KORT, ROLIGERE YRKESKILDER OG PIL PÅ TITTEL */
+#help-view #complete-source-library{
+  width:min(100%,620px) !important;
+  max-width:620px !important;
+}
+#help-view #complete-source-library .source-bank-top-category{
+  width:100% !important;
+  box-sizing:border-box !important;
+  margin-bottom:8px !important;
+}
+
+/* Kildepilen skal høre til selve overskriftsteksten, ikke flyte ytterst i kortet. */
+#help-view #complete-source-library .source-bank-top-category>summary::before,
+#help-view #complete-source-library .source-bank-top-category>summary::after,
+#help-view #complete-source-library .source-bank-sector>summary::before,
+#help-view #complete-source-library .source-bank-sector>summary::after,
+#help-view #complete-source-library .compact-source-row>summary::before,
+#help-view #complete-source-library .compact-source-row>summary::after{
+  content:none !important;
+  display:none !important;
+}
+#help-view #complete-source-library .source-bank-top-category>summary::-webkit-details-marker,
+#help-view #complete-source-library .source-bank-sector>summary::-webkit-details-marker,
+#help-view #complete-source-library .compact-source-row>summary::-webkit-details-marker{
+  display:none !important;
+}
+#help-view #complete-source-library .source-bank-top-category>summary::marker,
+#help-view #complete-source-library .source-bank-sector>summary::marker,
+#help-view #complete-source-library .compact-source-row>summary::marker{
+  content:"" !important;
+}
+
+#help-view #complete-source-library .source-bank-top-title,
+#help-view #complete-source-library .source-bank-sector-title,
+#help-view #complete-source-library .compact-source-title{
+  display:inline-flex;
+  align-items:center;
+  gap:6px;
+  min-width:0;
+}
+#help-view #complete-source-library .source-bank-top-title::after,
+#help-view #complete-source-library .source-bank-sector-title::after,
+#help-view #complete-source-library .compact-source-title::after{
+  content:"›";
+  display:inline-block;
+  flex:0 0 auto;
+  color:var(--muted);
+  font-size:1.08em;
+  line-height:1;
+  font-weight:750;
+  transform:rotate(0deg);
+  transition:transform .18s ease;
+}
+#help-view #complete-source-library .source-bank-top-category[open]>.source-bank-top-title::after{
+  transform:rotate(90deg);
+}
+#help-view #complete-source-library .source-bank-top-category[open]>summary .source-bank-top-title::after,
+#help-view #complete-source-library .source-bank-sector[open]>summary .source-bank-sector-title::after,
+#help-view #complete-source-library .compact-source-row[open]>summary .compact-source-title::after{
+  transform:rotate(90deg);
+}
+
+/* Tydelig hierarki: kategori > yrke/sektor > kilde. */
+#help-view #complete-source-library .source-bank-top-category>summary{
+  font-size:.96rem !important;
+  font-weight:700 !important;
+  padding:8px 0 !important;
+}
+#help-view #complete-source-library .source-bank-sector>summary{
+  font-size:.88rem !important;
+  font-weight:650 !important;
+  padding:6px 0 !important;
+}
+#help-view #complete-source-library .source-bank-sector>summary small{
+  font-size:.76rem !important;
+  font-weight:500 !important;
+}
+#help-view #complete-source-library .source-bank-sector-body{
+  padding:3px 0 5px 14px !important;
+}
+#help-view #complete-source-library .source-bank-occupations{
+  margin:3px 0 7px !important;
+  font-size:.79rem !important;
+  line-height:1.35 !important;
+}
+
+/* Selve kildene under yrke skal være diskrete, ikke se ut som nye hovedoverskrifter. */
+#help-view #complete-source-library .source-bank-sector-body .compact-source-row>summary{
+  padding:6px 0 !important;
+  color:var(--text) !important;
+  font-size:.80rem !important;
+  font-weight:500 !important;
+  line-height:1.3 !important;
+}
+#help-view #complete-source-library .source-bank-sector-body .compact-source-title::after{
+  font-size:.96em !important;
+  font-weight:650 !important;
+}
+#help-view #complete-source-library .source-bank-sector-body .compact-source-detail{
+  padding:0 0 8px 11px !important;
+}
+#help-view #complete-source-library .source-bank-sector-body .compact-source-detail p{
+  font-size:.80rem !important;
+  line-height:1.38 !important;
+}
+#help-view #complete-source-library .source-bank-sector-body .compact-source-detail a{
+  font-size:.80rem !important;
+  font-weight:650 !important;
+}
+
+@media(max-width:680px){
+  #help-view #complete-source-library{
+    width:100% !important;
+    max-width:none !important;
+  }
+}
