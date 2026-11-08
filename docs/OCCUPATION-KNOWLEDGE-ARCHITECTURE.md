@@ -132,7 +132,7 @@ Feil som skal regnes som alvorlige:
 
 ## Status etter kildegjennomgang 08.11.2026
 
-Det autoritative yrkes-/sektorregisteret er utvidet fra 31 til 85 kilder. Alle yrkene i kildekartet er gjennomgått. Prinsippet er at et yrke bare skal få egen profesjonskilde når det faktisk finnes særregler, sertifikatkrav, autorisasjon, etiske retningslinjer eller tilsvarende som kan endre rådet. Vanlige stillingstitler skal ikke få kunstige «egne lover» dersom generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå.
+Det autoritative arbeidsgiver-/yrkes-/sektorregisteret er utvidet fra 31 til 86 kilder. Alle yrkene i kildekartet er gjennomgått. Prinsippet er at et yrke bare skal få egen profesjonskilde når det faktisk finnes særregler, sertifikatkrav, autorisasjon, etiske retningslinjer eller tilsvarende som kan endre rådet. Vanlige stillingstitler skal ikke få kunstige «egne lover» dersom generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå.
 
 Detaljert gjennomgang: `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md`.
 
@@ -143,3 +143,17 @@ Detaljert gjennomgang: `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md`.
 3. Manuell/ekspertfaglig kvalitetssikring av de mest risikofylte sektorene.
 4. Utvide dekning bare der gjennomgangen finner reelle profesjonskrav.
 5. Fortsette å teste at ordinære mellommenneskelige samtaler ikke overjuridifiseres.
+
+
+### Verifikasjonsregel 08.11.2026
+
+Yrkesarkitekturen har nå et eksplisitt negativt kvalitetskrav: det er ikke nok at riktig profesjonskilde kan velges. Ruteren må også dokumentert klare å **la være** å aktivere yrkeskontekst når yrket ikke endrer saken.
+
+Dette verifiseres med 28 sektor-golden-caser:
+- 14 relevante
+- 14 irrelevante
+- forventede og forbudte yrkeskilder
+
+`authority_index` krever situasjonstreff, og negert kontekst skal ikke aktivere en profesjonskilde.
+
+Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
