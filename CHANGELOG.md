@@ -1766,3 +1766,19 @@ En UI-runde introduserte flere nye trekkspillvarianter som ikke fulgte ønsket g
 
 ### Teststatus
 Ingen ny komplett lokal `npm test`-kjøring skal impliseres av denne changelog-posten. Endringene krever samlet regresjonskontroll før de kan regnes som ny fullverifisert release.
+
+
+## 08.11.2026 – kildekvalitetsrevisjon
+- Samlet `source_ids`-kontrakt for generell fagbank, yrkes-/sektorkilder og tariffkilder.
+- Eksplisitt kildehierarki i server, systemprompt og responskontrakt.
+- Gjeldende HTA/Hovedavtale-kilder for stat og KS, samt Spekter helseforetak/overenskomstinnganger.
+- Statens personalhåndbok lagt inn som statlig arbeidsgiverreferanse.
+- Overordnet arbeidsgivergrunnlag styrket med AML kapittel 9, internkontroll, varsling, kontroll/overvåking, HMS-ansvar, NAV, Datatilsynet, IA og Akan.
+- IA/Akan klassifiseres eksplisitt som ikke-bindende rammeverk/veiledning.
+- Myndighetsoversikter kan merkes `authority_index` og får lavere vekt enn konkret lov/forskrift/veiledning.
+- Forskningsformidling skilles fra fagfellevurdert evidens.
+- Svakere/indirekte kilder fjernet; SOURCEBANK v8 har 58 generelle kilder.
+- Ingen eksakte URL-duplikater på tvers av bankene etter revisjonen.
+- Arbeidsgivertype har tom standardverdi; privat sektor antas ikke.
+- Tariffkontekst kan aktiveres uten valgt yrke.
+- Ny regresjonstest: `tests/test-source-policy.cjs`.
