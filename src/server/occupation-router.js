@@ -223,6 +223,9 @@ export function selectLegalSources({ sectorId, occupation = "", employerType = "
         if (!occupationMatch) return false;
       }
 
+      if (source.sourceRole === "authority_index") {
+        return contextMatchesSource(source, contextText);
+      }
       if (source.contextualOnly) return contextMatchesSource(source, contextText);
       return true;
     })
