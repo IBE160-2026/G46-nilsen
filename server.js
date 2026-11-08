@@ -1250,11 +1250,26 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
       lastVerified: source.last_verified || source.lastVerified || null,
       timeSensitive: Boolean(source.time_sensitive || source.timeSensitive),
       useFor: source.use_when || source.useFor || [],
-      occupations: Array.isArray(source.occupations) ? source.occupations : []
+      occupations: Array.isArray(source.occupations) ? source.occupations : [],
+      sourceTier: sourceTier(source),
+      bindingStatus: source.bindingStatus || null
     });
 
     const all = (sourceBank.sources || []).map(normalizePublicSource).filter(source => source.url);
-    const authorityAndLaw = all.filter(source => /lovverk|myndighet/i.test(source.type));
+    const globalEmployer = (occupationLegalSourceBank.sources || [])
+      .filter(source => (source.sectors || []).includes("*"))
+      .map(normalizePublicSource)
+      .filter(source => source.url);
+    const agreementSources = agreementCuratedSources.map(normalizePublicSource).filter(source => source.url);
+    const dedupePublic = items => {
+      const seen = new Set();
+      return items.filter(source => source.id && !seen.has(source.id) && seen.add(source.id));
+    };
+    const authorityAndLaw = dedupePublic([
+      ...all.filter(source => /lovverk|myndighet/i.test(source.type)),
+      ...globalEmployer,
+      ...agreementSources
+    ]);
     const research = all.filter(source => /forskning|fagfelle|evidens/i.test(source.type));
     const used = new Set([...authorityAndLaw, ...research].map(source => source.id));
     const frameworks = all.filter(source => !used.has(source.id));
