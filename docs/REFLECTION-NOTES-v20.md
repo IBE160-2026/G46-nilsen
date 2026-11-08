@@ -412,3 +412,14 @@ Den viktigste tekniske oppdagelsen var at yrkes-/sektorkilder tidligere kunne se
 En annen feil var at arbeidsgivertype kunne få «Privat» som første implicitte verdi. Dette kunne påvirke tariffvurdering uten aktivt brukerinput. Standardverdien er nå tom.
 
 **Læring:** Kildekvalitet handler like mye om hva systemet avstår fra å bruke, som om hva som ligger i databasen.
+
+
+## 08.11.2026 – fra «har kilde» til «har riktig kilde»
+
+Etter at yrke/sektor og arbeidsgivertype ble del av løsningen var de eksisterende golden-testene ikke lenger tilstrekkelige. De kunne kontrollere at et kritisk svar hadde minst én kilde, men ikke om modellen valgte riktig profesjons-/myndighetskilde eller unngikk en plausibel, men feil kilde.
+
+Derfor ble 40 nye golden-caser laget som en streng sensorpakke. Hvert av de 14 sektorområdene testes både når yrket skal være relevant og når yrket ikke skal påvirke rådet. Dette er viktig fordi en god yrkesfunksjon ikke bare må aktivere spesialregler riktig; den må også klare å la være.
+
+Tariffcasene tester spesielt at staten, KS og Spekter ikke blandes, og at privat eller uavklart arbeidsgiver ikke får en avtale gjettet. Kildelekkasjecaser tester blant annet helsepersonellov ved vanlig sykefraværsoppfølging, Finanstilsynet ved utvikler/personvern og politi-/brannkilder innen samme brede sektor.
+
+**Læring:** Det er ikke nok å måle «evidence present». Kildepresisjon krever både positive forventninger og eksplisitte negative forventninger.
