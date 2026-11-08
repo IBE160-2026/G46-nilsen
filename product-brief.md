@@ -1,6 +1,6 @@
 # Product Brief: Samtalestøtte
 
-**Leveransestatus:** Produksjonsgrunnlag 20.11.5 · videre dokumentert arbeidsrunde og patcher gjennom 02.11.2026  
+**Leveransestatus:** Produksjonsgrunnlag 20.11.5 · videre dokumentert arbeidsrunde og patcher gjennom 08.11.2026  
 
 ## Executive Summary
 
@@ -164,7 +164,7 @@ Eksempler:
 - Minimert sidebar, bedre ikoner og roligere informasjonsstruktur kom fra pilotfunn om at grensesnittet kunne oppleves som omfattende.
 - Utskrift ble foreslått av testbruker som ønsket å ta med samtalemalen videre.
 - Videre råd og nye oppfølgingsforslag ble utviklet fordi brukeren ellers måtte finne neste spørsmål alene.
-- Yrkes-/sektorkontekst og mulig kobling mot relevant regelverk/avtaleverk kom fra brukertest. Backend-, kilde- og rutinglaget finnes nå i `main`, men funksjonen er feature-flagget og skal ikke omtales som aktiv produksjonsfunksjon før UI/runtime og personvern er verifisert. Backend-, kilde- og rutinglaget finnes nå i `main`, men funksjonen er feature-flagget og skal ikke omtales som aktiv produksjonsfunksjon før UI/runtime og personvern er verifisert.
+- Yrkes-/sektorkontekst og kobling mot relevant regelverk/avtaleverk kom fra brukertest. Funksjonen er nå koblet gjennom produksjonskoden som valgfri kontekst, med lokal ruting, profesjonsavgrensede kilder og negative kontroller som skal hindre overjuridifisering. Serveren beholder feature flagg som driftskontroll.
 - Direkte samtale vurderes fordi en mer åpen inngang kan redusere friksjon for brukere som ikke ønsker å gå gjennom hele strukturen først.
 - Tale vurderes som ny inputkanal fordi samtaleøvelse og videre dialog krever mye skriving.
 
@@ -185,3 +185,12 @@ Derfor vurderes en pilot der brukeren kan:
 6. få KI-svaret lest opp med naturlig tale
 
 Dette skal testes som en separat pilot og ikke regnes som del av produksjonsløsningen før nytte, personvern, transkripsjonskvalitet og brukeropplevelse er verifisert.
+
+
+## Statusoppdatering 08.11.2026 – faglig presisjon per yrke
+
+Yrkes-/sektorlaget ble videreutviklet fra grov sektorbasert kildebruk til profesjonsavgrenset kildebruk. Det autoritative registeret inneholder nå 58 startkilder, og alle yrkene i kildekartet er gjennomgått med tanke på særregler, autorisasjon, sertifikatkrav, etiske retningslinjer og andre profesjonskrav som kan være relevante i en krevende medarbeidersamtale.
+
+Viktig produktregel: løsningen skal ikke forsøke å finne «en egen lov» for hvert yrke. Der generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå, er det bedre enn å presentere en irrelevant profesjonskilde.
+
+Som del av samme arbeidsrunde ble kildebanken i Hjelp forenklet til fire hovedkategorier, og den store CSS-filen ble modulært splittet for bedre vedlikeholdbarhet.
