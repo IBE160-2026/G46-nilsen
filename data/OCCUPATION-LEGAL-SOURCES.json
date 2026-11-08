@@ -1,5 +1,5 @@
 {
-  "version": 14,
+  "version": 15,
   "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Kilder kan avgrenses både til sektor og konkrete yrker. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -50,7 +50,9 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-01",
       "sourceType": "specialist_worklife_guidance",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "sourceRole": "specialist_guidance",
+      "bindingStatus": "non_binding_guidance"
     },
     {
       "id": "FISKERIDIR_AQUACULTURE",
@@ -230,6 +232,31 @@
       ]
     },
     {
+      "id": "AT_EMPLOYER_DUTIES",
+      "authority": "Arbeidstilsynet",
+      "title": "Arbeidsgivers plikter i HMS-arbeidet",
+      "url": "https://www.arbeidstilsynet.no/hms/roller-i-hms-arbeidet/arbeidsgiver/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "arbeidsgivers ansvar",
+        "HMS",
+        "medvirkning",
+        "verneombud",
+        "opplæring",
+        "arbeidsmiljø",
+        "risikovurdering",
+        "systematisk HMS"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_rules"
+    },
+    {
       "id": "LOVDATA_AML",
       "authority": "Lovdata",
       "title": "Arbeidsmiljøloven",
@@ -250,7 +277,35 @@
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
       "sourceType": "law_database",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
+    },
+    {
+      "id": "AML_CH9_CONTROL_MEASURES",
+      "authority": "Lovdata",
+      "title": "Arbeidsmiljøloven kapittel 9 – kontrolltiltak i virksomheten",
+      "url": "https://lovdata.no/lov/2005-06-17-62/KAPITTEL_10",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "kontrolltiltak",
+        "overvåking",
+        "GPS",
+        "kamera",
+        "e-post",
+        "helseopplysninger",
+        "medisinske undersøkelser",
+        "rustesting",
+        "drøfting med tillitsvalgte"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
     },
     {
       "id": "HAVTIL_WORK_TIME_PLANS",
@@ -303,7 +358,9 @@
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
-      "contextualOnly": false
+      "contextualOnly": false,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_index"
     },
     {
       "id": "AT_ASBEST_BUILDING",
@@ -925,7 +982,9 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-01",
       "sourceType": "specialist_worklife_guidance",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "sourceRole": "specialist_guidance",
+      "bindingStatus": "non_binding_guidance"
     },
     {
       "id": "IA_AGREEMENT_2025_2028",
@@ -1455,7 +1514,9 @@
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_privacy_rules"
     },
     {
       "id": "UDIR_KINDERGARTEN_POLICE_CERT",
