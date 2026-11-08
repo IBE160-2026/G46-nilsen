@@ -652,3 +652,30 @@ Runden viste fire forskjellige typer verdi:
 Dette støtter en sentral designregel for Samtalestøtte:
 
 > Yrke, regelverk og kilder skal brukes når de forbedrer rådet — ikke fordi systemet tilfeldigvis kjenner dem.
+
+
+## 18. Reproduserbar live-KI-kjøring i GitHub Actions
+
+Det er lagt til en separat manuell workflow:
+
+`.github/workflows/live-ai-validation.yml`
+
+Den startes med `workflow_dispatch` og kan kjøre:
+- `occupation-golden`
+- `golden`
+- `stress`
+- `stress-full`
+
+Workflown krever at repository har minst én av følgende GitHub Actions-secrets:
+- `OPENAI_API_KEY`
+- `OPENROUTER_API_KEY`
+
+Live-eval kjøres bevisst **ikke** automatisk på hver push. Begrunnelse:
+- den koster API-bruk
+- output er stokastisk
+- tilfeldig modellvariasjon skal ikke blokkere vanlig CI uten menneskelig vurdering
+- deterministic quality gate skal være rask og stabil
+
+Rapportfiler under `tests/reports/` lastes opp som workflow-artifact når de finnes.
+
+Per 08.11.2026 er denne workflown lagt til for reproduksjon, men den nye 40-case occupation-golden-pakken er fortsatt **ikke dokumentert som live-bestått** før en faktisk workflow-kjøring med provider-secret foreligger.
