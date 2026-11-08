@@ -50,7 +50,8 @@
     "test-natural-response-standard": "node tests/test-natural-response-standard.cjs",
     "test-occupation-context": "node tests/test-occupation-context.cjs",
     "test-ai:occupation": "node tests/test-ai-occupation.js",
-    "test-source-policy": "node tests/test-source-policy.cjs"
+    "test-source-policy": "node tests/test-source-policy.cjs",
+    "test-ai:occupation-golden": "node tests/test-ai-golden.js --occupation"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
