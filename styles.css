@@ -9168,3 +9168,11 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .occupation-suggestion-row p{margin:3px 0 6px;color:var(--muted);font-size:.9rem;line-height:1.45}
 #occupation-context-summary{display:block;margin-top:4px;font-size:.98rem;line-height:1.4}
 @media(max-width:650px){.occupation-context-fields{grid-template-columns:1fr}.occupation-context-suggestion{padding:16px;border-radius:18px}}
+
+
+/* v20.11.46 KILDEHENVISNINGER */
+.inline-source-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.88rem}
+.inline-source-links>span{color:var(--muted);font-weight:700}
+.inline-source-links a{display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--accent);font-weight:750;text-decoration:none}
+.inline-source-links a:hover{text-decoration:underline;background:var(--surface-2)}
+.evidence-list a em{display:block;margin-top:5px;color:var(--accent);font-size:.82rem;font-style:normal;font-weight:750}
