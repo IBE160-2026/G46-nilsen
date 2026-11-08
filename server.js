@@ -1304,31 +1304,88 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
   }
 });
 
-function selectRelevantSources(analysis = {}, situation = "") {
+function sourceTier(source = {}) {
+  const type = String(source.type || source.sourceType || source.sourceRole || "").toLowerCase();
+  if (source.sourceRole === "primary_regulation" || /lovverk|law_database|regulation/.test(type)) return "primary_law";
+  if (source.sourceRole === "collective_agreement" || /collective_agreement/.test(type)) return "collective_agreement";
+  if (source.sourceRole === "official_employer_reference") return "official_employer_reference";
+  if (/myndighet|official_authority|authority_guidance/.test(type)) return "authority_guidance";
+  if (/meta-analyse|fagfelle|forskning|evidens/.test(type)) return "research_evidence";
+  if (/specialist_worklife_guidance|worklife_framework/.test(type)) return "specialist_guidance";
+  return "professional_framework";
+}
+
+function selectRelevantSources(analysis = {}, situation = "", { employerType = "", topic = "", subtopic = "" } = {}) {
   const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
-  const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || [])]
+  if (topic) topics.add(topic);
+  const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || []), subtopic]
     .filter(Boolean).join(" ");
   const q = `${situation || ""} ${analysisText}`.toLocaleLowerCase("nb-NO");
-  const authorityWeight = { high: 2, medium: 1 };
-  const scored = sourceBank.sources.map(source => {
+  const agreementRelevant = shouldUseAgreementContext({ topic:[...topics].join(" "), subtopic, situation:q });
+  const legalContext = /\b(lov|regelverk|rettighet|plikt|oppsig|avskjed|varsling|trakassering|diskrimin|sykefravær|sykmeld|tilrettelegging|arbeidstid|overtid|kontrolltiltak|overvåking|hms|sikkerhet|tariff|lønn|forhandling|medbestemmelse|tillitsvalgt)\b/i.test(q);
+
+  const globalEmployerSources = (occupationLegalSourceBank.sources || []).filter(source => (source.sectors || []).includes("*"));
+  const agreementSources = agreementCuratedSources.filter(source => {
+    if (!employerType || !(source.employerTypes || []).includes(employerType)) return false;
+    if (source.id === "STATE_PERSONNEL_HANDBOOK") return legalContext;
+    return agreementRelevant;
+  });
+
+  const candidates = [...(sourceBank.sources || []), ...globalEmployerSources, ...agreementSources];
+  const seen = new Set();
+  const scored = [];
+
+  for (const source of candidates) {
+    if (!source?.id || seen.has(source.id)) continue;
+    seen.add(source.id);
+
     let score = 0;
-    source.topics.forEach(topic => { if (topics.has(topic)) score += 5; });
-    (source.use_when || []).forEach(term => {
+    let matched = false;
+    for (const sourceTopic of source.topics || []) {
+      if (topics.has(sourceTopic)) { score += 5; matched = true; }
+    }
+    for (const term of source.use_when || source.useFor || []) {
       const normalized = String(term).toLocaleLowerCase("nb-NO");
-      if (normalized && q.includes(normalized)) score += 3;
-    });
-    score += authorityWeight[source.authority] || 0;
-    if (source.type === "lovverk" || source.type === "myndighet") score += 1.5;
-    if (source.type === "fagfellevurdert forskning") score += 1;
-    return { source, score };
-  }).filter(item => item.score > 0).sort((a,b) => b.score - a.score);
-  return scored.slice(0, 10).map(item => item.source);
+      if (normalized && q.includes(normalized)) { score += 4; matched = true; }
+    }
+
+    const tier = sourceTier(source);
+    if (!matched) {
+      if (!(legalContext && source.id === "LOVDATA_AML")) continue;
+      score += 2;
+    }
+
+    if (tier === "primary_law") score += legalContext ? 7 : 2;
+    else if (tier === "authority_guidance") score += legalContext ? 6 : 3;
+    else if (tier === "collective_agreement") score += agreementRelevant ? 7 : -20;
+    else if (tier === "official_employer_reference") score += 4;
+    else if (tier === "research_evidence") score += legalContext ? 1 : 4;
+    else if (tier === "specialist_guidance") score += 3;
+    else score += 1;
+
+    if (source.authority === "high") score += 1;
+    if (source.authority === "medium") score += 0.5;
+    scored.push({ source:{ ...source, sourceTier:tier }, score });
+  }
+
+  scored.sort((a,b) => b.score - a.score || String(a.source.title||"").localeCompare(String(b.source.title||""),"nb"));
+  const legal = scored.filter(item => ["primary_law","authority_guidance","collective_agreement","official_employer_reference"].includes(item.source.sourceTier)).slice(0,5);
+  const evidence = scored.filter(item => !["primary_law","authority_guidance","collective_agreement","official_employer_reference"].includes(item.source.sourceTier)).slice(0,5);
+  return [...legal, ...evidence].sort((a,b)=>b.score-a.score).slice(0,10).map(item=>item.source);
 }
 
 function publicSources(ids = []) {
   const wanted = new Set(ids);
-  return sourceBank.sources.filter(source => wanted.has(source.id)).map(source => ({
-    id: source.id, title: source.title, author: source.author, year: source.year, type: source.type, url: source.url, doi: source.doi || null
+  return [...wanted].map(id => allCuratedSourceById.get(id)).filter(Boolean).map(source => ({
+    id: source.id,
+    title: source.title || source.id,
+    author: source.author || source.authority || "",
+    year: source.year || "",
+    type: source.type || source.sourceType || source.sourceRole || "fagkilde",
+    sourceTier: sourceTier(source),
+    bindingStatus: source.bindingStatus || null,
+    url: source.url || "",
+    doi: source.doi || null
   }));
 }
 
