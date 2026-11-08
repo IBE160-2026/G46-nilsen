@@ -546,3 +546,28 @@ Sensorinnspillet om en svært stor CSS-fil ble også fulgt opp. `styles.css` had
 ### Distribusjonslæring
 
 En annen konkret læring kom da GitHub viste nye commits mens produksjonen fortsatt så uendret ut. Kontroll av Render viste at produksjonsservicen faktisk kjørte en eldre commit. Dette tydeliggjorde at kildekode, deploy og det brukeren faktisk ser er tre separate tilstander som må verifiseres hver for seg.
+
+
+## Ny sluttverifikasjon 08.11.2026 – hva betyr det egentlig at en KI-test er god?
+
+Etter at løsningen fikk yrkes-/sektorkontekst, arbeidsgivertype og flere autoritative kilder ble en svakhet ved den tidligere teststrategien tydeligere: det var mulig å teste at et svar hadde «faglig grunnlag» uten å teste strengt nok om **riktig** faggrunnlag var valgt.
+
+Jeg utvidet derfor golden-banken fra 26 til 66 caser. 40 nye caser er spesifikt rettet mot yrke, sektor, tariff og kildepresisjon. Alle 14 sektorer har både én positiv case, der yrket skal endre rådet, og én negativ case, der yrket ikke skal gjøre det. I tillegg ble det lagt inn tariffcaser for stat, kommune, helseforetak, privat og ukjent arbeidsgivertype, samt bevisste kildelekkasjecaser.
+
+Dette endret også hva «fasit» betyr. En case kan nå si både hvilke kilder som forventes og hvilke som **ikke** skal få brukes. Hvis en sykepleier er sykmeldt uten pasientsikkerhetsproblem, skal systemet eksempelvis ikke få ekstra poeng for å vise helsepersonelloven. Tvert imot er dette et signal om at yrkeskonteksten er overaktivert.
+
+En ny deterministisk test kjører de 28 sektorcasene direkte mot yrkesruteren. Denne testen avdekket reelle problemer: lærer/elevkrenkelse ble først ikke fanget som yrkesrelevant, en barnehageoversikt kunne lekke inn i en skolecase, og en generell minstelønnskilde var avgrenset for bredt. Etter korrigering besto 28/28 caser: 14 relevante og 14 irrelevante.
+
+GitHub Actions ble samtidig innført som automatisk quality gate. Dette ga en uventet læring om **testgjeld**. Flere røde kjøringer skyldtes at testene fortsatt antok gammel CSS-struktur, gammel cacheversjon eller nøyaktig 26 golden-caser. Jeg kunne ha endret produksjonskode for å gjøre testene grønne, men det ville vært feil. I stedet måtte hvert avvik vurderes: var produktet feil, eller testet testen et foreldet premiss?
+
+Quality-gaten fant også reelle dataproblemer. Yrket «sekretær» lå i to sektorer, og tre kildereferanser pekte fortsatt på den gamle klassifiseringen etter at dette ble ryddet. Dette viste verdien av integritetstester mellom datasett, ikke bare funksjonelle tester.
+
+Til slutt la jeg inn `npm audit --omit=dev --audit-level=high` som gate. Den fant en høy sårbarhet i body-parser og en moderat i qs. Begge ble oppgradert til patchede versjoner, og deretter besto full testpakke og dependency audit.
+
+Siste dokumenterte grønne quality-gate i denne verifikasjonsrunden er run **42531396584** på commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`.
+
+Jeg tolker ikke dette som at språkmodellen nå er «bevist korrekt». Det er et viktig skille mellom deterministic testing av ruting, kildepolicy, personvern og kontrakter, og faktisk live modellkvalitet. De 40 nye yrkes-golden-casene er foreløpig ikke dokumentert som bestått mot en ekstern live modell. Det ville vært metodisk feil å slå sammen disse bevisnivåene.
+
+Denne runden har derfor endret min forståelse av testing: målet er ikke flest grønne tester, men at hver test representerer et gyldig krav, kan avsløre meningsfulle feil og gir et resultat som tolkes kritisk.
+
+Detaljert metode og funn finnes i `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
