@@ -23,3 +23,8 @@ assert(schema.includes('"Oppsigelse og avslutning av arbeidsforhold"'), 'Analyse
 assert(!schema.includes('"Avslutning av arbeidsforhold",'), 'Analyse-skjemaet inneholder fortsatt gammelt hovedtemanavn');
 
 console.log('Veiledningskvalitet: menneskelig muntlig åpning, omsorg, variasjon og temasynk OK');
+
+assert(server.includes('KILDEHIERARKI FOR RETTSLIGE/FORMELLE PÅSTANDER'), 'Mangler eksplisitt kildehierarki for rettslige råd');
+assert(server.includes('AKAN og IA er veiledning/arbeidslivsrammeverk, ikke lov'), 'Mangler vern mot å fremstille AKAN/IA som lov');
+assert(server.includes('Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant'), 'Mangler tariffavgrensning');
+assert(server.includes('Forskning og faglige rammeverk skal IKKE brukes som bevis'), 'Mangler skille mellom forskning og rettslig plikt');
