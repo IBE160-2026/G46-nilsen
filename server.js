@@ -1265,14 +1265,21 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
       const seen = new Set();
       return items.filter(source => source.id && !seen.has(source.id) && seen.add(source.id));
     };
+    const globalRules = globalEmployer.filter(source =>
+      ["primary_law","authority_guidance","official_employer_reference","collective_agreement"].includes(source.sourceTier)
+    );
+    const globalFrameworks = globalEmployer.filter(source => !globalRules.includes(source));
     const authorityAndLaw = dedupePublic([
       ...all.filter(source => /lovverk|myndighet/i.test(source.type)),
-      ...globalEmployer,
+      ...globalRules,
       ...agreementSources
     ]);
     const research = all.filter(source => /forskning|fagfelle|evidens/i.test(source.type));
     const used = new Set([...authorityAndLaw, ...research].map(source => source.id));
-    const frameworks = all.filter(source => !used.has(source.id));
+    const frameworks = dedupePublic([
+      ...all.filter(source => !used.has(source.id)),
+      ...globalFrameworks
+    ]);
 
     const occupationGroups = (occupationSourceMap.sectors || [])
       .filter(sector => sector.id !== "other")
@@ -1383,10 +1390,7 @@ function selectRelevantSources(analysis = {}, situation = "", { employerType = "
     }
 
     const tier = sourceTier(source);
-    if (!matched) {
-      if (!(legalContext && source.id === "LOVDATA_AML")) continue;
-      score += 2;
-    }
+    if (!matched) continue;
 
     if (tier === "primary_law") score += legalContext ? 7 : 2;
     else if (tier === "authority_guidance") score += legalContext ? 6 : 3;
