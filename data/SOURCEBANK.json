@@ -1388,7 +1388,9 @@
       "authority": "high",
       "note": "MI er utviklet for endringsorienterte og ofte kliniske samtaler. Samtalestøtte bruker relevante kommunikative prinsipper, ikke MI som full behandlingsmetode.",
       "last_verified": "2026-10-26",
-      "time_sensitive": false
+      "time_sensitive": false,
+      "source_role": "professional_framework",
+      "binding_status": "non_binding_method_guidance"
     },
     {
       "id": "CIPD_FAIR_SELECTION_2023",
