@@ -9303,3 +9303,19 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-source-library .source-group[open]>summary::after{
   transform:translateY(-50%) rotate(270deg) !important;
 }
+
+
+/* v20.11.51 GJENOPPRETT GAMMEL HJELP-KILDEVISNING */
+#help-view .resource-links{margin:0;padding-left:20px}
+#help-view .resource-links li{margin:8px 0}
+#help-view .resource-links a{color:var(--accent);text-decoration:none;font-weight:650}
+#help-view .resource-links a:hover{text-decoration:underline}
+#help-view .help-sector-source-summary{display:grid;gap:8px}
+#help-view .help-mini-source-group{border-top:1px solid var(--border);padding-top:8px}
+#help-view .help-mini-source-group:first-child{border-top:0;padding-top:0}
+#help-view .help-mini-source-group>summary{cursor:pointer;font-weight:700;display:flex;justify-content:space-between;gap:10px}
+#help-view .help-mini-source-group>summary small{color:var(--muted);font-weight:500}
+#help-view .compact-full-source-library{margin-top:10px}
+#help-view .compact-full-source-library .help-source-category{margin-bottom:8px}
+#help-view .compact-full-source-library .source-item-use,
+#help-view .compact-full-source-library .source-item-meta{display:none}
