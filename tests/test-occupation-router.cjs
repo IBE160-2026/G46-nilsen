@@ -81,6 +81,26 @@ const assert = require("assert");
   });
   assert.strictEqual(missingSafetyRoutine.occupationRelevant, true, "Brudd på sikkerhetsrutine skal fortsatt aktivere yrkeskontekst");
 
+  const negatedDriverRisk = router.resolveOccupationContext({
+    sectorId: "transport_logistics",
+    occupation: "taxisjåfør",
+    topic: "Lønn og utvikling",
+    subtopic: "Lønnskrav",
+    situation: "En taxisjåfør ønsker å diskutere lønn. Det gjelder ikke kjøre- eller hviletid eller sikkerhet."
+  });
+  assert.strictEqual(negatedDriverRisk.occupationRelevant, false, "Eksplisitt avkreftet transport-/sikkerhetskontekst skal ikke aktivere yrkeskilder");
+  assert.deepStrictEqual(negatedDriverRisk.sourceIds, []);
+
+  const negatedConstructionRisk = router.resolveOccupationContext({
+    sectorId: "construction_trades",
+    occupation: "tømrer",
+    topic: "Samarbeid og kommunikasjon",
+    subtopic: "Roller og forventninger",
+    situation: "Det er ikke snakk om sikkerhet, verneutstyr, høydearbeid eller andre HMS-forhold. Kun dårlig kommunikasjon."
+  });
+  assert.strictEqual(negatedConstructionRisk.occupationRelevant, false, "Negert HMS-liste skal ikke gi falsk positiv yrkeskontekst");
+  assert.deepStrictEqual(negatedConstructionRisk.sourceIds, []);
+
   let checked = 0;
   for (const tc of benchmark.cases || []) {
     const result = router.resolveOccupationContext({
