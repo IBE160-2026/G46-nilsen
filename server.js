@@ -1259,7 +1259,7 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
     const generalRules = all.filter(source =>
       ["primary_law","authority_guidance","official_employer_reference","collective_agreement","authority_index"].includes(source.sourceTier)
     );
-    const research = all.filter(source => source.sourceTier === "research_evidence");
+    const research = all.filter(source => ["research_evidence","research_communication"].includes(source.sourceTier));
     const generalFrameworks = all.filter(source => !generalRules.includes(source) && !research.includes(source));
     const globalEmployer = (occupationLegalSourceBank.sources || [])
       .filter(source => (source.sectors || []).includes("*"))
@@ -1338,6 +1338,7 @@ function sourceTier(source = {}) {
   if (role === "authority_index") return "authority_index";
   if (["professional_framework","international_framework"].includes(role)) return "professional_framework";
   if (/myndighet|official_authority|authority_guidance/.test(type)) return "authority_guidance";
+  if (/forskningsformidling|forskningsbasert fagressurs/.test(type)) return "research_communication";
   if (/meta-analyse|fagfelle|forskning|evidens/.test(type)) return "research_evidence";
   if (["specialist_guidance","worklife_framework"].includes(role) || /specialist_worklife_guidance|worklife_framework/.test(type)) return "specialist_guidance";
   return "professional_framework";
@@ -1403,6 +1404,7 @@ function selectRelevantSources(analysis = {}, situation = "", { employerType = "
     else if (tier === "official_employer_reference") score += 4;
     else if (tier === "authority_index") score += 1;
     else if (tier === "research_evidence") score += legalContext ? 1 : 4;
+    else if (tier === "research_communication") score += legalContext ? 0.5 : 2;
     else if (tier === "specialist_guidance") score += 3;
     else score += 1;
 
