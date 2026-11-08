@@ -61,6 +61,7 @@ Prototypen omfatter:
 - personverngateway i klient og server
 - innlogging, historikk og roller
 - kuratert faggrunnlag og kildebruk
+- valgfri yrkes-/sektorkontekst med presis ruting mot relevant særregelverk
 - utskrift av situasjon og råd
 - mobiltilpasset grensesnitt og PWA/installasjon
 - automatiserte regresjons- og KI-tester
@@ -134,6 +135,9 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 - `docs/ai/AI-LOGG-SAMTALESTOTTE.md` – dokumentert KI-bruk i utviklingen
 - `docs/ai/TEST-FASIT-OG-SPORBARHET.md` – golden/fasit og kravspor
 - `docs/SOURCEBANK.md` – kuratert kilde- og faggrunnlag
+- `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md` – gjennomgang av alle yrker/sektorer og særkilder
+- `docs/DOKUMENTASJON-SYNK-2026-11-08.md` – synk av implementasjon og dokumentasjon etter arbeidsrunden 08.11
+- `docs/KODESTRUKTUR-OPPRYDDING-2026-11-08.md` – vedlikeholdbarhet og filopprydding
 - `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` – sikkerhet og personvern
 
 ### Refleksjon og utviklingshistorikk
@@ -168,7 +172,7 @@ Noen funksjoner er bevisst holdt utenfor dagens ferdige leveranse, blant annet:
 - full lukket/offline variant
 - lokal RAG og intern KI
 - tale/voice i Samtaleøvelse
-- videre yrkes-/sektortilpasning i produksjons-UI
+- videre utvidelse og ekspertvalidering av yrkes-/sektorkilder
 - fullskala representativ brukertesting
 
 Disse områdene er dokumentert som videre arbeid og skal ikke tolkes som ferdige funksjoner.
@@ -187,10 +191,19 @@ G46-nilsen/
 ├── app.js
 ├── index.html
 ├── server.js
-├── styles.css
+├── styles.css                 # CSS-inngangspunkt
+├── styles-core.css            # grunnstiler og komponenter
+├── styles-responsive.css      # responsiv/mobil/PWA
+├── styles-overrides.css       # senere målrettede overrides
 ├── package.json
 ├── product-brief.md
 └── README.md
 ```
 
 Prosjektet er utviklet av Cecilie C. Nilsen som del av IBE160 Programmering med KI ved Høgskolen i Molde.
+
+## Statusoppdatering 08.11.2026
+
+Yrkes-/sektorlaget er koblet til den ordinære brukerflyten og har nå et eget autoritativt register med 58 startkilder. Kilder kan avgrenses til konkrete yrker, slik at for eksempel politiets særregler ikke automatisk brukes for brannvesen bare fordi begge ligger i samme sektor. Hjelp-siden viser kildebanken i fire hovedkategorier: Lovverk og myndigheter, Forskning og evidens, Faglig rammeverk og Yrkes- og sektorkilder.
+
+Som vedlikeholdsgrep er den tidligere ca. 9 389 linjer lange `styles.css` splittet i tre moduler, mens `styles.css` beholdes som et lite inngangspunkt. Se dokumentasjonssynken og oppryddingsrapporten for detaljer.
