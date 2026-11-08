@@ -189,7 +189,7 @@ Dette skal testes som en separat pilot og ikke regnes som del av produksjonsløs
 
 ## Statusoppdatering 08.11.2026 – faglig presisjon per yrke
 
-Yrkes-/sektorlaget ble videreutviklet fra grov sektorbasert kildebruk til profesjonsavgrenset kildebruk. Det autoritative registeret inneholder nå 58 startkilder, og alle yrkene i kildekartet er gjennomgått med tanke på særregler, autorisasjon, sertifikatkrav, etiske retningslinjer og andre profesjonskrav som kan være relevante i en krevende medarbeidersamtale.
+Yrkes-/sektorlaget ble videreutviklet fra grov sektorbasert kildebruk til profesjonsavgrenset kildebruk. Det autoritative registeret inneholder nå 62 startkilder, og alle yrkene i kildekartet er gjennomgått med tanke på særregler, autorisasjon, sertifikatkrav, etiske retningslinjer og andre profesjonskrav som kan være relevante i en krevende medarbeidersamtale.
 
 Viktig produktregel: løsningen skal ikke forsøke å finne «en egen lov» for hvert yrke. Der generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå, er det bedre enn å presentere en irrelevant profesjonskilde.
 
