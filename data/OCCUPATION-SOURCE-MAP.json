@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "description": "Lokal yrkes- og kilderuter for Samtalestøtte. Yrke/bransje er valgfritt og skal bare påvirke råd når arbeidskontekst, risiko eller regelverk faktisk er relevant.",
   "selectionPolicy": {
     "occupationOptional": true,
@@ -54,7 +54,12 @@
         "SFO/AKS-medarbeider",
         "skoleleder",
         "barnehagestyrer",
-        "miljøarbeider"
+        "miljøarbeider",
+        "barnehageassistent",
+        "lærerassistent",
+        "skoleassistent",
+        "miljøterapeut",
+        "pedagogisk leder"
       ],
       "aliases": [
         "skole",
@@ -114,7 +119,15 @@
         "fysioterapeut",
         "ergoterapeut",
         "ambulansearbeider",
-        "pleiemedarbeider"
+        "pleiemedarbeider",
+        "helsesekretær",
+        "legesekretær",
+        "apotektekniker",
+        "radiograf",
+        "bioingeniør",
+        "jordmor",
+        "omsorgsarbeider",
+        "hjemmehjelp"
       ],
       "aliases": [
         "sykehus",
@@ -179,7 +192,12 @@
         "forvaltningsmedarbeider",
         "NAV-medarbeider",
         "kommunal rådgiver",
-        "statlig rådgiver"
+        "statlig rådgiver",
+        "konsulent",
+        "førstekonsulent",
+        "seniorkonsulent",
+        "sekretær",
+        "arkivar"
       ],
       "aliases": [
         "kommune",
@@ -233,7 +251,12 @@
         "brann og redning",
         "vekter",
         "sikkerhetsmedarbeider",
-        "beredskapsmedarbeider"
+        "beredskapsmedarbeider",
+        "soldat",
+        "offiser",
+        "befal",
+        "fengselsbetjent",
+        "brannkonstabel"
       ],
       "aliases": [
         "militær",
@@ -290,7 +313,11 @@
         "maskinoperatør",
         "fabrikkarbeider",
         "næringsmiddelarbeider",
-        "driftsoperatør"
+        "driftsoperatør",
+        "montør",
+        "pakkerimedarbeider",
+        "lageroperatør",
+        "CNC-operatør"
       ],
       "aliases": [
         "fabrikk",
@@ -347,7 +374,15 @@
         "anleggsmaskinfører",
         "mekaniker",
         "ingeniør",
-        "driftstekniker"
+        "driftstekniker",
+        "maler",
+        "murer",
+        "betongarbeider",
+        "taktekker",
+        "blikkenslager",
+        "ventilasjonstekniker",
+        "bilmekaniker",
+        "automatiker"
       ],
       "aliases": [
         "bygg",
@@ -404,7 +439,11 @@
         "matros",
         "skipsfører",
         "maskinist",
-        "fiskeindustriarbeider"
+        "fiskeindustriarbeider",
+        "dekksarbeider",
+        "havbruksarbeider",
+        "oppdrettsmedarbeider",
+        "styrmann"
       ],
       "aliases": [
         "lakseoppdrett",
@@ -475,7 +514,15 @@
         "logistikkmedarbeider",
         "terminalarbeider",
         "togpersonell",
-        "flyplassmedarbeider"
+        "flyplassmedarbeider",
+        "taxisjåfør",
+        "sjåfør",
+        "budbilsjåfør",
+        "bud",
+        "postbud",
+        "truckfører",
+        "lokfører",
+        "konduktør"
       ],
       "aliases": [
         "transport",
@@ -532,7 +579,19 @@
         "servitør",
         "hotellmedarbeider",
         "resepsjonist",
-        "renholder"
+        "renholder",
+        "frisør",
+        "hudpleier",
+        "fotterapeut",
+        "massør",
+        "barista",
+        "baker",
+        "konditor",
+        "kantinemedarbeider",
+        "kassemedarbeider",
+        "butikkansatt",
+        "renholdsoperatør",
+        "vaktmester"
       ],
       "aliases": [
         "butikk",
@@ -584,7 +643,16 @@
         "utvikler",
         "IT-drift",
         "cybersikkerhet",
-        "supportmedarbeider"
+        "supportmedarbeider",
+        "sekretær",
+        "administrasjonsmedarbeider",
+        "lønnskonsulent",
+        "bankrådgiver",
+        "forsikringsrådgiver",
+        "systemutvikler",
+        "IT-konsulent",
+        "dataanalytiker",
+        "markedsfører"
       ],
       "aliases": [
         "kontor",
@@ -637,7 +705,10 @@
         "dyrepleier",
         "fiskehelsebiolog",
         "dyreklinikkmedarbeider",
-        "dyreholder"
+        "dyreholder",
+        "hundefrisør",
+        "dyrepasser",
+        "kennelmedarbeider"
       ],
       "aliases": [
         "dyrlege",
@@ -689,7 +760,10 @@
         "plattformarbeider",
         "energimontør",
         "kraftverksoperatør",
-        "petroleumsingeniør"
+        "petroleumsingeniør",
+        "elektroingeniør",
+        "energitekniker",
+        "prosessingeniør"
       ],
       "aliases": [
         "offshore",
@@ -749,7 +823,10 @@
         "gartner",
         "skogbruker",
         "skogsarbeider",
-        "reindriftsutøver"
+        "reindriftsutøver",
+        "anleggsgartner",
+        "skogsmaskinfører",
+        "naturforvalter"
       ],
       "aliases": [
         "landbruk",
@@ -819,7 +896,9 @@
         "flygeleder",
         "bakkeoperatør",
         "bagasjemedarbeider",
-        "luftfartsmedarbeider"
+        "luftfartsmedarbeider",
+        "ground handling-medarbeider",
+        "check-in-medarbeider"
       ],
       "aliases": [
         "luftfart",
