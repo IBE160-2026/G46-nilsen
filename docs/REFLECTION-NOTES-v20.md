@@ -364,7 +364,7 @@ Dette må testes før det omtales som en faktisk effekt.
 
 Gjennomgangen av yrkes-/sektorkildene avdekket at enkelte sektorer hadde svært få særkilder. Det mest interessante funnet var likevel at problemet ikke kunne løses ved bare å legge til flere URL-er. Datamodellen kunne bare si at en kilde gjaldt en hel sektor. I en bred kategori som «Forsvar, politi og beredskap» kunne dette i verste fall bety at politiets særregler ble tilgjengelige for brannvesen eller andre yrker i samme gruppe.
 
-Jeg endret derfor kildearkitekturen slik at kilder kan avgrenses til konkrete yrker. Først deretter ble registeret utvidet fra 31 til 62 autoritative startkilder og hele yrkeslisten gjennomgått.
+Jeg endret derfor kildearkitekturen slik at kilder kan avgrenses til konkrete yrker. Først deretter ble registeret utvidet fra 31 til 85 autoritative startkilder og hele yrkeslisten gjennomgått.
 
 Et viktig funn var også at fravær av en profesjonsspesifikk kilde ikke nødvendigvis er en mangel. Mange vanlige stillinger reguleres best av generelt arbeidsmiljø-/HMS- eller sektorregelverk. Å gi hvert yrke «sin egen lov» ville gjort systemet mer imponerende på overflaten, men faglig dårligere.
 
