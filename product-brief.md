@@ -68,7 +68,7 @@ Personvernkontrollen må finnes både i klient og server. Utfordringen er å red
 
 Simulatoren skal holde en konsistent medarbeiderrolle gjennom flere meldinger og reagere dynamisk på brukerens formuleringer. Samtidig må den styres slik at den ikke diagnostiserer, tillegger personer skjulte motiver eller fremstiller spekulasjoner som fakta.
 
-Prosjektet skal også ha systematisk KI-testing på flere nivåer. Benchmarkbanken dekker de 48 gjeldende undertemaene med faste testsituasjoner, mens en mindre golden/fasit-bank brukes til strengere regresjonskontroll av representative og risikoutsatte saker.
+Prosjektet skal også ha systematisk KI-testing på flere nivåer. Benchmarkbanken dekker de 48 gjeldende undertemaene med faste testsituasjoner, mens golden/fasit-banken nå har 66 caser. Av disse er 40 laget spesielt for yrke, sektor, arbeidsgivertype, tariff og kildepresisjon, med både positive og negative forventninger.
 
 Reduksjonen fra 56 til 48 undertemaer var et bevisst produktvalg etter klarspråkgjennomgang, pilotbruk og tilbakemeldinger. Flere tidligere undertemaer var for vage, overlappende eller så smale at de gjorde valget vanskeligere uten å tilføre nyttig KI-kontekst. De ble derfor slått sammen, omformulert eller fjernet. Målet var ikke færre kategorier i seg selv, men en tydeligere taksonomi som bruker ord ledere faktisk vil kjenne igjen. Et representativt utvalg skal kunne kjøres mot flere modeller for å sammenligne blant annet kvalitet, stabilitet, responstid, kostnad og kildebruk.
 
@@ -194,3 +194,12 @@ Yrkes-/sektorlaget ble videreutviklet fra grov sektorbasert kildebruk til profes
 Viktig produktregel: løsningen skal ikke forsøke å finne «en egen lov» for hvert yrke. Der generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå, er det bedre enn å presentere en irrelevant profesjonskilde.
 
 Som del av samme arbeidsrunde ble kildebanken i Hjelp forenklet til fire hovedkategorier, og den store CSS-filen ble modulært splittet for bedre vedlikeholdbarhet.
+
+
+### Quality gate 08.11.2026
+
+Kvalitetsstrategien er skjerpet slik at systemet ikke bare må finne *en* faglig kilde, men den mest relevante kilden og samtidig holde feil profesjons-/tariffkilder ute. Alle 14 sektorer har både relevant og irrelevant yrkes-golden-case. GitHub Actions kjører full deterministic testpakke og high-level dependency audit ved push til `main`.
+
+Siste verifiserte status i denne runden: 66 golden-caser, 28/28 deterministic sektor-golden, 73 personvernscaser, 114 benchmark-saker / 48 undertemaer og grønn dependency audit. Live språkmodelltesting holdes som et separat bevisnivå.
+
+Detaljer: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
