@@ -1327,7 +1327,7 @@ function sourceTier(source = {}) {
   if (role === "official_employer_reference") return "official_employer_reference";
   if (/myndighet|official_authority|authority_guidance/.test(type)) return "authority_guidance";
   if (/meta-analyse|fagfelle|forskning|evidens/.test(type)) return "research_evidence";
-  if (/specialist_worklife_guidance|worklife_framework/.test(type)) return "specialist_guidance";
+  if (["specialist_guidance","worklife_framework"].includes(role) || /specialist_worklife_guidance|worklife_framework/.test(type)) return "specialist_guidance";
   return "professional_framework";
 }
 
