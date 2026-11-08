@@ -1,5 +1,5 @@
 {
-  "version": 3,
+  "version": 4,
   "description": "Forslagskart for tariff-/overenskomstkontekst. Systemet skal aldri anta tariffdekning bare ut fra yrke eller arbeidsgivertype. Kartet inneholder kuraterte, gjeldende startkilder der avtaleområdet kan identifiseres, men konkrete tariffrettigheter krever bekreftet avtaledekning.",
   "policy": {
     "assumeAgreement": false,
@@ -91,7 +91,9 @@
             "tariff"
           ],
           "sourceRole": "collective_agreement",
-          "bindingStatus": "binding_if_covered"
+          "bindingStatus": "binding_if_covered",
+          "lastVerified": "2026-11-08",
+          "timeSensitive": true
         },
         {
           "id": "STATE_HA_2023_2026",
@@ -110,7 +112,9 @@
             "organisering"
           ],
           "sourceRole": "collective_agreement",
-          "bindingStatus": "binding_if_covered"
+          "bindingStatus": "binding_if_covered",
+          "lastVerified": "2026-11-08",
+          "timeSensitive": true
         },
         {
           "id": "STATE_PERSONNEL_HANDBOOK",
@@ -130,7 +134,9 @@
             "personaloppfølging"
           ],
           "sourceRole": "official_employer_reference",
-          "bindingStatus": "reference_not_independent_legal_basis"
+          "bindingStatus": "reference_not_independent_legal_basis",
+          "lastVerified": "2026-11-08",
+          "timeSensitive": true
         }
       ]
     },
@@ -183,7 +189,9 @@
             "tariff"
           ],
           "sourceRole": "collective_agreement",
-          "bindingStatus": "binding_if_covered"
+          "bindingStatus": "binding_if_covered",
+          "lastVerified": "2026-11-08",
+          "timeSensitive": true
         },
         {
           "id": "KS_HA_2026_2029",
@@ -201,7 +209,9 @@
             "forhandling"
           ],
           "sourceRole": "collective_agreement",
-          "bindingStatus": "binding_if_covered"
+          "bindingStatus": "binding_if_covered",
+          "lastVerified": "2026-11-08",
+          "timeSensitive": true
         }
       ]
     },
@@ -248,7 +258,9 @@
             "lokale forhandlinger"
           ],
           "sourceRole": "collective_agreement_framework",
-          "bindingStatus": "confirm_main_organization_and_area"
+          "bindingStatus": "confirm_main_organization_and_area",
+          "lastVerified": "2026-11-08",
+          "timeSensitive": true
         },
         {
           "id": "SPEKTER_OVERENSKOMST_AREAS",
@@ -262,7 +274,9 @@
             "tariff"
           ],
           "sourceRole": "official_employer_reference",
-          "bindingStatus": "directory_not_independent_legal_basis"
+          "bindingStatus": "directory_not_independent_legal_basis",
+          "lastVerified": "2026-11-08",
+          "timeSensitive": true
         }
       ]
     },
@@ -435,5 +449,6 @@
         "Be om arbeidsgivertype eller avtalenavn bare når tariffkontekst faktisk påvirker rådet."
       ]
     }
-  ]
+  ],
+  "verifiedAt": "2026-11-08"
 }
