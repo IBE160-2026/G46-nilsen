@@ -240,3 +240,8 @@ Siste dokumenterte grønne quality-gate i verifikasjonsrunden: GitHub Actions ru
 Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` for metode, funn, feilklassifisering, tiltak, begrensninger og sporbarhet.
 
 **Viktig avgrensning:** 40 nye strenge yrkes-golden-caser er strukturelt og deterministisk validert, men skal ikke omtales som bestått mot en ekstern live språkmodell før en faktisk live-kjøring er gjennomført.
+
+
+### Live KI-validering
+
+Live modelltesting er skilt fra vanlig CI. `.github/workflows/live-ai-validation.yml` kan manuelt kjøre den strenge 40-case yrkespakken, hele golden-banken eller stresstest når en provider-API-nøkkel er konfigurert som GitHub Actions-secret. Dette er bevisst ikke en automatisk push-gate.
