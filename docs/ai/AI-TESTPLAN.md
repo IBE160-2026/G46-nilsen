@@ -1521,3 +1521,14 @@ Deterministic green dokumenterer routing, policy, schema, personvern og regresjo
 
 Full metode, funn og akseptansekriterier:
 `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
+
+
+## Manuell live KI-workflow
+
+For å skille stabil CI fra stokastisk/provider-avhengig modelltesting finnes nå:
+
+`.github/workflows/live-ai-validation.yml`
+
+Den kan manuelt kjøre occupation-golden, full golden eller stresstest med GitHub Actions-secret for OpenAI/OpenRouter. Eventuelle rapporter lagres som workflow-artifact.
+
+Dette gjør live-eval reproduserbar uten å blande API-kostnad og modellvariasjon inn i den automatiske deterministic quality-gaten.
