@@ -27,6 +27,14 @@ const assert=require("assert");
   assert(relevant.prompt.includes("praktiske neste steg"));
   assert(/ikke start med paragrafer/i.test(relevant.prompt));
 
+  const tariffWithoutOccupation=buildOccupationGuidanceContext({
+    topic:"Lønn og utvikling",subtopic:"Lønnsutvikling",
+    situation:"Medarbeideren ønsker å snakke om lønn."
+  });
+  assert.strictEqual(tariffWithoutOccupation.enabled,true,"Tariffkontekst skal kunne aktiveres uten valgt yrke");
+  assert.strictEqual(tariffWithoutOccupation.agreement.needsEmployerType,true);
+  assert(tariffWithoutOccupation.prompt.includes("Arbeidsgivertype mangler"));
+
   const tariff=buildOccupationGuidanceContext({
     occupation:"sykepleier",sectorId:"health_care",
     topic:"Lønn og utvikling",subtopic:"Lønnsutvikling",
