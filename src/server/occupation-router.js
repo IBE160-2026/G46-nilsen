@@ -180,15 +180,27 @@ function contextMatchesSource(source, contextText) {
   });
 }
 
-export function selectLegalSources({ sectorId, topic, subtopic, situation, maxSources = 6 } = {}) {
+export function selectLegalSources({ sectorId, occupation = "", topic, subtopic, situation, maxSources = 6 } = {}) {
   if (!sectorId) return [];
   const contextText = [topic, subtopic, situation].filter(Boolean).join(" ");
+  const occupationNeedle = normalize(occupation);
 
   return legalRegistry.sources
     .filter(source => {
       const sectors = source.sectors || [];
       const appliesToSector = sectors.includes("*") || sectors.includes(sectorId);
       if (!appliesToSector) return false;
+
+      const occupationScope = Array.isArray(source.occupations) ? source.occupations : [];
+      if (occupationScope.length) {
+        if (!occupationNeedle) return false;
+        const occupationMatch = occupationScope.some(value => {
+          const scoped = normalize(value);
+          return scoped && (occupationNeedle === scoped || occupationNeedle.includes(scoped) || scoped.includes(occupationNeedle));
+        });
+        if (!occupationMatch) return false;
+      }
+
       if (source.contextualOnly) return contextMatchesSource(source, contextText);
       return true;
     })
