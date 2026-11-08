@@ -26,7 +26,7 @@ Sentrale filer:
 
 ## 2. Yrkeskildene ble gjort mer presise
 
-Det autoritative yrkes-/sektorregisteret ble utvidet fra 31 til 58 kilder.
+Det autoritative yrkes-/sektorregisteret ble utvidet fra 31 til 62 kilder.
 
 Ny modell:
 - `sectors` angir relevant arbeidsområde
