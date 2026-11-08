@@ -64,6 +64,8 @@ for(const id of [
 }
 
 const generalIds=new Set((sourceBank.sources||[]).map(s=>s.id));
+assert(generalIds.has("NAV_SYKEFRAVAER_OPPFOLGING"),"NAV sykefraværsoppfølging skal ligge i generell fagbank, ikke yrkesruteren");
+assert(generalIds.has("NAV_SAMTALESTOTTE_ARBEIDSGIVER"),"NAV samtalestøtte for arbeidsgiver mangler i generell fagbank");
 assert(!generalIds.has("FOR_VEILEDNING_LED2403"),"Smal emneside skal ikke være generell fagkilde");
 assert(!generalIds.has("COLLEGE_POLICING_INVESTIGATIVE_INTERVIEWING"),"Britisk politiguide skal ikke være generell samtalekilde");
 
