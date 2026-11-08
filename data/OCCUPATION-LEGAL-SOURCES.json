@@ -1,5 +1,5 @@
 {
-  "version": 15,
+  "version": 16,
   "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Kilder kan avgrenses både til sektor og konkrete yrker. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -43,9 +43,9 @@
         "spill",
         "doping",
         "bekymringssamtale",
-        "policy",
+        "rusmiddelpolicy",
         "individuell Akan-avtale",
-        "arbeidsliv"
+        "Akan"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-01",
@@ -976,8 +976,9 @@
         "rusproblem",
         "spilleproblem",
         "individuell Akan-avtale",
-        "oppfølging",
-        "hjelpetiltak"
+        "rusoppfølging",
+        "spilleavhengighet",
+        "hjelpetiltak ved rus eller spill"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-01",
