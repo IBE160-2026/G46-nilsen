@@ -1,6 +1,11 @@
 ﻿const fs=require('fs'); const assert=require('assert');
 const app=fs.readFileSync('app.js','utf8');
-const css=fs.readFileSync('styles.css','utf8');
+const css=[
+  fs.readFileSync('styles.css','utf8'),
+  fs.readFileSync('styles-core.css','utf8'),
+  fs.readFileSync('styles-responsive.css','utf8'),
+  fs.readFileSync('styles-overrides.css','utf8')
+].join('\n');
 
 assert(app.includes("function speechBubblePath(width, bodyHeight)"));
 assert(app.includes("const attachStart = 30"));
