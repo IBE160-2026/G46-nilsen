@@ -1,6 +1,6 @@
 {
-  "version": 2,
-  "description": "Forslagskart for tariff-/overenskomstkontekst. Systemet skal aldri anta at en arbeidstaker er omfattet av en bestemt avtale bare ut fra yrke; det skal foreslå mulige avtaleområder og be om bekreftelse når tariffkontekst faktisk er relevant.",
+  "version": 3,
+  "description": "Forslagskart for tariff-/overenskomstkontekst. Systemet skal aldri anta tariffdekning bare ut fra yrke eller arbeidsgivertype. Kartet inneholder kuraterte, gjeldende startkilder der avtaleområdet kan identifiseres, men konkrete tariffrettigheter krever bekreftet avtaledekning.",
   "policy": {
     "assumeAgreement": false,
     "requireConfirmationBeforeUse": true,
@@ -71,6 +71,67 @@
       "notes": [
         "Hovedtariffavtale og lokale avtaler kan variere med organisasjon og virksomhet.",
         "Ikke anta hvilken hovedsammenslutning arbeidstaker tilhører."
+      ],
+      "curatedSources": [
+        {
+          "id": "STATE_HTA_2026_2028",
+          "title": "Hovedtariffavtalene i staten 2026–2028",
+          "authority": "Digitaliserings- og forvaltningsdepartementet",
+          "url": "https://www.regjeringen.no/no/dokumenter/hovedtariffavtalene-i-staten-2026-2028/id3168033/",
+          "validFrom": "2026-05-01",
+          "validTo": "2028-04-30",
+          "useFor": [
+            "lønn",
+            "lokale forhandlinger",
+            "arbeidstid",
+            "tillegg",
+            "permisjon",
+            "reise",
+            "pensjon",
+            "tariff"
+          ],
+          "sourceRole": "collective_agreement",
+          "bindingStatus": "binding_if_covered"
+        },
+        {
+          "id": "STATE_HA_2023_2026",
+          "title": "Hovedavtalen i staten – forlenget ut 2026",
+          "authority": "Digitaliserings- og forvaltningsdepartementet",
+          "url": "https://www.regjeringen.no/no/dokumenter/hovedavtalen-i-staten/id2952431/",
+          "validFrom": "2023-01-01",
+          "validTo": "2026-12-31",
+          "useFor": [
+            "medbestemmelse",
+            "informasjon",
+            "drøfting",
+            "omstilling",
+            "tillitsvalgte",
+            "partssamarbeid",
+            "organisering"
+          ],
+          "sourceRole": "collective_agreement",
+          "bindingStatus": "binding_if_covered"
+        },
+        {
+          "id": "STATE_PERSONNEL_HANDBOOK",
+          "title": "Statens personalhåndbok",
+          "authority": "Digitaliserings- og forvaltningsdepartementet",
+          "url": "https://lovdata.no/dokument/SPH/sph",
+          "useFor": [
+            "ansettelse",
+            "oppsigelse",
+            "arbeidstid",
+            "lønn",
+            "fravær",
+            "ferie",
+            "etikk",
+            "medbestemmelse",
+            "omstilling",
+            "personaloppfølging"
+          ],
+          "sourceRole": "official_employer_reference",
+          "bindingStatus": "reference_not_independent_legal_basis"
+        }
       ]
     },
     {
@@ -103,6 +164,45 @@
       "notes": [
         "Avtaleområde kan avhenge av arbeidsgiver og organisasjon.",
         "Sjekk om virksomheten faktisk følger KS-området før råd gis."
+      ],
+      "curatedSources": [
+        {
+          "id": "KS_HTA_2026_2028",
+          "title": "Hovedtariffavtalen KS 01.05.2026–30.04.2028",
+          "authority": "KS",
+          "url": "https://www.ks.no/fagomrader/lonn-og-tariff/hovedtariffavtalen/hovedtariffavtalen-01.05.2026-30",
+          "validFrom": "2026-05-01",
+          "validTo": "2028-04-30",
+          "useFor": [
+            "lønn",
+            "lokale forhandlinger",
+            "arbeidstid",
+            "tillegg",
+            "permisjon",
+            "pensjon",
+            "tariff"
+          ],
+          "sourceRole": "collective_agreement",
+          "bindingStatus": "binding_if_covered"
+        },
+        {
+          "id": "KS_HA_2026_2029",
+          "title": "Hovedavtalen KS 01.01.2026–31.12.2029",
+          "authority": "KS",
+          "url": "https://www.ks.no/fagomrader/lonn-og-tariff/hovedavtalen/hovedavtalen-1.1.2026--31.12.2029",
+          "validFrom": "2026-01-01",
+          "validTo": "2029-12-31",
+          "useFor": [
+            "medbestemmelse",
+            "drøfting",
+            "tillitsvalgte",
+            "partssamarbeid",
+            "omstilling",
+            "forhandling"
+          ],
+          "sourceRole": "collective_agreement",
+          "bindingStatus": "binding_if_covered"
+        }
       ]
     },
     {
@@ -131,6 +231,39 @@
       "notes": [
         "Overenskomststruktur varierer mellom områder og forbund.",
         "Må bekreftes før konkrete rettigheter eller satser omtales."
+      ],
+      "curatedSources": [
+        {
+          "id": "SPEKTER_HEALTH_NEGOTIATION_2026_2029",
+          "title": "Forhandlingssystem for helseforetakene 2026–2029",
+          "authority": "Spekter",
+          "url": "https://www.spekter.no/lonn-og-tariff/tariffavtaler/forhandlingssystem-for-helseforetakene/",
+          "validFrom": "2026-01-01",
+          "validTo": "2029-12-31",
+          "useFor": [
+            "helseforetak",
+            "overenskomst",
+            "forhandling",
+            "tariffområde",
+            "lokale forhandlinger"
+          ],
+          "sourceRole": "collective_agreement_framework",
+          "bindingStatus": "confirm_main_organization_and_area"
+        },
+        {
+          "id": "SPEKTER_OVERENSKOMST_AREAS",
+          "title": "Spekter – overenskomstområder",
+          "authority": "Spekter",
+          "url": "https://www.spekter.no/lonn-og-tariff/tariffavtaler/overenskomstomrader",
+          "useFor": [
+            "overenskomstområde",
+            "helseforetak",
+            "arbeidsgiverområde",
+            "tariff"
+          ],
+          "sourceRole": "official_employer_reference",
+          "bindingStatus": "directory_not_independent_legal_basis"
+        }
       ]
     },
     {
