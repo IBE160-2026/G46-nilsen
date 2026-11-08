@@ -1199,6 +1199,29 @@ const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/SOURCEB
 const sourceIds = sourceBank.sources.map(source => source.id);
 const guidanceSchema = createGuidanceSchema(sourceIds);
 
+const occupationLegalSourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/OCCUPATION-LEGAL-SOURCES.json"), "utf8"));
+const occupationSourceMap = JSON.parse(fs.readFileSync(path.join(__dirname, "data/OCCUPATION-SOURCE-MAP.json"), "utf8"));
+
+app.get("/api/occupation-options", requireUser, (_req, res) => {
+  const sectors = (occupationSourceMap.sectors || []).map(sector => ({
+    id: sector.id,
+    label: sector.label,
+    occupations: sector.occupations || []
+  }));
+  res.json({
+    enabled: occupationContextEnabled,
+    sectors,
+    employerTypes: [
+      { id:"", label:"Ikke oppgitt" },
+      { id:"private", label:"Privat" },
+      { id:"municipal", label:"Kommune / fylkeskommune" },
+      { id:"state", label:"Stat" },
+      { id:"health_enterprise", label:"Helseforetak" },
+      { id:"unknown", label:"Usikker / vet ikke" }
+    ]
+  });
+});
+
 function selectRelevantSources(analysis = {}, situation = "") {
   const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
   const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || [])]
@@ -1396,15 +1419,15 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
     });
   }
 
-  const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", testMode = "", privacyNameOverrides = [] } = req.body || {};
+  const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", occupation = "", sectorId = "", employerType = "", testMode = "", privacyNameOverrides = [] } = req.body || {};
   const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
-  if (blockUnsafeAiText(res, [situation, helpRequest], privacyNameOverrides)) return;
+  if (blockUnsafeAiText(res, [situation, helpRequest, occupation], privacyNameOverrides)) return;
 
   const task = `\n\n## Oppgave i denne forespørselen\nAnalyser situasjonen som samtalepartner, ikke som HR-klassifiserer.\n- Gjengi bare fakta som faktisk står i brukerens tekst.\n- Identifiser det menneskelige/praktiske dilemmaet, ikke bare en kategori.\n- Relevante temaer er kun metadata og skal være maks to.\n- Still bare avklaringsspørsmål dersom svarene kan endre rådet vesentlig.\n- Lag korte klikkbare svaralternativer som dekker sannsynlige svar uten å påstå at de er sanne.
-- Sett multi_select=true når flere svaralternativer realistisk kan være sanne samtidig eller brukeren kan trenge hjelp med flere ting. Bruk false når alternativene faktisk utelukker hverandre.\n- Spør aldri om diagnose eller unødvendige sensitive opplysninger.\n- Hvis valgt tema/undertema ikke passer teksten, skal friteksten veie tyngst.\n\nValgt tema i grensesnittet: ${selectedTopic || "ikke oppgitt"}\nValgt undertema: ${selectedSubtopic || "ikke oppgitt"}\nHva brukeren ønsker hjelp til: ${helpRequest || "ikke oppgitt"}\n`;
+- Sett multi_select=true når flere svaralternativer realistisk kan være sanne samtidig eller brukeren kan trenge hjelp med flere ting. Bruk false når alternativene faktisk utelukker hverandre.\n- Spør aldri om diagnose eller unødvendige sensitive opplysninger.\n- Hvis valgt tema/undertema ikke passer teksten, skal friteksten veie tyngst.\n\nValgt tema i grensesnittet: ${selectedTopic || "ikke oppgitt"}\nValgt undertema: ${selectedSubtopic || "ikke oppgitt"}\nValgt yrke/stilling: ${occupation || "ikke oppgitt"}\nValgt arbeidsområde: ${sectorId || "ikke oppgitt"}\nArbeidsgivertype: ${employerType || "ikke oppgitt"}\nYrkesopplysninger skal bare påvirke analysen når de faktisk endrer risiko, regelverk eller praktisk råd. Ikke overjuridifiser en ordinær samtale.\nHva brukeren ønsker hjelp til: ${helpRequest || "ikke oppgitt"}\n`;
 
   try {
     const response = await createTrackedResponse({
