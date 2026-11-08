@@ -70,6 +70,7 @@ export function buildOccupationGuidanceContext({
         lines.push("Mulig avtaleområde er bare et forslag og må bekreftes før konkrete tariffrettigheter brukes.");
         for (const area of agreementResult.suggestions.slice(0, 2)) {
           lines.push(`- Mulig avtaleområde: ${area.label}`);
+          for (const source of area.curatedSources || []) lines.push(`  - Kandidatkilde [ID: ${source.id}]: ${source.authority}: ${source.title} (${source.url})`);
         }
       }
     }
@@ -105,7 +106,7 @@ export function buildOccupationGuidanceContext({
   if (occupationResult.legalSources.length) {
     lines.push("Godkjente autoritative startkilder ved behov:");
     for (const source of occupationResult.legalSources.slice(0, 5)) {
-      lines.push(`- ${source.authority}: ${source.title} (${source.url})`);
+      lines.push(`- [ID: ${source.id}] ${source.authority}: ${source.title} (${source.url})`);
     }
     lines.push("Bruk fersk autoritativ kilde for konkrete rettslige påstander; ikke stol på modellhukommelse alene.");
   }
@@ -118,6 +119,7 @@ export function buildOccupationGuidanceContext({
       lines.push("Mulig avtaleområde er bare et forslag og må bekreftes før konkrete tariffrettigheter brukes.");
       for (const area of agreementResult.suggestions.slice(0, 2)) {
         lines.push(`- Mulig avtaleområde: ${area.label}`);
+        for (const source of area.curatedSources || []) lines.push(`  - Kandidatkilde [ID: ${source.id}]: ${source.authority}: ${source.title} (${source.url})`);
       }
     }
   }
