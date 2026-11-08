@@ -1157,7 +1157,7 @@ Krav:
 - tidskritiske rettslige påstander skal kontrolleres mot gjeldende autoritativ kilde
 - ordinære mellommenneskelige samtaler skal ikke overjuridifiseres
 
-Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 62 startkilder etter gjennomgang av alle yrkene i sektorlisten.
+Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 85 startkilder etter gjennomgang av alle yrkene i sektorlisten.
 
 
 ## FR-23 – Direkte samtale som alternativ inngang
