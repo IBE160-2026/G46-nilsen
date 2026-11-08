@@ -180,7 +180,7 @@ function contextMatchesSource(source, contextText) {
   });
 }
 
-export function selectLegalSources({ sectorId, occupation = "", topic, subtopic, situation, maxSources = 6 } = {}) {
+export function selectLegalSources({ sectorId, occupation = "", employerType = "", topic, subtopic, situation, maxSources = 6 } = {}) {
   if (!sectorId) return [];
   const contextText = [topic, subtopic, situation].filter(Boolean).join(" ");
   const occupationNeedle = normalize(occupation);
@@ -190,6 +190,11 @@ export function selectLegalSources({ sectorId, occupation = "", topic, subtopic,
       const sectors = source.sectors || [];
       const appliesToSector = sectors.includes("*") || sectors.includes(sectorId);
       if (!appliesToSector) return false;
+
+      const employerScope = Array.isArray(source.employerTypes)
+        ? source.employerTypes
+        : (Array.isArray(source.employer_types) ? source.employer_types : []);
+      if (employerScope.length && (!employerType || !employerScope.includes(employerType))) return false;
 
       const occupationScope = Array.isArray(source.occupations) ? source.occupations : [];
       if (occupationScope.length) {
@@ -217,7 +222,7 @@ export function selectLegalSources({ sectorId, occupation = "", topic, subtopic,
     .slice(0, Math.max(1, maxSources));
 }
 
-export function resolveOccupationContext({ occupation, sectorId, topic, subtopic, situation } = {}) {
+export function resolveOccupationContext({ occupation, sectorId, employerType = "", topic, subtopic, situation } = {}) {
   let resolvedSectorId = sectorId || null;
   let classification = null;
 
@@ -241,6 +246,8 @@ export function resolveOccupationContext({ occupation, sectorId, topic, subtopic
   const legalSources = relevant && sector
     ? selectLegalSources({
         sectorId: sector.id,
+        occupation,
+        employerType,
         topic,
         subtopic,
         situation
