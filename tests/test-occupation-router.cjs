@@ -123,6 +123,42 @@ const assert = require("assert");
   assert(!healthJournal.sourceIds.includes("DFO_PERSONNEL_MEETING"), "Generisk oppfølging skal ikke trekke inn DFO-personalsak");
   assert(healthJournal.sourceIds.includes("HDIR_HEALTH_PERSONNEL"), "Journalføringssak skal hente helsepersonellkilde");
 
+  const policeEthics = router.selectLegalSources({
+    sectorId: "defence_police_emergency",
+    occupation: "politi",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Rolleforståelse",
+    situation: "Det er spørsmål om etikk, rolleforståelse og profesjonell opptreden."
+  });
+  assert(policeEthics.some(source => source.id === "POLITI_ETHICAL_GUIDELINES"), "Politi skal få politiets etiske retningslinjer");
+
+  const firefighterEthics = router.selectLegalSources({
+    sectorId: "defence_police_emergency",
+    occupation: "brannkonstabel",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Rolleforståelse",
+    situation: "Det er spørsmål om etikk, rolleforståelse og profesjonell opptreden."
+  });
+  assert(!firefighterEthics.some(source => source.id === "POLITI_ETHICAL_GUIDELINES"), "Brannkonstabel skal ikke få politiets etiske retningslinjer");
+
+  const accountantRules = router.selectLegalSources({
+    sectorId: "office_finance_it",
+    occupation: "regnskapsfører",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Taushetsplikt",
+    situation: "Det er spørsmål om taushetsplikt og regelverk i oppdraget."
+  });
+  assert(accountantRules.some(source => source.id === "ACCOUNTANT_RULES"), "Regnskapsfører skal få regnskapsførerregelverk");
+
+  const developerRules = router.selectLegalSources({
+    sectorId: "office_finance_it",
+    occupation: "utvikler",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Taushetsplikt",
+    situation: "Det er spørsmål om taushetsplikt og regelverk."
+  });
+  assert(!developerRules.some(source => source.id === "ACCOUNTANT_RULES"), "Utvikler skal ikke få regnskapsførerregelverk");
+
   let checked = 0;
   for (const tc of benchmark.cases || []) {
     const result = router.resolveOccupationContext({
