@@ -43,6 +43,9 @@ async function waitForServer() {
     const assets = [
       "/app.js",
       "/styles.css",
+      "/styles-core.css",
+      "/styles-responsive.css",
+      "/styles-overrides.css",
       "/src/client-data.js",
       "/src/privacy-name-data.js",
       "/src/privacy-detector.js",
