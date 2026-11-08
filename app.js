@@ -1648,7 +1648,7 @@ function renderAiGuidance(guidance) {
       <span class="guidance-number">${number}</span>
       <div>
         <details class="evidence-details"${openByDefault}>
-          <summary><span class="compact-source-title">${title}</span></summary>
+          <summary>${title}</summary>
           <div class="guidance-copy">${content}</div>
         </details>
       </div>
@@ -1821,7 +1821,7 @@ function compactSourceRow(source){
   const author=escapeHtml(source.author||'');
   const occupations=Array.isArray(source.occupations) ? source.occupations.filter(Boolean) : [];
   return `<details class="compact-source-row">
-    <summary>${title}</summary>
+    <summary><span class="compact-source-title">${title}</span></summary>
     <div class="compact-source-detail">
       <p><strong>Brukes ved:</strong> ${usage}.</p>
       ${occupations.length ? `<p><strong>Gjelder særlig:</strong> ${escapeHtml(occupations.join(', '))}.</p>` : ''}
@@ -1863,7 +1863,7 @@ async function loadCompleteSourceLibrary(){
     );
 
     const occupationHtml=`<details class="settings-card utility-accordion complete-source-bank source-bank-top-category">
-      <summary>${escapeHtml(occupation?.label||'Yrkes- og sektorkilder')}</summary>
+      <summary><span class="source-bank-top-title">${escapeHtml(occupation?.label||'Yrkes- og sektorkilder')}</span></summary>
       <div class="utility-accordion-body">
         <div class="complete-source-library-simple">
           ${occupationGroups.map(group=>`<details class="source-bank-sector">
