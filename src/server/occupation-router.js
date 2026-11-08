@@ -143,9 +143,12 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
     ? situationText.replaceAll(occupationNeedle, " ").replace(/\s+/g, " ").trim()
     : situationText;
   const text = normalize([topic, subtopic, sanitizedSituation].filter(Boolean).join(" "));
+  const concreteText = normalize([subtopic, sanitizedSituation].filter(Boolean).join(" "));
   if (!text) return false;
 
-  const hasRiskTrigger = riskTerms.some(term => containsNonNegatedTerm(text, term));
+  // Hovedtemaet er en bred UI-kategori og skal ikke alene gjøre yrket relevant.
+  // Bruk konkret undertema/situasjon som risikosignal.
+  const hasRiskTrigger = riskTerms.some(term => containsNonNegatedTerm(concreteText, term));
   if (hasRiskTrigger) return true;
 
   // I tillegg til generelle risikoord skal konkrete profesjons-/sektorkilder
@@ -167,7 +170,7 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
         if (!occupationMatch) return false;
       }
 
-      return (source.useFor || []).some(term => containsNonNegatedTerm(text, term));
+      return (source.useFor || []).some(term => containsNonNegatedTerm(concreteText, term));
     });
     if (scopedSourceMatch) return true;
   }
