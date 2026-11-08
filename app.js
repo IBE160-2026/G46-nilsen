@@ -1385,14 +1385,15 @@ function renderOccupationSuggestion(situation){
     updateOccupationDatalist();
     summary.textContent=`${suggestion.occupation} · ${suggestion.sectorLabel}`;
   }else{
-    summary.textContent='Ingen yrkeskontekst foreslått';
+    summary.textContent='Valgfritt – fyll bare inn hvis arbeidskonteksten er relevant for rådet.';
   }
 
   if(fields) fields.hidden=false;
   panel.hidden=false;
 }
 
-function scrollToOccupationContextAfterRender(){
+function scrollToOccupationContextAfterRender(situation=''){
+  if(!inferOccupationSuggestion(situation)) return;
   const target=document.querySelector('#occupation-title') || document.querySelector('#occupation-context-panel');
   if(!target) return;
   let attempts=0;
@@ -3007,13 +3008,13 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
     if (count > 0) {
       document.querySelector('#followup-panel').hidden = false;
-      scrollToOccupationContextAfterRender();
+      scrollToOccupationContextAfterRender(situationText);
     } else {
       // Ingen nødvendige avklaringer: hopp over avklaringsseksjonen og gå rett til rådet.
       document.querySelector('#followup-panel').hidden = true;
       directGuidance = true;
       await showStructuredGuidance();
-      scrollToOccupationContextAfterRender();
+      scrollToOccupationContextAfterRender(situationText);
     }
   } catch (error) {
     lastAiAnalysis = null;
@@ -3026,11 +3027,11 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     if (localQuestions.length) {
       renderFollowupQuestions(localQuestions);
       document.querySelector('#followup-panel').hidden = false;
-      scrollToOccupationContextAfterRender();
+      scrollToOccupationContextAfterRender(situationText);
     } else {
       followupContainer.innerHTML = '';
       document.querySelector('#followup-panel').hidden = true;
-      scrollToOccupationContextAfterRender();
+      scrollToOccupationContextAfterRender(situationText);
     }
 
     const note = document.createElement('div');
