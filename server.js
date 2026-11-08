@@ -1260,9 +1260,9 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
     res.json({
       categories: {
         rules: {
-          label: "Myndigheter og lovverk",
+          label: "Lovverk og myndigheter",
           description: "Norske lover, forskrifter, myndighetsveiledning og offentlige arbeidsgiverressurser.",
-          groups: [{ id:"rules", label:"Myndigheter og lovverk", sources: authorityAndLaw }]
+          groups: [{ id:"rules", label:"Lovverk og myndigheter", sources: authorityAndLaw }]
         },
         research: {
           label: "Forskning og evidens",
@@ -1270,9 +1270,9 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
           groups: [{ id:"research", label:"Forskning og evidens", sources: research }]
         },
         frameworks: {
-          label: "Faglige rammeverk og veiledere",
+          label: "Faglig rammeverk",
           description: "Praktiske fagveiledere, profesjonsressurser og ledelses-/samtalerammeverk.",
-          groups: [{ id:"frameworks", label:"Faglige rammeverk og veiledere", sources: frameworks }]
+          groups: [{ id:"frameworks", label:"Faglig rammeverk", sources: frameworks }]
         },
         occupations: {
           label: "Yrkes- og sektorkilder",
