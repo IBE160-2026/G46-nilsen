@@ -143,3 +143,14 @@ const swSource = fs.readFileSync('sw.js', 'utf8');
 
 
 console.log('v20.11.15 UI-kontroll: OK');
+
+
+const overrideCss = fs.readFileSync('styles-overrides.css', 'utf8');
+assert(html.includes('Yrke er valgfritt. Fyll det bare inn hvis du tror yrket eller arbeidsområdet har betydning for rådet du får.'), 'Yrkesfeltet forklarer ikke tydelig at det er valgfritt');
+assert(app.includes("['Forslag til åpning','Spørsmål som passer denne saken'].includes(title)"), 'Mulige reaksjoner skal være kollapset som standard');
+assert(app.includes("if(!inferOccupationSuggestion(situation)) return;"), 'Yrkesfeltet skal ikke autoscrolles til uten faktisk yrkesforslag');
+assert(overrideCss.includes('width:min(100%,620px) !important;'), 'Kildekortene er ikke redusert minst omtrent en tredel i bredde');
+assert(overrideCss.includes('.source-bank-sector-body .compact-source-row>summary') && overrideCss.includes('font-size:.80rem !important;'), 'Yrkeskildene er ikke tonet tydelig ned');
+assert(app.includes('class="source-bank-top-title"') && app.includes('class="source-bank-sector-title"') && app.includes('class="compact-source-title"'), 'Kildepilene er ikke koblet til selve overskriftsteksten');
+assert(overrideCss.includes('.source-bank-top-title::after') && overrideCss.includes('.compact-source-title::after'), 'Kildepilene mangler på overskriftsteksten');
+console.log('Valgfritt yrke, kollapsede reaksjoner og kompakt kildebank: OK');
