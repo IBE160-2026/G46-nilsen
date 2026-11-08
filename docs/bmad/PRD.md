@@ -795,7 +795,7 @@ npm run test-golden-schema
 
 KI-testene gjør faktiske modellkall og krever API-konfigurasjon.
 
-Golden/fasitbanken inneholder nå **26 caser** og dekker alle ni hovedtemaer med ekstra dekning på risikoområder.
+Golden/fasitbanken inneholder nå **66 caser**. De 26 tidligere generelle/pilotcasene er supplert med 40 strenge yrke/sektor/tariff/kilde-caser: 28 sektorcaser, 8 arbeidsgiver-/tariffcaser og 4 kildelekkasjecaser.
 
 Den dokumenterte live-kjøringen 26.10.2026 omfattet **21 caser** mot GPT-5.6 Luna og ga **19 maskinelt OK + 2 manuelt akseptert etter kontroll**, 0 kritiske avvik og 0 tekniske feil.
 
@@ -855,7 +855,7 @@ Leveransen anses som funksjonelt komplett som prosjektprototype når følgende e
 | Admin | Implementert | app/server |
 | Modellvalg | Implementert i prototypeform | admin/server |
 | Benchmark | Prototype/testform | 114 saker synkronisert med 48 undertemaer |
-| KI-testing | Implementert | 26 golden/pilotcaser + øvrige testspor i `tests/` |
+| KI-testing | Implementert / utvidet | 66 golden/fasitcaser, 28/28 deterministic sektor-golden + øvrige testspor i `tests/` |
 | Faggrunnlag | Implementert | `docs/faggrunnlag/` |
 | SOURCEBANK | Implementert | `docs/`, `data/` |
 | Brukertesting | Pilot gjennomført / videre evaluering | brukertestplan, backlog og dokumenterte produktendringer |
@@ -1203,3 +1203,51 @@ Produktkrav:
 - samme URL skal ikke ligge flere ganger i bankene for å skape kunstig kildevolum
 
 Regresjonsvern: `tests/test-source-policy.cjs`.
+
+
+## FR-15A – Kildepresisjon og negativ fasit
+
+**Status: IMPLEMENTERT 08.11.2026**
+
+Automatisert testing skal ikke bare kontrollere at et KI-svar har faglig grunnlag. For yrke, tariff og rettslige/formelle saker skal testgrunnlaget kunne uttrykke:
+
+- obligatorisk source_id
+- minst én av flere akseptable source_ids
+- eksplisitt forbudte source_ids
+- at ingen kuratert kilde normalt er nødvendig
+- forventet yrkesrelevans
+- forventet behov for arbeidsgivertype
+
+**Akseptansekriterier**
+1. Alle 14 sektorer har minst én positiv og én negativ yrkesrelevans-case.
+2. Positiv yrkescase kan ikke eksistere uten eksplisitt forventet kildefasit.
+3. Negativ yrkescase må ha negativ kildefasit.
+4. Kildelekkasjecase må ha minst én eksplisitt forbudt source_id.
+5. Forbudt source_id vurderes som kritisk avvik i golden-runneren.
+6. Privat/ukjent arbeidsgiver skal ikke få tariffområde gjettet.
+7. Generelt sykefravær skal ikke bli profesjonsjuss bare på grunn av yrkestittel.
+
+## NFR-QA-01 – Automatisert quality gate
+
+**Status: IMPLEMENTERT**
+
+Push til `main` skal automatisk kjøre:
+- `npm ci`
+- full deterministic `npm test`
+- `npm audit --omit=dev --audit-level=high`
+- strict golden coverage summary
+
+High dependency audit skal være grønn før runden kan omtales som fullført.
+
+Siste dokumenterte grønne run 08.11.2026:
+- GitHub Actions **42531396584**
+- commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`
+
+## Testbevis og begrensning
+
+Den automatiske quality-gaten dokumenterer deterministic kode-, data-, routing-, kilde-, personvern- og regresjonskvalitet. Den skal ikke brukes som bevis for at en ekstern stokastisk språkmodell alltid gir optimalt formulert svar.
+
+De 40 nye strenge yrkes-golden-casene skal først omtales som live-bestått etter faktisk kjøring med KI-provider.
+
+Full verifikasjonsrapport:
+`docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
