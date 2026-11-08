@@ -151,3 +151,18 @@ Arbeidsrunden ga også et dokumentert regresjonseksempel: flere nye trekkspillva
 Direkte samtalefunksjon og yrkes-/sektortilpasning skal fortsatt beskrives som planlagt/under utprøving dersom de ikke er aktivert og verifisert i produksjon.
 
 Denne arbeidsrunden må ikke omtales som fulltestet release før samlet regresjonstest er kjørt på den aktuelle koden.
+
+
+## 08.11.2026 – yrkes-/sektorkilder, kildebank og vedlikeholdbarhet
+
+- Yrkes-/sektorkontekst koblet videre inn i produksjonskoden.
+- Negasjons- og kildepresisjonstester utvidet for å hindre falske positive regelverkskilder.
+- Yrkes-/sektorkilderegisteret utvidet fra 31 til 58 autoritative startkilder.
+- Kildemodellen støtter nå `occupations` i tillegg til `sectors`.
+- Politiet, kriminalomsorgen, Forsvaret, vekter, revisor, regnskapsfører, lokfører, yrkessjåfør, reindrift, luftfart og flere andre områder fikk mer presise særkilder.
+- Fotterapeut flyttet fra Handel/service til Helse og omsorg.
+- Hjelp-kildebanken forenklet til fire direkte hovedkategorier og alfabetisk sortering.
+- Gammel statisk kildevisning fjernet.
+- Produksjonsfeil spores til at Render sto på eldre commit; deploy ble kontrollert mot faktisk `main`.
+- `styles.css` (ca. 9 389 linjer) ble splittet i `styles-core.css`, `styles-responsive.css` og `styles-overrides.css`.
+- Dokumentasjonen ble synkronisert gjennom README, Product Brief, PRD, arkitektur, UX, SOURCEBANK, KI-logg/testplan og refleksjonsdokumentasjon.
