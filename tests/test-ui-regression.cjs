@@ -150,7 +150,10 @@ assert(html.includes('Yrke er valgfritt. Fyll det bare inn hvis du tror yrket el
 assert(app.includes("['Forslag til åpning','Spørsmål som passer denne saken'].includes(title)"), 'Mulige reaksjoner skal være kollapset som standard');
 assert(app.includes("if(!inferOccupationSuggestion(situation)) return;"), 'Yrkesfeltet skal ikke autoscrolles til uten faktisk yrkesforslag');
 assert(overrideCss.includes('width:min(100%,620px) !important;'), 'Kildekortene er ikke redusert minst omtrent en tredel i bredde');
-assert(overrideCss.includes('.source-bank-sector-body .compact-source-row>summary') && overrideCss.includes('font-size:.80rem !important;'), 'Yrkeskildene er ikke tonet tydelig ned');
-assert(app.includes('class="source-bank-top-title"') && app.includes('class="source-bank-sector-title"') && app.includes('class="compact-source-title"'), 'Kildepilene er ikke koblet til selve overskriftsteksten');
-assert(overrideCss.includes('.source-bank-top-title::after') && overrideCss.includes('.compact-source-title::after'), 'Kildepilene mangler på overskriftsteksten');
+assert(overrideCss.includes('.compact-source-row>summary') && overrideCss.includes('font-size:.76rem !important;') && overrideCss.includes('font-weight:400 !important;'), 'Konkrete kilder er ikke gjort mindre og uten bold');
+assert(app.includes('class="source-bank-top-title"') && app.includes('class="source-bank-sector-title"') && app.includes('class="compact-source-title"'), 'Kildehierarkiet mangler forventede overskriftselementer');
+assert(overrideCss.includes('.source-bank-top-category>summary::before') && overrideCss.includes('.source-bank-top-category[open]>summary::before'), 'De fire hovedkategoriene mangler gammel venstrepil');
+assert(overrideCss.includes('.source-bank-top-title::after') && overrideCss.includes('content:none !important;'), 'Hovedkategoriene har fortsatt ny inline-pil');
+assert(overrideCss.includes('.source-bank-sector-title::after') && overrideCss.includes('.compact-source-title::after'), 'Kildepil-hierarkiet er ikke definert');
+assert(overrideCss.includes('.compact-source-row[open]>summary .compact-source-title::after'), 'Liten inline-pil mangler på konkrete kilder');
 console.log('Valgfritt yrke, kollapsede reaksjoner og kompakt kildebank: OK');
