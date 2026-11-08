@@ -143,6 +143,7 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
         /\buten(?:\s+at)?\b[^.!?;:]{0,80}$/u.test(prefix) ||
         /\bingen\b[^.!?;:]{0,100}$/u.test(prefix) ||
         /\bgjelder\s+ikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
+        /\bgjelder\b[^.!?;:]{0,100}\bikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
         /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,120}$/u.test(prefix) ||
         /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring)\b[^.!?;:]{0,80}$/u.test(prefix);
 
@@ -163,12 +164,19 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
   return false;
 }
 
+const genericWildcardContextTerms = new Set([
+  "oppfolging","lytting","oppfolgingssporsmal","referat","vanskelig samtale"
+]);
+
 function contextMatchesSource(source, contextText) {
   const text = normalize(contextText);
   if (!text) return false;
+  const wildcardOnlyContext = Boolean(source.contextualOnly && (source.sectors || []).includes("*"));
   return (source.useFor || []).some(term => {
     const n = normalize(term);
-    return n && text.includes(n);
+    if (!n) return false;
+    if (wildcardOnlyContext && genericWildcardContextTerms.has(n)) return false;
+    return text.includes(n);
   });
 }
 
