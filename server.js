@@ -1233,7 +1233,8 @@ app.get("/api/help-source-library", requireUser, (_req, res) => {
       url: source.url || (source.doi ? `https://doi.org/${source.doi}` : ""),
       lastVerified: source.last_verified || source.lastVerified || null,
       timeSensitive: Boolean(source.time_sensitive || source.timeSensitive),
-      useFor: source.use_when || source.useFor || []
+      useFor: source.use_when || source.useFor || [],
+      occupations: Array.isArray(source.occupations) ? source.occupations : []
     });
 
     const all = (sourceBank.sources || []).map(normalizePublicSource).filter(source => source.url);
