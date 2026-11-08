@@ -25,6 +25,9 @@ jobs:
       - name: Run deterministic test suite
         run: npm test
 
+      - name: Audit production dependencies
+        run: npm audit --omit=dev --audit-level=high
+
       - name: Summarize strict golden coverage
         run: |
           node - <<'NODE'
