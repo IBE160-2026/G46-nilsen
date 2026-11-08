@@ -2479,7 +2479,8 @@ async function appendConversationTurn(question) {
         guidance: lastAiGuidance,
         question,
         topicId: currentTopic?.id || '',
-        subtopic: currentSubtopic || ''
+        subtopic: currentSubtopic || '',
+        ...currentOccupationContext()
       })
     });
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
