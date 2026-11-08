@@ -54,18 +54,7 @@
       "title": "Regelverk",
       "url": "https://www.arbeidstilsynet.no/regelverk/",
       "sectors": [
-        "education_childcare",
-        "health_care",
-        "public_admin_legal",
-        "defence_police_emergency",
-        "industry_production",
-        "construction_trades",
-        "aquaculture_fisheries_maritime",
-        "transport_logistics",
-        "retail_hospitality_service",
-        "office_finance_it",
-        "veterinary_animal_health",
-        "offshore_energy"
+        "*"
       ],
       "useFor": [
         "arbeidsmiljø",
@@ -389,19 +378,7 @@
       "title": "Personvern i arbeidslivet",
       "url": "https://www.datatilsynet.no/personvern-pa-ulike-omrader/personvern-pa-arbeidsplassen/",
       "sectors": [
-        "public_admin_legal",
-        "office_finance_it",
-        "health_care",
-        "education_childcare",
-        "retail_hospitality_service",
-        "industry_production",
-        "construction_trades",
-        "transport_logistics",
-        "aquaculture_fisheries_maritime",
-        "veterinary_animal_health",
-        "offshore_energy",
-        "aviation",
-        "agriculture_nature"
+        "*"
       ],
       "useFor": [
         "kontrolltiltak",
@@ -464,7 +441,6 @@
       "title": "Gjennomføring av møte i personalsaker",
       "url": "https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/gjennomforing-av-mote",
       "sectors": [
-        "public_admin_legal",
         "*"
       ],
       "useFor": [
