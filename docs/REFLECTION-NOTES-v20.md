@@ -358,3 +358,34 @@ Lyd skal ikke brukes som direkte inngang til hoved-KI-en i første prototype. F�
 **Hypotese som skal testes:** Dersom skrivearbeidet reduseres, kan flere være villige til å bruke samtaleøvelse og videre dialog.
 
 Dette må testes før det omtales som en faktisk effekt.
+
+
+## 08.11.2026 – flere kilder var ikke nok; kildemodellen måtte bli mer presis
+
+Gjennomgangen av yrkes-/sektorkildene avdekket at enkelte sektorer hadde svært få særkilder. Det mest interessante funnet var likevel at problemet ikke kunne løses ved bare å legge til flere URL-er. Datamodellen kunne bare si at en kilde gjaldt en hel sektor. I en bred kategori som «Forsvar, politi og beredskap» kunne dette i verste fall bety at politiets særregler ble tilgjengelige for brannvesen eller andre yrker i samme gruppe.
+
+Jeg endret derfor kildearkitekturen slik at kilder kan avgrenses til konkrete yrker. Først deretter ble registeret utvidet fra 31 til 58 autoritative startkilder og hele yrkeslisten gjennomgått.
+
+Et viktig funn var også at fravær av en profesjonsspesifikk kilde ikke nødvendigvis er en mangel. Mange vanlige stillinger reguleres best av generelt arbeidsmiljø-/HMS- eller sektorregelverk. Å gi hvert yrke «sin egen lov» ville gjort systemet mer imponerende på overflaten, men faglig dårligere.
+
+**Læring:** Kildekvalitet måles i presisjon og relevans, ikke i antall lenker.
+
+## 08.11.2026 – taksonomifeil blir synlige når kilder kobles til yrker
+
+I gjennomgangen oppdaget jeg at fotterapeut lå under «Handel, service, hotell og servering». Når autorisasjonskilder skulle kobles på, ble denne plasseringen åpenbart feil. Yrket ble flyttet til «Helse og omsorg».
+
+**Læring:** En taksonomi kan se rimelig ut i et brukergrensesnitt, men når den brukes til regelverksruting blir feilklassifisering mye mer alvorlig. Datamodellen må derfor vurderes ut fra hva den faktisk styrer.
+
+## 08.11.2026 – deploystatus må verifiseres, ikke antas
+
+Flere endringer var pushet til `main`, men var ikke synlige i produksjon. Først ble cache og frontendlogikk mistenkt. Ved direkte kontroll av Render viste det seg at produksjonen fortsatt kjørte en eldre commit.
+
+Dette var en nyttig feilsøkingslæring: en korrekt GitHub-branch er ikke bevis på at brukeren ser samme kode. Deploy-pipeline må kontrolleres eksplisitt.
+
+**Læring:** Ved «jeg ser ingen endring» skal faktisk produksjonscommit kontrolleres tidlig, før flere kodeendringer gjøres.
+
+## 08.11.2026 – opprydding uten stor omskriving
+
+Sensor hadde tidligere påpekt den svært lange CSS-filen. `styles.css` var nå rundt 9 389 linjer. I stedet for å foreta en stor og risikofylt omskriving rett før innlevering ble filen splittet i tre moduler i samme regelrekkefølge: kjerne, responsiv/mobil og senere overrides. `styles.css` er beholdt som et lite inngangspunkt.
+
+**Læring:** Vedlikeholdbarhet kan forbedres trinnvis. En kontrollert modularisering med uendret cascade er bedre enn en estetisk «ren» refaktorering som introduserer nye UI-regresjoner.
