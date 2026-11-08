@@ -101,6 +101,28 @@ const assert = require("assert");
   assert.strictEqual(negatedConstructionRisk.occupationRelevant, false, "Negert HMS-liste skal ikke gi falsk positiv yrkeskontekst");
   assert.deepStrictEqual(negatedConstructionRisk.sourceIds, []);
 
+  const negatedHealthRisk = router.resolveOccupationContext({
+    sectorId: "health_care",
+    occupation: "sykepleier",
+    topic: "Prestasjon og utvikling",
+    subtopic: "Måloppnåelse",
+    situation: "Samtalen gjelder prioritering og samarbeid, ikke pasientsikkerhet, journalføring eller autorisasjon."
+  });
+  assert.strictEqual(negatedHealthRisk.occupationRelevant, false, "Negert helsefaglig risikoliste skal ikke aktivere helseregelverk");
+  assert.deepStrictEqual(negatedHealthRisk.sourceIds, []);
+
+  const healthJournal = router.resolveOccupationContext({
+    sectorId: "health_care",
+    occupation: "sykepleier",
+    topic: "Prestasjon og utvikling",
+    subtopic: "Kvalitet",
+    situation: "Det er gjentatte mangler i journalføringen som kan påvirke pasientoppfølgingen."
+  });
+  assert.strictEqual(healthJournal.occupationRelevant, true);
+  assert(!healthJournal.sourceIds.includes("AKAN_HELP_EMPLOYEE"), "Generisk ordet oppfølging skal ikke trekke inn AKAN");
+  assert(!healthJournal.sourceIds.includes("DFO_PERSONNEL_MEETING"), "Generisk oppfølging skal ikke trekke inn DFO-personalsak");
+  assert(healthJournal.sourceIds.includes("HDIR_HEALTH_PERSONNEL"), "Journalføringssak skal hente helsepersonellkilde");
+
   let checked = 0;
   for (const tc of benchmark.cases || []) {
     const result = router.resolveOccupationContext({
