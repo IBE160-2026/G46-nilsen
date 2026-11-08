@@ -1,5 +1,5 @@
 {
-  "version": 9,
+  "version": 10,
   "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Kilder kan avgrenses både til sektor og konkrete yrker. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -1116,6 +1116,61 @@
       "contextualOnly": false
     },
     {
+      "id": "REINDEER_ACT",
+      "authority": "Lovdata",
+      "title": "Reindriftsloven",
+      "url": "https://lovdata.no/nav/lov/2007-06-15-40",
+      "sectors": [
+        "agriculture_nature"
+      ],
+      "occupations": [
+        "reindriftsutøver"
+      ],
+      "useFor": [
+        "reindrift",
+        "siida",
+        "reinbeite",
+        "bruksregler",
+        "reintall",
+        "organisering",
+        "taushetsplikt"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true
+    },
+    {
+      "id": "MARITIME_CERTIFICATES",
+      "authority": "Sjøfartsdirektoratet",
+      "title": "Sertifikater og kvalifikasjoner for sjøfolk",
+      "url": "https://www.sdir.no/sjofolk/sertifikater/",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "occupations": [
+        "fisker",
+        "matros",
+        "skipsfører",
+        "maskinist",
+        "dekksarbeider",
+        "styrmann"
+      ],
+      "useFor": [
+        "sertifikat",
+        "kvalifikasjoner",
+        "sikkerhetsopplæring",
+        "fartstid",
+        "helsekrav",
+        "sjøfolk",
+        "kompetanse"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
       "id": "SERVERING_ACT",
       "authority": "Lovdata",
       "title": "Serveringsloven",
@@ -1239,6 +1294,39 @@
       "lastVerified": "2026-11-01",
       "sourceType": "official_authority",
       "contextualOnly": false
+    },
+    {
+      "id": "AVIATION_CERTIFICATES",
+      "authority": "Luftfartstilsynet",
+      "title": "Utdanning og sertifikater i luftfarten",
+      "url": "https://www.luftfartstilsynet.no/aktorer/utdanning/",
+      "sectors": [
+        "aviation"
+      ],
+      "occupations": [
+        "pilot",
+        "kabinansatt",
+        "flyvert",
+        "flyvertinne",
+        "flytekniker",
+        "flymekaniker",
+        "flygeleder"
+      ],
+      "useFor": [
+        "sertifikat",
+        "rettigheter",
+        "kompetanse",
+        "utdanning",
+        "skikkethet",
+        "flyger",
+        "kabin",
+        "flygeleder",
+        "flytekniker"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
     },
     {
       "id": "VAKTVIRKSOMHET_RULES",
