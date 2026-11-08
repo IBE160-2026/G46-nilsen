@@ -1197,11 +1197,26 @@ app.delete("/api/account", requireUser, async (req, res) => {
 
 const systemPrompt = fs.readFileSync(path.join(__dirname, "docs/ai/AI-SYSTEMPROMPT.md"), "utf8");
 const sourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/SOURCEBANK.json"), "utf8"));
-const sourceIds = sourceBank.sources.map(source => source.id);
-const guidanceSchema = createGuidanceSchema(sourceIds);
-
 const occupationLegalSourceBank = JSON.parse(fs.readFileSync(path.join(__dirname, "data/OCCUPATION-LEGAL-SOURCES.json"), "utf8"));
 const occupationSourceMap = JSON.parse(fs.readFileSync(path.join(__dirname, "data/OCCUPATION-SOURCE-MAP.json"), "utf8"));
+const agreementSourceMap = getAgreementMap();
+
+const agreementCuratedSources = (agreementSourceMap.agreementAreas || [])
+  .flatMap(area => (area.curatedSources || []).map(source => ({
+    ...source,
+    employerTypes: area.id === "state" ? ["state"] : area.id === "municipal" ? ["municipal"] : area.id === "health_enterprise" ? ["health_enterprise"] : [],
+    agreementAreaId: area.id,
+    sourceType: source.sourceRole || "collective_agreement"
+  })));
+
+const allCuratedSources = [
+  ...(sourceBank.sources || []),
+  ...(occupationLegalSourceBank.sources || []),
+  ...agreementCuratedSources
+];
+const allCuratedSourceById = new Map(allCuratedSources.map(source => [source.id, source]));
+const sourceIds = [...new Set(allCuratedSources.map(source => source.id).filter(Boolean))];
+const guidanceSchema = createGuidanceSchema(sourceIds);
 
 app.get("/api/occupation-options", requireUser, (_req, res) => {
   const sectors = (occupationSourceMap.sectors || []).map(sector => ({
