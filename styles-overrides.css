@@ -1474,3 +1474,91 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     line-height:1 !important;
   }
 }
+
+
+/* v20.11.65 EKSPLISITTE PILER - INGEN PSEUDO-ELEMENTER */
+#help-view #complete-source-library .source-bank-top-category>summary::before,
+#help-view #complete-source-library .source-bank-top-category>summary::after,
+#help-view #complete-source-library .compact-source-row>summary::before,
+#help-view #complete-source-library .compact-source-row>summary::after,
+#help-view #complete-source-library .source-bank-top-title::after,
+#help-view #complete-source-library .compact-source-title::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* Hovedkategori: samme enkle ›-pil som tidligere ble brukt ved yrkesnivået. */
+#help-view #complete-source-library .source-bank-top-category>summary{
+  display:flex !important;
+  align-items:center !important;
+  gap:7px !important;
+}
+#help-view #complete-source-library .source-bank-category-chevron{
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  color:var(--muted) !important;
+  font-size:1.08em !important;
+  line-height:1 !important;
+  font-weight:750 !important;
+  transform:rotate(0deg);
+  transition:transform .18s ease;
+}
+#help-view #complete-source-library .source-bank-top-category[open]>summary .source-bank-category-chevron{
+  transform:rotate(90deg);
+}
+
+/* Konkrete kilder: punkt + mindre eksplisitt åpnepil. */
+#help-view #complete-source-library .compact-source-row>summary{
+  display:flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  font-size:.84rem !important;
+  font-weight:400 !important;
+}
+#help-view #complete-source-library .compact-source-row>summary::before{
+  content:"•" !important;
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  color:var(--muted) !important;
+  font-size:.92rem !important;
+  line-height:1 !important;
+}
+#help-view #complete-source-library .compact-source-chevron{
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  color:var(--muted) !important;
+  font-size:.90em !important;
+  line-height:1 !important;
+  font-weight:600 !important;
+  transform:rotate(0deg);
+  transition:transform .18s ease;
+}
+#help-view #complete-source-library .compact-source-row[open]>summary .compact-source-chevron{
+  transform:rotate(90deg);
+}
+
+/* Rådskort: eksplisitt pil til høyre, så det alltid er synlig at kortet kan åpnes. */
+#structured-guidance .evidence-details>summary{
+  display:flex !important;
+  align-items:center !important;
+  width:100% !important;
+  gap:8px !important;
+}
+#structured-guidance .guidance-summary-title{
+  min-width:0;
+  flex:1 1 auto;
+}
+#structured-guidance .guidance-card-chevron{
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  margin-left:auto !important;
+  color:var(--muted) !important;
+  font-size:1.05rem !important;
+  line-height:1 !important;
+  font-weight:700 !important;
+  transform:rotate(0deg);
+  transition:transform .18s ease;
+}
+#structured-guidance .evidence-details[open]>summary .guidance-card-chevron{
+  transform:rotate(90deg);
+}
