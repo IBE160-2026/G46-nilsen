@@ -94,6 +94,10 @@ assert(app.includes('<option value="">Ikke valgt</option>'),"Arbeidsgivertype sk
 assert(server.includes("if (!matched) continue;"),"Kilder skal ikke få automatisk plass uten konkret treff");
 assert(server.includes("authority_index"),"Serveren skiller ikke oppslagsinngang fra konkret myndighetskilde");
 assert(server.includes("Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant"),"Tariffavgrensning mangler i KI-reglene");
+assert(server.includes("mergeGuidanceSourceCandidates"),"Veiledningen prioriterer ikke yrkes-/tariffkilder sammen med generell fagbank");
+assert(server.includes("allowedCandidateIds"),"Modellens source_ids avgrenses ikke til faktisk tilbudte kandidat-kilder");
+assert(server.includes("ordinær samtalesak uten et konkret kildebehov"),"Kildeinflasjon er ikke eksplisitt dempet i prompten");
+
 assert(systemPrompt.includes("Gjeldende lov og forskrift"),"Systemprompt mangler kildehierarki");
 assert(systemPrompt.includes("Akan-modellen eller IA-avtalen som lovpålagte krav") || systemPrompt.includes("Akan-modellen eller IA-avtalen som lovpålagte krav."),"Systemprompt mangler AKAN/IA-avgrensning");
 assert(systemPrompt.includes("Spekter har flere hovedavtaler/overenskomster"),"Systemprompt mangler Spekter-presisering");

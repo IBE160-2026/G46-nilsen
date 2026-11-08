@@ -19,7 +19,7 @@ const riskTerms = [
   "sikkerhet","påvirket","rus","alkohol","ulykke","nestenulykke","maskin","kjemikal",
   "taushetsplikt","taushetsbrudd","journal","autorisasjon","meldeplikt","pasient",
   "elevsikkerhet","barn","vold","trus","arbeidstid","hviletid","kjøretid","fartsskriver",
-  "personvern","informasjonssikkerhet","habilitet","beredskap","dyrevelferd","fiskehelse",
+  "habilitet","beredskap","dyrevelferd","fiskehelse",
   "rømming","strøm","elektr","høydearbeid","verneutstyr","fartøy","sjøsikkerhet"
 ];
 

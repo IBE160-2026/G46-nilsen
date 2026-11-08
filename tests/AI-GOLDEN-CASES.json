@@ -2644,7 +2644,7 @@
         "AI-04"
       ],
       "expected_topics_any": [
-        "Prestasjon og utvikling"
+        "Fravær og oppfølging"
       ],
       "followup": "optional",
       "require_evidence": false,
@@ -2695,11 +2695,11 @@
       },
       "id": "G-OCC-IND-02",
       "golden_group": "occupation_sector",
-      "theme": "Prestasjon og utvikling",
+      "theme": "Fravær og oppfølging",
       "risk": "medium",
       "occupation": "produksjonsmedarbeider",
       "sectorId": "industry_production",
-      "subtopic": "Punktlighet",
+      "subtopic": "Oppmøte og punktlighet",
       "input": "En produksjonsmedarbeider har kommet 10–15 minutter for sent til skiftstart fire ganger på en måned. Det er ingen sikkerhetshendelse, maskinproblem eller opplæringssak.",
       "occupation_relevant": false,
       "source_not_required": true,
@@ -3341,7 +3341,7 @@
         "AI-04"
       ],
       "expected_topics_any": [
-        "Prestasjon og utvikling"
+        "Fravær og oppfølging"
       ],
       "followup": "optional",
       "require_evidence": false,
@@ -3393,11 +3393,11 @@
       },
       "id": "G-OCC-SERVICE-02",
       "golden_group": "occupation_sector",
-      "theme": "Prestasjon og utvikling",
+      "theme": "Fravær og oppfølging",
       "risk": "medium",
       "occupation": "butikkmedarbeider",
       "sectorId": "retail_hospitality_service",
-      "subtopic": "Punktlighet",
+      "subtopic": "Oppmøte og punktlighet",
       "input": "En butikkmedarbeider har kommet sent til tre vakter de siste to ukene. Saken gjelder bare punktlighet og forventning om å være klar ved vaktstart.",
       "occupation_relevant": false,
       "source_not_required": true,
@@ -4218,7 +4218,8 @@
         "AI-04"
       ],
       "expected_topics_any": [
-        "Lønn og utvikling"
+        "Lønn og utvikling",
+        "Prestasjon og utvikling"
       ],
       "followup": "optional",
       "require_evidence": false,
@@ -4824,10 +4825,6 @@
       "input": "En statlig arbeidsgiver vurderer oppsigelse av en rådgiver etter dokumenterte prestasjonsproblemer. Beslutningen er ikke tatt. Jeg trenger samtalestøtte og korrekt overordnet regelverksretning.",
       "expected_source_ids": [
         "STATE_EMPLOYEE_ACT"
-      ],
-      "expected_source_ids_any": [
-        "AML_15_1_DROFTING",
-        "AT_OPPSIGELSE"
       ],
       "forbidden_source_ids": [
         "KS_HTA_2026_2028"

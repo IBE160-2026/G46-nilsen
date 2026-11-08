@@ -66,6 +66,23 @@ const assert=require("assert");
   assert(stateArea.curatedSources.some(x=>x.id==="STATE_HA_2023_2026"), "Hovedavtalen i staten mangler i avtalekartet");
   assert(stateArea.curatedSources.some(x=>x.id==="STATE_PERSONNEL_HANDBOOK"), "Statens personalhåndbok mangler i avtalekartet");
 
+  const careerDevelopment = router.suggestAgreementAreas({
+    occupation:"pilot",
+    topic:"Lønn og utvikling",
+    subtopic:"Karriereutvikling",
+    situation:"Medarbeideren er skuffet over ikke å ha fått en intern utviklingsmulighet. Det gjelder ikke lønn, arbeidstid, tariff eller tillegg."
+  });
+  assert.strictEqual(careerDevelopment.relevant,false,"Bredt tema «Lønn og utvikling» skal ikke alene gjøre karrieresak tariffrelevant");
+  assert.strictEqual(careerDevelopment.needsEmployerType,false);
+
+  const explicitlyNoAgreement = router.suggestAgreementAreas({
+    occupation:"utvikler",
+    topic:"Lønn og utvikling",
+    subtopic:"Karriereutvikling",
+    situation:"Samtalen gjelder videre utvikling og ikke lønn, tariff, arbeidstid eller overtid."
+  });
+  assert.strictEqual(explicitlyNoAgreement.relevant,false,"Eksplisitt avkreftede avtaletema skal ikke aktivere tariffkontekst");
+
   const unknown=router.suggestAgreementAreas({
     occupation:"elektriker",
     employerType:"unknown",

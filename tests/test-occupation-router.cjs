@@ -55,6 +55,16 @@ const assert = require("assert");
   assert.strictEqual(sickLeaveContext.occupationRelevant,false,"Generelt sykefravær skal være yrkesnøytralt når profesjonsrisiko er avkreftet");
   assert.deepStrictEqual(sickLeaveContext.sourceIds,[],"Generelt sykefravær skal ikke hente helsefaglig profesjonsregelverk");
 
+  const genericPrivacy = router.resolveOccupationContext({
+    sectorId: "office_finance_it",
+    occupation: "utvikler",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Kontroll og overvåking",
+    situation: "Arbeidsgiver vurderer logging av aktivitet på arbeids-PC. Saken gjelder kontrolltiltak og personvern, ikke finans eller regnskap."
+  });
+  assert.strictEqual(genericPrivacy.occupationRelevant, false, "Generelt arbeidslivspersonvern skal ikke gjøre utvikleryrket materiell");
+  assert.deepStrictEqual(genericPrivacy.sourceIds, [], "Generelt personvern skal bruke tverrgående kilder, ikke yrkeskilder");
+
   const irrelevantUnknown = router.resolveOccupationContext({
     occupation: "bibliotekar",
     topic: "Livssituasjoner",

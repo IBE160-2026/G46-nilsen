@@ -31,16 +31,43 @@ export const employerTypeOptions = [
   { id: "unknown", label: "Usikker / vet ikke" }
 ];
 
+function containsNonNegatedTerm(textValue, termValue) {
+  const text = normalize(textValue);
+  const needle = normalize(termValue);
+  if (!text || !needle) return false;
+
+  let fromIndex = 0;
+  while (fromIndex < text.length) {
+    const index = text.indexOf(needle, fromIndex);
+    if (index < 0) return false;
+
+    const prefix = text.slice(Math.max(0, index - 130), index).trim();
+    const explicitlyAbsent =
+      /\bingen\b[^.!?;:]{0,120}$/u.test(prefix) ||
+      /\bgjelder\s+ikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
+      /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,120}$/u.test(prefix) ||
+      /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak)\b[^.!?;:]{0,120}$/u.test(prefix);
+
+    if (!explicitlyAbsent) return true;
+    fromIndex = index + needle.length;
+  }
+  return false;
+}
+
 export function shouldUseAgreementContext({ topic, subtopic, situation } = {}) {
-  const text = normalize([topic, subtopic, situation].filter(Boolean).join(" "));
-  if (!text) return false;
+  // Et bredt hovedtema som «Lønn og utvikling» skal ikke alene gjøre en
+  // karriere-/utviklingssak tariffrelevant. Bruk konkret undertema og situasjon.
+  const concreteText = normalize([subtopic, situation].filter(Boolean).join(" "));
+  const fallbackText = normalize(topic);
 
-  if (agreementTerms.some(term => text.includes(normalize(term)))) return true;
+  if (concreteText) {
+    if (agreementTerms.some(term => containsNonNegatedTerm(concreteText, term))) return true;
+    return agreementVaktTerms.some(term => containsNonNegatedTerm(concreteText, term));
+  }
 
-  // "Vakt" alene er ikke tariffrelevant. Formuleringer som "under vakt" eller
-  // "på vakt" beskriver ofte bare arbeidssituasjonen. Aktiver avtaleområdet
-  // først når teksten faktisk handler om vaktordning, plan, tillegg eller lignende.
-  return agreementVaktTerms.some(term => text.includes(normalize(term)));
+  if (!fallbackText) return false;
+  if (agreementTerms.some(term => containsNonNegatedTerm(fallbackText, term))) return true;
+  return agreementVaktTerms.some(term => containsNonNegatedTerm(fallbackText, term));
 }
 
 function agreementAreasForEmployerType(employerType) {
