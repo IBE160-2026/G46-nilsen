@@ -1,5 +1,5 @@
 {
-  "version": 5,
+  "version": 6,
   "description": "Lokal yrkes- og kilderuter for Samtalestøtte. Yrke/bransje er valgfritt og skal bare påvirke råd når arbeidskontekst, risiko eller regelverk faktisk er relevant.",
   "selectionPolicy": {
     "occupationOptional": true,
@@ -197,7 +197,6 @@
         "konsulent",
         "førstekonsulent",
         "seniorkonsulent",
-        "sekretær",
         "arkivar"
       ],
       "aliases": [
@@ -206,7 +205,9 @@
         "forvaltning",
         "NAV",
         "juridisk",
-        "advokatkontor"
+        "advokatkontor",
+        "statlig sekretær",
+        "kommunal sekretær"
       ],
       "primaryAuthorities": [
         {
