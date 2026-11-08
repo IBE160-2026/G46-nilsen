@@ -1430,3 +1430,94 @@ Full golden:
 `npm run test-ai:golden`
 
 Viktig: dette er intern fasit, ikke uavhengig HR-/arbeidsretts-/HMS-ekspertvalidering.
+
+
+# Verifikasjonsrunde 08.11.2026 – gjeldende status
+
+Denne delen er **gjeldende nå-status**. Eldre 9-, 21- og 26-case-resultater over beholdes som daterte historiske milepæler.
+
+## Hvorfor testen ble skjerpet
+
+Etter innføring av yrke, sektor, arbeidsgivertype og tariff var det ikke nok å kontrollere at et KI-svar hadde minst én kilde. Nye sentrale testspørsmål ble:
+
+1. Velges **riktig** kilde?
+2. Holdes plausible, men **feil** kilder ute?
+3. Brukes yrkeskontekst bare når yrket faktisk endrer risiko, plikt eller råd?
+4. Forstår ruteren eksplisitte negasjoner som «ingen pasientsikkerhetssak»?
+5. Blandes stat, KS, Spekter eller privat tariff?
+6. Er testene selv fortsatt gyldige etter refaktorering?
+
+## Gjeldende testdekning
+
+- Golden/fasitbank: **66 caser**
+  - 26 tidligere generelle/pilotcaser
+  - 28 sektorcaser
+  - 8 arbeidsgiver-/tariffcaser
+  - 4 kildelekkasjecaser
+- Sektor-golden routing: **28/28 bestått**
+  - 14 relevante
+  - 14 irrelevante
+- Benchmark/taksonomi: **114 saker / 48 undertemaer / minst 2 per undertema**
+- Personvern: **73 deterministiske caser**
+- Kildeøkosystem: **58 generelle + 86 arbeidsgiver/yrke/sektor + 7 tariffreferanser**
+- Eksakte URL-duplikater: **0**
+- Dependency audit: **0 HIGH** etter oppgradering av body-parser/qs
+
+## Quality gate
+
+GitHub Actions-filen `.github/workflows/quality-gate.yml` kjører ved push til `main`:
+
+1. `npm ci`
+2. full `npm test`
+3. `npm audit --omit=dev --audit-level=high`
+4. oppsummering av strict golden coverage
+
+Siste verifiserte grønne run i denne runden:
+- run: **42531396584**
+- commit: `021b7f5e45584e5f1e17ac9a25c108735b6b5891`
+- resultat: **SUCCESS**
+
+## Feiltyper skilles eksplisitt
+
+Et rødt testresultat klassifiseres før retting som ett av følgende:
+
+- **produkt-/datafeil**
+- **KI-kvalitetsavvik**
+- **testgjeld / foreldet testforutsetning**
+- **testimplementasjonsfeil**
+- **teknisk/API-/miljøfeil**
+
+Dette hindrer at produksjonskode endres bare for å tilfredsstille en test som selv er feil.
+
+## Konkrete funn fra runden
+
+Produkt/data:
+- `sekretær` lå i to sektorer
+- tre kildeposter hadde foreldreløse yrkesreferanser
+- yrkesrelevans var for avhengig av generelle hardkodede risikoord
+- authority_index kunne lekke mellom skole/barnehage
+- minstelønnskilden var for bred og omfattet taxi generelt
+
+Testgjeld:
+- fire CSS-tester leste bare gammel/importerende `styles.css`
+- UI-test var låst til historisk cacheversjon
+- pilot-test var låst til nøyaktig 26 totalcaser
+- gammel NAV-test uttrykte tidligere kildearkitektur
+- testfilene selv var ikke syntakssjekket
+
+Security:
+- body-parser 2.3.0: HIGH
+- qs 6.16.0: MODERATE
+- oppgradert til body-parser 2.4.0 og qs 6.16.1
+- audit-gate består etter oppgradering
+
+## Live KI – viktig begrensning
+
+De 40 nye strenge yrke/sektor/tariff/kilde-casene er strukturelt validert, og 28 sektorcaser er kjørt deterministisk mot ruteren.
+
+De skal **ikke** omtales som bestått mot en ekstern språkmodell før `npm run test-ai:occupation-golden` faktisk er kjørt med API-nøkkel.
+
+Deterministic green dokumenterer routing, policy, schema, personvern og regresjoner – ikke at en stokastisk modell alltid formulerer optimalt svar.
+
+Full metode, funn og akseptansekriterier:
+`docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
