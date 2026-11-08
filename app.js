@@ -1821,23 +1821,27 @@ async function loadHelpSourceLibrary(){
     const payload=await response.json();
     if(!response.ok) throw new Error(payload.message||'Kunne ikke hente kildegrunnlaget.');
     const categories=payload.categories||{};
-    const tabs=[
+    const ordered=[
       ['rules',categories.rules],
       ['research',categories.research],
       ['frameworks',categories.frameworks],
       ['occupations',categories.occupations]
     ].filter(([,cat])=>cat);
-    const buttons=tabs.map(([id,cat],index)=>`<button class="source-library-tab" type="button" role="tab" aria-selected="${index===0?'true':'false'}" data-help-source-tab="${id}">${escapeHtml(cat.label)}</button>`).join('');
-    const panels=tabs.map(([id,cat],index)=>`<section class="source-category-panel" data-help-source-panel="${id}" ${index===0?'':'hidden'}>
-      <div class="source-category-heading"><h3>${escapeHtml(cat.label)}</h3><p>${escapeHtml(cat.description||'')}</p></div>
-      ${(cat.groups||[]).map(group=>renderHelpSourceGroup(group,id==='occupations')).join('')}
-    </section>`).join('');
-    root.innerHTML=`<div class="source-library-tabs" role="tablist" aria-label="Kildekategorier">${buttons}</div>${panels}`;
-    root.querySelectorAll('[data-help-source-tab]').forEach(button=>button.addEventListener('click',()=>{
-      const id=button.dataset.helpSourceTab;
-      root.querySelectorAll('[data-help-source-tab]').forEach(tab=>tab.setAttribute('aria-selected',String(tab===button)));
-      root.querySelectorAll('[data-help-source-panel]').forEach(panel=>{panel.hidden=panel.dataset.helpSourcePanel!==id;});
-    }));
+    root.innerHTML=ordered.map(([id,cat])=>{
+      const groups=cat.groups||[];
+      const totalSources=groups.reduce((sum,group)=>sum+(group.sources||[]).length,0);
+      const occupation=id==='occupations';
+      const body=occupation
+        ? groups.map(group=>renderHelpSourceGroup(group,true)).join('')
+        : groups.flatMap(group=>group.sources||[]).map(renderHelpSourceItem).join('');
+      return `<details class="settings-card utility-accordion help-source-category">
+        <summary><span>${escapeHtml(cat.label)}</span><small>${occupation ? groups.length+' arbeidsområder' : totalSources+' kilder'}</small></summary>
+        <div class="utility-accordion-body help-source-category-body">
+          <p class="source-category-description">${escapeHtml(cat.description||'')}</p>
+          ${body || '<p class="muted-note">Ingen kilder registrert.</p>'}
+        </div>
+      </details>`;
+    }).join('');
     helpSourceLibraryLoaded=true;
     if(status) status.textContent='Kildene åpnes i ny fane. Sektorkilder er sortert etter arbeidsområde.';
   }catch(error){
