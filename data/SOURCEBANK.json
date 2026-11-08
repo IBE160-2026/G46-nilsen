@@ -1515,7 +1515,12 @@
       "authority": "high",
       "note": "Offisiell veiledning for statlige arbeidsgivere. Brukes som praktisk samtale- og prosessstøtte, ikke som universell juridisk fasit for alle virksomheter.",
       "last_verified": "2026-10-29",
-      "time_sensitive": true
+      "time_sensitive": true,
+      "employer_types": [
+        "state"
+      ],
+      "source_role": "official_employer_reference",
+      "binding_status": "guidance_not_independent_legal_basis"
     },
     {
       "id": "DFO_PERSONALSAKER_GJENNOMFORING_2026",
@@ -1550,7 +1555,12 @@
       "authority": "high",
       "note": "Offisiell veiledning for statlige arbeidsgivere. Særlig relevant for menneskelig samtalestil, lytting og oppfølging.",
       "last_verified": "2026-10-29",
-      "time_sensitive": true
+      "time_sensitive": true,
+      "employer_types": [
+        "state"
+      ],
+      "source_role": "official_employer_reference",
+      "binding_status": "guidance_not_independent_legal_basis"
     },
     {
       "id": "BI_KUVAAS_AUTONOMISTOTTE_2026",
