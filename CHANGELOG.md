@@ -1,6 +1,6 @@
 # Arbeidsrunde 08.11.2026 – yrkespresisjon, kildebank og kodeopprydding
 
-- Yrkes-/sektorkilderegisteret utvidet fra 31 til 58 autoritative startkilder.
+- Yrkes-/sektorkilderegisteret utvidet fra 31 til 62 autoritative startkilder.
 - Kilder kan avgrenses til konkrete yrker via `occupations`, ikke bare brede sektorer.
 - Nye profesjonskilder for blant annet politi, kriminalomsorg, Forsvaret, vektere, offentlig forvaltning, regnskapsfører, revisor, yrkessjåfør, lokfører, sjøfolk, reindrift og luftfart.
 - Fotterapeut flyttet fra Handel/service til Helse og omsorg.
