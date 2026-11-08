@@ -1817,10 +1817,12 @@ function compactSourceRow(source){
   const title=escapeHtml(source.title||source.id||'Kilde');
   const usage=escapeHtml(compactSourceUsage(source));
   const author=escapeHtml(source.author||'');
+  const occupations=Array.isArray(source.occupations) ? source.occupations.filter(Boolean) : [];
   return `<details class="compact-source-row">
     <summary>${title}</summary>
     <div class="compact-source-detail">
       <p><strong>Brukes ved:</strong> ${usage}.</p>
+      ${occupations.length ? `<p><strong>Gjelder særlig:</strong> ${escapeHtml(occupations.join(', '))}.</p>` : ''}
       ${author ? `<p class="muted-note">${author}</p>` : ''}
       <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Åpne kilde ↗</a>
     </div>
