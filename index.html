@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.50" />
+  <link rel="stylesheet" href="styles.css?v=20.11.51" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -771,13 +771,64 @@
   </div>
 </details>
 
-<div class="help-section-heading help-resource-heading"><span class="eyebrow">KILDEGRUNNLAG</span><h2>Kilder og faggrunnlag</h2><p>Kildene er organisert etter hva slags kunnskap de representerer. En faglig anbefaling skal ikke fremstilles som lov.</p></div>
-        <div class="source-library-intro settings-card">
-          <p><strong>Om kildebanken:</strong> Samtalestøtte skiller mellom myndigheter/lovverk, forskning/evidens, faglige rammeverk/veiledere og yrkes-/sektorkilder.</p>
-          <small id="help-source-library-status">Henter kildegrunnlag …</small>
-        </div>
-        <div id="help-source-library" class="source-library"></div>
-        </div>
+<div class="help-section-heading help-resource-heading"><span class="eyebrow">EKSTERNE KILDER</span><h2>Ressurser og lenker</h2><p>Faglige kilder, regelverk og veiledere som kan være relevante ved behov.</p></div>
+
+<details class="settings-card utility-accordion">
+  <summary>Arbeidsmiljø, mobbing og trakassering</summary>
+  <ul class="utility-accordion-body resource-links">
+    <li><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – trakassering</a></li>
+    <li><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/mobbing/" target="_blank" rel="noopener">Arbeidstilsynet – mobbing</a></li>
+    <li><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/trakassering/seksuell-trakassering/" target="_blank" rel="noopener">Arbeidstilsynet – seksuell trakassering</a></li>
+    <li><a href="https://www.ffi.no/publikasjoner/arkiv/mobbing-og-seksuell-trakassering-i-forsvaret-i-fma-og-ved-ffi-resultater-fra-en-sporreundersokelse-i-2024" target="_blank" rel="noopener">FFI – MOST 2024</a></li>
+  </ul>
+</details>
+
+<details class="settings-card utility-accordion">
+  <summary>Fravær, tilrettelegging og rus</summary>
+  <ul class="utility-accordion-body resource-links">
+    <li><a href="https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver" target="_blank" rel="noopener">NAV – samtalestøtte for arbeidsgiver</a></li>
+    <li><a href="https://www.arbeidstilsynet.no/arbeidsforhold/tilrettelegging/" target="_blank" rel="noopener">Arbeidstilsynet – tilrettelegging</a></li>
+    <li><a href="https://www.akan.no/bekymret-for-en-ansatt" target="_blank" rel="noopener">Akan – bekymret for en ansatt</a></li>
+  </ul>
+</details>
+
+<details class="settings-card utility-accordion">
+  <summary>Sikkerhet og regelverk</summary>
+  <ul class="utility-accordion-body resource-links">
+    <li><a href="https://www.arbeidstilsynet.no/arbeidsmiljo/vold-og-trusler/" target="_blank" rel="noopener">Arbeidstilsynet – vold og trusler</a></li>
+    <li><a href="https://lovdata.no/dokument/NL/lov/2005-06-17-62" target="_blank" rel="noopener">Lovdata – arbeidsmiljøloven</a></li>
+    <li><a href="https://ldo.no/" target="_blank" rel="noopener">Likestillings- og diskrimineringsombudet</a></li>
+  </ul>
+</details>
+
+<details class="settings-card utility-accordion">
+  <summary>Samtaleteknikk og ledelse</summary>
+  <ul class="utility-accordion-body resource-links">
+    <li><a href="https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/forberedelse-til-mote" target="_blank" rel="noopener">Statens arbeidsgiverportal – forberedelse til krevende samtaler</a></li>
+    <li><a href="https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/gjennomforing-av-mote" target="_blank" rel="noopener">Statens arbeidsgiverportal – gjennomføring av møte</a></li>
+    <li><a href="https://www.helsedirektoratet.no/forebygging-diagnose-og-behandling/forebygging-og-levevaner/motiverende-intervju-mi/motiverende-intervju-som-metode" target="_blank" rel="noopener">Helsedirektoratet – motiverende intervju</a></li>
+    <li><a href="https://www.bi.no/forskning/business-review/articles/2022/05/god-ledelse-fordrer-god-relasjon/" target="_blank" rel="noopener">BI – relasjonsledelse</a></li>
+    <li><a href="https://stami.no/vare-tjenester/medarbeiderundersokelsen-i-staten-must/temaomrader-i-must/" target="_blank" rel="noopener">STAMI – psykologisk trygghet og arbeidsmiljø</a></li>
+  </ul>
+</details>
+
+<details class="settings-card utility-accordion">
+  <summary>Yrkes- og sektorkilder</summary>
+  <div class="utility-accordion-body">
+    <p class="muted-note">Viser bare de mest relevante sektorkildene her. Hele den dynamiske kildebanken kan åpnes ved behov.</p>
+    <div id="help-sector-source-summary" class="help-sector-source-summary"></div>
+  </div>
+</details>
+
+<details class="settings-card utility-accordion complete-source-bank">
+  <summary>Se alle kilder i kildebanken</summary>
+  <div class="utility-accordion-body">
+    <p class="complete-source-intro">Her finner du hele kildebanken. Denne delen er ment som oppslagsverk, ikke som hovedvisning.</p>
+    <div id="help-source-library" class="source-library compact-full-source-library"></div>
+    <small id="help-source-library-status"></small>
+  </div>
+</details>
+</div>
       </section>
 
     </main>
@@ -891,6 +942,6 @@
   <script src="src/privacy-name-data.js?v=20.11.15"></script>
   <script src="src/privacy-detector.js?v=20.11.15"></script>
   <script src="src/client-data.js?v=20.11.15"></script>
-  <script src="app.js?v=20.11.48"></script>
+  <script src="app.js?v=20.11.51"></script>
 </body>
 </html>
