@@ -162,3 +162,8 @@ assert(overrideCss.includes('#structured-guidance .guidance-card:has(.evidence-d
 assert(overrideCss.includes('#structured-guidance .guidance-card:has(.evidence-details[open])') && overrideCss.includes('width:100% !important;'), 'Åpne rådskort skal fortsatt bruke full bredde');
 
 assert(overrideCss.includes('min-height:46px !important;') && overrideCss.includes('align-items:center !important;'), 'Sammentrukne rådskort sentrerer ikke innholdet vertikalt');
+
+assert(app.includes('guidance-card-chevron'), 'Rådskortene mangler eksplisitt åpnepil i markup');
+assert(app.includes('source-bank-category-chevron'), 'Hovedkategoriene mangler eksplisitt kategori-pil i markup');
+assert(app.includes('compact-source-chevron'), 'Konkrete kilder mangler eksplisitt åpnepil i markup');
+assert(overrideCss.includes('.guidance-card-chevron') && overrideCss.includes('.source-bank-category-chevron') && overrideCss.includes('.compact-source-chevron'), 'Eksplisitte piler mangler styling');
