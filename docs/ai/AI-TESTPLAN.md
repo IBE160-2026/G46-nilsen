@@ -1365,3 +1365,22 @@ Hvis direkte samtale implementeres, skal den testes mot minst:
 - overgang fra direkte dialog til strukturert råd/simulering dersom funksjonen støtter dette
 
 Direkte samtale skal ikke inn i ferdig-funksjonslisten før denne testen er gjennomført.
+
+
+## Tillegg 08.11.2026 – tester for profesjonsavgrensede kilder
+
+Yrkes-/sektorkilder testes nå også på **negativ presisjon**: systemet skal ikke bare finne en relevant kilde, men unngå at en kilde lekker til andre yrker i samme sektor.
+
+Eksempler i `tests/test-occupation-router.cjs`:
+- politi → politiets etiske retningslinjer
+- brannkonstabel → ikke politiets etiske retningslinjer
+- regnskapsfører → regnskapsførerregelverk
+- utvikler → ikke regnskapsførerregelverk
+
+Dette kommer i tillegg til eksisterende negative kontroller for negert sikkerhets-/HMS-kontekst og irrelevante yrkesvalg.
+
+Akseptansekriterium:
+1. riktig sektor
+2. riktig profesjon når kilden er yrkesavgrenset
+3. relevant situasjonskontekst når kilden er `contextualOnly`
+4. ingen profesjonskilde ved ordinær samtale uten regelverksrelevans
