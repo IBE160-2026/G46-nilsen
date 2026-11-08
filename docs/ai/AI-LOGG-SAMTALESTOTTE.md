@@ -1375,3 +1375,30 @@ Endring:
 Nye negative regresjoner kontrollerer blant annet at politiets etiske retningslinjer ikke brukes for brannkonstabel og at regnskapsførerregelverk ikke brukes for utvikler.
 
 Arbeidsprinsipp: KI skal ikke «fylle tomrom» med tilfeldige regler. Der et yrke ikke har relevant særregelverk, skal generelt arbeidslivs-/HMS- eller sektorregelverk være tilstrekkelig.
+
+
+## 08.11.2026 – kildekvalitetsrevisjon, ikke kildeinflasjon
+
+Etter utvidelsen av yrkes-/sektorkildene ble hele kildearkitekturen vurdert på nytt med et annet spørsmål: «Er dette en god kilde til akkurat denne typen påstand, eller ligger den bare i banken fordi den er relevant til temaet?»
+
+Revisjonen avdekket flere strukturelle svakheter:
+- yrkes-/sektorkilder kunne gis til KI, men kunne ikke tidligere registreres som kuraterte `source_ids`
+- tariffruteren kjente avtaleområder, men ikke konkrete gjeldende HTA-/hovedavtalekilder
+- samme URL forekom flere ganger under ulike ID-er
+- brede regelverkssider kunne få for høy autoritet
+- DFØ-veiledning kunne bli brukt uten at arbeidsgiveren var statlig
+- generiske Akan-triggere kunne aktivere rusveiledning ved ordinær «oppfølging»
+- kildekategori kunne styres av ord i typefeltet i stedet for kildens faktiske funksjon
+
+Tiltak:
+- samlet kilde-ID-kontrakt for SOURCEBANK + yrkes-/sektorkilder + tariffkilder
+- eksplisitt kildehierarki i systemprompt, responskontrakt og serverinstruks
+- konkrete gjeldende tariffkilder for staten, KS og helseforetak/Spekter
+- overordnet arbeidsgivergrunnlag med AML, internkontroll, varsling, kontrolltiltak, Arbeidstilsynet, NAV, Datatilsynet, IA og Akan
+- duplikater fjernet
+- myndighetsindekser merket som `authority_index`
+- svake/for indirekte kilder fjernet
+- kildevalg filtreres på arbeidsgivertype, sektor, yrke og situasjon før KI ser kilden
+- egen regresjonstest `test-source-policy.cjs`
+
+Detaljer: `docs/SOURCE-QUALITY-AUDIT-2026-11-08.md`.
