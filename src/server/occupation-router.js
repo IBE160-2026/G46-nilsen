@@ -109,6 +109,31 @@ export function classifyOccupationLocally(value) {
   };
 }
 
+function containsNonNegatedTerm(textValue, termValue) {
+  const text = normalize(textValue);
+  const needle = normalize(termValue);
+  if (!text || !needle) return false;
+
+  let fromIndex = 0;
+  while (fromIndex < text.length) {
+    const index = text.indexOf(needle, fromIndex);
+    if (index < 0) return false;
+
+    const prefix = text.slice(Math.max(0, index - 150), index).trim();
+    const explicitlyAbsent =
+      /\buten(?:\s+at)?\b[^.!?;:]{0,120}$/u.test(prefix) ||
+      /\bingen(?:\s+(?:opplysning(?:er)?|tegn|konkret(?:e)?|aktuell(?:e)?))?\b[^.!?;:]{0,140}$/u.test(prefix) ||
+      /\bgjelder\s+ikke\b[^.!?;:]{0,140}$/u.test(prefix) ||
+      /\bgjelder\b[^.!?;:]{0,120}\bikke\b[^.!?;:]{0,140}$/u.test(prefix) ||
+      /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,140}$/u.test(prefix) ||
+      /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak)\b[^.!?;:]{0,120}$/u.test(prefix);
+
+    if (!explicitlyAbsent) return true;
+    fromIndex = index + needle.length;
+  }
+  return false;
+}
+
 export function shouldUseOccupationContext({ occupation, sectorId, topic, subtopic, situation } = {}) {
   if (!normalize(occupation) && !normalize(sectorId)) return false;
 
@@ -120,40 +145,32 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
   const text = normalize([topic, subtopic, sanitizedSituation].filter(Boolean).join(" "));
   if (!text) return false;
 
-  const hasRiskTrigger = riskTerms.some(term => {
-    const needle = normalize(term);
-    let fromIndex = 0;
-
-    while (needle && fromIndex < text.length) {
-      const index = text.indexOf(needle, fromIndex);
-      if (index < 0) break;
-
-      // Ikke aktiver yrkeskontekst bare fordi brukeren eksplisitt sier at
-      // et risiko-/regelverkstema IKKE er til stede, f.eks.
-      // "uten at sikkerhet er tema" eller "ingen konkrete sikkerhetsproblemer".
-      const clauseStart = Math.max(
-        text.lastIndexOf(".", index),
-        text.lastIndexOf("!", index),
-        text.lastIndexOf("?", index),
-        text.lastIndexOf(";", index),
-        text.lastIndexOf(":", index)
-      ) + 1;
-      const prefix = text.slice(clauseStart, index).trim();
-      const explicitlyAbsent =
-        /\buten(?:\s+at)?\b[^.!?;:]{0,80}$/u.test(prefix) ||
-        /\bingen\b[^.!?;:]{0,100}$/u.test(prefix) ||
-        /\bgjelder\s+ikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
-        /\bgjelder\b[^.!?;:]{0,100}\bikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
-        /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,120}$/u.test(prefix) ||
-        /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring)\b[^.!?;:]{0,80}$/u.test(prefix);
-
-      if (!explicitlyAbsent) return true;
-      fromIndex = index + needle.length;
-    }
-
-    return false;
-  });
+  const hasRiskTrigger = riskTerms.some(term => containsNonNegatedTerm(text, term));
   if (hasRiskTrigger) return true;
+
+  // I tillegg til generelle risikoord skal konkrete profesjons-/sektorkilder
+  // kunne aktivere yrkeskontekst når deres useFor faktisk treffes i saken.
+  // Dette gjør rutingen robust for f.eks. skolemiljø, integritet i politiet,
+  // frisørhygiene og hvitvasking uten å gjøre alle yrkessaker spesielle.
+  if (sectorId) {
+    const scopedSourceMatch = (legalRegistry.sources || []).some(source => {
+      const sectors = source.sectors || [];
+      if (!sectors.includes(sectorId)) return false;
+
+      const occupationScope = Array.isArray(source.occupations) ? source.occupations : [];
+      if (occupationScope.length) {
+        if (!occupationNeedle) return false;
+        const occupationMatch = occupationScope.some(value => {
+          const scoped = normalize(value);
+          return scoped && (occupationNeedle === scoped || occupationNeedle.includes(scoped) || scoped.includes(occupationNeedle));
+        });
+        if (!occupationMatch) return false;
+      }
+
+      return (source.useFor || []).some(term => containsNonNegatedTerm(text, term));
+    });
+    if (scopedSourceMatch) return true;
+  }
 
   const topicKey = normalize(topic);
   if (generallyOccupationNeutralTopics.has(topicKey)) return false;
@@ -176,7 +193,7 @@ function contextMatchesSource(source, contextText) {
     const n = normalize(term);
     if (!n) return false;
     if (wildcardOnlyContext && genericWildcardContextTerms.has(n)) return false;
-    return text.includes(n);
+    return containsNonNegatedTerm(text, n);
   });
 }
 
