@@ -23,6 +23,7 @@ const assert=require("assert");
   });
   assert.strictEqual(relevant.occupation.occupationRelevant,true);
   assert(relevant.prompt.includes("Helsedirektoratet"));
+  assert(relevant.prompt.includes("[ID:"), "Yrkes-/sektorkilder må ha eksplisitt kilde-ID for source_ids");
   assert(relevant.prompt.includes("praktiske neste steg"));
   assert(/ikke start med paragrafer/i.test(relevant.prompt));
 
@@ -33,6 +34,14 @@ const assert=require("assert");
   });
   assert.strictEqual(tariff.agreement.needsEmployerType,true);
   assert(tariff.prompt.includes("Privat, kommune/fylkeskommune, stat, helseforetak"));
+
+  const stateTariff=buildOccupationGuidanceContext({
+    occupation:"rådgiver",sectorId:"public_admin_legal",employerType:"state",
+    topic:"Lønn og utvikling",subtopic:"Lønnsutvikling",
+    situation:"Lønn og lokale forhandlinger er tema."
+  });
+  assert(stateTariff.prompt.includes("STATE_HTA_2026_2028"), "Statlig HTA-kilde skal tilbys som kandidat når tariff er relevant");
+  assert(stateTariff.prompt.includes("må bekreftes"), "Tariffkilde må ikke presenteres som automatisk gjeldende");
 
   console.log("Occupation context builder OK");
 })().catch(err=>{console.error(err);process.exit(1);});
