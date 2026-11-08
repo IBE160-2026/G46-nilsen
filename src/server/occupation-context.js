@@ -43,11 +43,40 @@ export function buildOccupationGuidanceContext({
   });
 
   if (!occupationResult.selected) {
+    if (!agreementResult.relevant) {
+      return {
+        enabled: false,
+        occupation: occupationResult,
+        agreement: agreementResult,
+        prompt: ""
+      };
+    }
+
+    const lines = [
+      "## Arbeidsgiver-/avtalekontekst",
+      "Tariff/overenskomst kan være relevant selv om yrke ikke er oppgitt.",
+      "Ikke gjett avtaleområde eller tariffdekning."
+    ];
+
+    if (agreementResult.needsEmployerType) {
+      lines.push("Arbeidsgivertype mangler. Dersom tariff faktisk påvirker rådet, be om ett kort avklaringssvar: Privat, kommune/fylkeskommune, stat, helseforetak eller usikker.");
+    } else if (agreementResult.suggestions.length) {
+      lines.push("Mulig avtaleområde er bare et forslag og må bekreftes før konkrete tariffrettigheter brukes.");
+      for (const area of agreementResult.suggestions.slice(0, 2)) {
+        lines.push(`- Mulig avtaleområde: ${area.label}`);
+        for (const source of area.curatedSources || []) {
+          lines.push(`  - Kandidatkilde [ID: ${source.id}]: ${source.authority}: ${source.title} (${source.url})`);
+        }
+      }
+    } else if (agreementResult.unresolved) {
+      lines.push("Avtaleområdet er uavklart. Ikke bruk konkrete tariffrettigheter før riktig avtale er identifisert.");
+    }
+
     return {
-      enabled: false,
+      enabled: true,
       occupation: occupationResult,
       agreement: agreementResult,
-      prompt: ""
+      prompt: lines.join("\n")
     };
   }
 
