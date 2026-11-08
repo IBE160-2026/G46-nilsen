@@ -104,3 +104,32 @@ Planlagte funksjoner skal aldri beskrives som ferdige før de er implementert og
 - [x] Egen full yrkeskilde-audit opprettet.
 - [x] Egen kodeoppryddingsrapport opprettet.
 - [x] Egen dokumentasjonssynk for 08.11 opprettet.
+
+
+### Quality gate / eval-sjekk 08.11.2026
+
+- [x] Golden-bank oppdatert til 66 caser
+- [x] 40 strenge yrke/sektor/tariff/kilde-caser dokumentert
+- [x] Alle 14 sektorer har positiv + negativ yrkesrelevans
+- [x] 28 sektor-golden kjøres deterministisk mot yrkesruteren
+- [x] expected/expected-any/forbidden/no-source oracles dokumentert
+- [x] Testfilene syntakssjekkes før resten av suite
+- [x] GitHub Actions quality gate opprettet
+- [x] Dependency audit med HIGH som gate
+- [x] body-parser/qs sikkerhetsfunn rettet og re-testet
+- [x] Testgjeld etter CSS-modularisering ryddet
+- [x] Tvetydig yrke «sekretær» ryddet
+- [x] Foreldreløse kildereferanser ryddet
+- [x] authority_index lekkasje korrigert
+- [x] minstelønnskilde avgrenset mot faktisk virkeområde
+- [x] README synkronisert
+- [x] Product Brief synkronisert
+- [x] PRD synkronisert
+- [x] Architecture synkronisert
+- [x] AI-TESTPLAN synkronisert
+- [x] TEST-FASIT-OG-SPORBARHET synkronisert
+- [x] AI-LOGG synkronisert
+- [x] refleksjonsnotat og refleksjonsrapport synkronisert
+- [x] kilde-/yrkesaudits synkronisert
+- [x] hovedrapport opprettet: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
+- [ ] 40 nye strict occupation-golden kjørt mot ekstern live modell – **ikke påstå bestått før faktisk kjøring**
