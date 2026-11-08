@@ -39,7 +39,13 @@ console.log("Hver case vurderes mot maskinell fasit og en eksplisitt menneskelig
 
 const server = spawn(process.execPath, [path.join(__dirname, "../server.js")], {
   cwd: __dirname,
-  env: { ...process.env, PORT: String(port), NODE_ENV: "test", TEST_AUTH_BYPASS: "1" },
+  env: {
+    ...process.env,
+    PORT: String(port),
+    NODE_ENV: "test",
+    TEST_AUTH_BYPASS: "1",
+    ...(occupationOnly ? { OCCUPATION_CONTEXT_ENABLED: "true" } : {})
+  },
   stdio: ["ignore", "pipe", "pipe"]
 });
 let serverError = "";
