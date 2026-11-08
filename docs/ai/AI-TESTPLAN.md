@@ -1384,3 +1384,22 @@ Akseptansekriterium:
 2. riktig profesjon når kilden er yrkesavgrenset
 3. relevant situasjonskontekst når kilden er `contextualOnly`
 4. ingen profesjonskilde ved ordinær samtale uten regelverksrelevans
+
+
+## Tillegg 08.11.2026 – kildekvalitet og kildepolicy
+
+Ny deterministisk test: `tests/test-source-policy.cjs`.
+
+Den kontrollerer blant annet:
+- ingen eksakte URL-duplikater på tvers av kildebankene
+- sentrale overordnede arbeidsgiverkilder finnes
+- AML, internkontroll, varsling, kontrolltiltak, personvern og HMS er representert
+- IA og Akan ikke klassifiseres som lov
+- brede myndighetssider merkes som oppslagsinnganger
+- DFØ-veiledning er avgrenset til staten
+- gjeldende statlig HTA/Hovedavtale, KS HTA/Hovedavtale og Spekter-kilder finnes
+- svake kilder som ble fjernet ikke kommer tilbake
+- systemprompt/server inneholder eksplisitt kildehierarki
+- kilde-ID-kontrakten omfatter både generell bank, yrkeskilder og tariffkilder
+
+Testen kjøres som del av `npm run test-local`.
