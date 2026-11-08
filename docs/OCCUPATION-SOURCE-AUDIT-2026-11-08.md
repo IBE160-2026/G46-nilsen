@@ -10,7 +10,7 @@ Målet er ikke å gi hvert yrke en kunstig egen lov. Mange stillinger reguleres 
 
 ## Kildemodell
 
-Registeret har nå 58 autoritative startkilder.
+Registeret har nå 62 autoritative startkilder.
 
 En kilde kan avgrenses til:
 - hele sektoren
@@ -117,3 +117,15 @@ Et godt resultat er:
 - ingen regelverkskilde når situasjonen er en ordinær mellommenneskelig samtale uten regelverksrelevans
 
 Det er bedre at et yrke har null kunstige profesjonskilder enn at systemet gir brukeren feil regelverk.
+
+
+## Supplerende funn i sluttgjennomgangen
+
+Den siste tverrsektorielle kontrollen avdekket fire ytterligere særkilder:
+
+- **truckfører / anleggsmaskinfører / relevant maskinoperatør:** Arbeidstilsynets krav til dokumentert og sertifisert sikkerhetsopplæring for arbeidsutstyr
+- **elektriker / automatiker / relevante energi-/elektrofag:** DSBs kvalifikasjonskrav for arbeid på elektriske anlegg og elektrisk utstyr
+- **apotektekniker:** apoteklovens krav til apotekets personale og kompetanse
+- **sjøfolk:** STCW-opplæringskrav som fra 2026 omfatter forebygging og håndtering av vold, trakassering, seksuell trakassering, mobbing og seksuelle overgrep
+
+Dette løftet registeret til 62 autoritative yrkes-/sektorkilder.
