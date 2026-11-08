@@ -1403,3 +1403,30 @@ Den kontrollerer blant annet:
 - kilde-ID-kontrakten omfatter både generell bank, yrkeskilder og tariffkilder
 
 Testen kjøres som del av `npm run test-local`.
+
+
+## Yrke/sektor/tariff-golden – 08.11.2026
+
+Golden-banken er utvidet fra 26 til 66 caser. De 40 nye casene er laget som en streng intern sensorpakke:
+
+- 28 sektorcaser: alle 14 sektorer har én case der yrket **skal** påvirke rådet/kildevalget og én case der yrket **ikke skal** påvirke svaret
+- 8 arbeidsgiver-/tariffcaser: stat, kommune, helseforetak/Spekter, privat, ukjent arbeidsgivertype, statlig oppsigelse, kommunal oppsigelse og statlig etikk
+- 4 kildelekkasjecaser: tester at plausible, men feil profesjons-/sektorkilder ikke lekker inn
+
+Nye maskinelle felt:
+- `expected_source_ids` – alle oppgitte kilder forventes
+- `expected_source_ids_any` – minst én av kildene forventes
+- `forbidden_source_ids` – bruk av kilden er kritisk avvik
+- `source_not_required` – kuratert kilde forventes normalt ikke
+- `occupation_relevant` – forventet vurdering av yrkesrelevans
+- `needs_employer_type` – forventet behov for arbeidsgivertype
+
+Golden-runneren sender nå yrke, sektor, arbeidsgivertype og undertema helt inn i `/api/generate-guidance`.
+
+Kjør bare yrkespakken med:
+`npm run test-ai:occupation-golden`
+
+Full golden:
+`npm run test-ai:golden`
+
+Viktig: dette er intern fasit, ikke uavhengig HR-/arbeidsretts-/HMS-ekspertvalidering.
