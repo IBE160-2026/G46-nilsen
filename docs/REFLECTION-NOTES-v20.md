@@ -389,3 +389,26 @@ Dette var en nyttig feilsøkingslæring: en korrekt GitHub-branch er ikke bevis 
 Sensor hadde tidligere påpekt den svært lange CSS-filen. `styles.css` var nå rundt 9 389 linjer. I stedet for å foreta en stor og risikofylt omskriving rett før innlevering ble filen splittet i tre moduler i samme regelrekkefølge: kjerne, responsiv/mobil og senere overrides. `styles.css` er beholdt som et lite inngangspunkt.
 
 **Læring:** Vedlikeholdbarhet kan forbedres trinnvis. En kontrollert modularisering med uendret cascade er bedre enn en estetisk «ren» refaktorering som introduserer nye UI-regresjoner.
+
+
+## 08.11.2026 – kildebankens størrelse var et dårlig kvalitetsmål
+
+Etter at yrkes-/sektorkildene var utvidet, ble det tydelig at «flere kilder» i seg selv kunne skjule nye problemer. Samme nettside kunne ligge under flere ID-er, brede myndighetsoversikter kunne se like sterke ut som konkrete lovbestemmelser, og en kilde kunne være autoritativ i sin egen kontekst uten å være riktig for Samtalestøtte.
+
+Jeg gjorde derfor en egen kildekvalitetsrevisjon. Den førte både til tillegg og sletting.
+
+Eksempler:
+- eksakte URL-duplikater ble fjernet
+- tre minstelønnsposter som pekte til samme Arbeidstilsynet-side ble konsolidert
+- en liten studie om aktiv lytting ble fjernet fordi nyere meta-analyse gir bedre grunnlag
+- en klinisk MI-meta-analyse ble fjernet fordi konteksten er for behandlingsorientert for vanlig lederdialog
+- en britisk politiintervjuguide og en smal Forsvaret-emneside ble fjernet fra den generelle banken
+- BI-forskningsformidling ble skilt fra fagfellevurdert forskning
+- myndighetsoversikter ble merket som oppslagsinnganger fremfor direkte rettsgrunnlag
+- DFØ-veiledning ble avgrenset til staten
+
+Den viktigste tekniske oppdagelsen var at yrkes-/sektorkilder tidligere kunne sendes inn i prompten uten å være gyldige `source_ids`. Dermed var faglig bruk og sporbarhet ikke helt koblet sammen. Kilde-ID-kontrakten omfatter nå generell bank, yrkeskilder og tariffkilder.
+
+En annen feil var at arbeidsgivertype kunne få «Privat» som første implicitte verdi. Dette kunne påvirke tariffvurdering uten aktivt brukerinput. Standardverdien er nå tom.
+
+**Læring:** Kildekvalitet handler like mye om hva systemet avstår fra å bruke, som om hva som ligger i databasen.
