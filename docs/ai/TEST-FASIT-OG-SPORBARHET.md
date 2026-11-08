@@ -2,7 +2,7 @@
 
 **Formål:** Gjøre det mulig å se hva testene faktisk forventer, hvilke krav de dekker, og hvordan KI-svar vurderes.
 
-**Status 02.11.2026:** Golden/pilotbanken inneholder **26 caser** og dekker alle 9 hovedtemaer med flere representative saker. Den bredere benchmarkbanken inneholder **114 saker** og er synkronisert med de **48 gjeldende undertemaene**. Den dokumenterte live golden-kjøringen 26.10 omfattet 21 caser og skal beholdes som et datert historisk testresultat, ikke omskrives til 26.
+**Status 08.11.2026:** Golden/fasitbanken inneholder **66 caser**. De 26 tidligere generelle/pilotcasene er utvidet med **40 strenge yrke/sektor/tariff/kilde-caser**: 28 sektorcaser, 8 arbeidsgiver-/tariffcaser og 4 kildelekkasjecaser. Den bredere benchmarkbanken inneholder **114 saker** og er synkronisert med de **48 gjeldende undertemaene**. Den dokumenterte live golden-kjøringen 26.10 omfattet 21 caser og beholdes som et datert historisk testresultat; den skal ikke omskrives til et live-resultat for den nye 66-case-banken.
 
 ## 1. Hvorfor en fasitbank?
 
@@ -124,3 +124,21 @@ Dersom en test feiler, skal det vurderes om:
 3. testmetoden ikke er egnet til å avgjøre kriteriet automatisk
 
 Dette prinsippet er særlig viktig ved KI-testing, der flere ulike formuleringer kan være faglig gode.
+
+
+## Streng kildefasit fra 08.11.2026
+
+Yrkes-/kilde-golden kan nå uttrykke både positive og negative forventninger:
+
+- `expected_source_ids` – alle må være valgt
+- `expected_source_ids_any` – minst én må være valgt
+- `forbidden_source_ids` – valg regnes som kritisk kildelekkasje
+- `source_not_required` – kilde forventes normalt ikke
+- `occupation_relevant` – forventet yrkesrelevans
+- `needs_employer_type` – forventet behov for arbeidsgivertype
+
+Dette er viktig fordi en god eval ikke bare skal belønne at modellen finner *en* kilde. Den skal også kunne straffe en plausibel, men feil kilde.
+
+De 28 sektorcasene kjøres i tillegg deterministisk direkte mot yrkesruteren. Status 08.11.2026: **28/28 bestått (14 relevante + 14 irrelevante)**.
+
+Full metode og funn: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
