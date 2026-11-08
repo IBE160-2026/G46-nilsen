@@ -1366,7 +1366,7 @@ Yrkes-/sektorlaget ble gjennomgått etter observasjon om at enkelte brede sektor
 Endring:
 - `OCCUPATION-LEGAL-SOURCES.json` støtter nå valgfri `occupations`
 - `occupation-router.js` filtrerer profesjonskilder på valgt yrke
-- registeret ble utvidet fra 31 til 62 autoritative startkilder
+- registeret ble utvidet fra 31 til 85 autoritative startkilder
 - brede kilder ble snevret inn der de egentlig bare gjelder bestemte profesjoner
 - alle yrkene i sektorlisten ble gjennomgått
 - `fotterapeut` ble flyttet til Helse og omsorg
