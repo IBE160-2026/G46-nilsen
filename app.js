@@ -255,7 +255,7 @@ function showView(name, options = {}) {
   views[name].classList.add('active-view');
   updateNavState(name);
   if (name === 'help') {
-    loadHelpSectorSummary();
+    // Hjelp-siden bruker den kuraterte, statiske kildevisningen for bedre oversikt.
   }
 
   // Temakort skal bare fremstå valgt mens brukeren faktisk er inne på et tema.
