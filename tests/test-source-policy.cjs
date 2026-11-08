@@ -81,6 +81,12 @@ assert(hasAgreement("municipal","KS_HTA_2026_2028"),"KS HTA 2026-2028 mangler");
 assert(hasAgreement("municipal","KS_HA_2026_2029"),"KS Hovedavtale 2026-2029 mangler");
 assert(hasAgreement("health_enterprise","SPEKTER_HEALTH_NEGOTIATION_2026_2029"),"Spekter helseforetak-kilde mangler");
 
+for(const source of agreementSources){
+  assert.strictEqual(source.timeSensitive,true,source.id+": tariff-/avtalekilde skal være tidskritisk");
+  assert(/^\d{4}-\d{2}-\d{2}$/.test(source.lastVerified||""),source.id+": tariff-/avtalekilde mangler lastVerified");
+}
+
+
 assert(server.includes("allCuratedSourceById"),"Serveren samler ikke kilde-ID-er på tvers av bankene");
 assert(app.includes("<option value=\\"\\">Ikke valgt</option>"),"Arbeidsgivertype skal ikke defaultes til privat");
 assert(server.includes("if (!matched) continue;"),"Kilder skal ikke få automatisk plass uten konkret treff");
