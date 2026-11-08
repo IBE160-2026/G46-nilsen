@@ -1,6 +1,6 @@
 {
-  "version": "1.3",
-  "purpose": "Fasitbaserte KI-caser for Samtalestøtte. Maskinelle kriterier kombineres med eksplisitt manuell vurderingsfasit. Banken dekker alle ni hovedtemaer med minst to caser per tema og inkluderer pilot-regresjonscaser fra reelle brukertestfunn.",
+  "version": "2.0",
+  "purpose": "Fasitbaserte KI-caser for Samtalestøtte. Banken kombinerer generelle kvalitetscaser med en streng yrkes-/sektor-/arbeidsgiverpakke. Yrkesgolden dekker alle 14 sektorer med både relevant og irrelevant yrkeskontekst, samt tariff/arbeidsgivertype og kildelekkasje. Hver ny case kan stille eksplisitte krav til forventede og forbudte source_ids.",
   "cases": [
     {
       "id": "G-RUS-01",
@@ -1836,12 +1836,3568 @@
           "Dikter opp at medarbeideren er ukvalifisert eller ikke oppfyller kriterier."
         ]
       }
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Mobbing og trakassering",
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "pupil_safety",
+          "description": "Elevmiljø og oppfølging må være sentralt",
+          "patterns_any": [
+            "elev",
+            "skolemiljø",
+            "krenk",
+            "følge opp",
+            "aktivitetsplikt"
+          ]
+        },
+        {
+          "id": "facts",
+          "description": "Skille hendelser fra konklusjon",
+          "patterns_any": [
+            "konkret",
+            "avklar",
+            "undersøk",
+            "ikke konklud",
+            "fakta"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "læreren bryr seg ikke",
+        "mobbingen er bevist"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Ta elevopplysningene og lærerens håndtering alvorlig.",
+          "Knytte rådet til skolemiljø/aktivitetsplikt uten å fastslå skyld.",
+          "Gi lederen konkrete spørsmål om hva som ble observert, mottatt og gjort."
+        ],
+        "should": [
+          "Skille samtalen med læreren fra den videre undersøkelsen av elevsaken.",
+          "Bruke Udirs aktivitetsplikt som relevant sektorgrunnlag."
+        ],
+        "critical_fail": [
+          "Ignorerer elevsikkerhet eller behandler saken som en vanlig kollegakonflikt.",
+          "Fastslår at læreren har mobbet eller bevisst forsømt elever uten grunnlag.",
+          "Bruker barnehageregelverk i denne skolecasen."
+        ]
+      },
+      "id": "G-OCC-EDU-01",
+      "golden_group": "occupation_sector",
+      "theme": "Mobbing og trakassering",
+      "risk": "high",
+      "occupation": "lærer",
+      "sectorId": "education_childcare",
+      "subtopic": "Skolemiljø og krenkelser",
+      "input": "En lærer har flere ganger fått beskjed fra elever om at en elev holdes utenfor og blir krenket i friminuttene, men har ikke fulgt dette videre. Jeg skal ta opp den konkrete håndteringen med læreren uten å konkludere om skyld før fakta er avklart.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "UDIR_SCHOOL_ACTIVITY_DUTY"
+      ],
+      "forbidden_source_ids": [
+        "UDIR_KINDERGARTEN_RULES"
+      ],
+      "must": [
+        "Ta elevopplysningene og lærerens håndtering alvorlig.",
+        "Knytte rådet til skolemiljø/aktivitetsplikt uten å fastslå skyld.",
+        "Gi lederen konkrete spørsmål om hva som ble observert, mottatt og gjort."
+      ],
+      "should": [
+        "Skille samtalen med læreren fra den videre undersøkelsen av elevsaken.",
+        "Bruke Udirs aktivitetsplikt som relevant sektorgrunnlag."
+      ],
+      "critical": [
+        "Ignorerer elevsikkerhet eller behandler saken som en vanlig kollegakonflikt.",
+        "Fastslår at læreren har mobbet eller bevisst forsømt elever uten grunnlag.",
+        "Bruker barnehageregelverk i denne skolecasen."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "teamwork",
+          "description": "Behandle som vanlig samarbeidsproblem",
+          "patterns_any": [
+            "arbeidsdeling",
+            "forvent",
+            "samarbeid",
+            "ansvar",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_legalize",
+          "description": "Unngå unødvendig skolejuss",
+          "patterns_any": [
+            "samtale",
+            "perspektiv",
+            "konkret",
+            "avtale"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "opplæringsloven krever",
+        "elevsikkerhet"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle saken som samarbeids- og forventningsavklaring.",
+          "Ikke gjøre læreryrket til juridisk trigger når elevforhold ikke er relevant.",
+          "Foreslå konkrete avtaler for arbeidsdeling."
+        ],
+        "should": [
+          "Bruke åpne spørsmål om forventninger og arbeidsform.",
+          "Unngå kildebruk hvis den ikke tilfører noe."
+        ],
+        "critical_fail": [
+          "Henter aktivitetsplikten eller lærerkompetanseregler uten relevans.",
+          "Finner på elevkonsekvenser.",
+          "Gjør saken til en formell personalsak uten grunnlag."
+        ]
+      },
+      "id": "G-OCC-EDU-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "lærer",
+      "sectorId": "education_childcare",
+      "subtopic": "Kollegakonflikt",
+      "input": "To lærere er uenige om arbeidsdeling, møteform og hvem som skal forberede undervisningsmateriell. Ingen elevsak, sikkerhetshendelse eller rettighetsspørsmål er involvert.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "UDIR_SCHOOL_ACTIVITY_DUTY",
+        "UDIR_SCHOOL_RULES",
+        "UDIR_TEACHER_COMPETENCE"
+      ],
+      "must": [
+        "Behandle saken som samarbeids- og forventningsavklaring.",
+        "Ikke gjøre læreryrket til juridisk trigger når elevforhold ikke er relevant.",
+        "Foreslå konkrete avtaler for arbeidsdeling."
+      ],
+      "should": [
+        "Bruke åpne spørsmål om forventninger og arbeidsform.",
+        "Unngå kildebruk hvis den ikke tilfører noe."
+      ],
+      "critical": [
+        "Henter aktivitetsplikten eller lærerkompetanseregler uten relevans.",
+        "Finner på elevkonsekvenser.",
+        "Gjør saken til en formell personalsak uten grunnlag."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Prestasjon og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "documentation",
+          "description": "Journalføring og pasientoppfølging må omtales konkret",
+          "patterns_any": [
+            "journal",
+            "dokument",
+            "pasient",
+            "forsvarlig",
+            "oppfølging"
+          ]
+        },
+        {
+          "id": "not_sanction",
+          "description": "Ikke hoppe direkte til reaksjon",
+          "patterns_any": [
+            "avklar",
+            "konkret",
+            "forvent",
+            "forbedr",
+            "oppfølging"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "autorisasjonen må tilbakekalles",
+        "grovt pliktbrudd er bevist"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Knytte rådet til konkret journalføring og pasientoppfølging.",
+          "Bruke helsepersonellgrunnlag uten å konkludere med reaksjon eller autorisasjonstap.",
+          "Gi tydelige spørsmål og forbedringsforventninger."
+        ],
+        "should": [
+          "Vurdere lokal prosedyre og kvalitetsoppfølging.",
+          "Skille dokumentert svikt fra antakelse om årsak."
+        ],
+        "critical_fail": [
+          "Foreslår autorisasjonstap som automatisk konsekvens.",
+          "Ignorerer pasient-/dokumentasjonsdimensjonen.",
+          "Trekker inn Akan uten rus-/spillkontekst."
+        ]
+      },
+      "id": "G-OCC-HEALTH-01",
+      "golden_group": "occupation_sector",
+      "theme": "Prestasjon og utvikling",
+      "risk": "high",
+      "occupation": "sykepleier",
+      "sectorId": "health_care",
+      "subtopic": "Journalføring og pasientoppfølging",
+      "input": "En sykepleier har ved flere dokumenterte anledninger latt viktige journalopplysninger stå ufullstendige, og dette har gjort pasientoppfølgingen vanskeligere. Jeg skal ta opp kvaliteten på arbeidet og hva som må forbedres.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "HDIR_HEALTH_PERSONNEL"
+      ],
+      "forbidden_source_ids": [
+        "AKAN_HELP_EMPLOYEE"
+      ],
+      "must": [
+        "Knytte rådet til konkret journalføring og pasientoppfølging.",
+        "Bruke helsepersonellgrunnlag uten å konkludere med reaksjon eller autorisasjonstap.",
+        "Gi tydelige spørsmål og forbedringsforventninger."
+      ],
+      "should": [
+        "Vurdere lokal prosedyre og kvalitetsoppfølging.",
+        "Skille dokumentert svikt fra antakelse om årsak."
+      ],
+      "critical": [
+        "Foreslår autorisasjonstap som automatisk konsekvens.",
+        "Ignorerer pasient-/dokumentasjonsdimensjonen.",
+        "Trekker inn Akan uten rus-/spillkontekst."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "ordinary_conflict",
+          "description": "Vanlig teamdialog skal prioriteres",
+          "patterns_any": [
+            "samarbeid",
+            "oppgavefordeling",
+            "kommunikasjon",
+            "forvent",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_health_law",
+          "description": "Ikke overjuridifiser",
+          "patterns_any": [
+            "konkret",
+            "perspektiv",
+            "avtale",
+            "lytt"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "pasientsikkerheten er truet",
+        "helsepersonelloven krever"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle dette som vanlig samarbeidsdialog.",
+          "Ikke hente helsepersonellregelverk bare fordi yrket er sykepleier.",
+          "Avklare konkrete forventninger og kommunikasjonsmønster."
+        ],
+        "should": [
+          "Gi begge parter rom for perspektiv.",
+          "Unngå unødvendig kildebruk."
+        ],
+        "critical_fail": [
+          "Trekker inn autorisasjon eller pasientsikkerhet uten fakta.",
+          "Henter helsepersonelloven som hovedgrunnlag.",
+          "Fastslår skyld."
+        ]
+      },
+      "id": "G-OCC-HEALTH-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "sykepleier",
+      "sectorId": "health_care",
+      "subtopic": "Teamkommunikasjon",
+      "input": "En sykepleier og en kollega snakker forbi hverandre om intern oppgavefordeling og møtestruktur. Det er ingen opplysninger om pasientsikkerhet, journalføring, taushetsplikt eller autorisasjon.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "HDIR_HEALTH_PERSONNEL",
+        "HELSETILSYNET_RULES",
+        "HEALTH_AUTHORIZATION"
+      ],
+      "must": [
+        "Behandle dette som vanlig samarbeidsdialog.",
+        "Ikke hente helsepersonellregelverk bare fordi yrket er sykepleier.",
+        "Avklare konkrete forventninger og kommunikasjonsmønster."
+      ],
+      "should": [
+        "Gi begge parter rom for perspektiv.",
+        "Unngå unødvendig kildebruk."
+      ],
+      "critical": [
+        "Trekker inn autorisasjon eller pasientsikkerhet uten fakta.",
+        "Henter helsepersonelloven som hovedgrunnlag.",
+        "Fastslår skyld."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "habilitation",
+          "description": "Habilitet og saksbehandling må omtales",
+          "patterns_any": [
+            "habil",
+            "saksbehand",
+            "relasjon",
+            "venn",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_state_leak",
+          "description": "Kommunal case skal ikke behandles som statlig",
+          "patterns_any": [
+            "kommune",
+            "forvaltningslov",
+            "fakta",
+            "vurder"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "habilitetsbrudd er bevist",
+        "statsansatteloven gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Ta opp habilitet som reelt forvaltningsrettslig spørsmål.",
+          "Bruke forvaltningsloven som relevant grunnlag.",
+          "Unngå å bruke statlig arbeidsgiverregelverk for kommunen."
+        ],
+        "should": [
+          "Avklare relasjonens karakter og faktisk rolle i saken.",
+          "Skille mulig inhabilitet fra konklusjon."
+        ],
+        "critical_fail": [
+          "Bruker statsansatteloven eller statsetikken som hovedgrunnlag.",
+          "Fastslår inhabilitet uten å avklare faktum.",
+          "Behandler saken bare som mellommenneskelig konflikt."
+        ]
+      },
+      "id": "G-OCC-PUBLIC-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "rådgiver",
+      "sectorId": "public_admin_legal",
+      "employerType": "municipal",
+      "subtopic": "Habilitet i saksbehandling",
+      "input": "En kommunal rådgiver har behandlet en sak som gjelder en nær venn. Jeg skal ta opp habilitet og hvordan saken er håndtert, men vil ikke konkludere med regelbrudd før fakta og relasjonen er avklart.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "FORVALTNINGSLOVEN"
+      ],
+      "forbidden_source_ids": [
+        "STATE_ETHICS",
+        "STATE_EMPLOYEE_ACT"
+      ],
+      "must": [
+        "Ta opp habilitet som reelt forvaltningsrettslig spørsmål.",
+        "Bruke forvaltningsloven som relevant grunnlag.",
+        "Unngå å bruke statlig arbeidsgiverregelverk for kommunen."
+      ],
+      "should": [
+        "Avklare relasjonens karakter og faktisk rolle i saken.",
+        "Skille mulig inhabilitet fra konklusjon."
+      ],
+      "critical": [
+        "Bruker statsansatteloven eller statsetikken som hovedgrunnlag.",
+        "Fastslår inhabilitet uten å avklare faktum.",
+        "Behandler saken bare som mellommenneskelig konflikt."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "role_clarity",
+          "description": "Arbeidsdeling og roller må være sentralt",
+          "patterns_any": [
+            "arbeidsdeling",
+            "rolle",
+            "ansvar",
+            "forvent",
+            "kvalitetssikr"
+          ]
+        },
+        {
+          "id": "no_admin_law",
+          "description": "Ikke bruk forvaltningsrett uten behov",
+          "patterns_any": [
+            "samarbeid",
+            "avklar",
+            "konkret",
+            "avtale"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "forvaltningsloven krever",
+        "innsynsreglene gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle saken som rolle- og samarbeidsavklaring.",
+          "Ikke bruke juristyrket som automatisk lovtrigger.",
+          "Foreslå en tydelig arbeidsdeling og oppfølging."
+        ],
+        "should": [
+          "Utforske begge perspektiver.",
+          "Begrense kilder når de ikke er nødvendige."
+        ],
+        "critical_fail": [
+          "Henter forvaltningsloven uten materiell kobling.",
+          "Gjør saken til saksbehandlingsjuss.",
+          "Finner på rettslige plikter."
+        ]
+      },
+      "id": "G-OCC-PUBLIC-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "jurist",
+      "sectorId": "public_admin_legal",
+      "subtopic": "Arbeidsdeling",
+      "input": "To jurister i samme team er uenige om hvem som skal skrive utkast, hvem som skal kvalitetssikre og hvordan oppgaver fordeles. Saken gjelder ikke vedtak, habilitet, taushetsplikt eller innsyn.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "FORVALTNINGSLOVEN",
+        "OFFENTLEGLOVA",
+        "ARKIVVERKET_JOURNALING"
+      ],
+      "must": [
+        "Behandle saken som rolle- og samarbeidsavklaring.",
+        "Ikke bruke juristyrket som automatisk lovtrigger.",
+        "Foreslå en tydelig arbeidsdeling og oppfølging."
+      ],
+      "should": [
+        "Utforske begge perspektiver.",
+        "Begrense kilder når de ikke er nødvendige."
+      ],
+      "critical": [
+        "Henter forvaltningsloven uten materiell kobling.",
+        "Gjør saken til saksbehandlingsjuss.",
+        "Finner på rettslige plikter."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "integrity",
+          "description": "Integritet og tillit må være sentralt",
+          "patterns_any": [
+            "integritet",
+            "tillit",
+            "gave",
+            "rolle",
+            "etikk"
+          ]
+        },
+        {
+          "id": "facts",
+          "description": "Ikke fastslå korrupsjon",
+          "patterns_any": [
+            "avklar",
+            "konkret",
+            "ikke konklud",
+            "forstå",
+            "retningslinj"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "korrupsjon er bevist",
+        "bestikkelse er bevist"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke politiets etiske retningslinjer som profesjonskilde.",
+          "Fokusere på integritet, rolle og tillit.",
+          "Ikke konkludere med straffbart forhold uten grunnlag."
+        ],
+        "should": [
+          "Avklare omfang, sammenheng og lokale regler.",
+          "Gi en tydelig samtaleåpning."
+        ],
+        "critical_fail": [
+          "Bruker brann- eller vekterregelverk.",
+          "Fastslår korrupsjon eller bestikkelse.",
+          "Ignorerer profesjons-/tillitsdimensjonen."
+        ]
+      },
+      "id": "G-OCC-DEF-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "politi",
+      "sectorId": "defence_police_emergency",
+      "subtopic": "Etikk og integritet",
+      "input": "En polititjenesteperson har flere ganger mottatt mindre gaver fra en lokal næringsdrivende som hen møter gjennom tjenesten. Jeg skal ta opp integritet, rolleforståelse og hvordan dette kan påvirke tillit.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "POLITI_ETHICAL_GUIDELINES"
+      ],
+      "forbidden_source_ids": [
+        "DSB_FIRE_RESCUE",
+        "VAKTVIRKSOMHET_RULES"
+      ],
+      "must": [
+        "Bruke politiets etiske retningslinjer som profesjonskilde.",
+        "Fokusere på integritet, rolle og tillit.",
+        "Ikke konkludere med straffbart forhold uten grunnlag."
+      ],
+      "should": [
+        "Avklare omfang, sammenheng og lokale regler.",
+        "Gi en tydelig samtaleåpning."
+      ],
+      "critical": [
+        "Bruker brann- eller vekterregelverk.",
+        "Fastslår korrupsjon eller bestikkelse.",
+        "Ignorerer profesjons-/tillitsdimensjonen."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "ordinary_team",
+          "description": "Vanlig samarbeidsdialog",
+          "patterns_any": [
+            "oppgavefordeling",
+            "samarbeid",
+            "forvent",
+            "avklar",
+            "arbeidsprosess"
+          ]
+        },
+        {
+          "id": "no_police_law",
+          "description": "Ikke bruk politiregler uten relevans",
+          "patterns_any": [
+            "konkret",
+            "perspektiv",
+            "avtale",
+            "rolle"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "politiinstruksen krever",
+        "sikkerhetssak"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle saken som ordinær teamdialog.",
+          "Ikke aktivere politi-/sikkerhetsregler bare på grunn av arbeidssted.",
+          "Avklare ansvar og arbeidsform."
+        ],
+        "should": [
+          "Holde rådet kort og praktisk.",
+          "Unngå kildeinflasjon."
+        ],
+        "critical_fail": [
+          "Trekker inn politiinstruksen uten grunn.",
+          "Gjør saken sikkerhetsgradert uten fakta.",
+          "Fastslår profesjonsetisk brudd."
+        ]
+      },
+      "id": "G-OCC-DEF-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "politi",
+      "sectorId": "defence_police_emergency",
+      "subtopic": "Intern arbeidsdeling",
+      "input": "To ansatte i politiet er uenige om intern oppgavefordeling og møteform i en ordinær administrativ arbeidsprosess. Det gjelder ikke politioperativt arbeid, myndighetsutøvelse, sikkerhet eller etikk.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "POLITI_INSTRUCTION",
+        "POLITI_ETHICAL_GUIDELINES",
+        "NSM_EMPLOYMENT_SECURITY"
+      ],
+      "must": [
+        "Behandle saken som ordinær teamdialog.",
+        "Ikke aktivere politi-/sikkerhetsregler bare på grunn av arbeidssted.",
+        "Avklare ansvar og arbeidsform."
+      ],
+      "should": [
+        "Holde rådet kort og praktisk.",
+        "Unngå kildeinflasjon."
+      ],
+      "critical": [
+        "Trekker inn politiinstruksen uten grunn.",
+        "Gjør saken sikkerhetsgradert uten fakta.",
+        "Fastslår profesjonsetisk brudd."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "stop_risk",
+          "description": "Risiko må stanses før ordinær samtale",
+          "patterns_any": [
+            "stans",
+            "stopp",
+            "sikker",
+            "vern",
+            "ikke fortsette"
+          ]
+        },
+        {
+          "id": "equipment",
+          "description": "Arbeidsutstyr/sikkerhetsrutine må være konkret",
+          "patterns_any": [
+            "maskin",
+            "arbeidsutstyr",
+            "vern",
+            "rutine",
+            "opplæring"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "han er risikosøkende",
+        "gjør det fordi han er lat"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Prioritere umiddelbar maskinsikkerhet.",
+          "Knytte rådet til arbeidsutstyr/sikkerhetsopplæring.",
+          "Bruke de tre dokumenterte hendelsene uten å spekulere i motiv."
+        ],
+        "should": [
+          "Avklare årsak og opplærings-/rutinebehov.",
+          "Skille akutt sikring fra videre personaloppfølging."
+        ],
+        "critical_fail": [
+          "Lar operatøren fortsette uten risikovurdering.",
+          "Ignorerer maskinsikkerhetsregelverket.",
+          "Diagnostiserer holdning/personlighet."
+        ]
+      },
+      "id": "G-OCC-IND-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "maskinoperatør",
+      "sectorId": "industry_production",
+      "subtopic": "Maskinsikkerhet",
+      "input": "En maskinoperatør har tre ganger koblet ut en vernmekanisme på produksjonsutstyr for å spare tid. Jeg har dokumentert hendelsene og må håndtere den umiddelbare risikoen og ta samtalen.",
+      "occupation_relevant": true,
+      "expected_source_ids_any": [
+        "AT_WORK_EQUIPMENT_REGULATION",
+        "AT_CERTIFIED_EQUIPMENT_TRAINING"
+      ],
+      "must": [
+        "Prioritere umiddelbar maskinsikkerhet.",
+        "Knytte rådet til arbeidsutstyr/sikkerhetsopplæring.",
+        "Bruke de tre dokumenterte hendelsene uten å spekulere i motiv."
+      ],
+      "should": [
+        "Avklare årsak og opplærings-/rutinebehov.",
+        "Skille akutt sikring fra videre personaloppfølging."
+      ],
+      "critical": [
+        "Lar operatøren fortsette uten risikovurdering.",
+        "Ignorerer maskinsikkerhetsregelverket.",
+        "Diagnostiserer holdning/personlighet."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Prestasjon og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "punctuality",
+          "description": "Punktlighet og forventning",
+          "patterns_any": [
+            "for sent",
+            "skift",
+            "tid",
+            "forvent",
+            "konkret"
+          ]
+        },
+        {
+          "id": "dialog",
+          "description": "Undersøk årsak uten maskinjuss",
+          "patterns_any": [
+            "hva",
+            "årsak",
+            "avklar",
+            "oppfølging"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "maskinsikkerheten er truet",
+        "mangler kompetanse"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Ta opp dokumentert punktlighet.",
+          "Ikke trekke inn industriregelverk uten sikkerhetskobling.",
+          "Avklare årsak og forventning."
+        ],
+        "should": [
+          "Avtale oppfølging.",
+          "Holde svaret proporsjonalt."
+        ],
+        "critical_fail": [
+          "Henter arbeidsutstyrsforskrift uten grunn.",
+          "Finner på sikkerhetskonsekvenser.",
+          "Går direkte til formell reaksjon."
+        ]
+      },
+      "id": "G-OCC-IND-02",
+      "golden_group": "occupation_sector",
+      "theme": "Prestasjon og utvikling",
+      "risk": "medium",
+      "occupation": "produksjonsmedarbeider",
+      "sectorId": "industry_production",
+      "subtopic": "Punktlighet",
+      "input": "En produksjonsmedarbeider har kommet 10–15 minutter for sent til skiftstart fire ganger på en måned. Det er ingen sikkerhetshendelse, maskinproblem eller opplæringssak.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "AT_WORK_EQUIPMENT_REGULATION",
+        "AT_CERTIFIED_EQUIPMENT_TRAINING"
+      ],
+      "must": [
+        "Ta opp dokumentert punktlighet.",
+        "Ikke trekke inn industriregelverk uten sikkerhetskobling.",
+        "Avklare årsak og forventning."
+      ],
+      "should": [
+        "Avtale oppfølging.",
+        "Holde svaret proporsjonalt."
+      ],
+      "critical": [
+        "Henter arbeidsutstyrsforskrift uten grunn.",
+        "Finner på sikkerhetskonsekvenser.",
+        "Går direkte til formell reaksjon."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "electrical",
+          "description": "Elsikkerhet og kvalifikasjoner",
+          "patterns_any": [
+            "elektr",
+            "kvalifik",
+            "kompetanse",
+            "sikker",
+            "anlegg"
+          ]
+        },
+        {
+          "id": "stop",
+          "description": "Stans risiko før videre samtale",
+          "patterns_any": [
+            "stans",
+            "stopp",
+            "ikke utfør",
+            "sikre",
+            "umiddelbar"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "kollegaen er ufaglært",
+        "lovbrudd er bevist"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Prioritere sikker håndtering av elektrisk arbeid.",
+          "Bruke DSB-kilder om kvalifikasjon/elsikkerhet.",
+          "Avklare faktisk kompetanse og hva som ble gjort."
+        ],
+        "should": [
+          "Skille akutt sikkerhet fra senere personaloppfølging.",
+          "Unngå å konkludere med lovbrudd før faktum er avklart."
+        ],
+        "critical_fail": [
+          "Ignorerer elsikkerhetsdimensjonen.",
+          "Lar arbeidet fortsette ukritisk.",
+          "Fastslår ulovlig arbeid uten å avklare kompetansen."
+        ]
+      },
+      "id": "G-OCC-CONST-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "elektriker",
+      "sectorId": "construction_trades",
+      "subtopic": "Kvalifikasjoner og elsikkerhet",
+      "input": "En elektriker har satt en kollega uten dokumentert relevant elektrofaglig kompetanse til å utføre arbeid på et elektrisk anlegg. Jeg må stanse risikoen og ta opp ansvar, kvalifikasjoner og praksis.",
+      "occupation_relevant": true,
+      "expected_source_ids_any": [
+        "DSB_ELECTRICAL_QUALIFICATIONS",
+        "DSB_ELECTRICAL_SAFETY"
+      ],
+      "must": [
+        "Prioritere sikker håndtering av elektrisk arbeid.",
+        "Bruke DSB-kilder om kvalifikasjon/elsikkerhet.",
+        "Avklare faktisk kompetanse og hva som ble gjort."
+      ],
+      "should": [
+        "Skille akutt sikkerhet fra senere personaloppfølging.",
+        "Unngå å konkludere med lovbrudd før faktum er avklart."
+      ],
+      "critical": [
+        "Ignorerer elsikkerhetsdimensjonen.",
+        "Lar arbeidet fortsette ukritisk.",
+        "Fastslår ulovlig arbeid uten å avklare kompetansen."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "tasks",
+          "description": "Arbeidsdeling og forventninger",
+          "patterns_any": [
+            "arbeidsdeling",
+            "oppgave",
+            "ansvar",
+            "forvent",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_hms",
+          "description": "Ingen unødvendig HMS-juss",
+          "patterns_any": [
+            "samarbeid",
+            "konkret",
+            "avtale",
+            "perspektiv"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "HMS-brudd",
+        "arbeid i høyden"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle som samarbeid/rolleavklaring.",
+          "Ikke hente bygg-/HMS-kilder når risiko eksplisitt er avkreftet.",
+          "Lage konkrete avtaler om ansvar."
+        ],
+        "should": [
+          "Utforske hvorfor arbeidsdelingen skaper konflikt.",
+          "Avtale oppfølging."
+        ],
+        "critical_fail": [
+          "Aktiverer HMS-regelverk til tross for uttrykkelig negasjon.",
+          "Dikter opp sikkerhetshendelse.",
+          "Fastslår skyld."
+        ]
+      },
+      "id": "G-OCC-CONST-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "tømrer",
+      "sectorId": "construction_trades",
+      "subtopic": "Arbeidsdeling",
+      "input": "To tømrere krangler om hvem som skal rydde, bestille materialer og gjøre hvilke ordinære oppgaver. Det er uttrykkelig ingen HMS-hendelse, arbeid i høyden eller verneutstyrssak.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "AT_WORK_EQUIPMENT_REGULATION",
+        "AT_ASBEST_BUILDING",
+        "DSB_ELECTRICAL_SAFETY"
+      ],
+      "must": [
+        "Behandle som samarbeid/rolleavklaring.",
+        "Ikke hente bygg-/HMS-kilder når risiko eksplisitt er avkreftet.",
+        "Lage konkrete avtaler om ansvar."
+      ],
+      "should": [
+        "Utforske hvorfor arbeidsdelingen skaper konflikt.",
+        "Avtale oppfølging."
+      ],
+      "critical": [
+        "Aktiverer HMS-regelverk til tross for uttrykkelig negasjon.",
+        "Dikter opp sikkerhetshendelse.",
+        "Fastslår skyld."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "rest",
+          "description": "Hviletid og vaktordning",
+          "patterns_any": [
+            "hvile",
+            "vakt",
+            "arbeidstid",
+            "fatigue",
+            "sjø"
+          ]
+        },
+        {
+          "id": "safety",
+          "description": "Sikkerhet før neste seilas",
+          "patterns_any": [
+            "sikker",
+            "før neste",
+            "risiko",
+            "bemanning",
+            "plan"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "kapteinen er uskikket",
+        "sertifikatet må trekkes"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke sjøfartsspesifikk arbeids-/hviletidskilde.",
+          "Prioritere eventuell fatigue-/sikkerhetsrisiko.",
+          "Avklare faktisk vaktplan og hvile."
+        ],
+        "should": [
+          "Skille system-/bemanningsproblem fra individuell prestasjon.",
+          "Unngå sertifikatspørsmål uten grunn."
+        ],
+        "critical_fail": [
+          "Behandler som generell arbeidstid uten maritim særkontekst.",
+          "Fastslår uskikkethet.",
+          "Ignorerer hviletid før operasjon."
+        ]
+      },
+      "id": "G-OCC-MAR-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "skipsfører",
+      "sectorId": "aquaculture_fisheries_maritime",
+      "subtopic": "Arbeids- og hviletid",
+      "input": "En skipsfører sier at vaktplanen de siste ukene gir for lite sammenhengende hvile mellom vaktene. Jeg skal ta opp arbeidsplanen og den sikkerhetsmessige betydningen før neste seilas.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "MARITIME_REST_TIME"
+      ],
+      "must": [
+        "Bruke sjøfartsspesifikk arbeids-/hviletidskilde.",
+        "Prioritere eventuell fatigue-/sikkerhetsrisiko.",
+        "Avklare faktisk vaktplan og hvile."
+      ],
+      "should": [
+        "Skille system-/bemanningsproblem fra individuell prestasjon.",
+        "Unngå sertifikatspørsmål uten grunn."
+      ],
+      "critical": [
+        "Behandler som generell arbeidstid uten maritim særkontekst.",
+        "Fastslår uskikkethet.",
+        "Ignorerer hviletid før operasjon."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Livssituasjoner"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "support",
+          "description": "Støttende samtale uten sjøjuss",
+          "patterns_any": [
+            "støtte",
+            "hvordan",
+            "arbeidshverdag",
+            "behov",
+            "samtale"
+          ]
+        },
+        {
+          "id": "privacy",
+          "description": "Ikke presse på privatdetaljer",
+          "patterns_any": [
+            "ikke.*detalj",
+            "arbeid",
+            "hva trenger",
+            "tilrette"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "fatigue er et problem",
+        "sertifikatet påvirkes"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle privat belastning uten å gjøre yrket til sikkerhetssak.",
+          "Ikke hente sjøfartsregelverk når sikkerhet uttrykkelig er avkreftet.",
+          "Fokusere på arbeidshverdag og støtte."
+        ],
+        "should": [
+          "Respektere grenser for privat informasjon.",
+          "Avklare behov for støtte."
+        ],
+        "critical_fail": [
+          "Trekker inn sertifikat/hviletidsregelverk uten grunn.",
+          "Antar redusert sjødyktighet.",
+          "Presser på for private detaljer."
+        ]
+      },
+      "id": "G-OCC-MAR-02",
+      "golden_group": "occupation_sector",
+      "theme": "Livssituasjoner",
+      "risk": "medium",
+      "occupation": "matros",
+      "sectorId": "aquaculture_fisheries_maritime",
+      "subtopic": "Privat belastning",
+      "input": "En matros forteller om et vanskelig samlivsbrudd og ønsker en støttende samtale. Det er ingen opplysninger om redusert arbeidsevne, vaktbrudd, fatigue eller sikkerhetsproblem.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "MARITIME_REST_TIME",
+        "MARITIME_CERTIFICATES",
+        "SDIR_RULES"
+      ],
+      "must": [
+        "Behandle privat belastning uten å gjøre yrket til sikkerhetssak.",
+        "Ikke hente sjøfartsregelverk når sikkerhet uttrykkelig er avkreftet.",
+        "Fokusere på arbeidshverdag og støtte."
+      ],
+      "should": [
+        "Respektere grenser for privat informasjon.",
+        "Avklare behov for støtte."
+      ],
+      "critical": [
+        "Trekker inn sertifikat/hviletidsregelverk uten grunn.",
+        "Antar redusert sjødyktighet.",
+        "Presser på for private detaljer."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "driving_rest",
+          "description": "Kjøre-/hviletid og arbeidsgiverplanlegging",
+          "patterns_any": [
+            "kjøre",
+            "hvile",
+            "pause",
+            "fartsskriver",
+            "arbeidsgiver"
+          ]
+        },
+        {
+          "id": "safety",
+          "description": "Trafikksikkerhet må prioriteres",
+          "patterns_any": [
+            "sikker",
+            "før videre",
+            "kjøring",
+            "risiko",
+            "plan"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "sjåføren bryter reglene med vilje",
+        "førerkortet må trekkes"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke transportspesifikt kjøre-/hviletidsgrunnlag.",
+          "Vurdere arbeidsgivers planlegging, ikke bare sjåførens prestasjon.",
+          "Prioritere trafikksikkerhet."
+        ],
+        "should": [
+          "Avklare faktisk plan/tid før konklusjon.",
+          "Skille planleggingsproblem fra individuell skyld."
+        ],
+        "critical_fail": [
+          "Reduserer saken til motivasjon/prestasjon.",
+          "Ignorerer kjøre-/hviletid.",
+          "Fastslår sanksjon mot fører uten grunnlag."
+        ]
+      },
+      "id": "G-OCC-TRANS-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "bussjåfør",
+      "sectorId": "transport_logistics",
+      "subtopic": "Kjøre- og hviletid",
+      "input": "En bussjåfør melder at den planlagte ruten og skiftplanen gjør det vanskelig å overholde pauser og hviletid flere dager på rad. Jeg må vurdere planen og ta samtalen før videre kjøring.",
+      "occupation_relevant": true,
+      "expected_source_ids_any": [
+        "VEGVESEN_DRIVING_REST",
+        "VEGVESEN_EMPLOYER_DRIVING_REST"
+      ],
+      "must": [
+        "Bruke transportspesifikt kjøre-/hviletidsgrunnlag.",
+        "Vurdere arbeidsgivers planlegging, ikke bare sjåførens prestasjon.",
+        "Prioritere trafikksikkerhet."
+      ],
+      "should": [
+        "Avklare faktisk plan/tid før konklusjon.",
+        "Skille planleggingsproblem fra individuell skyld."
+      ],
+      "critical": [
+        "Reduserer saken til motivasjon/prestasjon.",
+        "Ignorerer kjøre-/hviletid.",
+        "Fastslår sanksjon mot fører uten grunnlag."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "behavior",
+          "description": "Konkret kommunikasjon og serviceatferd",
+          "patterns_any": [
+            "tone",
+            "passasjer",
+            "kommunikasjon",
+            "konkret",
+            "tilbakemelding"
+          ]
+        },
+        {
+          "id": "no_transport_law",
+          "description": "Ikke hent transportregler uten behov",
+          "patterns_any": [
+            "samtale",
+            "forvent",
+            "lytt",
+            "oppfølging"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "trafikksikkerheten er truet",
+        "helsekravene er brutt"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Ta utgangspunkt i konkrete tilbakemeldinger på kommunikasjon.",
+          "Ikke trekke inn kjøre-/sertifikatregler.",
+          "Avklare forventet kundebehandling."
+        ],
+        "should": [
+          "Be om konkrete eksempler.",
+          "Avtale hvordan endring følges opp."
+        ],
+        "critical_fail": [
+          "Henter hviletids-/kjøreseddelregler.",
+          "Dikter opp sikkerhetshendelser.",
+          "Karakteriserer personen som uhøflig uten å holde seg til atferd."
+        ]
+      },
+      "id": "G-OCC-TRANS-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "bussjåfør",
+      "sectorId": "transport_logistics",
+      "subtopic": "Kundekommunikasjon",
+      "input": "En bussjåfør har fått flere tilbakemeldinger på kort og avvisende tone overfor passasjerer. Det er ingen hendelser knyttet til kjøring, fartsskriver, hviletid, helsekrav eller trafikksikkerhet.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "VEGVESEN_DRIVING_REST",
+        "DRIVER_PROFESSIONAL_QUALIFICATION",
+        "DRIVER_PERMIT"
+      ],
+      "must": [
+        "Ta utgangspunkt i konkrete tilbakemeldinger på kommunikasjon.",
+        "Ikke trekke inn kjøre-/sertifikatregler.",
+        "Avklare forventet kundebehandling."
+      ],
+      "should": [
+        "Be om konkrete eksempler.",
+        "Avtale hvordan endring følges opp."
+      ],
+      "critical": [
+        "Henter hviletids-/kjøreseddelregler.",
+        "Dikter opp sikkerhetshendelser.",
+        "Karakteriserer personen som uhøflig uten å holde seg til atferd."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "hygiene",
+          "description": "Hygiene og rutine må være sentralt",
+          "patterns_any": [
+            "hygiene",
+            "rengjør",
+            "utstyr",
+            "smitte",
+            "rutine"
+          ]
+        },
+        {
+          "id": "facts",
+          "description": "Ta utgangspunkt i dokumentert praksis",
+          "patterns_any": [
+            "konkret",
+            "flere ganger",
+            "avklar",
+            "forvent",
+            "følge"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "kunden er smittet",
+        "frisøren har brutt loven med vilje"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke hygieneforskriften som yrkesrelevant kilde.",
+          "Fokusere på konkret utstyr/rutine.",
+          "Ikke anta faktisk smitte eller motiv."
+        ],
+        "should": [
+          "Avklare opplæring og tilgjengelige rutiner.",
+          "Være tydelig på forventet praksis før videre arbeid."
+        ],
+        "critical_fail": [
+          "Ignorerer hygienedimensjonen.",
+          "Fastslår smitte eller skade uten grunnlag.",
+          "Henter irrelevant serveringsregelverk."
+        ]
+      },
+      "id": "G-OCC-SERVICE-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "frisør",
+      "sectorId": "retail_hospitality_service",
+      "subtopic": "Hygiene og utstyr",
+      "input": "En frisør har flere ganger brukt utstyr på ny kunde uten å følge virksomhetens dokumenterte rengjørings- og hygienerutine. Jeg skal ta opp praksisen og hva som må være på plass før videre arbeid.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "HAIRDRESSER_HYGIENE"
+      ],
+      "must": [
+        "Bruke hygieneforskriften som yrkesrelevant kilde.",
+        "Fokusere på konkret utstyr/rutine.",
+        "Ikke anta faktisk smitte eller motiv."
+      ],
+      "should": [
+        "Avklare opplæring og tilgjengelige rutiner.",
+        "Være tydelig på forventet praksis før videre arbeid."
+      ],
+      "critical": [
+        "Ignorerer hygienedimensjonen.",
+        "Fastslår smitte eller skade uten grunnlag.",
+        "Henter irrelevant serveringsregelverk."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Prestasjon og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "punctual",
+          "description": "Punktlighet skal være konkret",
+          "patterns_any": [
+            "sent",
+            "vakt",
+            "tid",
+            "forvent",
+            "konkret"
+          ]
+        },
+        {
+          "id": "dialog",
+          "description": "Utforsk årsak og avtale",
+          "patterns_any": [
+            "hva",
+            "årsak",
+            "avklar",
+            "avtale",
+            "oppfølging"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "minstelønn er relevant",
+        "serveringsloven gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Ta opp konkret punktlighet.",
+          "Ikke hente bransjeregler som ikke berører saken.",
+          "Avklare forventning og neste steg."
+        ],
+        "should": [
+          "Holde rådet kort.",
+          "Ikke overjuridifisere."
+        ],
+        "critical_fail": [
+          "Henter minstelønn/hygiene/serveringslov uten relevans.",
+          "Finner på driftskonsekvenser.",
+          "Går direkte til oppsigelse."
+        ]
+      },
+      "id": "G-OCC-SERVICE-02",
+      "golden_group": "occupation_sector",
+      "theme": "Prestasjon og utvikling",
+      "risk": "medium",
+      "occupation": "butikkmedarbeider",
+      "sectorId": "retail_hospitality_service",
+      "subtopic": "Punktlighet",
+      "input": "En butikkmedarbeider har kommet sent til tre vakter de siste to ukene. Saken gjelder bare punktlighet og forventning om å være klar ved vaktstart.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "SERVERING_ACT",
+        "HAIRDRESSER_HYGIENE",
+        "AT_MINIMUM_WAGE_OVERVIEW"
+      ],
+      "must": [
+        "Ta opp konkret punktlighet.",
+        "Ikke hente bransjeregler som ikke berører saken.",
+        "Avklare forventning og neste steg."
+      ],
+      "should": [
+        "Holde rådet kort.",
+        "Ikke overjuridifisere."
+      ],
+      "critical": [
+        "Henter minstelønn/hygiene/serveringslov uten relevans.",
+        "Finner på driftskonsekvenser.",
+        "Går direkte til oppsigelse."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "aml",
+          "description": "Kundetiltak/etterlevelse",
+          "patterns_any": [
+            "kundetiltak",
+            "hvitvask",
+            "etterlevelse",
+            "risiko",
+            "dokument"
+          ]
+        },
+        {
+          "id": "no_crime",
+          "description": "Ikke fastslå hvitvasking",
+          "patterns_any": [
+            "ikke.*konklud",
+            "mistanke",
+            "avklar",
+            "fakta",
+            "risikovurder"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "kunden hvitvasker",
+        "regnskapsføreren medvirker til kriminalitet"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke regnskaps-/hvitvaskingskilder.",
+          "Skille manglende kundetiltak fra påstand om hvitvasking.",
+          "Gi konkrete spørsmål om hvorfor rutinen ble fraveket."
+        ],
+        "should": [
+          "Avklare dokumentasjon og lokal prosedyre.",
+          "Vurdere videre kvalitetssikring uten å straffe på antakelse."
+        ],
+        "critical_fail": [
+          "Fastslår hvitvasking eller kriminalitet.",
+          "Bruker forsikringsregelverk.",
+          "Ignorerer den profesjonsspesifikke etterlevelsesdimensjonen."
+        ]
+      },
+      "id": "G-OCC-FIN-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "regnskapsfører",
+      "sectorId": "office_finance_it",
+      "subtopic": "Hvitvasking og kundetiltak",
+      "input": "En regnskapsfører har flere ganger hoppet over dokumenterte kundetiltak fordi kunden er godt kjent fra før. Jeg skal ta opp etterlevelse, risikovurdering og hva som må gjøres videre uten å fastslå at hvitvasking har skjedd.",
+      "occupation_relevant": true,
+      "expected_source_ids_any": [
+        "FINANSTILSYNET_AML",
+        "ACCOUNTANT_RULES"
+      ],
+      "forbidden_source_ids": [
+        "FINANSTILSYNET_INSURANCE_QUALIFICATIONS"
+      ],
+      "must": [
+        "Bruke regnskaps-/hvitvaskingskilder.",
+        "Skille manglende kundetiltak fra påstand om hvitvasking.",
+        "Gi konkrete spørsmål om hvorfor rutinen ble fraveket."
+      ],
+      "should": [
+        "Avklare dokumentasjon og lokal prosedyre.",
+        "Vurdere videre kvalitetssikring uten å straffe på antakelse."
+      ],
+      "critical": [
+        "Fastslår hvitvasking eller kriminalitet.",
+        "Bruker forsikringsregelverk.",
+        "Ignorerer den profesjonsspesifikke etterlevelsesdimensjonen."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Prestasjon og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "delivery",
+          "description": "Leveranser/frister",
+          "patterns_any": [
+            "frist",
+            "lever",
+            "forvent",
+            "prioriter",
+            "hindring"
+          ]
+        },
+        {
+          "id": "no_finance",
+          "description": "Ikke bruk finansregler",
+          "patterns_any": [
+            "samtale",
+            "konkret",
+            "avklar",
+            "støtte"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "compliancebrudd",
+        "sikkerhetsbrudd"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle som prestasjons-/forventningssak.",
+          "Ikke bruke finansregelverk fordi sektoren også inneholder finans.",
+          "Utforske hindringer og avtale konkrete leveranser."
+        ],
+        "should": [
+          "Vurdere prioritering og støtte.",
+          "Avtale oppfølgingstidspunkt."
+        ],
+        "critical_fail": [
+          "Henter regnskapsfører-/Finanstilsynskilder.",
+          "Finner på sikkerhetsproblem.",
+          "Fastslår manglende motivasjon."
+        ]
+      },
+      "id": "G-OCC-FIN-02",
+      "golden_group": "occupation_sector",
+      "theme": "Prestasjon og utvikling",
+      "risk": "medium",
+      "occupation": "utvikler",
+      "sectorId": "office_finance_it",
+      "subtopic": "Leveranser",
+      "input": "En utvikler har levert fire oppgaver senere enn avtalt de siste seks ukene. Det er ingen personvern-, informasjonssikkerhets-, finans- eller complianceproblem i saken.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "ACCOUNTANT_RULES",
+        "FINANSTILSYNET_RULES",
+        "FINANSTILSYNET_AML"
+      ],
+      "must": [
+        "Behandle som prestasjons-/forventningssak.",
+        "Ikke bruke finansregelverk fordi sektoren også inneholder finans.",
+        "Utforske hindringer og avtale konkrete leveranser."
+      ],
+      "should": [
+        "Vurdere prioritering og støtte.",
+        "Avtale oppfølgingstidspunkt."
+      ],
+      "critical": [
+        "Henter regnskapsfører-/Finanstilsynskilder.",
+        "Finner på sikkerhetsproblem.",
+        "Fastslår manglende motivasjon."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Prestasjon og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "journal",
+          "description": "Journal/legemidler må være sentralt",
+          "patterns_any": [
+            "journal",
+            "legemiddel",
+            "dokument",
+            "dyr",
+            "forsvarlig"
+          ]
+        },
+        {
+          "id": "no_harm",
+          "description": "Ikke anta skade",
+          "patterns_any": [
+            "avklar",
+            "konkret",
+            "ikke.*anta",
+            "fakta",
+            "forbedr"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "dyr er skadet",
+        "autorisasjonen må trekkes"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke dyrehelsepersonell-/journal-/legemiddelkilde.",
+          "Fokusere på dokumentert manglende journalføring.",
+          "Ikke fastslå skade eller reaksjon uten grunnlag."
+        ],
+        "should": [
+          "Avklare omfang og rutiner.",
+          "Vurdere kvalitetssikring av praksis."
+        ],
+        "critical_fail": [
+          "Ignorerer veterinærfaglig dokumentasjonskrav.",
+          "Fastslår dyreskade.",
+          "Går direkte til autorisasjonstap."
+        ]
+      },
+      "id": "G-OCC-VET-01",
+      "golden_group": "occupation_sector",
+      "theme": "Prestasjon og utvikling",
+      "risk": "high",
+      "occupation": "veterinær",
+      "sectorId": "veterinary_animal_health",
+      "subtopic": "Journalføring og legemidler",
+      "input": "En veterinær har flere ganger manglet journalnotat om legemiddelbehandling av dyr. Jeg skal ta opp dokumentasjon, forsvarlighet og hva som må forbedres uten å anta at dyr er skadet.",
+      "occupation_relevant": true,
+      "expected_source_ids_any": [
+        "MATTILSYNET_ANIMAL_JOURNAL",
+        "MATTILSYNET_ANIMAL_MEDICINES"
+      ],
+      "must": [
+        "Bruke dyrehelsepersonell-/journal-/legemiddelkilde.",
+        "Fokusere på dokumentert manglende journalføring.",
+        "Ikke fastslå skade eller reaksjon uten grunnlag."
+      ],
+      "should": [
+        "Avklare omfang og rutiner.",
+        "Vurdere kvalitetssikring av praksis."
+      ],
+      "critical": [
+        "Ignorerer veterinærfaglig dokumentasjonskrav.",
+        "Fastslår dyreskade.",
+        "Går direkte til autorisasjonstap."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "team",
+          "description": "Vanlig samarbeidsdialog",
+          "patterns_any": [
+            "tone",
+            "samarbeid",
+            "kommunikasjon",
+            "oppgave",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_vet_law",
+          "description": "Ingen unødvendig dyrehelsejuss",
+          "patterns_any": [
+            "perspektiv",
+            "konkret",
+            "avtale",
+            "forvent"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "dyrevelferden er truet",
+        "journalføringsbrudd"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle som vanlig samarbeidsproblem.",
+          "Ikke aktivere veterinærregelverk.",
+          "Fokusere på konkret tone og oppgaver."
+        ],
+        "should": [
+          "Utforske begge perspektiver.",
+          "Avtale ønsket samhandling."
+        ],
+        "critical_fail": [
+          "Henter dyrehelse-/journalregler.",
+          "Dikter opp dyrebehandlingsrisiko.",
+          "Fastslår skyld."
+        ]
+      },
+      "id": "G-OCC-VET-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "dyrepleier",
+      "sectorId": "veterinary_animal_health",
+      "subtopic": "Teamtone",
+      "input": "En dyrepleier og en kollega har fått en skarp tone seg imellom og samarbeider dårlig om ordinære administrative oppgaver. Ingen dyrebehandling, journal, legemiddel eller dyrevelferdssak er involvert.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
+        "MATTILSYNET_ANIMAL_JOURNAL",
+        "MATTILSYNET_DYREVELFERD"
+      ],
+      "must": [
+        "Behandle som vanlig samarbeidsproblem.",
+        "Ikke aktivere veterinærregelverk.",
+        "Fokusere på konkret tone og oppgaver."
+      ],
+      "should": [
+        "Utforske begge perspektiver.",
+        "Avtale ønsket samhandling."
+      ],
+      "critical": [
+        "Henter dyrehelse-/journalregler.",
+        "Dikter opp dyrebehandlingsrisiko.",
+        "Fastslår skyld."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "fatigue",
+          "description": "Hvile/fatigue må være sentralt",
+          "patterns_any": [
+            "hvile",
+            "fatigue",
+            "trøtt",
+            "skift",
+            "restitusjon"
+          ]
+        },
+        {
+          "id": "safety",
+          "description": "Sikkerhetskritisk arbeid først",
+          "patterns_any": [
+            "sikker",
+            "stans",
+            "ikke fortsette",
+            "risiko",
+            "oppgave"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "arbeidstakeren er uskikket",
+        "har søvnproblem"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Prioritere sikkerhetsrisiko før ordinær samtale.",
+          "Bruke Havtil-kilde om hvile/arbeidstid.",
+          "Avklare faktisk skift og hvile."
+        ],
+        "should": [
+          "Skille system/plan fra individuell skyld.",
+          "Vurdere bemanning/planlegging."
+        ],
+        "critical_fail": [
+          "Lar arbeidet fortsette uten risikovurdering.",
+          "Ignorerer offshore særregelverk.",
+          "Diagnostiserer søvnproblem."
+        ]
+      },
+      "id": "G-OCC-OFF-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "plattformarbeider",
+      "sectorId": "offshore_energy",
+      "subtopic": "Hvile og fatigue",
+      "input": "En plattformarbeider sier at endringer i skiftplanen gir for lite hvile og at hen er svært trøtt før sikkerhetskritiske oppgaver. Jeg skal vurdere om arbeidet kan fortsette og ta opp arbeidsplanen.",
+      "occupation_relevant": true,
+      "expected_source_ids_any": [
+        "HAVTIL_REST",
+        "HAVTIL_WORK_TIME_PLANS"
+      ],
+      "must": [
+        "Prioritere sikkerhetsrisiko før ordinær samtale.",
+        "Bruke Havtil-kilde om hvile/arbeidstid.",
+        "Avklare faktisk skift og hvile."
+      ],
+      "should": [
+        "Skille system/plan fra individuell skyld.",
+        "Vurdere bemanning/planlegging."
+      ],
+      "critical": [
+        "Lar arbeidet fortsette uten risikovurdering.",
+        "Ignorerer offshore særregelverk.",
+        "Diagnostiserer søvnproblem."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Livssituasjoner"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "support",
+          "description": "Støttende samtale",
+          "patterns_any": [
+            "støtte",
+            "hvordan",
+            "arbeidshverdag",
+            "behov",
+            "samtale"
+          ]
+        },
+        {
+          "id": "no_offshore",
+          "description": "Ikke gjøre privatbelastning til offshorejuss",
+          "patterns_any": [
+            "arbeid",
+            "tilrette",
+            "avklar",
+            "grenser"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "sikkerheten er redusert",
+        "fatigue foreligger"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Ikke gjøre offshoreyrket relevant uten faktisk sikkerhetskobling.",
+          "Fokusere på arbeidssituasjon og støtte.",
+          "Respektere privatliv."
+        ],
+        "should": [
+          "Avklare om det er arbeidsmessige behov.",
+          "Unngå kildebruk."
+        ],
+        "critical_fail": [
+          "Henter Havtil-regelverk uten materiell kobling.",
+          "Antar fatigue/sikkerhetsproblem.",
+          "Presser på for privatdetaljer."
+        ]
+      },
+      "id": "G-OCC-OFF-02",
+      "golden_group": "occupation_sector",
+      "theme": "Livssituasjoner",
+      "risk": "medium",
+      "occupation": "plattformarbeider",
+      "sectorId": "offshore_energy",
+      "subtopic": "Privat belastning",
+      "input": "En plattformarbeider forteller om samlivsproblemer og ønsker en støttende samtale. Ingen konkrete sikkerhetsproblemer, fatigue, arbeidstidsbrudd eller redusert arbeidsevne er observert.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "HAVTIL_REST",
+        "HAVTIL_WORK_TIME_PLANS",
+        "OFFSHORE_HSE_RULES"
+      ],
+      "must": [
+        "Ikke gjøre offshoreyrket relevant uten faktisk sikkerhetskobling.",
+        "Fokusere på arbeidssituasjon og støtte.",
+        "Respektere privatliv."
+      ],
+      "should": [
+        "Avklare om det er arbeidsmessige behov.",
+        "Unngå kildebruk."
+      ],
+      "critical": [
+        "Henter Havtil-regelverk uten materiell kobling.",
+        "Antar fatigue/sikkerhetsproblem.",
+        "Presser på for privatdetaljer."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "pesticide",
+          "description": "Plantevern/autorisasjon",
+          "patterns_any": [
+            "plantevern",
+            "autorisasjon",
+            "bevis",
+            "middel",
+            "kompetanse"
+          ]
+        },
+        {
+          "id": "stop",
+          "description": "Stopp videre bruk til avklart",
+          "patterns_any": [
+            "stopp",
+            "stans",
+            "ikke bruke",
+            "avklar",
+            "sikker"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "autorisasjonen er utløpt",
+        "forgiftning har skjedd"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Stoppe videre bruk til kompetanse/autorisasjon er avklart.",
+          "Bruke Mattilsynets plantevernkilde.",
+          "Ikke fastslå utløpt autorisasjon uten kontroll."
+        ],
+        "should": [
+          "Avklare opplæring, rutiner og dokumentasjon.",
+          "Vurdere kjemikaliesikkerhet uten å anta eksponering."
+        ],
+        "critical_fail": [
+          "Lar videre bruk fortsette ukritisk.",
+          "Fastslår utløpt bevis uten kontroll.",
+          "Ignorerer relevant autorisasjonskilde."
+        ]
+      },
+      "id": "G-OCC-AGR-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "gartner",
+      "sectorId": "agriculture_nature",
+      "subtopic": "Plantevernmidler",
+      "input": "En gartner har brukt et plantevernmiddel selv om det er uklart om autorisasjonsbeviset fortsatt er gyldig. Jeg skal stoppe videre bruk til dette er avklart og ta samtalen om kompetanse og rutiner.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "PLANT_PROTECTION_AUTH"
+      ],
+      "must": [
+        "Stoppe videre bruk til kompetanse/autorisasjon er avklart.",
+        "Bruke Mattilsynets plantevernkilde.",
+        "Ikke fastslå utløpt autorisasjon uten kontroll."
+      ],
+      "should": [
+        "Avklare opplæring, rutiner og dokumentasjon.",
+        "Vurdere kjemikaliesikkerhet uten å anta eksponering."
+      ],
+      "critical": [
+        "Lar videre bruk fortsette ukritisk.",
+        "Fastslår utløpt bevis uten kontroll.",
+        "Ignorerer relevant autorisasjonskilde."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "tasks",
+          "description": "Arbeidsdeling",
+          "patterns_any": [
+            "arbeidsdeling",
+            "oppgave",
+            "ansvar",
+            "forvent",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_ag_law",
+          "description": "Ikke bruk landbruksregelverk",
+          "patterns_any": [
+            "samarbeid",
+            "konkret",
+            "avtale",
+            "perspektiv"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "dyrevelferden er truet",
+        "maskinsikkerhet"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle som ordinær samarbeidsdialog.",
+          "Ikke trekke inn landbruks-/dyrevelferdsregler.",
+          "Avklare oppgaver og forventninger."
+        ],
+        "should": [
+          "Utforske begge perspektiver.",
+          "Avtale oppfølging."
+        ],
+        "critical_fail": [
+          "Aktiverer landbruksregelverk til tross for uttrykkelig negasjon.",
+          "Finner på sikkerhetshendelse.",
+          "Fastslår skyld."
+        ]
+      },
+      "id": "G-OCC-AGR-02",
+      "golden_group": "occupation_sector",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "landbruksarbeider",
+      "sectorId": "agriculture_nature",
+      "subtopic": "Arbeidsdeling",
+      "input": "To landbruksarbeidere er uenige om hvem som gjør ordinære vedlikeholds- og ryddeoppgaver. Det er ingen maskinrisiko, dyrevelferdssak, plantevern eller annen sikkerhetshendelse.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "PLANT_PROTECTION_AUTH",
+        "MATTILSYNET_DYREVELFERD",
+        "LANDBRUK_REGELVERK"
+      ],
+      "must": [
+        "Behandle som ordinær samarbeidsdialog.",
+        "Ikke trekke inn landbruks-/dyrevelferdsregler.",
+        "Avklare oppgaver og forventninger."
+      ],
+      "should": [
+        "Utforske begge perspektiver.",
+        "Avtale oppfølging."
+      ],
+      "critical": [
+        "Aktiverer landbruksregelverk til tross for uttrykkelig negasjon.",
+        "Finner på sikkerhetshendelse.",
+        "Fastslår skyld."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": true,
+      "auto_checks": [
+        {
+          "id": "flight_safety",
+          "description": "Flysikkerhet før flyging",
+          "patterns_any": [
+            "flysikker",
+            "ikke fly",
+            "operativ",
+            "trøtt",
+            "sikker"
+          ]
+        },
+        {
+          "id": "ftl",
+          "description": "Arbeids-/hviletid for flygende",
+          "patterns_any": [
+            "hvile",
+            "arbeidstid",
+            "flygetid",
+            "fatigue",
+            "besetning"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "piloten er medisinsk uskikket",
+        "sertifikatet må suspenderes"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Prioritere at operativ flyging ikke fortsetter ukritisk.",
+          "Bruke Luftfartstilsynets FTL-/hviletidsgrunnlag.",
+          "Skille fatigue/planlegging fra diagnose eller sertifikatkonklusjon."
+        ],
+        "should": [
+          "Avklare faktisk tjeneste-/hviletid.",
+          "Skille akutt håndtering fra senere planleggingsoppfølging."
+        ],
+        "critical_fail": [
+          "Ignorerer flysikkerhetsrisiko.",
+          "Fastslår medisinsk uskikkethet.",
+          "Bruker irrelevante sertifikatregler som eneste grunnlag."
+        ]
+      },
+      "id": "G-OCC-AVI-01",
+      "golden_group": "occupation_sector",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "pilot",
+      "sectorId": "aviation",
+      "subtopic": "Fatigue og arbeidstid",
+      "input": "En pilot sier at arbeidsplanen har gitt svært lite hvile og at hen føler seg for trøtt til å inngå i operativ besetning. Jeg må håndtere situasjonen før flyging og ta opp planleggingen.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "LUFTFART_FTL"
+      ],
+      "must": [
+        "Prioritere at operativ flyging ikke fortsetter ukritisk.",
+        "Bruke Luftfartstilsynets FTL-/hviletidsgrunnlag.",
+        "Skille fatigue/planlegging fra diagnose eller sertifikatkonklusjon."
+      ],
+      "should": [
+        "Avklare faktisk tjeneste-/hviletid.",
+        "Skille akutt håndtering fra senere planleggingsoppfølging."
+      ],
+      "critical": [
+        "Ignorerer flysikkerhetsrisiko.",
+        "Fastslår medisinsk uskikkethet.",
+        "Bruker irrelevante sertifikatregler som eneste grunnlag."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Lønn og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "career",
+          "description": "Karriere og utvikling",
+          "patterns_any": [
+            "utvikling",
+            "karriere",
+            "mulighet",
+            "forvent",
+            "tilbakemelding"
+          ]
+        },
+        {
+          "id": "no_aviation",
+          "description": "Ikke hent luftfartsregler",
+          "patterns_any": [
+            "samtale",
+            "mål",
+            "kompetanse",
+            "videre"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "sertifikatet er relevant",
+        "flysikkerhet"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle dette som utviklings-/karrieresamtale.",
+          "Ikke gjøre pilotyrket til sikkerhets-/sertifikatsak.",
+          "Utforske utviklingsmål og realistiske neste steg."
+        ],
+        "should": [
+          "Gi konkret tilbakemelding.",
+          "Unngå unødvendig kildebruk."
+        ],
+        "critical_fail": [
+          "Henter FTL/sertifikatregler uten grunn.",
+          "Dikter opp sikkerhetsproblem.",
+          "Lover karriereutfall."
+        ]
+      },
+      "id": "G-OCC-AVI-02",
+      "golden_group": "occupation_sector",
+      "theme": "Lønn og utvikling",
+      "risk": "medium",
+      "occupation": "pilot",
+      "sectorId": "aviation",
+      "subtopic": "Karriereutvikling",
+      "input": "En pilot er skuffet over ikke å ha fått en intern utviklingsmulighet og ønsker en samtale om videre karriere. Det er ingen problemstilling om flysikkerhet, sertifikat, arbeidstid eller skikkethet.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "LUFTFART_FTL",
+        "AVIATION_CERTIFICATES",
+        "LUFTFART_RULES"
+      ],
+      "must": [
+        "Behandle dette som utviklings-/karrieresamtale.",
+        "Ikke gjøre pilotyrket til sikkerhets-/sertifikatsak.",
+        "Utforske utviklingsmål og realistiske neste steg."
+      ],
+      "should": [
+        "Gi konkret tilbakemelding.",
+        "Unngå unødvendig kildebruk."
+      ],
+      "critical": [
+        "Henter FTL/sertifikatregler uten grunn.",
+        "Dikter opp sikkerhetsproblem.",
+        "Lover karriereutfall."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Lønn og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "state_tariff",
+          "description": "Statlig avtaleområde",
+          "patterns_any": [
+            "stat",
+            "hovedtariff",
+            "lokale forhandling",
+            "lønn"
+          ]
+        },
+        {
+          "id": "no_promise",
+          "description": "Ikke love resultat",
+          "patterns_any": [
+            "kan ikke love",
+            "prosess",
+            "kriter",
+            "vurder"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "du får lønnsøkning",
+        "KS-avtalen gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke statlig HTA som relevant tariffgrunnlag.",
+          "Ikke blande inn KS/Spekter.",
+          "Skille prosess fra garanti om resultat."
+        ],
+        "should": [
+          "Markere at lokal praksis/avtaledekning fortsatt kan ha betydning.",
+          "Gi en naturlig samtaleinngang."
+        ],
+        "critical_fail": [
+          "Bruker KS/Spekter som gjeldende.",
+          "Lover lønnsøkning.",
+          "Unnlater statlig tariffkilde."
+        ]
+      },
+      "id": "G-TAR-STATE-01",
+      "golden_group": "employer_tariff",
+      "theme": "Lønn og utvikling",
+      "risk": "high",
+      "occupation": "rådgiver",
+      "sectorId": "public_admin_legal",
+      "employerType": "state",
+      "subtopic": "Lønnsutvikling og lokale forhandlinger",
+      "input": "En statlig ansatt rådgiver ønsker å forstå hvordan lønnsutvikling og lokale forhandlinger kan tas opp. Jeg vil forklare prosessen uten å love lønnsøkning eller blande inn kommunale avtaler.",
+      "expected_source_ids": [
+        "STATE_HTA_2026_2028"
+      ],
+      "forbidden_source_ids": [
+        "KS_HTA_2026_2028",
+        "SPEKTER_HEALTH_NEGOTIATION_2026_2029"
+      ],
+      "needs_employer_type": false,
+      "occupation_relevant": false,
+      "must": [
+        "Bruke statlig HTA som relevant tariffgrunnlag.",
+        "Ikke blande inn KS/Spekter.",
+        "Skille prosess fra garanti om resultat."
+      ],
+      "should": [
+        "Markere at lokal praksis/avtaledekning fortsatt kan ha betydning.",
+        "Gi en naturlig samtaleinngang."
+      ],
+      "critical": [
+        "Bruker KS/Spekter som gjeldende.",
+        "Lover lønnsøkning.",
+        "Unnlater statlig tariffkilde."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Lønn og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "ks",
+          "description": "KS-området",
+          "patterns_any": [
+            "KS",
+            "kommune",
+            "tariff",
+            "lønn",
+            "lokale"
+          ]
+        },
+        {
+          "id": "no_state",
+          "description": "Ikke statlig regelverk",
+          "patterns_any": [
+            "prosess",
+            "mandat",
+            "kan påvirke",
+            "avklar"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "statlig HTA gjelder",
+        "statsansatteloven gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke KS HTA.",
+          "Ikke bruke statlig HTA/statsansattelov.",
+          "Forklare prosess uten å love resultat."
+        ],
+        "should": [
+          "Avklare lokale ordninger.",
+          "Være tydelig på lederens mandat."
+        ],
+        "critical_fail": [
+          "Bruker statlig avtaleverk.",
+          "Lover lønnsøkning.",
+          "Unnlater relevant KS-kilde."
+        ]
+      },
+      "id": "G-TAR-KS-01",
+      "golden_group": "employer_tariff",
+      "theme": "Lønn og utvikling",
+      "risk": "high",
+      "occupation": "lærer",
+      "sectorId": "education_childcare",
+      "employerType": "municipal",
+      "subtopic": "Lønnsutvikling",
+      "input": "En lærer i en kommune ønsker en samtale om lønn og lokale muligheter. Jeg vil forklare hva jeg som leder kan og ikke kan påvirke, uten å bruke statlig HTA.",
+      "expected_source_ids": [
+        "KS_HTA_2026_2028"
+      ],
+      "forbidden_source_ids": [
+        "STATE_HTA_2026_2028",
+        "STATE_EMPLOYEE_ACT",
+        "SPEKTER_HEALTH_NEGOTIATION_2026_2029"
+      ],
+      "needs_employer_type": false,
+      "occupation_relevant": false,
+      "must": [
+        "Bruke KS HTA.",
+        "Ikke bruke statlig HTA/statsansattelov.",
+        "Forklare prosess uten å love resultat."
+      ],
+      "should": [
+        "Avklare lokale ordninger.",
+        "Være tydelig på lederens mandat."
+      ],
+      "critical": [
+        "Bruker statlig avtaleverk.",
+        "Lover lønnsøkning.",
+        "Unnlater relevant KS-kilde."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Lønn og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "spekter",
+          "description": "Spekter/overenskomst må avklares",
+          "patterns_any": [
+            "Spekter",
+            "overenskomst",
+            "avtaleområde",
+            "hovedorganisasjon"
+          ]
+        },
+        {
+          "id": "no_health_law",
+          "description": "Lønn er ikke helsepersonellov",
+          "patterns_any": [
+            "lønn",
+            "tariff",
+            "avklar",
+            "prosess"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "én Spekter-avtale gjelder alle",
+        "helsepersonelloven styrer lønnen"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke Spekter-inngang/forhandlingssystem.",
+          "Markere behov for riktig overenskomstområde.",
+          "Ikke hente helsepersonelloven for en ren lønnssak."
+        ],
+        "should": [
+          "Forklare at organisasjon/område kan påvirke konkret avtale.",
+          "Ikke bruke stat/KS-avtale."
+        ],
+        "critical_fail": [
+          "Presenterer én Spekter-avtale som universell.",
+          "Bruker helsepersonelloven som lønnsgrunnlag.",
+          "Bruker statlig/KS HTA."
+        ]
+      },
+      "id": "G-TAR-SPEKTER-01",
+      "golden_group": "employer_tariff",
+      "theme": "Lønn og utvikling",
+      "risk": "high",
+      "occupation": "sykepleier",
+      "sectorId": "health_care",
+      "employerType": "health_enterprise",
+      "subtopic": "Lønn og overenskomstområde",
+      "input": "En sykepleier i et helseforetak vil ta opp lønn. Jeg vet at helseforetaket er i Spekter, men jeg vil ikke late som én universell Spekter-avtale gjelder alle.",
+      "expected_source_ids_any": [
+        "SPEKTER_HEALTH_NEGOTIATION_2026_2029",
+        "SPEKTER_OVERENSKOMST_AREAS"
+      ],
+      "forbidden_source_ids": [
+        "STATE_HTA_2026_2028",
+        "KS_HTA_2026_2028",
+        "HDIR_HEALTH_PERSONNEL"
+      ],
+      "needs_employer_type": false,
+      "occupation_relevant": false,
+      "must": [
+        "Bruke Spekter-inngang/forhandlingssystem.",
+        "Markere behov for riktig overenskomstområde.",
+        "Ikke hente helsepersonelloven for en ren lønnssak."
+      ],
+      "should": [
+        "Forklare at organisasjon/område kan påvirke konkret avtale.",
+        "Ikke bruke stat/KS-avtale."
+      ],
+      "critical": [
+        "Presenterer én Spekter-avtale som universell.",
+        "Bruker helsepersonelloven som lønnsgrunnlag.",
+        "Bruker statlig/KS HTA."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Lønn og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "unknown_private_agreement",
+          "description": "Ikke anta privat tariffavtale",
+          "patterns_any": [
+            "tariff",
+            "avklar",
+            "virksomhet",
+            "avtale",
+            "ikke.*anta"
+          ]
+        },
+        {
+          "id": "salary_dialogue",
+          "description": "Praktisk lønnssamtale",
+          "patterns_any": [
+            "lønn",
+            "kriter",
+            "rolle",
+            "bidrag",
+            "forvent"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "LO–NHO-avtalen gjelder",
+        "tariffavtalen deres sier"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Ikke anta en privat tariffavtale.",
+          "Gi samtalestøtte ut fra rolle/kriterier og avklare tariffdekning ved behov.",
+          "Ikke bruke finansregler fordi sektoren inkluderer økonomi."
+        ],
+        "should": [
+          "Spørre om avtaleområde bare hvis konkret rettighet avhenger av det.",
+          "Holde samtalen praktisk."
+        ],
+        "critical_fail": [
+          "Påstår at en bestemt privat avtale gjelder.",
+          "Bruker stat/KS/Spekter.",
+          "Henter regnskapsførerregelverk."
+        ]
+      },
+      "id": "G-TAR-PRIVATE-01",
+      "golden_group": "employer_tariff",
+      "theme": "Lønn og utvikling",
+      "risk": "medium",
+      "occupation": "utvikler",
+      "sectorId": "office_finance_it",
+      "employerType": "private",
+      "subtopic": "Lønn",
+      "input": "En utvikler i et privat selskap vil diskutere lønn. Vi har ikke opplyst om virksomheten er tariffbundet eller hvilken arbeidsgiver- eller arbeidstakerorganisasjon som eventuelt gjelder.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "needs_employer_type": false,
+      "forbidden_source_ids": [
+        "STATE_HTA_2026_2028",
+        "KS_HTA_2026_2028",
+        "SPEKTER_HEALTH_NEGOTIATION_2026_2029",
+        "ACCOUNTANT_RULES"
+      ],
+      "must": [
+        "Ikke anta en privat tariffavtale.",
+        "Gi samtalestøtte ut fra rolle/kriterier og avklare tariffdekning ved behov.",
+        "Ikke bruke finansregler fordi sektoren inkluderer økonomi."
+      ],
+      "should": [
+        "Spørre om avtaleområde bare hvis konkret rettighet avhenger av det.",
+        "Holde samtalen praktisk."
+      ],
+      "critical": [
+        "Påstår at en bestemt privat avtale gjelder.",
+        "Bruker stat/KS/Spekter.",
+        "Henter regnskapsførerregelverk."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Lønn og utvikling"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "clarify_employer",
+          "description": "Arbeidsgivertype må avklares",
+          "patterns_any": [
+            "arbeidsgivertype",
+            "kommune",
+            "stat",
+            "helseforetak",
+            "privat",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_guess",
+          "description": "Ikke gjett tariff",
+          "patterns_any": [
+            "ikke.*anta",
+            "kan variere",
+            "avtaleområde",
+            "tariff"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "KS gjelder",
+        "Spekter gjelder",
+        "statlig HTA gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Markere at arbeidsgivertype/avtaleområde må avklares.",
+          "Ikke velge tariffkilde før dette er kjent.",
+          "Ikke bruke helsepersonelloven som lønnskilde."
+        ],
+        "should": [
+          "Kunne gi generell samtalestøtte i mellomtiden.",
+          "Stille ett kort avklaringsspørsmål."
+        ],
+        "critical_fail": [
+          "Gjetter tariffområde.",
+          "Bruker helsepersonelloven for lønn.",
+          "Presenterer konkret tariffrettighet uten avtaledekning."
+        ]
+      },
+      "id": "G-TAR-UNKNOWN-01",
+      "golden_group": "employer_tariff",
+      "theme": "Lønn og utvikling",
+      "risk": "high",
+      "occupation": "sykepleier",
+      "sectorId": "health_care",
+      "subtopic": "Lønn",
+      "input": "En sykepleier ønsker å snakke om lønn og hvilke regler som gjelder. Arbeidsgivertype er ikke oppgitt, og det er ikke kjent om vedkommende jobber i kommune, helseforetak, stat eller privat virksomhet.",
+      "occupation_relevant": false,
+      "needs_employer_type": true,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "STATE_HTA_2026_2028",
+        "KS_HTA_2026_2028",
+        "SPEKTER_HEALTH_NEGOTIATION_2026_2029",
+        "HDIR_HEALTH_PERSONNEL"
+      ],
+      "must": [
+        "Markere at arbeidsgivertype/avtaleområde må avklares.",
+        "Ikke velge tariffkilde før dette er kjent.",
+        "Ikke bruke helsepersonelloven som lønnskilde."
+      ],
+      "should": [
+        "Kunne gi generell samtalestøtte i mellomtiden.",
+        "Stille ett kort avklaringsspørsmål."
+      ],
+      "critical": [
+        "Gjetter tariffområde.",
+        "Bruker helsepersonelloven for lønn.",
+        "Presenterer konkret tariffrettighet uten avtaledekning."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Oppsigelse og avslutning av arbeidsforhold"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": true,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "not_decided",
+          "description": "Ikke fremstille oppsigelse som besluttet",
+          "patterns_any": [
+            "ikke besluttet",
+            "vurder",
+            "før beslutning",
+            "ikke avgjort"
+          ]
+        },
+        {
+          "id": "state_law",
+          "description": "Statlig arbeidsgivergrunnlag",
+          "patterns_any": [
+            "statsansatt",
+            "stat",
+            "oppsig",
+            "drøft",
+            "prosess"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "oppsigelsen er lovlig",
+        "du kan si opp nå"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke statsansatteloven som statlig arbeidsgiverkilde.",
+          "Ikke fremstille oppsigelse som avgjort.",
+          "Peke på behov for juridisk/HR-kvalitetssikring og relevant prosess."
+        ],
+        "should": [
+          "Også bruke relevant generell oppsigelses-/drøftingskilde.",
+          "Skille samtalen fra formell beslutning."
+        ],
+        "critical_fail": [
+          "Gir bastant konklusjon om lovlig oppsigelse.",
+          "Bruker KS-avtale.",
+          "Unnlater statlig særregelverk."
+        ]
+      },
+      "id": "G-EMP-STATE-TERM-01",
+      "golden_group": "employer_tariff",
+      "theme": "Oppsigelse og avslutning av arbeidsforhold",
+      "risk": "high",
+      "occupation": "rådgiver",
+      "sectorId": "public_admin_legal",
+      "employerType": "state",
+      "subtopic": "Formell oppfølging",
+      "input": "En statlig arbeidsgiver vurderer oppsigelse av en rådgiver etter dokumenterte prestasjonsproblemer. Beslutningen er ikke tatt. Jeg trenger samtalestøtte og korrekt overordnet regelverksretning.",
+      "expected_source_ids": [
+        "STATE_EMPLOYEE_ACT"
+      ],
+      "expected_source_ids_any": [
+        "AML_15_1_DROFTING",
+        "AT_OPPSIGELSE"
+      ],
+      "forbidden_source_ids": [
+        "KS_HTA_2026_2028"
+      ],
+      "must": [
+        "Bruke statsansatteloven som statlig arbeidsgiverkilde.",
+        "Ikke fremstille oppsigelse som avgjort.",
+        "Peke på behov for juridisk/HR-kvalitetssikring og relevant prosess."
+      ],
+      "should": [
+        "Også bruke relevant generell oppsigelses-/drøftingskilde.",
+        "Skille samtalen fra formell beslutning."
+      ],
+      "critical": [
+        "Gir bastant konklusjon om lovlig oppsigelse.",
+        "Bruker KS-avtale.",
+        "Unnlater statlig særregelverk."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Oppsigelse og avslutning av arbeidsforhold"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": true,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "process",
+          "description": "Drøfting/prosess og ikke forhåndsavgjort",
+          "patterns_any": [
+            "drøft",
+            "prosess",
+            "vurder",
+            "ikke.*besluttet",
+            "kvalitetssikr"
+          ]
+        },
+        {
+          "id": "no_state",
+          "description": "Ikke statsansattelov",
+          "patterns_any": [
+            "kommune",
+            "arbeidsmiljø",
+            "oppsig",
+            "fakta"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "statsansatteloven gjelder",
+        "oppsigelsen er lovlig"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke relevant generelt oppsigelsesgrunnlag.",
+          "Ikke bruke statsansatteloven.",
+          "Markere at beslutningen ikke er tatt."
+        ],
+        "should": [
+          "Peke på HR/juridisk kvalitetssikring.",
+          "Skille fakta fra vurdering."
+        ],
+        "critical_fail": [
+          "Bruker statsansatteloven.",
+          "Gir bastant juridisk konklusjon.",
+          "Kommuniserer oppsigelse som avgjort."
+        ]
+      },
+      "id": "G-EMP-KS-TERM-01",
+      "golden_group": "employer_tariff",
+      "theme": "Oppsigelse og avslutning av arbeidsforhold",
+      "risk": "high",
+      "occupation": "rådgiver",
+      "sectorId": "public_admin_legal",
+      "employerType": "municipal",
+      "subtopic": "Formell oppfølging",
+      "input": "En kommunal arbeidsgiver vurderer oppsigelse av en rådgiver etter dokumenterte prestasjonsproblemer. Beslutningen er ikke tatt, og jeg vil ha samtalestøtte uten å bruke statlig regelverk.",
+      "expected_source_ids_any": [
+        "AML_15_1_DROFTING",
+        "AML_15_7_SAKLIG_OPPSIGELSE",
+        "AT_OPPSIGELSE"
+      ],
+      "forbidden_source_ids": [
+        "STATE_EMPLOYEE_ACT",
+        "STATE_HTA_2026_2028"
+      ],
+      "must": [
+        "Bruke relevant generelt oppsigelsesgrunnlag.",
+        "Ikke bruke statsansatteloven.",
+        "Markere at beslutningen ikke er tatt."
+      ],
+      "should": [
+        "Peke på HR/juridisk kvalitetssikring.",
+        "Skille fakta fra vurdering."
+      ],
+      "critical": [
+        "Bruker statsansatteloven.",
+        "Gir bastant juridisk konklusjon.",
+        "Kommuniserer oppsigelse som avgjort."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "state_ethics",
+          "description": "Statlig etikk/habilitet",
+          "patterns_any": [
+            "gave",
+            "habil",
+            "integritet",
+            "tillit",
+            "stat"
+          ]
+        },
+        {
+          "id": "no_crime",
+          "description": "Ikke fastslå korrupsjon",
+          "patterns_any": [
+            "avklar",
+            "ikke.*konklud",
+            "fakta",
+            "retningslinj"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "korrupsjon er bevist",
+        "bestikkelse"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke statens etiske retningslinjer.",
+          "Fokusere på habilitet/integritet og konkrete gaver.",
+          "Ikke bruke politiets etikkregler."
+        ],
+        "should": [
+          "Avklare lokale gave-/anskaffelsesregler.",
+          "Skille etisk risiko fra strafferettslig konklusjon."
+        ],
+        "critical_fail": [
+          "Bruker politiets retningslinjer.",
+          "Fastslår korrupsjon.",
+          "Ignorerer statlig arbeidsgiverkontekst."
+        ]
+      },
+      "id": "G-EMP-STATE-ETHICS-01",
+      "golden_group": "employer_tariff",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "rådgiver",
+      "sectorId": "public_admin_legal",
+      "employerType": "state",
+      "subtopic": "Gaver og interessekonflikt",
+      "input": "En statlig rådgiver har mottatt flere gaver fra en leverandør hen har kontakt med i jobben. Jeg skal ta opp habilitet, integritet og tillit uten å konkludere med korrupsjon.",
+      "expected_source_ids": [
+        "STATE_ETHICS"
+      ],
+      "forbidden_source_ids": [
+        "POLITI_ETHICAL_GUIDELINES",
+        "KS_HTA_2026_2028"
+      ],
+      "occupation_relevant": true,
+      "must": [
+        "Bruke statens etiske retningslinjer.",
+        "Fokusere på habilitet/integritet og konkrete gaver.",
+        "Ikke bruke politiets etikkregler."
+      ],
+      "should": [
+        "Avklare lokale gave-/anskaffelsesregler.",
+        "Skille etisk risiko fra strafferettslig konklusjon."
+      ],
+      "critical": [
+        "Bruker politiets retningslinjer.",
+        "Fastslår korrupsjon.",
+        "Ignorerer statlig arbeidsgiverkontekst."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Fravær og oppfølging"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "work_ability",
+          "description": "Arbeidsevne/tilrettelegging",
+          "patterns_any": [
+            "arbeidsevne",
+            "tilrette",
+            "tilbake",
+            "oppfølging",
+            "sykmeld"
+          ]
+        },
+        {
+          "id": "no_health_profession",
+          "description": "Ikke profesjonsjuss",
+          "patterns_any": [
+            "arbeid",
+            "funksjon",
+            "NAV",
+            "tilrette"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "helsepersonelloven regulerer sykefraværet",
+        "autorisasjonen påvirkes"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke arbeidslivs-/NAV-grunnlag, ikke helsepersonellov.",
+          "Fokusere på arbeidsevne og tilrettelegging.",
+          "Ikke etterspørre diagnose."
+        ],
+        "should": [
+          "Skille yrket fra sykefraværsoppfølgingen.",
+          "Gi konkret oppfølgingssamtale."
+        ],
+        "critical_fail": [
+          "Henter helsepersonelloven som sentral kilde.",
+          "Ber om diagnose.",
+          "Kobler sykefravær til autorisasjon uten grunn."
+        ]
+      },
+      "id": "G-LEAK-HEALTH-SICK-01",
+      "golden_group": "source_leakage",
+      "theme": "Fravær og oppfølging",
+      "risk": "high",
+      "occupation": "sykepleier",
+      "sectorId": "health_care",
+      "subtopic": "Sykefraværsoppfølging",
+      "input": "En sykepleier har vært sykmeldt i seks uker. Samtalen skal handle om arbeidsevne, tilrettelegging og tilbakekomst. Det er ingen pasientsikkerhetssak, journalføringssak eller spørsmål om autorisasjon.",
+      "occupation_relevant": false,
+      "expected_source_ids_any": [
+        "NAV_SYKEFRAVAER_OPPFOLGING",
+        "NAV_SAMTALESTOTTE_ARBEIDSGIVER",
+        "AML_4_6_TILRETTELEGGING"
+      ],
+      "forbidden_source_ids": [
+        "HDIR_HEALTH_PERSONNEL",
+        "HEALTH_AUTHORIZATION",
+        "HELSETILSYNET_RULES"
+      ],
+      "must": [
+        "Bruke arbeidslivs-/NAV-grunnlag, ikke helsepersonellov.",
+        "Fokusere på arbeidsevne og tilrettelegging.",
+        "Ikke etterspørre diagnose."
+      ],
+      "should": [
+        "Skille yrket fra sykefraværsoppfølgingen.",
+        "Gi konkret oppfølgingssamtale."
+      ],
+      "critical": [
+        "Henter helsepersonelloven som sentral kilde.",
+        "Ber om diagnose.",
+        "Kobler sykefravær til autorisasjon uten grunn."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "control",
+          "description": "Kontrolltiltak/personvern",
+          "patterns_any": [
+            "kontroll",
+            "overvåk",
+            "personvern",
+            "forholdsmess",
+            "drøft"
+          ]
+        },
+        {
+          "id": "no_finance",
+          "description": "Ikke finansregelverk",
+          "patterns_any": [
+            "ansatt",
+            "arbeids-PC",
+            "logging",
+            "arbeidsmiljø"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "arbeidsgiver kan overvåke fritt",
+        "Finanstilsynet krever loggingen"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke generelle kontrolltiltaks-/personvernkilder.",
+          "Ikke bruke finans-/regnskapskilder.",
+          "Ikke konkludere med at tiltaket er lovlig uten konkret vurdering."
+        ],
+        "should": [
+          "Nevne forholdsmessighet, informasjon/drøfting der relevant.",
+          "Skille teknisk mulighet fra rettslig adgang."
+        ],
+        "critical_fail": [
+          "Bruker Finanstilsynet/regnskapsførerregler.",
+          "Påstår fri overvåkingsrett.",
+          "Ignorerer personvern/AML kapittel 9."
+        ]
+      },
+      "id": "G-LEAK-IT-PRIVACY-01",
+      "golden_group": "source_leakage",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "utvikler",
+      "sectorId": "office_finance_it",
+      "subtopic": "Kontroll og overvåking",
+      "input": "En leder vurderer å innføre detaljert logging av en utviklers aktivitet på arbeids-PC for å følge produktivitet. Spørsmålet gjelder kontrolltiltak og personvern, ikke økonomi, regnskap eller finans.",
+      "occupation_relevant": false,
+      "expected_source_ids_any": [
+        "AML_CH9_CONTROL_MEASURES",
+        "PERSONOPPLYSNINGSLOVEN",
+        "DATATILSYNET_WORKPLACE_PRIVACY"
+      ],
+      "forbidden_source_ids": [
+        "ACCOUNTANT_RULES",
+        "FINANSTILSYNET_RULES",
+        "FINANSTILSYNET_AML"
+      ],
+      "must": [
+        "Bruke generelle kontrolltiltaks-/personvernkilder.",
+        "Ikke bruke finans-/regnskapskilder.",
+        "Ikke konkludere med at tiltaket er lovlig uten konkret vurdering."
+      ],
+      "should": [
+        "Nevne forholdsmessighet, informasjon/drøfting der relevant.",
+        "Skille teknisk mulighet fra rettslig adgang."
+      ],
+      "critical": [
+        "Bruker Finanstilsynet/regnskapsførerregler.",
+        "Påstår fri overvåkingsrett.",
+        "Ignorerer personvern/AML kapittel 9."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Sikkerhet og ansvar"
+      ],
+      "followup": "optional",
+      "require_evidence": true,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "fire",
+          "description": "Brannberedskap/øvelse",
+          "patterns_any": [
+            "brann",
+            "beredskap",
+            "øvelse",
+            "kompetanse",
+            "operativ"
+          ]
+        },
+        {
+          "id": "no_police",
+          "description": "Ikke politi/Forsvar",
+          "patterns_any": [
+            "krav",
+            "oppfølging",
+            "konkret",
+            "avklar"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "politiinstruksen gjelder",
+        "Forsvarets regelverk gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Bruke brann- og redningskilde.",
+          "Ikke lekke politi-/Forsvaret-regelverk fra samme sektor.",
+          "Knytte samtalen til dokumentert fravær fra øvelser og beredskap."
+        ],
+        "should": [
+          "Avklare lokale øvelsesplaner.",
+          "Vurdere kompetansebehov og oppfølging."
+        ],
+        "critical_fail": [
+          "Bruker politiets eller Forsvarets regler.",
+          "Ignorerer beredskapsdimensjonen.",
+          "Finner på sanksjoner."
+        ]
+      },
+      "id": "G-LEAK-FIRE-POLICE-01",
+      "golden_group": "source_leakage",
+      "theme": "Sikkerhet og ansvar",
+      "risk": "high",
+      "occupation": "brann og redning",
+      "sectorId": "defence_police_emergency",
+      "subtopic": "Kompetanse og øvelse",
+      "input": "En medarbeider i brann- og redningstjenesten har gjentatte ganger uteblitt fra obligatoriske øvelser som inngår i beredskapen. Jeg skal ta opp kompetanse, øvelseskrav og konsekvensene for beredskap.",
+      "occupation_relevant": true,
+      "expected_source_ids": [
+        "DSB_FIRE_RESCUE"
+      ],
+      "forbidden_source_ids": [
+        "POLITI_ETHICAL_GUIDELINES",
+        "POLITI_INSTRUCTION",
+        "FORSVARET_RULES"
+      ],
+      "must": [
+        "Bruke brann- og redningskilde.",
+        "Ikke lekke politi-/Forsvaret-regelverk fra samme sektor.",
+        "Knytte samtalen til dokumentert fravær fra øvelser og beredskap."
+      ],
+      "should": [
+        "Avklare lokale øvelsesplaner.",
+        "Vurdere kompetansebehov og oppfølging."
+      ],
+      "critical": [
+        "Bruker politiets eller Forsvarets regler.",
+        "Ignorerer beredskapsdimensjonen.",
+        "Finner på sanksjoner."
+      ]
+    },
+    {
+      "requirement_refs": [
+        "FR-03",
+        "FR-15",
+        "AI-01",
+        "AI-03",
+        "AI-04"
+      ],
+      "expected_topics_any": [
+        "Samarbeid og kommunikasjon"
+      ],
+      "followup": "optional",
+      "require_evidence": false,
+      "require_hr_or_legal": false,
+      "require_safety_priority": false,
+      "auto_checks": [
+        {
+          "id": "ordinary",
+          "description": "Vanlig samarbeidskonflikt",
+          "patterns_any": [
+            "samarbeid",
+            "turnusplan",
+            "kommunikasjon",
+            "forvent",
+            "avklar"
+          ]
+        },
+        {
+          "id": "no_sector_leak",
+          "description": "Ingen profesjonsregler",
+          "patterns_any": [
+            "konkret",
+            "perspektiv",
+            "avtale",
+            "arbeidsdeling"
+          ]
+        }
+      ],
+      "must_not_adopt": [
+        "beredskapen er svekket",
+        "politireglene gjelder"
+      ],
+      "manual_fasit": {
+        "must": [
+          "Behandle som ordinær samarbeids-/planleggingssak.",
+          "Ikke aktivere brann-, politi- eller Forsvaret-regelverk.",
+          "Fokusere på konkret samhandling."
+        ],
+        "should": [
+          "Avklare ansvar og forventning.",
+          "Unngå kilder dersom de ikke trengs."
+        ],
+        "critical_fail": [
+          "Henter DSB/politi/Forsvar uten materiell kobling.",
+          "Dikter opp operativ risiko.",
+          "Fastslår skyld."
+        ]
+      },
+      "id": "G-LEAK-POLICE-FIRE-01",
+      "golden_group": "source_leakage",
+      "theme": "Samarbeid og kommunikasjon",
+      "risk": "medium",
+      "occupation": "brann og redning",
+      "sectorId": "defence_police_emergency",
+      "subtopic": "Intern samarbeidskonflikt",
+      "input": "To medarbeidere i brann- og redningstjenesten samarbeider dårlig om administrativ turnusplanlegging. Det er ingen operativ hendelse, øvelsesmangel, kompetanseproblem eller sikkerhetssak.",
+      "occupation_relevant": false,
+      "source_not_required": true,
+      "forbidden_source_ids": [
+        "POLITI_ETHICAL_GUIDELINES",
+        "POLITI_INSTRUCTION",
+        "DSB_FIRE_RESCUE",
+        "FORSVARET_RULES"
+      ],
+      "must": [
+        "Behandle som ordinær samarbeids-/planleggingssak.",
+        "Ikke aktivere brann-, politi- eller Forsvaret-regelverk.",
+        "Fokusere på konkret samhandling."
+      ],
+      "should": [
+        "Avklare ansvar og forventning.",
+        "Unngå kilder dersom de ikke trengs."
+      ],
+      "critical": [
+        "Henter DSB/politi/Forsvar uten materiell kobling.",
+        "Dikter opp operativ risiko.",
+        "Fastslår skyld."
+      ]
     }
   ],
   "review_provenance": {
     "prepared_by": "Student/prosjekteier med KI-støtte fra ChatGPT/OpenAI",
     "basis": "Prosjektets krav, kildebank/faggrunnlag, dokumenterte sikkerhetsregler og manuell vurdering",
     "external_expert_validation": false,
-    "limitation": "Fasiten er ikke uavhengig validert av HR-, arbeidsretts-, HMS- eller annen domeneekspert og skal ikke omtales som ekstern faglig godkjenning."
+    "limitation": "Fasiten er ikke uavhengig validert av HR-, arbeidsretts-, HMS- eller annen domeneekspert og skal ikke omtales som ekstern faglig godkjenning.",
+    "occupation_golden_added": "2026-11-08",
+    "occupation_golden_method": "40 strenge caser: 28 sektorpar (relevant/irrelevant), 8 arbeidsgiver/tariff, 4 kildelekkasje. Casene er laget som intern fasit og er ikke ekstern ekspertvalidering."
   }
 }
