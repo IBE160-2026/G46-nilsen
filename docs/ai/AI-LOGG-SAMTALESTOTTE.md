@@ -1357,3 +1357,21 @@ Parallelt ble produktdokumentasjonen styrket. Norske sammenlignbare tilbud ble i
 Den planlagte direkte samtalefunksjonen er derfor dokumentert som en **hypotese som skal testes**, ikke som en unik eller ferdig funksjon.
 
 **Læring:** Git-historikk er ikke bare et sikkerhetsnett for kode. Den kan også brukes som presis spesifikasjon når verbal kontekst har sklidd ut. Dokumentasjon blir samtidig et produktverktøy: den tvinger frem mer nøkterne påstander om hva som faktisk er ferdig, hva som er planlagt og hva som skiller produktet fra eksisterende tilbud.
+
+
+## 08.11.2026 – yrkes-/sektorkilder, kildepresisjon og negativ kontroll
+
+Yrkes-/sektorlaget ble gjennomgått etter observasjon om at enkelte brede sektorer hadde få eller lite presise særkilder. Gjennomgangen viste at problemet ikke bare var antall kilder, men datamodellen: en kilde kunne tidligere avgrenses til sektor, men ikke til konkret yrke.
+
+Endring:
+- `OCCUPATION-LEGAL-SOURCES.json` støtter nå valgfri `occupations`
+- `occupation-router.js` filtrerer profesjonskilder på valgt yrke
+- registeret ble utvidet fra 31 til 58 autoritative startkilder
+- brede kilder ble snevret inn der de egentlig bare gjelder bestemte profesjoner
+- alle yrkene i sektorlisten ble gjennomgått
+- `fotterapeut` ble flyttet til Helse og omsorg
+- Hjelp-kildebanken viser yrkesavgrensning og er organisert i fire hovedkategorier
+
+Nye negative regresjoner kontrollerer blant annet at politiets etiske retningslinjer ikke brukes for brannkonstabel og at regnskapsførerregelverk ikke brukes for utvikler.
+
+Arbeidsprinsipp: KI skal ikke «fylle tomrom» med tilfeldige regler. Der et yrke ikke har relevant særregelverk, skal generelt arbeidslivs-/HMS- eller sektorregelverk være tilstrekkelig.
