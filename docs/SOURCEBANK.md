@@ -1844,3 +1844,28 @@ SOURCEBANK v6 har 62 kuraterte kilder. Samtidig ble alle kilder kontrollert mot 
 De nye nettsidene er ikke kopiert i fulltekst. I stedet er kilde-ID, metadata, URL, sist-kontrollert-dato og de faglige prinsippene Samtalestøtte faktisk trenger lagret lokalt. Dette gjør prinsippene tilgjengelige for en framtidig lokal RAG-/offline-løsning uten å gjøre repoet til et uautorisert fulltekstarkiv.
 
 Originalkildene skal fortsatt kontrolleres når informasjon er tidsfølsom, ved regelverksendringer eller når mer detaljert kildegrunnlag er nødvendig.
+
+
+---
+
+# Tillegg 08.11.2026 – yrkes-/sektorkilder og kildevisning
+
+Den generelle SOURCEBANK-en og yrkes-/sektorregisteret har ulike oppgaver:
+
+- `data/SOURCEBANK.json` støtter generelle samtale-, leder-, forsknings- og arbeidslivsprinsipper.
+- `data/OCCUPATION-LEGAL-SOURCES.json` støtter autoritative sektor- og profesjonskilder når yrket faktisk endrer risiko, plikt eller formell ramme.
+
+Yrkesregisteret er utvidet fra 31 til 58 autoritative startkilder. Kildene kan nå ha valgfri `occupations`-avgrensning i tillegg til `sectors`. Dette er nødvendig fordi brede sektorer kan inneholde svært ulike yrker; en politiregel skal ikke automatisk gjelde brannkonstabel, og revisorregelverk skal ikke automatisk gjelde utvikler.
+
+Hjelp-siden viser kildebanken i fire hovedkategorier:
+
+1. Lovverk og myndigheter
+2. Forskning og evidens
+3. Faglig rammeverk
+4. Yrkes- og sektorkilder
+
+Kildene sorteres alfabetisk. Generelle arbeidslivskilder skal ikke gjentas under hvert yrke. En profesjonskilde kan vise hvilke yrker den særlig gjelder for.
+
+Full yrkesgjennomgang og begrunnelser finnes i `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md`.
+
+Prinsipp: kildekvalitet måles i **relevans og presisjon**, ikke i at hvert yrke har flest mulig lenker.
