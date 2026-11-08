@@ -455,3 +455,24 @@ Dette skiller:
 - **rettsgrunnlag:** personopplysningsloven/GDPR
 - **arbeidsrettslig kontrolltiltaksregel:** AML kapittel 9
 - **praktisk personvernveiledning:** Datatilsynet
+
+
+## 13. Manuell kontroll av kilder merket verifisert 08.11.2026
+
+Alle 57 arbeidsgiver-/yrkes-/sektorkilder med `lastVerified=2026-11-08` ble kontrollert mot originaldomene eller, for Lovdata-URL-er som ikke kunne åpnes direkte i kontrollverktøyet, mot Lovdatas indekserte ajourførte kilde.
+
+Kontrollen avdekket og rettet:
+- Arkivverkets gamle URL videresendte til Nasjonalarkivet. Kilden er oppdatert til Nasjonalarkivet og dagens kanoniske journalføringsveileder.
+- Offentleglova brukte regjeringen.no som offisiell inngang. Den er erstattet med ajourført Lovdata-kilde som primær rettskilde.
+
+En Finanstilsynet-kilde om interessekonflikter og lønnsordninger i forsikringsformidling ble særskilt kontrollert fordi den direkte sidevisningen ikke viste disse avsnittene i første utdrag. Finanstilsynets indekserte innhold bekrefter at siden eksplisitt omtaler både interessekonflikter og regler om lønnsordninger/salgsmål. Kilden beholdes.
+
+Status etter kontrollen:
+- 58 generelle fag-/forsknings-/myndighetskilder
+- 86 arbeidsgiver-/yrkes-/sektorkilder
+- 7 konkrete tariff-/hovedavtale-/arbeidsgiverreferanser
+- 0 eksakte URL-duplikater
+- 0 generiske kildetitler som bare «Regelverk»/«Lover»
+- 57 kilder kontrollert mot originaldomene/Lovdata 08.11.2026
+
+`lastVerified` skal framover bety faktisk kildekontroll, ikke bare datoen en post ble lagt til.
