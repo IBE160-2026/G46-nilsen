@@ -1,6 +1,6 @@
 # Arbeidsrunde 08.11.2026 – yrkespresisjon, kildebank og kodeopprydding
 
-- Yrkes-/sektorkilderegisteret utvidet fra 31 til 62 autoritative startkilder.
+- Yrkes-/sektorkilderegisteret utvidet fra 31 til 85 autoritative startkilder.
 - Kilder kan avgrenses til konkrete yrker via `occupations`, ikke bare brede sektorer.
 - Nye profesjonskilder for blant annet politi, kriminalomsorg, Forsvaret, vektere, offentlig forvaltning, regnskapsfører, revisor, yrkessjåfør, lokfører, sjøfolk, reindrift og luftfart.
 - Fotterapeut flyttet fra Handel/service til Helse og omsorg.
@@ -88,7 +88,7 @@
 - Samtaleøvelse har egen KI-illustrasjon med mobiltilpasset beskjæring og større forhåndsvisning.
 - PWA-støtte er lagt til med manifest, 192/512-ikoner, maskable-ikon, service worker og installasjonsveiledning.
 - Installasjon er fysisk verifisert på Samsung/Chrome med standalone-visning.
-- Hjelp viser komplett kildebank med 62 kilder.
+- Hjelp viser komplett kildebank med 85 kilder.
 - Mobilmenyen inkluderer Innstillinger og bruker samme ikonfamilie som resten av produktet.
 - Regresjonstester for pilot-UX og PWA er lagt til/oppdatert.
 - Versjon er synkronisert til 20.11.0 i package, lockfil, server, klient, HTML, demo, miljøeksempel og service worker-cache.
