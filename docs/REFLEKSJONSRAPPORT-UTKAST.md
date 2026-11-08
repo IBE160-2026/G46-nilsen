@@ -525,3 +525,24 @@ Et viktig skille er derfor mellom **kurs/trening** og **løpende støtte i behov
 Prosjektet vurderer også en mer direkte samtaleinngang. Også her er det viktig å ikke beskrive selve KI-chatten som innovasjonen, siden slike løsninger allerede finnes. Hypotesen er i stedet om en åpen dialog kan gi merverdi når den kobles til Samtalestøttes arbeidslivskontekst, personvern, faglige avgrensninger og mulighet til å gå videre til strukturert råd eller simulering. Funksjonen skal derfor omtales som planlagt utprøving inntil den faktisk er implementert og testet.
 
 **Refleksjon:** Denne sammenligningen gjorde produktbeskrivelsen mer nøktern. Jeg gikk fra å lete etter én funksjon som kunne kalles unik, til å beskrive hvor og når produktet faktisk skal gi verdi. Det er også et eksempel på hvordan dokumentasjon kan korrigere produktforståelsen, ikke bare beskrive den i etterkant.
+
+
+## Tillegg 08.11.2026 – fra sektorkilder til profesjonspresisjon
+
+I sluttfasen gjennomgikk jeg yrkes-/sektorkildene mer kritisk. Den første implementasjonen hadde autoritative kilder per sektor, men dette var for grovt for brede kategorier. «Forsvar, politi og beredskap» er et tydelig eksempel: politi, brann, kriminalomsorg, Forsvaret og vektere kan ha helt ulike særregler selv om de deler et overordnet arbeidsområde.
+
+Løsningen ble derfor endret slik at kilder kan avgrenses både til sektor og til konkrete yrker. Registeret ble samtidig utvidet fra 31 til 58 autoritative startkilder. Politiet fikk blant annet egne etiske retningslinjer, politiinstruksen og medarbeiderplattformen; andre profesjoner fikk egne kilder der det faktisk finnes særregler, autorisasjon eller sertifikatkrav.
+
+Gjennomgangen omfattet alle yrkene i sektorlisten. Jeg valgte bevisst ikke å legge inn en kunstig profesjonskilde for hver stilling. For mange yrker er arbeidsmiljøloven, HMS-regler eller sektorfelles regelverk det faglig riktige nivået. Dette er et viktig skille mellom en stor kildebank og en presis kildebank.
+
+Gjennomgangen avdekket også en taksonomifeil: fotterapeut var plassert under handel/service, men yrket hører til autorisert helsepersonell og ble flyttet til Helse og omsorg.
+
+Det ble lagt til negative regresjonstester som kontrollerer at en profesjonskilde ikke brukes for et annet yrke i samme sektor. Eksempelvis skal brannkonstabel ikke få politiets etiske retningslinjer, og utvikler skal ikke få regnskapsførerregelverk.
+
+### Vedlikeholdbarhet
+
+Sensorinnspillet om en svært stor CSS-fil ble også fulgt opp. `styles.css` hadde vokst til omtrent 9 389 linjer gjennom mange iterative UI-runder. I stedet for en omfattende redesign/refaktorering ble CSS-en modulært splittet i kjerne, responsiv/mobil og senere overrides, med samme rekkefølge som før. Dette reduserer navigasjons- og vedlikeholdsgjelden uten å endre den visuelle kontrakten unødvendig.
+
+### Distribusjonslæring
+
+En annen konkret læring kom da GitHub viste nye commits mens produksjonen fortsatt så uendret ut. Kontroll av Render viste at produksjonsservicen faktisk kjørte en eldre commit. Dette tydeliggjorde at kildekode, deploy og det brukeren faktisk ser er tre separate tilstander som må verifiseres hver for seg.
