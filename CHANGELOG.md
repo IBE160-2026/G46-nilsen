@@ -1782,3 +1782,15 @@ Ingen ny komplett lokal `npm test`-kjøring skal impliseres av denne changelog-p
 - Arbeidsgivertype har tom standardverdi; privat sektor antas ikke.
 - Tariffkontekst kan aktiveres uten valgt yrke.
 - Ny regresjonstest: `tests/test-source-policy.cjs`.
+
+
+## 08.11.2026 – 40 nye strenge yrkes-golden-caser
+- Golden-bank økt fra 26 til 66 caser.
+- Alle 14 yrkessektorer har positiv og negativ yrkesrelevans-case.
+- 8 egne tariff-/arbeidsgiver-caser.
+- 4 kildelekkasjecaser.
+- Golden-runner tester nå konkrete forventede og forbudte source_ids.
+- Forbudt kilde gir kritisk avvik.
+- Kildeinflasjon og mer enn fire valgte kilder flagges.
+- Yrkesrelevans og behov for arbeidsgivertype kontrolleres mot fasit.
+- Ny kommando: `npm run test-ai:occupation-golden`.
