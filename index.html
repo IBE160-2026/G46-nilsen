@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.44" />
+  <link rel="stylesheet" href="styles.css?v=20.11.45" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -291,6 +291,27 @@
             <span id="understanding-confidence" class="understanding-confidence"></span>
           </div>
           <div id="understanding-content" class="understanding-content"></div>
+        </section>
+
+
+        <section id="occupation-context-panel" class="occupation-context-panel occupation-context-suggestion" hidden>
+          <div class="occupation-suggestion-row">
+            <div>
+              <span class="eyebrow">ARBEIDSKONTEKST</span>
+              <p id="occupation-context-note">For bedre tilpassede råd, fyll inn yrke eller yrkesgruppe. Du kan endre feltene direkte hvis noe ikke stemmer.</p>
+              <strong id="occupation-context-summary"></strong>
+            </div>
+          </div>
+          <div class="occupation-context-fields" id="occupation-context-fields">
+            <label>Arbeidsområde
+              <select id="occupation-sector"><option value="">Ikke valgt</option></select>
+            </label>
+            <label>Yrke / stilling
+              <input id="occupation-title" type="text" list="occupation-title-options" autocomplete="off" placeholder="For eksempel sykepleier, lærer eller tømrer">
+              <datalist id="occupation-title-options"></datalist>
+            </label>
+            <input id="occupation-employer-type" type="hidden" value="">
+          </div>
         </section>
 
         <section id="followup-panel" class="followup-panel" hidden>
@@ -1017,6 +1038,6 @@
   <script src="src/privacy-name-data.js?v=20.11.15"></script>
   <script src="src/privacy-detector.js?v=20.11.15"></script>
   <script src="src/client-data.js?v=20.11.15"></script>
-  <script src="app.js?v=20.11.32"></script>
+  <script src="app.js?v=20.11.45"></script>
 </body>
 </html>
