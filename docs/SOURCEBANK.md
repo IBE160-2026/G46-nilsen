@@ -1869,3 +1869,30 @@ Kildene sorteres alfabetisk. Generelle arbeidslivskilder skal ikke gjentas under
 Full yrkesgjennomgang og begrunnelser finnes i `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md`.
 
 Prinsipp: kildekvalitet måles i **relevans og presisjon**, ikke i at hvert yrke har flest mulig lenker.
+
+
+---
+
+# SOURCEBANK v7 – kildekvalitet og kildehierarki 08.11.2026
+
+SOURCEBANK v6-avsnittet over beholdes som historikk for tilstanden 29.10.2026.
+
+Etter kvalitetsrevisjonen 08.11.2026 er den generelle SOURCEBANK-en versjon 7 med 60 kilder. Reduksjonen fra 62 er bevisst:
+- en smal Forsvaret-emneside ble fjernet som generell fagkilde
+- College of Policing sin britiske intervjuguide ble fjernet som for indirekte for norske medarbeidersamtaler
+- Forsvaret-spesifikke kilder er avgrenset til relevant sektor/yrke
+- DFØs arbeidsgiverveiledning er avgrenset til statlig arbeidsgiver
+- Helsedirektoratets MI-side er klassifisert som faglig metode/rammeverk, ikke rettslig myndighetskilde
+
+Kildeøkosystemet består nå av tre lag:
+1. generell SOURCEBANK – forskning, generell lov/myndighet og faglige rammeverk
+2. arbeidsgiver-/yrkes-/sektorregister – overordnet arbeidsgivergrunnlag og profesjonssærkilder
+3. tariff-/avtalekart – konkrete kuraterte HTA/hovedavtale-/arbeidsgiverreferanser
+
+Detaljert revisjon:
+`docs/SOURCE-QUALITY-AUDIT-2026-11-08.md`
+
+Ny hovedregel:
+> Kildens funksjon og autoritet er viktigere enn antall kilder.
+
+Brede myndighetsoversikter kan være gode oppslagsinnganger, men skal ikke brukes som direkte hjemmel for en presis juridisk påstand. Forskning kan være sterk evidens for samtale-/lederfaglige råd, men er ikke rettsgrunnlag. Akan og IA er arbeidslivsveiledning/rammeverk, ikke lov.
