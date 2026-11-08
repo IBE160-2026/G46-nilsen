@@ -9176,3 +9176,30 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .inline-source-links a{display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--accent);font-weight:750;text-decoration:none}
 .inline-source-links a:hover{text-decoration:underline;background:var(--surface-2)}
 .evidence-list a em{display:block;margin-top:5px;color:var(--accent);font-size:.82rem;font-style:normal;font-weight:750}
+
+
+/* v20.11.47 KATEGORISERT KILDEBANK PÅ HJELP */
+.source-library-intro{max-width:980px;margin-bottom:14px}
+.source-library-intro p{margin:0 0 8px;line-height:1.55}
+.source-library{max-width:980px;display:grid;gap:14px}
+.source-library-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
+.source-library-tab{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:9px 14px;font:inherit;font-weight:700;cursor:pointer}
+.source-library-tab[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.source-category-panel{display:grid;gap:10px}
+.source-category-panel[hidden]{display:none}
+.source-category-heading{margin:6px 2px 4px}
+.source-category-heading h3{margin:0 0 5px;font-size:1.16rem}
+.source-category-heading p{margin:0;color:var(--muted);line-height:1.5}
+.source-group{border:1px solid var(--border);border-radius:15px;background:var(--surface);overflow:hidden}
+.source-group>summary{cursor:pointer;padding:15px 17px;font-weight:800;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.source-group>summary small{font-weight:600;color:var(--muted)}
+.source-group-body{padding:0 17px 16px;display:grid;gap:8px}
+.source-item{display:grid;gap:3px;padding:11px 0;border-top:1px solid var(--border)}
+.source-item:first-child{border-top:0}
+.source-item a{font-weight:750;color:var(--accent);text-decoration:none}
+.source-item a em{font-style:normal;margin-left:4px}
+.source-item a:hover{text-decoration:underline}
+.source-item-meta{display:flex;gap:7px;flex-wrap:wrap;color:var(--muted);font-size:.82rem}
+.source-kind-badge{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:2px 7px;background:var(--surface-2)}
+.source-item-use{margin:2px 0 0;color:var(--muted);font-size:.9rem;line-height:1.45}
+@media(max-width:680px){.source-library-tabs{display:grid;grid-template-columns:1fr}.source-library-tab{text-align:left;border-radius:12px}.source-group>summary{align-items:flex-start;flex-direction:column;gap:3px}}
