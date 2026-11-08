@@ -1,5 +1,5 @@
 {
-  "version": 21,
+  "version": 22,
   "verifiedAt": "2026-11-08",
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
@@ -1661,7 +1661,14 @@
       "sourceType": "official_authority",
       "contextualOnly": false,
       "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis",
+      "occupations": [
+        "barnehagelærer",
+        "barnehagestyrer",
+        "barnehageassistent",
+        "pedagogisk leder",
+        "barne- og ungdomsarbeider"
+      ]
     },
     {
       "id": "VEGVESEN_DRIVING_REST",
@@ -1789,7 +1796,18 @@
       "sourceType": "official_authority",
       "contextualOnly": false,
       "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis",
+      "occupations": [
+        "lærer",
+        "spesialpedagog",
+        "SFO/AKS-medarbeider",
+        "skoleleder",
+        "miljøarbeider",
+        "lærerassistent",
+        "skoleassistent",
+        "miljøterapeut",
+        "barne- og ungdomsarbeider"
+      ]
     },
     {
       "id": "LANDBRUK_REGELVERK",
