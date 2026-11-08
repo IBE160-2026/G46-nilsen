@@ -1793,6 +1793,15 @@ async function loadHelpSectorSummary(){
   }
 }
 
+function sortSourcesNewestFirst(items=[]){
+  return [...items].sort((a,b)=>{
+    const ay=parseInt(String(a?.year||'').match(/\d{4}/)?.[0]||'0',10);
+    const by=parseInt(String(b?.year||'').match(/\d{4}/)?.[0]||'0',10);
+    if(by!==ay) return by-ay;
+    return String(a?.title||'').localeCompare(String(b?.title||''),'nb');
+  });
+}
+
 function compactSourceUsage(source){
   const use=Array.isArray(source?.useFor) ? source.useFor.filter(Boolean) : [];
   if(use.length) return use.slice(0,6).join(', ');
@@ -1833,7 +1842,7 @@ async function loadCompleteSourceLibrary(){
       c.research,
       c.frameworks
     ].filter(Boolean).map(cat=>{
-      const sources=(cat.groups||[]).flatMap(group=>group.sources||[]);
+      const sources=sortSourcesNewestFirst((cat.groups||[]).flatMap(group=>group.sources||[]));
       return `<details class="source-bank-category">
         <summary>${escapeHtml(cat.label)} <small>${sources.length} kilder</small></summary>
         <div class="source-bank-category-body">${sources.map(compactSourceRow).join('')}</div>
@@ -1848,7 +1857,7 @@ async function loadCompleteSourceLibrary(){
           <summary>${escapeHtml(group.label)} <small>${(group.sources||[]).length} kilder</small></summary>
           <div class="source-bank-sector-body">
             ${(group.occupations||[]).length ? `<p class="source-bank-occupations"><strong>Yrker:</strong> ${escapeHtml((group.occupations||[]).join(', '))}</p>` : ''}
-            ${(group.sources||[]).map(compactSourceRow).join('')}
+            ${sortSourcesNewestFirst(group.sources||[]).map(compactSourceRow).join('')}
           </div>
         </details>`).join('')}
       </div>
