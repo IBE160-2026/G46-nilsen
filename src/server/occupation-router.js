@@ -165,7 +165,7 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
 }
 
 const genericWildcardContextTerms = new Set([
-  "oppfolging","lytting","oppfolgingssporsmal","referat","vanskelig samtale"
+  "oppfølging","lytting","oppfølgingsspørsmål","referat","vanskelig samtale"
 ]);
 
 function contextMatchesSource(source, contextText) {
