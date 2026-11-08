@@ -1794,3 +1794,25 @@ Ingen ny komplett lokal `npm test`-kjøring skal impliseres av denne changelog-p
 - Kildeinflasjon og mer enn fire valgte kilder flagges.
 - Yrkesrelevans og behov for arbeidsgivertype kontrolleres mot fasit.
 - Ny kommando: `npm run test-ai:occupation-golden`.
+
+
+## 08.11.2026 – streng verifikasjonsrunde og automatisert quality gate
+- GitHub Actions quality gate lagt til på `main`: `npm ci`, full `npm test`, high dependency audit og strict golden summary.
+- Golden-bank: 66 caser totalt.
+- Ny deterministic test kjører 28 sektor-golden direkte mot yrkesruteren: 14 relevante + 14 irrelevante.
+- Golden-runner støtter expected, expected-any, forbidden, no-source, occupationRelevant og needsEmployerType.
+- Testsyntaks lagt inn for alle JS/CJS/MJS-testfiler.
+- Flere foreldede tester etter CSS-modularisering rettet til å teste faktisk modulert CSS.
+- Foreldet cacheversjonsassert erstattet med krav om korrekt scriptrekkefølge.
+- Pilotregresjon er ikke lenger låst til historisk total på 26 caser.
+- Generelt sykefravær verifiseres mot generell NAV-/arbeidslivskontekst, ikke profesjonsjuss.
+- Tvetydig `sekretær` fjernet fra dobbel sektorklassifisering; offentlige alias presisert.
+- Tre foreldreløse offentlige kildeomfang synkronisert.
+- Yrkesrelevans kan nå aktiveres av faktisk `useFor`-treff i profesjonskilden.
+- Negasjonsbevisst matching skjerper «ikke relevant»-caser.
+- `authority_index` krever situasjonstreff; skole/barnehageoversikter avgrenset.
+- Minstelønnskilde avgrenset: taxi fjernet som generell dekning og «lønn» alene er ikke trigger.
+- Dependency audit fant body-parser 2.3.0 (HIGH) og qs 6.16.0 (MODERATE).
+- Oppgradert til body-parser 2.4.0 og qs 6.16.1.
+- Siste dokumenterte grønne quality-gate i verifikasjonsrunden: run **42531396584**, commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`.
+- Full metode og funn: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
