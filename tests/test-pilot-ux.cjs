@@ -3,7 +3,12 @@ const assert = require('assert');
 
 const html = fs.readFileSync('index.html','utf8');
 const app = fs.readFileSync('app.js','utf8');
-const css = fs.readFileSync('styles.css','utf8');
+const css = [
+  fs.readFileSync('styles.css','utf8'),
+  fs.readFileSync('styles-core.css','utf8'),
+  fs.readFileSync('styles-responsive.css','utf8'),
+  fs.readFileSync('styles-overrides.css','utf8')
+].join('\n');
 const backlog = fs.readFileSync('docs/BRUKERTEST-FUNN-OG-BACKLOG.md','utf8');
 
 assert(!html.includes('SAMTALELAB'), 'Samtalelab skal ikke være et brukerbegrep');
