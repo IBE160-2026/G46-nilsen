@@ -22,6 +22,9 @@ const allowedRootFiles = new Set([
   "README.md",
   "server.js",
   "styles.css",
+  "styles-core.css",
+  "styles-responsive.css",
+  "styles-overrides.css",
   "sw.js",
   "tilbakemelding-product-brief.md"
 ]);
