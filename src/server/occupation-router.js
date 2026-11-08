@@ -141,7 +141,10 @@ export function shouldUseOccupationContext({ occupation, sectorId, topic, subtop
       const prefix = text.slice(clauseStart, index).trim();
       const explicitlyAbsent =
         /\buten(?:\s+at)?\b[^.!?;:]{0,80}$/u.test(prefix) ||
-        /\bingen\b[^.!?;:]{0,100}$/u.test(prefix);
+        /\bingen\b[^.!?;:]{0,100}$/u.test(prefix) ||
+        /\bgjelder\s+ikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
+        /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,120}$/u.test(prefix) ||
+        /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring)\b[^.!?;:]{0,80}$/u.test(prefix);
 
       if (!explicitlyAbsent) return true;
       fromIndex = index + needle.length;
