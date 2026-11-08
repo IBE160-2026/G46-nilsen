@@ -1793,6 +1793,76 @@ async function loadHelpSectorSummary(){
   }
 }
 
+function compactSourceUsage(source){
+  const use=Array.isArray(source?.useFor) ? source.useFor.filter(Boolean) : [];
+  if(use.length) return use.slice(0,6).join(', ');
+  const type=String(source?.type||'').toLowerCase();
+  if(type.includes('lovverk')) return 'kontroll av rettslige rammer og plikter';
+  if(type.includes('myndighet')) return 'myndighetsveiledning og praktisk regelverksforståelse';
+  if(type.includes('forskning') || type.includes('fagfelle') || type.includes('evidens')) return 'faglig begrunnelse for samtaleteknikk, ledelse og arbeidsmiljø';
+  return 'faglig støtte når temaet er relevant';
+}
+
+function compactSourceRow(source){
+  const title=escapeHtml(source.title||source.id||'Kilde');
+  const usage=escapeHtml(compactSourceUsage(source));
+  const author=escapeHtml(source.author||'');
+  return `<details class="compact-source-row">
+    <summary>${title}</summary>
+    <div class="compact-source-detail">
+      <p><strong>Brukes ved:</strong> ${usage}.</p>
+      ${author ? `<p class="muted-note">${author}</p>` : ''}
+      <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Åpne kilde ↗</a>
+    </div>
+  </details>`;
+}
+
+let completeSourceLibraryLoaded=false;
+async function loadCompleteSourceLibrary(){
+  const root=document.querySelector('#complete-source-library');
+  const status=document.querySelector('#complete-source-library-status');
+  if(!root || completeSourceLibraryLoaded) return;
+  root.innerHTML='<p class="muted-note">Henter kildegrunnlag …</p>';
+  try{
+    const response=await fetch('/api/help-source-library',{credentials:'include',cache:'no-store'});
+    const payload=await response.json();
+    if(!response.ok) throw new Error(payload.message||'Kunne ikke hente kildegrunnlaget.');
+    const c=payload.categories||{};
+    const ordinary=[
+      c.rules,
+      c.research,
+      c.frameworks
+    ].filter(Boolean).map(cat=>{
+      const sources=(cat.groups||[]).flatMap(group=>group.sources||[]);
+      return `<details class="source-bank-category">
+        <summary>${escapeHtml(cat.label)} <small>${sources.length} kilder</small></summary>
+        <div class="source-bank-category-body">${sources.map(compactSourceRow).join('')}</div>
+      </details>`;
+    }).join('');
+
+    const occupation=c.occupations;
+    const occupationHtml=occupation ? `<details class="source-bank-category">
+      <summary>${escapeHtml(occupation.label)} <small>${(occupation.groups||[]).length} arbeidsområder</small></summary>
+      <div class="source-bank-category-body">
+        ${(occupation.groups||[]).map(group=>`<details class="source-bank-sector">
+          <summary>${escapeHtml(group.label)} <small>${(group.sources||[]).length} kilder</small></summary>
+          <div class="source-bank-sector-body">
+            ${(group.occupations||[]).length ? `<p class="source-bank-occupations"><strong>Yrker:</strong> ${escapeHtml((group.occupations||[]).join(', '))}</p>` : ''}
+            ${(group.sources||[]).map(compactSourceRow).join('')}
+          </div>
+        </details>`).join('')}
+      </div>
+    </details>` : '';
+
+    root.innerHTML=ordinary+occupationHtml;
+    completeSourceLibraryLoaded=true;
+    if(status) status.textContent='Klikk på en kilde for å se hva den brukes til.';
+  }catch(error){
+    root.innerHTML=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
+    if(status) status.textContent='Kildebanken er ikke tilgjengelig akkurat nå.';
+  }
+}
+
 function helpSourceTypeLabel(type=''){
   const value=String(type||'').toLowerCase();
   if(value.includes('lovverk')) return 'Lovverk';
@@ -3067,6 +3137,9 @@ document.querySelector('#end-conversation-new')?.addEventListener('click', () =>
 
 renderContinueSuggestions();
 document.querySelector('#print-guidance')?.addEventListener('click', printCurrentGuidance);
+document.querySelector('#complete-source-bank')?.addEventListener('toggle', event => {
+  if (event.currentTarget.open) loadCompleteSourceLibrary();
+});
 
 
 
