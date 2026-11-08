@@ -3,6 +3,15 @@ const assert = require('assert');
 
 const data = JSON.parse(fs.readFileSync('tests/AI-GOLDEN-CASES.json', 'utf8'));
 const cases = data.cases || [];
+const occupationMap = JSON.parse(fs.readFileSync('data/OCCUPATION-SOURCE-MAP.json','utf8'));
+const sourceBank = JSON.parse(fs.readFileSync('data/SOURCEBANK.json','utf8'));
+const occupationSources = JSON.parse(fs.readFileSync('data/OCCUPATION-LEGAL-SOURCES.json','utf8'));
+const agreementMap = JSON.parse(fs.readFileSync('data/AGREEMENT-SOURCE-MAP.json','utf8'));
+const validSourceIds = new Set([
+  ...(sourceBank.sources||[]).map(s=>s.id),
+  ...(occupationSources.sources||[]).map(s=>s.id),
+  ...(agreementMap.agreementAreas||[]).flatMap(a=>(a.curatedSources||[]).map(s=>s.id))
+]);
 const expectedThemes = [
   'Alkohol og rus',
   'Fravær og oppfølging',
@@ -40,6 +49,23 @@ for (const tc of cases) {
   }
 
   assert(Array.isArray(tc.must_not_adopt), `${tc.id}: must_not_adopt må være liste`);
+
+  if (tc.golden_group) {
+    assert(['occupation_sector','employer_tariff','source_leakage'].includes(tc.golden_group), `${tc.id}: ugyldig golden_group`);
+    assert(typeof tc.occupation === 'string' && tc.occupation.trim(), `${tc.id}: yrkesgolden mangler occupation`);
+    assert(typeof tc.sectorId === 'string' && tc.sectorId.trim(), `${tc.id}: yrkesgolden mangler sectorId`);
+    assert(typeof tc.occupation_relevant === 'boolean' || tc.golden_group === 'employer_tariff', `${tc.id}: mangler occupation_relevant`);
+    for (const field of ['expected_source_ids','expected_source_ids_any','forbidden_source_ids']) {
+      if (tc[field] !== undefined) {
+        assert(Array.isArray(tc[field]), `${tc.id}: ${field} må være liste`);
+        for (const id of tc[field]) assert(validSourceIds.has(id), `${tc.id}: ukjent kilde-ID i ${field}: ${id}`);
+      }
+    }
+    if (tc.source_not_required === true) {
+      assert(!(tc.expected_source_ids||[]).length && !(tc.expected_source_ids_any||[]).length, `${tc.id}: source_not_required kan ikke kombineres med forventet kilde`);
+    }
+  }
+
   assert(tc.manual_fasit && Array.isArray(tc.manual_fasit.must) && tc.manual_fasit.must.length >= 2, `${tc.id}: mangler MUST-fasit`);
   assert(Array.isArray(tc.manual_fasit.should), `${tc.id}: mangler SHOULD-fasit`);
   assert(Array.isArray(tc.manual_fasit.critical_fail) && tc.manual_fasit.critical_fail.length >= 2, `${tc.id}: mangler kritiske feil`);
@@ -63,7 +89,23 @@ for (const [theme, minimum] of Object.entries(minimumRiskCoverage)) {
   assert(count >= minimum, `Fasitbanken må ha minst ${minimum} caser for risikotemaet ${theme}; fant ${count}`);
 }
 
+const occupationGolden = cases.filter(tc => tc.golden_group === 'occupation_sector');
+const tariffGolden = cases.filter(tc => tc.golden_group === 'employer_tariff');
+const leakageGolden = cases.filter(tc => tc.golden_group === 'source_leakage');
+assert(occupationGolden.length >= 28, `Yrkesgolden må ha minst 28 sektorcaser; fant ${occupationGolden.length}`);
+assert(tariffGolden.length >= 8, `Arbeidsgiver/tariff-golden må ha minst 8 caser; fant ${tariffGolden.length}`);
+assert(leakageGolden.length >= 4, `Kildelekkasje-golden må ha minst 4 caser; fant ${leakageGolden.length}`);
+
+const expectedSectorIds=(occupationMap.sectors||[]).filter(s=>s.id!=='other').map(s=>s.id);
+for(const sectorId of expectedSectorIds){
+  const sectorCases=occupationGolden.filter(tc=>tc.sectorId===sectorId);
+  assert(sectorCases.length>=2, `Yrkesgolden mangler positiv/negativ dekning for sektor ${sectorId}`);
+  assert(sectorCases.some(tc=>tc.occupation_relevant===true), `Yrkesgolden mangler relevant-case for ${sectorId}`);
+  assert(sectorCases.some(tc=>tc.occupation_relevant===false), `Yrkesgolden mangler irrelevant-case for ${sectorId}`);
+}
+assert(cases.length >= 66, `Golden-banken skal ha minst 66 caser etter yrkesutvidelsen; fant ${cases.length}`);
+
 assert(data.review_provenance?.prepared_by, 'Fasitbanken mangler dokumentasjon av hvem som har utarbeidet fasiten');
 assert(data.review_provenance?.external_expert_validation === false, 'Fasitbanken skal eksplisitt dokumentere at ekstern ekspertvalidering ikke er gjennomført');
 
-console.log(`Golden/fasit-schema OK: ${cases.length} caser · ${themes.size}/9 hovedtemaer · minst 2 per tema · ekstra risikodekning · provenance dokumentert`);
+console.log(`Golden/fasit-schema OK: ${cases.length} caser · ${occupationGolden.length} sektorcaser · ${tariffGolden.length} tariff/arbeidsgiver · ${leakageGolden.length} lekkasje · alle 14 sektorer positiv/negativt dekket`);
