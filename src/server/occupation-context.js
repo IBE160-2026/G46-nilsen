@@ -28,6 +28,7 @@ export function buildOccupationGuidanceContext({
   const occupationResult = resolveOccupationContext({
     occupation,
     sectorId,
+    employerType,
     topic,
     subtopic,
     situation
