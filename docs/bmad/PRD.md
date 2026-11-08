@@ -1144,11 +1144,20 @@ Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
 På desktop skal sidebaren være minimert som standard for nye brukere. Brukerens eksplisitte valg om å åpne/lukke menyen skal lagres lokalt. Minimert modus skal ha forståelige tooltips.
 
 ## FR-22 – Yrke/bransje som valgfri kontekst
-Status: DELVIS IMPLEMENTERT I MAIN / FEATURE-FLAGGET / IKKE AKTIVERT I PRODUKSJONS-UI
+Status: IMPLEMENTERT I PRODUKSJONSKODEN / DRIFTSSTYRT MED FEATURE FLAGG
 
-Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Backend-, kilde- og rutinglaget finnes i `main`, blant annet gjennom `occupation-context`, `occupation-router` og tilhørende data/tester. Produksjonsserveren styrer laget med `OCCUPATION_CONTEXT_ENABLED`, som som standard er avslått, og dagens produksjons-UI eksponerer ikke feltet som ferdig brukerfunksjon.
+Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Produksjonskoden har felt, lokal ruting, serverkontekst, kildebank og regresjonstester. `OCCUPATION_CONTEXT_ENABLED` beholdes som driftskontroll.
 
-Systemet skal ikke anta tariffområde bare ut fra yrkestittel, og skal ikke gjøre yrkeskontekst til et obligatorisk steg når den ikke tilfører verdi.
+Krav:
+- yrkesvalg skal være valgfritt
+- yrket skal ignoreres når det ikke endrer rådet
+- særkilder kan avgrenses til konkrete yrker, ikke bare sektor
+- et profesjonsregelverk skal ikke lekke til andre yrker i samme sektor
+- systemet skal ikke anta tariffområde bare ut fra yrkestittel
+- tidskritiske rettslige påstander skal kontrolleres mot gjeldende autoritativ kilde
+- ordinære mellommenneskelige samtaler skal ikke overjuridifiseres
+
+Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 58 startkilder etter gjennomgang av alle yrkene i sektorlisten.
 
 
 ## FR-23 – Direkte samtale som alternativ inngang
@@ -1164,3 +1173,12 @@ En eventuell prototype skal vurderes mot:
 - om personvern og rollegrenser ivaretas like godt
 - om arbeidslivskontekst og kildebruk beholdes
 - om direkte samtale bør være alternativ inngang eller supplement til eksisterende flyt
+
+
+# Tillegg – vedlikeholdbarhet og kildepresisjon 08.11.2026
+
+## NFR – modulær frontend-styling
+Den tidligere ca. 9 389 linjer lange CSS-filen er delt i `styles-core.css`, `styles-responsive.css` og `styles-overrides.css`, med `styles.css` som stabilt inngangspunkt. Delingen skal bevare cascade-rekkefølgen og redusere regresjonsrisiko.
+
+## Kildekrav – profesjonsavgrensning
+Yrkes-/sektorkilder skal kunne avgrenses på både sektor og konkret yrke. Antall kilder er ikke et kvalitetsmål i seg selv; feil eller for brede kilder er verre enn ingen særkilde.
