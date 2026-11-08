@@ -1402,3 +1402,64 @@ Tiltak:
 - egen regresjonstest `test-source-policy.cjs`
 
 Detaljer: `docs/SOURCE-QUALITY-AUDIT-2026-11-08.md`.
+
+
+## 08.11.2026 – streng sensorverifikasjon av KI, yrke og kildevalg
+
+Målet med denne runden var ikke å få flest mulig grønne tester, men å utfordre løsningen som en streng sensor: «Hvordan vet vi at systemet bruker riktig kontekst og riktig kilde – og ikke bare en plausibel kilde?»
+
+Golden-banken ble derfor utvidet fra 26 til 66 caser. De 40 nye casene dekker alle 14 sektorer med både positiv og negativ yrkesrelevans, i tillegg til tariff-/arbeidsgiver- og kildelekkasjecaser.
+
+Golden-runneren ble utvidet med eksplisitt kildefasit:
+- obligatorisk kilde
+- minst én av flere akseptable kilder
+- forbudt kilde
+- forventet ingen kilde
+- forventet yrkesrelevans
+- forventet behov for arbeidsgivertype
+
+En egen deterministisk test kjører de 28 sektorcasene direkte mot yrkesruteren.
+
+### Hva CI avdekket
+
+Første CI-kjøringer var røde. Jeg valgte å undersøke hvert avvik før jeg endret kode.
+
+**Testgjeld:**
+- simulatortest, UI-regresjon, snakkebobletest og pilot-UX leste bare gammel `styles.css` etter CSS-modularisering
+- én UI-test krevde historisk cacheversjon i stedet for korrekt scriptrekkefølge
+- pilotregresjon krevde nøyaktig 26 golden-caser
+- en gammel NAV-test forutsatte at sykefravær lå i yrkesruteren
+- en nylig kildepolicytest hadde selv syntaksfeil
+
+Dette førte til en ny metaregel: testene må også testes. `test-test-suite-syntax.cjs` syntakssjekker nå alle testfiler før resten av pakken.
+
+**Reelle produkt-/datafunn:**
+- «sekretær» var duplisert mellom to sektorer
+- tre offentlige kilder refererte fortsatt til den gamle sektorplasseringen
+- lærer + elevkrenkelse ble ikke vurdert yrkesrelevant fordi ruteren var for avhengig av generell ordliste
+- bred barnehageindeks lekket inn i lærercase
+- minstelønnskilden var for bred og kunne trigges på taxisjåfør/lønn
+
+Disse ble rettet i data/ruting, ikke skjult ved å svekke testene.
+
+### Security-funn
+
+Da dependency audit ble lagt til quality-gaten, fant den:
+- body-parser 2.3.0 – HIGH DoS-risiko
+- qs 6.16.0 – MODERATE DoS-relatert risiko
+
+Lockfilen ble oppdatert til body-parser 2.4.0 og qs 6.16.1. Ny CI viste at både `npm ci`, full testpakke og high-level audit besto.
+
+### Verifisert resultat
+
+Siste grønne quality-gate i runden:
+- GitHub Actions run **42531396584**
+- commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`
+- full deterministic suite: PASS
+- 28/28 sektor-golden routing: PASS
+- dependency audit HIGH: PASS
+
+Jeg beskriver ikke dette som «KI-en er bevist korrekt». Live modelltesting er et eget lag. Den nye 40-case yrkespakken er ikke påstått live-bestått før faktisk API-kjøring.
+
+Full sporbar rapport:
+`docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
