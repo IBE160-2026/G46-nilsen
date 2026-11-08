@@ -9,6 +9,7 @@ import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
+import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
