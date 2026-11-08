@@ -1873,13 +1873,15 @@ Prinsipp: kildekvalitet måles i **relevans og presisjon**, ikke i at hvert yrke
 
 ---
 
-# SOURCEBANK v7 – kildekvalitet og kildehierarki 08.11.2026
+# SOURCEBANK v8 – kildekvalitet og kildehierarki 08.11.2026
 
 SOURCEBANK v6-avsnittet over beholdes som historikk for tilstanden 29.10.2026.
 
-Etter kvalitetsrevisjonen 08.11.2026 er den generelle SOURCEBANK-en versjon 7 med 60 kilder. Reduksjonen fra 62 er bevisst:
+Etter kvalitetsrevisjonen 08.11.2026 er den generelle SOURCEBANK-en versjon 8 med 58 kilder. Reduksjonen fra 62 er bevisst:
 - en smal Forsvaret-emneside ble fjernet som generell fagkilde
 - College of Policing sin britiske intervjuguide ble fjernet som for indirekte for norske medarbeidersamtaler
+- en liten aktiv-lytting-studie ble fjernet fordi nyere arbeidslivs-meta-analyse gir sterkere dekning
+- en klinisk MI-meta-analyse ble fjernet fordi terapikonteksten er for indirekte for ordinær lederdialog
 - Forsvaret-spesifikke kilder er avgrenset til relevant sektor/yrke
 - DFØs arbeidsgiverveiledning er avgrenset til statlig arbeidsgiver
 - Helsedirektoratets MI-side er klassifisert som faglig metode/rammeverk, ikke rettslig myndighetskilde
