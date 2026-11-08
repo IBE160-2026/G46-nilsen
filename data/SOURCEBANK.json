@@ -1,5 +1,5 @@
 {
-  "version": 6,
+  "version": 7,
   "description": "Kuratert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken kombinerer empirisk samtaleforskning, organisasjons- og ledelsespsykologi, norsk arbeidslivsforskning, evidensbaserte intervjuprinsipper, relasjonsledelse, samtaleteknikk, faglige rammeverk og autoritative myndighets-/lovkilder. Ingen enkelt faggruppe behandles som universell fasit; kildetype velges etter hva slags spørsmål som vurderes. Versjon 6 styrker særlig menneskelig lederdialog, relasjon, aktiv lytting, anerkjennelse, feedback og framtidig offline-bruk.",
   "sources": [
     {
@@ -570,7 +570,16 @@
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
-      "time_sensitive": false
+      "time_sensitive": false,
+      "sectors": [
+        "defence_police_emergency"
+      ],
+      "occupations": [
+        "Forsvaret",
+        "soldat",
+        "offiser",
+        "befal"
+      ]
     },
     {
       "id": "FOR_GRUNNSYN_LEDELSE_2020",
@@ -597,32 +606,16 @@
       ],
       "authority": "framework",
       "last_verified": "2026-10-07",
-      "time_sensitive": false
-    },
-    {
-      "id": "FOR_VEILEDNING_LED2403",
-      "type": "faglig rammeverk",
-      "title": "Veiledning som praktisk fundament for ledelse",
-      "author": "Forsvaret",
-      "year": 2026,
-      "url": "https://www.forsvaret.no/utdanning/emner/LED2403/2026-V%C3%85R",
-      "topics": [
-        "Prestasjon og utvikling",
-        "Samarbeid og kommunikasjon"
+      "time_sensitive": false,
+      "sectors": [
+        "defence_police_emergency"
       ],
-      "principles": [
-        "Veiledning kan utvikle medarbeidere og støtte læring, ansvar og samhandling.",
-        "Oppdragsbasert ledelse forutsetter tillit, forståelse og effektiv kommunikasjon mellom nivåer."
-      ],
-      "use_when": [
-        "veiledning",
-        "utvikling",
-        "læring",
-        "intensjonsbasert ledelse"
-      ],
-      "authority": "framework",
-      "last_verified": "2026-10-07",
-      "time_sensitive": false
+      "occupations": [
+        "Forsvaret",
+        "soldat",
+        "offiser",
+        "befal"
+      ]
     },
     {
       "id": "ILO_ALCOHOL_DRUG_WORK",
@@ -648,7 +641,9 @@
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
-      "time_sensitive": false
+      "time_sensitive": false,
+      "source_role": "international_framework",
+      "binding_status": "non_binding_framework"
     },
     {
       "id": "SPURKELAND_RELASJONSLEDELSE",
@@ -676,7 +671,9 @@
       "authority": "framework",
       "note": "Fagbok og praktisk rammeverk, ikke en fagfellevurdert enkeltstudie.",
       "last_verified": "2026-10-07",
-      "time_sensitive": false
+      "time_sensitive": false,
+      "source_role": "professional_framework",
+      "binding_status": "non_binding_framework"
     },
     {
       "id": "WHO_MENTAL_HEALTH_WORK_2022",
@@ -705,7 +702,9 @@
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
-      "time_sensitive": false
+      "time_sensitive": false,
+      "source_role": "international_framework",
+      "binding_status": "non_binding_framework"
     },
     {
       "id": "AKAN_MODELLEN",
@@ -733,7 +732,9 @@
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
-      "time_sensitive": true
+      "time_sensitive": true,
+      "source_role": "specialist_guidance",
+      "binding_status": "non_binding_guidance"
     },
     {
       "id": "AKAN_NODVENDIG_SAMTALE",
@@ -758,7 +759,9 @@
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
-      "time_sensitive": false
+      "time_sensitive": false,
+      "source_role": "specialist_guidance",
+      "binding_status": "non_binding_guidance"
     },
     {
       "id": "AKAN_POLICY",
@@ -784,7 +787,9 @@
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
-      "time_sensitive": true
+      "time_sensitive": true,
+      "source_role": "specialist_guidance",
+      "binding_status": "non_binding_guidance"
     },
     {
       "id": "LDO_SETTESTREK",
@@ -1384,38 +1389,6 @@
       "note": "MI er utviklet for endringsorienterte og ofte kliniske samtaler. Samtalestøtte bruker relevante kommunikative prinsipper, ikke MI som full behandlingsmetode.",
       "last_verified": "2026-10-26",
       "time_sensitive": false
-    },
-    {
-      "id": "COLLEGE_POLICING_INVESTIGATIVE_INTERVIEWING",
-      "type": "evidensbasert profesjonsveiledning",
-      "title": "Investigative interviewing",
-      "author": "College of Policing",
-      "url": "https://www.college.police.uk/app/investigation/investigative-interviewing/investigative-interviewing",
-      "topics": [
-        "Mobbing og trakassering",
-        "Samarbeid og kommunikasjon",
-        "Sikkerhet og ansvar"
-      ],
-      "principles": [
-        "Begynn med åpne spørsmål og la personen gi en friere forklaring før mer spesifikke avklaringer.",
-        "Lytt uten unødvendige avbrytelser og reflekter tilbake relevant informasjon.",
-        "Unngå ledende og tvungne svaralternativer når formålet er å forstå hva som faktisk har skjedd."
-      ],
-      "use_when": [
-        "varsling",
-        "trakassering",
-        "konflikt",
-        "hendelse",
-        "avklaring",
-        "åpne spørsmål",
-        "ledende spørsmål",
-        "faktainnhenting"
-      ],
-      "authority": "high",
-      "note": "Kilden gjelder etterforskningsintervju. Samtalestøtte overfører bare generelle, ikke-ledende samtaleprinsipper; ledersamtaler er ikke politiavhør.",
-      "last_verified": "2026-10-26",
-      "time_sensitive": false,
-      "year": "2013"
     },
     {
       "id": "CIPD_FAIR_SELECTION_2023",
