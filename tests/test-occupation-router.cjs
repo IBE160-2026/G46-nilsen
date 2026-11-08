@@ -45,14 +45,15 @@ const assert = require("assert");
   assert(healthSafety.sourceIds.includes("HDIR_HEALTH_PERSONNEL"));
   assert(!healthSafety.sourceIds.includes("DATATILSYNET_WORKPLACE_PRIVACY"), "Personvernkilde skal ikke aktiveres uten personvernkontekst");
 
-  const sickLeaveSources = router.selectLegalSources({
+  const sickLeaveContext = router.resolveOccupationContext({
     sectorId: "health_care",
     occupation: "sykepleier",
     topic: "Fravær og oppfølging",
     subtopic: "Langtidsfravær",
     situation: "Oppfølging av sykmeldt medarbeider og tilrettelegging. Ingen pasientsikkerhet, journalføring eller autorisasjon er tema."
   });
-  assert(!sickLeaveSources.some(source => ["HDIR_HEALTH_PERSONNEL","HEALTH_AUTHORIZATION","HELSETILSYNET_RULES"].includes(source.id)), "Generelt sykefravær skal ikke trekke inn helsefaglig profesjonsregelverk");
+  assert.strictEqual(sickLeaveContext.occupationRelevant,false,"Generelt sykefravær skal være yrkesnøytralt når profesjonsrisiko er avkreftet");
+  assert.deepStrictEqual(sickLeaveContext.sourceIds,[],"Generelt sykefravær skal ikke hente helsefaglig profesjonsregelverk");
 
   const irrelevantUnknown = router.resolveOccupationContext({
     occupation: "bibliotekar",
