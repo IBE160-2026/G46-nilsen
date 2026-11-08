@@ -88,7 +88,7 @@ for(const source of agreementSources){
 
 
 assert(server.includes("allCuratedSourceById"),"Serveren samler ikke kilde-ID-er på tvers av bankene");
-assert(app.includes("<option value=\\"\\">Ikke valgt</option>"),"Arbeidsgivertype skal ikke defaultes til privat");
+assert(app.includes('<option value="">Ikke valgt</option>'),"Arbeidsgivertype skal ikke defaultes til privat");
 assert(server.includes("if (!matched) continue;"),"Kilder skal ikke få automatisk plass uten konkret treff");
 assert(server.includes("authority_index"),"Serveren skiller ikke oppslagsinngang fra konkret myndighetskilde");
 assert(server.includes("Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant"),"Tariffavgrensning mangler i KI-reglene");
