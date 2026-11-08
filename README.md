@@ -204,6 +204,6 @@ Prosjektet er utviklet av Cecilie C. Nilsen som del av IBE160 Programmering med 
 
 ## Statusoppdatering 08.11.2026
 
-Yrkes-/sektorlaget er koblet til den ordinære brukerflyten og har nå et eget autoritativt register med 62 startkilder. Kilder kan avgrenses til konkrete yrker, slik at for eksempel politiets særregler ikke automatisk brukes for brannvesen bare fordi begge ligger i samme sektor. Hjelp-siden viser kildebanken i fire hovedkategorier: Lovverk og myndigheter, Forskning og evidens, Faglig rammeverk og Yrkes- og sektorkilder.
+Yrkes-/sektorlaget er koblet til den ordinære brukerflyten og har nå et eget autoritativt register med 85 startkilder. Kilder kan avgrenses til konkrete yrker, slik at for eksempel politiets særregler ikke automatisk brukes for brannvesen bare fordi begge ligger i samme sektor. Hjelp-siden viser kildebanken i fire hovedkategorier: Lovverk og myndigheter, Forskning og evidens, Faglig rammeverk og Yrkes- og sektorkilder.
 
 Som vedlikeholdsgrep er den tidligere ca. 9 389 linjer lange `styles.css` splittet i tre moduler, mens `styles.css` beholdes som et lite inngangspunkt. Se dokumentasjonssynken og oppryddingsrapporten for detaljer.
