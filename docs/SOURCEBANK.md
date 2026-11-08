@@ -1855,7 +1855,7 @@ Den generelle SOURCEBANK-en og yrkes-/sektorregisteret har ulike oppgaver:
 - `data/SOURCEBANK.json` støtter generelle samtale-, leder-, forsknings- og arbeidslivsprinsipper.
 - `data/OCCUPATION-LEGAL-SOURCES.json` støtter autoritative sektor- og profesjonskilder når yrket faktisk endrer risiko, plikt eller formell ramme.
 
-Yrkesregisteret er utvidet fra 31 til 58 autoritative startkilder. Kildene kan nå ha valgfri `occupations`-avgrensning i tillegg til `sectors`. Dette er nødvendig fordi brede sektorer kan inneholde svært ulike yrker; en politiregel skal ikke automatisk gjelde brannkonstabel, og revisorregelverk skal ikke automatisk gjelde utvikler.
+Yrkesregisteret er utvidet fra 31 til 62 autoritative startkilder. Kildene kan nå ha valgfri `occupations`-avgrensning i tillegg til `sectors`. Dette er nødvendig fordi brede sektorer kan inneholde svært ulike yrker; en politiregel skal ikke automatisk gjelde brannkonstabel, og revisorregelverk skal ikke automatisk gjelde utvikler.
 
 Hjelp-siden viser kildebanken i fire hovedkategorier:
 
