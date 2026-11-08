@@ -1793,13 +1793,14 @@ async function loadHelpSectorSummary(){
   }
 }
 
-function sortSourcesNewestFirst(items=[]){
-  return [...items].sort((a,b)=>{
-    const ay=parseInt(String(a?.year||'').match(/\d{4}/)?.[0]||'0',10);
-    const by=parseInt(String(b?.year||'').match(/\d{4}/)?.[0]||'0',10);
-    if(by!==ay) return by-ay;
-    return String(a?.title||'').localeCompare(String(b?.title||''),'nb');
-  });
+function sortSourcesAlphabetically(items=[]){
+  return [...items].sort((a,b)=>
+    String(a?.title||a?.author||a?.id||'').localeCompare(
+      String(b?.title||b?.author||b?.id||''),
+      'nb',
+      { sensitivity:'base' }
+    )
+  );
 }
 
 function compactSourceUsage(source){
@@ -1829,46 +1830,55 @@ function compactSourceRow(source){
 let completeSourceLibraryLoaded=false;
 async function loadCompleteSourceLibrary(){
   const root=document.querySelector('#complete-source-library');
+  const occupationRoot=document.querySelector('#occupation-source-library');
   const status=document.querySelector('#complete-source-library-status');
-  if(!root || completeSourceLibraryLoaded) return;
+  const occupationStatus=document.querySelector('#occupation-source-library-status');
+  if(!root || !occupationRoot || completeSourceLibraryLoaded) return;
+
   root.innerHTML='<p class="muted-note">Henter kildegrunnlag …</p>';
+  occupationRoot.innerHTML='<p class="muted-note">Henter yrkes- og sektorkilder …</p>';
+
   try{
     const response=await fetch('/api/help-source-library',{credentials:'include',cache:'no-store'});
     const payload=await response.json();
     if(!response.ok) throw new Error(payload.message||'Kunne ikke hente kildegrunnlaget.');
     const c=payload.categories||{};
+
     const ordinary=[
       c.rules,
       c.research,
       c.frameworks
     ].filter(Boolean).map(cat=>{
-      const sources=sortSourcesNewestFirst((cat.groups||[]).flatMap(group=>group.sources||[]));
+      const sources=sortSourcesAlphabetically((cat.groups||[]).flatMap(group=>group.sources||[]));
       return `<details class="source-bank-category">
         <summary>${escapeHtml(cat.label)} <small>${sources.length} kilder</small></summary>
         <div class="source-bank-category-body">${sources.map(compactSourceRow).join('')}</div>
       </details>`;
     }).join('');
 
-    const occupation=c.occupations;
-    const occupationHtml=occupation ? `<details class="source-bank-category">
-      <summary>${escapeHtml(occupation.label)} <small>${(occupation.groups||[]).length} arbeidsområder</small></summary>
-      <div class="source-bank-category-body">
-        ${(occupation.groups||[]).map(group=>`<details class="source-bank-sector">
-          <summary>${escapeHtml(group.label)} <small>${(group.sources||[]).length} kilder</small></summary>
-          <div class="source-bank-sector-body">
-            ${(group.occupations||[]).length ? `<p class="source-bank-occupations"><strong>Yrker:</strong> ${escapeHtml((group.occupations||[]).join(', '))}</p>` : ''}
-            ${sortSourcesNewestFirst(group.sources||[]).map(compactSourceRow).join('')}
-          </div>
-        </details>`).join('')}
-      </div>
-    </details>` : '';
+    root.innerHTML=ordinary || '<p class="muted-note">Ingen generelle kilder registrert.</p>';
 
-    root.innerHTML=ordinary+occupationHtml;
+    const occupation=c.occupations;
+    const occupationGroups=[...(occupation?.groups||[])].sort((a,b)=>
+      String(a?.label||a?.id||'').localeCompare(String(b?.label||b?.id||''),'nb',{sensitivity:'base'})
+    );
+    occupationRoot.innerHTML=occupationGroups.map(group=>`<details class="source-bank-sector">
+      <summary>${escapeHtml(group.label)} <small>${(group.sources||[]).length} kilder</small></summary>
+      <div class="source-bank-sector-body">
+        ${(group.occupations||[]).length ? `<p class="source-bank-occupations"><strong>Yrker:</strong> ${escapeHtml([...(group.occupations||[])].sort((a,b)=>String(a).localeCompare(String(b),'nb',{sensitivity:'base'})).join(', '))}</p>` : ''}
+        ${sortSourcesAlphabetically(group.sources||[]).map(compactSourceRow).join('')}
+      </div>
+    </details>`).join('') || '<p class="muted-note">Ingen yrkes- eller sektorkilder registrert.</p>';
+
     completeSourceLibraryLoaded=true;
-    if(status) status.textContent='Klikk på en kilde for å se hva den brukes til.';
+    if(status) status.textContent='Kildene er sortert alfabetisk etter navn. Klikk på en kilde for å se hva den brukes til.';
+    if(occupationStatus) occupationStatus.textContent='Arbeidsområdene og kildene er sortert alfabetisk.';
   }catch(error){
-    root.innerHTML=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
+    const message=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
+    root.innerHTML=message;
+    occupationRoot.innerHTML=message;
     if(status) status.textContent='Kildebanken er ikke tilgjengelig akkurat nå.';
+    if(occupationStatus) occupationStatus.textContent='Yrkes- og sektorkildene er ikke tilgjengelige akkurat nå.';
   }
 }
 
