@@ -1355,6 +1355,9 @@ function selectRelevantSources(analysis = {}, situation = "", { employerType = "
   for (const source of candidates) {
     if (!source?.id || seen.has(source.id)) continue;
 
+    const scopedEmployerTypes = Array.isArray(source.employerTypes) ? source.employerTypes : (Array.isArray(source.employer_types) ? source.employer_types : []);
+    if (scopedEmployerTypes.length && (!employerType || !scopedEmployerTypes.includes(employerType))) continue;
+
     const scopedSectors = Array.isArray(source.sectors) ? source.sectors.filter(id => id !== "*") : [];
     if (scopedSectors.length && (!sectorId || !scopedSectors.includes(sectorId))) continue;
     const scopedOccupations = Array.isArray(source.occupations) ? source.occupations : [];
