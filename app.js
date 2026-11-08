@@ -1604,8 +1604,25 @@ function renderAiGuidance(guidance) {
       </div>
     </details>`).join('');
   const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
-  const evidence = (guidance.evidence_sources || []).length
-    ? `<div class="evidence-list">${guidance.evidence_sources.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong><span>${escapeHtml(source.author)}${source.year ? ` (${escapeHtml(String(source.year))})` : ''} · ${escapeHtml(source.type)}</span></a>`).join('')}</div>`
+  const evidenceSources = guidance.evidence_sources || [];
+  const sourceHost = source => {
+    try { return new URL(source.url).hostname.replace(/^www\./,''); }
+    catch (_) { return ''; }
+  };
+  const evidence = evidenceSources.length
+    ? `<div class="evidence-list">${evidenceSources.map(source => {
+        const host = sourceHost(source);
+        const title = source.title || source.author || host || 'Kilde';
+        const meta = [source.author && source.author !== host ? source.author : '', source.year ? String(source.year) : '', source.type || '', host].filter(Boolean).join(' · ');
+        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>Åpne kilde ↗</em></a>`;
+      }).join('')}</div>`
+    : '';
+  const compactEvidence = evidenceSources.length
+    ? `<div class="inline-source-links"><span>Kilder:</span>${evidenceSources.slice(0,4).map(source => {
+        const host = sourceHost(source);
+        const label = source.author || host || source.title || 'Kilde';
+        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>`;
+      }).join('')}</div>`
     : '';
 
   const sections = [
@@ -1613,7 +1630,7 @@ function renderAiGuidance(guidance) {
     ['Spørsmål som passer denne saken', list(guidance.questions)],
     ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
-    ['Faglig / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>')],
+    ['Faglig / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>') + compactEvidence],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
     ['Videre oppfølging', list(guidance.next_steps)],
     ['Kildegrunnlag', evidence]
