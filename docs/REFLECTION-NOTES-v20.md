@@ -423,3 +423,27 @@ Derfor ble 40 nye golden-caser laget som en streng sensorpakke. Hvert av de 14 s
 Tariffcasene tester spesielt at staten, KS og Spekter ikke blandes, og at privat eller uavklart arbeidsgiver ikke får en avtale gjettet. Kildelekkasjecaser tester blant annet helsepersonellov ved vanlig sykefraværsoppfølging, Finanstilsynet ved utvikler/personvern og politi-/brannkilder innen samme brede sektor.
 
 **Læring:** Det er ikke nok å måle «evidence present». Kildepresisjon krever både positive forventninger og eksplisitte negative forventninger.
+
+
+## 08.11.2026 – da testene begynte å teste både produktet og seg selv
+
+Den strenge verifikasjonsrunden ga en viktig læring: en rød test betyr ikke automatisk at produktet er feil, og en grønn test betyr ikke automatisk at testen er god.
+
+Da CSS ble modularisert, fortsatte flere regresjonstester å lese bare `styles.css`. De feilet derfor selv om funksjonen fantes i de nye CSS-modulene. En annen test var låst til en gammel cacheversjon, og pilotregresjonen var låst til nøyaktig 26 golden-caser. Dette var **testgjeld**, ikke produktfeil.
+
+Samtidig fant den samme quality-gaten reelle feil:
+- ett yrke var klassifisert i to sektorer
+- tre kildereferanser var ikke synkronisert etter klassifiseringsendringen
+- skole/barnehagekilder kunne lekke på sektornivå
+- yrkesrelevans fanget ikke enkelte profesjonsspesifikke problemstillinger
+- minstelønnskilden var avgrenset for bredt
+
+Det viktigste metodiske grepet var derfor å klassifisere hvert avvik før retting: produktfeil, KI-kvalitetsavvik, testgjeld, testimplementasjonsfeil eller miljøfeil.
+
+De negative yrkes-golden-casene viste seg særlig verdifulle. Det er relativt enkelt å teste at en sykepleier kan få en helsekilde i en pasientsikkerhetssak. Det er vanskeligere – og kanskje viktigere – å bevise at samme sykepleier **ikke** får helsepersonelloven i en ordinær sykefraværssamtale.
+
+**Læring:** kvalitet i et kontekstsensitivt KI-system handler like mye om riktig tilbakeholdenhet som om riktig aktivering.
+
+Deterministic quality gate ble til slutt grønn med 66 golden-caser, 28/28 sektor-rutinger og high dependency audit uten åpne høyalvorlige funn. Live modellkvalitet holdes fortsatt som et separat bevisnivå.
+
+Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
