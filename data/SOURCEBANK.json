@@ -1,6 +1,6 @@
 {
   "version": 7,
-  "description": "Kuratert, kvalitetssikret og utvidbar fagbank for Samtalestøtte. Banken kombinerer empirisk samtaleforskning, organisasjons- og ledelsespsykologi, norsk arbeidslivsforskning, evidensbaserte intervjuprinsipper, relasjonsledelse, samtaleteknikk, faglige rammeverk og autoritative myndighets-/lovkilder. Ingen enkelt faggruppe behandles som universell fasit; kildetype velges etter hva slags spørsmål som vurderes. Versjon 6 styrker særlig menneskelig lederdialog, relasjon, aktiv lytting, anerkjennelse, feedback og framtidig offline-bruk.",
+  "description": "Kuratert fagbank for Samtalestøtte. Versjon 7 skiller eksplisitt mellom empirisk samtale-/ledelsesforskning, faglige rammeverk og autoritative lov-/myndighetskilder. Kilder er avgrenset etter funksjon og kontekst; forskning og rammeverk skal ikke brukes som rettsgrunnlag, og arbeidsgiver-/yrkes-/tariffkilder håndteres i egne registre.",
   "sources": [
     {
       "id": "DEDREU_WEINGART_2003_CONFLICT",
