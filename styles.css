@@ -9203,3 +9203,21 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .source-kind-badge{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:2px 7px;background:var(--surface-2)}
 .source-item-use{margin:2px 0 0;color:var(--muted);font-size:.9rem;line-height:1.45}
 @media(max-width:680px){.source-library-tabs{display:grid;grid-template-columns:1fr}.source-library-tab{text-align:left;border-radius:12px}.source-group>summary{align-items:flex-start;flex-direction:column;gap:3px}}
+
+
+/* v20.11.48 KILDEBANK - TILBAKE TIL OVERSIKTLIG ACCORDION */
+#help-source-library.source-library{display:block;max-width:980px}
+#help-source-library .help-source-category{margin:0 0 12px}
+#help-source-library .help-source-category>summary{display:flex;align-items:center;justify-content:space-between;gap:14px}
+#help-source-library .help-source-category>summary small{color:var(--muted);font-weight:600;font-size:.86rem}
+#help-source-library .help-source-category-body{display:block}
+#help-source-library .source-category-description{margin:0 0 12px;color:var(--muted);line-height:1.5}
+#help-source-library .source-item{padding:12px 0;border-top:1px solid var(--border)}
+#help-source-library .source-item:first-of-type{border-top:0}
+#help-source-library .source-group{margin:9px 0;border:1px solid var(--border);border-radius:13px;background:var(--surface-2)}
+#help-source-library .source-group>summary{padding:12px 14px}
+#help-source-library .source-group-body{padding:0 14px 12px}
+#help-source-library .source-library-tabs{display:none!important}
+@media(max-width:680px){
+  #help-source-library .help-source-category>summary{align-items:flex-start;flex-direction:column;gap:3px}
+}
