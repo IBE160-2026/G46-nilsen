@@ -1372,3 +1372,37 @@ Registeret inneholder 85 autoritative startkilder etter gjennomgang 08.11.2026.
 Sensorinnspill om en svært lang CSS-fil ble fulgt opp uten en risikofylt total omskriving. Den tidligere `styles.css` på ca. 9 389 linjer ble splittet i tre filer i samme rekkefølge som originalen. `styles.css` fungerer nå som et lite, stabilt inngangspunkt med imports.
 
 Dette er kontrollert modularisering: målet er bedre ansvar og navigerbarhet samtidig som eksisterende cascade bevares. `app.js` og `server.js` er fortsatt store og er dokumentert som neste naturlige refaktoreringskandidater.
+
+
+## Kildearkitektur etter kvalitetsrevisjon 08.11.2026
+
+Kildegrunnlaget er nå delt i tre eksplisitte lag:
+
+1. `data/SOURCEBANK.json` – generell forskning, evidens, faglige rammeverk og generelle lov-/myndighetskilder
+2. `data/OCCUPATION-LEGAL-SOURCES.json` – overordnet arbeidsgivergrunnlag og sektor-/profesjonssærkilder
+3. `data/AGREEMENT-SOURCE-MAP.json` – avtaleområder og konkrete kuraterte tariff-/hovedavtale-/arbeidsgiverreferanser
+
+Serveren bygger én samlet `source_ids`-kontrakt fra alle tre. Dette retter en tidligere begrensning der yrkes-/sektorkilder kunne ligge i prompten uten å kunne registreres som kuratert kilde i modellresponsen.
+
+Kildevalg filtreres før modellen på:
+- arbeidsgivertype
+- sektor
+- yrke
+- situasjon/tema
+
+Kildeautoritet skilles gjennom `sourceTier`, blant annet:
+- `primary_law`
+- `collective_agreement`
+- `authority_guidance`
+- `official_employer_reference`
+- `authority_index`
+- `research_evidence`
+- `research_communication`
+- `specialist_guidance`
+- `professional_framework`
+
+`authority_index` er bevisst lavere rangert: en regelverksoversikt er en retrieval-inngang og ikke en direkte juridisk hjemmel.
+
+Tariffvurdering er skilt fra yrkesvalg. Lønn, arbeidstid eller medbestemmelse kan derfor utløse behov for avklaring av arbeidsgivertype selv om yrke ikke er oppgitt.
+
+Se `docs/SOURCE-QUALITY-AUDIT-2026-11-08.md`.
