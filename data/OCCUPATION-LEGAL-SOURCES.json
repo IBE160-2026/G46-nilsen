@@ -1,5 +1,5 @@
 {
-  "version": 10,
+  "version": 11,
   "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Kilder kan avgrenses både til sektor og konkrete yrker. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -96,6 +96,30 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "regulation",
+      "contextualOnly": true
+    },
+    {
+      "id": "PHARMACY_PERSONNEL_ACT",
+      "authority": "Lovdata",
+      "title": "Apotekloven – krav til apotekets personale",
+      "url": "https://lovdata.no/nav/lov/2000-06-02-39/kap4",
+      "sectors": [
+        "health_care"
+      ],
+      "occupations": [
+        "apotektekniker"
+      ],
+      "useFor": [
+        "apotektekniker",
+        "kompetanse",
+        "personalkrav",
+        "legemidler",
+        "faglig personale",
+        "opplæring"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
       "contextualOnly": true
     },
     {
@@ -240,6 +264,35 @@
         "sprøyting",
         "kjemikalier",
         "plantevern"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "AT_CERTIFIED_EQUIPMENT_TRAINING",
+      "authority": "Arbeidstilsynet",
+      "title": "Dokumentert og sertifisert sikkerhetsopplæring for arbeidsutstyr",
+      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/opplaring/",
+      "sectors": [
+        "construction_trades",
+        "transport_logistics",
+        "industry_production"
+      ],
+      "occupations": [
+        "anleggsmaskinfører",
+        "truckfører",
+        "maskinoperatør"
+      ],
+      "useFor": [
+        "truck",
+        "masseforflytningsmaskin",
+        "anleggsmaskin",
+        "arbeidsutstyr",
+        "kompetansebevis",
+        "sikkerhetsopplæring",
+        "maskin"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
@@ -704,6 +757,35 @@
         "skikkethet",
         "drosje",
         "buss"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "DSB_ELECTRICAL_QUALIFICATIONS",
+      "authority": "DSB",
+      "title": "Kvalifikasjonskrav for arbeid på elektriske anlegg og elektrisk utstyr",
+      "url": "https://www.dsb.no/elsikkerhet/kvalifikasjoner-foretak-og-virksomhet/veiledning-til-forskrift-om-elektroforetak-mv/",
+      "sectors": [
+        "construction_trades",
+        "offshore_energy"
+      ],
+      "occupations": [
+        "elektriker",
+        "automatiker",
+        "energimontør",
+        "elektroingeniør",
+        "energitekniker"
+      ],
+      "useFor": [
+        "kvalifikasjoner",
+        "kompetanse",
+        "faglig ansvar",
+        "elektrisk anlegg",
+        "elsikkerhet",
+        "opplæring"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
@@ -1274,6 +1356,35 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "law_database",
+      "contextualOnly": true
+    },
+    {
+      "id": "STCW_HARASSMENT_TRAINING_2026",
+      "authority": "Sjøfartsdirektoratet",
+      "title": "STCW-opplæring om vold, trakassering og seksuell trakassering",
+      "url": "https://www.sdir.no/sjofolk/utdanning/sash---kurs-og-oppdatering-for-sjofolk/",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "occupations": [
+        "matros",
+        "skipsfører",
+        "maskinist",
+        "dekksarbeider",
+        "styrmann"
+      ],
+      "useFor": [
+        "trakassering",
+        "seksuell trakassering",
+        "mobbing",
+        "vold",
+        "seksuelle overgrep",
+        "sikkerhetsopplæring",
+        "arbeidsmiljø om bord"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
       "contextualOnly": true
     },
     {
