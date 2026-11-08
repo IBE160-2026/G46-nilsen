@@ -1,7 +1,7 @@
 {
   "version": 17,
-  "verifiedAt": "2026-11-01",
-  "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Kilder kan avgrenses både til sektor og konkrete yrker. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
+  "verifiedAt": "2026-11-08",
+  "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
     {
       "id": "ADVOKATTILSYNET_PROFESSION",
