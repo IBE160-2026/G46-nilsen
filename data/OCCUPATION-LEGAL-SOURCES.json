@@ -1,6 +1,6 @@
 {
-  "version": 6,
-  "verifiedAt": "2026-10-29",
+  "version": 8,
+  "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
     {
@@ -457,6 +457,217 @@
       "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
       "contextualOnly": false
+    },
+    {
+      "id": "DFO_PERSONNEL_MEETING",
+      "authority": "DFØ / Statens arbeidsgiverportal",
+      "title": "Gjennomføring av møte i personalsaker",
+      "url": "https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/gjennomforing-av-mote",
+      "sectors": [
+        "public_admin_legal",
+        "*"
+      ],
+      "useFor": [
+        "personalsak",
+        "vanskelig samtale",
+        "lytting",
+        "oppfølgingsspørsmål",
+        "referat",
+        "oppfølging"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "UDIR_CONFIDENTIALITY",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Taushetsplikt",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring/forvaltningsloven/taushetsplikt/",
+      "sectors": [
+        "education_childcare"
+      ],
+      "useFor": [
+        "taushetsplikt",
+        "personlige forhold",
+        "skole",
+        "forvaltningsloven"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "HDIR_QUALITY_LEADERSHIP",
+      "authority": "Helsedirektoratet",
+      "title": "Ledelse og kvalitetsforbedring i helse- og omsorgstjenesten",
+      "url": "https://www.helsedirektoratet.no/veiledere/ledelse-og-kvalitetsforbedring-i-helse-og-omsorgstjenesten/",
+      "sectors": [
+        "health_care"
+      ],
+      "useFor": [
+        "ledelse",
+        "styringssystem",
+        "kompetanse",
+        "risiko",
+        "avvik",
+        "kvalitetsforbedring",
+        "pasientsikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "NSM_EMPLOYMENT_SECURITY",
+      "authority": "Nasjonal sikkerhetsmyndighet",
+      "title": "Sikkerhet ved ansettelsesforhold",
+      "url": "https://nsm.no/regelverk-og-hjelp/rad-og-anbefalinger/sikkerhet-ved-ansettelsesforhold",
+      "sectors": [
+        "defence_police_emergency",
+        "office_finance_it"
+      ],
+      "useFor": [
+        "personellsikkerhet",
+        "sikkerhetskultur",
+        "ansettelsesforhold",
+        "tilgang",
+        "sikkerhetsstyring"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "DSB_FIRE_RESCUE",
+      "authority": "DSB",
+      "title": "Veiledning til brann- og redningsvesenforskriften",
+      "url": "https://www.dsb.no/brannsikkerhet/brannberedskap/regelverk-prosedyrer-og-veiledning/veiledning-til-brann--og-redningsvesenforskriften/",
+      "sectors": [
+        "defence_police_emergency"
+      ],
+      "useFor": [
+        "brann og redning",
+        "beredskap",
+        "ledelse",
+        "kompetanse",
+        "øvelse",
+        "evaluering",
+        "læring"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "FISKERIDIR_IK_AQUACULTURE",
+      "authority": "Fiskeridirektoratet",
+      "title": "Veileder i internkontroll - IK Akvakultur",
+      "url": "https://www.fiskeridir.no/akvakultur/veiledere/veileder-i-internkontroll-ik-akvakultur",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "internkontroll",
+        "risikokartlegging",
+        "kompetanse",
+        "avvik",
+        "forbedring",
+        "havbruk"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "VEGVESEN_EMPLOYER_DRIVING_REST",
+      "authority": "Statens vegvesen",
+      "title": "Arbeidsgivers ansvar – kjøre- og hviletid",
+      "url": "https://www.vegvesen.no/kjoretoy/yrkestransport/kjore-og-hviletid/arbeidsgivers-ansvar/",
+      "sectors": [
+        "transport_logistics"
+      ],
+      "useFor": [
+        "kjøre- og hviletid",
+        "arbeidsgiveransvar",
+        "fartsskriver",
+        "trafikksikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "MATTILSYNET_ANIMAL_JOURNAL",
+      "authority": "Mattilsynet",
+      "title": "Journalføring for dyrehelsepersonell",
+      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell/veileder-om-dyrehelsepersonell-og-bruk-av-ikke-medikamentelle-avlusingsmetoder-imm/journalforing",
+      "sectors": [
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "journalføring",
+        "dyrehelsepersonell",
+        "forsvarlighet",
+        "fiskehelse",
+        "dokumentasjon"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "AKAN_MODEL",
+      "authority": "Akan kompetansesenter",
+      "title": "Akan-modellen – forebygging, den nødvendige samtalen og individuell oppfølging",
+      "url": "https://www.akan.no/akan-modellen/forebyggende-arbeid-og-tiltak-etter-akan-modellen",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "alkohol",
+        "rusmidler",
+        "legemidler",
+        "spill",
+        "doping",
+        "bekymringssamtale",
+        "policy",
+        "individuell Akan-avtale",
+        "arbeidsliv"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "specialist_worklife_guidance",
+      "contextualOnly": true
+    },
+    {
+      "id": "AKAN_HELP_EMPLOYEE",
+      "authority": "Akan kompetansesenter",
+      "title": "Hvordan hjelpe en medarbeider med et rus- eller spilleproblem?",
+      "url": "https://www.akan.no/hjelpe-en-medarbeider",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "rusproblem",
+        "spilleproblem",
+        "individuell Akan-avtale",
+        "oppfølging",
+        "hjelpetiltak"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "specialist_worklife_guidance",
+      "contextualOnly": true
     }
   ],
   "validationRules": {
