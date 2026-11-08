@@ -1222,6 +1222,71 @@ app.get("/api/occupation-options", requireUser, (_req, res) => {
   });
 });
 
+app.get("/api/help-source-library", requireUser, (_req, res) => {
+  try {
+    const normalizePublicSource = source => ({
+      id: source.id,
+      title: source.title || source.id || "Kilde",
+      author: source.author || source.authority || "",
+      year: source.year || "",
+      type: source.type || source.sourceType || "fagkilde",
+      url: source.url || (source.doi ? `https://doi.org/${source.doi}` : ""),
+      lastVerified: source.last_verified || source.lastVerified || null,
+      timeSensitive: Boolean(source.time_sensitive || source.timeSensitive),
+      useFor: source.use_when || source.useFor || []
+    });
+
+    const all = (sourceBank.sources || []).map(normalizePublicSource).filter(source => source.url);
+    const authorityAndLaw = all.filter(source => /lovverk|myndighet/i.test(source.type));
+    const research = all.filter(source => /forskning|fagfelle|evidens/i.test(source.type));
+    const used = new Set([...authorityAndLaw, ...research].map(source => source.id));
+    const frameworks = all.filter(source => !used.has(source.id));
+
+    const occupationGroups = (occupationSourceMap.sectors || [])
+      .filter(sector => sector.id !== "other")
+      .map(sector => {
+        const sources = (occupationLegalSourceBank.sources || [])
+          .filter(source => (source.sectors || []).includes(sector.id))
+          .map(normalizePublicSource);
+        return {
+          id: sector.id,
+          label: sector.label,
+          occupations: sector.occupations || [],
+          sources
+        };
+      })
+      .filter(group => group.sources.length);
+
+    res.json({
+      categories: {
+        rules: {
+          label: "Myndigheter og lovverk",
+          description: "Norske lover, forskrifter, myndighetsveiledning og offentlige arbeidsgiverressurser.",
+          groups: [{ id:"rules", label:"Myndigheter og lovverk", sources: authorityAndLaw }]
+        },
+        research: {
+          label: "Forskning og evidens",
+          description: "Fagfellevurdert forskning, meta-analyser, evidensgjennomganger og forskningsbaserte fagressurser.",
+          groups: [{ id:"research", label:"Forskning og evidens", sources: research }]
+        },
+        frameworks: {
+          label: "Faglige rammeverk og veiledere",
+          description: "Praktiske fagveiledere, profesjonsressurser og ledelses-/samtalerammeverk.",
+          groups: [{ id:"frameworks", label:"Faglige rammeverk og veiledere", sources: frameworks }]
+        },
+        occupations: {
+          label: "Yrkes- og sektorkilder",
+          description: "Sektorspesifikke myndighets- og regelverkskilder sortert etter arbeidsområde.",
+          groups: occupationGroups
+        }
+      }
+    });
+  } catch (error) {
+    console.error("Kunne ikke bygge kildebank for Hjelp:", error?.message || error);
+    res.status(500).json({ error:"HELP_SOURCE_LIBRARY_FAILED", message:"Kunne ikke hente kildebanken." });
+  }
+});
+
 function selectRelevantSources(analysis = {}, situation = "") {
   const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
   const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || [])]
