@@ -139,6 +139,41 @@ function evaluate(tc, analysis, guidance) {
     review.push("Faglig grunnlag: fasiten forventer minst én kvalitetssikret kilde");
   }
 
+  const sourceIds = Array.isArray(guidance?.source_ids) ? guidance.source_ids : [];
+  for (const id of tc.expected_source_ids || []) {
+    if (!sourceIds.includes(id)) review.push(`Kildevalg: forventet obligatorisk kilde ${id}, fikk [${sourceIds.join(", ") || "ingen"}]`);
+    else passedChecks.push(`Forventet kilde valgt: ${id}`);
+  }
+  if ((tc.expected_source_ids_any || []).length && !(tc.expected_source_ids_any || []).some(id => sourceIds.includes(id))) {
+    review.push(`Kildevalg: forventet minst én av [${tc.expected_source_ids_any.join(", ")}], fikk [${sourceIds.join(", ") || "ingen"}]`);
+  }
+  for (const id of tc.forbidden_source_ids || []) {
+    if (sourceIds.includes(id)) critical.push(`Kritisk kildelekkasje: forbudt kilde ble valgt: ${id}`);
+  }
+  if (tc.source_not_required === true && sourceIds.length > 0) {
+    review.push(`Kildeinflasjon: casen forventer normalt ingen kuratert kilde, men fikk [${sourceIds.join(", ")}]`);
+  }
+  if (sourceIds.length > 4) {
+    review.push(`Kildepresisjon: ${sourceIds.length} kilder valgt; systemregelen sier normalt 1–4 presise kilder`);
+  }
+
+  if (typeof tc.occupation_relevant === "boolean") {
+    const actual = guidance?.occupation_context?.occupationRelevant;
+    if (actual !== tc.occupation_relevant) {
+      review.push(`Yrkesrelevans: forventet ${tc.occupation_relevant}, fikk ${String(actual)}`);
+    } else {
+      passedChecks.push(`Yrkesrelevans korrekt: ${actual}`);
+    }
+  }
+  if (typeof tc.needs_employer_type === "boolean") {
+    const actual = guidance?.occupation_context?.needsEmployerType;
+    if (actual !== tc.needs_employer_type) {
+      review.push(`Arbeidsgivertype: forventet needsEmployerType=${tc.needs_employer_type}, fikk ${String(actual)}`);
+    } else {
+      passedChecks.push(`Arbeidsgivertype-behov korrekt: ${actual}`);
+    }
+  }
+
   const combined = [
     analysis?.summary,
     ...(analysis?.dilemma || []),
@@ -183,7 +218,17 @@ try {
     process.stdout.write(`[${i+1}/${cases.length}] ${tc.id} ${tc.theme} ... `);
     try{
       const analysis=await post("/api/analyze-situation",{situation:tc.input});
-      const guidance=await post("/api/generate-guidance",{situation:tc.input,analysis,followups:{}});
+      const guidance=await post("/api/generate-guidance",{
+        situation:tc.input,
+        analysis,
+        followups:{},
+        topicId:tc.topicId || tc.theme || "",
+        subtopic:tc.subtopic || "",
+        occupation:tc.occupation || "",
+        sectorId:tc.sectorId || "",
+        employerType:tc.employerType || "",
+        employerContext:tc.employerContext || ""
+      });
       const ev=evaluate(tc,analysis,guidance);
       results.push({...tc,...ev,analysis,guidance});
       console.log(ev.status);
@@ -242,6 +287,16 @@ for(const r of results){
     md+=`**Faglig/regelverksmerknad:** ${r.guidance.legal_hr_note||"Ingen"}\n\n`;
     md+=`**Neste steg:**\n${(r.guidance.next_steps||[]).map(x=>`- ${x}`).join("\n")||"- Ingen"}\n\n`;
     md+=`**Kilder:** ${(r.guidance.source_ids||[]).join(", ")||"Ingen"}\n\n`;
+    if(r.golden_group){
+      md+=`**Golden-gruppe:** ${r.golden_group}  \n`;
+      if(r.occupation) md+=`**Yrke/sektor:** ${r.occupation} · ${r.sectorId||"ukjent"}  \n`;
+      if(r.employerType) md+=`**Arbeidsgivertype:** ${r.employerType}  \n`;
+      if((r.expected_source_ids||[]).length) md+=`**Obligatoriske kilder:** ${r.expected_source_ids.join(", ")}  \n`;
+      if((r.expected_source_ids_any||[]).length) md+=`**Minst én av:** ${r.expected_source_ids_any.join(", ")}  \n`;
+      if((r.forbidden_source_ids||[]).length) md+=`**Forbudte kilder:** ${r.forbidden_source_ids.join(", ")}  \n`;
+      if(r.source_not_required) md+="**Kildepolicy:** Ingen kuratert kilde forventet i utgangspunktet  \n";
+      md+="\n";
+    }
     if(r.require_evidence){
       md+="**Manuell kildekontroll:** Kontroller at hver kilde faktisk støtter påstanden den brukes til, og at organisasjoner ikke tilskrives råd med en kilde som ikke støtter attribusjonen.\n\n";
     }
