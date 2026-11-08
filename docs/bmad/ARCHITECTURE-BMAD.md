@@ -1364,7 +1364,7 @@ Yrkes-/sektorarkitekturen finnes i `main` gjennom hele kjeden: valgfritt UI-felt
 
 Kildemodellen støtter nå både `sectors` og valgfri `occupations`. Det er et viktig arkitekturgrep fordi én sektor kan inneholde yrker med helt ulike rettslige/profesjonelle krav. Ruteren filtrerer derfor profesjonskilder på valgt yrke før de kan inngå i KI-konteksten.
 
-Registeret inneholder 85 autoritative startkilder etter gjennomgang 08.11.2026.
+Registeret inneholder 86 autoritative startkilder etter gjennomgang 08.11.2026.
 
 
 ## CSS-modularisering 08.11.2026
