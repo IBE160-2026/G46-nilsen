@@ -141,6 +141,36 @@ const assert = require("assert");
   });
   assert(!firefighterEthics.some(source => source.id === "POLITI_ETHICAL_GUIDELINES"), "Brannkonstabel skal ikke få politiets etiske retningslinjer");
 
+  const stateEmploymentRules = router.selectLegalSources({
+    sectorId: "public_admin_legal",
+    occupation: "rådgiver",
+    employerType: "state",
+    topic: "Oppsigelse og avslutning av arbeidsforhold",
+    subtopic: "Formell oppfølging",
+    situation: "Det vurderes en formell reaksjon overfor en statsansatt."
+  });
+  assert(stateEmploymentRules.some(source => source.id === "STATE_EMPLOYEE_ACT"), "Statlig arbeidsgiver skal kunne få statsansatteloven");
+
+  const municipalEmploymentRules = router.selectLegalSources({
+    sectorId: "public_admin_legal",
+    occupation: "rådgiver",
+    employerType: "municipal",
+    topic: "Oppsigelse og avslutning av arbeidsforhold",
+    subtopic: "Formell oppfølging",
+    situation: "Det vurderes en formell reaksjon."
+  });
+  assert(!municipalEmploymentRules.some(source => source.id === "STATE_EMPLOYEE_ACT"), "Kommunal arbeidsgiver skal ikke få statsansatteloven");
+
+  const stateEthics = router.selectLegalSources({
+    sectorId: "public_admin_legal",
+    occupation: "rådgiver",
+    employerType: "state",
+    topic: "Sikkerhet og ansvar",
+    subtopic: "Habilitet",
+    situation: "Samtalen gjelder habilitet, gaver og interessekonflikt i staten."
+  });
+  assert(stateEthics.some(source => source.id === "STATE_ETHICS"), "Statlig arbeidsgiver skal kunne få statens etiske retningslinjer");
+
   const accountantRules = router.selectLegalSources({
     sectorId: "office_finance_it",
     occupation: "regnskapsfører",
