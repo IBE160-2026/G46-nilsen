@@ -1055,3 +1055,18 @@ Disse kravene stammer fra faktisk pilotbruk og skal derfor behandles som UX-regr
 Pilot-/brukerfunn viste at enkelte undertemaer var faglig forståelige, men for vage, overlappende eller lite skannbare i faktisk navigasjon. Taksonomien ble derfor redusert fra 56 til **48 undertemaer**. Prinsippet ble «kort tittel, presis beskrivelse»: tittelen skal bruke ord lederen sannsynligvis vil lete etter, mens nyanser og avgrensninger ligger i beskrivelsen.
 
 Endringen er et UX- og informasjonsarkitekturvalg, ikke bare reduksjon av scope.
+
+
+## UX-tillegg 08.11.2026 – kildebank
+
+Kildebanken på Hjelp-siden er forenklet etter iterativ testing. Den skal ikke ha en ekstra paraplyoverskrift som skjuler kategoriene.
+
+Direkte hovednivå:
+1. Lovverk og myndigheter
+2. Forskning og evidens
+3. Faglig rammeverk
+4. Yrkes- og sektorkilder
+
+Kildene sorteres alfabetisk etter navn, ikke etter dato. Yrkes-/sektorkilder er en egen hovedkategori. Når en kilde er avgrenset til bestemte yrker, skal detaljvisningen kunne vise «Gjelder særlig».
+
+En eldre statisk kildeliste ble fjernet for å unngå at brukeren møter både gammel og ny informasjonsarkitektur samtidig.
