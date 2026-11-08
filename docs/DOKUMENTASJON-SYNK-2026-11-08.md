@@ -26,7 +26,7 @@ Sentrale filer:
 
 ## 2. Yrkeskildene ble gjort mer presise
 
-Det autoritative yrkes-/sektorregisteret ble utvidet fra 31 til 85 kilder.
+Det autoritative arbeidsgiver-/yrkes-/sektorregisteret ble utvidet fra 31 til 86 kilder.
 
 Ny modell:
 - `sectors` angir relevant arbeidsområde
@@ -124,3 +124,32 @@ CSS er nå modulært splittet. De neste åpenbare vedlikeholdskandidatene er:
 - historiske dokumenter/changelog som kan arkiveres per release uten å miste sporbarhet
 
 Disse bør deles kontrollert etter ansvar og med regresjonstester, ikke gjennom en stor engangsrefaktorering.
+
+
+## Sluttsynk – streng verifikasjonsrunde
+
+Følgende dokumentasjon er synkronisert etter quality-gate-runden:
+
+- README – 66 golden-caser og gjeldende CI-status
+- Product Brief – streng kilde-/yrkestesting som produktkvalitet
+- PRD – FR-15A kildepresisjon + NFR-QA-01 quality gate
+- Architecture – separat deterministic/live eval-arkitektur
+- AI-TESTPLAN – metode, feiltyper, resultater og live-begrensning
+- TEST-FASIT-OG-SPORBARHET – expected/forbidden source-oracles
+- AI-LOGG – faktisk utviklings-/feilrettingsforløp
+- REFLECTION-NOTES – testgjeld vs produktfeil
+- REFLEKSJONSRAPPORT-UTKAST – metodisk refleksjon rundt gyldige tester
+- SOURCE-QUALITY-AUDIT – Udir/minstelønn/data-integritetsfunn
+- OCCUPATION-SOURCE-AUDIT – 86 kilder og quality-gate-funn
+- OCCUPATION-KNOWLEDGE-ARCHITECTURE – negativ yrkesrelevans som krav
+- CHANGELOG – implementerte test-/sikkerhetsendringer
+
+Hovedbevis:
+`docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
+
+Siste verifiserte grønne quality-gate for runden:
+- run **42531396584**
+- commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`
+- full deterministic suite + high dependency audit: **SUCCESS**
+
+Senere dokumentasjonscommits endrer ikke runtime-logikken, men går fortsatt gjennom samme automatiske workflow ved push.
