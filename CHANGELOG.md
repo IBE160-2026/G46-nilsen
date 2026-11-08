@@ -1,3 +1,20 @@
+# Arbeidsrunde 08.11.2026 – yrkespresisjon, kildebank og kodeopprydding
+
+- Yrkes-/sektorkilderegisteret utvidet fra 31 til 58 autoritative startkilder.
+- Kilder kan avgrenses til konkrete yrker via `occupations`, ikke bare brede sektorer.
+- Nye profesjonskilder for blant annet politi, kriminalomsorg, Forsvaret, vektere, offentlig forvaltning, regnskapsfører, revisor, yrkessjåfør, lokfører, sjøfolk, reindrift og luftfart.
+- Fotterapeut flyttet fra Handel/service til Helse og omsorg.
+- Nye negative tester hindrer at politiregler brukes for brann eller regnskapsførerregler for utvikler.
+- Hjelp-kildebanken forenklet til fire hovedkategorier og alfabetisk sortering.
+- Gammel statisk kildevisning fjernet.
+- `styles.css` på ca. 9 389 linjer splittet i kjerne, responsiv og overrides uten å endre cascade-rekkefølgen.
+- Produksjonsserver, sensor-demo, PWA-cache og relevante tester er oppdatert for de nye CSS-filene.
+- Render-feilsøking viste at produksjonen sto på eldre commit selv om `main` var oppdatert; deploy må derfor verifiseres eksplisitt.
+- README, Product Brief, PRD, arkitektur, UX, SOURCEBANK, KI-logg/testplan, refleksjon og versjonshistorikk er synkronisert.
+- Frontend-cachemarkører er samlet på 20.11.60.
+
+---
+
 # Pågående – pilotdrevet UX-runde 30.10.2026
 
 - Nye brukere får minimert desktop-sidebar som standard; eksplisitt brukerpreferanse huskes fortsatt.
