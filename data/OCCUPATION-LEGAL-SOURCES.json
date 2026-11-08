@@ -1,5 +1,5 @@
 {
-  "version": 12,
+  "version": 13,
   "verifiedAt": "2026-11-01",
   "description": "Autoritative startkilder for yrkes- og bransjespesifikt regelverk. Kilder kan avgrenses både til sektor og konkrete yrker. Dette er godkjente innganger for retrieval; konkrete rettslige påstander skal fortsatt kontrolleres mot gjeldende kilde.",
   "sources": [
@@ -944,6 +944,30 @@
       "contextualOnly": true
     },
     {
+      "id": "IA_AGREEMENT_2025_2028",
+      "authority": "Regjeringen / partene i arbeidslivet",
+      "title": "IA-avtalen 2025–2028",
+      "url": "https://www.regjeringen.no/no/tema/arbeidsliv/arbeidsmiljo-og-sikkerhet/inkluderende_arbeidsliv/innsikt/ia-avtalen-2025-2028/id3151146/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "sykefravær",
+        "inkluderende arbeidsliv",
+        "forebygging",
+        "frafall",
+        "arbeidsmiljø",
+        "partssamarbeid",
+        "tilrettelegging"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "tripartite_agreement",
+      "contextualOnly": true,
+      "sourceRole": "worklife_framework",
+      "bindingStatus": "non_binding_framework"
+    },
+    {
       "id": "FINANSTILSYNET_INSURANCE_CONFLICTS",
       "authority": "Finanstilsynet",
       "title": "Interessekonflikter og avlønningskrav i forsikringsformidling",
@@ -966,6 +990,33 @@
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
       "contextualOnly": true
+    },
+    {
+      "id": "AT_INTERNKONTROLL",
+      "authority": "Arbeidstilsynet",
+      "title": "Internkontrollforskriften – systematisk HMS-arbeid",
+      "url": "https://www.arbeidstilsynet.no/regelverk/forskrifter/internkontrollforskriften/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "internkontroll",
+        "HMS",
+        "systematisk HMS",
+        "risikovurdering",
+        "avvik",
+        "rutiner",
+        "opplæring",
+        "ansvar",
+        "myndighet",
+        "sikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "regulation",
+      "contextualOnly": true,
+      "sourceRole": "primary_regulation",
+      "bindingStatus": "binding_when_applicable"
     },
     {
       "id": "MATTILSYNET_ANIMAL_JOURNAL",
@@ -1138,6 +1189,32 @@
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
       "contextualOnly": true
+    },
+    {
+      "id": "AT_CONTROL_MONITORING",
+      "authority": "Arbeidstilsynet",
+      "title": "Kontroll og overvåking i arbeidslivet",
+      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/kontroll-og-overvakning/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "kontrolltiltak",
+        "overvåking",
+        "kamera",
+        "GPS",
+        "e-post",
+        "internettrafikk",
+        "rustesting",
+        "helseundersøkelse",
+        "produksjonskontroll"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_rules"
     },
     {
       "id": "UDIR_TEACHER_COMPETENCE",
@@ -1810,6 +1887,29 @@
       "lastVerified": "2026-11-08",
       "sourceType": "law_database",
       "contextualOnly": true
+    },
+    {
+      "id": "AT_WHISTLEBLOWING_ROUTINES",
+      "authority": "Arbeidstilsynet",
+      "title": "Rutiner for intern varsling",
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/varsling/virksomheten-skal-ha-rutiner-for-intern-varsling/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "varsling",
+        "varslingsrutine",
+        "kritikkverdige forhold",
+        "gjengjeldelse",
+        "mottak av varsel",
+        "undersøkelse"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_rules"
     },
     {
       "id": "MARITIME_CERTIFICATES",
