@@ -1,7 +1,12 @@
 const fs = require('fs');
 const assert = require('assert');
 const html = fs.readFileSync('index.html', 'utf8');
-const css = fs.readFileSync('styles.css', 'utf8');
+const css = [
+  fs.readFileSync('styles.css', 'utf8'),
+  fs.readFileSync('styles-core.css', 'utf8'),
+  fs.readFileSync('styles-responsive.css', 'utf8'),
+  fs.readFileSync('styles-overrides.css', 'utf8')
+].join('\n');
 const app = fs.readFileSync('app.js', 'utf8');
 const server = fs.readFileSync('server.js', 'utf8');
 
