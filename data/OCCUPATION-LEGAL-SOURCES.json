@@ -1,5 +1,5 @@
 {
-  "version": 22,
+  "version": 23,
   "verifiedAt": "2026-11-08",
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
@@ -91,8 +91,6 @@
         "bussjåfør",
         "lastebilsjåfør",
         "varebilsjåfør",
-        "taxisjåfør",
-        "sjåfør",
         "budbilsjåfør",
         "kokk",
         "servitør",
@@ -109,24 +107,32 @@
         "gartner"
       ],
       "useFor": [
-        "lønn",
         "minstelønn",
         "allmenngjøring",
-        "arbeidsvilkår",
         "godstransport",
-        "persontransport",
+        "godstransport på vei",
+        "persontransport med turbil",
+        "turbil",
+        "turvogn",
         "overnatting",
         "servering",
+        "catering",
         "renhold",
         "jordbruk",
-        "gartneri"
+        "gartneri",
+        "bilbransjen",
+        "byggebransjen",
+        "elektro",
+        "fiskeindustribedrift",
+        "skips- og verftsindustri"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
       "contextualOnly": true,
       "sourceRole": "authority_guidance",
-      "bindingStatus": "guidance_to_binding_minimum_rules"
+      "bindingStatus": "guidance_to_binding_minimum_rules",
+      "note": "Allmenngjort minstelønn gjelder bare bestemte bransjer/vilkår. Taxi omfattes ikke generelt; persontransportkilden gjelder turbil/turvogn/buss under forskriftens vilkår, og godstransport har egne vekt-/virkeområdekrav."
     },
     {
       "id": "POLITI_INSTRUCTION",
