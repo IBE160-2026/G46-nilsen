@@ -531,7 +531,7 @@ Prosjektet vurderer også en mer direkte samtaleinngang. Også her er det viktig
 
 I sluttfasen gjennomgikk jeg yrkes-/sektorkildene mer kritisk. Den første implementasjonen hadde autoritative kilder per sektor, men dette var for grovt for brede kategorier. «Forsvar, politi og beredskap» er et tydelig eksempel: politi, brann, kriminalomsorg, Forsvaret og vektere kan ha helt ulike særregler selv om de deler et overordnet arbeidsområde.
 
-Løsningen ble derfor endret slik at kilder kan avgrenses både til sektor og til konkrete yrker. Registeret ble samtidig utvidet fra 31 til 58 autoritative startkilder. Politiet fikk blant annet egne etiske retningslinjer, politiinstruksen og medarbeiderplattformen; andre profesjoner fikk egne kilder der det faktisk finnes særregler, autorisasjon eller sertifikatkrav.
+Løsningen ble derfor endret slik at kilder kan avgrenses både til sektor og til konkrete yrker. Registeret ble samtidig utvidet fra 31 til 62 autoritative startkilder. Politiet fikk blant annet egne etiske retningslinjer, politiinstruksen og medarbeiderplattformen; andre profesjoner fikk egne kilder der det faktisk finnes særregler, autorisasjon eller sertifikatkrav.
 
 Gjennomgangen omfattet alle yrkene i sektorlisten. Jeg valgte bevisst ikke å legge inn en kunstig profesjonskilde for hver stilling. For mange yrker er arbeidsmiljøloven, HMS-regler eller sektorfelles regelverk det faglig riktige nivået. Dette er et viktig skille mellom en stor kildebank og en presis kildebank.
 
