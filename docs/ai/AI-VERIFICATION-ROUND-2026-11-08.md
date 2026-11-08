@@ -679,3 +679,114 @@ Live-eval kjøres bevisst **ikke** automatisk på hver push. Begrunnelse:
 Rapportfiler under `tests/reports/` lastes opp som workflow-artifact når de finnes.
 
 Per 08.11.2026 er denne workflown lagt til for reproduksjon, men den nye 40-case occupation-golden-pakken er fortsatt **ikke dokumentert som live-bestått** før en faktisk workflow-kjøring med provider-secret foreligger.
+
+
+---
+
+## 19. Siste verifikasjon av `main` etter dokumentasjons- og testutvidelser
+
+Etter at den manuelle live-workflowen og dokumentasjonen var lagt inn, ble siste `main`-commit før denne rapportoppdateringen kontrollert i GitHub Actions.
+
+Quality Gate-run:
+
+**42531844146**
+
+Commit:
+
+`4268225f44ae58b8d39ce50e4a4fe6a317a74634`
+
+Resultat:
+
+**SUCCESS**
+
+Kjøringen dokumenterte blant annet:
+
+- 35 JS/CJS/MJS-filer syntakskontrollert
+- **73/73 personverntester bestått**
+- **24/24 simulator-kontroller bestått**
+- **66 golden-caser** strukturelt validert
+- **40 strenge yrke/sektor/tariff/kilde-caser** registrert i golden-banken
+- **28/28 sektor-golden-rutinger bestått**, fordelt på 14 relevante og 14 irrelevante yrkescaser
+- **114 benchmark-saker / 48 undertemaer**, minst to saker per undertema
+- kildebank v8: **58 generelle kilder**
+- yrkes-/arbeidsgiverkilder: **86**
+- tariff-/avtalekilder: **7**
+- **0 eksakte URL-duplikater**
+- production dependency audit: **0 kjente sårbarheter** på valgt auditnivå
+
+Denne kjøringen er den nyeste komplette deterministic quality-gaten som lå til grunn før produksjons-smoken nedenfor.
+
+---
+
+## 20. Produksjons-smoke mot faktisk Render-deploy
+
+Det ble gjennomført en separat smoke-test fra en GitHub-hosted runner mot den offentlige produksjonsadressen:
+
+`https://g46-nilsen-samtalestotte.onrender.com`
+
+GitHub Actions-run:
+
+**42532653228**
+
+Resultat:
+
+**SUCCESS**
+
+Testen verifiserte at:
+
+- forsiden svarte HTTP 200 og inneholdt Samtalestøtte-markør
+- `/api/public-config` svarte HTTP 200 med **appVersion 20.11.5**
+- `/styles.css` svarte HTTP 200
+- `/app.js` svarte HTTP 200
+- `/src/client-data.js` svarte HTTP 200
+- `/manifest.webmanifest` svarte HTTP 200
+- `/sw.js` svarte HTTP 200
+
+Dette gir et separat bevis på at den deployede produksjonsflaten faktisk serverer forventet versjon og sentrale frontend-/PWA-assets. Smoke-testen beviser ikke i seg selv autentisert funksjonalitet eller kvaliteten på et generert KI-svar.
+
+---
+
+## 21. Forsøk på live occupation-golden i GitHub Actions
+
+For å forsøke å lukke det siste gapet ble den strenge 40-case occupation-golden-suiten startet fra en midlertidig QA-gren.
+
+GitHub Actions-run:
+
+**42532573390**
+
+Resultat:
+
+**IKKE KJØRT MOT MODELL**
+
+Workflown stoppet i den eksplisitte sikkerhetssjekken før noen live-KI-case ble kjørt fordi repository ikke hadde noen av disse GitHub Actions-secretene konfigurert:
+
+- `OPENAI_API_KEY`
+- `OPENROUTER_API_KEY`
+
+Stegene for checkout, Node-oppsett og dependency-installasjon besto. Selve `test-ai:occupation-golden` ble deretter korrekt hoppet over.
+
+Dette er derfor **ikke et KI-avvik** og skal heller ikke registreres som en mislykket golden-case. Resultatet dokumenterer kun en manglende CI-konfigurasjon for ekstern provider.
+
+Konklusjonen står fast:
+
+> 40-case occupation-golden er deterministic/schema/routing-validert, men kan ikke omtales som live modell-bestått før en faktisk kjøring med provider-secret foreligger.
+
+Den midlertidige QA-workflowen ble deaktivert fra automatisk push etter kontrollen, slik at den ikke kan generere gjentatte feilkall.
+
+---
+
+## 22. Status etter denne runden
+
+Per 08.11.2026 kan følgende hevdes med dokumentert dekning:
+
+- deterministic quality gate på `main`: **grønn**
+- personvern: **73/73**
+- sektor-golden routing: **28/28**
+- benchmark/taksonomi: **114 saker / 48 undertemaer**
+- source policy og source integrity: **grønn**
+- simulator/UI/PWA/regresjon: **grønn**
+- production dependency audit: **0 kjente sårbarheter på valgt auditnivå**
+- faktisk produksjonsflate, versjon og sentrale assets: **verifisert**
+- live 40-case occupation-golden mot ekstern språkmodell: **ikke kjørt i GitHub Actions på grunn av manglende provider-secret**
+
+Det siste punktet er den eneste tydelige testgaten i denne runden som fortsatt står åpen. Den skal ikke skjules eller omformuleres som bestått.
