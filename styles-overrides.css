@@ -1353,3 +1353,124 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     max-width:none !important;
   }
 }
+
+
+/* v20.11.64 KORRIGERT PILHIERARKI + PUNKTLISTE + SMALERE RÅDSKORT */
+
+/* HOVEDKATEGORIER:
+   Bruk samme inline-pil som tidligere ble brukt på yrkes-/sektoroverskriftene. */
+#help-view #complete-source-library .source-bank-top-category>summary::before,
+#help-view #complete-source-library .source-bank-top-category>summary::after{
+  content:none !important;
+  display:none !important;
+}
+#help-view #complete-source-library .source-bank-top-title{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:6px !important;
+}
+#help-view #complete-source-library .source-bank-top-title::after{
+  content:"›" !important;
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  color:var(--muted) !important;
+  font-size:1.08em !important;
+  line-height:1 !important;
+  font-weight:750 !important;
+  transform:rotate(0deg) !important;
+  transition:transform .18s ease !important;
+}
+#help-view #complete-source-library .source-bank-top-category[open]>summary .source-bank-top-title::after{
+  transform:rotate(90deg) !important;
+}
+
+/* Yrkes-/sektoroverskriftene skal ikke beholde denne pilen når den er flyttet opp. */
+#help-view #complete-source-library .source-bank-sector-title::after{
+  content:none !important;
+  display:none !important;
+}
+
+/* KONKRETE KILDER:
+   Punktvis liste + liten inline-pil etter kildenavnet. */
+#help-view #complete-source-library .compact-source-row>summary{
+  display:flex !important;
+  align-items:center !important;
+  gap:7px !important;
+  padding:6px 0 !important;
+  color:var(--text) !important;
+  font-size:.84rem !important;
+  font-weight:400 !important;
+  line-height:1.32 !important;
+}
+#help-view #complete-source-library .compact-source-row>summary::before{
+  content:"•" !important;
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  color:var(--muted) !important;
+  font-size:.90rem !important;
+  line-height:1 !important;
+  transform:none !important;
+}
+#help-view #complete-source-library .compact-source-title{
+  display:inline-flex !important;
+  align-items:center !important;
+  gap:5px !important;
+  font-size:inherit !important;
+  font-weight:400 !important;
+}
+#help-view #complete-source-library .compact-source-title::after{
+  content:"›" !important;
+  display:inline-block !important;
+  flex:0 0 auto !important;
+  color:var(--muted) !important;
+  font-size:.90em !important;
+  line-height:1 !important;
+  font-weight:600 !important;
+  transform:rotate(0deg) !important;
+  transition:transform .18s ease !important;
+}
+#help-view #complete-source-library .compact-source-row[open]>summary .compact-source-title::after{
+  transform:rotate(90deg) !important;
+}
+#help-view #complete-source-library .compact-source-detail p,
+#help-view #complete-source-library .compact-source-detail a{
+  font-size:.84rem !important;
+  line-height:1.38 !important;
+}
+
+/* SAMMENTRUKNE RÅDSKORT:
+   Smalere og med innholdet vertikalt midtstilt. */
+@media (min-width:641px){
+  #structured-guidance .guidance-card:has(.evidence-details:not([open])){
+    width:min(100%,460px) !important;
+    max-width:460px !important;
+    min-height:46px !important;
+    justify-self:start !important;
+    align-items:center !important;
+    padding:8px 10px !important;
+    grid-template-columns:24px minmax(0,1fr) !important;
+    gap:7px !important;
+  }
+  #structured-guidance .guidance-card:has(.evidence-details:not([open]))>div{
+    align-self:center !important;
+  }
+  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .evidence-details{
+    display:flex !important;
+    align-items:center !important;
+    min-height:30px !important;
+  }
+  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .evidence-details>summary{
+    display:flex !important;
+    align-items:center !important;
+    min-height:30px !important;
+    margin:0 !important;
+    padding:0 !important;
+    font-size:.92rem !important;
+    line-height:1.2 !important;
+  }
+  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .guidance-number{
+    align-self:center !important;
+    margin:0 !important;
+    line-height:1 !important;
+  }
+}
