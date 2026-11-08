@@ -167,3 +167,5 @@ assert(app.includes('guidance-card-chevron'), 'Rådskortene mangler eksplisitt �
 assert(app.includes('source-bank-category-chevron'), 'Hovedkategoriene mangler eksplisitt kategori-pil i markup');
 assert(app.includes('compact-source-chevron'), 'Konkrete kilder mangler eksplisitt åpnepil i markup');
 assert(overrideCss.includes('.guidance-card-chevron') && overrideCss.includes('.source-bank-category-chevron') && overrideCss.includes('.compact-source-chevron'), 'Eksplisitte piler mangler styling');
+
+assert(overrideCss.includes('.history-actions .primary-button') && overrideCss.includes('min-height:30px !important;') && overrideCss.includes('font-size:.80rem !important;'), 'Historikk-knappene Åpne/Slett er ikke gjort kompakte');
