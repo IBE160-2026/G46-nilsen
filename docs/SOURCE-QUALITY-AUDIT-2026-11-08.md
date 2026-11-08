@@ -476,3 +476,42 @@ Status etter kontrollen:
 - 57 kilder kontrollert mot originaldomene/Lovdata 08.11.2026
 
 `lastVerified` skal framover bety faktisk kildekontroll, ikke bare datoen en post ble lagt til.
+
+
+## 14. Tillegg etter strict golden-/CI-verifikasjon
+
+Kildekvalitetsrevisjonen ble senere samme dag utfordret med negative golden-caser og automatisert CI.
+
+### Udir-indekser
+
+En skolecase for lærer/elevkrenkelse fikk også den brede barnehageoversikten. Årsaken var at en `authority_index` med `contextualOnly=false` kunne følge sektoren uten konkret treff.
+
+Rettet:
+- authority_index krever alltid faktisk konteksttreff i yrkesruteren
+- skole-/barnehageoversiktene har eksplisitt yrkesomfang
+
+### Minstelønn
+
+En taxisjåfør/lønn-case viste at den samlede minstelønnskilden var for bred.
+
+Ny avgrensning:
+- taxi omfattes ikke generelt
+- generisk «lønn» er ikke lenger trigger
+- konkrete begreper som minstelønn, allmenngjøring, godstransport, turbil/turvogn og aktuelle bransjer brukes
+
+Dette følger prinsippet om at kildebanken ikke skal gi en regel større virkeområde enn originalkilden.
+
+### Data-/referanseintegritet
+
+«Sekretær» var duplisert mellom offentlig sektor og kontor/administrasjon. Etter klassifiseringsretting ble tre foreldreløse kildeomfang oppdaget og synkronisert.
+
+### Verifikasjonsstatus
+
+- 58 generelle kilder
+- 86 arbeidsgiver-/yrkes-/sektorkilder
+- 7 tariff-/avtalekilder
+- 0 eksakte URL-duplikater
+- 28/28 sektor-golden-ruting består
+- high dependency audit består
+
+Full testmetode: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
