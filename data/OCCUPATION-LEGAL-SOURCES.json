@@ -1,5 +1,5 @@
 {
-  "version": 17,
+  "version": 18,
   "verifiedAt": "2026-11-08",
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
@@ -1512,6 +1512,33 @@
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
       "contextualOnly": true
+    },
+    {
+      "id": "PERSONOPPLYSNINGSLOVEN",
+      "authority": "Lovdata",
+      "title": "Personopplysningsloven og personvernforordningen (GDPR)",
+      "url": "https://lovdata.no/lov/2018-06-15-38",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "personopplysninger",
+        "personvern",
+        "ansattopplysninger",
+        "personalmappe",
+        "kontrolltiltak",
+        "overvåking",
+        "helseopplysninger",
+        "dataminimering",
+        "lagring",
+        "GDPR"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
     },
     {
       "id": "DATATILSYNET_WORKPLACE_PRIVACY",
