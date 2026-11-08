@@ -1642,12 +1642,12 @@ function renderAiGuidance(guidance) {
 
   grid.innerHTML = sections.map(([title, content], index) => {
     const number = String(index + 1).padStart(2, '0');
-    const openByDefault = index < 3 ? ' open' : '';
+    const openByDefault = ['Forslag til åpning','Spørsmål som passer denne saken'].includes(title) ? ' open' : '';
     return `<article class="guidance-card">
       <span class="guidance-number">${number}</span>
       <div>
         <details class="evidence-details"${openByDefault}>
-          <summary>${title}</summary>
+          <summary><span class="compact-source-title">${title}</span></summary>
           <div class="guidance-copy">${content}</div>
         </details>
       </div>
@@ -1847,7 +1847,7 @@ async function loadCompleteSourceLibrary(){
     const renderCategory=(cat)=>{
       const sources=sortSourcesAlphabetically((cat?.groups||[]).flatMap(group=>group.sources||[]));
       return `<details class="settings-card utility-accordion complete-source-bank source-bank-top-category">
-        <summary>${escapeHtml(cat?.label||'Kilder')}</summary>
+        <summary><span class="source-bank-top-title">${escapeHtml(cat?.label||'Kilder')}</span></summary>
         <div class="utility-accordion-body">
           <div class="complete-source-library-simple">
             ${sources.map(compactSourceRow).join('') || '<p class="muted-note">Ingen kilder registrert.</p>'}
@@ -1866,7 +1866,7 @@ async function loadCompleteSourceLibrary(){
       <div class="utility-accordion-body">
         <div class="complete-source-library-simple">
           ${occupationGroups.map(group=>`<details class="source-bank-sector">
-            <summary>${escapeHtml(group.label)} <small>${(group.sources||[]).length} kilder</small></summary>
+            <summary><span class="source-bank-sector-title">${escapeHtml(group.label)}</span><small>${(group.sources||[]).length} kilder</small></summary>
             <div class="source-bank-sector-body">
               ${(group.occupations||[]).length ? `<p class="source-bank-occupations"><strong>Yrker:</strong> ${escapeHtml([...(group.occupations||[])].sort((a,b)=>String(a).localeCompare(String(b),'nb',{sensitivity:'base'})).join(', '))}</p>` : ''}
               ${sortSourcesAlphabetically(group.sources||[]).map(compactSourceRow).join('')}
