@@ -41,7 +41,7 @@ for (const source of registry.sources || []) {
   assert(Array.isArray(source.useFor) && source.useFor.length > 0, `${source.id}: mangler useFor`);
   assert.strictEqual(typeof source.timeSensitive, "boolean", `${source.id}: timeSensitive må være bool`);
   assert(/^\d{4}-\d{2}-\d{2}$/.test(source.lastVerified || ""), `${source.id}: mangler gyldig lastVerified`);
-  assert(["official_authority","law_database","official_guideline","regulation","specialist_worklife_guidance"].includes(source.sourceType), `${source.id}: ugyldig sourceType`);
+  assert(["official_authority","law_database","official_guideline","regulation","specialist_worklife_guidance","tripartite_agreement"].includes(source.sourceType), `${source.id}: ugyldig sourceType`);
   if (source.occupations !== undefined) assert(Array.isArray(source.occupations) && source.occupations.length > 0, `${source.id}: occupations må være en ikke-tom liste når feltet brukes`);
 }
 
