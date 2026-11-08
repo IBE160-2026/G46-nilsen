@@ -89,3 +89,18 @@ Planlagte funksjoner skal aldri beskrives som ferdige før de er implementert og
 - [ ] Oppdater refleksjonsrapport med endelige brukertestfunn
 - [ ] Fjern påstander om planlagte funksjoner som ikke ble levert
 - [ ] Kontroller at rapporten skiller klart mellom egne vurderinger, KI-forslag, brukerfunn og dokumenterte fakta
+
+
+## Synk 08.11.2026
+
+- [x] README beskriver valgfri yrkes-/sektorkontekst og ny CSS-struktur.
+- [x] Product Brief synkronisert med yrkeskilder og produksjonsstatus.
+- [x] PRD FR-22 oppdatert fra delvis/fremtidig til implementert produksjonskode.
+- [x] Arkitekturdokument oppdatert med profesjonsavgrensning og CSS-moduler.
+- [x] UX-dokument beskriver fire hovedkategorier i kildebanken.
+- [x] SOURCEBANK dokumenterer skillet mellom generell fagbank og yrkes-/sektorkilder.
+- [x] KI-logg og testplan dokumenterer negative profesjonskontroller.
+- [x] Refleksjonsnotater og refleksjonsrapport oppdatert.
+- [x] Egen full yrkeskilde-audit opprettet.
+- [x] Egen kodeoppryddingsrapport opprettet.
+- [x] Egen dokumentasjonssynk for 08.11 opprettet.
