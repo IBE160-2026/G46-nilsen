@@ -38,6 +38,9 @@ const assert=require("assert");
   });
   assert.strictEqual(municipal.needsEmployerType,false);
   assert(municipal.suggestions.some(x=>x.id==="municipal"));
+  const municipalArea=municipal.suggestions.find(x=>x.id==="municipal");
+  assert(municipalArea.curatedSources.some(x=>x.id==="KS_HTA_2026_2028"), "KS HTA 2026-2028 mangler");
+  assert(municipalArea.curatedSources.some(x=>x.id==="KS_HA_2026_2029"), "KS Hovedavtale 2026-2029 mangler");
   assert.strictEqual(municipal.confirmationRequired,true);
 
   const healthEnterprise=router.suggestAgreementAreas({
@@ -48,6 +51,8 @@ const assert=require("assert");
     situation:"Medarbeideren ønsker å snakke om lønn."
   });
   assert(healthEnterprise.suggestions.some(x=>x.id==="health_enterprise"));
+  const healthArea=healthEnterprise.suggestions.find(x=>x.id==="health_enterprise");
+  assert(healthArea.curatedSources.some(x=>x.id==="SPEKTER_HEALTH_NEGOTIATION_2026_2029"), "Spekter helseforetakskilde mangler");
 
   const state=router.suggestAgreementAreas({
     occupation:"rådgiver",
@@ -56,6 +61,10 @@ const assert=require("assert");
     subtopic:"Lønnsutvikling"
   });
   assert(state.suggestions.some(x=>x.id==="state"));
+  const stateArea=state.suggestions.find(x=>x.id==="state");
+  assert(stateArea.curatedSources.some(x=>x.id==="STATE_HTA_2026_2028"), "Statlig HTA 2026-2028 mangler i avtalekartet");
+  assert(stateArea.curatedSources.some(x=>x.id==="STATE_HA_2023_2026"), "Hovedavtalen i staten mangler i avtalekartet");
+  assert(stateArea.curatedSources.some(x=>x.id==="STATE_PERSONNEL_HANDBOOK"), "Statens personalhåndbok mangler i avtalekartet");
 
   const unknown=router.suggestAgreementAreas({
     occupation:"elektriker",
