@@ -426,7 +426,7 @@ Testen inngår i `npm run test-local`.
 Etter kvalitetsryddingen består kildegrunnlaget av tre forskjellige lag:
 
 - 58 generelle fag-, forsknings-, lov- og myndighetskilder
-- ca. 85 overordnede arbeidsgiver-/yrkes-/sektorkilder
+- ca. 86 overordnede arbeidsgiver-/yrkes-/sektorkilder
 - 7 konkrete kuraterte tariff-/hovedavtale-/arbeidsgiverreferanser
 
 Tallene skal **ikke** brukes som kvalitetsmål. Viktigere er at:
@@ -437,3 +437,13 @@ Tallene skal **ikke** brukes som kvalitetsmål. Viktigere er at:
 - rettslig autoritet er skilt fra faglig evidens
 - avtaledekning må avklares
 - kildene kan spores i KI-svaret.
+
+
+## Tillegg – personopplysningsloven/GDPR
+
+Personopplysningsloven er lagt inn som overordnet primær rettskilde for behandling av ansattopplysninger. Den brukes sammen med Datatilsynets arbeidslivsveiledning og, ved kontrolltiltak, AML kapittel 9.
+
+Dette skiller:
+- **rettsgrunnlag:** personopplysningsloven/GDPR
+- **arbeidsrettslig kontrolltiltaksregel:** AML kapittel 9
+- **praktisk personvernveiledning:** Datatilsynet
