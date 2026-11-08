@@ -1,5 +1,5 @@
 {
-  "version": 18,
+  "version": 19,
   "verifiedAt": "2026-11-08",
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
@@ -643,20 +643,7 @@
       "title": "Etiske retningslinjer for statstjenesten",
       "url": "https://www.regjeringen.no/no/dokumenter/etiske-retningslinjer-for-statstjenesten/id88164/",
       "sectors": [
-        "public_admin_legal",
-        "defence_police_emergency"
-      ],
-      "occupations": [
-        "statlig rådgiver",
-        "førstekonsulent",
-        "seniorkonsulent",
-        "politi",
-        "Forsvaret",
-        "soldat",
-        "offiser",
-        "befal",
-        "kriminalomsorg",
-        "fengselsbetjent"
+        "*"
       ],
       "useFor": [
         "etikk",
@@ -670,7 +657,12 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "official_guideline",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "employerTypes": [
+        "state"
+      ],
+      "sourceRole": "official_employer_reference",
+      "bindingStatus": "official_guideline_not_law"
     },
     {
       "id": "FINANSTILSYNET_RULES",
@@ -2059,20 +2051,7 @@
       "title": "Statsansatteloven",
       "url": "https://lovdata.no/nav/lov/2017-06-16-67",
       "sectors": [
-        "public_admin_legal",
-        "defence_police_emergency"
-      ],
-      "occupations": [
-        "statlig rådgiver",
-        "førstekonsulent",
-        "seniorkonsulent",
-        "politi",
-        "Forsvaret",
-        "soldat",
-        "offiser",
-        "befal",
-        "kriminalomsorg",
-        "fengselsbetjent"
+        "*"
       ],
       "useFor": [
         "statsansatt",
@@ -2086,7 +2065,12 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "law_database",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "employerTypes": [
+        "state"
+      ],
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law_for_state_employment_scope"
     },
     {
       "id": "STCW_HARASSMENT_TRAINING_2026",
