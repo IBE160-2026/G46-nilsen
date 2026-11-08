@@ -1562,3 +1562,21 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #structured-guidance .evidence-details[open]>summary .guidance-card-chevron{
   transform:rotate(90deg);
 }
+
+
+/* v20.11.66 KOMPAKTE HISTORIKK-KNAPPER */
+.history-actions{
+  gap:6px !important;
+  margin-top:9px !important;
+}
+.history-actions .primary-button,
+.history-actions .secondary-button{
+  min-height:30px !important;
+  min-width:0 !important;
+  width:auto !important;
+  padding:5px 10px !important;
+  border-radius:8px !important;
+  font-size:.80rem !important;
+  line-height:1.15 !important;
+  font-weight:650 !important;
+}
