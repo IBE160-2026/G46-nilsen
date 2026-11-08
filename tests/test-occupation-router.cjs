@@ -47,11 +47,12 @@ const assert = require("assert");
 
   const sickLeaveSources = router.selectLegalSources({
     sectorId: "health_care",
+    occupation: "sykepleier",
     topic: "Fravær og oppfølging",
     subtopic: "Langtidsfravær",
-    situation: "Oppfølging av sykmeldt medarbeider og tilrettelegging."
+    situation: "Oppfølging av sykmeldt medarbeider og tilrettelegging. Ingen pasientsikkerhet, journalføring eller autorisasjon er tema."
   });
-  assert(sickLeaveSources.some(source => source.id === "NAV_SICK_LEAVE_FOLLOWUP"), "NAV-kilde skal aktiveres ved sykefravær");
+  assert(!sickLeaveSources.some(source => ["HDIR_HEALTH_PERSONNEL","HEALTH_AUTHORIZATION","HELSETILSYNET_RULES"].includes(source.id)), "Generelt sykefravær skal ikke trekke inn helsefaglig profesjonsregelverk");
 
   const irrelevantUnknown = router.resolveOccupationContext({
     occupation: "bibliotekar",
