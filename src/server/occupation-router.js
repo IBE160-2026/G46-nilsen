@@ -112,7 +112,12 @@ export function classifyOccupationLocally(value) {
 export function shouldUseOccupationContext({ occupation, sectorId, topic, subtopic, situation } = {}) {
   if (!normalize(occupation) && !normalize(sectorId)) return false;
 
-  const text = normalize([topic, subtopic, situation].filter(Boolean).join(" "));
+  const occupationNeedle = normalize(occupation);
+  const situationText = normalize(situation);
+  const sanitizedSituation = occupationNeedle
+    ? situationText.replaceAll(occupationNeedle, " ").replace(/\s+/g, " ").trim()
+    : situationText;
+  const text = normalize([topic, subtopic, sanitizedSituation].filter(Boolean).join(" "));
   if (!text) return false;
 
   const hasRiskTrigger = riskTerms.some(term => {
@@ -182,7 +187,7 @@ export function selectLegalSources({ sectorId, topic, subtopic, situation, maxSo
       const contextMatch = contextMatchesSource(source, contextText);
       return {
         ...source,
-        score: (sectorSpecific ? 10 : 0) + (contextMatch ? 5 : 0)
+        score: (contextMatch ? 20 : 0) + (sectorSpecific ? 10 : 0)
       };
     })
     .sort((a, b) => b.score - a.score || a.authority.localeCompare(b.authority, "nb"))
