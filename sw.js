@@ -1,9 +1,12 @@
-const CACHE_NAME = 'samtalestotte-shell-v20-11-58';
+const CACHE_NAME = 'samtalestotte-shell-v20-11-59';
 
 const APP_SHELL = [
   '/',
   '/index.html',
   '/styles.css',
+  '/styles-core.css',
+  '/styles-responsive.css',
+  '/styles-overrides.css',
   '/app.js',
   '/manifest.webmanifest',
   '/src/client-data.js',
