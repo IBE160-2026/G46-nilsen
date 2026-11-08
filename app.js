@@ -1345,7 +1345,8 @@ async function loadOccupationOptions(){
       sectorSelect.addEventListener('change',updateOccupationDatalist,{once:false});
     }
     if(employerSelect){
-      employerSelect.innerHTML=(payload.employerTypes||[]).map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)}</option>`).join('');
+      employerSelect.innerHTML='<option value="">Ikke valgt</option>'+(payload.employerTypes||[]).map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)}</option>`).join('');
+      employerSelect.value='';
     }
     updateOccupationDatalist();
   }catch(error){
