@@ -5,6 +5,7 @@ const sourceBank=JSON.parse(fs.readFileSync("data/SOURCEBANK.json","utf8"));
 const occupationBank=JSON.parse(fs.readFileSync("data/OCCUPATION-LEGAL-SOURCES.json","utf8"));
 const agreementMap=JSON.parse(fs.readFileSync("data/AGREEMENT-SOURCE-MAP.json","utf8"));
 const server=fs.readFileSync("server.js","utf8");
+const app=fs.readFileSync("app.js","utf8");
 const systemPrompt=fs.readFileSync("docs/ai/AI-SYSTEMPROMPT.md","utf8");
 
 const agreementSources=(agreementMap.agreementAreas||[]).flatMap(area=>area.curatedSources||[]);
@@ -78,6 +79,7 @@ assert(hasAgreement("municipal","KS_HA_2026_2029"),"KS Hovedavtale 2026-2029 man
 assert(hasAgreement("health_enterprise","SPEKTER_HEALTH_NEGOTIATION_2026_2029"),"Spekter helseforetak-kilde mangler");
 
 assert(server.includes("allCuratedSourceById"),"Serveren samler ikke kilde-ID-er på tvers av bankene");
+assert(app.includes("<option value=\\"\\">Ikke valgt</option>"),"Arbeidsgivertype skal ikke defaultes til privat");
 assert(server.includes("if (!matched) continue;"),"Kilder skal ikke få automatisk plass uten konkret treff");
 assert(server.includes("authority_index"),"Serveren skiller ikke oppslagsinngang fra konkret myndighetskilde");
 assert(server.includes("Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant"),"Tariffavgrensning mangler i KI-reglene");
