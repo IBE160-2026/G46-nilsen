@@ -4,7 +4,7 @@
 **Dokumenttype:** Architecture Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert arkitektur med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 02.11.2026  
+**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 08.11.2026  
 **Språk:** Norsk
 
 ---
@@ -200,7 +200,10 @@ Frontend bruker:
 Sentrale filer:
 
 - `index.html`
-- `styles.css`
+- `styles.css` – inngangspunkt
+- `styles-core.css` – grunnlayout og komponenter
+- `styles-responsive.css` – responsiv/mobil/PWA
+- `styles-overrides.css` – senere målrettede overrides
 - `app.js`
 
 ## Ansvar
@@ -1355,6 +1358,17 @@ Service workeren cacher bare eksplisitte frontendressurser og skal ikke fungere 
 PWA-laget endrer dermed distribusjonsopplevelsen, men ikke tillitsgrensen: serveren er fortsatt kontrollpunkt for autentisering, autorisasjon, personverngateway, hemmeligheter og KI-kall.
 
 
-## Status for yrkes-/sektorlaget per 02.11.2026
+## Status for yrkes-/sektorlaget per 08.11.2026
 
-Yrkes-/sektorarkitekturen finnes i `main` som et separat backend- og kunnskapslag med ruting, kildekart, avtaleområder og egne tester. Laget er feature-flagget og er ikke en ferdig aktiv produksjons-UI. Dette skillet er viktig: arkitekturen er implementert, men sluttbrukerflyten skal ikke omtales som produksjonsverifisert før den faktisk er aktivert og testet gjennom hele kjeden.
+Yrkes-/sektorarkitekturen finnes i `main` gjennom hele kjeden: valgfritt UI-felt, lokal klassifisering, relevansvurdering, serverkontekst, autoritativt kilderegister og regresjonstester. Feature flagget beholdes som driftskontroll.
+
+Kildemodellen støtter nå både `sectors` og valgfri `occupations`. Det er et viktig arkitekturgrep fordi én sektor kan inneholde yrker med helt ulike rettslige/profesjonelle krav. Ruteren filtrerer derfor profesjonskilder på valgt yrke før de kan inngå i KI-konteksten.
+
+Registeret inneholder 58 autoritative startkilder etter gjennomgang 08.11.2026.
+
+
+## CSS-modularisering 08.11.2026
+
+Sensorinnspill om en svært lang CSS-fil ble fulgt opp uten en risikofylt total omskriving. Den tidligere `styles.css` på ca. 9 389 linjer ble splittet i tre filer i samme rekkefølge som originalen. `styles.css` fungerer nå som et lite, stabilt inngangspunkt med imports.
+
+Dette er kontrollert modularisering: målet er bedre ansvar og navigerbarhet samtidig som eksisterende cascade bevares. `app.js` og `server.js` er fortsatt store og er dokumentert som neste naturlige refaktoreringskandidater.
