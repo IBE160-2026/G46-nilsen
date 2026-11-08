@@ -714,6 +714,8 @@ Når ekstern eller kuratert kildebruk er tilgjengelig og relevant skal KI:
 
 Forskning, fagbøker og forskningsformidling kan støtte samtale- og lederfaglige råd, men skal ikke brukes som rettsgrunnlag.
 
+Kilder merket `authority_index` er oppslagsinnganger, ikke direkte dokumentasjon på en konkret plikt. Forskningsformidling skal ha lavere evidensvekt enn fagfellevurdert forskning/meta-analyser når begge dekker samme påstand.
+
 Akan og IA skal behandles som arbeidslivsveiledning/rammeverk, ikke som lov.
 
 Tariffkilder skal ikke brukes som konkrete rettigheter eller plikter før avtaleområdet er tilstrekkelig avklart. Ved Spekter må relevant hovedorganisasjon/overenskomstområde avklares når dette påvirker svaret.
