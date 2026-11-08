@@ -1406,3 +1406,66 @@ Kildeautoritet skilles gjennom `sourceTier`, blant annet:
 Tariffvurdering er skilt fra yrkesvalg. Lønn, arbeidstid eller medbestemmelse kan derfor utløse behov for avklaring av arbeidsgivertype selv om yrke ikke er oppgitt.
 
 Se `docs/SOURCE-QUALITY-AUDIT-2026-11-08.md`.
+
+
+## Verifikasjonsarkitektur 08.11.2026
+
+Testing behandles som flere separate bevislag:
+
+```text
+Kode/data
+  -> syntaks + testsyntaks
+  -> deterministic unit/regresjon
+  -> kilde-/tariff-/yrkespolicy
+  -> 28 sektor-golden direkte mot router
+  -> personvern/UI/PWA/simulator
+  -> dependency audit
+  -> GitHub Actions quality gate
+  -> live KI-golden/stress (separat stokastisk lag)
+  -> manuell faglig vurdering / brukertest
+```
+
+### Hvorfor lagene er separate
+
+En deterministic test kan bevise at:
+- riktig source_id er tilgjengelig
+- feil profesjonskilde filtreres bort
+- en tariffkilde krever riktig arbeidsgivertype
+- schema og personvernregler holder
+
+Den kan ikke bevise at en ekstern språkmodell alltid velger den beste formuleringen.
+
+Live-modelltest kan på sin side avdekke språk-/resonneringsavvik, men er mindre deterministisk og krever provider/API.
+
+### Golden som arkitekturtest
+
+`tests/AI-GOLDEN-CASES.json` fungerer nå både som eval-datasett og kravkontrakt.
+
+40 strenge caser har eksplisitte source-oracles:
+- expected
+- expected-any
+- forbidden
+- no-source
+- occupationRelevant
+- needsEmployerType
+
+`tests/test-golden-occupation-routing.cjs` bruker de samme casene direkte mot `occupation-router.js`. Dermed gjenbrukes fasiten på både router- og live-KI-nivå.
+
+### CI
+
+`.github/workflows/quality-gate.yml` er den automatiske kvalitetssperren på `main`.
+
+Den kjører full testpakke og dependency audit. Testene selv syntakssjekkes før øvrige tester, fordi denne verifikasjonsrunden viste at testkode også kan inneholde feil.
+
+### Designendringer avdekket av test
+
+Verifikasjonsrunden førte til arkitekturforbedringer:
+- `authority_index` krever faktisk konteksttreff
+- yrkesrelevans kan komme fra kildebankens `useFor`, ikke bare hardkodede triggerord
+- matching er negasjonsbevisst
+- generelle NAV-kilder holdes utenfor yrkesruteren
+- sektor-/kildereferanser har sterkere integritetstester
+- dependency audit er en eksplisitt gate
+
+Full sporbarhet:
+`docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
