@@ -8,7 +8,7 @@ const bank=JSON.parse(fs.readFileSync('tests/AI-GOLDEN-CASES.json','utf8'));
 
 const pilot=(bank.cases||[]).filter(x=>x.pilot_regression);
 assert.strictEqual(pilot.length,5,'Pilotbanken skal inneholde de fem faktiske brukertestcasene');
-assert.strictEqual((bank.cases||[]).length,26,'Goldenbanken skal inneholde 26 saker totalt');
+assert((bank.cases||[]).length>=66,'Goldenbanken skal inneholde minst 66 saker etter yrkesutvidelsen');
 assert(html.includes('id="pilot-regression-run"'),'Admin mangler knapp for pilotkjøring');
 assert(html.includes('id="production-regression-run"'),'Admin mangler knapp for full produksjonsflyt-test');
 assert(html.includes('id="pilot-regression-results"'),'Admin mangler område for pilotresultater');
@@ -31,4 +31,4 @@ assert(server.includes('testMode === "production-regression"'),'Serveren mangler
 assert(server.includes('effectiveRole(req.user) === "admin"'),'Serveren beskytter testmerking med adminrolle');
 assert(pilot.every(x=>x.opening_checks?.max_words),'Alle pilotcaser skal ha konkret kontroll av åpningen');
 
-console.log('Produksjonsflyt-regresjon: 5 pilotcaser + 26 totalcaser, myk ordvurdering og adminvern OK');
+console.log(`Produksjonsflyt-regresjon: 5 pilotcaser + ${(bank.cases||[]).length} totalcaser, myk ordvurdering og adminvern OK`);
