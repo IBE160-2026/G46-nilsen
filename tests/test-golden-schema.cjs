@@ -64,6 +64,17 @@ for (const tc of cases) {
     if (tc.source_not_required === true) {
       assert(!(tc.expected_source_ids||[]).length && !(tc.expected_source_ids_any||[]).length, `${tc.id}: source_not_required kan ikke kombineres med forventet kilde`);
     }
+
+    if (tc.golden_group === 'occupation_sector') {
+      if (tc.occupation_relevant === true) {
+        assert((tc.expected_source_ids||[]).length || (tc.expected_source_ids_any||[]).length, `${tc.id}: relevant yrkescase mangler eksplisitt forventet kildefasit`);
+      } else {
+        assert(tc.source_not_required === true || (tc.forbidden_source_ids||[]).length > 0, `${tc.id}: irrelevant yrkescase mangler negativ kildefasit`);
+      }
+    }
+    if (tc.golden_group === 'source_leakage') {
+      assert((tc.forbidden_source_ids||[]).length > 0, `${tc.id}: lekkasjecase mangler forbidden_source_ids`);
+    }
   }
 
   assert(tc.manual_fasit && Array.isArray(tc.manual_fasit.must) && tc.manual_fasit.must.length >= 2, `${tc.id}: mangler MUST-fasit`);
