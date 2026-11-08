@@ -1,0 +1,1118 @@
+/* v20.11.1 DESKTOP / TABLET RESPONSIVE NORMALIZATION
+   Mobile mode starts at 640px. Keep Samtaleøvelse visually stable above that. */
+@media (min-width:641px) {
+  #simulation-view .simulation-hub-hero {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) clamp(150px,14vw,200px) !important;
+    align-items: center !important;
+    gap: clamp(16px,2vw,28px) !important;
+  }
+
+  #simulation-view .simulation-hub-copy {
+    display: block !important;
+    min-width: 0;
+  }
+
+  #simulation-view .simulation-logo-crop {
+    display: flex !important;
+    width: clamp(150px,14vw,200px) !important;
+    max-width: 200px !important;
+    height: clamp(126px,12vw,164px) !important;
+    min-height: 126px !important;
+    margin: 0 !important;
+    transform: none !important;
+    overflow: hidden !important;
+    justify-self: end !important;
+    align-items: center !important;
+    justify-content: center !important;
+    border-radius: 20px !important;
+    border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border)) !important;
+    background: color-mix(in srgb,var(--surface) 88%,var(--accent-soft)) !important;
+  }
+
+  #simulation-view .simulation-logo-crop img,
+  html[data-theme="light"] #simulation-view .simulation-logo-crop img,
+  html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
+  html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
+    content: normal !important;
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    border: 0 !important;
+    border-radius: 18px !important;
+    box-shadow: none !important;
+    filter: none !important;
+  }
+}
+
+@media (min-width:641px) and (max-width:900px) {
+  #simulation-view .simulation-hub-hero {
+    grid-template-columns: minmax(0,1fr) 150px !important;
+  }
+
+  #simulation-view .simulation-logo-crop {
+    width: 150px !important;
+    height: 126px !important;
+  }
+
+  #simulation-view .simulation-launch-grid {
+    grid-template-columns: repeat(2,minmax(0,1fr)) !important;
+  }
+
+  #simulation-view .simulation-launch-card {
+    min-height: 150px !important;
+  }
+}
+
+
+/* v20.11.2 COMPACT DESKTOP TOPBAR
+   Keep desktop identity, but prevent logo/breadcrumb/profile collisions. */
+@media (min-width:641px) and (max-width:1500px) {
+  .topbar {
+    padding-left: clamp(14px,2vw,26px) !important;
+    padding-right: clamp(14px,2vw,26px) !important;
+    gap: 12px !important;
+  }
+
+  .topbar-left {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    overflow: hidden !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-brand-logo {
+    display: block !important;
+    width: clamp(112px,10vw,150px) !important;
+    max-width: 150px !important;
+    max-height: 48px !important;
+    flex: 0 0 auto !important;
+  }
+
+  #breadcrumb {
+    min-width: 0 !important;
+    max-width: 100% !important;
+    font-size: clamp(.94rem,1.18vw,1.08rem) !important;
+    line-height: 1.22 !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .topbar-right {
+    flex: 0 0 auto !important;
+    gap: clamp(6px,.8vw,12px) !important;
+  }
+
+  .topbar .theme-switcher button {
+    padding: 7px 8px !important;
+    font-size: .78rem !important;
+  }
+
+  .topbar-new-chat {
+    padding-left: 13px !important;
+    padding-right: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .profile-chip {
+    min-width: 0 !important;
+    max-width: 190px !important;
+    gap: 8px !important;
+  }
+
+  .profile-text {
+    min-width: 0 !important;
+    max-width: 126px !important;
+  }
+
+  .profile-text strong,
+  .profile-text small {
+    display: block !important;
+    white-space: nowrap !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+  }
+}
+
+@media (min-width:641px) and (max-width:1100px) {
+  .topbar {
+    display: grid !important;
+    grid-template-columns: minmax(0,1fr) !important;
+    align-items: start !important;
+    height: auto !important;
+    min-height: 0 !important;
+    row-gap: 10px !important;
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+  }
+
+  .topbar-left {
+    width: 100% !important;
+  }
+
+  .topbar-right {
+    width: 100% !important;
+    justify-content: flex-start !important;
+    flex-wrap: wrap !important;
+  }
+
+  .profile-chip {
+    max-width: none !important;
+  }
+
+  .profile-text {
+    max-width: 180px !important;
+  }
+}
+
+
+/* v20.11.3 COMPACT DESKTOP ALIGNMENT
+   Keep profile anchored at the right edge and reserve space for the sidebar toggle. */
+@media (min-width:641px) and (max-width:1100px) {
+  .topbar-right {
+    width: 100% !important;
+    justify-content: flex-end !important;
+    align-items: center !important;
+    flex-wrap: wrap !important;
+    padding-left: 44px !important;
+    box-sizing: border-box !important;
+  }
+
+  .topbar-right .theme-switcher {
+    margin-left: 8px !important;
+  }
+
+  .topbar-right .profile-wrap {
+    margin-left: auto !important;
+    flex: 0 0 auto !important;
+  }
+
+  .topbar-right .profile-chip {
+    max-width: 230px !important;
+  }
+
+  .topbar-right .profile-text {
+    max-width: 172px !important;
+  }
+}
+
+
+#simulation-view .simulation-logo-crop,
+#simulation-view .simulation-hub-hero > .simulation-logo-crop {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#simulation-view .simulation-logo-crop img,
+#simulation-view .simulation-hub-hero > .simulation-logo-crop img,
+html[data-theme="light"] #simulation-view .simulation-logo-crop img,
+html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
+html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  object-fit: contain !important;
+  content: normal !important;
+}
+
+
+/* v20.11.5 CLEAN SIMULATION MARK
+   Keep the KI illustration free of card/frame styling. */
+#simulation-view .simulation-logo-crop,
+#simulation-view .simulation-hub-hero > .simulation-logo-crop {
+  border: 0 !important;
+  background: transparent !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  padding: 0 !important;
+  overflow: visible !important;
+}
+
+#simulation-view .simulation-logo-crop img,
+#simulation-view .simulation-hub-hero > .simulation-logo-crop img,
+html[data-theme="light"] #simulation-view .simulation-logo-crop img,
+html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
+html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
+  background: transparent !important;
+  border: 0 !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+  filter: none !important;
+  object-fit: contain !important;
+  content: normal !important;
+}
+
+/* v20.11.5 DARK SIDEBAR HOVER CONTRAST
+   Final override so dark/hybrid navigation never flashes white on hover. */
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled),
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible,
+html[data-theme="hybrid"] .sidebar .nav-item.active,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled),
+html[data-theme="dark"] .sidebar .nav-item:focus-visible,
+html[data-theme="dark"] .sidebar .nav-item.active {
+  background: #245d6d !important;
+  color: #ffffff !important;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled) .nav-label,
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible .nav-label,
+html[data-theme="hybrid"] .sidebar .nav-item.active .nav-label,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled) .nav-label,
+html[data-theme="dark"] .sidebar .nav-item:focus-visible .nav-label,
+html[data-theme="dark"] .sidebar .nav-item.active .nav-label {
+  color: #ffffff !important;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled) small,
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible small,
+html[data-theme="hybrid"] .sidebar .nav-item.active small,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled) small,
+html[data-theme="dark"] .sidebar .nav-item:focus-visible small,
+html[data-theme="dark"] .sidebar .nav-item.active small {
+  color: #d9edf1 !important;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item:hover:not(:disabled) .nav-glyph,
+html[data-theme="hybrid"] .sidebar .nav-item:focus-visible .nav-glyph,
+html[data-theme="hybrid"] .sidebar .nav-item.active .nav-glyph,
+html[data-theme="dark"] .sidebar .nav-item:hover:not(:disabled) .nav-glyph,
+html[data-theme="dark"] .sidebar .nav-item:focus-visible .nav-glyph,
+html[data-theme="dark"] .sidebar .nav-item.active .nav-glyph {
+  background: rgba(255,255,255,.13) !important;
+  color: #ffffff !important;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.18) !important;
+}
+
+
+/* SAFE UX REBUILD 2026-10-30 */
+.info-icon {
+  width: 46px;
+  height: 46px;
+  flex: 0 0 46px;
+  border-radius: 50%;
+  font-size: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.info-icon svg {
+  width: 23px;
+  height: 23px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.info-card { align-items: center; cursor: default; }
+.info-card:hover { transform: none; }
+.help-section-heading { padding: 12px 4px 6px; margin-top: 4px; }
+.help-section-heading h2 { margin: 4px 0; font-size: clamp(1.25rem,1.7vw,1.5rem); }
+.help-section-heading p { margin: 0; color: var(--muted); line-height: 1.5; }
+.help-resource-heading { margin-top: 24px; padding-top: 22px; border-top: 1px solid var(--border); }
+
+html[data-theme="hybrid"] .sidebar .nav-logo-glyph img,
+html[data-theme="dark"] .sidebar .nav-logo-glyph img {
+  filter: drop-shadow(0 0 1px rgba(255,255,255,.96)) drop-shadow(0 0 1px rgba(255,255,255,.78));
+}
+
+@media (max-width: 760px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .info-card { padding: 14px 15px; gap: 12px; }
+  .help-section-heading { padding-left: 0; padding-right: 0; }
+}
+
+
+.guidance-complete {
+  margin: 0 0 14px;
+  padding: 10px 13px;
+  border-radius: 11px;
+  border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 32%,var(--surface));
+  color: var(--text);
+  font-size: .9rem;
+  line-height: 1.45;
+}
+@media (max-width:640px) {
+  .topbar {
+    transition: transform .22s ease, opacity .18s ease;
+    will-change: transform;
+  }
+  body.mobile-nav-hidden .topbar {
+    transform: translateY(calc(-100% - 8px));
+    opacity: .05;
+    pointer-events: none;
+  }
+}
+
+
+/* SAFE UX: progressive disclosure + full collapsed desktop width */
+@media (min-width:981px) {
+  .app-shell.sidebar-collapsed-layout { grid-template-columns: 84px minmax(0,1fr); }
+}
+
+/* Tooltip-fasit for minimert sidemeny.
+   Nav må tillate at etiketten stikker ut mot høyre på desktop/mellombredde. */
+@media (min-width: 641px) {
+  .sidebar.sidebar-collapsed,
+  .sidebar.sidebar-collapsed .nav {
+    overflow: visible !important;
+  }
+
+  .sidebar.sidebar-collapsed .nav-item[data-tooltip] {
+    position: relative;
+    overflow: visible !important;
+  }
+
+  .sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
+    left: calc(100% + 5px);
+    z-index: 400;
+  }
+}
+
+
+/* Flytende sidebar-tooltip rendres i body for å unngå clipping/overflow. */
+.sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
+  display: none !important;
+}
+
+.sidebar-floating-tooltip {
+  position: fixed;
+  z-index: 1000;
+  padding: 6px 8px;
+  border-radius: 8px;
+  background: #102f38;
+  color: #ffffff;
+  font-size: .76rem;
+  font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+  pointer-events: none;
+  box-shadow: 0 6px 16px rgba(0,0,0,.16);
+}
+
+.sidebar-floating-tooltip[hidden] {
+  display: none !important;
+}
+
+
+/* Tydelig avslutning av vanlig Samtalestøtte */
+.conversation-end-row {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 14px;
+}
+
+.conversation-end-button {
+  min-height: 42px;
+}
+
+.conversation-end-panel {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: var(--surface-2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.conversation-end-panel > div:first-child {
+  display: grid;
+  gap: 4px;
+}
+
+.conversation-end-panel strong {
+  font-size: 1rem;
+}
+
+.conversation-end-panel span {
+  color: var(--muted);
+  line-height: 1.45;
+}
+
+.conversation-end-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+@media (max-width: 720px) {
+  .conversation-end-row {
+    justify-content: stretch;
+  }
+
+  .conversation-end-button {
+    width: 100%;
+  }
+
+  .conversation-end-panel {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .conversation-end-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .conversation-end-actions button {
+    width: 100%;
+  }
+}
+
+
+/* Fortsett samtalen: forslag vises ved siste svar og avslutningspanelet respekterer hidden. */
+.continue-suggestions {
+  margin-top: 12px;
+  margin-bottom: 10px;
+}
+
+.conversation-end-panel[hidden] {
+  display: none !important;
+}
+
+.conversation-end-row,
+.conversation-end-actions {
+  align-items: center;
+}
+
+.conversation-end-row .conversation-end-button,
+.conversation-end-actions .primary-button,
+.conversation-end-actions .secondary-button {
+  min-height: 42px;
+  padding: 0 18px;
+  border-radius: 14px;
+  font-size: .92rem;
+  font-weight: 700;
+}
+
+
+/* Samordnet knappestil for oppfølgingsfelt og samtaleavslutning */
+.continue-form .continue-submit-button,
+.conversation-end-row .conversation-end-button {
+  min-height: 42px;
+  height: 42px;
+  padding: 0 18px;
+  border-radius: 14px;
+  font-size: .92rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* Mulige reaksjoner som tydelige egne blokker */
+.reaction-card {
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 15px;
+  background: color-mix(in srgb,var(--surface) 94%,var(--accent-soft));
+}
+
+.reaction-card + .reaction-card {
+  margin-top: 10px;
+}
+
+.reaction-card-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  margin-bottom: 10px;
+}
+
+.reaction-card-title > span {
+  display: inline-grid;
+  place-items: center;
+  min-width: 28px;
+  height: 28px;
+  border-radius: 9px;
+  background: var(--accent-soft);
+  color: var(--accent-strong);
+  font-size: .75rem;
+  font-weight: 800;
+}
+
+.reaction-card-title strong {
+  font-size: .95rem;
+}
+
+.reaction-card-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.reaction-card-body > div {
+  padding: 10px 11px;
+  border-radius: 10px;
+  background: var(--surface);
+  border: 1px solid color-mix(in srgb,var(--border) 80%,transparent);
+}
+
+.reaction-card-body small {
+  display: block;
+  margin-bottom: 5px;
+  color: var(--muted);
+  font-weight: 700;
+}
+
+.reaction-card-body p {
+  margin: 0;
+  line-height: 1.45;
+}
+
+/* Bekreftelsesdialog for avslutning */
+.confirm-dialog {
+  border: 0;
+  padding: 0;
+  background: transparent;
+}
+
+.confirm-dialog::backdrop {
+  background: rgba(10, 26, 31, .42);
+  backdrop-filter: blur(2px);
+}
+
+.confirm-dialog-card {
+  width: min(520px, calc(100vw - 32px));
+  padding: 22px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  background: var(--surface);
+  box-shadow: 0 24px 60px rgba(0,0,0,.22);
+}
+
+.confirm-dialog-card h2 {
+  margin: 0 0 8px;
+}
+
+.confirm-dialog-card p {
+  margin: 0;
+  color: var(--muted);
+  line-height: 1.5;
+}
+
+.confirm-dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 18px;
+}
+
+@media (max-width:720px) {
+  .reaction-card-body {
+    grid-template-columns: 1fr;
+  }
+
+  .guidance-collapsible > .guidance-copy {
+    padding-left: 18px;
+  }
+
+  .confirm-dialog-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+  }
+
+  .confirm-dialog-actions button {
+    width: 100%;
+  }
+}
+
+
+/* Spør videre og Avslutt samtale skal ha samme mål */
+.continue-form .continue-submit-button,
+.conversation-end-row .conversation-end-button {
+  width: 158px;
+  min-width: 158px;
+}
+
+@media (max-width:720px) {
+  .continue-form .continue-submit-button,
+  .conversation-end-row .conversation-end-button {
+    width: 100%;
+    min-width: 0;
+  }
+}
+
+
+/* Samme kompakte knappestil for Spør videre og Avslutt samtale */
+.continue-form .continue-submit-button,
+.conversation-end-row .conversation-end-button {
+  box-sizing: border-box;
+  height: 36px;
+  min-height: 36px;
+  padding: 0 14px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--accent);
+  box-shadow: none;
+  font-size: .9rem;
+  font-weight: 700;
+  transition: .18s ease;
+}
+
+.continue-form .continue-submit-button:hover,
+.conversation-end-row .conversation-end-button:hover {
+  transform: translateY(-1px);
+  border-color: color-mix(in srgb,var(--accent) 42%,var(--border));
+  background: color-mix(in srgb,var(--accent-soft) 38%,var(--surface));
+}
+
+.continue-form .continue-submit-button:focus-visible,
+.conversation-end-row .conversation-end-button:focus-visible {
+  outline: 2px solid color-mix(in srgb,var(--accent) 55%,transparent);
+  outline-offset: 2px;
+}
+
+
+/* GJENOPPRETT HISTORISK RÅDSKORT-UTSEENDE (fasit fra b5e3acb) */
+#structured-guidance .guidance-card {
+  position: relative !important;
+  display: grid !important;
+  grid-template-columns: 30px minmax(0,1fr) !important;
+  gap: 10px !important;
+  align-items: start !important;
+  padding: 14px 15px !important;
+  border: 1px solid var(--border) !important;
+  border-left: 3px solid color-mix(in srgb,var(--accent) 72%,var(--border)) !important;
+  border-radius: 14px !important;
+  background: color-mix(in srgb,var(--surface) 96%,var(--accent-soft)) !important;
+  box-shadow: 0 3px 12px rgba(18,55,53,.035) !important;
+}
+
+#structured-guidance .guidance-card > div {
+  display: block !important;
+  min-width: 0;
+}
+
+#structured-guidance .guidance-card .evidence-details {
+  width: 100%;
+}
+
+#structured-guidance .guidance-card .evidence-details > summary {
+  cursor: pointer;
+  font-weight: 800;
+  color: var(--accent-strong);
+  font-size: 1rem;
+  line-height: 1.25;
+  margin: 1px 0 0;
+}
+
+#structured-guidance .guidance-card .evidence-details[open] > summary {
+  margin-bottom: 6px;
+}
+
+#structured-guidance .guidance-card .guidance-copy {
+  margin: 0 !important;
+  width: 100% !important;
+  max-width: none !important;
+}
+
+@media (max-width:640px) {
+  #structured-guidance .guidance-card {
+    grid-template-columns: 25px minmax(0,1fr) !important;
+    gap: 8px !important;
+    padding: 11px 11px 12px !important;
+    border-radius: 13px !important;
+  }
+
+  #structured-guidance .guidance-card .evidence-details > summary {
+    font-size: .97rem;
+  }
+}
+
+
+
+/* v20.11.24 GUIDANCE COLUMN ALIGNMENT
+   Hold input-/oppsummeringsfelt og resultat i samme visuelle kolonne. */
+@media (min-width:761px) {
+  #guidance-view .situation-form,
+  #guidance-view .temporary-chat-option,
+  #guidance-view .ai-thinking,
+  #guidance-view .situation-understanding,
+  #guidance-view .followup-panel,
+  #guidance-view .prototype-result {
+    width: min(100%, 980px) !important;
+    max-width: 980px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+  }
+
+  #guidance-view .situation-form .main-situation-field,
+  #guidance-view .situation-form .situation-input-shell,
+  #guidance-view .situation-form textarea,
+  #guidance-view .followup-question-field,
+  #guidance-view .followup-question-field textarea {
+    width: 100% !important;
+    max-width: none !important;
+  }
+}
+
+
+
+/* v20.11.31 HERO RESTORE FROM PILOT */
+.hero-intro-collapsed {
+  display: none !important;
+}
+
+
+/* v20.11.32 RESTORE PILOT TOPBAR
+   Gjenopprett minimert toppfelt slik pilot hadde det: én rad på desktop,
+   med tema/profil helt til høyre. Mobil styres fortsatt av egne regler. */
+/* Pilotfasit: stabil minimert header */
+@media (min-width:1101px) {
+  .app-shell.sidebar-collapsed-layout .topbar-left {
+    min-width: 0 !important;
+    overflow: visible !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-brand-logo {
+    display: block !important;
+    width: 170px !important;
+    max-width: 170px !important;
+    flex: 0 0 170px !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout #breadcrumb {
+    min-width: 0 !important;
+    white-space: normal !important;
+    overflow-wrap: anywhere !important;
+  }
+
+  .app-shell.sidebar-collapsed-layout .topbar-right {
+    margin-left: auto !important;
+    justify-content: flex-end !important;
+    flex: 0 0 auto !important;
+  }
+}
+
+
+
+/* v20.11.33 GUIDANCE PRE-RESULT WIDTH ALIGNMENT
+   Hold alle felter før «Forslag til samtalen» i samme visuelle kolonne. */
+@media (min-width:761px) {
+  #guidance-view .privacy-banner,
+  #guidance-view .guidance-safety-banner,
+  #guidance-view .privacy-check,
+  #guidance-view .finder-privacy-check,
+  #guidance-view .situation-form,
+  #guidance-view .temporary-chat-option,
+  #guidance-view .ai-thinking,
+  #guidance-view .situation-understanding,
+  #guidance-view .followup-panel,
+  #guidance-view .prototype-result,
+  #guidance-view .history-loaded-situation {
+    width: min(100%, 980px) !important;
+    max-width: 980px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #guidance-view .privacy-banner > *,
+  #guidance-view .guidance-safety-banner > *,
+  #guidance-view .privacy-check > * {
+    max-width: none !important;
+  }
+}
+
+
+/* v20.11.34 GUIDANCE COLUMN COMPLETION
+   Fullfør samme kolonnebredde for alle relevante blokker i veiledningsvisningen. */
+@media (min-width:761px) {
+  #guidance-view > .content-header,
+  #guidance-view > .auto-topic-note,
+  #guidance-view > .history-privacy-review,
+  #guidance-view > .privacy-banner,
+  #guidance-view > .history-loaded-situation,
+  #guidance-view > .situation-form,
+  #guidance-view > .temporary-chat-option,
+  #guidance-view > .ai-thinking,
+  #guidance-view > .situation-understanding,
+  #guidance-view > .followup-panel,
+  #guidance-view > .prototype-result {
+    width: min(100%, 980px) !important;
+    max-width: 980px !important;
+    margin-left: 0 !important;
+    margin-right: auto !important;
+    box-sizing: border-box !important;
+  }
+
+  #guidance-view > .content-header p,
+  #guidance-view > .content-header h1 {
+    max-width: none !important;
+  }
+
+  #guidance-view .privacy-submit-note {
+    max-width: 980px !important;
+  }
+}
+
+
+
+
+
+
+
+
+
+/* v20.11.44 INTRO BELOW IMAGE IN COLLAPSED VIEW
+   Kun den lille introteksten får egne regler.
+   I minimert desktop dyttes den ned til under bildets bunn og får deretter full bredde.
+   Overskrift, eyebrow, bilde og hero-grid er urørt. */
+@media (min-width:641px) {
+  .app-shell:has(.sidebar.sidebar-collapsed) #home-view
+  .hero-copy > p[data-content-key="home.hero.intro"] {
+    width: 217.4% !important;
+    max-width: none !important;
+    margin-top: max(10px, calc(205px - 100%)) !important;
+  }
+
+  .app-shell:not(:has(.sidebar.sidebar-collapsed)) #home-view
+  .hero-copy > p[data-content-key="home.hero.intro"] {
+    width: auto !important;
+    max-width: 560px !important;
+    margin-top: 10px !important;
+  }
+}
+
+
+/* v20.11.45 Valgfri yrkes-/sektorkontekst */
+.occupation-context-panel{margin:10px 0 2px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);overflow:hidden}
+.occupation-context-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
+.occupation-context-fields label{display:grid;gap:7px;min-width:0;font:inherit;font-size:.9rem;font-weight:700;color:var(--text)}
+.occupation-context-fields select,.occupation-context-fields input[type="text"]{width:100%;min-height:46px;box-sizing:border-box;border:1px solid var(--border);border-radius:14px;background:var(--surface);color:var(--text);padding:10px 12px;font:inherit;font-size:.94rem;font-weight:500;line-height:1.35;outline:none}
+.occupation-context-fields select:focus,.occupation-context-fields input[type="text"]:focus{border-color:color-mix(in srgb,var(--accent) 58%,var(--border));box-shadow:0 0 0 3px color-mix(in srgb,var(--accent) 13%,transparent)}
+.occupation-context-suggestion{margin:18px 0 22px;padding:18px 20px 20px;border:1px solid var(--border);border-radius:20px;background:color-mix(in srgb,var(--accent-soft) 22%,var(--surface));box-shadow:0 4px 14px rgba(20,40,74,.04)}
+.occupation-suggestion-row{display:block;margin-bottom:16px}
+.occupation-suggestion-row p{margin:3px 0 6px;color:var(--muted);font-size:.9rem;line-height:1.45}
+#occupation-context-summary{display:block;margin-top:4px;font-size:.98rem;line-height:1.4}
+@media(max-width:650px){.occupation-context-fields{grid-template-columns:1fr}.occupation-context-suggestion{padding:16px;border-radius:18px}}
+
+
+/* v20.11.46 KILDEHENVISNINGER */
+.inline-source-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.88rem}
+.inline-source-links>span{color:var(--muted);font-weight:700}
+.inline-source-links a{display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--accent);font-weight:750;text-decoration:none}
+.inline-source-links a:hover{text-decoration:underline;background:var(--surface-2)}
+.evidence-list a em{display:block;margin-top:5px;color:var(--accent);font-size:.82rem;font-style:normal;font-weight:750}
+
+
+/* v20.11.47 KATEGORISERT KILDEBANK PÅ HJELP */
+.source-library-intro{max-width:980px;margin-bottom:14px}
+.source-library-intro p{margin:0 0 8px;line-height:1.55}
+.source-library{max-width:980px;display:grid;gap:14px}
+.source-library-tabs{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 4px}
+.source-library-tab{border:1px solid var(--border);background:var(--surface);color:var(--text);border-radius:999px;padding:9px 14px;font:inherit;font-weight:700;cursor:pointer}
+.source-library-tab[aria-selected="true"]{background:var(--accent);color:#fff;border-color:var(--accent)}
+.source-category-panel{display:grid;gap:10px}
+.source-category-panel[hidden]{display:none}
+.source-category-heading{margin:6px 2px 4px}
+.source-category-heading h3{margin:0 0 5px;font-size:1.16rem}
+.source-category-heading p{margin:0;color:var(--muted);line-height:1.5}
+.source-group{border:1px solid var(--border);border-radius:15px;background:var(--surface);overflow:hidden}
+.source-group>summary{cursor:pointer;padding:15px 17px;font-weight:800;display:flex;justify-content:space-between;gap:12px;align-items:center}
+.source-group>summary small{font-weight:600;color:var(--muted)}
+.source-group-body{padding:0 17px 16px;display:grid;gap:8px}
+.source-item{display:grid;gap:3px;padding:11px 0;border-top:1px solid var(--border)}
+.source-item:first-child{border-top:0}
+.source-item a{font-weight:750;color:var(--accent);text-decoration:none}
+.source-item a em{font-style:normal;margin-left:4px}
+.source-item a:hover{text-decoration:underline}
+.source-item-meta{display:flex;gap:7px;flex-wrap:wrap;color:var(--muted);font-size:.82rem}
+.source-kind-badge{display:inline-flex;border:1px solid var(--border);border-radius:999px;padding:2px 7px;background:var(--surface-2)}
+.source-item-use{margin:2px 0 0;color:var(--muted);font-size:.9rem;line-height:1.45}
+@media(max-width:680px){.source-library-tabs{display:grid;grid-template-columns:1fr}.source-library-tab{text-align:left;border-radius:12px}.source-group>summary{align-items:flex-start;flex-direction:column;gap:3px}}
+
+
+/* v20.11.48 KILDEBANK - TILBAKE TIL OVERSIKTLIG ACCORDION */
+#help-source-library.source-library{display:block;max-width:980px}
+#help-source-library .help-source-category{margin:0 0 12px}
+#help-source-library .help-source-category>summary{display:flex;align-items:center;justify-content:space-between;gap:14px}
+#help-source-library .help-source-category>summary small{color:var(--muted);font-weight:600;font-size:.86rem}
+#help-source-library .help-source-category-body{display:block}
+#help-source-library .source-category-description{margin:0 0 12px;color:var(--muted);line-height:1.5}
+#help-source-library .source-item{padding:12px 0;border-top:1px solid var(--border)}
+#help-source-library .source-item:first-of-type{border-top:0}
+#help-source-library .source-group{margin:9px 0;border:1px solid var(--border);border-radius:13px;background:var(--surface-2)}
+#help-source-library .source-group>summary{padding:12px 14px}
+#help-source-library .source-group-body{padding:0 14px 12px}
+#help-source-library .source-library-tabs{display:none!important}
+@media(max-width:680px){
+  #help-source-library .help-source-category>summary{align-items:flex-start;flex-direction:column;gap:3px}
+}
+
+
+/* v20.11.49 TYDELIG KILDEBANK MED PILER */
+#help-source-library .help-source-category>summary,
+#help-source-library .source-group>summary{
+  position:relative;
+  padding-right:46px;
+  cursor:pointer;
+  user-select:none;
+}
+#help-source-library .help-source-category>summary::after,
+#help-source-library .source-group>summary::after{
+  content:"›";
+  position:absolute;
+  right:16px;
+  top:50%;
+  transform:translateY(-50%) rotate(90deg);
+  transform-origin:center;
+  font-size:1.45rem;
+  line-height:1;
+  font-weight:800;
+  color:var(--accent);
+  transition:transform .18s ease;
+}
+#help-source-library .help-source-category[open]>summary::after,
+#help-source-library .source-group[open]>summary::after{
+  transform:translateY(-50%) rotate(270deg);
+}
+#help-source-library .help-source-category>summary{
+  min-height:54px;
+  font-size:1rem;
+  border-radius:14px;
+}
+#help-source-library .help-source-category>summary span{
+  font-weight:850;
+}
+#help-source-library .source-group>summary{
+  min-height:46px;
+  font-size:.95rem;
+}
+#help-source-library .help-source-category>summary::-webkit-details-marker,
+#help-source-library .source-group>summary::-webkit-details-marker{
+  display:none;
+}
+#help-source-library .help-source-category>summary::marker,
+#help-source-library .source-group>summary::marker{
+  content:"";
+}
+
+
+/* v20.11.50 TVING TYDELIGE PILER I HJELP-KILDEBANK */
+#help-source-library .help-source-category>summary,
+#help-source-library .source-group>summary{
+  min-height:54px !important;
+  padding:14px 48px 14px 16px !important;
+  font-size:1rem !important;
+  font-weight:800 !important;
+  line-height:1.3 !important;
+}
+#help-source-library .source-group>summary{
+  min-height:46px !important;
+  padding:12px 44px 12px 14px !important;
+  font-size:.95rem !important;
+}
+#help-source-library .help-source-category>summary::after,
+#help-source-library .source-group>summary::after{
+  content:"›" !important;
+  display:block !important;
+  position:absolute !important;
+  right:16px !important;
+  top:50% !important;
+  transform:translateY(-50%) rotate(90deg) !important;
+  transform-origin:center !important;
+  font-size:1.55rem !important;
+  line-height:1 !important;
+  font-weight:900 !important;
+  color:var(--accent) !important;
+}
+#help-source-library .help-source-category[open]>summary::after,
+#help-source-library .source-group[open]>summary::after{
+  transform:translateY(-50%) rotate(270deg) !important;
+}
+
+
+/* v20.11.51 GJENOPPRETT GAMMEL HJELP-KILDEVISNING */
+#help-view .resource-links{margin:0;padding-left:20px}
+#help-view .resource-links li{margin:8px 0}
+#help-view .resource-links a{color:var(--accent);text-decoration:none;font-weight:650}
+#help-view .resource-links a:hover{text-decoration:underline}
+#help-view .help-sector-source-summary{display:grid;gap:8px}
+#help-view .help-mini-source-group{border-top:1px solid var(--border);padding-top:8px}
+#help-view .help-mini-source-group:first-child{border-top:0;padding-top:0}
+#help-view .help-mini-source-group>summary{cursor:pointer;font-weight:700;display:flex;justify-content:space-between;gap:10px}
+#help-view .help-mini-source-group>summary small{color:var(--muted);font-weight:500}
+#help-view .compact-full-source-library{margin-top:10px}
+#help-view .compact-full-source-library .help-source-category{margin-bottom:8px}
+#help-view .compact-full-source-library .source-item-use,
+#help-view .compact-full-source-library .source-item-meta{display:none}
+
+
+/* v20.11.52 GJENOPPRETT GAMMEL KILDEVISNING + VENSTREPIL */
+#help-view details.utility-accordion > summary{
+  position:relative !important;
+  display:flex !important;
+  align-items:center !important;
+  gap:8px !important;
+  padding:0 !important;
+  min-height:0 !important;
+  font-size:1rem !important;
+  font-weight:600 !important;
+  line-height:1.3 !important;
+  cursor:pointer;
+}
+#help-view details.utility-accordion > summary::after{
+  content:none !important;
+  display:none !important;
+}
+#help-view details.utility-accordion > summary::before{
+  content:"›" !important;
+  display:inline-block !important;
+  flex:0 0 auto;
+  font-size:1.25rem;
+  line-height:1;
+  font-weight:800;
+  color:var(--muted);
+  transform:rotate(0deg);
+  transition:transform .18s ease;
+}
+#help-view details.utility-accordion[open] > summary::before{
+  transform:rotate(90deg);
+}
+#help-view details.utility-accordion > summary::-webkit-details-marker{display:none}
+#help-view details.utility-accordion > summary::marker{content:""}
+#help-view .resource-links{margin:0;padding-left:24px}
+#help-view .resource-links li{margin:8px 0}
+#help-view .resource-links a{color:var(--accent);text-decoration:none;font-weight:600}
+#help-view .resource-links a:hover{text-decoration:underline}
+
+
+/* v20.11.53 ENKEL, KATEGORISERT FULL KILDEBANK */
+#help-view .complete-source-library-simple{display:grid;gap:10px;margin-top:12px}
+#help-view .source-bank-category,
+#help-view .source-bank-sector{border-top:1px solid var(--border);padding-top:8px}
+#help-view .source-bank-category:first-child{border-top:0}
+#help-view .source-bank-category>summary,
+#help-view .source-bank-sector>summary,
+#help-view .compact-source-row>summary{
+  cursor:pointer;
+  font-weight:700;
+  line-height:1.35;
+}
+#help-view .source-bank-category>summary,
+#help-view .source-bank-sector>summary{display:flex;justify-content:space-between;gap:10px;padding:6px 0}
+#help-view .source-bank-category>summary small,
+#help-view .source-bank-sector>summary small{color:var(--muted);font-weight:500}
+#help-view .source-bank-category-body{padding:6px 0 4px 18px}
+#help-view .source-bank-sector-body{padding:4px 0 6px 18px}
+#help-view .source-bank-occupations{margin:4px 0 10px;color:var(--muted);font-size:.9rem;line-height:1.45}
+#help-view .compact-source-row{margin:0;border-top:1px solid color-mix(in srgb,var(--border) 72%,transparent)}
+#help-view .compact-source-row:first-of-type{border-top:0}
+#help-view .compact-source-row>summary{padding:9px 0;color:var(--accent);font-weight:600}
+#help-view .compact-source-detail{padding:0 0 10px 14px}
+#help-view .compact-source-detail p{margin:3px 0;font-size:.9rem;line-height:1.45}
+#help-view .compact-source-detail a{display:inline-block;margin-top:5px;color:var(--accent);font-weight:700;text-decoration:none}
+#help-view .compact-source-detail a:hover{text-decoration:underline}
+
