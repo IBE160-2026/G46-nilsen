@@ -1311,3 +1311,45 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view #complete-source-library .compact-source-detail a{
   font-weight:500 !important;
 }
+
+
+/* v20.11.63 KOMPAKTE SAMMENTRUKNE RÅDSKORT */
+@media (min-width:641px){
+  /* Lukkede kort trenger ikke fylle hele 980px-resultatkolonnen. */
+  #structured-guidance .guidance-card:has(.evidence-details:not([open])){
+    width:min(100%,600px) !important;
+    max-width:600px !important;
+    justify-self:start !important;
+    padding:10px 12px !important;
+    grid-template-columns:26px minmax(0,1fr) !important;
+    gap:8px !important;
+  }
+
+  /* Når kortet åpnes får innholdet full tilgjengelig bredde igjen. */
+  #structured-guidance .guidance-card:has(.evidence-details[open]){
+    width:100% !important;
+    max-width:none !important;
+    justify-self:stretch !important;
+    padding:14px 15px !important;
+    grid-template-columns:30px minmax(0,1fr) !important;
+    gap:10px !important;
+  }
+
+  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .evidence-details>summary{
+    font-size:.92rem !important;
+    line-height:1.2 !important;
+    margin:0 !important;
+  }
+
+  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .guidance-number{
+    font-size:.88rem !important;
+    line-height:1.2 !important;
+  }
+}
+
+@media (max-width:640px){
+  #structured-guidance .guidance-card{
+    width:100% !important;
+    max-width:none !important;
+  }
+}
