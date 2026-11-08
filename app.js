@@ -655,6 +655,7 @@ function openGuidance(title, help, initialSituation = '') {
   }
   updatePrivacyCheck();
   showView('guidance');
+  loadOccupationOptions();
 }
 
 function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
@@ -1302,6 +1303,108 @@ function renderSituationUnderstanding(analysis) {
 }
 
 
+
+let occupationOptionsLoaded=false;
+let occupationOptionsCache=[];
+
+function currentOccupationContext(){
+  return {
+    sectorId: document.querySelector('#occupation-sector')?.value || '',
+    occupation: document.querySelector('#occupation-title')?.value.trim() || '',
+    employerType: document.querySelector('#occupation-employer-type')?.value || ''
+  };
+}
+
+function updateOccupationDatalist(){
+  const sectorId=document.querySelector('#occupation-sector')?.value || '';
+  const datalist=document.querySelector('#occupation-title-options');
+  if(!datalist) return;
+  const sector=occupationOptionsCache.find(item=>item.id===sectorId);
+  const occupations=sector?.occupations || occupationOptionsCache.flatMap(item=>item.occupations||[]);
+  datalist.innerHTML=[...new Set(occupations)].sort((a,b)=>a.localeCompare(b,'nb')).map(item=>`<option value="${escapeHtml(item)}"></option>`).join('');
+}
+
+async function loadOccupationOptions(){
+  if(occupationOptionsLoaded) return;
+  const panel=document.querySelector('#occupation-context-panel');
+  if(!panel) return;
+  try{
+    const response=await fetch('/api/occupation-options',{credentials:'include',cache:'no-store'});
+    const payload=await response.json();
+    if(!response.ok) throw new Error(payload.message||'Kunne ikke hente yrkesvalg.');
+    if(!payload.enabled) return;
+    occupationOptionsLoaded=true;
+    occupationOptionsCache=(payload.sectors||[]).filter(item=>item.id!=='other');
+    const sectorSelect=document.querySelector('#occupation-sector');
+    const employerSelect=document.querySelector('#occupation-employer-type');
+    if(sectorSelect){
+      sectorSelect.innerHTML='<option value="">Ikke valgt</option>'+occupationOptionsCache.map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)}</option>`).join('')+'<option value="other">Annet</option>';
+      sectorSelect.addEventListener('change',updateOccupationDatalist,{once:false});
+    }
+    if(employerSelect){
+      employerSelect.innerHTML=(payload.employerTypes||[]).map(item=>`<option value="${escapeHtml(item.id)}">${escapeHtml(item.label)}</option>`).join('');
+    }
+    updateOccupationDatalist();
+  }catch(error){
+    panel.hidden=true;
+  }
+}
+
+function inferOccupationSuggestion(situation){
+  const text=String(situation||'').toLocaleLowerCase('nb-NO');
+  if(!text || !occupationOptionsCache.length) return null;
+  let best=null;
+  for(const sector of occupationOptionsCache){
+    for(const occupation of (sector.occupations||[])){
+      const needle=String(occupation||'').toLocaleLowerCase('nb-NO');
+      if(needle && text.includes(needle)){
+        const score=needle.length;
+        if(!best || score>best.score) best={sectorId:sector.id,sectorLabel:sector.label,occupation,score};
+      }
+    }
+  }
+  return best;
+}
+
+function renderOccupationSuggestion(situation){
+  const panel=document.querySelector('#occupation-context-panel');
+  const summary=document.querySelector('#occupation-context-summary');
+  const fields=document.querySelector('#occupation-context-fields');
+  if(!panel || !summary) return;
+
+  const suggestion=inferOccupationSuggestion(situation);
+  if(suggestion){
+    const sectorSelect=document.querySelector('#occupation-sector');
+    const occupationInput=document.querySelector('#occupation-title');
+    if(sectorSelect) sectorSelect.value=suggestion.sectorId;
+    if(occupationInput) occupationInput.value=suggestion.occupation;
+    updateOccupationDatalist();
+    summary.textContent=`${suggestion.occupation} · ${suggestion.sectorLabel}`;
+  }else{
+    summary.textContent='Ingen yrkeskontekst foreslått';
+  }
+
+  if(fields) fields.hidden=false;
+  panel.hidden=false;
+}
+
+function scrollToOccupationContextAfterRender(){
+  const target=document.querySelector('#occupation-title') || document.querySelector('#occupation-context-panel');
+  if(!target) return;
+  let attempts=0;
+  const settle=()=>{
+    attempts+=1;
+    const rect=target.getBoundingClientRect();
+    if(rect.height>0 || attempts>6){
+      target.scrollIntoView({ behavior:'smooth', block:'center' });
+      if(target.matches?.('input,select,textarea,button')) target.focus({ preventScroll:true });
+      return;
+    }
+    requestAnimationFrame(settle);
+  };
+  setTimeout(()=>requestAnimationFrame(settle),180);
+}
+
 async function requestAiSituationAnalysis(situation, helpRequest) {
   const response = await fetch('/api/analyze-situation', {
     method: 'POST',
@@ -1312,6 +1415,7 @@ async function requestAiSituationAnalysis(situation, helpRequest) {
       helpRequest,
       selectedTopic: currentTopic?.title || '',
       selectedSubtopic: currentSubtopic || '',
+      ...currentOccupationContext(),
       privacyNameOverrides: privacyNameOverridesForText(situation)
     })
   });
@@ -1332,7 +1436,7 @@ async function requestAiGuidance(situation, analysis, followups) {
     method: 'POST',
     credentials: 'include',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '', privacyNameOverrides: privacyNameOverridesForText(situation) })
+    body: JSON.stringify({ situation, analysis, followups, topicId: currentTopic?.id || '', subtopic: currentSubtopic || '', ...currentOccupationContext(), privacyNameOverrides: privacyNameOverridesForText(situation) })
   });
   if (!response.ok) {
     let payload = {};
@@ -2681,6 +2785,8 @@ document.querySelector('#situation-form').addEventListener('submit', async event
   try {
     const aiAnalysis = await requestAiSituationAnalysis(situationText, helpRequest);
     lastAiAnalysis = aiAnalysis;
+    await loadOccupationOptions();
+    renderOccupationSuggestion(situationText);
     renderAiSituationUnderstanding(aiAnalysis);
     const count = aiAnalysis.needs_clarification
       ? renderAiFollowupQuestions(aiAnalysis.clarifications)
@@ -2688,14 +2794,18 @@ document.querySelector('#situation-form').addEventListener('submit', async event
 
     if (count > 0) {
       document.querySelector('#followup-panel').hidden = false;
+      scrollToOccupationContextAfterRender();
     } else {
       // Ingen nødvendige avklaringer: hopp over avklaringsseksjonen og gå rett til rådet.
       document.querySelector('#followup-panel').hidden = true;
       directGuidance = true;
       await showStructuredGuidance();
+      scrollToOccupationContextAfterRender();
     }
   } catch (error) {
     lastAiAnalysis = null;
+    await loadOccupationOptions();
+    renderOccupationSuggestion(situationText);
     const localAnalysis = analyzeSituation(situationText);
     const localQuestions = buildFollowupQuestions(situationText);
     renderSituationUnderstanding(localAnalysis);
@@ -2703,9 +2813,11 @@ document.querySelector('#situation-form').addEventListener('submit', async event
     if (localQuestions.length) {
       renderFollowupQuestions(localQuestions);
       document.querySelector('#followup-panel').hidden = false;
+      scrollToOccupationContextAfterRender();
     } else {
       followupContainer.innerHTML = '';
       document.querySelector('#followup-panel').hidden = true;
+      scrollToOccupationContextAfterRender();
     }
 
     const note = document.createElement('div');
