@@ -278,6 +278,15 @@ Sterke internasjonale rammeverk, men ikke norsk lov. De kan støtte faglige prin
 - for indirekte og kontekstuelt fjern fra norske medarbeidersamtaler
 - ikke nødvendig når bedre samtale-/lytteforskning allerede finnes
 
+**Weger et al. 2010 – aktiv lytting i peer-intervjuer**
+- fagfellevurdert, men liten og indirekte studie
+- fjernet fordi en nyere 2024-meta-analyse om lytting og arbeidsutfall gir betydelig sterkere grunnlag
+
+**Burke et al. 2003 – klinisk MI-meta-analyse**
+- god forskning i sin kliniske/endringsorienterte kontekst
+- fjernet fra hovedbanken fordi ordinær lederdialog ikke skal behandles som terapi
+- Helsedirektoratets MI-metode beholdes som forsiktig faglig rammeverk
+
 ### Avgrenset
 
 **Forsvarets grunnsyn på ledelse**
@@ -416,7 +425,7 @@ Testen inngår i `npm run test-local`.
 
 Etter kvalitetsryddingen består kildegrunnlaget av tre forskjellige lag:
 
-- ca. 60 generelle fag-, forsknings-, lov- og myndighetskilder
+- 58 generelle fag-, forsknings-, lov- og myndighetskilder
 - ca. 85 overordnede arbeidsgiver-/yrkes-/sektorkilder
 - 7 konkrete kuraterte tariff-/hovedavtale-/arbeidsgiverreferanser
 
