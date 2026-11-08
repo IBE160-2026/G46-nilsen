@@ -157,3 +157,6 @@ assert(overrideCss.includes('.source-bank-top-title::after') && overrideCss.incl
 assert(overrideCss.includes('.source-bank-sector-title::after') && overrideCss.includes('.compact-source-title::after'), 'Kildepil-hierarkiet er ikke definert');
 assert(overrideCss.includes('.compact-source-row[open]>summary .compact-source-title::after'), 'Liten inline-pil mangler på konkrete kilder');
 console.log('Valgfritt yrke, kollapsede reaksjoner og kompakt kildebank: OK');
+
+assert(overrideCss.includes('#structured-guidance .guidance-card:has(.evidence-details:not([open]))') && overrideCss.includes('max-width:600px !important;'), 'Sammentrukne rådskort er ikke gjort betydelig smalere');
+assert(overrideCss.includes('#structured-guidance .guidance-card:has(.evidence-details[open])') && overrideCss.includes('width:100% !important;'), 'Åpne rådskort skal fortsatt bruke full bredde');
