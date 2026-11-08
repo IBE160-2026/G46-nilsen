@@ -53,6 +53,8 @@ assert.equal(occById.get("IA_AGREEMENT_2025_2028").bindingStatus,"non_binding_fr
 assert.equal(occById.get("AKAN_MODEL").bindingStatus,"non_binding_guidance","Akan skal ikke klassifiseres som bindende lov");
 assert(!occById.get("AKAN_HELP_EMPLOYEE").useFor.includes("oppfølging"),"Generisk «oppfølging» skal ikke trigge Akan");
 assert(!occById.get("AKAN_MODEL").useFor.includes("arbeidsliv"),"Generisk «arbeidsliv» skal ikke trigge Akan");
+assert.deepStrictEqual(occById.get("STATE_EMPLOYEE_ACT")?.employerTypes,["state"],"Statsansatteloven skal styres av statlig arbeidsgivertype");
+assert.deepStrictEqual(occById.get("STATE_ETHICS")?.employerTypes,["state"],"Statens etiske retningslinjer skal styres av statlig arbeidsgivertype");
 
 for(const id of [
   "AT_RULES","FINANSTILSYNET_RULES","HAVTIL_RULES_PDF","HELSETILSYNET_RULES",
