@@ -1182,3 +1182,24 @@ Den tidligere ca. 9 389 linjer lange CSS-filen er delt i `styles-core.css`, `sty
 
 ## Kildekrav – profesjonsavgrensning
 Yrkes-/sektorkilder skal kunne avgrenses på både sektor og konkret yrke. Antall kilder er ikke et kvalitetsmål i seg selv; feil eller for brede kilder er verre enn ingen særkilde.
+
+
+## Tillegg 08.11.2026 – krav til kildeautoritet
+
+**Status: IMPLEMENTERT I MAIN / PRODUKSJONSDEPLOY MÅ VERIFISERES**
+
+Samtalestøtte skal ikke behandle alle kilder som likeverdige.
+
+Produktkrav:
+- bindende rettslige påstander skal forankres i gjeldende lov/forskrift når tilgjengelig
+- tariff-/hovedavtale skal bare brukes konkret når riktig avtaleområde er avklart
+- myndighetsveiledning skal ikke fremstilles som selvstendig lovhjemmel
+- Akan og IA skal ikke fremstilles som lov
+- forskning og faglige rammeverk skal ikke brukes til å fastslå juridiske plikter
+- brede myndighetsoversikter skal kunne brukes som retrieval-start, men ikke som direkte hjemmel
+- arbeidsgivertype skal aldri defaultes eller gjettes
+- tariffkontekst skal kunne være relevant uten valgt yrke
+- yrkes-/sektorkilder skal kunne registreres og vises som kuraterte `source_ids`
+- samme URL skal ikke ligge flere ganger i bankene for å skape kunstig kildevolum
+
+Regresjonsvern: `tests/test-source-policy.cjs`.
