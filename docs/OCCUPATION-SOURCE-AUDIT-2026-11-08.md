@@ -10,7 +10,7 @@ Målet er ikke å gi hvert yrke en kunstig egen lov. Mange stillinger reguleres 
 
 ## Kildemodell
 
-Registeret har nå 62 autoritative startkilder.
+Registeret har nå 85 autoritative startkilder.
 
 En kilde kan avgrenses til:
 - hele sektoren
@@ -128,4 +128,42 @@ Den siste tverrsektorielle kontrollen avdekket fire ytterligere særkilder:
 - **apotektekniker:** apoteklovens krav til apotekets personale og kompetanse
 - **sjøfolk:** STCW-opplæringskrav som fra 2026 omfatter forebygging og håndtering av vold, trakassering, seksuell trakassering, mobbing og seksuelle overgrep
 
-Dette løftet registeret til 62 autoritative yrkes-/sektorkilder.
+Dette løftet registeret til 85 autoritative yrkes-/sektorkilder.
+
+
+## Korrigert balansegjennomgang – alle sektorer
+
+Etter første gjennomgang ble det oppdaget en metodisk skjevhet: eksemplet «politi» hadde fått uforholdsmessig stor oppmerksomhet. En ny gjennomgang ble derfor gjort med samme kriterier for alle sektorer.
+
+Nytt kildeantall per sektor:
+- Utdanning og oppvekst: 7
+- Helse og omsorg: 6
+- Offentlig forvaltning og juss: 7
+- Forsvar, politi og beredskap: 13
+- Produksjon og industri: 5
+- Bygg, anlegg og tekniske fag: 6
+- Fiskeri, havbruk og sjø: 10
+- Transport og logistikk: 8
+- Handel, service, hotell og servering: 6
+- Kontor, økonomi, finans og IT: 7
+- Veterinær, dyrehelse og dyr: 5
+- Offshore, energi og kraft: 6
+- Landbruk, skogbruk og natur: 6
+- Luftfart: 4
+
+Tallet 13 for «Forsvar, politi og beredskap» er et **sektortall**, ikke antall kilder for politiet. Innen sektoren har politiet 6 relevante kilder, Forsvaret 6, kriminalomsorg/fengselsbetjent 4, brann 2 og vekter/sikkerhetsmedarbeider 2. Sektoren blir høy fordi den rommer flere separate, sterkt regulerte profesjoner.
+
+Ny dekning omfatter blant annet:
+- læreres kompetansekrav, skolens aktivitetsplikt, politiattest og bemanning i barnehage
+- reaksjoner ved brudd på helsepersonelloven
+- offentleglova og journalførings-/arkivregler
+- varmt arbeid, arbeidsutstyr, arbeid i høyden og asbestrisiko
+- jernbanens kompetansestyring og transportspesifikke lønnsvilkår
+- servering/renhold: allmenngjorte lønnsvilkår og vold/trusler
+- hvitvasking, forsikringskompetanse, interessekonflikter og avlønningskrav
+- veterinærmedisinske legemiddelregler og kompetansekrav ved dyrehold
+- offshore arbeidstidsordninger, hvile og restitusjon
+- jordbruk/gartneri: allmenngjorte lønnsvilkår og dyrevelferdskompetanse
+- luftfart: bakgrunnssjekk/vandel for adgang til sikkerhetsområder
+
+Registeret har etter denne balanserte gjennomgangen 85 autoritative startkilder.
