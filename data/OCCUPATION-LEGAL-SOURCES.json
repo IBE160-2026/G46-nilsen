@@ -1,5 +1,5 @@
 {
-  "version": 19,
+  "version": 20,
   "verifiedAt": "2026-11-08",
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
@@ -1098,9 +1098,9 @@
     },
     {
       "id": "ARKIVVERKET_JOURNALING",
-      "authority": "Arkivverket",
-      "title": "Journalføring og arkivering i offentlig sektor",
-      "url": "https://www.arkivverket.no/veiledere-for-offentlig-sektor/veileder-for-arkivering-og-journalforing/",
+      "authority": "Nasjonalarkivet",
+      "title": "Veileder for journalføring",
+      "url": "https://www.nasjonalarkivet.no/veiledere/veileder-for-journalforing/",
       "sectors": [
         "public_admin_legal"
       ],
@@ -1471,9 +1471,9 @@
     },
     {
       "id": "OFFENTLEGLOVA",
-      "authority": "Regjeringen",
+      "authority": "Lovdata",
       "title": "Offentleglova",
-      "url": "https://www.regjeringen.no/no/dokumenter/offentleglova/id546797/",
+      "url": "https://lovdata.no/nav/lov/2006-05-19-16",
       "sectors": [
         "public_admin_legal"
       ],
@@ -1502,8 +1502,10 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
+      "sourceType": "law_database",
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
     },
     {
       "id": "PERSONOPPLYSNINGSLOVEN",
