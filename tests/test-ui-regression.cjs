@@ -71,8 +71,18 @@ if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.5");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
-assert(/<script src=["']src\/privacy-name-data\.js\?v=20\.11\.13["']><\/script>[\s\S]*<script src=["']src\/privacy-detector\.js\?v=20\.11\.13["']><\/script>[\s\S]*<script src=["']src\/client-data\.js\?v=20\.11\.13["']><\/script>[\s\S]*<script src=["']app\.js\?v=20\.11\.13["']><\/script>/.test(html), "Personvernmodul og klientdata lastes ikke før app.js med riktig versjon");
-console.log("Klientmodul-innlasting: OK");
+const privacyNamePos = html.indexOf('src/privacy-name-data.js?v=');
+const privacyDetectorPos = html.indexOf('src/privacy-detector.js?v=');
+const clientDataPos = html.indexOf('src/client-data.js?v=');
+const appScriptPos = html.indexOf('app.js?v=');
+assert(
+  privacyNamePos >= 0 &&
+  privacyDetectorPos > privacyNamePos &&
+  clientDataPos > privacyDetectorPos &&
+  appScriptPos > clientDataPos,
+  "Personvernmodul og klientdata lastes ikke i sikker rekkefølge før app.js"
+);
+console.log("Klientmodul-innlasting og rekkefølge: OK");
 
 // Ansvarlig bruk: brukergrensesnittet skal tydelig vise at KI-råd er veiledning og ikke faglig fasit.
 assert(html.includes('Veiledning – ikke faglig fasit'), 'Mangler synlig advarsel om at KI-råd ikke er faglig fasit');
