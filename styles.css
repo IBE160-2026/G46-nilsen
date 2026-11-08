@@ -9358,3 +9358,31 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view .resource-links li{margin:8px 0}
 #help-view .resource-links a{color:var(--accent);text-decoration:none;font-weight:600}
 #help-view .resource-links a:hover{text-decoration:underline}
+
+
+/* v20.11.53 ENKEL, KATEGORISERT FULL KILDEBANK */
+#help-view .complete-source-library-simple{display:grid;gap:10px;margin-top:12px}
+#help-view .source-bank-category,
+#help-view .source-bank-sector{border-top:1px solid var(--border);padding-top:8px}
+#help-view .source-bank-category:first-child{border-top:0}
+#help-view .source-bank-category>summary,
+#help-view .source-bank-sector>summary,
+#help-view .compact-source-row>summary{
+  cursor:pointer;
+  font-weight:700;
+  line-height:1.35;
+}
+#help-view .source-bank-category>summary,
+#help-view .source-bank-sector>summary{display:flex;justify-content:space-between;gap:10px;padding:6px 0}
+#help-view .source-bank-category>summary small,
+#help-view .source-bank-sector>summary small{color:var(--muted);font-weight:500}
+#help-view .source-bank-category-body{padding:6px 0 4px 18px}
+#help-view .source-bank-sector-body{padding:4px 0 6px 18px}
+#help-view .source-bank-occupations{margin:4px 0 10px;color:var(--muted);font-size:.9rem;line-height:1.45}
+#help-view .compact-source-row{margin:0;border-top:1px solid color-mix(in srgb,var(--border) 72%,transparent)}
+#help-view .compact-source-row:first-of-type{border-top:0}
+#help-view .compact-source-row>summary{padding:9px 0;color:var(--accent);font-weight:600}
+#help-view .compact-source-detail{padding:0 0 10px 14px}
+#help-view .compact-source-detail p{margin:3px 0;font-size:.9rem;line-height:1.45}
+#help-view .compact-source-detail a{display:inline-block;margin-top:5px;color:var(--accent);font-weight:700;text-decoration:none}
+#help-view .compact-source-detail a:hover{text-decoration:underline}
