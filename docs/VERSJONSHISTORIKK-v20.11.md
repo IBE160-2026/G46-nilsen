@@ -157,7 +157,7 @@ Denne arbeidsrunden må ikke omtales som fulltestet release før samlet regresjo
 
 - Yrkes-/sektorkontekst koblet videre inn i produksjonskoden.
 - Negasjons- og kildepresisjonstester utvidet for å hindre falske positive regelverkskilder.
-- Yrkes-/sektorkilderegisteret utvidet fra 31 til 62 autoritative startkilder.
+- Yrkes-/sektorkilderegisteret utvidet fra 31 til 85 autoritative startkilder.
 - Kildemodellen støtter nå `occupations` i tillegg til `sectors`.
 - Politiet, kriminalomsorgen, Forsvaret, vekter, revisor, regnskapsfører, lokfører, yrkessjåfør, reindrift, luftfart og flere andre områder fikk mer presise særkilder.
 - Fotterapeut flyttet fra Handel/service til Helse og omsorg.
