@@ -13,12 +13,30 @@ const allCases = data.cases || [];
 const pilotOnly = process.argv.includes("--pilot");
 const occupationOnly = process.argv.includes("--occupation");
 const requestedLimit = Number(process.env.AI_TEST_LIMIT || 0);
+const requestedCaseIds = new Set(
+  String(process.env.AI_TEST_CASE_IDS || "")
+    .split(",")
+    .map(value => value.trim())
+    .filter(Boolean)
+);
 const selectedCases = pilotOnly
   ? allCases.filter(tc => tc.pilot_regression)
   : occupationOnly
     ? allCases.filter(tc => tc.golden_group)
     : allCases;
-const cases = requestedLimit > 0 ? selectedCases.slice(0, requestedLimit) : selectedCases;
+const idFilteredCases = requestedCaseIds.size
+  ? selectedCases.filter(tc => requestedCaseIds.has(tc.id))
+  : selectedCases;
+const cases = requestedLimit > 0 ? idFilteredCases.slice(0, requestedLimit) : idFilteredCases;
+
+if (requestedCaseIds.size) {
+  const found = new Set(cases.map(tc => tc.id));
+  const missing = [...requestedCaseIds].filter(id => !found.has(id));
+  if (missing.length) {
+    console.error(`Ukjente eller ikke valgte golden-case-ID-er: ${missing.join(", ")}`);
+    process.exit(2);
+  }
+}
 const port = 3203;
 const base = `http://127.0.0.1:${port}`;
 
@@ -71,7 +89,8 @@ async function post(url, body) {
       const r = await fetch(`${base}${url}`, {
         method: "POST",
         headers: { "content-type": "application/json" },
-        body: JSON.stringify(body)
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(105000)
       });
       const data = await r.json().catch(() => ({}));
       if (r.ok) return data;

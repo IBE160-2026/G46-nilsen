@@ -119,7 +119,7 @@ app.get("/api/public-config", (_req, res) => {
 const apiKey = process.env.OPENAI_API_KEY;
 const openRouterApiKey = process.env.OPENROUTER_API_KEY;
 const defaultModel = process.env.OPENAI_MODEL || (openRouterApiKey ? "openrouter/free" : "gpt-5.6-luna");
-const client = apiKey ? new OpenAI({ apiKey }) : null;
+const client = apiKey ? new OpenAI({ apiKey, timeout: 90000, maxRetries: 0 }) : null;
 const openRouterClient = openRouterApiKey ? new OpenAI({
   apiKey: openRouterApiKey,
   baseURL: "https://openrouter.ai/api/v1",
