@@ -800,7 +800,7 @@ function createUi() {
       '<div class="live-pilot-actions">' +
         '<button id="live-pilot-start" class="live-pilot-primary" type="button">Start mikrofon</button>' +
         '<button id="live-pilot-stop" class="live-pilot-secondary" type="button" disabled>Stopp mikrofon</button>' +
-        '<button id="live-pilot-send" class="live-pilot-primary" type="button">Send</button>' +
+        '<button id="live-pilot-send" class="live-pilot-primary" type="button">Få råd / send</button>' +
         '<button id="live-pilot-clear" class="live-pilot-danger" type="button">Slett</button>' +
         '<button id="live-pilot-stop-speech" class="live-pilot-secondary" type="button" hidden>Stopp opplesning</button>' +
       '</div>' +
@@ -811,7 +811,7 @@ function createUi() {
         '<label><input id="live-pilot-tts" type="checkbox" checked> Les korte systemmeldinger høyt</label>' +
         '<label for="live-pilot-voice">Stemme <select id="live-pilot-voice"></select></label>' +
       '</div>' +
-      '<p class="live-pilot-help"><strong>Talekommandoer:</strong> «send», «slett», «start på nytt», «hopp over», «fortsett», «stopp mikrofon», «ja» og «nei». Si «send» som en egen ytring. Mikrofonen varsler etter 45 sekunder uten tale og slås av etter 60 sekunder.</p>' +
+      '<p class="live-pilot-help"><strong>Talekommandoer:</strong> «send», «slett», «start på nytt», «hopp over», «fortsett», «stopp mikrofon», «ja» og «nei». Si «send», «ferdig» eller «få råd» som en egen ytring. Mikrofonen varsler etter 45 sekunder uten tale og slås av etter 60 sekunder.</p>' +
     '</div>';
   document.body.appendChild(panel);
   state.panel = panel;
@@ -836,7 +836,18 @@ function createUi() {
 
   q("#live-pilot-start").addEventListener("click", startMicrophone);
   q("#live-pilot-stop").addEventListener("click", function () { stopMicrophone(false); });
-  q("#live-pilot-send").addEventListener("click", beginSend);
+  q("#live-pilot-send").addEventListener("click", function () {
+    if (state.micActive && state.speakingDetected) {
+      state.speakingDetected = false;
+      commitAudioTurn();
+      setMessage("Avslutter siste lydsegment. Trykk «Få råd» igjen når teksten vises.");
+      return;
+    }
+    beginSend().catch(function (error) {
+      setStatus("Kunne ikke sende", "error");
+      setMessage(error.message || "Sendingen feilet.");
+    });
+  });
   q("#live-pilot-stop-speech").addEventListener("click", stopSpeech);
 
   q("#live-pilot-clear").addEventListener("click", function () {
