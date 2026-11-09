@@ -193,7 +193,11 @@ Arbeidsformen ble derfor:
 
 Etter kalibrering ga siste verifiserte golden-kjøring mot GPT-5.6 Luna 9/9 OK, uten kritiske eller tekniske avvik. Jeg ser likevel ikke dette som et bevis på at modellen alltid vil svare perfekt. Det er et bevis på at den besto ni definerte, representative kontrollcaser på det tidspunktet testen ble kjørt.
 
-Etter faglærers tilbakemelding ble golden-banken senere utvidet til 21 caser. Alle ni hovedtemaer har nå minst to caser, og risikoområdene mobbing/trakassering og avslutning av arbeidsforhold har ekstra dekning. Den utvidede banken ble deretter kjørt live mot GPT-5.6 Luna. Det maskinelle resultatet var 19 OK, 2 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil. De to gule casene ble manuelt kontrollert mot den eksplisitte MÅ-/BØR-fasiten. Begge traff de faglige hovedkravene; flagget kom av at modellen ikke satte `Avklaring` til ja selv om svaret ellers inneholdt relevante avklarende kontrollpunkter og en forsvarlig videre prosess. Jeg valgte derfor å dokumentere resultatet som 19 maskinelt OK + 2 manuelt akseptert, i stedet for å endre testen bare for å få 21 grønne. Det er et konkret eksempel på at målet med testingen ikke er grønnest mulig rapport, men å finne ut om svaret faktisk er godt nok.
+Etter faglærers tilbakemelding ble golden-banken senere utvidet til 21 caser. Alle ni hovedtemaer fikk minst to caser, og risikoområdene mobbing/trakassering og avslutning av arbeidsforhold fikk ekstra dekning. Den utvidede banken ble deretter kjørt live mot GPT-5.6 Luna. Det maskinelle resultatet var 19 OK, 2 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil. De to gule casene ble manuelt kontrollert mot den eksplisitte MÅ-/BØR-fasiten. Begge traff de faglige hovedkravene; flagget kom av at modellen ikke satte `Avklaring` til ja selv om svaret ellers inneholdt relevante avklarende kontrollpunkter og en forsvarlig videre prosess. Jeg valgte derfor å dokumentere resultatet som 19 maskinelt OK + 2 manuelt akseptert, i stedet for å endre testen bare for å få 21 grønne.
+
+Senere ble golden-banken utvidet videre til 66 caser, hvorav 40 er strenge yrke/sektor/tariff/kilde-caser. Den første fulle live-kjøringen av disse 40 mot gpt-5.6-luna ga 37 OK og 3 BØR SJEKKES, uten kritiske eller tekniske feil. Gjennomgangen av de tre gule casene ble et enda tydeligere eksempel på hvorfor testing av KI krever menneskelig årsaksanalyse. Én case viste at fasiten var for rigid om hovedtema selv om den juridiske behandlingen og kilden var riktig. Én case viste at testheuristikken var for grov og kunne tolke en legitim replikk med «du bør» som en instruksjon til lederen. Den tredje avdekket en reell systemfeil: statsansatteloven ble omtalt riktig i selve rådet, men falt ut av strukturerte `source_ids` fordi kildeprioriteringen ikke ga den arbeidsgiverspesifikke primærloven nok vekt.
+
+Jeg valgte derfor tre ulike tiltak i stedet for å «fikse testen til grønn»: presisere fasiten der flere faglig gode svar var mulige, forbedre testmetoden der den målte feil ting, og rette produksjonslogikken der systemet faktisk var svakere enn ønsket. Etter regresjonstesting og ny live-verifisering ga sluttkjøringen 09.11.2026 **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil**. For meg oppsummerer dette prosjektets viktigste læring om KI-testing: et grønt tall har bare verdi når jeg forstår hvorfor testen er grønn, hva den faktisk kontrollerer, og hvilke begrensninger som fortsatt finnes.
 
 Jeg presiserte også at den manuelle fasiten er laget av meg som prosjekteier med KI-støtte og kildegrunnlag, ikke av en uavhengig ekspert. Ved videre validering ville jeg derfor brukt ulik fagkompetanse etter hva som vurderes, for eksempel samtalefag/organisasjonspsykologi for samtaleteknikk og arbeidsrett/HMS for formelle spørsmål.
 
@@ -337,7 +341,7 @@ Jeg har blitt bedre til å:
 - dokumentere avgrensninger ærlig
 - stoppe funksjonsvekst når nytteverdien ikke forsvarer risikoen
 
-Golden-testingen oppsummerer denne læringen best. Først var målet å få gode KI-svar. Etter hvert forsto jeg at jeg også måtte kunne vise **hvordan jeg vet at svarene er gode nok**, og samtidig kunne oppdage når selve vurderingsmetoden er feil.
+Golden-testingen oppsummerer denne læringen best. Først var målet å få gode KI-svar. Etter hvert forsto jeg at jeg også måtte kunne vise **hvordan jeg vet at svarene er gode nok**, og samtidig kunne oppdage når selve vurderingsmetoden er feil. Sluttrunden med 37/40, årsaksanalyse av tre ulike feilklasser og deretter 40/40 ble derfor mer lærerik enn om første kjøring bare hadde vært grønn.
 
 ---
 
@@ -400,7 +404,7 @@ Sentrale spor som underbygger refleksjonen:
 
 ### Verifiserte testresultater som kan omtales i rapporten
 
-- personvern: 33/33
+- personvern: 73/73
 - samtalesimulering: 24/24
 - server-personvern: bestått
 - UI-regresjon: bestått
@@ -413,9 +417,9 @@ Sentrale spor som underbygger refleksjonen:
 - offentlige frontend-assets: bestått
 - repo-struktur: bestått
 - package-lock-konsistens: bestått
-- siste verifiserte live golden-kjøring mot GPT-5.6 Luna: 21 caser, 19 OK, 2 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil; de to gule ble manuelt vurdert som faglig akseptable
+- siste verifiserte live occupation-golden-kjøring mot gpt-5.6-luna 09.11.2026: 40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil; tidligere 21-case-resultat beholdes som historisk teststeg
 
-**Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt etter den kontrollerte modulariseringen og besto, inkludert UI-regresjon, sensor-demo, offentlige frontend-assets, repo-struktur og package-lock-konsistens. Etter at golden-banken senere ble utvidet til 21 caser og brukeradvarsler/testdokumentasjon ble oppdatert, ble hele pakken kjørt på nytt 26.10.2026 og besto fortsatt. Golden-schemaet verifiserte samtidig 21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert fasitopphav. Senere samme dag ble det gjort ytterligere mindre kodeendringer i flerfaglig runtime og retensjon for brukertestdata. Disse ble derfor kontrollert på nytt. Den eneste nye feilen var i repo-strukturtesten, som ikke kjente igjen lærerens nye `CLAUDE.md` og `.claude/` som tilsiktede kursfiler. Testen ble oppdatert til å tillate disse og framtidige `.logs/`-sesjonslogger, uten å åpne for andre tilfeldige rotfiler. Repo-strukturtesten besto deretter. Jeg unngikk dermed å bruke en eldre grønn kjøring som bevis for kode som var endret etterpå.
+**Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt gjentatte ganger gjennom prosjektet og besto etter de siste kodeendringene. Den endelige KI-kvalitetsrunden 09.11.2026 bygget videre på dette med 40 strenge yrke/sektor/tariff/kilde-caser. Første fullrunde ga 37/40 og førte til målrettet retting av fasit, testheuristikk og kildeprioritering. Etter nye regresjonstester og quality gate ga sluttkjøringen 40/40 OK. Dokumentasjonsoppdateringen etterpå utløste også en ny full GitHub Actions quality gate på `main`, run 42665279811, som var SUCCESS. Dermed bruker jeg ikke en eldre grønn kjøring som bevis for senere kode eller dokumentasjon.
 
 
 ## Tillegg 28.–29.10.2026 – produksjonsflyt som avdekket feil utenfor KI-modellen
@@ -564,9 +568,9 @@ Quality-gaten fant også reelle dataproblemer. Yrket «sekretær» lå i to sekt
 
 Til slutt la jeg inn `npm audit --omit=dev --audit-level=high` som gate. Den fant en høy sårbarhet i body-parser og en moderat i qs. Begge ble oppgradert til patchede versjoner, og deretter besto full testpakke og dependency audit.
 
-Siste dokumenterte grønne quality-gate i denne verifikasjonsrunden er run **42531396584** på commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`.
+Siste dokumenterte grønne quality gate etter kode- og kildeprioriteringsretting er run **42646984725** på commit `a8756d36c492be39e70611c0946c026234beb965`. Etter at 40/40-sluttresultatet ble dokumentert, besto også GitHub Actions run **42665279811** på `main`.
 
-Jeg tolker ikke dette som at språkmodellen nå er «bevist korrekt». Det er et viktig skille mellom deterministic testing av ruting, kildepolicy, personvern og kontrakter, og faktisk live modellkvalitet. De 40 nye yrkes-golden-casene er foreløpig ikke dokumentert som bestått mot en ekstern live modell. Det ville vært metodisk feil å slå sammen disse bevisnivåene.
+Jeg tolker ikke dette som at språkmodellen nå er «bevist korrekt». Det er fortsatt et viktig skille mellom deterministic testing av ruting, kildepolicy, personvern og kontrakter, og faktisk live modellkvalitet. Forskjellen er at begge bevisnivåene nå er dokumentert separat: deterministic quality gate er grønn, og de 40 strenge yrke/sektor/tariff/kilde-casene ble 09.11.2026 kjørt live mot gpt-5.6-luna med 40/40 OK. Det ville fortsatt vært metodisk feil å slå disse sammen til en påstand om generell juridisk eller faglig korrekthet.
 
 Denne runden har derfor endret min forståelse av testing: målet er ikke flest grønne tester, men at hver test representerer et gyldig krav, kan avsløre meningsfulle feil og gir et resultat som tolkes kritisk.
 

@@ -189,7 +189,7 @@ Dette skal testes som en separat pilot og ikke regnes som del av produksjonsløs
 
 ## Statusoppdatering 08.11.2026 – faglig presisjon per yrke
 
-Yrkes-/sektorlaget ble videreutviklet fra grov sektorbasert kildebruk til profesjonsavgrenset kildebruk. Det autoritative registeret inneholder nå 85 startkilder, og alle yrkene i kildekartet er gjennomgått med tanke på særregler, autorisasjon, sertifikatkrav, etiske retningslinjer og andre profesjonskrav som kan være relevante i en krevende medarbeidersamtale.
+Yrkes-/sektorlaget ble videreutviklet fra grov sektorbasert kildebruk til profesjonsavgrenset kildebruk. Det autoritative registeret inneholder nå 86 startkilder, og alle yrkene i kildekartet er gjennomgått med tanke på særregler, autorisasjon, sertifikatkrav, etiske retningslinjer og andre profesjonskrav som kan være relevante i en krevende medarbeidersamtale.
 
 Viktig produktregel: løsningen skal ikke forsøke å finne «en egen lov» for hvert yrke. Der generelt arbeidsmiljø-/HMS- eller sektorregelverk er riktig nivå, er det bedre enn å presentere en irrelevant profesjonskilde.
 
@@ -200,6 +200,8 @@ Som del av samme arbeidsrunde ble kildebanken i Hjelp forenklet til fire hovedka
 
 Kvalitetsstrategien er skjerpet slik at systemet ikke bare må finne *en* faglig kilde, men den mest relevante kilden og samtidig holde feil profesjons-/tariffkilder ute. Alle 14 sektorer har både relevant og irrelevant yrkes-golden-case. GitHub Actions kjører full deterministic testpakke og high-level dependency audit ved push til `main`.
 
-Siste verifiserte status i denne runden: 66 golden-caser, 28/28 deterministic sektor-golden, 73 personvernscaser, 114 benchmark-saker / 48 undertemaer og grønn dependency audit. Live språkmodelltesting holdes som et separat bevisnivå.
+Siste verifiserte status i denne runden: 66 golden-caser, 28/28 deterministic sektor-golden, 73 personvernscaser, 114 benchmark-saker / 48 undertemaer og grønn dependency audit. Live språkmodelltesting holdes fortsatt som et separat bevisnivå fra deterministic CI, men den strenge 40-case occupation-golden-suiten ble faktisk kjørt lokalt mot **gpt-5.6-luna** 09.11.2026 og ga **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil** i sluttkjøringen.
+
+Dette er et regressjonsresultat for den definerte testbanken, ikke en påstand om at modellen alltid vil være juridisk eller faglig korrekt i alle situasjoner.
 
 Detaljer: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.

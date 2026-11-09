@@ -2,7 +2,11 @@
 
 **Formål:** Gjøre det mulig å se hva testene faktisk forventer, hvilke krav de dekker, og hvordan KI-svar vurderes.
 
-**Status 08.11.2026:** Golden/fasitbanken inneholder **66 caser**. De 26 tidligere generelle/pilotcasene er utvidet med **40 strenge yrke/sektor/tariff/kilde-caser**: 28 sektorcaser, 8 arbeidsgiver-/tariffcaser og 4 kildelekkasjecaser. Den bredere benchmarkbanken inneholder **114 saker** og er synkronisert med de **48 gjeldende undertemaene**. Den dokumenterte live golden-kjøringen 26.10 omfattet 21 caser og beholdes som et datert historisk testresultat; den skal ikke omskrives til et live-resultat for den nye 66-case-banken.
+**Status 09.11.2026:** Golden/fasitbanken inneholder **66 caser**. De 26 tidligere generelle/pilotcasene er utvidet med **40 strenge yrke/sektor/tariff/kilde-caser**: 28 sektorcaser, 8 arbeidsgiver-/tariffcaser og 4 kildelekkasjecaser. Den bredere benchmarkbanken inneholder **114 saker** og er synkronisert med de **48 gjeldende undertemaene**.
+
+Historiske live-resultater, blant annet 21-case-kjøringen 26.10, beholdes som daterte tidligere teststeg. Den nye 40-case occupation-golden-suiten er nå også faktisk kjørt lokalt mot **gpt-5.6-luna**. Sluttkjøringen 09.11.2026 ga **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil**. Første fullrunde ga 37/40 og avdekket tre ulike forbedringsbehov: fasitpresisjon, testheuristikk og kildeprioritering. Dette er dokumentert i `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
+
+Live-resultatet er regressjonsbevis mot prosjektets definerte fasit, ikke uavhengig ekspertgodkjenning eller garanti for all framtidig modelloutput.
 
 ## 1. Hvorfor en fasitbank?
 
