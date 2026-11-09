@@ -10,7 +10,7 @@ import { topicCatalog, topicClassificationSchema } from "./src/server/topic-cont
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
-import { requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
+import { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
@@ -1352,7 +1352,7 @@ function selectRelevantSources(analysis = {}, situation = "", { employerType = "
     .filter(Boolean).join(" ");
   const q = `${situation || ""} ${analysisText}`.toLocaleLowerCase("nb-NO");
   const agreementRelevant = shouldUseAgreementContext({ topic:[...topics].join(" "), subtopic, situation:q });
-  const legalContext = /\b(lov|regelverk|rettighet|plikt|oppsig|avskjed|varsling|trakassering|diskrimin|sykefravær|sykmeld|tilrettelegging|arbeidstid|overtid|kontrolltiltak|overvåking|hms|sikkerhet|tariff|lønn|forhandling|medbestemmelse|tillitsvalgt)\b/i.test(q);
+  const legalContext = isLegalSourceContext(q);
 
   const globalEmployerSources = (occupationLegalSourceBank.sources || []).filter(source => (source.sectors || []).includes("*"));
   const agreementSources = agreementCuratedSources.filter(source => {
@@ -1409,6 +1409,7 @@ function selectRelevantSources(analysis = {}, situation = "", { employerType = "
     else if (tier === "specialist_guidance") score += 3;
     else score += 1;
 
+    score += employerScopedPrimaryLawBonus(source, employerType);
     if (source.authority === "high") score += 1;
     if (source.authority === "medium") score += 0.5;
     scored.push({ source:{ ...source, sourceTier:tier }, score });
