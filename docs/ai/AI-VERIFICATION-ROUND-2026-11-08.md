@@ -530,19 +530,19 @@ Den nye occupation-golden-runneren:
 - kontrollerer occupationRelevant
 - kontrollerer needsEmployerType
 
-### Status 08.11.2026
+### Status 08.11.2026 – historisk status før lokal live-kjøring
 
-De 40 nye strenge yrkes-golden-casene er:
+De 40 nye strenge yrkes-golden-casene var på dette tidspunktet:
 - strukturelt validert
 - source-ID-validert
 - 28 sektorcaser kjørt deterministisk mot ruteren
 
-De er **ikke påstått bestått mot en ekstern live språkmodell i denne verifikasjonsrunden**, fordi live-runneren krever en KI-API-nøkkel i testmiljøet.
+Per 08.11.2026 var de **ikke ennå dokumentert som bestått mot en ekstern live språkmodell**, fordi faktisk lokal modellkjøring ikke var gjennomført.
 
-Dette skillet skal beholdes i all dokumentasjon:
+Skillet beholdes metodisk:
 > deterministic routing/schema green ≠ live model quality proven
 
-Historiske live-resultater fra tidligere testkjøringer kan fortsatt omtales som historiske resultater med dato, men skal ikke brukes som bevis for at den nye 66-case-banken er live-godkjent.
+Denne åpne gaten ble senere lukket gjennom faktisk lokal live-kjøring 09.11.2026. Se seksjon 25.
 
 ---
 
@@ -600,7 +600,7 @@ For denne prosjektversjonen brukes følgende mål som streng intern kvalitetssta
 | URL-duplikater i kildebank | 0 |
 | HIGH production dependency audit | 0 |
 | Kilder per KI-svar | normalt 1–4 presise |
-| Live golden | vurderes separat; ingen falsk påstand om bestått før faktisk kjøring |
+| Live occupation-golden | 40/40 OK i endelig lokal live-kjøring 09.11.2026; 0 kritiske og 0 tekniske feil |
 
 ---
 
@@ -674,7 +674,7 @@ Live-eval kjøres bevisst **ikke** automatisk på hver push. Begrunnelse:
 
 Rapportfiler lagres lokalt i `tests/test-results/`, som også er ignorert av Git.
 
-Den nye 40-case occupation-golden-pakken skal fortsatt **ikke dokumenteres som live-bestått** før en faktisk lokal modellkjøring foreligger.
+Dette var tidligere en åpen testgate. Faktisk lokal modellkjøring ble gjennomført og bestått 09.11.2026; se seksjon 25.
 
 
 ---
@@ -758,9 +758,11 @@ Forsøket ble stoppet før noen live-KI-case ble kjørt fordi CI-miljøet ikke h
 
 Denne CI-tilnærmingen brukes ikke videre i prosjektet. Etter avklaring av sikkerhetspraksis er lokal `.env` eneste dokumenterte metode for provider-nøkkel ved live KI-testing.
 
-Konklusjonen står fast:
+Konklusjonen på dette tidspunktet var:
 
-> 40-case occupation-golden er deterministic/schema/routing-validert, men kan ikke omtales som live modell-bestått før en faktisk lokal modellkjøring foreligger.
+> 40-case occupation-golden var deterministic/schema/routing-validert, men kunne ikke omtales som live modell-bestått før en faktisk lokal modellkjøring forelå.
+
+Dette er nå historikk. Faktisk lokal modellkjøring ble gjennomført 09.11.2026 og er dokumentert i seksjon 25.
 
 ---
 
@@ -776,9 +778,9 @@ Per 08.11.2026 kan følgende hevdes med dokumentert dekning:
 - simulator/UI/PWA/regresjon: **grønn**
 - production dependency audit: **0 kjente sårbarheter på valgt auditnivå**
 - faktisk produksjonsflate, versjon og sentrale assets: **verifisert**
-- live 40-case occupation-golden mot ekstern språkmodell: **ikke ferdig dokumentert som live-bestått; skal kjøres lokalt med nøkkel i lokal .env**
+- live 40-case occupation-golden mot ekstern språkmodell: **var fortsatt åpen per 08.11.2026**
 
-Det siste punktet er den eneste tydelige testgaten i denne runden som fortsatt står åpen. Den skal ikke skjules eller omformuleres som bestått.
+Denne statuslisten er historisk for 08.11. Testgaten ble lukket 09.11.2026 gjennom faktisk lokal live-kjøring; se seksjon 25.
 
 
 ---
@@ -899,12 +901,96 @@ Den midlertidige QA-grenen ble deretter reset til `main`, slik at smoke-workflow
 
 ### Gjenstående eksplisitte begrensninger
 
-To forhold skal fortsatt beskrives nøkternt:
+Den tidligere åpne 40-case live-gaten er nå lukket gjennom lokal kjøring 09.11.2026. Provider-nøkkelen brukes fortsatt kun fra lokal `.env`; ingen provider-nøkkel skal legges i Git, repo-filer eller GitHub-workflows.
 
-1. **40-case occupation-golden er ikke dokumentert som live-bestått mot ekstern språkmodell.**
-   Den skal kjøres lokalt med provider-nøkkel kun i lokal `.env`. Tidligere CI-/produksjonsforsøk brukes ikke videre som nøkkelflyt. Ingen provider-nøkkel skal legges i Git, repo-filer eller GitHub-workflows.
+Følgende hardening-punkt står fortsatt åpent:
 
-2. **Supabase Leaked Password Protection er deaktivert.**
-   Dette er en prosjektinnstilling i Supabase Auth og må aktiveres i Supabase Dashboard. Den tilgjengelige prosjektkoblingen i denne verifikasjonen har ingen skriveoperasjon for innstillingen.
+- **Supabase Leaked Password Protection er deaktivert.**
+  Dette er en prosjektinnstilling i Supabase Auth og må aktiveres i Supabase Dashboard. Den tilgjengelige prosjektkoblingen i denne verifikasjonen har ingen skriveoperasjon for innstillingen.
 
 Alt øvrig som kunne verifiseres eller rettes gjennom kode, GitHub Actions og Supabase-advisors i denne runden er gjennomført og dokumentert.
+
+
+---
+
+## 25. Endelig lokal live-verifikasjon av 40-case occupation-golden – 09.11.2026
+
+Den strenge live-suiten for yrke, sektor, arbeidsgivertype, tariff og kildevalg ble kjørt lokalt mot faktisk språkmodell etter at deterministic quality gate var grønn.
+
+Kommando:
+
+`npm run test-ai:occupation-golden`
+
+Modell i sluttkjøringen:
+
+**gpt-5.6-luna**
+
+Sluttresultat:
+
+- **40/40 OK**
+- **0 Bør sjekkes**
+- **0 kritiske avvik**
+- **0 tekniske feil**
+
+Lokal rapport:
+
+`tests/test-results/ai-golden-2026-11-09T17-17-32-310Z.md`
+
+Lokal detaljrapport:
+
+`tests/test-results/ai-golden-2026-11-09T17-17-32-310Z.json`
+
+Rapportfilene ligger i `tests/test-results/`, som er ignorert av Git. Resultatet dokumenteres derfor her med rapportfilnavn og kjøringsstatus, mens provider-nøkkelen fortsatt bare finnes i lokal `.env`.
+
+### Avvik som ble funnet og rettet før sluttkjøringen
+
+En tidligere full live-kjøring ga:
+
+- 37 OK
+- 3 Bør sjekkes
+- 0 kritiske avvik
+- 0 tekniske feil
+
+De tre flaggede casene ble gjennomgått manuelt og førte til tre ulike typer forbedring:
+
+1. **Habilitetscase i kommunal forvaltning**
+   - modellen brukte korrekt `FORVALTNINGSLOVEN`
+   - statlig regelverk lekket ikke inn
+   - tema-fasiten ble presisert slik at to faglig plausible hovedtemaer kan godtas når det forvaltningsrettslige innholdet er korrekt
+
+2. **Arbeidsdeling mellom jurister**
+   - testen var for grov og tolket enhver formulering med «du bør» som meta-instruks til lederen
+   - heuristikken ble strammet inn til faktiske instruksjoner som «kontakt HR», «følg prosedyren» og tilsvarende
+
+3. **Statlig oppsigelsessak**
+   - modellen omtalte statsansatteloven korrekt i selve rådet, men `STATE_EMPLOYEE_ACT` falt ut av strukturerte `source_ids`
+   - dette avdekket en reell kildeprioriteringssvakhet
+   - juridisk kontekstgjenkjenning og prioritering av arbeidsgiverspesifikk primærlov ble forbedret
+   - den berørte casen ble deretter kjørt alene og besto før sluttkjøringen
+
+### Hva sluttresultatet dokumenterer
+
+Sluttkjøringen gir dokumentert støtte for at den testede modellen i disse 40 fasitbaserte casene:
+
+- valgte forventede kilder der de var obligatoriske
+- holdt forbudte sektor-/profesjonskilder ute
+- håndterte arbeidsgiver- og tariffkontekst uten kritisk lekkasje
+- ikke ga kritiske kildeavvik i de definerte høyrisikocasene
+- fullførte hele suiten uten tekniske feil
+
+### Viktig metodisk avgrensning
+
+**40/40 er et sterkt regressjonsresultat, men ikke et bevis på at all framtidig modelloutput alltid er korrekt.**
+
+Begrensningene fra seksjon 16 gjelder fortsatt:
+
+- golden-fasiten er prosjektets egen fasit
+- den er ikke uavhengig ekspertvalidert
+- språkmodelloutput er stokastisk
+- nye formuleringer, nye kilder, regelverksendringer eller modellendringer kan gi andre resultater
+
+Derfor skal resultatet omtales som:
+
+> **40/40 bestått i dokumentert lokal live occupation-golden-kjøring 09.11.2026 mot gpt-5.6-luna**
+
+og ikke som en generell garanti for juridisk eller faglig korrekthet i alle mulige saker.
