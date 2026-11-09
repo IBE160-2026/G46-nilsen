@@ -1,5 +1,6 @@
 const COMMAND_PATTERNS = Object.freeze({
-  send: /^(?:send|senn|send nå|send det|send inn|ferdig|jeg er ferdig|nå er jeg ferdig|få råd|gi meg råd|send spørsmålet|send meldingen)[.!?]?$/iu,
+  send: /^(?:send|senn|fem|send nå|send det|send inn|ferdig|jeg er ferdig|nå er jeg ferdig|få råd|gi meg råd|send spørsmålet|send meldingen)[.!?]?$/iu,
+  fix: /^(?:fiks feil(?:ene)?|rett feil(?:ene)?|fiks personvern(?:feil(?:ene)?)?|anonymiser teksten|rett han til hen|bruk hen)[.!?]?$/iu,
   clear: /^(?:slett|slett det|tøm)[.!?]?$/iu,
   restart: /^(?:start på nytt|begynn på nytt)[.!?]?$/iu,
   skip: /^(?:hopp over|gå videre)[.!?]?$/iu,
