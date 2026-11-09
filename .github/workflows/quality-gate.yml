@@ -2,7 +2,7 @@ name: Quality Gate
 
 on:
   push:
-    branches: [main, qa/state-primary-law-ranking-2026-11-09]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
