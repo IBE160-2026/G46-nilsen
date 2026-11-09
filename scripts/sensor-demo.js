@@ -1,5 +1,6 @@
 import express from "express";
 import crypto from "node:crypto";
+import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -8,8 +9,36 @@ const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, "..");
 const app = express();
 const port = Number(process.env.PORT || 3000);
+const liveVoicePilotEnabled = String(process.env.LIVE_VOICE_PILOT_ENABLED || "false").toLowerCase() === "true";
+const liveTranscriptionConfigured = liveVoicePilotEnabled && Boolean(process.env.OPENAI_API_KEY);
+const occupationMap = JSON.parse(fs.readFileSync(path.join(root, "data", "OCCUPATION-SOURCE-MAP.json"), "utf8"));
+const liveKeywords = [
+  "arbeidsmiljøloven", "statsansatteloven", "habilitet", "tariffavtale",
+  "tillitsvalgt", "verneombud", "BHT", "AKAN", "IA", "sykefravær",
+  "oppsigelse", "helsefagarbeider", "sykepleier", "barnehagelærer"
+];
 
 app.disable("x-powered-by");
+app.set("trust proxy", 1);
+app.use((req, res, next) => {
+  res.setHeader("X-Content-Type-Options", "nosniff");
+  res.setHeader("Referrer-Policy", "no-referrer");
+  res.setHeader("X-Frame-Options", "DENY");
+  res.setHeader(
+    "Permissions-Policy",
+    liveVoicePilotEnabled
+      ? "camera=(), microphone=(self), geolocation=(), payment=(), usb=()"
+      : "camera=(), microphone=(), geolocation=(), payment=(), usb=()"
+  );
+  res.setHeader(
+    "Content-Security-Policy",
+    liveVoicePilotEnabled
+      ? "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self' https://api.openai.com; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+      : "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; font-src 'self'; object-src 'none'; base-uri 'self'; frame-ancestors 'none'; form-action 'self'"
+  );
+  if (req.path.startsWith("/api/")) res.setHeader("Cache-Control", "no-store");
+  next();
+});
 app.use(express.json({ limit: "512kb" }));
 
 const demoUser = {
@@ -112,10 +141,10 @@ function guidanceFor(situation, analysis) {
 }
 
 app.get("/", (_req, res) => res.sendFile(path.join(root, "index.html")));
-for (const filename of ["app.js", "styles.css", "styles-core.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js"]) {
+for (const filename of ["app.js", "live-pilot.js", "live-pilot.css", "styles.css", "styles-core.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js"]) {
   app.get(`/${filename}`, (_req, res) => res.sendFile(path.join(root, filename)));
 }
-for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-data.js"]) {
+for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-data.js", "live-pilot-utils.js"]) {
   app.get(`/src/${filename}`, (_req, res) => res.sendFile(path.join(root, "src", filename)));
 }
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
@@ -123,7 +152,9 @@ app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
 app.get("/api/public-config", (_req, res) => res.json({
   appVersion: "20.11.5",
   contactEmail: "",
-  demoMode: true
+  demoMode: true,
+  liveVoicePilotEnabled,
+  liveTranscriptionConfigured
 }));
 app.get("/api/auth/me", (_req, res) => res.json({ user: demoUser }));
 app.post("/api/auth/login", (_req, res) => res.json({ user: demoUser }));
@@ -135,6 +166,162 @@ app.get("/api/content", (_req, res) => res.json({ values: {}, setupRequired: fal
 app.get("/api/privacy-ack", (_req, res) => res.json({ acknowledged: true }));
 app.post("/api/privacy-ack", (_req, res) => res.json({ ok: true }));
 app.get("/api/status", (_req, res) => res.json({ aiConfigured: false, model: "sensor-demo", demoMode: true }));
+
+
+function normalizeLiveText(value = "") {
+  return String(value || "").normalize("NFC").toLocaleLowerCase("nb-NO").replace(/\s+/g, " ").trim();
+}
+
+function escapeLiveRegex(value = "") {
+  return String(value || "").replace(/[.*+?^$()|[\]{}\\]/g, "\\app.post("/api/classify-topic", (req, res) => {");
+}
+
+function exactPhraseInText(text, phrase) {
+  const escaped = escapeLiveRegex(phrase).replace(/\s+/g, "\\s+");
+  if (!escaped) return false;
+  return new RegExp("(?<![\\p{L}\\p{N}])" + escaped + "(?![\\p{L}\\p{N}])", "iu").test(text);
+}
+
+function detectLiveOccupation(text) {
+  const source = normalizeLiveText(text);
+  let best = null;
+  for (const sector of occupationMap.sectors || []) {
+    for (const occupation of sector.occupations || []) {
+      if (!exactPhraseInText(source, normalizeLiveText(occupation))) continue;
+      if (!best || String(occupation).length > String(best.occupation).length) {
+        best = { sectorId: sector.id, sectorLabel: sector.label, occupation };
+      }
+    }
+  }
+  return best;
+}
+
+function detectLiveEmployerType(text) {
+  const source = normalizeLiveText(text);
+  if (/\b(?:stat|staten|statlig|statsansatt(?:e|en)?)\b/u.test(source)) return "state";
+  if (/\b(?:kommune|kommunal|fylkeskommune|fylkeskommunal)\b/u.test(source)) return "municipal";
+  if (/\b(?:helseforetak|helseforetaket|helseforetakene)\b/u.test(source)) return "health_enterprise";
+  if (/\b(?:privat|privat sektor|privat virksomhet|privat selskap)\b/u.test(source)) return "private";
+  return "";
+}
+
+function liveOccupationRelevant(text) {
+  const source = normalizeLiveText(text);
+  const terms = [
+    ...(occupationMap.selectionPolicy?.useOccupationWhen || []),
+    "hms", "risiko", "prosedyre", "sertifikat", "pasientsikkerhet", "brukersikkerhet",
+    "elevsikkerhet", "barnesikkerhet", "medisin", "medisinering", "legemiddel",
+    "journal", "habilitet", "saksbehandling", "vold", "trussel", "beredskap",
+    "politi", "forsvar", "luftfart", "flysikkerhet", "dyrevelferd", "smittevern"
+  ].map(normalizeLiveText);
+  return terms.some(term => term && source.includes(term));
+}
+
+function liveEmployerRelevant(text) {
+  return /\b(?:tariff\w*|lønn\w*|oppsig\w*|avskjed\w*|ordensstraff\w*|ansett\w*|personalreglement\w*|drøft\w*|arbeidsforhold\w*|formell\w*)\b/u.test(normalizeLiveText(text));
+}
+
+app.get("/api/occupation-options", (_req, res) => {
+  res.json({
+    sectors: (occupationMap.sectors || []).map(sector => ({
+      id: sector.id,
+      label: sector.label,
+      occupations: sector.occupations || []
+    })),
+    employerTypes: [
+      { id: "state", label: "Stat" },
+      { id: "municipal", label: "Kommune / fylkeskommune" },
+      { id: "health_enterprise", label: "Helseforetak" },
+      { id: "private", label: "Privat" },
+      { id: "unknown", label: "Usikker / ukjent" }
+    ]
+  });
+});
+
+app.post("/api/live/context-check", (req, res) => {
+  if (!liveVoicePilotEnabled) return res.status(404).json({ error: "LIVE_PILOT_DISABLED" });
+  const text = String(req.body?.text || "").trim();
+  if (!text) return res.status(400).json({ error: "MISSING_TEXT", message: "Mangler tekst for kontekstkontroll." });
+  const occupation = detectLiveOccupation(text);
+  const employerType = detectLiveEmployerType(text);
+  res.json({
+    occupation,
+    occupationRelevant: liveOccupationRelevant(text),
+    employerType,
+    employerTypeRelevant: liveEmployerRelevant(text)
+  });
+});
+
+const liveTokenBuckets = new Map();
+function liveTokenAllowed(req) {
+  const now = Date.now();
+  const windowMs = 10 * 60 * 1000;
+  const max = 20;
+  const key = crypto.createHash("sha256").update(String(req.ip || "unknown")).digest("hex");
+  const previous = liveTokenBuckets.get(key);
+  const entry = !previous || previous.resetAt <= now ? { count: 0, resetAt: now + windowMs } : previous;
+  entry.count += 1;
+  liveTokenBuckets.set(key, entry);
+  return entry.count <= max;
+}
+
+app.post("/api/live/transcription-token", async (req, res) => {
+  if (!liveVoicePilotEnabled) return res.status(404).json({ error: "LIVE_PILOT_DISABLED" });
+  if (!liveTokenAllowed(req)) return res.status(429).json({ error: "LIVE_RATE_LIMIT", message: "For mange LIVE-tilkoblinger. Prøv igjen senere." });
+  const apiKey = process.env.OPENAI_API_KEY;
+  if (!apiKey) {
+    return res.status(503).json({
+      error: "LIVE_TRANSCRIPTION_NOT_CONFIGURED",
+      message: "LIVE-transkripsjon er ikke konfigurert i pilotmiljøet."
+    });
+  }
+  try {
+    const safetyId = crypto.createHash("sha256").update("samtalestotte-live-pilot|" + String(req.ip || "unknown")).digest("hex");
+    const response = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
+      method: "POST",
+      headers: {
+        "Authorization": "Bearer " + apiKey,
+        "Content-Type": "application/json",
+        "OpenAI-Safety-Identifier": safetyId
+      },
+      body: JSON.stringify({
+        expires_after: { anchor: "created_at", seconds: 300 },
+        session: {
+          type: "transcription",
+          audio: {
+            input: {
+              noise_reduction: { type: "near_field", strength: 0.85 },
+              transcription: {
+                model: "gpt-live-transcribe",
+                languages: ["no"],
+                keywords: liveKeywords
+              },
+              turn_detection: null
+            }
+          }
+        }
+      })
+    });
+    const raw = await response.text();
+    let payload = {};
+    try { payload = raw ? JSON.parse(raw) : {}; } catch (_) {}
+    if (!response.ok || !payload.value) {
+      console.error("[live-pilot] Kunne ikke opprette client secret:", response.status, payload?.error?.code || "ukjent");
+      return res.status(502).json({
+        error: "LIVE_TRANSCRIPTION_TOKEN_FAILED",
+        message: "Kunne ikke starte LIVE-transkripsjon."
+      });
+    }
+    res.json({
+      clientSecret: payload.value,
+      expiresAt: payload.expires_at || null,
+      model: "gpt-live-transcribe"
+    });
+  } catch (error) {
+    console.error("[live-pilot] Client secret-feil:", error?.message || error);
+    res.status(502).json({ error: "LIVE_TRANSCRIPTION_TOKEN_FAILED", message: "Kunne ikke starte LIVE-transkripsjon." });
+  }
+});
 
 app.post("/api/classify-topic", (req, res) => {
   const situation = String(req.body?.situation || "").trim();
@@ -273,5 +460,8 @@ app.use((_req, res) => res.status(404).send("Ikke funnet"));
 const host = process.env.HOST || "0.0.0.0";
 app.listen(port, host, () => {
   console.log(`Samtalestøtte sensor-demo kjører på http://${host}:${port}`);
-  console.log("Demoen bruker deterministiske mock-svar og ingen eksterne tjenester eller API-nøkler.");
+  console.log("Demoen bruker deterministiske mock-svar for råd.");
+  console.log(liveVoicePilotEnabled
+    ? "LIVE-pilot aktivert. Transkripsjon: " + (liveTranscriptionConfigured ? "konfigurert" : "ikke konfigurert") + "."
+    : "LIVE-pilot er deaktivert.");
 });
