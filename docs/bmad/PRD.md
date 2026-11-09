@@ -799,7 +799,11 @@ Golden/fasitbanken inneholder nå **66 caser**. De 26 tidligere generelle/pilotc
 
 Den dokumenterte live-kjøringen 26.10.2026 omfattet **21 caser** mot GPT-5.6 Luna og ga **19 maskinelt OK + 2 manuelt akseptert etter kontroll**, 0 kritiske avvik og 0 tekniske feil.
 
-Etter senere utvidelse til 26 caser ble hele produksjonsflyten kjørt. Første kjøring avdekket tre falske personverntreff før KI-kall; etter retting nådde **26/26** fram til KI-svar. Historiske 9/9-resultater beholdes som tidligere teststeg, men skal ikke beskrives som dagens testbank.
+Etter senere utvidelse til 26 caser ble hele produksjonsflyten kjørt. Første kjøring avdekket tre falske personverntreff før KI-kall; etter retting nådde **26/26** fram til KI-svar. Historiske 9/9- og 21-case-resultater beholdes som tidligere teststeg, men skal ikke beskrives som dagens testbank.
+
+Etter utvidelsen til 66 golden/fasitcaser ble de **40 strenge yrke/sektor/tariff/kilde-casene** kjørt separat live mot **gpt-5.6-luna** 09.11.2026. Første fullrunde ga **37 OK / 3 BØR SJEKKES / 0 kritiske / 0 tekniske**. De tre avvikene ble analysert hver for seg og viste henholdsvis en for rigid tema-fasit, en for grov testheuristikk og en reell svakhet i kildeprioriteringen for statsansatteloven. Etter retting og regresjonstesting ga sluttkjøringen **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil**.
+
+Dette resultatet dokumenterer samsvar med prosjektets definerte fasit og kilde-/sikkerhetsregler i disse 40 casene. Det er ikke en garanti for at en stokastisk språkmodell alltid vil gi korrekt eller optimalt svar i alle framtidige saker.
 
 ---
 
@@ -847,7 +851,7 @@ Leveransen anses som funksjonelt komplett som prosjektprototype når følgende e
 | Webapplikasjon | Implementert | `app.js`, `index.html`, `server.js` |
 | KI-veiledning | Implementert | server + systemprompt |
 | 9 hovedtemaer | Implementert | app + faggrunnlag |
-| Personverngateway | Implementert/testet | 56/56 i siste dokumenterte personvernpakke |
+| Personverngateway | Implementert/testet | 73/73 i siste dokumenterte personvernpakke |
 | Samtaleøvelse | Implementert/testet | 24/24 tester |
 | Autentisering | Implementert | Supabase/server |
 | Historikk | Implementert | Supabase/regresjonstest |
@@ -855,7 +859,7 @@ Leveransen anses som funksjonelt komplett som prosjektprototype når følgende e
 | Admin | Implementert | app/server |
 | Modellvalg | Implementert i prototypeform | admin/server |
 | Benchmark | Prototype/testform | 114 saker synkronisert med 48 undertemaer |
-| KI-testing | Implementert / utvidet | 66 golden/fasitcaser, 28/28 deterministic sektor-golden + øvrige testspor i `tests/` |
+| KI-testing | Implementert / utvidet | 66 golden/fasitcaser, 28/28 deterministic sektor-golden og dokumentert live occupation-golden 40/40 mot gpt-5.6-luna 09.11.2026 |
 | Faggrunnlag | Implementert | `docs/faggrunnlag/` |
 | SOURCEBANK | Implementert | `docs/`, `data/` |
 | Brukertesting | Pilot gjennomført / videre evaluering | brukertestplan, backlog og dokumenterte produktendringer |
@@ -1239,15 +1243,17 @@ Push til `main` skal automatisk kjøre:
 
 High dependency audit skal være grønn før runden kan omtales som fullført.
 
-Siste dokumenterte grønne run 08.11.2026:
-- GitHub Actions **42531396584**
-- commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`
+Siste dokumenterte grønne quality gate etter live-funn og kildeprioriteringsretting:
+- GitHub Actions **42646984725**
+- commit `a8756d36c492be39e70611c0946c026234beb965`
+
+Etterpå ble dokumentasjonen for 40/40-sluttresultatet slått inn på `main`, og ny full quality gate **42665279811** var også **SUCCESS**.
 
 ## Testbevis og begrensning
 
 Den automatiske quality-gaten dokumenterer deterministic kode-, data-, routing-, kilde-, personvern- og regresjonskvalitet. Den skal ikke brukes som bevis for at en ekstern stokastisk språkmodell alltid gir optimalt formulert svar.
 
-De 40 nye strenge yrkes-golden-casene skal først omtales som live-bestått etter faktisk kjøring med KI-provider.
+De 40 strenge yrkes-golden-casene er nå faktisk kjørt live mot `gpt-5.6-luna` 09.11.2026 og ga **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil** i sluttkjøringen. Resultatet skal omtales som et dokumentert regressjonsresultat for disse casene, ikke som en generell faglig eller juridisk garanti.
 
 Full verifikasjonsrapport:
 `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
