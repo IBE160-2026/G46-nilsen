@@ -35,15 +35,24 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Require configured AI provider secret
+      - name: Check AI provider secret
+        id: provider
         shell: bash
         run: |
-          if [ -z "$OPENAI_API_KEY" ] && [ -z "$OPENROUTER_API_KEY" ]; then
-            echo "::error::Live AI validation requires OPENAI_API_KEY or OPENROUTER_API_KEY as a GitHub Actions secret."
-            exit 2
+          if [ -n "$OPENAI_API_KEY" ] || [ -n "$OPENROUTER_API_KEY" ]; then
+            echo "available=true" >> "$GITHUB_OUTPUT"
+            echo "Live AI provider er konfigurert."
+          else
+            echo "available=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::Live AI validation ble ikke kjørt fordi OPENAI_API_KEY eller OPENROUTER_API_KEY ikke er konfigurert som GitHub Actions secret."
+            echo "### Live AI Validation" >> "$GITHUB_STEP_SUMMARY"
+            echo "" >> "$GITHUB_STEP_SUMMARY"
+            echo "⏭️ Hoppet over: ingen provider-secret er konfigurert." >> "$GITHUB_STEP_SUMMARY"
+            echo "Dette er en miljøforutsetning, ikke en testfeil i applikasjonen." >> "$GITHUB_STEP_SUMMARY"
           fi
 
       - name: Run selected live suite
+        if: steps.provider.outputs.available == 'true'
         shell: bash
         run: |
           case "${{ inputs.suite }}" in
@@ -66,11 +75,12 @@ jobs:
           esac
 
       - name: Upload live AI reports
-        if: always()
+        if: always() && steps.provider.outputs.available == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: live-ai-validation-${{ inputs.suite }}-${{ github.run_id }}
           path: |
+            tests/test-results/**
             tests/reports/**
-          if-no-files-found: ignore
+          if-no-files-found: warn
           retention-days: 14
