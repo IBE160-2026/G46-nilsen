@@ -235,11 +235,11 @@ Automatisk quality gate på `main` kjører:
 - UI/PWA/simulator/regresjoner
 - `npm audit --omit=dev --audit-level=high`
 
-Siste dokumenterte grønne quality-gate i verifikasjonsrunden: GitHub Actions run **42531396584**, commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`.
+Siste dokumenterte grønne quality-gate for kodeendringene før denne dokumentasjonsoppdateringen: GitHub Actions run **42646984725**, commit `a8756d36c492be39e70611c0946c026234beb965`.
 
 Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` for metode, funn, feilklassifisering, tiltak, begrensninger og sporbarhet.
 
-**Viktig avgrensning:** 40 nye strenge yrkes-golden-caser er strukturelt og deterministisk validert, men skal ikke omtales som bestått mot en ekstern live språkmodell før en faktisk live-kjøring er gjennomført.
+**Live-status 09.11.2026:** Den strenge 40-case occupation-golden-suiten er nå også kjørt lokalt mot `gpt-5.6-luna`: **40/40 OK, 0 Bør sjekkes, 0 kritiske avvik og 0 tekniske feil**. Resultatet er et dokumentert regressjonsresultat for disse casene, ikke en garanti for all framtidig modelloutput.
 
 
 ### Live KI-validering
@@ -260,6 +260,6 @@ Legg deretter nøkkelen kun i den lokale `.env`-filen og kjør:
 npm run test-ai:occupation-golden
 ```
 
-Rapportene skrives til `tests/test-results/`, som også er ignorert av Git.
+Rapportene skrives til `tests/test-results/`, som også er ignorert av Git. Endelig 40/40-kjøring 09.11.2026 er dokumentert i `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` med rapportfilnavn og metodiske begrensninger.
 
 For dette prosjektet er lokal `.env` eneste dokumenterte metode for live KI-test. Ekte API-nøkler skal ikke legges i Git, repo-filer eller GitHub-workflows.
