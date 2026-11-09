@@ -415,6 +415,28 @@ async function handleUtterance(raw) {
     return;
   }
 
+  if (command === "fix") {
+    const draft = normalizeSpeechText(state.draft);
+    if (!draft) { setMessage("Det finnes ingen tekst å rette."); return; }
+    const suggested = draft.replace(/\b(?:han|hun)\b/giu, "hen");
+    if (suggested !== draft) {
+      setDraft(suggested);
+      setStatus("Kontroller rettingen", "warning");
+      setMessage("Jeg har foreslått «hen» i stedet for «han/hun». Kontroller teksten før du sier «send». Andre personvernfunn må fortsatt rettes.");
+      return;
+    }
+    const bridge = window.SamtalestotteLiveBridge;
+    const result = bridge && bridge.privacyCheck(draft);
+    if (result && result.blocked) {
+      setPrivacy(result.hard);
+      setMessage("Disse personvernopplysningene kan ikke rettes sikkert automatisk. Rediger teksten og si «send» når den er anonymisert.");
+    } else {
+      setPrivacy([]);
+      setMessage("Ingen personvernblokkering funnet. Kontroller teksten og si «send».");
+    }
+    return;
+  }
+
   if (command === "send") {
     return beginSend();
   }
@@ -817,7 +839,7 @@ function createUi() {
         '<label><input id="live-pilot-tts" type="checkbox" checked> Les korte systemmeldinger høyt</label>' +
         '<label for="live-pilot-voice">Stemme <select id="live-pilot-voice"></select></label>' +
       '</div>' +
-      '<p class="live-pilot-help"><strong>Talekommandoer:</strong> «send», «slett», «start på nytt», «hopp over», «fortsett», «stopp mikrofon», «ja» og «nei». Si «send», «ferdig» eller «få råd» som en egen ytring. Mikrofonen varsler etter 45 sekunder uten tale og slås av etter 60 sekunder.</p>' +
+      '<p class="live-pilot-help"><strong>Talekommandoer:</strong> «send», «fiks feilene», «bruk hen», «slett», «start på nytt», «hopp over», «fortsett», «stopp mikrofon», «ja» og «nei». Si «send», «ferdig» eller «få råd» som en egen ytring. Mikrofonen varsler etter 45 sekunder uten tale og slås av etter 60 sekunder.</p>' +
     '</div>';
   document.body.appendChild(panel);
   state.panel = panel;
