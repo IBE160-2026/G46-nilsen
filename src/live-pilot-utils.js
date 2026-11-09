@@ -27,6 +27,18 @@ export function voiceCommand(value = "") {
   return null;
 }
 
+export function punctuationByVoice(spoken = "") {
+  const text = normalizeSpeechText(spoken).toLocaleLowerCase("nb-NO").replace(/[.!?]+$/u, "");
+  const marks = {"punktum":".","komma":",","spørsmålstegn":"?","utropstegn":"!","kolon":":","semikolon":";","ny linje":"\\n","nytt avsnitt":"\\n\\n"};
+  return Object.prototype.hasOwnProperty.call(marks,text) ? marks[text] : null;
+}
+
+export function appendPunctuation(draft = "", punctuation = "") {
+  const value = String(draft || "").trimEnd();
+  if (punctuation.startsWith("\\n")) return value + punctuation;
+  return value.replace(/[.,!?;:]$/u,"") + punctuation;
+}
+
 export function editDraftByVoice(draft = "", spoken = "") {
   const command = normalizeSpeechText(spoken).replace(/[.!?]+$/u, "").trim();
   const text = normalizeSpeechText(draft);
