@@ -24,3 +24,17 @@ export function unsafeAdoption(text, phrase) {
   }
   return false;
 }
+
+
+export function openingLooksLikeLeaderInstruction(opening) {
+  const text = String(opening || "").trim();
+  if (!text) return false;
+
+  const explicitMetaInstruction =
+    /\b(?:kontakt|ta kontakt med)\s+(?:hr|juridisk|jurist|bht|bedriftshelsetjenesten|nærmeste leder)\b/iu.test(text) ||
+    /\b(?:følg|sjekk|avklar|kvalitetssikr|dokumenter|varsle)\b[^.!?]{0,80}\b(?:prosedyre|rutine|regelverk|hr|juridisk|jurist|bht|leder)\b/iu.test(text) ||
+    /\b(?:du bør|bør du)\s+(?:kontakte|ta kontakt|følge|sjekke|avklare|kvalitetssikre|dokumentere|varsle|forberede|innhente)\b/iu.test(text) ||
+    /\b(?:før samtalen|som leder)\b[^.!?]{0,80}\b(?:bør|må|skal)\b/iu.test(text);
+
+  return explicitMetaInstruction;
+}
