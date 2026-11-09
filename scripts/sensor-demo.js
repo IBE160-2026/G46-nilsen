@@ -173,7 +173,7 @@ function normalizeLiveText(value = "") {
 }
 
 function escapeLiveRegex(value = "") {
-  return String(value || "").replace(/[.*+?^$()|[\]{}\\]/g, "\\app.post("/api/classify-topic", (req, res) => {");
+  return String(value || "").replace(/[.*+?^$()|[\]{}\\]/g, "\\$&");
 }
 
 function exactPhraseInText(text, phrase) {
