@@ -262,4 +262,4 @@ npm run test-ai:occupation-golden
 
 Rapportene skrives til `tests/test-results/`, som også er ignorert av Git.
 
-Den manuelle GitHub-workflowen `.github/workflows/live-ai-validation.yml` beholdes som teknisk støtte, men dersom repository ikke har en tillatt ekstern secret-konfigurasjon, hopper den over live-testen uten å markere applikasjonen som feilet. For dette prosjektet er lokal `.env` anbefalt metode.
+For dette prosjektet er lokal `.env` eneste dokumenterte metode for live KI-test. Ekte API-nøkler skal ikke legges i Git, repo-filer eller GitHub-workflows.
