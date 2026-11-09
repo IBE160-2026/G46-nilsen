@@ -223,6 +223,7 @@ function liveEmployerRelevant(text) {
 
 app.get("/api/occupation-options", (_req, res) => {
   res.json({
+    enabled: true,
     sectors: (occupationMap.sectors || []).map(sector => ({
       id: sector.id,
       label: sector.label,
