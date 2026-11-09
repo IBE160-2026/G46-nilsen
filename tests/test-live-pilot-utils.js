@@ -20,6 +20,8 @@ assert.equal(appendTranscript("Jeg må ta en samtale.", "Det gjelder fravær."),
 
 assert.equal(employerTypeFromSpeech("Dette gjelder en statlig arbeidsgiver."), "state");
 assert.equal(employerTypeFromSpeech("Jeg jobber i kommunen."), "municipal");
+assert.equal(employerTypeFromSpeech("Dette er kommunalt."), "municipal");
+assert.equal(employerTypeFromSpeech("Jeg jobber i fylkeskommunen."), "municipal");
 assert.equal(employerTypeFromSpeech("Dette er et helseforetak."), "health_enterprise");
 assert.equal(employerTypeFromSpeech("Sykepleier på sykehus."), "", "Yrke/sykehus alene skal ikke gjette arbeidsgivertype");
 
