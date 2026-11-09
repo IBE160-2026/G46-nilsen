@@ -654,21 +654,17 @@ Dette støtter en sentral designregel for Samtalestøtte:
 > Yrke, regelverk og kilder skal brukes når de forbedrer rådet — ikke fordi systemet tilfeldigvis kjenner dem.
 
 
-## 18. Reproduserbar live-KI-kjøring i GitHub Actions
+## 18. Reproduserbar live-KI-kjøring lokalt
 
-Det er lagt til en separat manuell workflow:
+Live KI-eval skal i dette prosjektet kjøres lokalt, separat fra vanlig CI.
 
-`.github/workflows/live-ai-validation.yml`
+Kommandoer:
+- `npm run test-ai:occupation-golden`
+- `npm run test-ai:golden`
+- `npm run test-ai:stress`
+- `npm run test-ai:stress:full`
 
-Den startes med `workflow_dispatch` og kan kjøre:
-- `occupation-golden`
-- `golden`
-- `stress`
-- `stress-full`
-
-Workflown krever at repository har minst én av følgende GitHub Actions-secrets:
-- `OPENAI_API_KEY`
-- `OPENROUTER_API_KEY`
+Provider-nøkkelen ligger kun i lokal `.env`, som er ignorert av Git. Ekte API-nøkler skal ikke legges i Git, repo-filer eller GitHub-workflows.
 
 Live-eval kjøres bevisst **ikke** automatisk på hver push. Begrunnelse:
 - den koster API-bruk
@@ -676,9 +672,9 @@ Live-eval kjøres bevisst **ikke** automatisk på hver push. Begrunnelse:
 - tilfeldig modellvariasjon skal ikke blokkere vanlig CI uten menneskelig vurdering
 - deterministic quality gate skal være rask og stabil
 
-Rapportfiler under `tests/reports/` lastes opp som workflow-artifact når de finnes.
+Rapportfiler lagres lokalt i `tests/test-results/`, som også er ignorert av Git.
 
-Per 08.11.2026 er denne workflown lagt til for reproduksjon, men den nye 40-case occupation-golden-pakken er fortsatt **ikke dokumentert som live-bestått** før en faktisk workflow-kjøring med provider-secret foreligger.
+Den nye 40-case occupation-golden-pakken skal fortsatt **ikke dokumenteres som live-bestått** før en faktisk lokal modellkjøring foreligger.
 
 
 ---
@@ -746,9 +742,9 @@ Dette gir et separat bevis på at den deployede produksjonsflaten faktisk server
 
 ---
 
-## 21. Forsøk på live occupation-golden i GitHub Actions
+## 21. Tidligere forsøk på live occupation-golden i CI
 
-For å forsøke å lukke det siste gapet ble den strenge 40-case occupation-golden-suiten startet fra en midlertidig QA-gren.
+Det ble tidligere gjort et forsøk på å kjøre den strenge 40-case occupation-golden-suiten fra en midlertidig QA-gren i GitHub Actions.
 
 GitHub Actions-run:
 
@@ -758,20 +754,13 @@ Resultat:
 
 **IKKE KJØRT MOT MODELL**
 
-Workflown stoppet i den eksplisitte sikkerhetssjekken før noen live-KI-case ble kjørt fordi repository ikke hadde noen av disse GitHub Actions-secretene konfigurert:
+Forsøket ble stoppet før noen live-KI-case ble kjørt fordi CI-miljøet ikke hadde provider-nøkkel. Dette var **ikke et KI-avvik** og heller ikke en mislykket golden-case.
 
-- `OPENAI_API_KEY`
-- `OPENROUTER_API_KEY`
-
-Stegene for checkout, Node-oppsett og dependency-installasjon besto. Selve `test-ai:occupation-golden` ble deretter korrekt hoppet over.
-
-Dette er derfor **ikke et KI-avvik** og skal heller ikke registreres som en mislykket golden-case. Resultatet dokumenterer kun en manglende CI-konfigurasjon for ekstern provider.
+Denne CI-tilnærmingen brukes ikke videre i prosjektet. Etter avklaring av sikkerhetspraksis er lokal `.env` eneste dokumenterte metode for provider-nøkkel ved live KI-testing.
 
 Konklusjonen står fast:
 
-> 40-case occupation-golden er deterministic/schema/routing-validert, men kan ikke omtales som live modell-bestått før en faktisk kjøring med provider-secret foreligger.
-
-Den midlertidige QA-workflowen ble deaktivert fra automatisk push etter kontrollen, slik at den ikke kan generere gjentatte feilkall.
+> 40-case occupation-golden er deterministic/schema/routing-validert, men kan ikke omtales som live modell-bestått før en faktisk lokal modellkjøring foreligger.
 
 ---
 
@@ -787,7 +776,7 @@ Per 08.11.2026 kan følgende hevdes med dokumentert dekning:
 - simulator/UI/PWA/regresjon: **grønn**
 - production dependency audit: **0 kjente sårbarheter på valgt auditnivå**
 - faktisk produksjonsflate, versjon og sentrale assets: **verifisert**
-- live 40-case occupation-golden mot ekstern språkmodell: **ikke kjørt i GitHub Actions på grunn av manglende provider-secret**
+- live 40-case occupation-golden mot ekstern språkmodell: **ikke ferdig dokumentert som live-bestått; skal kjøres lokalt med nøkkel i lokal .env**
 
 Det siste punktet er den eneste tydelige testgaten i denne runden som fortsatt står åpen. Den skal ikke skjules eller omformuleres som bestått.
 
@@ -870,7 +859,7 @@ Fjernet:
 Begrunnelse:
 - midlertidig QA-infrastruktur skal ikke bli liggende i produksjonsruntime
 - en eventuell gammel Render-miljøvariabel kan dermed ikke starte en ny 40-case KI-kjøring ved senere restart
-- den permanente, dokumenterte veien for live-eval er `.github/workflows/live-ai-validation.yml`
+- den permanente, dokumenterte veien for live-eval er lokal kjøring med nøkkel kun i `.env`
 
 ### Quality Gate etter opprydding
 
@@ -913,7 +902,7 @@ Den midlertidige QA-grenen ble deretter reset til `main`, slik at smoke-workflow
 To forhold skal fortsatt beskrives nøkternt:
 
 1. **40-case occupation-golden er ikke dokumentert som live-bestått mot ekstern språkmodell.**
-   Forsøk på å kjøre den via GitHub stoppet fordi repository mangler provider-secret. Et senere forsøk på å bruke kortlivet produksjonstestidentitet ble blokkert av plattformens sikkerhetskontroll før hemmelighetene kunne sendes. Ingen testpassord eller provider-nøkkel ble eksponert for å omgå dette.
+   Den skal kjøres lokalt med provider-nøkkel kun i lokal `.env`. Tidligere CI-/produksjonsforsøk brukes ikke videre som nøkkelflyt. Ingen provider-nøkkel skal legges i Git, repo-filer eller GitHub-workflows.
 
 2. **Supabase Leaked Password Protection er deaktivert.**
    Dette er en prosjektinnstilling i Supabase Auth og må aktiveres i Supabase Dashboard. Den tilgjengelige prosjektkoblingen i denne verifikasjonen har ingen skriveoperasjon for innstillingen.
