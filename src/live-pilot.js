@@ -688,7 +688,7 @@ async function startMicrophone() {
     const token = await fetchJson("/api/live/transcription-token", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: "{}"
+      body: JSON.stringify({ model: q("#live-pilot-model")?.value || "gpt-live-transcribe" })
     });
 
     const pc = new RTCPeerConnection();
@@ -840,6 +840,7 @@ function createUi() {
         '<button class="live-pilot-close" id="live-pilot-close" type="button" aria-label="Lukk LIVE">×</button>' +
       '</div>' +
       '<div class="live-pilot-notice"><strong>Lyd lagres ikke av Samtalestøtte.</strong><br>Det du sier transkriberes til tekst. Teksten personvernsjekkes før den sendes videre. Opplesning bruker en syntetisk nettleserstemme i denne piloten.</div>' +
+      '<label class="live-pilot-label" for="live-pilot-model">Transkripsjonsmodell</label><select id="live-pilot-model" class="live-pilot-draft" style="min-height:42px;height:auto"><option value="gpt-live-transcribe">GPT Live Transcribe (nåværende)</option><option value="gpt-4o-transcribe">GPT-4o Transcribe (sammenligning)</option></select><p class="live-pilot-help">Velg modell før du starter mikrofonen. Stopp mikrofonen for å bytte modell.</p>' +
       '<div class="live-pilot-status-row"><span id="live-pilot-status" class="live-pilot-status">Mikrofon av</span><span class="live-pilot-level" aria-hidden="true"><span id="live-pilot-level-fill"></span></span></div>' +
       '<label class="live-pilot-label" for="live-pilot-draft">Transkripsjon / utkast</label>' +
       '<textarea id="live-pilot-draft" class="live-pilot-draft" placeholder="Det du sier vises her. Du kan også redigere teksten manuelt."></textarea>' +
