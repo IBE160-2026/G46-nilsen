@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 
 (async () => {
-  const { shouldRetainCuratedSources } = await import("../src/server/source-retention.js");
+  const { requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } = await import("../src/server/source-retention.js");
 
   const ordinaryContext = {
     occupation: { occupationRelevant: false },
@@ -110,7 +110,25 @@ const assert = require("node:assert/strict");
     "Avklart offentlig avtaleområde skal beholde tariffkilder"
   );
 
-  console.log("SOURCE RETENTION OK: 7 live-avvik + positive kontroller");
+  assert.deepEqual(
+    requiredEmployerScopedPrimaryLawIds([
+      { id:"LOVDATA_AML", sourceRole:"primary_law", sectors:["*"] },
+      { id:"STATE_EMPLOYEE_ACT", sourceRole:"primary_law", employerTypes:["state"], sectors:["*"] },
+      { id:"STATE_PERSONNEL_HANDBOOK", sourceRole:"official_employer_reference", employerTypes:["state"] }
+    ], "state"),
+    ["STATE_EMPLOYEE_ACT"],
+    "Statlig arbeidsgiverspesifikk primærlov skal beholdes når den allerede er relevant kandidat"
+  );
+
+  assert.deepEqual(
+    requiredEmployerScopedPrimaryLawIds([
+      { id:"STATE_EMPLOYEE_ACT", sourceRole:"primary_law", employerTypes:["state"] }
+    ], "municipal"),
+    [],
+    "Statlig primærlov skal ikke tvinges inn for kommune"
+  );
+
+  console.log("SOURCE RETENTION OK: live-avvik + kildepresisjon + positive kontroller");
 })().catch(error => {
   console.error(error);
   process.exit(1);
