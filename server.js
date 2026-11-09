@@ -10,7 +10,7 @@ import { topicCatalog, topicClassificationSchema } from "./src/server/topic-cont
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
-import { shouldRetainCuratedSources } from "./src/server/source-retention.js";
+import { requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
@@ -1852,7 +1852,10 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const allowedCandidateIds = new Set(relevantSources.map(source => source.id));
     const selectedSourceIds = (Array.isArray(parsed.source_ids) ? parsed.source_ids : [])
       .filter(id => allowedCandidateIds.has(id));
-    const finalSourceIds = retainCuratedSources ? selectedSourceIds.slice(0, 4) : [];
+    const requiredPrimaryLawIds = requiredEmployerScopedPrimaryLawIds(relevantSources, employerType);
+    const finalSourceIds = retainCuratedSources
+      ? [...new Set([...requiredPrimaryLawIds, ...selectedSourceIds])].slice(0, 4)
+      : [];
     parsed.source_ids = finalSourceIds;
     const curated = publicSources(finalSourceIds);
     const verifiedWebSources = webSources(response);
