@@ -244,4 +244,22 @@ Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` for metode, funn, feilklassifis
 
 ### Live KI-validering
 
-Live modelltesting er skilt fra vanlig CI. `.github/workflows/live-ai-validation.yml` kan manuelt kjøre den strenge 40-case yrkespakken, hele golden-banken eller stresstest når en provider-API-nøkkel er konfigurert som GitHub Actions-secret. Dette er bevisst ikke en automatisk push-gate.
+Live modelltesting er skilt fra vanlig CI og skal i dette prosjektet kjøres **lokalt** med API-nøkkel i en lokal `.env`-fil.
+
+`.env` og `.env.*` er eksplisitt ignorert av Git. Ekte API-nøkler skal aldri committes, pushes eller legges i repo-filer.
+
+Trygg lokal fremgangsmåte:
+
+```bash
+cp .env.example .env
+```
+
+Legg deretter nøkkelen kun i den lokale `.env`-filen og kjør:
+
+```bash
+npm run test-ai:occupation-golden
+```
+
+Rapportene skrives til `tests/test-results/`, som også er ignorert av Git.
+
+Den manuelle GitHub-workflowen `.github/workflows/live-ai-validation.yml` beholdes som teknisk støtte, men dersom repository ikke har en tillatt ekstern secret-konfigurasjon, hopper den over live-testen uten å markere applikasjonen som feilet. For dette prosjektet er lokal `.env` anbefalt metode.
