@@ -715,7 +715,7 @@ npm run test-privacy
 
 Siste dokumenterte kontroll:
 
-**56/56 bestått**
+**73/73 bestått**
 
 ---
 
@@ -790,6 +790,7 @@ npm run test-ai:stress
 npm run test-ai:stress:full
 npm run test-ai:stress:problems
 npm run test-ai:golden
+npm run test-ai:occupation-golden
 npm run test-golden-schema
 ```
 
