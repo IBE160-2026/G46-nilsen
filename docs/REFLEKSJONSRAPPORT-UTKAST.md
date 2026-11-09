@@ -404,7 +404,7 @@ Sentrale spor som underbygger refleksjonen:
 
 ### Verifiserte testresultater som kan omtales i rapporten
 
-- personvern: 33/33
+- personvern: 73/73
 - samtalesimulering: 24/24
 - server-personvern: bestått
 - UI-regresjon: bestått
@@ -417,9 +417,9 @@ Sentrale spor som underbygger refleksjonen:
 - offentlige frontend-assets: bestått
 - repo-struktur: bestått
 - package-lock-konsistens: bestått
-- siste verifiserte live golden-kjøring mot GPT-5.6 Luna: 21 caser, 19 OK, 2 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil; de to gule ble manuelt vurdert som faglig akseptable
+- siste verifiserte live occupation-golden-kjøring mot gpt-5.6-luna 09.11.2026: 40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil; tidligere 21-case-resultat beholdes som historisk teststeg
 
-**Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt etter den kontrollerte modulariseringen og besto, inkludert UI-regresjon, sensor-demo, offentlige frontend-assets, repo-struktur og package-lock-konsistens. Etter at golden-banken senere ble utvidet til 21 caser og brukeradvarsler/testdokumentasjon ble oppdatert, ble hele pakken kjørt på nytt 26.10.2026 og besto fortsatt. Golden-schemaet verifiserte samtidig 21 caser, 9/9 hovedtemaer, minst to caser per tema, ekstra risikodekning og dokumentert fasitopphav. Senere samme dag ble det gjort ytterligere mindre kodeendringer i flerfaglig runtime og retensjon for brukertestdata. Disse ble derfor kontrollert på nytt. Den eneste nye feilen var i repo-strukturtesten, som ikke kjente igjen lærerens nye `CLAUDE.md` og `.claude/` som tilsiktede kursfiler. Testen ble oppdatert til å tillate disse og framtidige `.logs/`-sesjonslogger, uten å åpne for andre tilfeldige rotfiler. Repo-strukturtesten besto deretter. Jeg unngikk dermed å bruke en eldre grønn kjøring som bevis for kode som var endret etterpå.
+**Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt gjentatte ganger gjennom prosjektet og besto etter de siste kodeendringene. Den endelige KI-kvalitetsrunden 09.11.2026 bygget videre på dette med 40 strenge yrke/sektor/tariff/kilde-caser. Første fullrunde ga 37/40 og førte til målrettet retting av fasit, testheuristikk og kildeprioritering. Etter nye regresjonstester og quality gate ga sluttkjøringen 40/40 OK. Dokumentasjonsoppdateringen etterpå utløste også en ny full GitHub Actions quality gate på `main`, run 42665279811, som var SUCCESS. Dermed bruker jeg ikke en eldre grønn kjøring som bevis for senere kode eller dokumentasjon.
 
 
 ## Tillegg 28.–29.10.2026 – produksjonsflyt som avdekket feil utenfor KI-modellen
