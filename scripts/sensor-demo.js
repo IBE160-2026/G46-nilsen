@@ -141,10 +141,10 @@ function guidanceFor(situation, analysis) {
 }
 
 app.get("/", (_req, res) => res.sendFile(path.join(root, "index.html")));
-for (const filename of ["app.js", "live-pilot.js", "live-pilot.css", "styles.css", "styles-core.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js"]) {
+for (const filename of ["app.js", "styles.css", "styles-core.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js"]) {
   app.get(`/${filename}`, (_req, res) => res.sendFile(path.join(root, filename)));
 }
-for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-data.js", "live-pilot-utils.js"]) {
+for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-data.js", "live-pilot-utils.js", "live-pilot.js"]) {
   app.get(`/src/${filename}`, (_req, res) => res.sendFile(path.join(root, "src", filename)));
 }
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
