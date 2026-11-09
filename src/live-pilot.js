@@ -124,7 +124,7 @@ function setLevel(value) {
 function preferredVoices() {
   if (!("speechSynthesis" in window)) return [];
   const voices = window.speechSynthesis.getVoices() || [];
-  return voices.slice().sort(function (a, b) {
+  return voices.filter(function (voice) { return /^(?:nb|nn|no)(?:-|$)/i.test(voice.lang || ""); }).sort(function (a, b) {
     const aNo = /^nb|^no/i.test(a.lang || "") ? 0 : 1;
     const bNo = /^nb|^no/i.test(b.lang || "") ? 0 : 1;
     if (aNo !== bNo) return aNo - bNo;
@@ -140,7 +140,7 @@ function populateVoices() {
   if (!voices.length) {
     const option = document.createElement("option");
     option.value = "";
-    option.textContent = "Nettleserens standardstemme";
+    option.textContent = "Ingen norsk stemme tilgjengelig på denne enheten";
     select.appendChild(option);
     return;
   }
@@ -184,6 +184,10 @@ function speak(text, options) {
   const opts = options || {};
   const clean = normalizeSpeechText(text);
   if (!clean || !state.ttsEnabled || !("speechSynthesis" in window)) return Promise.resolve();
+  if (!selectedSpeechVoice()) {
+    setMessage("Ingen norsk opplesningsstemme er installert på enheten. Opplesning er deaktivert for å unngå feil språk.");
+    return Promise.resolve();
+  }
 
   stopSpeech();
   state.ttsActive = true;
