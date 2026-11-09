@@ -1523,15 +1523,15 @@ Full metode, funn og akseptansekriterier:
 `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
 
 
-## Manuell live KI-workflow
+## Lokal live KI-kjøring
 
-For å skille stabil CI fra stokastisk/provider-avhengig modelltesting finnes nå:
+Live KI-testing holdes adskilt fra vanlig CI og kjøres lokalt. API-nøkkelen ligger kun i lokal `.env`, som er ignorert av Git.
 
-`.github/workflows/live-ai-validation.yml`
+Kjøring:
 
-Den kan manuelt kjøre occupation-golden, full golden eller stresstest med GitHub Actions-secret for OpenAI/OpenRouter. Eventuelle rapporter lagres som workflow-artifact.
+`npm run test-ai:occupation-golden`
 
-Dette gjør live-eval reproduserbar uten å blande API-kostnad og modellvariasjon inn i den automatiske deterministic quality-gaten.
+Rapportene lagres i `tests/test-results/`, som også er ignorert av Git. Dette skiller stokastisk/provider-avhengig testing fra den stabile deterministic quality-gaten uten å legge hemmeligheter i Git eller GitHub-workflows.
 
 
 ---
@@ -1553,4 +1553,4 @@ Sikkerhetsvern som allerede finnes:
 - `tests/test-repo-structure.cjs` feiler dersom en ekte `.env` eller annen ikke-eksempel miljøfil spores i Git.
 - genererte testresultater spores ikke som kildekode.
 
-Den manuelle GitHub-workflowen kan fortsatt brukes i miljøer der ekstern secret-håndtering er eksplisitt tillatt, men den er **ikke anbefalt nøkkelflyt for dette prosjektet**. Uten provider-secret hopper workflown over live-testen med notice i stedet for å rapportere applikasjonsfeil.
+For dette prosjektet brukes ikke GitHub-workflow til provider-nøkler. Lokal `.env` er eneste dokumenterte nøkkelflyt for live KI-test.
