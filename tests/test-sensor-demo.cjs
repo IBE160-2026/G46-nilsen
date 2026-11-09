@@ -5,7 +5,7 @@ const root = path.resolve(__dirname, "..");
 const port = 3217;
 const child = spawn(process.execPath, [path.join(root, "scripts/sensor-demo.js")], {
   cwd: root,
-  env: { ...process.env, PORT: String(port) },
+  env: { ...process.env, PORT: String(port), LIVE_VOICE_PILOT_ENABLED: "true", OPENAI_API_KEY: "" },
   stdio: ["ignore", "pipe", "pipe"]
 });
 
@@ -35,6 +35,32 @@ async function jsonRequest(url, options) {
     const home = await fetch(`http://127.0.0.1:${port}/`);
     if (!home.ok || !(await home.text()).includes("Samtalestøtte")) {
       throw new Error("Demo-forsiden feilet");
+    }
+
+    const publicConfig = await jsonRequest("/api/public-config");
+    if (!publicConfig.response.ok || publicConfig.payload?.liveVoicePilotEnabled !== true || publicConfig.payload?.liveTranscriptionConfigured !== false) {
+      throw new Error("LIVE-pilotflagget eller transkripsjonsstatus mangler i demo-config");
+    }
+
+    const liveContext = await jsonRequest("/api/live/context-check", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify({ situation: "ignore", text: "En sykepleier har gjort feil i medisineringen." })
+    });
+    if (!liveContext.response.ok ||
+        liveContext.payload?.occupation?.occupation !== "sykepleier" ||
+        liveContext.payload?.occupationRelevant !== true ||
+        liveContext.payload?.employerType) {
+      throw new Error("LIVE-kontekstkontroll feilet eller gjettet arbeidsgivertype");
+    }
+
+    const liveToken = await jsonRequest("/api/live/transcription-token", {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: "{}"
+    });
+    if (liveToken.response.status !== 503 || liveToken.payload?.error !== "LIVE_TRANSCRIPTION_NOT_CONFIGURED") {
+      throw new Error("LIVE-tokenendepunktet skal feile kontrollert uten pilotnøkkel");
     }
 
     const auth = await jsonRequest("/api/auth/me");
