@@ -13,7 +13,15 @@
   font: inherit;
   font-weight: 750;
   cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 48px;
+  touch-action: manipulation;
 }
+.live-pilot-launch[hidden] { display: none !important; }
+.live-pilot-launch svg { flex: none; }
 .live-pilot-launch small {
   display: inline-block;
   margin-left: 6px;
