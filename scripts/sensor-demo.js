@@ -276,6 +276,9 @@ app.post("/api/live/transcription-token", async (req, res) => {
       message: "LIVE-transkripsjon er ikke konfigurert i pilotmiljøet."
     });
   }
+  const requestedModel = String(req.body?.model || "gpt-live-transcribe");
+  const model = ["gpt-live-transcribe", "gpt-4o-transcribe"].includes(requestedModel) ? requestedModel : null;
+  if (!model) return res.status(400).json({error:"INVALID_TRANSCRIPTION_MODEL"});
   try {
     const safetyId = crypto.createHash("sha256").update("samtalestotte-live-pilot|" + String(req.ip || "unknown")).digest("hex");
     const response = await fetch("https://api.openai.com/v1/realtime/client_secrets", {
@@ -292,11 +295,9 @@ app.post("/api/live/transcription-token", async (req, res) => {
           audio: {
             input: {
               noise_reduction: { type: "near_field", strength: 0.85 },
-              transcription: {
-                model: "gpt-live-transcribe",
-                languages: ["no"],
-                keywords: liveKeywords
-              },
+              transcription: model === "gpt-live-transcribe"
+                ? { model, languages: ["no"], keywords: liveKeywords }
+                : { model, language: "no", prompt: "Transkriber naturlig norsk tale, inkludert nordnorsk dialekt. Behold ordet hen når det sies. Bruk norsk tegnsetting." },
               turn_detection: null
             }
           }
@@ -316,7 +317,7 @@ app.post("/api/live/transcription-token", async (req, res) => {
     res.json({
       clientSecret: payload.value,
       expiresAt: payload.expires_at || null,
-      model: "gpt-live-transcribe"
+      model
     });
   } catch (error) {
     console.error("[live-pilot] Client secret-feil:", error?.message || error);
