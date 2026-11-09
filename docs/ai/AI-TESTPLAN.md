@@ -1532,3 +1532,25 @@ For å skille stabil CI fra stokastisk/provider-avhengig modelltesting finnes n�
 Den kan manuelt kjøre occupation-golden, full golden eller stresstest med GitHub Actions-secret for OpenAI/OpenRouter. Eventuelle rapporter lagres som workflow-artifact.
 
 Dette gjør live-eval reproduserbar uten å blande API-kostnad og modellvariasjon inn i den automatiske deterministic quality-gaten.
+
+
+---
+
+## 09.11.2026 – lokal håndtering av API-nøkkel for live KI-test
+
+For dette prosjektet skal ekte provider-nøkler **ikke legges i Git eller repo-filer**.
+
+Anbefalt live-testflyt er lokal:
+
+1. Kopier `.env.example` til lokal `.env`.
+2. Legg `OPENAI_API_KEY` eller `OPENROUTER_API_KEY` kun i lokal `.env`.
+3. Verifiser at `.env` ikke spores av Git.
+4. Kjør `npm run test-ai:occupation-golden`.
+5. Inspiser rapportene i `tests/test-results/`.
+
+Sikkerhetsvern som allerede finnes:
+- `.gitignore` ignorerer `.env` og `.env.*`, med unntak av eksempel-filer.
+- `tests/test-repo-structure.cjs` feiler dersom en ekte `.env` eller annen ikke-eksempel miljøfil spores i Git.
+- genererte testresultater spores ikke som kildekode.
+
+Den manuelle GitHub-workflowen kan fortsatt brukes i miljøer der ekstern secret-håndtering er eksplisitt tillatt, men den er **ikke anbefalt nøkkelflyt for dette prosjektet**. Uten provider-secret hopper workflown over live-testen med notice i stedet for å rapportere applikasjonsfeil.
