@@ -199,9 +199,9 @@ function detectLiveOccupation(text) {
 function detectLiveEmployerType(text) {
   const source = normalizeLiveText(text);
   if (/\b(?:stat|staten|statlig|statsansatt(?:e|en)?)\b/u.test(source)) return "state";
-  if (/\b(?:kommune|kommunal|fylkeskommune|fylkeskommunal)\b/u.test(source)) return "municipal";
-  if (/\b(?:helseforetak|helseforetaket|helseforetakene)\b/u.test(source)) return "health_enterprise";
-  if (/\b(?:privat|privat sektor|privat virksomhet|privat selskap)\b/u.test(source)) return "private";
+  if (/\b(?:kommune(?:n|r)?|kommunal(?:t|e)?|fylkeskommune(?:n|r)?|fylkeskommunal(?:t|e)?)\b/u.test(source)) return "municipal";
+  if (/\b(?:helseforetak(?:et|ene)?)\b/u.test(source)) return "health_enterprise";
+  if (/\b(?:privat(?:e)?|privat sektor|privat virksomhet|privat selskap)\b/u.test(source)) return "private";
   return "";
 }
 
