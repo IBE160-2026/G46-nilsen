@@ -1010,6 +1010,61 @@ function topicSubtopicByTitle(topic, title) {
   return topic?.subtopics?.find(([subTitle]) => subTitle === title) || null;
 }
 
+async function submitLivePilotSituation(text, context = {}) {
+  const situation = String(text || '').trim();
+  if (!situation) return { ok:false, reason:'empty', findings:[] };
+
+  const findings = detectSensitiveInfo(situation);
+  const { hard, soft } = splitPrivacyFindings(findings);
+  if (hard.length) return { ok:false, reason:'privacy', findings, hard, soft };
+
+  const classification = await requestTopicClassification(situation);
+  const topic = topics.find(item => item.id === classification.primary_topic_id);
+  if (!topic) throw new Error('LIVE-piloten fant ikke et gyldig hovedtema.');
+
+  const subtopic = topicSubtopicByTitle(topic, classification.primary_subtopic) || topic.subtopics?.[0];
+  if (!subtopic) throw new Error('LIVE-piloten fant ikke et gyldig undertema.');
+
+  currentTopic = topic;
+  highlightTopicCard(topic.id);
+  openGuidance(subtopic[0], subtopic[1], situation);
+  showAutoTopicNote(topic, subtopic, classification);
+  await loadOccupationOptions();
+
+  const sector = document.querySelector('#occupation-sector');
+  const occupation = document.querySelector('#occupation-title');
+  const employer = document.querySelector('#occupation-employer-type');
+  if (sector && context.sectorId) sector.value = context.sectorId;
+  updateOccupationDatalist();
+  if (occupation && context.occupation) occupation.value = context.occupation;
+  if (employer) employer.value = context.employerType || '';
+
+  requestAnimationFrame(() => {
+    document.querySelector('#situation-form')?.requestSubmit();
+  });
+
+  return {
+    ok:true,
+    topicId: topic.id,
+    topic: topic.title,
+    subtopic: subtopic[0],
+    classification
+  };
+}
+
+window.SamtalestotteLiveBridge = Object.freeze({
+  privacyCheck(text) {
+    const findings = detectSensitiveInfo(text);
+    const { hard, soft } = splitPrivacyFindings(findings);
+    return { findings, hard, soft, blocked: hard.length > 0 };
+  },
+  autoFixPrivacy(text) {
+    const findings = detectSensitiveInfo(text);
+    return autoFixPrivacyText(text, findings);
+  },
+  submitSituation: submitLivePilotSituation
+});
+
 function showAutoTopicNote(topic, subtopic, classification) {
   const note = document.querySelector('#auto-topic-note');
   const text = document.querySelector('#auto-topic-text');
@@ -2354,9 +2409,11 @@ async function showStructuredGuidance() {
     lastAiGuidance = guidance;
     conversationDirty = true;
     renderAiGuidance(guidance);
+    window.dispatchEvent(new CustomEvent('samtalestotte:guidance-ready', { detail: { guidance } }));
     await saveCurrentConversation();
   } catch (error) {
     renderStructuredGuidance();
+    window.dispatchEvent(new CustomEvent('samtalestotte:guidance-error', { detail: { message: error?.message || 'Ukjent feil' } }));
     const intro = document.querySelector('#result-intro');
     if (intro) intro.textContent = `KI-samtalestøtten feilet (${error.diagnostic?.status || error.code || 'ukjent'}). Lokal reserve vises bare for testing.`;
   } finally {
