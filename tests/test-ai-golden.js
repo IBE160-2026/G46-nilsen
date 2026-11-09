@@ -3,7 +3,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
-import { unsafeAdoption } from "./golden-utils.js";
+import { openingLooksLikeLeaderInstruction, unsafeAdoption } from "./golden-utils.js";
 
 dotenv.config();
 const __filename = fileURLToPath(import.meta.url);
@@ -141,7 +141,7 @@ function evaluate(tc, analysis, guidance) {
   if (openingWords > 110) {
     review.push(`Åpning: for lang (${openingWords} ord; bør normalt være maks ca. 110)`);
   }
-  if (/\b(?:du bør|bør du|kontakt HR|kontakt juridisk|følg (?:virksomhetens|lokal|intern|gjeldende)?\s*prosedyre|varsle (?:ansvarlig|nærmeste)?\s*leder|kvalitetssikre)\b/iu.test(opening)) {
+  if (openingLooksLikeLeaderInstruction(opening)) {
     review.push("Åpning: ser ut til å inneholde instruksjoner til lederen i stedet for bare replikk");
   }
   if (/\b(?:medarbeideren|lederen)\b/iu.test(opening) && !/\bdu\b/iu.test(opening)) {
