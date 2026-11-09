@@ -790,3 +790,68 @@ Per 08.11.2026 kan følgende hevdes med dokumentert dekning:
 - live 40-case occupation-golden mot ekstern språkmodell: **ikke kjørt i GitHub Actions på grunn av manglende provider-secret**
 
 Det siste punktet er den eneste tydelige testgaten i denne runden som fortsatt står åpen. Den skal ikke skjules eller omformuleres som bestått.
+
+
+---
+
+## 23. Supabase security/performance advisor – kontroll 09.11.2026
+
+Som del av sluttkontrollen ble Supabase sine egne advisor-kontroller kjørt mot produksjonsprosjektet.
+
+### Sikkerhetsfunn som ble rettet
+
+Advisor flagget:
+
+`public.rls_auto_enable()`
+
+Funksjonen er en `SECURITY DEFINER` event-trigger-funksjon som automatisk aktiverer RLS på nye tabeller i `public`. Fordi funksjonen ikke hadde eksplisitte EXECUTE-rettigheter, arvet den PostgreSQL-standard der PUBLIC kan ha EXECUTE.
+
+Dette var unødvendig og ble rettet ved å trekke direkte EXECUTE fra:
+- PUBLIC
+- anon
+- authenticated
+
+Funksjonen beholdes som database-event-trigger, men kan ikke lenger kalles direkte av vanlige API-roller.
+
+Repo-migrasjon:
+`database/migrations/V20-7-SUPABASE-MIGRATION.sql`
+
+Etter endringen forsvant begge advisor-advarslene om offentlig/innlogget kjøring av SECURITY DEFINER-funksjonen.
+
+### RLS-performance og foreign-key-indekser
+
+Performance advisor flagget fire policies på `public.conversations` fordi `auth.uid()` ble evaluert per rad.
+
+Policyene ble erstattet med:
+`(select auth.uid()) = user_id`
+
+og eksplisitt begrenset til `authenticated`.
+
+I tillegg ble støtteindekser lagt på seks foreign-key-kolonner advisoren flagget:
+- ai_response_feedback.user_id
+- ai_usage_log.user_id
+- app_settings.updated_by
+- benchmark_results.created_by
+- content_overrides.updated_by
+- invites.user_id
+
+Repo-migrasjon:
+`database/migrations/V20-8-SUPABASE-MIGRATION.sql`
+
+Etter endringen var:
+- `auth_rls_initplan`: ingen funn
+- `unindexed_foreign_keys`: ingen funn
+
+Advisor viser naturlig nok de nye indeksene som `unused_index` umiddelbart etter opprettelse. Dette er INFO, ikke en feil, og indeksene skal ikke fjernes før produksjonsbruk over tid gir grunnlag for en slik vurdering.
+
+### Gjenstående Supabase-advarsel
+
+`Leaked Password Protection Disabled`
+
+Dette er en Supabase Auth-prosjektinnstilling som aktiverer kontroll mot kjente kompromitterte passord. Den tilgjengelige prosjektkoblingen i denne verifikasjonsrunden har ingen skriveoperasjon for denne Auth-innstillingen.
+
+Den står derfor som et eksplisitt manuelt hardening-punkt i Dashboard, ikke som en kodefeil i Samtalestøtte.
+
+### RLS uten policy
+
+Advisor viser INFO for flere server-only tabeller som har RLS aktivert og ingen klientpolicyer. Dette er i tråd med arkitekturen der disse tabellene håndteres gjennom serverens privilegerte backend og ikke skal være direkte tilgjengelige for anon/authenticated via Data API. Det ble derfor ikke lagt åpne policies bare for å fjerne INFO-varselet.
