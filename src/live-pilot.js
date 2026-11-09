@@ -677,7 +677,11 @@ async function startMicrophone() {
       },
       body: offer.sdp
     });
-    if (!sdpResponse.ok) throw new Error("OpenAI Realtime avviste WebRTC-tilkoblingen.");
+    if (!sdpResponse.ok) {
+      let detail = "";
+      try { const payload = await sdpResponse.json(); detail = payload?.error?.message || payload?.error?.code || ""; } catch (_) {}
+      throw new Error("OpenAI Realtime avviste tilkoblingen (HTTP " + sdpResponse.status + ")." + (detail ? " " + String(detail).slice(0, 240) : ""));
+    }
     const answerSdp = await sdpResponse.text();
     await pc.setRemoteDescription({ type: "answer", sdp: answerSdp });
 
@@ -700,12 +704,14 @@ async function startMicrophone() {
     q("#live-pilot-stop").disabled = false;
     setStatus("Lytter", "listening");
   } catch (error) {
+    const reason = error && error.message ? error.message : "Ukjent oppstartsfeil";
+    console.error("[live-pilot] Mikrofonstart feilet:", error);
     await stopMicrophone(true);
     setStatus("Kunne ikke starte", "error");
     if (error && error.name === "NotAllowedError") {
       setMessage("Mikrofontillatelsen ble avslått. Du kan fortsatt bruke vanlig tekstmodus.");
     } else {
-      setMessage(error.message || "Kunne ikke starte LIVE-transkripsjon.");
+      setMessage("Mikrofonen ble slått av fordi oppstarten feilet: " + reason);
     }
   }
 }
