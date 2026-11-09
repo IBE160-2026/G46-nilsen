@@ -625,19 +625,22 @@ async function startMicrophone() {
   setMessage("Ber om mikrofontillatelse og oppretter en kortlivet transkripsjonsøkt.");
 
   try {
-    const token = await fetchJson("/api/live/transcription-token", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: "{}"
-    });
-
+    // Be om mikrofon direkte fra brukerklikket. Mobilnettlesere kan kreve
+    // brukeraktivering før første await/nettverkskall.
+    setMessage("Ber nettleseren om mikrofontilgang …");
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
         echoCancellation: true,
         noiseSuppression: true,
-        autoGainControl: true,
-        channelCount: 1
+        autoGainControl: true
       }
+    });
+    state.stream = stream;
+    setMessage("Mikrofon åpnet. Oppretter transkripsjonsøkt …");
+    const token = await fetchJson("/api/live/transcription-token", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: "{}"
     });
 
     const pc = new RTCPeerConnection();
