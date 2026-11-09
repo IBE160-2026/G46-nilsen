@@ -2,7 +2,7 @@ name: Quality Gate
 
 on:
   push:
-    branches: [main, pilot-live-v1]
+    branches: [main]
   workflow_dispatch:
 
 jobs:
