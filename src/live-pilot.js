@@ -409,7 +409,9 @@ async function handleUtterance(raw) {
 
   const punctuation = punctuationByVoice(utterance);
   if (punctuation !== null) {
-    setDraft(appendPunctuation(state.draft, punctuation));
+    state.draft = appendPunctuation(state.draft, punctuation);
+    updateDraftUi();
+    setPrivacy([]);
     setMessage("Tegnsetting lagt til.");
     return;
   }
