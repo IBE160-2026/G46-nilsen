@@ -1062,7 +1062,16 @@ window.SamtalestotteLiveBridge = Object.freeze({
     const findings = detectSensitiveInfo(text);
     return autoFixPrivacyText(text, findings);
   },
-  submitSituation: submitLivePilotSituation
+  submitSituation: submitLivePilotSituation,
+  async continueConversation(text) {
+    const question = String(text || '').trim();
+    if (!question) return { ok:false, reason:'empty', findings:[] };
+    const findings = detectSensitiveInfo(question);
+    const { hard, soft } = splitPrivacyFindings(findings);
+    if (hard.length) return { ok:false, reason:'privacy', findings, hard, soft };
+    await appendConversationTurn(question);
+    return { ok:true };
+  }
 });
 
 function showAutoTopicNote(topic, subtopic, classification) {
@@ -2549,6 +2558,7 @@ async function appendConversationTurn(question) {
     setConversationTurnText(assistant, 'assistant', assistantReply);
     renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
+    window.dispatchEvent(new CustomEvent('samtalestotte:continuation-ready', { detail: { reply: assistantReply } }));
     conversationDirty = true;
     await saveCurrentConversation();
   } catch (_) {
@@ -2557,6 +2567,7 @@ async function appendConversationTurn(question) {
     setConversationTurnText(assistant, 'assistant', reply);
     renderContinueSuggestions(localContinuationSuggestions(question, reply));
     queueSpeechBubbleRefresh();
+    window.dispatchEvent(new CustomEvent('samtalestotte:continuation-ready', { detail: { reply, fallback:true } }));
   }
 }
 
