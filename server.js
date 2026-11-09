@@ -2084,18 +2084,6 @@ app.post('/api/simulation-feedback', aiLimiter, requireUser, async (req, res) =>
 app.listen(port, () => {
   console.log(`Samtalestøtte kjører på http://localhost:${port}`);
   console.log(hasAnyAiClient() ? `KI aktivert (standard ${defaultModel}; admin kan overstyre)` : "KI er ikke aktivert: sett OPENAI_API_KEY eller OPENROUTER_API_KEY i .env");
-
-  // Midlertidig, eksplisitt QA-hook for verifikasjon i Render-miljøet.
-  // Inaktiv som standard og blokkert i testserveren for å unngå rekursjon.
-  if (
-    process.env.RENDER_LIVE_QA_ON_START === "1" &&
-    process.env.NODE_ENV !== "test" &&
-    process.env.TEST_AUTH_BYPASS !== "1"
-  ) {
-    import("./scripts/render-live-qa.js")
-      .then(({ runRenderLiveQa }) => runRenderLiveQa())
-      .catch(error => console.error("[LIVE-QA] Kunne ikke starte QA-runner:", error));
-  }
 });
 
 
