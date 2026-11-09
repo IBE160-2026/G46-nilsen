@@ -855,3 +855,67 @@ Den står derfor som et eksplisitt manuelt hardening-punkt i Dashboard, ikke som
 ### RLS uten policy
 
 Advisor viser INFO for flere server-only tabeller som har RLS aktivert og ingen klientpolicyer. Dette er i tråd med arkitekturen der disse tabellene håndteres gjennom serverens privilegerte backend og ikke skal være direkte tilgjengelige for anon/authenticated via Data API. Det ble derfor ikke lagt åpne policies bare for å fjerne INFO-varselet.
+
+
+---
+
+## 24. Sluttopprydding og siste produksjonskontroll – 09.11.2026
+
+Den midlertidige Render-hooken som kunne starte occupation-golden ved oppstart ble fjernet fra produksjonskoden etter verifikasjonsarbeidet.
+
+Fjernet:
+- oppstartsblokken for `RENDER_LIVE_QA_ON_START` i `server.js`
+- `scripts/render-live-qa.js`
+
+Begrunnelse:
+- midlertidig QA-infrastruktur skal ikke bli liggende i produksjonsruntime
+- en eventuell gammel Render-miljøvariabel kan dermed ikke starte en ny 40-case KI-kjøring ved senere restart
+- den permanente, dokumenterte veien for live-eval er `.github/workflows/live-ai-validation.yml`
+
+### Quality Gate etter opprydding
+
+GitHub Actions-run:
+
+**42539766034**
+
+Commit:
+
+`b433a8e626ba9534a9005931ba63c0ff066745f1`
+
+Resultat:
+
+**SUCCESS**
+
+Dette bekrefter at hele deterministic quality-gaten fortsatt er grønn etter at den midlertidige runtime-hooken ble fjernet.
+
+### Siste offentlige produksjons-smoke
+
+En kortlivet QA-workflow ble kjørt mot faktisk Render-produksjon etter oppryddingen.
+
+GitHub Actions-run:
+
+**42539814526**
+
+Resultat:
+
+**SUCCESS**
+
+Kontrollen verifiserte:
+- produksjonsforsiden svarer
+- `/api/public-config` svarer
+- appVersion er fortsatt **20.11.5**
+- sentrale frontend-/PWA-assets kan hentes
+
+Den midlertidige QA-grenen ble deretter reset til `main`, slik at smoke-workflowen ikke ligger igjen som ekstra prosjektkode.
+
+### Gjenstående eksplisitte begrensninger
+
+To forhold skal fortsatt beskrives nøkternt:
+
+1. **40-case occupation-golden er ikke dokumentert som live-bestått mot ekstern språkmodell.**
+   Forsøk på å kjøre den via GitHub stoppet fordi repository mangler provider-secret. Et senere forsøk på å bruke kortlivet produksjonstestidentitet ble blokkert av plattformens sikkerhetskontroll før hemmelighetene kunne sendes. Ingen testpassord eller provider-nøkkel ble eksponert for å omgå dette.
+
+2. **Supabase Leaked Password Protection er deaktivert.**
+   Dette er en prosjektinnstilling i Supabase Auth og må aktiveres i Supabase Dashboard. Den tilgjengelige prosjektkoblingen i denne verifikasjonen har ingen skriveoperasjon for innstillingen.
+
+Alt øvrig som kunne verifiseres eller rettes gjennom kode, GitHub Actions og Supabase-advisors i denne runden er gjennomført og dokumentert.
