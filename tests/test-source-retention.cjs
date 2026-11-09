@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 
 (async () => {
-  const { requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } = await import("../src/server/source-retention.js");
+  const { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } = await import("../src/server/source-retention.js");
 
   const ordinaryContext = {
     occupation: { occupationRelevant: false },
@@ -128,7 +128,28 @@ const assert = require("node:assert/strict");
     "Statlig primærlov skal ikke tvinges inn for kommune"
   );
 
-  console.log("SOURCE RETENTION OK: live-avvik + kildepresisjon + positive kontroller");
+  assert.equal(isLegalSourceContext("Arbeidsgiver vurderer oppsigelse."), true, "Oppsigelse skal gjenkjennes som juridisk kontekst");
+  assert.equal(isLegalSourceContext("Jeg trenger korrekt overordnet regelverksretning."), true, "Sammensatt ord med regelverk skal gjenkjennes");
+  assert.equal(isLegalSourceContext("Vanlig samtale om arbeidsdeling."), false, "Ordinær samarbeidsdialog skal ikke bli juridisk kontekst");
+
+  assert.equal(
+    employerScopedPrimaryLawBonus(
+      { sourceRole:"primary_law", employerTypes:["state"] },
+      "state"
+    ),
+    10,
+    "Relevant arbeidsgiverspesifikk primærlov skal få tydelig prioritet"
+  );
+  assert.equal(
+    employerScopedPrimaryLawBonus(
+      { sourceRole:"primary_law", employerTypes:["state"] },
+      "municipal"
+    ),
+    0,
+    "Statlig primærlov skal ikke få bonus i kommunal sak"
+  );
+
+  console.log("SOURCE RETENTION OK: live-avvik + juridisk kilderangering + positive kontroller");
 })().catch(error => {
   console.error(error);
   process.exit(1);

@@ -86,3 +86,17 @@ export function requiredEmployerScopedPrimaryLawIds(sources = [], employerType =
     .filter(id => id && !seen.has(id) && seen.add(id))
     .slice(0, 2);
 }
+
+
+export function isLegalSourceContext(textValue = "") {
+  const text = normalize(textValue);
+  return /\b(?:lov\w*|regelverk\w*|rettighet\w*|plikt\w*|oppsig\w*|avskjed\w*|varsling\w*|trakassering\w*|diskrimin\w*|sykefravær\w*|sykmeld\w*|tilrettelegg\w*|arbeidstid\w*|overtid\w*|kontrolltiltak\w*|overvåk\w*|hms\w*|sikkerhet\w*|tariff\w*|lønn\w*|forhandling\w*|medbestemmelse\w*|tillitsvalgt\w*)\b/u.test(text);
+}
+
+export function employerScopedPrimaryLawBonus(source = {}, employerType = "") {
+  const role = source?.sourceRole || source?.source_role || "";
+  const scopedEmployers = Array.isArray(source?.employerTypes)
+    ? source.employerTypes
+    : (Array.isArray(source?.employer_types) ? source.employer_types : []);
+  return role === "primary_law" && employerType && scopedEmployers.includes(employerType) ? 10 : 0;
+}
