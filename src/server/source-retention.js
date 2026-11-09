@@ -67,3 +67,22 @@ export function shouldRetainCuratedSources({
   const concrete = `${subtopic || ""} ${situation || ""}`;
   return concreteSourceTerms.some(term => containsNonNegatedSourceTerm(concrete, term));
 }
+
+
+export function requiredEmployerScopedPrimaryLawIds(sources = [], employerType = "") {
+  const employer = String(employerType || "").trim();
+  if (!employer) return [];
+
+  const seen = new Set();
+  return (Array.isArray(sources) ? sources : [])
+    .filter(source => {
+      const role = source?.sourceRole || source?.source_role || "";
+      const scopedEmployers = Array.isArray(source?.employerTypes)
+        ? source.employerTypes
+        : (Array.isArray(source?.employer_types) ? source.employer_types : []);
+      return role === "primary_law" && scopedEmployers.includes(employer);
+    })
+    .map(source => source.id)
+    .filter(id => id && !seen.has(id) && seen.add(id))
+    .slice(0, 2);
+}
