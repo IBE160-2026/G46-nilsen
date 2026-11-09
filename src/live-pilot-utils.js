@@ -37,9 +37,9 @@ export function employerTypeFromSpeech(value = "") {
   const text = normalizeSpeechText(value).toLocaleLowerCase("nb-NO");
   if (!text) return "";
   if (/\b(?:stat|staten|statlig|statsansatt(?:e|en)?)\b/u.test(text)) return "state";
-  if (/\b(?:kommune|kommunal|fylkeskommune|fylkeskommunal)\b/u.test(text)) return "municipal";
-  if (/\b(?:helseforetak|helseforetaket|helseforetakene)\b/u.test(text)) return "health_enterprise";
-  if (/\b(?:privat|privat sektor|privat virksomhet|privat selskap)\b/u.test(text)) return "private";
+  if (/\b(?:kommune(?:n|r)?|kommunal(?:t|e)?|fylkeskommune(?:n|r)?|fylkeskommunal(?:t|e)?)\b/u.test(text)) return "municipal";
+  if (/\b(?:helseforetak(?:et|ene)?)\b/u.test(text)) return "health_enterprise";
+  if (/\b(?:privat(?:e)?|privat sektor|privat virksomhet|privat selskap)\b/u.test(text)) return "private";
   if (/\b(?:usikker|vet ikke|ukjent)\b/u.test(text)) return "unknown";
   return "";
 }
