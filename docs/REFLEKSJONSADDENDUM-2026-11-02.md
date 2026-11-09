@@ -101,14 +101,17 @@ Dette er et viktig refleksjonspunkt: tilbakemelding ble omgjort til konkrete kod
 - 9 hovedtemaer
 - 48 gjeldende undertemaer
 - 114 benchmarkcaser
-- 26 golden/pilotcaser i dagens bank
-- dokumentert live golden-kjøring 26.10: 21 caser, 19 maskinelt OK + 2 manuelt akseptert etter kontroll
-- senere produksjonsflyt: 26/26 nådde KI-svar etter retting av falske personverntreff
-- personverntestsett er senere dokumentert utvidet til 56/56
+- 66 golden/fasitcaser totalt
+- 40 strenge yrke/sektor/tariff/kilde-caser
+- endelig lokal live occupation-golden 09.11.2026 mot gpt-5.6-luna: **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik, 0 tekniske feil**
+- første fullrunde av samme 40-case-suite ga 37/40 og utløste dokumentert årsaksanalyse og retting av henholdsvis fasit, testheuristikk og kildeprioritering
+- personverntestsett: 73/73
 - simulator: 24/24 i dokumentert kontroll
-- yrkes-/sektorlag: backend/data/tester finnes, men ikke ferdig aktiv produksjons-UI
-- direkte samtale og tale: hypoteser/videre arbeid, ikke ferdige funksjoner
-- produksjonsgrunnlag: appversjon 20.11.5, med senere dokumenterte UI/cache/PWA-patcher uten ny fullverifisert formell release
+- 28/28 deterministic sektor-golden, fordelt på relevante og irrelevante yrkescaser
+- yrkes-/sektorlag: koblet gjennom ordinær produksjonskode som valgfri kontekst, med driftskontroll via feature flagg
+- direkte samtale og tale: hypoteser/videre arbeid, ikke ferdige produksjonsfunksjoner
+- produksjonsgrunnlag: appversjon 20.11.5
+- siste dokumenterte quality gate etter sluttverifikasjonsdokumentasjon: GitHub Actions 42665279811, SUCCESS
 
 ## 8. Før endelig innlevering
 
