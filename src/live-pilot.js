@@ -631,6 +631,8 @@ async function startMicrophone() {
   try {
     // Be om mikrofon direkte fra brukerklikket. Mobilnettlesere kan kreve
     // brukeraktivering før første await/nettverkskall.
+    const help = q("#live-pilot-permission-help");
+    if (help) help.hidden = true;
     setMessage("Ber nettleseren om mikrofontilgang …");
     const stream = await navigator.mediaDevices.getUserMedia({
       audio: {
@@ -715,8 +717,10 @@ async function startMicrophone() {
     console.error("[live-pilot] Mikrofonstart feilet:", error);
     await stopMicrophone(true);
     setStatus("Kunne ikke starte", "error");
-    if (error && error.name === "NotAllowedError") {
-      setMessage("Mikrofontillatelsen ble avslått. Du kan fortsatt bruke vanlig tekstmodus.");
+    if (error && (error.name === "NotAllowedError" || error.name === "PermissionDeniedError" || error.name === "SecurityError")) {
+      setMessage("Mikrofonen er blokkert. I Chrome: trykk på ikonet til venstre for nettadressen → Nettstedinnstillinger → Mikrofon → Tillat. Sjekk også Android Innstillinger → Apper → Chrome → Tillatelser → Mikrofon. Prøv deretter igjen.");
+      const help = q("#live-pilot-permission-help");
+      if (help) help.hidden = false;
     } else {
       setMessage("Mikrofonen ble slått av fordi oppstarten feilet: " + reason);
     }
@@ -808,6 +812,7 @@ function createUi() {
       '<div id="live-pilot-context" class="live-pilot-context" hidden></div>' +
       '<div id="live-pilot-privacy" class="live-pilot-privacy" hidden></div>' +
       '<div id="live-pilot-message" class="live-pilot-message" hidden aria-live="polite"></div>' +
+      '<div id="live-pilot-permission-help" class="live-pilot-message" hidden><strong>Gi mikrofontilgang</strong><p>Chrome: Trykk på ikonet til venstre for adressen → Nettstedinnstillinger → Mikrofon → Tillat.</p><p>Samsung: Innstillinger → Apper → Chrome → Tillatelser → Mikrofon → Tillat.</p><button id="live-pilot-retry" class="live-pilot-primary" type="button">Prøv mikrofon igjen</button></div>' +
       '<div class="live-pilot-options">' +
         '<label><input id="live-pilot-tts" type="checkbox" checked> Les korte systemmeldinger høyt</label>' +
         '<label for="live-pilot-voice">Stemme <select id="live-pilot-voice"></select></label>' +
@@ -827,6 +832,8 @@ function createUi() {
       q("#live-pilot-start").disabled = true;
     }
   });
+
+  q("#live-pilot-retry").addEventListener("click", startMicrophone);
 
   q("#live-pilot-close").addEventListener("click", async function () {
     await stopMicrophone(true);
