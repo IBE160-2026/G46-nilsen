@@ -568,9 +568,9 @@ Quality-gaten fant også reelle dataproblemer. Yrket «sekretær» lå i to sekt
 
 Til slutt la jeg inn `npm audit --omit=dev --audit-level=high` som gate. Den fant en høy sårbarhet i body-parser og en moderat i qs. Begge ble oppgradert til patchede versjoner, og deretter besto full testpakke og dependency audit.
 
-Siste dokumenterte grønne quality-gate i denne verifikasjonsrunden er run **42531396584** på commit `021b7f5e45584e5f1e17ac9a25c108735b6b5891`.
+Siste dokumenterte grønne quality gate etter kode- og kildeprioriteringsretting er run **42646984725** på commit `a8756d36c492be39e70611c0946c026234beb965`. Etter at 40/40-sluttresultatet ble dokumentert, besto også GitHub Actions run **42665279811** på `main`.
 
-Jeg tolker ikke dette som at språkmodellen nå er «bevist korrekt». Det er et viktig skille mellom deterministic testing av ruting, kildepolicy, personvern og kontrakter, og faktisk live modellkvalitet. De 40 nye yrkes-golden-casene er foreløpig ikke dokumentert som bestått mot en ekstern live modell. Det ville vært metodisk feil å slå sammen disse bevisnivåene.
+Jeg tolker ikke dette som at språkmodellen nå er «bevist korrekt». Det er fortsatt et viktig skille mellom deterministic testing av ruting, kildepolicy, personvern og kontrakter, og faktisk live modellkvalitet. Forskjellen er at begge bevisnivåene nå er dokumentert separat: deterministic quality gate er grønn, og de 40 strenge yrke/sektor/tariff/kilde-casene ble 09.11.2026 kjørt live mot gpt-5.6-luna med 40/40 OK. Det ville fortsatt vært metodisk feil å slå disse sammen til en påstand om generell juridisk eller faglig korrekthet.
 
 Denne runden har derfor endret min forståelse av testing: målet er ikke flest grønne tester, men at hver test representerer et gyldig krav, kan avsløre meningsfulle feil og gir et resultat som tolkes kritisk.
 
