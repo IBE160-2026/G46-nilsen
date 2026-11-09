@@ -10,6 +10,7 @@ import { topicCatalog, topicClassificationSchema } from "./src/server/topic-cont
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
+import { shouldRetainCuratedSources } from "./src/server/source-retention.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
@@ -1458,26 +1459,6 @@ function mergeGuidanceSourceCandidates(generalSources = [], occupationContext = 
     .slice(0, 10);
 }
 
-function shouldRetainCuratedSources({ topic = "", subtopic = "", situation = "", employerType = "", occupationContext = null } = {}) {
-  if (occupationContext?.occupation?.occupationRelevant) return true;
-
-  const agreement = occupationContext?.agreement;
-  if (
-    agreement?.relevant &&
-    !agreement?.needsEmployerType &&
-    ["state","municipal","health_enterprise"].includes(employerType) &&
-    (agreement.suggestions || []).length
-  ) return true;
-
-  const topicText = String(topic || "").toLocaleLowerCase("nb-NO");
-  const concrete = `${subtopic || ""} ${situation || ""}`.toLocaleLowerCase("nb-NO");
-
-  if (/oppsig|avskjed|mobb|trakass|diskrimin|varsling|sikkerhet|alkohol|rus/.test(topicText)) return true;
-  if (/sykmeld|sykefravær|tilrettelegg|kontrolltiltak|overvåk|personvern|vold|trus|ulykke|sikkerhets/.test(concrete)) return true;
-
-  return false;
-}
-
 function publicSources(ids = []) {
   const wanted = new Set(ids);
   return [...wanted].map(id => allCuratedSourceById.get(id)).filter(Boolean).map(source => ({
@@ -1798,14 +1779,16 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
       })
     : { enabled:false, prompt:"", occupation:null, agreement:null };
   const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic });
-  const relevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType);
+  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType);
   const retainCuratedSources = shouldRetainCuratedSources({
-    topic: resolvedTopic,
+    requestedTopic: topicId,
+    resolvedTopic,
     subtopic: resolvedSubtopic,
     situation,
     employerType,
     occupationContext
   });
+  const relevantSources = retainCuratedSources ? mergedRelevantSources : [];
   const occupationPrompt = occupationContext?.prompt ? "\n\n" + occupationContext.prompt + "\n" : "";
   const sourceSelectionHint = retainCuratedSources
     ? "Denne saken har et konkret faglig, rettslig, tariffmessig eller sikkerhetsmessig kildebehov. Prioriter den mest spesifikke relevante lov-, myndighets-, yrkes- eller avtale-kilden foran brede forsknings-/HR-kilder."
@@ -1873,10 +1856,13 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     parsed.source_ids = finalSourceIds;
     const curated = publicSources(finalSourceIds);
     const verifiedWebSources = webSources(response);
-    const supplementary = (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
-      .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
-      .filter(source => source?.url && verifiedWebSources.has(source.url));
-    const citedInLegalNote = markdownWebSources(parsed.legal_hr_note, verifiedWebSources);
+    const supplementary = retainCuratedSources
+      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
+          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
+          .filter(source => source?.url && verifiedWebSources.has(source.url))
+      : [];
+    parsed.supplementary_sources = supplementary;
+    const citedInLegalNote = retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : [];
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
     return res.json({ ...parsed, legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
@@ -1923,7 +1909,16 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation })
     : { prompt:"", occupation:null, agreement:null };
   const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic });
-  const relevantSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType);
+  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType);
+  const retainContinueSources = shouldRetainCuratedSources({
+    requestedTopic: topicId,
+    resolvedTopic: continueTopic,
+    subtopic: continueSubtopic,
+    situation: continueSituation,
+    employerType,
+    occupationContext: continueOccupationContext
+  });
+  const relevantSources = retainContinueSources ? mergedContinueSources : [];
   const continueOccupationPrompt = continueOccupationContext?.prompt ? "\n\n" + continueOccupationContext.prompt + "\n" : "";
   const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.\n- Hvis fagbanken er tilstrekkelig, ikke bruk nettsøk bare for å legge til flere lenker.\n- Hold svaret kort, direkte og situasjonsnært.
 - Svar på akkurat spørsmålet som ble stilt; ikke skriv hovedveiledningen på nytt.
