@@ -1,6 +1,7 @@
 import {
   LIVE_TIMEOUTS,
   appendTranscript,
+  editDraftByVoice,
   employerTypeFromSpeech,
   employerTypeLabel,
   normalizeSpeechText,
@@ -401,6 +402,14 @@ async function handleUtterance(raw) {
       setStatus("Kontekstfeil", "error");
       setMessage(error.message || "Kunne ikke behandle svaret.");
     }
+    return;
+  }
+
+  const edit = editDraftByVoice(state.draft, utterance);
+  if (edit.handled) {
+    setDraft(edit.text);
+    setMessage(edit.message);
+    setStatus("Utkast endret", "warning");
     return;
   }
 
@@ -839,7 +848,7 @@ function createUi() {
         '<label><input id="live-pilot-tts" type="checkbox" checked> Les korte systemmeldinger høyt</label>' +
         '<label for="live-pilot-voice">Stemme <select id="live-pilot-voice"></select></label>' +
       '</div>' +
-      '<p class="live-pilot-help"><strong>Talekommandoer:</strong> «send», «fiks feilene», «bruk hen», «slett», «start på nytt», «hopp over», «fortsett», «stopp mikrofon», «ja» og «nei». Si «send», «ferdig» eller «få råd» som en egen ytring. Mikrofonen varsler etter 45 sekunder uten tale og slås av etter 60 sekunder.</p>' +
+      '<p class="live-pilot-help"><strong>Talekommandoer:</strong> «send», «fiks feilene», «bruk hen», «slett», «start på nytt», «hopp over», «fortsett», «stopp mikrofon», «ja» og «nei». Du kan også si «slett siste ord», «slett siste fem ord» eller «endre fem til send». Si «send», «ferdig» eller «få råd» som en egen ytring. Mikrofonen varsler etter 45 sekunder uten tale og slås av etter 60 sekunder.</p>' +
     '</div>';
   document.body.appendChild(panel);
   state.panel = panel;
