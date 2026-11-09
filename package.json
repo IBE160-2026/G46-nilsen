@@ -42,7 +42,7 @@
     "test-pwa": "npm run generate-pwa-icons && node tests/test-pwa.cjs",
     "generate-pwa-icons": "node scripts/generate-pwa-icons.js",
     "prestart": "npm run generate-pwa-icons",
-    "predemo": "npm run generate-pwa-icons",
+    "predemo": "npm test && npm run generate-pwa-icons",
     "test-occupation-router": "node tests/test-occupation-router.cjs",
     "test-occupation-data": "node tests/test-occupation-data.cjs",
     "test-agreement-router": "node tests/test-agreement-router.cjs",
