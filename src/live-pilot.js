@@ -877,7 +877,14 @@ window.addEventListener("samtalestotte:guidance-ready", async function (event) {
   state.phase = "dictating";
   setDraft("");
   setStatus(state.micActive ? "Lytter" : "Mikrofon av", state.micActive ? "listening" : "");
-  setMessage("Rådet er klart på skjermen. Du kan stille et nytt oppfølgingsspørsmål og si «send».");
+  setMessage("Rådet er klart på skjermen. LIVE kan åpnes igjen for oppfølgingsspørsmål.");
+  const panel = q("#live-pilot-panel");
+  const launch = q("#live-pilot-launch");
+  if (panel && launch) {
+    panel.hidden = true;
+    launch.hidden = false;
+    launch.setAttribute("aria-label", state.micActive ? "LIVE lytter – åpne mikrofonkontroller" : "Åpne LIVE-kontroller");
+  }
   await speak(shortGuidanceSummary(event.detail && event.detail.guidance));
 });
 
