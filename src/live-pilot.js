@@ -778,7 +778,8 @@ function createUi() {
   launch.className = "live-pilot-launch";
   launch.type = "button";
   launch.setAttribute("aria-controls", "live-pilot-panel");
-  launch.innerHTML = "🎙 LIVE <small>Pilot</small>";
+  launch.innerHTML = '<svg aria-hidden="true" viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"></rect><path d="M5 10a7 7 0 0 0 14 0M12 17v5m-4 0h8"></path></svg><span>LIVE mikrofon</span><small>Pilot</small>';
+  launch.setAttribute("aria-label", "Åpne LIVE-mikrofon");
   document.body.appendChild(launch);
 
   const panel = document.createElement("aside");
