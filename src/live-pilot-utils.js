@@ -27,6 +27,32 @@ export function voiceCommand(value = "") {
   return null;
 }
 
+export function editDraftByVoice(draft = "", spoken = "") {
+  const command = normalizeSpeechText(spoken).replace(/[.!?]+$/u, "").trim();
+  const text = normalizeSpeechText(draft);
+  let match = command.match(/^slett (?:det )?(?:siste|siste[n]?) (\\d+|ett|en|to|tre|fire|fem|seks|sju|syv|åtte|ni|ti) ord$/iu);
+  if (match) {
+    const numbers = {ett:1,en:1,to:2,tre:3,fire:4,fem:5,seks:6,sju:7,syv:7,åtte:8,ni:9,ti:10};
+    const count = numbers[match[1].toLocaleLowerCase("nb-NO")] || Number(match[1]);
+    if (!Number.isSafeInteger(count) || count < 1 || count > 100) return {handled:true,text,message:"Velg mellom 1 og 100 ord."};
+    return {handled:true,text:text.split(/\\s+/u).slice(0,-count).join(" "),message:"Slettet de siste " + count + " ordene."};
+  }
+  if (/^slett (?:siste|det siste) ord(?:et)?$/iu.test(command)) {
+    return {handled:true,text:text.split(/\\s+/u).slice(0,-1).join(" "),message:"Slettet siste ord."};
+  }
+  match = command.match(/^(?:endre|bytt ut|erstatt) (?:ordet )?(.+?) (?:til|med) (.+)$/iu);
+  if (match) {
+    const from = match[1].trim(), to = match[2].trim();
+    if (!from || !to || from.length > 100 || to.length > 100) return {handled:true,text,message:"Ugyldig ordbytte."};
+    const at = text.toLocaleLowerCase("nb-NO").lastIndexOf(from.toLocaleLowerCase("nb-NO"));
+    if (at < 0) return {handled:true,text,message:"Fant ikke «" + from + "» i utkastet."};
+    const before = text.slice(0,at), after = text.slice(at+from.length);
+    if ((before && /[\\p{L}\\p{N}]$/u.test(before)) || (after && /^[\\p{L}\\p{N}]/u.test(after))) return {handled:true,text,message:"Fant ikke «" + from + "» som eget ord."};
+    return {handled:true,text:before+to+after,message:"Endret siste «" + from + "» til «" + to + "». Kontroller teksten."};
+  }
+  return {handled:false,text};
+}
+
 export function appendTranscript(draft = "", utterance = "") {
   const a = normalizeSpeechText(draft);
   const b = normalizeSpeechText(utterance);
