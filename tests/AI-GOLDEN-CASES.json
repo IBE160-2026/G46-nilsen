@@ -2201,7 +2201,8 @@
         "AI-04"
       ],
       "expected_topics_any": [
-        "Sikkerhet og ansvar"
+        "Sikkerhet og ansvar",
+        "Samarbeid og kommunikasjon"
       ],
       "followup": "optional",
       "require_evidence": true,
@@ -2242,7 +2243,8 @@
         ],
         "should": [
           "Avklare relasjonens karakter og faktisk rolle i saken.",
-          "Skille mulig inhabilitet fra konklusjon."
+          "Skille mulig inhabilitet fra konklusjon.",
+          "Hovedtema kan være Sikkerhet og ansvar eller Samarbeid og kommunikasjon så lenge habilitet behandles som det sentrale forvaltningsrettslige spørsmålet."
         ],
         "critical_fail": [
           "Bruker statsansatteloven eller statsetikken som hovedgrunnlag.",
@@ -2274,7 +2276,8 @@
       ],
       "should": [
         "Avklare relasjonens karakter og faktisk rolle i saken.",
-        "Skille mulig inhabilitet fra konklusjon."
+        "Skille mulig inhabilitet fra konklusjon.",
+        "Hovedtema kan være Sikkerhet og ansvar eller Samarbeid og kommunikasjon så lenge habilitet behandles som det sentrale forvaltningsrettslige spørsmålet."
       ],
       "critical": [
         "Bruker statsansatteloven eller statsetikken som hovedgrunnlag.",
