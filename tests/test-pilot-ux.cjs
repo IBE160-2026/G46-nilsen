@@ -6,6 +6,10 @@ const app = fs.readFileSync('app.js','utf8');
 const css = [
   fs.readFileSync('styles.css','utf8'),
   fs.readFileSync('styles-core.css','utf8'),
+  fs.readFileSync('styles-core-foundation.css', 'utf8'),
+  fs.readFileSync('styles-core-dialogue.css', 'utf8'),
+  fs.readFileSync('styles-core-simulation.css', 'utf8'),
+  fs.readFileSync('styles-core-utilities.css', 'utf8'),
   fs.readFileSync('styles-responsive.css','utf8'),
   fs.readFileSync('styles-overrides.css','utf8')
 ].join('\n');
