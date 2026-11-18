@@ -6,6 +6,18 @@ Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeiders
 
 Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy. KI-en skal støtte lederens vurdering, ikke erstatte lederens ansvar eller relevant fagkompetanse.
 
+## Dokumentasjon og kvalitetssikring – oppdatert 18.11.2026
+
+Dette repoet inneholder en studentprototype som er utviklet iterativt. **Produktgrunnlaget ligger i `main`, mens dokumentasjonsrevisjonen ligger på `docs/ibe160-helhetlig-revisjon-20261118`.** Dokumentasjonsgrenen inneholder ikke en produksjonsrelease.
+
+- **Gjeldende krav:** `docs/bmad/PRD.md` (§§ 8–10; 36 identifiserte krav inkludert FR-15A og NFR-QA-01). Daterte tilleggsbeskrivelser/testtall er bevart i `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`.
+- **Arkitektur og stories:** `docs/bmad/ARCHITECTURE-BMAD.md` § 2.1 kobler krav til komponenter/feilmodi, og `docs/bmad/EPICS-AND-STORIES-BMAD.md` § 25.3 viser krav-til-story-spor.
+- **Testbevis, ikke bare testfiler:** `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` skiller statiske tester, deterministiske regler, E2E/integrasjon, live modell og manuell vurdering. `docs/REVISJON-IBE160-2026-11-18.md` viser åpne avvik.
+- **Siste faktisk sjekkede `main`-CI:** GitHub Actions run `43205812288` 12.11.2026 **feilet** i repo-strukturtesten på `.docs` etter tillegg av en faglærerreferanse. Etterfølgende `npm audit` ble hoppet over; se rapporten før du omtaler sluttstatus. Det ligger en begrenset testtilpasning i dokumentasjonsgrenen, men den er ikke verifisert i CI ennå.
+- **LIVE/tale:** Kun separat pilot på `pilot-ux-v20.11` og egen Render-preview. Taletranskripsjon er **ikke produksjonssatt eller godkjent som ferdig funksjon**. FR-23 om alternativ direkte inngang er en annen hypotese, ikke synonymt med tale-LIVE.
+
+Følg sensorstien nedenfor for lokal demo og deterministiske kontroller. `npm test` på studentens egen maskin dokumenterer først et resultat når kommandoen faktisk er kjørt på aktuell commit; tidligere testtall i docs er historiske.
+
 ## Rask tilgang for vurdering
 
 ### Publisert løsning
