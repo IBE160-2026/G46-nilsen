@@ -459,12 +459,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* Samordnet knappestil for oppfølgingsfelt og samtaleavslutning */
 .continue-form .continue-submit-button,
 .conversation-end-row .conversation-end-button {
-  min-height: 42px;
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 14px;
-  font-size: .92rem;
-  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -886,22 +880,11 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 }
 #help-source-library .help-source-category>summary::after,
 #help-source-library .source-group>summary::after{
-  content:"›";
-  position:absolute;
-  right:16px;
-  top:50%;
-  transform:translateY(-50%) rotate(90deg);
-  transform-origin:center;
-  font-size:1.45rem;
-  line-height:1;
-  font-weight:800;
   color:var(--accent);
   transition:transform .18s ease;
 }
 
 #help-source-library .help-source-category>summary{
-  min-height:54px;
-  font-size:1rem;
   border-radius:14px;
 }
 #help-source-library .help-source-category>summary span{
@@ -953,7 +936,7 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* v20.11.51 GJENOPPRETT GAMMEL HJELP-KILDEVISNING */
 
 #help-view .resource-links li{margin:8px 0}
-#help-view .resource-links a{color:var(--accent);text-decoration:none;font-weight:650}
+#help-view .resource-links a{color:var(--accent);font-weight:650}
 #help-view .resource-links a:hover{text-decoration:underline}
 #help-view .help-sector-source-summary{display:grid;gap:8px}
 #help-view .help-mini-source-group{border-top:1px solid var(--border);padding-top:8px}
@@ -1073,8 +1056,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view #complete-source-library .source-bank-top-title::after,
 #help-view #complete-source-library .source-bank-sector-title::after,
 #help-view #complete-source-library .compact-source-title::after{
-  content:"›";
-  display:inline-block;
   flex:0 0 auto;
   color:var(--muted);
   font-size:1.08em;
@@ -1118,11 +1099,7 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 /* Selve kildene under yrke skal være diskrete, ikke se ut som nye hovedoverskrifter. */
 #help-view #complete-source-library .source-bank-sector-body .compact-source-row>summary{
-  padding:6px 0 !important;
   color:var(--text) !important;
-  font-size:.80rem !important;
-  font-weight:500 !important;
-  line-height:1.3 !important;
 }
 #help-view #complete-source-library .source-bank-sector-body .compact-source-title::after{
   font-size:.96em !important;
@@ -1151,8 +1128,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* De fire hovedkategoriene bruker den gamle venstrepilen. */
 
 #help-view #complete-source-library .source-bank-top-category>summary::before{
-  content:"›" !important;
-  display:inline-block !important;
   flex:0 0 auto !important;
   width:auto !important;
   height:auto !important;
@@ -1172,15 +1147,7 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 /* Den lille inline-pilen beholdes kun på konkrete kilder. */
 #help-view #complete-source-library .compact-source-title::after{
-  content:"›" !important;
-  display:inline-block !important;
-  flex:0 0 auto !important;
   color:var(--muted) !important;
-  font-size:.92em !important;
-  line-height:1 !important;
-  font-weight:600 !important;
-  transform:rotate(0deg) !important;
-  transition:transform .18s ease !important;
 }
 
 /* Konkrete kilder skal være små og IKKE bold. Gjelder alle kategorier. */
@@ -1217,7 +1184,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
   #structured-guidance .guidance-card:has(.evidence-details:not([open])) .guidance-number{
     font-size:.88rem !important;
-    line-height:1.2 !important;
   }
 }
 
@@ -1239,8 +1205,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   gap:6px !important;
 }
 #help-view #complete-source-library .source-bank-top-title::after{
-  content:"›" !important;
-  display:inline-block !important;
   flex:0 0 auto !important;
   color:var(--muted) !important;
   font-size:1.08em !important;
@@ -1262,22 +1226,12 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* KONKRETE KILDER:
    Punktvis liste + liten inline-pil etter kildenavnet. */
 #help-view #complete-source-library .compact-source-row>summary{
-  display:flex !important;
-  align-items:center !important;
-  gap:7px !important;
   padding:6px 0 !important;
   color:var(--text) !important;
-  font-size:.84rem !important;
-  font-weight:400 !important;
   line-height:1.32 !important;
 }
 #help-view #complete-source-library .compact-source-row>summary::before{
-  content:"•" !important;
-  display:inline-block !important;
-  flex:0 0 auto !important;
   color:var(--muted) !important;
-  font-size:.90rem !important;
-  line-height:1 !important;
   transform:none !important;
 }
 #help-view #complete-source-library .compact-source-title{
@@ -1288,8 +1242,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   font-weight:400 !important;
 }
 #help-view #complete-source-library .compact-source-title::after{
-  content:"›" !important;
-  display:inline-block !important;
   flex:0 0 auto !important;
   color:var(--muted) !important;
   font-size:.90em !important;

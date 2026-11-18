@@ -114,8 +114,6 @@
   }
 
   .topbar {
-    min-height: 58px !important;
-    height: 58px !important;
     padding: 7px 10px !important;
     flex-direction: row !important;
     align-items: center !important;
@@ -124,7 +122,6 @@
 
   .topbar-left {
     min-width: 0;
-    flex: 1 1 auto;
     gap: 8px;
   }
 
@@ -137,7 +134,6 @@
 
   #breadcrumb {
     min-width: 0;
-    max-width: 38vw;
     font-size: .78rem;
     white-space: nowrap;
     overflow: hidden;
@@ -241,9 +237,6 @@
   }
 
   .simulation-hub-hero {
-    grid-template-columns: 1fr !important;
-    padding: 18px !important;
-    gap: 12px !important;
     border-radius: 18px !important;
   }
 
@@ -321,7 +314,6 @@
     bottom: 0;
     z-index: 250;
     display: grid;
-    grid-template-columns: repeat(4,minmax(0,1fr));
     gap: 2px;
     padding: 5px 6px calc(5px + env(safe-area-inset-bottom));
     border-top: 1px solid var(--border);
@@ -336,16 +328,13 @@
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    gap: 2px;
     padding: 5px 2px !important;
     border-radius: 11px;
-    font-size: .68rem;
     font-weight: 700;
     text-align: center;
   }
 
   .mobile-nav-glyph {
-    font-size: 1.15rem;
     line-height: 1;
   }
 
@@ -384,12 +373,6 @@
   }
 
   .simulation-hub-hero .simulation-logo-crop {
-    display: flex !important;
-    width: 150px !important;
-    max-width: 52% !important;
-    height: auto !important;
-    margin: 2px 0 0 !important;
-    justify-self: start !important;
     transform: none !important;
   }
 
@@ -493,8 +476,6 @@
 @media (max-width:640px) {
   /* Tema flyttes ut av bunnnavigasjonen og opp ved profilen. */
   .topbar-mobile-theme {
-    width: 36px;
-    height: 36px;
     flex: 0 0 36px;
     display: grid !important;
     place-items: center;
@@ -576,10 +557,7 @@
 
   /* Samtaleøvelse: behold desktop-prinsippet med logo til høyre for overskriften. */
   .simulation-hub-hero {
-    grid-template-columns: minmax(0,1fr) 108px !important;
-    align-items: start !important;
     gap: 10px !important;
-    padding: 15px !important;
   }
 
   .simulation-hub-hero > div:first-child {
@@ -780,7 +758,6 @@
 
   /* Samtaleøvelse: web speech icon on the left; description gets the whole width. */
   .simulation-hub-hero {
-    display: block !important;
     padding: 15px !important;
   }
 
@@ -791,7 +768,6 @@
   .simulation-hub-title-row {
     display: flex;
     align-items: center;
-    gap: 9px;
   }
 
   .simulation-hub-title-row .simulation-heading-icon {
@@ -817,9 +793,7 @@
   }
 
   .simulation-hub-copy > p {
-    width: 100%;
     max-width: none !important;
-    margin-top: 7px;
   }
 
   .utility-title-row {
@@ -861,15 +835,11 @@
   .topbar-mobile-brand-lockup {
     display: inline-flex;
     align-items: center;
-    gap: 5px;
     min-width: 0;
-    flex: 0 1 auto;
   }
 
   .topbar-mobile-brand-symbol {
     display: block;
-    width: 29px;
-    height: 27px;
     flex: 0 0 29px;
     object-fit: contain;
   }
@@ -880,10 +850,7 @@
   }
 
   .topbar-mobile-brand-word {
-    font-size: .88rem;
     line-height: 1;
-    font-weight: 820;
-    letter-spacing: -.035em;
     white-space: nowrap;
   }
 
@@ -954,12 +921,10 @@
   }
 
   .topbar-mobile-brand-lockup {
-    gap: 7px !important;
     flex: 1 1 auto !important;
   }
 
   .topbar-mobile-brand-word {
-    font-size: 1.04rem !important;
     letter-spacing: -.04em;
   }
 
@@ -1008,9 +973,7 @@
      Logoen ligger i topphjørnet, mens beskrivelsen bruker hele bredden under. */
   .simulation-hub-hero {
     display: grid !important;
-    grid-template-columns: minmax(0,1fr) 72px !important;
     grid-template-rows: auto auto auto !important;
-    column-gap: 9px !important;
     row-gap: 0 !important;
     align-items: start !important;
   }
@@ -1038,27 +1001,16 @@
   }
 
   .simulation-hub-hero > .simulation-logo-crop {
-    display: flex !important;
     grid-column: 2;
     grid-row: 1 / 3;
     align-self: center;
-    justify-self: end;
-    width: 72px !important;
-    max-width: 72px !important;
-    height: 58px !important;
     margin: 0 !important;
-    overflow: hidden;
     align-items: center;
     justify-content: flex-end !important;
   }
 
   .simulation-hub-hero > .simulation-logo-crop img {
     display: block;
-    width: 105px !important;
-    max-width: none !important;
-    height: auto !important;
-    object-fit: contain;
-    object-position: right center;
   }
 
   /* Selve øvelsesrommet får nesten hele skjermbredden. */
@@ -1225,9 +1177,6 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
   .simulation-hub-hero > .simulation-logo-crop {
     display: grid !important;
     place-items: center !important;
-    width: 88px !important;
-    max-width: 88px !important;
-    height: 76px !important;
     overflow: visible !important;
     justify-self: end !important;
   }
@@ -1374,17 +1323,9 @@ html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
 }
 
 #structured-guidance .guidance-card {
-  position: relative;
-  display: grid;
-  grid-template-columns: 30px minmax(0,1fr);
-  gap: 10px;
-  align-items: start;
-  padding: 14px 15px;
   border: 1px solid var(--border);
   border-left: 3px solid color-mix(in srgb,var(--accent) 72%,var(--border));
-  border-radius: 14px;
   background: color-mix(in srgb,var(--surface) 96%,var(--accent-soft));
-  box-shadow: 0 3px 12px rgba(18,55,53,.035);
 }
 
 #structured-guidance .guidance-card:first-child {
@@ -1407,9 +1348,7 @@ html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
 }
 
 #structured-guidance .guidance-card h3 {
-  margin: 1px 0 6px;
   font-size: 1rem;
-  line-height: 1.25;
 }
 
 #structured-guidance .guidance-card p,
@@ -1472,8 +1411,6 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
   }
 
   #structured-guidance .guidance-number {
-    width: 25px;
-    height: 25px;
     border-radius: 8px;
     font-size: .66rem;
   }
@@ -1520,12 +1457,9 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
 
 /* Rådskort: nummer og overskrift på samme linje, teksten bruker hele bredden under. */
 #structured-guidance .guidance-card {
-  display: grid !important;
-  grid-template-columns: 28px minmax(0,1fr) !important;
   grid-template-rows: auto auto !important;
   column-gap: 9px !important;
   row-gap: 7px !important;
-  padding: 13px 14px 14px !important;
 }
 
 #structured-guidance .guidance-number {
@@ -1556,10 +1490,8 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
 
 @media (max-width:640px) {
   #structured-guidance .guidance-card {
-    grid-template-columns: 25px minmax(0,1fr) !important;
     column-gap: 8px !important;
     row-gap: 6px !important;
-    padding: 11px 11px 12px !important;
   }
 
   #structured-guidance .guidance-number {
@@ -1585,11 +1517,6 @@ html[data-theme="dark"] .simulation-entry-icon img,
 html[data-theme="hybrid"] .simulation-entry-icon img,
 html[data-theme="dark"] .simulation-avatar img,
 html[data-theme="hybrid"] .simulation-avatar img {
-  filter: none !important;
-  border: 2px solid rgba(255,255,255,.88) !important;
-  box-shadow:
-    0 0 0 1px rgba(255,255,255,.16),
-    0 2px 8px rgba(0,0,0,.22) !important;
   box-sizing: border-box;
 }
 
