@@ -93,6 +93,8 @@ const privacyNamePos = html.indexOf('src/privacy-name-data.js?v=');
 const privacyDetectorPos = html.indexOf('src/privacy-detector.js?v=');
 const clientDataPos = html.indexOf('src/client-data.js?v=');
 const topicSearchPos = html.indexOf('src/client/topic-search.js?v=');
+const situationAnalysisPos = html.indexOf('src/client/situation-analysis.js?v=');
+assert(situationAnalysisPos > clientDataPos && situationAnalysisPos < html.indexOf('app.js?v='), 'Situasjonsanalyse må lastes før app.js');
 assert(topicSearchPos > clientDataPos && topicSearchPos < html.indexOf('app.js?v='), 'Temasøkmodul må lastes før app.js');
 const appScriptPos = html.indexOf('app.js?v=');
 assert(
