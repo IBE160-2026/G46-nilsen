@@ -34,6 +34,8 @@ Følg sensorstien nedenfor for lokal demo og deterministiske kontroller. `npm te
 - **Feil fra KI-provider:** `tests/test-ai-provider-errors-http.cjs` med offline fetch-stub tester 503, 429, ugyldig leverandørrespons, nettverksbrudd og personvernblokkering før KI. En rød kjøring `44342507107` avdekket et falskt personnavntreff på `Hvordan`. Det delte navnefilteret og klient-/servertestene er korrigert med spørreord pluss fortsatt positiv navnegjenkjenning. Grønn kjøring `44343038247`. Se `docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md`.
 - Ingen produksjonsmerge, ingen Render-deploy, ingen endringer i LIVE-piloten og ingen lesing/endring av reelle brukerrader. `main` er fortsatt produksjonsreferanse. Alle testkonklusjonene gjelder **den isolerte revisjonsgrenen**, ikke en ny `main`-CI.
 
+**Refleksjonsrapport – lesbar sensorversjon:** [Konsentrert arbeidsutkast på ca. 2 650 ord](docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md) bygger på det originale, daterte refleksjonsutkastet (ca. 9 500 ord). Originalen er bevart for historikk og detaljer. Den nye teksten er **ikke** sjekket mot endelige ord-/formkrav fra Canvas, og er derfor ikke merket som ferdig innlevering.
+
 ## Rask tilgang for vurdering
 
 ### Publisert løsning

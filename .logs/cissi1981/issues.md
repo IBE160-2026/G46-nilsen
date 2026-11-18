@@ -39,7 +39,8 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 - [ ] **P1:** Kontroller 36 akseptanser mot reell kode/atferd og status – ikke anta at tekstassert eller krav-ID er et E2E-bevis. Marker og prioriter eventuelle hull.
 - [ ] **P1:** Kjør faktisk brukerreise på desktop og fysisk mobil, inkl. PWA, personvern, oppfølgingsflyt, utskrift med hovedråd + videre råd og sensorens demomodus.
 - [ ] **P1:** Gjør en kritisk menneskelig sluttgjennomgang av nye formuleringer, tekniske spor og risikopåstander i PRD/arkitektur/stories. Ingen uavhengig ekspertvalidering er dokumentert.
-- [ ] **P1:** Sluttrediger refleksjonsrapporten – nå ca. 9 000 whitespace-ord – mot reell ord-/formgrense og innleveringskrav i Canvas. Konsolider kronologiske tillegg uten tap av læring.
+- [x] **P1 delvis:** Opprettet konsentrert refleksjonsutkast (2 646 ord), uten å slette det originale historiske utkastet (9 535 ord).
+- [ ] **P1:** Sjekk faktisk ord-/formgrense i Canvas, rediger endelig versjon, og kontroller kilder og korrekt personlig framstilling.
 - [ ] **P1:** Behold LIVE/tale og alternativ direkte inngang (FR-23) som **to ulike, ikke-produksjonssatte** hypoteser. Krev egne personvern-, norsk-dialekt-, kommando- og brukerprøver før noen produksjonsbeslutning.
 - [ ] **P2:** Verifiser hvilke sesjonslogger som fantes lokalt fra før; AI-loggen er delvis rekonstruert og skal ikke omtales som ordrett/historisk komplett.
 - [ ] **P2:** Ny kvalitetskjøring mot faktisk kildeoppdatering/yrkeregler og faglig review ved senere leveranse-/modellendringer.

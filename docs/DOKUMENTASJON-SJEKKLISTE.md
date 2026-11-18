@@ -37,6 +37,9 @@ Dette er en datert revisjonsmilepæl, ikke en sluttrapport eller godkjenningsatt
 - **Feil fra KI-provider:** `tests/test-ai-provider-errors-http.cjs` med offline fetch-stub tester 503, 429, ugyldig leverandørrespons, nettverksbrudd og personvernblokkering før KI. En rød kjøring `44342507107` avdekket et falskt personnavntreff på `Hvordan`. Det delte navnefilteret og klient-/servertestene er korrigert med spørreord pluss fortsatt positiv navnegjenkjenning. Grønn kjøring `44343038247`. Se `docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md`.
 - Ingen produksjonsmerge, ingen Render-deploy, ingen endringer i LIVE-piloten og ingen lesing/endring av reelle brukerrader. `main` er fortsatt produksjonsreferanse. Alle testkonklusjonene gjelder **den isolerte revisjonsgrenen**, ikke en ny `main`-CI.
 
+- [x] Refleksjon: laget konsentrert arbeidsutkast på 2 646 ord i `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md`, med sammenhengende hovedtekst og konkret refleksjon opp mot novemberforelesningene. Originalens 9 535 ord og daterte tillegg er bevart.
+- [ ] Avklar konkret ordgrense og innleveringskrav i Canvas før valg av endelig refleksjonsrapport, og gjennomfør faglig/redaksjonell sluttkontroll.
+
 ## Arbeidsregel
 
 Ved større endringer skal minst disse fire spørsmålene vurderes:

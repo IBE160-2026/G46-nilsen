@@ -3,7 +3,8 @@
 **Emne:** IBE160 Programmering med KI  
 **Prosjekt:** Samtalestøtte, gruppe G46  
 **Gruppestørrelse:** Én student  
-**Student og studentnummer:** Kontroller mot innleveringen  
+**Student:** Cecilie C. Nilsen  
+**Studentnummer:** [fyll inn før innlevering]  
 **Dokumentstatus:** Konsentrert redigeringsutkast per 18.11.2026. Ikke innlevert eller kvalitetssikret mot endelige formkrav i Canvas.  
 **Produksjonsgrunnlag:** main, Samtalestøtte v20.11.5. Nyeste tekniske og dokumentære forbedringer ligger på egen revisjonsgren. LIVE/tale er kun separat pilot.
 
@@ -106,6 +107,6 @@ Dokumentasjonen nedenfor er **etterprøvbare prosjektspor**, ikke en påstand om
 - [Product Brief](../product-brief.md), [PRD](bmad/PRD.md), [Architecture](bmad/ARCHITECTURE-BMAD.md) og [Epics/Stories](bmad/EPICS-AND-STORIES-BMAD.md).
 - [Testbevis per krav](ai/TESTBEVIS-OG-DEKNING-2026-11-18.md), [KI-testplan](ai/AI-TESTPLAN.md) og [KI-logg](ai/AI-LOGG-SAMTALESTOTTE.md).
 - [Rød/grønn providerstatus](ai/REGRESJON-OPENROUTER-2026-11-18.md), [historikk med to syntetiske brukere](ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md) og [KI-feil/personvernsjekk](ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md).
-- [Supabase-metadata og åpne sikkerhetsfunn](ai/SUPABASE-SIKKERHET-2026-11-18.md), [full revisjonsrapport](REVISJON-IBE160-2026-11-18.md) og GitHub Actions [siste grønne revisjonsgren-CI](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44343038247).
+- [Supabase-metadata og åpne sikkerhetsfunn](ai/SUPABASE-SIKKERHET-2026-11-18.md), [full revisjonsrapport](REVISJON-IBE160-2026-11-18.md) og GitHub Actions [verifisert grønn revisjonsgren-CI](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44343038247).
 
 **Ikke ferdig innlevering:** Ordkrav, formalia og eventuell vedleggsbegrensning må kontrolleres mot den faktiske oppgaveteksten i Canvas. Originalt langt refleksjonsutkast med daterte tillegg beholdes som historisk arbeidsmateriale.
