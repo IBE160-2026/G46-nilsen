@@ -31,7 +31,8 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 ## Åpne oppgaver før sluttgodkjenning
 
 - [x] **Revisjonsgren Quality Gate utført 18.11:** run `44336281200` SUCCESS på `d9234879...`, 31 deltester + npm audit 0 sårbarheter + golden-opptelling 66/40.
-- [ ] **Før eventuell merge:** fjern den midlertidige ekstra branch-triggeren fra `.github/workflows/quality-gate.yml`, vurder andre dokumentasjonsendringer og kjør Quality Gate på endelig målcommit. `main` er fortsatt uendret og siste run der feilet.
+- [x] **CI-hygiene:** midlertidig revisjonsgren-trigger er fjernet fra `.github/workflows/quality-gate.yml`; PR-kjøring mot `main` er definert.
+- [ ] **Før eventuell merge:** vurder dokumentasjons- og kodeendringer, kjør Quality Gate på faktisk PR, gjennomfør manuelle kontroller og krev uttrykkelig godkjenning. `main` er fortsatt uendret og siste tidligere run der feilet.
 - [ ] **P0:** Fullfør ekte Supabase-Auth/RLS E2E i separat testprosjekt med to fiktive kontoer. Isolert lokal to-bruker HTTP-test og live RLS-metadata er gjennomført, men erstatter ikke dette., både normal og uautorisert API-/databaseadgang, uten ekte persondata.
 - [ ] **P0:** Vurder å aktivere Supabases leaked-password protection før bredere bruk; nåværende advisory WARN dokumentert, ikke endret.
 - [x] **P1 delvis:** Lokal API-providerfeilsimulering gjennomført (503/429/ugyldig svar/frakobling) og nøytrale API-feilmeldinger testet; direkte personverngateway verifisert. Timeout over reelle tjenestegrenser, appens faktiske klientmelding og database-retry/latens er **ikke** testet.

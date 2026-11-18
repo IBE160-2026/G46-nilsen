@@ -42,7 +42,7 @@ Alle 36 krav-ID-er er referert i arkitektur, epics/stories og testbevisregister.
 | `src/privacy-detector.js` | Vanlige norske spørreord skal ikke gjenkjennes som ukjente navn | Positiv og negativ personverntest; manuell kvalitet ved flerfoldige kontekster gjenstår |
 | `tests/` og `package.json` | Flere faktiske HTTP-/mocktester i `npm test`, totalt 35 delsteg | Testene krever ikke prod-secrets; review isolasjon, portbruk og responser |
 | `tests/test-repo-structure.cjs` | Tillater én legitim lærerfil i `.docs` | Begrenset allowlist; CI bestått |
-| `.github/workflows/quality-gate.yml` | Midlertidig revisjonsgren-trigger fra undersøkelsen | **Fjern branch-spesifikk trigger før merge**; behold standard CI og helst PR-gate |
+| `.github/workflows/quality-gate.yml` | Midlertidig gren-trigger er fjernet; standard `main` og `pull_request` mot `main` støttes | Endelig PR-kjøring må bestå; ingen prod-deploy er utløst |
 
 ## Viktige stoppunkter før produksjon eller endelig godkjenning
 
@@ -50,7 +50,7 @@ Alle 36 krav-ID-er er referert i arkitektur, epics/stories og testbevisregister.
 2. **Manuell brukerreise (høy):** Kontroller en testinnlogget bruker på desktop og fysisk mobil: beskrivelse → personvern → tema/råd → oppfølging → simulering → historikk/eksport/sletting → utskrift/PWA. Dokumenter nettleser og observerte resultater.
 3. **Passordvern (høy før bredere bruk):** Supabase Security Advisor varslet om at leaked-password protection er av. Vurder tiltak og eventuell lisens-/Auth-konsekvens med eksplisitt beslutning; ingen live innstilling er endret.
 4. **Dokumenter og innlevering (høy):** Les faktisk rubrikk, ordgrense og formkrav i Canvas; disse er **ikke verifisert**. La studenten kontrollere at refleksjonen uttrykker egne opplevelser og faglige vurderinger. Velg endelig tekst.
-5. **Kode- og endringskontroll (høy):** Gjennomgå hele diffen mot `main`, rydde midlertidig CI-trigger, kjør ny full Quality Gate på endelig PR-commit og krev eksplisitt godkjenning før merge.
+5. **Kode- og endringskontroll (høy):** Gjennomgå hele diffen mot `main` og kjør ny full Quality Gate på PR-en. Den midlertidige branch-triggeren er allerede fjernet og erstattet med generell PR-gate. Krev eksplisitt godkjenning før merge.
 6. **Ekstern KI og ytelse (videre arbeid):** reell retry/timeout, faktisk modellkvalitet og ekstern fagvurdering gjenstår. Det samme gjør full brukerrepresentativitet; ikke presenter dette som allerede validert.
 
 ## Sensorens mest relevante eksempler på læring
