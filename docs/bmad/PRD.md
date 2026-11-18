@@ -221,6 +221,13 @@ Brukeren skal ikke måtte fylle ut et omfattende HR-skjema før KI-en kan hjelpe
 - `app.js`
 - `server.js`
 
+### Presisert akseptanse for revisjon
+
+En anonymisert situasjon kan legges inn; starten av nytt løp gjenbruker ikke forrige situasjon; relevante verdier føres videre innenfor riktig samtale.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-02 – Tema og undertema
@@ -238,6 +245,13 @@ Brukeren skal kunne korrigere eller velge tema selv.
 - `app.js`
 - `index.html`
 - `docs/faggrunnlag/`
+
+### Presisert akseptanse for revisjon
+
+Alle 9 temaer og 48 gjeldende undertemaer kan velges; valgt tema er konsistent mellom klient, backend og kildevalg; ukjent tema gir kontrollert håndtering.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -265,6 +279,13 @@ KI skal være tilbakeholden med bastante HR-, juridiske og psykologiske konklusj
 - `docs/ai/AI-SYSTEMPROMPT.md`
 - `docs/ai/AI-RESPONSE-CONTRACT.md`
 
+### Presisert akseptanse for revisjon
+
+Anonymisert eksempel gir strukturert, forståelig hovedråd med praktisk samtaleåpning; ugyldig modellrespons håndteres, ikke stilletiende presenteres som gyldig.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-04 – Oppfølgingsdialog
@@ -284,6 +305,13 @@ Brukeren skal kunne fortsette dialogen med KI etter første veiledning.
 
 - `app.js`
 - `server.js`
+
+### Presisert akseptanse for revisjon
+
+Bruker kan spørre videre og få svar som bruker relevant gjeldende kontekst; ny samtale eller annen bruker får ikke med tidligere kontekst.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -307,6 +335,13 @@ Simulatoren skal:
 
 - `tests/test-simulation.js`
 - siste kontroll: **24/24 kontroller bestått**
+
+### Presisert akseptanse for revisjon
+
+Øvelsen lar leder trene mot en separat medarbeiderrolle; KI skal ikke dikte opp personopplysninger som fakta; tilbakestilling starter ny øvelse.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -343,6 +378,13 @@ Systemet skal ikke love full anonymitet.
 - `tests/test-privacy.js`
 - historisk kontroll: **33/33**; senere dokumentert personvernspakke: **56/56**
 
+### Presisert akseptanse for revisjon
+
+Utvalgte navn, e-post, telefon og identifiserende data i både hovedfelt og oppfølging avvises/varsles før ekstern KI-kall; serverkontroll fungerer selv om klienten omgås.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-07 – Autentisering
@@ -365,6 +407,13 @@ Systemet skal ha brukerkontoer og lukket registrering.
 - Supabase-oppsett
 - `database/`
 
+### Presisert akseptanse for revisjon
+
+Uautorisert bruker får ikke innlogget funksjon/data; autorisert innlogging etablerer riktig sesjon; utlogging/utløp opphever tilgangen.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-08 – Engangsinvitasjoner
@@ -380,6 +429,13 @@ Invitasjoner kan brukes til kontrollert tilgang til beta- og vurderingsmiljø.
 - `scripts/create-invite.js`
 - adminfunksjoner
 - serverlogikk
+
+### Presisert akseptanse for revisjon
+
+Gyldig invitasjon kan brukes i tiltenkt flyt; ugyldig/utløpt/gjenbrukt invitasjon avvises; hemmelig token skal ikke lekke i respons/logg.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -400,6 +456,13 @@ Historikk skal være knyttet til riktig bruker.
 
 - `tests/test-history-hotfix.cjs`
 
+### Presisert akseptanse for revisjon
+
+Bruker kan åpne og slette egne samtaler; slettet samtale vises ikke igjen etter oppdatering; forsøk på å hente en annens samtale avvises også på server-/RLS-nivå.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-10 – Rapportering av KI-svar
@@ -417,6 +480,13 @@ Rapporteringen kan inneholde:
 - tidspunkt
 
 Samtaleinnhold skal ikke inkluderes automatisk.
+
+### Presisert akseptanse for revisjon
+
+Rapportering oppretter forventet post og knytter hendelsen korrekt; personvernhensyn er ivaretatt; bruker får tydelig tilbakemelding om utfallet.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -444,6 +514,13 @@ Kan i tillegg administrere sentrale systemfunksjoner.
 
 Kritiske rettigheter skal valideres server-side.
 
+### Presisert akseptanse for revisjon
+
+Bruker, redaktør og admin har nøyaktig tillatte rettigheter; serveren avviser handlinger over rollen uavhengig av skjult UI.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-12 – Admin
@@ -463,6 +540,13 @@ Dette omfatter blant annet:
 - kilde-/systeminformasjon
 
 Store adminområder skal kunne minimeres for å redusere visuell belastning.
+
+### Presisert akseptanse for revisjon
+
+Innholds- og brukeradministrasjon følger rollegrensene; endringer persistenteres korrekt; ugyldig endring avvises.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -487,6 +571,13 @@ Arkitekturen skal støtte flere providere.
 - `server.js`
 - adminlogikk
 - `data/BENCHMARK-CASES.json`
+
+### Presisert akseptanse for revisjon
+
+Modellvalg godtar bare støttede modeller/providers; nøkler blir på serversiden; manglende provider gir forståelig feil, ikke skjult fall-back til uventet modell.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -514,6 +605,13 @@ Selve benchmarkverktøyet og testgrunnlaget er implementert i prototype/testform
 - `tests/test-model-compare.js`
 - benchmarklogikk i app/server
 - `data/BENCHMARK-CASES.json`
+
+### Presisert akseptanse for revisjon
+
+Samme anonymiserte testgrunnlag kan brukes på minst to konfigurerte modeller ved faktisk tilgjengelig konfigurasjon; kostnad/latens og resultat holdes atskilt fra faglig fasit. Bare prototype hvis ikke full kjøreport finnes.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -548,6 +646,13 @@ Automatisert vurdering skal brukes som støtte og ikke erstatte manuell vurderin
 
 Golden/fasittesten knytter representative KI-caser til eksplisitte kravreferanser, maskinelle kontrollpunkter og en menneskelig vurderingsfasit med `MÅ`, `BØR` og kritiske feil. Fasitbankens struktur og 9/9 temadekning kan verifiseres uten API-nøkkel.
 
+### Presisert akseptanse for revisjon
+
+Golden-bankens schema og temadekning valideres deterministisk; `npm test` krever ikke nøkkel; live-evaluering kjøres separat med bevart rapport, dato, modell og kodeversjon.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-15A – Kildepresisjon og negativ fasit
@@ -571,6 +676,13 @@ Automatisert testing skal ikke bare kontrollere at et KI-svar har faglig grunnla
 5. Forbudt source_id vurderes som kritisk avvik i golden-runneren.
 6. Privat/ukjent arbeidsgiver skal ikke få tariffområde gjettet.
 7. Generelt sykefravær skal ikke bli profesjonsjuss bare på grunn av yrkestittel.
+
+### Presisert akseptanse for revisjon
+
+I 14 sektorer finnes én positiv og én negativ kilde-/yrkesrelevanscase. Forbudt source_id gir kritisk avvik; tariffområde skal ikke gjettes.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -600,6 +712,13 @@ Dette finnes som:
 - `data/SOURCEBANK.json`
 - `docs/faggrunnlag/`
 
+### Presisert akseptanse for revisjon
+
+Råd viser kun verifiserbar/kuraterbar kilde der kilde kreves; relevans og virkeområde er dokumentert; ugyldig/forbudt profesjons- eller tariffkilde avvises i definert negativ case.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-17 – Brukertesting
@@ -620,6 +739,13 @@ Pilot-/brukertesting er gjennomført med et begrenset kvalitativt utvalg. Funnen
 
 Resultater fra brukertesting har allerede ført til konkrete revisjoner av krav, UX og taksonomi, blant annet reduksjonen fra 56 til 48 undertemaer, tydeligere språk, mobil/PWA-arbeid, utskrift og videre oppfølgingsflyt.
 
+### Presisert akseptanse for revisjon
+
+Gjennomført brukertest har anonymiserte observasjoner med antall testpersoner, metode, funn, beslutning og avgrensning; planlagt test er ikke ført som gjennomført.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-18 – Web- og kildeanalyse
@@ -632,6 +758,13 @@ Målet er å kunne analysere hvilke kilder som brukes uten å bygge brukerprofil
 
 Videre utvikling av dette området er mulig.
 
+### Presisert akseptanse for revisjon
+
+Kontrollert web-/kildeanalyse skiller faktisk hentet kilde fra intern modellkunnskap; utilgjengelige kilder fører ikke til fabrikkert rettskilde; delvis status beholdes der det ikke er testet.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## FR-19 – Videre oppfølgingsflyt
@@ -639,15 +772,36 @@ Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
 
 Etter et oppfølgingsspørsmål skal brukeren ikke måtte finne neste spørsmål helt alene. Systemet skal kunne foreslå 2–4 korte, situasjonsnære neste spørsmål basert på siste spørsmål og svar. Forslagene skal ikke erstatte fritekst.
 
+
+### Presisert akseptanse for revisjon
+
+Ved oppfølging foreslås normalt 2–4 korte relevante spørsmål der funksjonen er aktiv; fritekst kan fortsatt brukes; relevans og mobilvisning kontrolleres manuelt.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 ## FR-20 – Utskrift av samtalestøtte
 Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
 
 Brukeren skal kunne skrive ut en enkel samtalemal som inneholder situasjonsbeskrivelse, tema/undertema når tilgjengelig, genererte hovedråd og eventuelle videre spørsmål/svar fra oppfølgingsdialogen. Sammenfoldet innhold skal presenteres lesbart i utskriftsversjonen. Navigasjon, personvernvarsler, rapporteringsknapper, samtaleøvelse og øvrige UI-elementer skal ikke inngå.
 
+
+### Presisert akseptanse for revisjon
+
+Utskrift inneholder situasjon, relevante hovedråd og oppfølgingsråd, også når skjermseksjon er sammenfoldet; knapper/nav/personvernvarsel skal ikke skrives ut; sjekk fysisk print preview.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 ## FR-21 – Rolig standardnavigasjon
 Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
 
 På desktop skal sidebaren være minimert som standard for nye brukere. Brukerens eksplisitte valg om å åpne/lukke menyen skal lagres lokalt. Minimert modus skal ha forståelige tooltips.
+
+
+### Presisert akseptanse for revisjon
+
+Sidebar er minimert som standard for ny bruker på desktop; manuelt valg bevares lokalt; verktøytips kan nås og er forståelige; mobilflyt kontrolleres separat.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
 
 ## FR-22 – Yrke/bransje som valgfri kontekst
 Status: IMPLEMENTERT I PRODUKSJONSKODEN / DRIFTSSTYRT MED FEATURE FLAGG
@@ -666,6 +820,13 @@ Krav:
 Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 86 startkilder etter gjennomgang av alle yrkene i sektorlisten.
 
 
+
+### Presisert akseptanse for revisjon
+
+Yrke er valgfritt; irrelevante yrker gir ikke profesjonsjuss; tvetydig yrke avklares; tariffområde gjettes ikke; negativ kildefasit fanger kildelekkasje. Bekreft feature flagg og faktisk miljø.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 ## FR-23 – Direkte samtale som alternativ inngang
 Status: VIDERE ARBEID / HYPOTESE – IKKE FERDIG FUNKSJON
 
@@ -679,6 +840,13 @@ En eventuell prototype skal vurderes mot:
 - om personvern og rollegrenser ivaretas like godt
 - om arbeidslivskontekst og kildebruk beholdes
 - om direkte samtale bør være alternativ inngang eller supplement til eksisterende flyt
+
+### Presisert akseptanse for revisjon
+
+Direkte samtaleinngang uten obligatorisk temameny er en hypotese og skal ikke telles som implementert i main. Eventuell slik inngang må prøves mot relevans og personvern. LIVE/tale er et separat piloteksperiment som heller ikke er produksjonssatt.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -695,6 +863,13 @@ KI skal skille mellom:
 - antakelser
 - informasjon som mangler
 
+### Presisert akseptanse for revisjon
+
+Modellen skiller eksplisitt observasjoner fra antakelser ved usikre saker; test mot caser med mangelfullt faktagrunnlag.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## AI-02 – Ingen oppdiktede diagnoser
@@ -704,6 +879,13 @@ KI skal skille mellom:
 KI skal ikke dikte opp medisinske eller psykologiske diagnoser.
 
 Dette gjelder også simulatoren.
+
+### Presisert akseptanse for revisjon
+
+Caser om helseplager/rus får ikke medisinsk diagnose eller fastslått avhengighet.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -720,6 +902,13 @@ KI skal ikke fastslå:
 
 uten tilstrekkelig grunnlag.
 
+### Presisert akseptanse for revisjon
+
+Mobbing/konflikt-caser får ikke automatiske påstander om skyld, hensikt eller motiv.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## AI-04 – HR og juridiske spørsmål
@@ -727,6 +916,13 @@ uten tilstrekkelig grunnlag.
 **Status:** IMPLEMENTERT SOM KI-REGEL
 
 KI skal være tydelig på usikkerhet og anbefale relevant faglig bistand når situasjonen krever det.
+
+### Presisert akseptanse for revisjon
+
+Komplekse juridiske/HR-saker har nøktern usikkerhet og anbefaler relevant faglig bistand, uten bastante rettslige konklusjoner uten grunnlag.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -736,6 +932,13 @@ KI skal være tydelig på usikkerhet og anbefale relevant faglig bistand når si
 
 KI skal beholde nødvendig samtalekontekst, men ny samtale skal ikke arve uvedkommende tidligere kontekst.
 
+### Presisert akseptanse for revisjon
+
+Oppfølgingsdialog tar med relevant kontekst og holder brukere/samtaler isolert; kontroller også lang samtale og reset.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## AI-06 – Modelluavhengighet
@@ -743,6 +946,13 @@ KI skal beholde nødvendig samtalekontekst, men ny samtale skal ikke arve uvedko
 **Status:** IMPLEMENTERT I PROTOTYPEFORM
 
 KI-laget skal støtte at modell/provider kan endres uten at hele applikasjonen bygges om.
+
+### Presisert akseptanse for revisjon
+
+Prototypens modell/providergrensesnitt kan bytte konfigurerbar provider uten at personvern-/responskontrakt faller bort; dokumenter begrensningene.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -768,6 +978,13 @@ Systemet skal blant annet bruke:
 
 `docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
 
+### Presisert akseptanse for revisjon
+
+Sjekk header/cookie/sesjon/rolle/rate limit/sekretthåndtering med faktiske serverforespørsler og relevante databaserettigheter; statiske tekstsøk er ikke nok.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## NFR-02 – Personvern
@@ -782,6 +999,13 @@ Produktet skal følge prinsipper om:
 - bruker-eid historikk
 - frivillig deling av samtaleinnhold
 - separasjon mellom brukerdata og teknisk analyse
+
+### Presisert akseptanse for revisjon
+
+Personvernkontroll blokkerer definerte PII-kategorier før ekstern sending på server; lagring, sletting og retensjon dokumenteres for faktisk database.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -800,6 +1024,13 @@ Løsningen skal ha:
 
 UX er iterativt forbedret gjennom prosjektet.
 
+### Presisert akseptanse for revisjon
+
+Minst to representative brukerreiser kan fullføres på relevant desktop/mobil uten blokkerende UI-feil; faktisk testutvalg og resultat rapporteres, ikke antas.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
+
 ---
 
 ## NFR-04 – Feilhåndtering
@@ -809,6 +1040,13 @@ UX er iterativt forbedret gjennom prosjektet.
 Tekniske feil skal så langt som mulig håndteres uten at brukerflyten kollapser.
 
 Sluttbruker skal ikke eksponeres for unødvendig tekniske debugdetaljer.
+
+### Presisert akseptanse for revisjon
+
+Simuler API-timeout, avbrutt nett og uventet svar; brukeren får håndterbar feilmelding, pågående state ryddes og sensitivt råmateriale lekker ikke i feil.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -825,6 +1063,13 @@ Repoet er organisert i:
 - `database/`
 - `docs/`
 - `tests/`
+
+### Presisert akseptanse for revisjon
+
+Full `npm test` og avhengighetskontroll er grønne på endelig commit, kodeendringer har avgrenset konsekvens og dokumentert regressjonskontroll. Ikke oppfylt som siste-verifisert CI på main 12.11.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
@@ -845,6 +1090,13 @@ Siste dokumenterte grønne quality gate etter live-funn og kildeprioriteringsret
 - commit `a8756d36c492be39e70611c0946c026234beb965`
 
 Etterpå ble dokumentasjonen for 40/40-sluttresultatet slått inn på `main`, og ny full quality gate **42665279811** var også **SUCCESS**.
+
+### Presisert akseptanse for revisjon
+
+Kvalitetsporten på main må kjøre npm ci, npm test, produksjonsavhengighet-audit og strict golden-oppsummering. Manglende eller hoppet-over steg kan ikke markeres som bestått.
+
+**Verifikasjon:** Kriteriet må prøves mot faktisk implementasjon. Eksisterende «IMPLEMENTERT»-status er historisk dokumentasjon, ikke bevis på at dagens commit er testet.
+
 
 ---
 
