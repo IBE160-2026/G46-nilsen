@@ -29,6 +29,22 @@ Testing brukes gjennom utviklingsprosessen og ikke bare som sluttkontroll.
 
 ---
 
+## 1.1 Verifikasjonsstatus per 18.11.2026 – må leses før testtallene nedenfor
+
+Denne planen beskriver metoder og **historisk gjennomførte testkjøringer**, ikke en ny grønn kvalitetserklæring for siste `main`-commit. Et separat, krav-for-krav testbevisregister er opprettet i `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` (36 krav). Registeret skiller:
+
+1. **S – statisk:** kildekode-/DOM-/schemaassert; kontrollerer struktur, ikke hel UI-/API-atferd.
+2. **D – deterministisk:** faktiske isolerte regler/data med forventet utfallet.
+3. **I – integrasjon/E2E:** faktisk klient, server, database, autorisasjon og negativ testflyt.
+4. **L – live KI:** modellrespons med navngitt modell, testsett, dato og evaluering; ikke deterministisk.
+5. **M – menneskelig/fysisk:** brukerscenario, mobil, utskrift, kvalitativ brukertest og faglig vurdering.
+
+**Viktig nytt funn:** Siste GitHub Actions Quality Gate på `main` **12.11.2026**, run `43205812288`, var **FAILURE**. `npm test` stoppet på `tests/test-repo-structure.cjs` etter at legitim faglærerreferanse ble lagt i `.docs`; etterfølgende `npm audit --omit=dev --audit-level=high` ble ikke kjørt i denne runen. En smal tilpasning av struktursjekken ligger på egen dokumentasjonsgren, men er **ikke** re-verifisert i CI. Ikke skriv «alle tester grønne på dagens main» før endelig suite/audit faktisk er kjørt.
+
+Golden-banken er kontrollert direkte fra JSON i main og inneholder **66** caser, mens benchmarkbanken har **114**. Historisk live-resultat 09.11.2026 mot `gpt-5.6-luna` var **40/40** for den særskilte yrke/sektor/tariff/kilde-suiten, etter analyse av tidligere 37/40. Dette er prosjektets egen fasit og ikke en uavhengig HR-/juridisk ekspertvalidering.
+
+**LIVE/tale:** Taletranskripsjon testes kun i pilotgren og pilot-Render; egne tale-/kommando-/personverntester er fortsatt nødvendige og **skal ikke** summeres inn i produksjonens deterministic eller golden-resultater.
+
 # 2. Testprinsipp
 
 Samtalestøtte tester både:
@@ -151,9 +167,7 @@ Brukes når faglig kvalitet, språk, realisme eller nyanser ikke kan avgjøres s
 
 ## Nivå 6 – Brukertesting
 
-Skal senere brukes til å undersøke faktisk brukeropplevelse og nytte.
-
-Dette er ikke ferdig fullskala testaktivitet i nåværende prosjektstatus.
+Begrenset kvalitativ pilot-/brukertesting er gjennomført og dokumentert i `docs/BRUKERTEST-FUNN-OG-BACKLOG.md`. Et større og representativt utvalg samt fullstendig faglig validering gjenstår. Pilotinntrykk og surveyresultater er ikke statistiske bevis eller juridisk ekspertgodkjenning.
 
 ---
 
