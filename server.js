@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { historyPayload, rowToHistory } from "./src/server/history-contracts.js";
+import { normalizeSourceUrl, webSources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } from "./src/server/source-normalization.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
@@ -1446,74 +1447,6 @@ function publicSources(ids = []) {
     url: source.url || "",
     doi: source.doi || null
   }));
-}
-
-function normalizeSourceUrl(value) {
-  try {
-    const url = new URL(String(value || ""));
-    for (const key of [...url.searchParams.keys()]) {
-      if (/^utm_/i.test(key)) url.searchParams.delete(key);
-    }
-    url.hash = "";
-    return url.toString();
-  } catch (_) {
-    return String(value || "").trim();
-  }
-}
-
-function webSources(response) {
-  const sources = new Map();
-  for (const item of response?.output || []) {
-    const actionSources = item?.action?.sources;
-    if (!Array.isArray(actionSources)) continue;
-    for (const source of actionSources) {
-      if (source?.type !== "url" || typeof source.url !== "string") continue;
-      const normalizedUrl = normalizeSourceUrl(source.url);
-      if (!normalizedUrl) continue;
-      sources.set(normalizedUrl, {
-        title: source.title || source.name || "",
-        url: normalizedUrl
-      });
-    }
-  }
-  return sources;
-}
-
-function markdownWebSources(text = "", verifiedSources = new Map()) {
-  const found = [];
-  const regex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
-  let match;
-  while ((match = regex.exec(String(text || "")))) {
-    const normalizedUrl = normalizeSourceUrl(match[2]);
-    const verified = verifiedSources.get(normalizedUrl);
-    if (!verified) continue;
-    found.push({
-      title: verified.title || match[1] || "Kilde",
-      author: (() => { try { return new URL(normalizedUrl).hostname.replace(/^www\./,""); } catch (_) { return ""; } })(),
-      year: "",
-      type: "nettkilde",
-      url: normalizedUrl
-    });
-  }
-  return found;
-}
-
-function stripInlineSourceLinks(text = "") {
-  return String(text || "")
-    .replace(/\s*\(\s*\[[^\]]+\]\(https?:\/\/[^)]+\)\s*\)/g, "")
-    .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, "$1")
-    .replace(/[ \t]+\n/g, "\n")
-    .trim();
-}
-
-function dedupeEvidenceSources(items = []) {
-  const seen = new Set();
-  return items.filter(source => {
-    const key = normalizeSourceUrl(source?.url || source?.doi || "") || String(source?.id || source?.title || "");
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
 }
 
 const SERVER_HARD_PRIVACY_TYPES = new Set(["email", "phone", "birthdate", "identifier", "name", "address", "gendered_language"]);
