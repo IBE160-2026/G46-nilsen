@@ -1529,3 +1529,14 @@ Deretter ble OpenAI SDKs feilbetingelser simulert via en **test-only lokal fetch
 KI leste det eksisterende refleksjonsutkastet (ca. 9 535 ord) og tok utgangspunkt i beskrevet faktisk utviklingshistorie, novemberforelesningene, formative tilbakemeldinger og nye røde/grønne testbevis. KI utarbeidet et **separat 2 646-ords redigeringsutkast** i `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md`. Originalen er beholdt med kronologiske tillegg og gamle testtall. Ny versjon prioriterer egen rolle, problemforståelse, BMAD etter prototype, context engineering, menneskelig kontroll, etiske avveininger, faktiske tekniske feil, testvaliditet og kildekritikk. Den markerer at pilot-tale ikke er i produksjon og at E2E-RLS med to ekte testkontoer ikke er gjennomført.
 
 **Forbehold:** Canvas' gjeldende ord- og formkrav er ikke inspisert i denne runden. Teksten er et forslag til studenten, ikke automatisk godkjent eller levert. Studenten må selv kvalitetssikre at refleksjonene uttrykker egne vurderinger.
+
+
+---
+
+## 18.11.2026 – Målrettet CSS-analyse etter spørsmål om 6 000 linjer og !important
+
+Bruker ba om gjennomgang av stor CSS-fil, mange `!important`-overstyringer og muligheter for å forkorte koden. KI åpnet **den faktiske** Product Brief-tilbakemeldingen 26.10 og de fire CSS-filene på revisjonsgrenen. Læreren hadde konkret kommentert størrelsen på app.js og server.js, men ikke oppgitt noe bestemt CSS-tall. Reell opptelling før rydding: 9 870 CSS-linjer inkludert importfil og 845 `!important`.
+
+KI kartla gjentatte selektorer/egenskaper med identiske `@media`-kontekster og opprettet en reproduserbar, **skrivebeskyttet** CSS-auditscript `scripts/audit-css.cjs` (`npm run audit:css`), kjørt automatisk i PR Quality Gate. Baseline viste 149 *fysiske* deklarasjoner hvor `!important` ble fulgt av en ny `!important` på samme selektor/egenskap/at-kontekst. Funn ble vurdert mot den mobile simulatoren, temaer og pilene i kildebanken – områder med høy risiko for skjulte visuelle regresjoner.
+
+Kun to **100 % identiske** KI-logo-blokker i `styles-overrides.css` ble fjernet (25 linjer og 13 `!important`). Sluttmåling: 9 845 linjer/832 `!important` og 136 tilsvarende kaskadekandidater. Full PR Quality Gate `44350121403` besto. **Ingen manuell skjermbilde-/nettlesertest ble påstått**, og større CSS-refaktorering ble uttrykkelig utsatt til visuelt før-/etter-grunnlag foreligger. Hele funnlisten og arbeidet videre: `docs/CSS-REVISJON-2026-11-18.md`. `main`, produksjons-Render og LIVE-pilot er uendret.

@@ -10,7 +10,9 @@ Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy
 
 **Samtalestøtte v20.11.5** er en studentprototype. `main` er produksjonsgrunnlaget; alle forbedringene fra den siste kvalitetsrevisjonen ligger på `docs/ibe160-helhetlig-revisjon-20261118` og **er ikke slått sammen eller deployet til produksjon**. LIVE/tale er fortsatt **kun på en separat pilotgren** (`pilot-ux-v20.11`), ikke en del av produksjonsleveransen. FR-23 (en alternativ direkte tekstinngang) er en annen hypotese enn LIVE/tale.
 
-**Siste bekreftede kontroll på revisjonsgrenen:** [GitHub Actions Quality Gate 44345652524](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44345652524), commit `eba6eec89970f4e27f2322bfe41255cbd296cc51`: **SUCCESS**, 35 automatiske deltester og `npm audit` uten funn på valgt nivå. Golden-banken har 66 caser, hvorav 40 strenge yrke-/sektor-/kilde-caser. Dette er **ikke** en ny live KI-kjøring. Siste kjøring på `main` før revisjonen feilet 12. november på repo-strukturtesten; statusene må ikke blandes.
+**Siste bekreftede CSS-/testkontroll på revisjonsgrenen:** [GitHub Actions Quality Gate 44350121403](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44350121403), commit `e94e23aae200d6a3f0958a238b1f57722eaa89b1`: **SUCCESS**, 35 automatiske deltester og `npm audit` uten funn på valgt nivå. Golden-banken har 66 caser, hvorav 40 strenge yrke-/sektor-/kilde-caser. Dette er **ikke** en ny live KI-kjøring. Siste kjøring på `main` før revisjonen feilet 12. november på repo-strukturtesten; statusene må ikke blandes.
+
+**CSS-vedlikeholdbarhet:** [CSS-revisjon med konkrete overstyringskjeder, målt før/etter og trygg ryddeplan](docs/CSS-REVISJON-2026-11-18.md). Etter første risikofrie duplikatrydding er det **9 845 linjer og 832 `!important`** på tvers av importfil og de tre stilarkene. `npm run audit:css` gir en reproduserbar oversikt; 136 fysiske `!important` er registrert etter tidligere `!important` for samme selektor/egenskap/scope. Manuell visuell regresjon er **ikke** gjennomført.
 
 **Les i denne rekkefølgen:**
 

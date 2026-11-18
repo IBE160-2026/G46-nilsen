@@ -40,6 +40,10 @@ Dette er en datert revisjonsmilepæl, ikke en sluttrapport eller godkjenningsatt
 - [x] Refleksjon: laget konsentrert arbeidsutkast på 2 646 ord i `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md`, med sammenhengende hovedtekst og konkret refleksjon opp mot novemberforelesningene. Originalens 9 535 ord og daterte tillegg er bevart.
 - [ ] Avklar konkret ordgrense og innleveringskrav i Canvas før valg av endelig refleksjonsrapport, og gjennomfør faglig/redaksjonell sluttkontroll.
 
+- [x] CSS-grunnmåling og reproduserbar `npm run audit:css`: 9 870 linjer/845 `!important` før, 9 845/832 etter første rydding; 136 senere fysisk `!important` for samme selector/egenskap/at-scope identifisert.
+- [x] To eksakt dupliserte KI-logo-regelblokker fjernet fra `styles-overrides.css` (−25 linjer, −13 `!important`). PR Quality Gate `44350121403` bestått.
+- [ ] Før større CSS-refaktorering: faktisk visuell før-/etter-sjekk i mobil/desktop/tre temaer, minimert sidemeny, kildebankpiler, simulering, utskrift; se `docs/CSS-REVISJON-2026-11-18.md`.
+
 ## Arbeidsregel
 
 Ved større endringer skal minst disse fire spørsmålene vurderes:
