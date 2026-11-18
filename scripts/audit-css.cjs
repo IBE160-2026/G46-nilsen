@@ -4,7 +4,14 @@
 // Reports identical selectors/properties inside the same at-rule context.
 // These are CANDIDATES, not proof that rules can safely be removed.
 const fs = require("node:fs");
-const files = ["styles-core.css", "styles-responsive.css", "styles-overrides.css"];
+const coreChunks = ["styles-core-foundation.css","styles-core-dialogue.css","styles-core-simulation.css","styles-core-utilities.css"];
+const files = [...coreChunks, "styles-responsive.css", "styles-overrides.css"];
+const coreIndex = fs.readFileSync("styles-core.css", "utf8");
+const actualCoreImports = [...coreIndex.matchAll(/@import\s+url\(["']?([^"')]+)["']?\)/g)].map(x => x[1]);
+const expectedCoreImports = coreChunks.map(x => "./" + x);
+if (JSON.stringify(actualCoreImports) !== JSON.stringify(expectedCoreImports)) {
+  throw new Error("Uventet rekkefølge på CSS-kjernemodulene: " + actualCoreImports.join(", "));
+}
 const entry = fs.readFileSync("styles.css", "utf8");
 const imports = [...entry.matchAll(/@import\s+url\(["']?([^"')]+)["']?\)/g)].map(x => x[1]);
 const expected = files.map(x => "./" + x);
