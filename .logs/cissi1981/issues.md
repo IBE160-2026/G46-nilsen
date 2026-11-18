@@ -20,13 +20,22 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 
 - [x] Testdrev OpenRouter-only `/api/status`: rød run `44339406194` bekreftet feilen, minimal fix i `server.js`, grønn run `44339569597` med 33 tester/audit. Ingen prod-merge.
 
+## Nye testfunn og rettelser – 18.11.2026
+
+**Siste komplette CI-kjøring:** [44343038247](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44343038247) på revisjonsgrenen, commit `4d78bcbc02d665c3cfa0ae68289b81370621dfc3`, **SUCCESS**: 35 automatiske deltester, dependency audit med 0 sårbarheter og 66/40 golden-opptelling (ikke en ny live modellkjøring).
+
+- **To fiktive brukere:** `tests/test-auth-history-two-users-http.cjs` kjører selve Express-serveren mot en lokal Auth/PostgREST-simulator. Opprett/les/endre/slett, eksport, uautoriserte operasjoner og databasefeil testes. Den første røde kjøringen `44341093359` fant en misvisende HTTP 500 ved oppdatering av ukjent/andres ID; nå nøytral 404. Grønn kjøring `44341831405`. Se `docs/ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md`. **Ekte Supabase RLS med to reelle kontoer er ikke gjennomført.**
+- **Feil fra KI-provider:** `tests/test-ai-provider-errors-http.cjs` med offline fetch-stub tester 503, 429, ugyldig leverandørrespons, nettverksbrudd og personvernblokkering før KI. En rød kjøring `44342507107` avdekket et falskt personnavntreff på `Hvordan`. Det delte navnefilteret og klient-/servertestene er korrigert med spørreord pluss fortsatt positiv navnegjenkjenning. Grønn kjøring `44343038247`. Se `docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md`.
+- Ingen produksjonsmerge, ingen Render-deploy, ingen endringer i LIVE-piloten og ingen lesing/endring av reelle brukerrader. `main` er fortsatt produksjonsreferanse. Alle testkonklusjonene gjelder **den isolerte revisjonsgrenen**, ikke en ny `main`-CI.
+
 ## Åpne oppgaver før sluttgodkjenning
 
 - [x] **Revisjonsgren Quality Gate utført 18.11:** run `44336281200` SUCCESS på `d9234879...`, 31 deltester + npm audit 0 sårbarheter + golden-opptelling 66/40.
 - [ ] **Før eventuell merge:** fjern den midlertidige ekstra branch-triggeren fra `.github/workflows/quality-gate.yml`, vurder andre dokumentasjonsendringer og kjør Quality Gate på endelig målcommit. `main` er fortsatt uendret og siste run der feilet.
-- [ ] **P0:** Fullfør innlogget E2E (HTTP uten sesjon er testet, live RLS-policyer er lest): test tilgang/RLS, historikk og admin med to fiktive kontoer, både normal og uautorisert API-/databaseadgang, uten ekte persondata.
+- [ ] **P0:** Fullfør ekte Supabase-Auth/RLS E2E i separat testprosjekt med to fiktive kontoer. Isolert lokal to-bruker HTTP-test og live RLS-metadata er gjennomført, men erstatter ikke dette., både normal og uautorisert API-/databaseadgang, uten ekte persondata.
 - [ ] **P0:** Vurder å aktivere Supabases leaked-password protection før bredere bruk; nåværende advisory WARN dokumentert, ikke endret.
-- [ ] **P1:** Test API-/provider-timeout, uventet/ugyldig KI-svar, nettverkstap og databasefeil. Dokumenter faktiske brukermeldinger og personverngrenser.
+- [x] **P1 delvis:** Lokal API-providerfeilsimulering gjennomført (503/429/ugyldig svar/frakobling) og nøytrale API-feilmeldinger testet; direkte personverngateway verifisert. Timeout over reelle tjenestegrenser, appens faktiske klientmelding og database-retry/latens er **ikke** testet.
+- [ ] **P1:** Test reell provider-timeout/retry, databasebrudd i dedikert testmiljø og menneskelig vurdering av klientens feilmeldinger.
 - [ ] **P1:** Kontroller 36 akseptanser mot reell kode/atferd og status – ikke anta at tekstassert eller krav-ID er et E2E-bevis. Marker og prioriter eventuelle hull.
 - [ ] **P1:** Kjør faktisk brukerreise på desktop og fysisk mobil, inkl. PWA, personvern, oppfølgingsflyt, utskrift med hovedråd + videre råd og sensorens demomodus.
 - [ ] **P1:** Gjør en kritisk menneskelig sluttgjennomgang av nye formuleringer, tekniske spor og risikopåstander i PRD/arkitektur/stories. Ingen uavhengig ekspertvalidering er dokumentert.

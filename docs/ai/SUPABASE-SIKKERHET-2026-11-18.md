@@ -41,3 +41,8 @@ Secret/service_role-nøkkel skal aldri eksponeres i nettleser eller sendes til k
 - [HTTP-grensetest](../../tests/test-api-boundary-http.cjs) starter den faktiske Express-serveren med **kunstige, lokale** Supabase-verdier. Den sjekker 22 uinnloggede API-kall, 3 ugyldige Origin og 5 private filer. Den bruker **ikke** ekte Supabase eller persondata.
 - [Testbevisregisteret](TESTBEVIS-OG-DEKNING-2026-11-18.md) beholder autentisert E2E med to brukere som åpent punkt.
 - [Helhetlig revisjon](../REVISJON-IBE160-2026-11-18.md) samler CI-, dokumentasjons- og sikkerhetsstatus.
+
+
+### Tillegg – isolert to-bruker HTTP-integrasjon 18.11.2026
+
+Se `REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md`. Testen gjennomfører sesjons-/historikkoperasjoner med to oppdiktede identiteter på faktisk Express-server, men **en lokal mock håndhever eierskapet**, ikke ekte Supabase. Resultatet må ikke brukes som bevis på to autentiserte brukeres reelle Postgres RLS. Prosjektets faktiske policyer og grants er fortsatt kontrollert separat og skrivebeskyttet ovenfor.

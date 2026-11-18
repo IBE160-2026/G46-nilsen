@@ -1507,3 +1507,16 @@ Supabase ble kun lest via metadata og Security Advisor, **uten brukerdata eller 
 ## 18.11.2026 – Rød/grønn providerstatus-regresjon
 
 KI analyserte serverens modellvelger og fant at statusendepunktet bare sjekket OpenAI-klienten, selv om `hasAnyAiClient()` også omfatter OpenRouter. Før kodeendring ble en faktisk HTTP-regresjonstest lagt til med lokale dummy-nøkler. CI `44339406194` feilet på forventet `OpenRouter-only skal regnes som KI-konfigurert`. Deretter ble kun `/api/status` endret til å bruke felles providerkontroll. CI `44339569597` var grønn med 33 deltester og audit uten sårbarheter. Dette er test av statuskontrakt, ikke av ekte provider eller KI-råd. Dokumentasjon: `docs/ai/REGRESJON-OPENROUTER-2026-11-18.md`. Produksjonskoden i `main` og LIVE-piloten er urørt.
+
+
+---
+
+## 18.11.2026 – Ny integrasjonsrunde med negativ testing og dokumentert rød/grønn CI
+
+**Menneskelig oppdrag:** Fortsette å kvalitetssikre hele Samtalestøtte, prioritere virkelige feil og kvalitet i stedet for forhastet produksjonssetting.
+
+**KI-assistanse/arbeid:** Bygget en lokal Node.js Auth/PostgREST-simulator med to syntetiske brukere, testet den faktiske Express-serverens sesjons- og historikkruter og oppdaget at oppdatering av en utilgjengelig historikk-ID ga HTTP 500. Forventet 404 feilet i CI run `44341093359`, og den begrensede rettelsen i `server.js` bestod senere i run `44341831405` (34 deltester).
+
+Deretter ble OpenAI SDKs feilbetingelser simulert via en **test-only lokal fetch-omdirigering**; ingen ekte AI-API, brukerkonto eller database ble brukt. Et vanlig spørsmål, `Hvordan spør jeg?`, ble da uriktig blokkert som navn, påvist i rød CI `44342507107`. Den delte detektoren `src/privacy-detector.js` ble korrigert med norske spørreord som grammatisk ikke-navn. Både klient- og serversiden fikk negative og positive regresjonscaser, og full CI `44343038247` var grønn med 35 deltester og audit 0 sårbarheter.
+
+**Kritisk avgrensning:** Selv med grønn CI er dette ikke en ekte to-konto-test i Supabase, live modellkvalitetstest, fysisk mobilkontroll eller produktsikkerhetssertifisering. `main` og Render-produksjon er ikke berørt. Kildebevis, begrensninger og CI-URL-er er lagret i `docs/ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md` og `docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md`. LIVE/tale er fortsatt separat, ikke-produksjonssatt pilot.

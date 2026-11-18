@@ -333,6 +333,16 @@ Som del av den samme revisjonen undersøkte vi den faktiske Supabase-databasens 
 
 ---
 
+### 5.9 To uventede feil funnet ved negative integrasjonstester
+
+En sentral læring fra forelesningenes fokus på tester, reviews og human-in-the-loop er at det ikke er nok å teste bare det som normalt skal fungere. Under den avsluttende revisjonen kjørte vi derfor den virkelige Express-rutingen mot en **isolert, fiktiv Auth/PostgREST-tjeneste** med to syntetiske brukere. Da en bruker forsøkte å endre en annen brukers samtale, blokkerte den simulerte eierskapsregelen tilgangen, men API-et svarte misvisende med HTTP 500. En rød test gjorde denne forskjellen synlig. Etter en minimal rettelse returnerer API-et en nøytral 404 for både fremmed og ukjent samtale-ID, og hele testpakken ble grønn (run `44341831405`).
+
+I neste runde simulerte vi feil fra KI-provider uten virkelige API-kall. Her fant testen en **annen** svakhet: `Hvordan spør jeg?` ble blokkert fordi navnedetektoren tolket «Hvordan» som et navn. Dette var et falskt positivt personverntreff, og vi korrigerte den delte navneheuristikken med eksplisitte norske spørreord. Positive testtilfeller sikret samtidig at navn som «Knut» fortsatt oppdages. CI gikk fra rød (`44342507107`) til grønn (`44343038247`) med 35 deltester.
+
+Dette har fått meg til å skille skarpere mellom **sikkerhet** og **brukbarhet**: Personvernfilteret må både stanse faktiske personopplysninger og unngå å blokkere vanlige, ufarlige spørsmål. At en test gir grønt resultat betyr heller ikke at hele produksjonsoppsettet er bevist. Vår to-brukertest bruker en lokal database-etterligning, ikke faktiske Supabase RLS-sesjoner. Begge eksemplene ligger dokumentert i `docs/ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md` og `docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md`.
+
+---
+
 ## 6. Etiske implikasjoner
 
 Samtalestøtte behandler et område som krever særlig varsomhet. Selv om løsningen ikke skal brukes som journalsystem, vil brukere kunne beskrive reelle medarbeidere og sensitive situasjoner.
