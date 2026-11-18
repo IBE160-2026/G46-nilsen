@@ -30,6 +30,9 @@ jobs:
       - name: Report CSS complexity and prevent new important debt
         run: npm run audit:css -- --enforce-budget
 
+      - name: Compare CSS rendering against pre-refactor baseline in headless Chrome
+        run: node tests/test-css-browser-regression.cjs
+
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
 
