@@ -5,7 +5,7 @@
 **Student:** Cecilie C. Nilsen  
 **Student-ID:** [fyll inn]  
 **Gruppestørrelse:** 1  
-**Status:** Arbeidsutkast – oppdatert med pilot og produksjonssetting v20.11.0  
+**Status:** Arbeidsutkast – historisk produksjonsgrunnlag v20.11.5; teorikobling og dokumentkontroll revidert 18.11.2026. LIVE/tale kun i separat pilot  
 **Ordantall:** må kontrolltelles ved sluttredigering
 
 ---
@@ -290,6 +290,34 @@ I starten var arbeidsmåten nærmere «beskriv ønsket resultat og se hva KI lag
 Det mest interessante er at jeg ikke lærte dette bare ved å lese om metodene. Behovet ble tydelig gjennom konkrete feil. Personvernregexen, foreldede tester, golden-testens falske positive og min egen regresjon under sluttmodulariseringen tvang frem en mer disiplinert arbeidsform.
 
 På den måten ble teorien mest nyttig når den kunne forklare erfaringer jeg allerede hadde fått i prosjektet.
+
+---
+
+### 5.6 Hva forelesningene i november endret i måten jeg dokumenterer prosjektet
+
+Gjennomgangen av BMAD, arkitektur, epics/stories og sprintplanlegging i forelesningene 2., 5., 9. og 12. november fikk meg til å se en svakhet i min egen dokumentasjon: Jeg hadde mange filer, testresultater og detaljer, men sammenhengen mellom **et konkret krav og hvordan en utenforstående kan fastslå at kravet er oppfylt** var ikke alltid tydelig. Det er en annen type svakhet enn at funksjonen mangler. Den formative PRD-tilbakemeldingen 12. november pekte nettopp på at krav ofte var formulert som «implementert» fremfor observerbare akseptansekriterier, og at historikk og nye funksjoner var lagt til etter hoveddelen.
+
+Jeg har derfor brukt avslutningsfasen til en helhetlig dokumentasjonsrevisjon: FR-19–FR-23 og FR-15A er samlet med resten av kravene, NFR-QA-01 med NFR, og kravene er koblet til arkitekturkomponenter og stories. Jeg har skilt historiske testtall fra gjeldende krav og opprettet et eget testbevisregister som viser **hvilket bevisnivå** vi faktisk har. Denne revisjonen er dokumentert på en separat Git-gren og er ikke en påstand om at de opprinnelige BMAD-dokumentene fantes før første prototype.
+
+| Prinsipp fra forelesningene | Erfaring i Samtalestøtte | Kritisk vurdering |
+|---|---|---|
+| **Context engineering** | Tema, samtalekontekst, serverinstruksjoner, kildeprioritering og valgfritt yrke påvirker hvilke råd KI kan gi | Modellen kan likevel svare plausibelt feil; riktig kilde og usikkerhet må testes, ikke bare beskrives i prompt |
+| **Human in the loop** | Jeg har korrigert KI-forslag til UX, språk, taksonomi og testfasit etter faktisk bruk og egen vurdering | Rask implementering skaper også risiko for at jeg godkjenner for mye uten separat gjennomgang |
+| **BMAD og sporbarhet** | Product Brief, PRD, UX, Architecture, Epics/Stories og tester finnes | BMAD kom inn mens utviklingen allerede pågikk; revisjonen av kravbevis er et konkret forsøk på å lukke dette gapet |
+| **Epics, stories og avhengigheter** | Funksjoner er delt opp i stories med akseptanse og status; flere server-/klientmoduler er skilt ut | Dette er ikke en fullstendig vertikal-slice-arkitektur; store fellesfiler øker regresjonsrisiko. Det er heller ikke dokumentert at subagenter bygget alle stories automatisk |
+| **Testing og review** | Golden-banken, personvern, kildepolicy og regresjonstester har avslørt både modellfeil og feil i testheuristikk | En bestått statisk test er ikke E2E-bevis. Egen golden-fasit er ikke faglig uavhengig, og siste `main`-CI 12.11 feilet |
+
+Det siste er spesielt viktig. En tidligere CI-kjøring var grønn, men etter at faglærers `technology.md` ble lagt i `.docs` 12. november, feilet repo-strukturtesten på en fil som var ment å være legitim. Resten av kontrollkjeden, inkludert dependency audit, ble dermed ikke fullført i den siste kjøringen. Riktig respons er ikke å skrive «alle tester bestått» eller fjerne struktursjekken, men å undersøke hvorfor testen feilet, gjøre en snever rettelse og kjøre hele porten igjen. Det viser skillet mellom **testens resultat** og **testens gyldighet**.
+
+Foreleseren viste også hvordan subagenter og worktrees kan dele arbeid for å spare kontekstvindu og tid. I mitt prosjekt har KI-assistansen primært skjedd iterativt gjennom ChatGPT/Git, med menneskelige kontroller og tidvis store kodefiler. Jeg skal derfor ikke beskrive arbeidet som en parallell, autonom subagentprosess jeg ikke har dokumentert. Læringen ligger i å forstå hvorfor små oppgaver og isolerte endringer er viktige, og å anvende det videre uten å etterkonstruere historikken.
+
+### 5.7 En bevisst avgrensning: tale er fortsatt eksperiment
+
+LIVE/taletranskripsjon er lagt i en separat pilotgren og pilot-Render. Den siste oppdateringen sammenligner transkripsjonsmodeller, men dette er **ikke** produksjonssatt funksjonalitet i `main`. Jeg har erfart feil med norsk dialekt, «send» som «fem», «hen» som «han» og dårlig støtte for redigering av feiltranskribert tekst. Når dette er et verktøy for potensielt sensitive personalsituasjoner, kan en slik feil få betydning både for råd og for personvern. Jeg mener derfor det er faglig riktigere å beholde en tydelig pilotstatus enn å legge funksjonen inn i produksjon bare fordi den teknisk lar seg deploye.
+
+Det er også viktig å skille **FR-23 (mulig direkte tekstbasert inngang uten temameny)** fra LIVE-forsøket med tale. Disse er to ulike hypoteser med ulike testbehov. Ingen av dem skal telles som ferdig produksjonskrav.
+
+**Avgrensning av denne refleksjonen:** Revisjonen har forbedret krav- og testsporbarheten, men full ende-til-ende-sikkerhetstest, ny full CI, eksternt faglig review og sluttkontroll mot eventuelle ord-/formkrav i Canvas gjenstår. Refleksjonen beskriver derfor forbedringsarbeid og er ikke en ny, udokumentert kvalitetserklæring.
 
 ---
 
