@@ -108,6 +108,8 @@ Større endringer dokumenteres gjennom:
 
 ---
 
+**Avhengighetsdiagram:** Se `docs/bmad/ARKITEKTUR-OG-AVHENGIGHETSKART.md` for en eksplisitt *illustrasjon* av arkitektur og epic-avhengigheter (ikke bevis på at alle stories ble automatisert eller utført i parallelle subagenter).
+
 ## 3.1 Gjeldende planstatus og gjennomføringslogikk (18.11.2026)
 
 Fasekapitlene nedenfor inneholder **historisk** status per 26.–29.10. De er ikke etterjustert for å late som hele planen var klar før prototypen. Dette prosjektet har vært iterativt: tidlig prototype → BMAD-formalisering → brukertesting → revisjon av krav/arkitektur → strengere regresjoner og kildekrav. Gjeldende krav er i `docs/bmad/PRD.md`, teknisk kobling er i `docs/bmad/ARCHITECTURE-BMAD.md`, og full krav-til-story-sporing er i `docs/bmad/EPICS-AND-STORIES-BMAD.md` § 25.3.
