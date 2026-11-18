@@ -13,11 +13,11 @@ const assert = require("node:assert/strict");
     {id:"IRRELEVANT",title:"Urelatert",topics:["sikkerhet-ansvar"]}
   ];
   const glob = [
-    {id:"STATE_LAW",title:"Statlig kilde",sourceRole:"primary_regulation",topics:["fravaer-oppfolging"],sectors:["*"],employerTypes:["state"]},
-    {id:"STATE_PERSONNEL_HANDBOOK",title:"Håndbok",topics:["fravaer-oppfolging"],sectors:["*"],employerTypes:["state"]}
+    {id:"STATE_LAW",title:"Statlig kilde",sourceRole:"primary_regulation",topics:["fravaer-oppfolging"],sectors:["*"],employerTypes:["state"]}
   ];
   const agreement = [
     {id:"STATE_AGREEMENT",title:"Statlig HTA",sourceRole:"collective_agreement",employerTypes:["state"],topics:["fravaer-oppfolging"]},
+    {id:"STATE_PERSONNEL_HANDBOOK",title:"Håndbok",sourceRole:"official_employer_reference",topics:["fravaer-oppfolging"],employerTypes:["state"]},
     {id:"PRIVATE_AGREEMENT",title:"Privat HTA",sourceRole:"collective_agreement",employerTypes:["private"],topics:["fravaer-oppfolging"]}
   ];
   const select=createRelevantSourceSelector({
