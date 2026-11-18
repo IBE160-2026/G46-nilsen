@@ -59,7 +59,8 @@
     "test-api-boundary-http": "node tests/test-api-boundary-http.cjs",
     "test-ai-provider-status-http": "node tests/test-ai-provider-status-http.cjs",
     "test-auth-history-two-users-http": "node tests/test-auth-history-two-users-http.cjs",
-    "test-ai-provider-errors-http": "node tests/test-ai-provider-errors-http.cjs"
+    "test-ai-provider-errors-http": "node tests/test-ai-provider-errors-http.cjs",
+    "audit:css": "node scripts/audit-css.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
