@@ -6,6 +6,24 @@
 
 Hele prosjektet kontrolleres på separat dokumentasjonsgren med `main` som kontrollgrunnlag. Se `docs/REVISJON-IBE160-2026-11-18.md` for avvik, faglærertilbakemelding 12.11 og presis status på siste CI (feilet 12.11 etter tillegg av `.docs`), samt `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`. Eksisterende avkryssinger viser **historisk** dokumenterte arbeidstrinn og er ikke en ny friskmelding av hovedgrenen. LIVE/tale er fortsatt kun pilot, ikke produksjon.
 
+## Revisjonsstatus 18.11.2026 – hele Samtalestøtte (separat dokumentasjonsgren)
+
+- [x] Kartlagt 36 gjeldende krav-ID-er (23 FR, FR-15A, 6 AI, 5 NFR, NFR-QA-01)
+- [x] Fulgte opp faglærers PRD-tilbakemelding med samlet kravstruktur, observerbare akseptanser, scope, mål/motmål, brukerreiser og glossar
+- [x] Flyttet tidligere teststatuser og daterte tillegg til `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`, uten tap av historikk
+- [x] Etablert 36/36 *referansekoblinger* i Architecture, Epics/Stories og testbevisregisteret – **ikke** 36/36 fullførte tester
+- [x] Opprettet arkitektur-/avhengighetsdiagram og tydeliggjort begrensning i modularitet
+- [x] Oppdatert implementeringsplan, KI-logg, testplan, refleksjonsutkast og README på egen dokumentasjonsgren
+- [x] Identifisert siste main-CI 12.11 som feilet på `.docs`; smal dokumentasjonsgrenrettelse er skrevet
+- [x] Kontrollert statisk 36 unike PRD-overskrifter, plassering av FR-15A/FR-19–23/NFR-QA-01 og 36/36 ID-referanser, samt 31 eksisterende testskript og eksplisitt allowlist for lærerens eneste `.docs`-fil
+- [ ] **Kjør faktisk full ny npm/CI-test, audit og eventuelle E2E-tester på endelig commit** før påstand om grønn gate
+- [ ] Kontroller konkrete API/RLS-/feilscenarier og print-preview/fysisk mobil; statiske tester er ikke tilstrekkelig bevis
+- [ ] Gjør en menneskelig sluttgjennomgang av nye akseptansekriterier og dokumentkonsistens
+- [ ] Sluttrediger refleksjonsrapport mot ord-/innleveringskrav i Canvas
+- [ ] Eventuell produksjonsmerge: **ikke utført**, og LIVE/tale skal fortsatt ikke inn i produksjon uten eget vedtak
+
+Dette er en datert revisjonsmilepæl, ikke en sluttrapport eller godkjenningsattest. Se `docs/REVISJON-IBE160-2026-11-18.md` og `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md`.
+
 ## Arbeidsregel
 
 Ved større endringer skal minst disse fire spørsmålene vurderes:
