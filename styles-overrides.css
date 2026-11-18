@@ -198,31 +198,6 @@
 }
 
 
-#simulation-view .simulation-logo-crop,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop {
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
-}
-
-#simulation-view .simulation-logo-crop img,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop img,
-html[data-theme="light"] #simulation-view .simulation-logo-crop img,
-html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
-html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  filter: none !important;
-  object-fit: contain !important;
-  content: normal !important;
-}
-
-
 /* v20.11.5 CLEAN SIMULATION MARK
    Keep the KI illustration free of card/frame styling. */
 #simulation-view .simulation-logo-crop,
