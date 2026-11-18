@@ -112,7 +112,7 @@ function guidanceFor(situation, analysis) {
 }
 
 app.get("/", (_req, res) => res.sendFile(path.join(root, "index.html")));
-for (const filename of ["app.js", "styles.css", "styles-core.css", "styles-core-foundation.css", "styles-core-dialogue.css", "styles-core-simulation.css", "styles-core-utilities.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js"]) {
+for (const filename of ["app.js", "styles.css", "styles-core.css", "styles-core-foundation.css", "styles-core-dialogue.css", "styles-core-simulation.css", "styles-core-utilities.css", "styles-core-01-shell.css", "styles-core-02-forms.css", "styles-core-03-situation.css", "styles-core-04-topic-layout.css", "styles-core-05-guidance.css", "styles-core-06-auth-history.css", "styles-core-07-reports.css", "styles-core-08-simulation-flow.css", "styles-core-09-simulation-controls.css", "styles-core-10-auth-views.css", "styles-core-11-speech-bubbles.css", "styles-core-12-admin.css", "styles-core-13-survey.css", "styles-core-14-final-adjustments.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js"]) {
   app.get(`/${filename}`, (_req, res) => res.sendFile(path.join(root, filename)));
 }
 for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-data.js"]) {

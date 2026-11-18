@@ -1,0 +1,223 @@
+
+
+.simulation-reflection-grid span {
+  font-size: .82rem;
+  line-height: 1.45;
+  color: var(--muted);
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+select:focus-visible {
+  outline: 3px solid color-mix(in srgb,var(--accent) 42%,transparent);
+  outline-offset: 3px;
+}
+
+@media (max-width:760px) {
+  #settings-view .content-header.utility-header,
+  #about-view .content-header.utility-header,
+  #contact-view .content-header.utility-header,
+  #history-view .content-header.utility-header,
+  .legal-view .content-header.utility-header {
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .simulation-launch-grid.two-options {
+    grid-template-columns: 1fr;
+  }
+
+  .simulation-reflection-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .simulation-privacy-banner {
+    grid-template-columns: auto 1fr;
+  }
+
+  .simulation-privacy-link {
+    grid-column: 2;
+    justify-self: start;
+  }
+
+}
+
+:root[data-theme="hybrid"] {
+  color-scheme: light;
+}
+
+html[data-theme="hybrid"] .sidebar {
+  background: linear-gradient(180deg,#123e4a 0%,#0f3440 100%);
+  border-right-color: #255766;
+  color: #f2fbfd;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item {
+  color: #edf8fa;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-item small {
+  color: #b8d1d7;
+}
+
+html[data-theme="hybrid"] .sidebar .nav-glyph {
+  background: rgba(255,255,255,.10);
+  color: #d9f5f7;
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.12);
+}
+
+html[data-theme="hybrid"] .sidebar .nav-logo-glyph img {
+  content: url("assets/images/profile-ai-light.png");
+}
+
+html[data-theme="hybrid"] .sidebar .sidebar-message {
+  border-top-color: rgba(255,255,255,.18);
+  color: #bfd4d9;
+}
+
+html[data-theme="dark"] .sidebar .sidebar-message {
+  border-top-color: var(--border);
+  color: var(--muted);
+  background: transparent;
+}
+html[data-theme="hybrid"] .sidebar .sidebar-message-icon {
+  color: #d9f5f7;
+}
+
+html[data-theme="hybrid"] .sidebar-toggle {
+  background: #123e4a;
+  border-color: #255766;
+  color: #f2fbfd;
+  box-shadow: 5px 0 14px rgba(11,47,58,.24);
+}
+
+html[data-theme="hybrid"] .sidebar-toggle:hover {
+  background: #245d6d;
+}
+
+.content-header.utility-header {
+  display: block;
+}
+
+.utility-header-copy {
+  max-width: 900px;
+}
+
+.utility-header-copy>p {
+  max-width: 760px;
+}
+
+#contact-view .contact-layout {
+  width: 100%;
+}
+
+#contact-view .contact-card {
+  width: 100%;
+  padding: 16px 18px;
+}
+
+#contact-view .contact-card h2 {
+  font-size: 1.25rem;
+}
+
+#contact-view .contact-card p {
+  margin: 8px 0 0;
+}
+
+#contact-view .contact-email-link {
+  margin-top: 10px;
+}
+
+#contact-view .report-form {
+  width: 100%;
+}
+
+.simulation-avatar {
+  position: relative;
+  z-index: 2;
+}
+
+.theme-switcher button {
+  padding: 7px 8px;
+  font-size: .78rem;
+}
+
+.settings-theme-options {
+  flex-wrap: wrap;
+}
+
+@media (max-width:760px) {
+}
+
+.finder-privacy-check {
+  max-width: none;
+  width: 100%;
+  margin: 10px 0 0;
+}
+
+.ai-topic-suggestion.loading {
+  padding: 16px 18px;
+}
+
+.topic-thinking {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.topic-thinking p {
+  margin: 3px 0 0;
+  color: var(--muted);
+}
+
+.auto-topic-note {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin: 0 0 14px;
+  padding: 11px 14px;
+  border: 1px solid color-mix(in srgb,var(--accent) 26%,var(--border));
+  border-radius: 14px;
+  background: color-mix(in srgb,var(--accent-soft) 38%,var(--surface));
+}
+
+.auto-topic-note[hidden] {
+  display: none;
+}
+
+.auto-topic-copy {
+  display: grid;
+  gap: 3px;
+  min-width: 0;
+}
+
+.auto-topic-copy strong {
+  font-size: .92rem;
+}
+
+.auto-topic-copy span {
+  font-size: .82rem;
+  color: var(--muted);
+  line-height: 1.4;
+}
+
+.auto-topic-change {
+  flex: 0 0 auto;
+  white-space: nowrap;
+}
+
+.topic-choice-button {
+  min-width: 160px;
+}
+
+@media (max-width:760px) {
+  .auto-topic-note {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+}

@@ -4,10 +4,41 @@
 // Reports identical selectors/properties inside the same at-rule context.
 // These are CANDIDATES, not proof that rules can safely be removed.
 const fs = require("node:fs");
-const coreChunks = ["styles-core-foundation.css","styles-core-dialogue.css","styles-core-simulation.css","styles-core-utilities.css"];
-const files = [...coreChunks, "styles-responsive.css", "styles-overrides.css"];
+const coreGroups = {
+  "styles-core-foundation.css": [
+    "styles-core-01-shell.css",
+    "styles-core-02-forms.css",
+    "styles-core-03-situation.css",
+    "styles-core-04-topic-layout.css"
+  ],
+  "styles-core-dialogue.css": [
+    "styles-core-05-guidance.css",
+    "styles-core-06-auth-history.css",
+    "styles-core-07-reports.css"
+  ],
+  "styles-core-simulation.css": [
+    "styles-core-08-simulation-flow.css",
+    "styles-core-09-simulation-controls.css",
+    "styles-core-10-auth-views.css"
+  ],
+  "styles-core-utilities.css": [
+    "styles-core-11-speech-bubbles.css",
+    "styles-core-12-admin.css",
+    "styles-core-13-survey.css",
+    "styles-core-14-final-adjustments.css"
+  ]
+};
+const coreChunks = Object.keys(coreGroups);
+const files = [...Object.values(coreGroups).flat(), "styles-responsive.css", "styles-overrides.css"];
 const coreIndex = fs.readFileSync("styles-core.css", "utf8");
 const actualCoreImports = [...coreIndex.matchAll(/@import\s+url\(["']?([^"')]+)["']?\)/g)].map(x => x[1]);
+for (const [group, children] of Object.entries(coreGroups)) {
+  const content = fs.readFileSync(group, "utf8");
+  const actual = [...content.matchAll(/@import\s+url\(["']?([^"')]+)["']?\)/g)].map(x => x[1]);
+  if (JSON.stringify(actual) !== JSON.stringify(children.map(x=>"./"+x))) {
+    throw new Error("Uventet CSS-import i "+group+": "+actual.join(", "));
+  }
+}
 const expectedCoreImports = coreChunks.map(x => "./" + x);
 if (JSON.stringify(actualCoreImports) !== JSON.stringify(expectedCoreImports)) {
   throw new Error("Uventet rekkefølge på CSS-kjernemodulene: " + actualCoreImports.join(", "));
