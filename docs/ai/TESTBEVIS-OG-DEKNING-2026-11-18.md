@@ -52,8 +52,8 @@
 | NFR-02 | Personvern | D + I utvides | `tests/test-privacy-surfaces.cjs`, `tests/test-server-privacy.cjs` | Oppfølging, sletting, retensjon |
 | NFR-03 | Brukervennlighet | S + historisk M | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
 | NFR-04 | Feilhåndtering | Kode; negativ I mangler | `server.js`, `app.js` | Timeout, JSON-feil, nettutfall, DB feil |
-| NFR-05 | Vedlikeholdbarhet | D; siste CI **feilet** | `tests/test-repo-structure.cjs`, `package.json` | Main-run 43205812288 feilet ved .docs |
-| NFR-QA-01 | Quality Gate | CI konfigurert; siste run **feilet** | `.github/workflows/quality-gate.yml` | Kjør faktisk full pakke inkl audit på endelig commit |
+| NFR-05 | Vedlikeholdbarhet | Revisjonsgren CI **bestått**; siste `main`-CI feilet | `tests/test-repo-structure.cjs`, `package.json` | Main-run 43205812288 feilet ved .docs |
+| NFR-QA-01 | Quality Gate | Revisjonsgren run `44336281200` **bestått**; `main`-run feilet | `.github/workflows/quality-gate.yml` | Kjør faktisk full pakke inkl audit på endelig commit |
 
 ## 3. Verifiserte dokumentfakta
 
@@ -63,6 +63,8 @@
 - `tests/AI-GOLDEN-CASES.json` har eksplisitte `requirement_refs` i case-objektene; forekomst er **ikke det samme** som testresultat eller fullstendig kravdekning.
 - Historisk lokal live occupation-golden mot `gpt-5.6-luna` 09.11: **40/40 OK** rapportert i `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`; dette er egen prosjektfasit, ikke ekstern ekspertgodkjenning og ikke fersk test på endelig commit.
 - Siste Quality Gate på `main`, run `43205812288` 12.11, **feilet** i `tests/test-repo-structure.cjs` på mappen `.docs`. Etterfølgende `npm audit` og strict golden-oppsummering ble **hoppet over**. Forrige run `43202363894` var grønn, men gjelder en eldre commit.
+
+**Revisjonsgren-CI 18.11.2026:** [GitHub Actions 44336281200](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44336281200), commit `d9234879e848219f7ea0b1fe87bf3bced9572615`, **SUCCESS** – `npm ci`, alle 31 `npm test`-delsteg, produksjonsdependency-audit (**0 sårbarheter**) og oppsummering av 66 golden-caser (40 strenge: 28 sektor, 8 tariff, 4 kildelekkasje). Dette er ikke en ny live KI-test eller E2E-/RLS-godkjenning, og `main` er fortsatt uendret.
 
 ## 4. Viktigste åpne kvalitetsrisikoer
 

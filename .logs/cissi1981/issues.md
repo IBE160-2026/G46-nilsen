@@ -16,7 +16,8 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 
 ## Åpne oppgaver før sluttgodkjenning
 
-- [ ] **P0:** Kjør faktisk full Quality Gate (inkl. `npm ci`, deterministisk `npm test`, `npm audit --omit=dev --audit-level=high` og golden-dekning) på identifisert endelig commit. Siste `main`-CI var ikke grønn. Dokumentasjonsgrenen har ingen ny verifisert full CI-kjøring.
+- [x] **Revisjonsgren Quality Gate utført 18.11:** run `44336281200` SUCCESS på `d9234879...`, 31 deltester + npm audit 0 sårbarheter + golden-opptelling 66/40.
+- [ ] **Før eventuell merge:** fjern den midlertidige ekstra branch-triggeren fra `.github/workflows/quality-gate.yml`, vurder andre dokumentasjonsendringer og kjør Quality Gate på endelig målcommit. `main` er fortsatt uendret og siste run der feilet.
 - [ ] **P0:** Test tilgang/RLS, historikk og admin med to fiktive kontoer, både normal og uautorisert API-/databaseadgang, uten ekte persondata.
 - [ ] **P1:** Test API-/provider-timeout, uventet/ugyldig KI-svar, nettverkstap og databasefeil. Dokumenter faktiske brukermeldinger og personverngrenser.
 - [ ] **P1:** Kontroller 36 akseptanser mot reell kode/atferd og status – ikke anta at tekstassert eller krav-ID er et E2E-bevis. Marker og prioriter eventuelle hull.

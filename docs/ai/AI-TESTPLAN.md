@@ -29,6 +29,8 @@ Testing brukes gjennom utviklingsprosessen og ikke bare som sluttkontroll.
 
 ---
 
+**Revisjonsgren-CI 18.11.2026:** [GitHub Actions 44336281200](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44336281200), commit `d9234879e848219f7ea0b1fe87bf3bced9572615`, **SUCCESS** – `npm ci`, alle 31 `npm test`-delsteg, produksjonsdependency-audit (**0 sårbarheter**) og oppsummering av 66 golden-caser (40 strenge: 28 sektor, 8 tariff, 4 kildelekkasje). Dette er ikke en ny live KI-test eller E2E-/RLS-godkjenning, og `main` er fortsatt uendret.
+
 ## 1.1 Verifikasjonsstatus per 18.11.2026 – må leses før testtallene nedenfor
 
 Denne planen beskriver metoder og **historisk gjennomførte testkjøringer**, ikke en ny grønn kvalitetserklæring for siste `main`-commit. Et separat, krav-for-krav testbevisregister er opprettet i `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` (36 krav). Registeret skiller:
@@ -39,7 +41,7 @@ Denne planen beskriver metoder og **historisk gjennomførte testkjøringer**, ik
 4. **L – live KI:** modellrespons med navngitt modell, testsett, dato og evaluering; ikke deterministisk.
 5. **M – menneskelig/fysisk:** brukerscenario, mobil, utskrift, kvalitativ brukertest og faglig vurdering.
 
-**Viktig nytt funn:** Siste GitHub Actions Quality Gate på `main` **12.11.2026**, run `43205812288`, var **FAILURE**. `npm test` stoppet på `tests/test-repo-structure.cjs` etter at legitim faglærerreferanse ble lagt i `.docs`; etterfølgende `npm audit --omit=dev --audit-level=high` ble ikke kjørt i denne runen. En smal tilpasning av struktursjekken ligger på egen dokumentasjonsgren, men er **ikke** re-verifisert i CI. Ikke skriv «alle tester grønne på dagens main» før endelig suite/audit faktisk er kjørt.
+**Viktig nytt funn:** Siste GitHub Actions Quality Gate på `main` **12.11.2026**, run `43205812288`, var **FAILURE**. `npm test` stoppet på `tests/test-repo-structure.cjs` etter at legitim faglærerreferanse ble lagt i `.docs`; etterfølgende `npm audit --omit=dev --audit-level=high` ble ikke kjørt i denne runen. En smal tilpasning av struktursjekken er nå **re-verifisert på revisjonsgrenen** med full Quality Gate (run `44336281200`, SUCCESS 18.11, inkludert audit med 0 sårbarheter). Ikke skriv «alle tester grønne på dagens main» før endelig suite/audit faktisk er kjørt.
 
 Golden-banken er kontrollert direkte fra JSON i main og inneholder **66** caser, mens benchmarkbanken har **114**. Historisk live-resultat 09.11.2026 mot `gpt-5.6-luna` var **40/40** for den særskilte yrke/sektor/tariff/kilde-suiten, etter analyse av tidligere 37/40. Dette er prosjektets egen fasit og ikke en uavhengig HR-/juridisk ekspertvalidering.
 
