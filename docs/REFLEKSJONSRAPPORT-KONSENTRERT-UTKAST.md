@@ -1,0 +1,111 @@
+# Refleksjonsrapport – Samtalestøtte (konsentrert arbeidsutkast)
+
+**Emne:** IBE160 Programmering med KI  
+**Prosjekt:** Samtalestøtte, gruppe G46  
+**Gruppestørrelse:** Én student  
+**Student og studentnummer:** Kontroller mot innleveringen  
+**Dokumentstatus:** Konsentrert redigeringsutkast per 18.11.2026. Ikke innlevert eller kvalitetssikret mot endelige formkrav i Canvas.  
+**Produksjonsgrunnlag:** main, Samtalestøtte v20.11.5. Nyeste tekniske og dokumentære forbedringer ligger på egen revisjonsgren. LIVE/tale er kun separat pilot.
+
+> Denne teksten bygger på det opprinnelige, daterte refleksjonsutkastet, Git-historikk, kilde- og testdokumentasjon og revisjonen 18. november. Den erstatter ikke de historiske notatene. Den er laget for å framheve beslutninger, begrunnelser, egen rolle, feil og læring – ikke gjenta hele funksjonslisten.
+
+## 1. Utgangspunkt, mål og eget ansvar
+
+Jeg utviklet Samtalestøtte fordi jeg ønsket et praktisk hjelpemiddel for ledere som forbereder krevende medarbeidersamtaler. I en slik situasjon er det ikke nok å kjenne regelverk eller generelle råd. Lederen må kunne åpne samtalen på en respektfull måte, skille observasjoner fra antakelser, stille gode spørsmål, håndtere reaksjoner og avtale videre oppfølging. Målet mitt var derfor ikke å bygge enda en åpen chatbot, men en arbeidsflyt som gir støtte i øyeblikket når en konkret samtale skal gjennomføres.
+
+Løsningen lar brukeren beskrive en situasjon, velge eller få foreslått tema, motta KI-baserte samtaleråd, stille oppfølgingsspørsmål og øve i en simulering. Fagkilder og personvern er bygget inn i denne flyten. Brukeren skal slippe å beherske prompt engineering selv. Samtalestøtte er likevel verken et HR-system eller en beslutningsmotor: KI skal ikke fastslå skyld, stille diagnoser, dikte opp motiv eller fatte personalbeslutninger.
+
+Jeg har gjennomført prosjektet alene. Jeg har derfor hatt rollene som produkteier, kravstiller, utviklingsleder, tester, dokumentasjonsansvarlig og den som må avgjøre om KI-forslag kan godkjennes. Det har gjort prosjektet lærerikt, men også sårbart. Uten et ordinært utviklingsteam og uavhengig code review kan det være lett å godta en plausibel løsning for raskt. En stor del av læringen min har handlet om å bygge kontrollmekanismer som motvirker nettopp dette.
+
+## 2. Fra utforsking til systematisk KI-assistert utvikling
+
+Prosjektet begynte utforskende. Jeg beskrev ønsket funksjon, KI foreslo kode, jeg testet og ga nye instruksjoner. Dette var effektivt i en enkel prototype, men etter hvert ble konsekvensene av små endringer større. Et CSS-tiltak kunne påvirke mobilvisningen, og en justering av KI-råd kunne påvirke responskontrakter og tester. Jeg oppdaget at en generell beskjed om å «fikse» noe ofte ga KI for mye tolkningsrom.
+
+Arbeidsmåten ble derfor gradvis mer kontrollert: Jeg presiserte mål, avgrenset hva som ikke skulle endres, gjennomgikk kodeforskjeller, kjørte regresjonstester og brukte Git-commits til å bevare fungerende tilstander. Jeg ser dette som forskjellen mellom enkel prompt engineering og det forelesningene omtaler som **context engineering**: KI må få riktig prosjektkontekst, tidligere beslutninger, akseptansekriterier og dokumenterte feil. Ellers kan den lage kode som ser riktig ut isolert, men er feil i systemet som helhet.
+
+BMAD ble ikke brukt som en ferdig oppskrift før første kode. Prototypen var allerede under utvikling da Product Brief, PRD, UX, arkitektur og Epics/Stories ble formalisert. Jeg mener det ville vært misvisende å påstå at hvert planleggingsdokument var godkjent før implementeringen startet. BMAD ga derimot et nyttig rammeverk for å få kontroll på det som allerede var bygget, og for videre endringer. I november ble kravene samlet i en kanonisk PRD, koblet til konkrete arkitekturkomponenter og stories, og supplert med et register som viser hvilket testbevis hvert krav faktisk har.
+
+Forelesningen 12. november understreket verdien av mindre stories med akseptansekriterier, avhengigheter og en gjennomføringsrekkefølge. Den viste også hvordan subagenter kan redusere presset på kontekstvinduet og arbeide parallelt. Mitt prosjekt ble hovedsakelig utviklet gjennom iterativ KI-dialog og Git, ikke gjennom en dokumentert autonom prosess der subagenter implementerte alle stories. Jeg har derfor lagt størst vekt på å vise hva jeg faktisk gjorde og lærte, framfor å kopiere en prosessbeskrivelse jeg ikke har fulgt fullt ut.
+
+En ulempe ved min framgangsmåte er at arkitekturen ble delvis formet av mange små endringer. Frontend og backend har fortsatt store fellesfiler og er ikke fullt isolert i vertikale slices. Jeg flyttet noen avgrensede deler til egne klient- og servermoduler, og CSS ble delt i kjerne, responsive regler og overstyringer. Det ga bedre vedlikeholdbarhet uten risikoen ved en stor omskriving tett på innlevering. Dersom jeg startet på nytt, ville jeg definert slike grenser tidligere.
+
+## 3. Produktbeslutninger som krevde menneskelig vurdering
+
+De første versjonene var mer skjemabaserte og stilte flere spørsmål før brukeren fikk hjelp. Jeg vurderte dette som lite naturlig. Brukerflyten ble derfor endret slik at fritekst og korte avklaringer fikk større plass. KI kan foreslå et tema, men skal ikke velge tema basert på ett tilfeldig nøkkelord eller erstatte brukerens egen situasjonsbeskrivelse med en standardmal.
+
+Brukertesting avdekket også uklare titler og overlappende undertemaer. Etter en systematisk gjennomgang ble listen redusert fra 56 til 48 undertemaer. Det var ikke et tall pilotbrukerne ba om. De meldte fra om uklart språk og vanskelige valg; 48 var mitt designresultat etter å ha fjernet eller slått sammen overlapp. En viktig bieffekt var at endringen måtte følges opp i både serverkontrakt og testdata. Den eksisterende benchmarkbanken ble oppdatert til 114 saker, ikke kastet og erstattet.
+
+Mobilutviklingen lærte meg å kontrollere den faktiske visningen, ikke bare kildekoden. Ved ett tilfelle ble logoen justert i en desktop-komponent som ikke var synlig på mobil. Først da jeg fulgte den responsive DOM-/CSS-stien, ble årsaken klar. Jeg erfarte også at en vellykket Render-deploy ikke nødvendigvis beviser at riktig commit faktisk vises, eller at PWA-cache er oppdatert. En fungerende kodeendring, en vellykket deploy og et tilfredsstillende brukergrensesnitt er tre forskjellige kvalitetsnivåer.
+
+Et annet produktvalg var den valgfrie yrkes- og sektorkonteksten. En generell kilde for «Forsvar, politi og beredskap» er ikke tilstrekkelig når yrkene har ulike særregler. Kildegrunnlaget ble derfor nyansert etter sektor og konkrete yrker, samtidig som jeg unngikk å legge inn irrelevante spesialkilder bare for å øke antallet referanser. Det er kildepresisjon, ikke flest mulig kilder, som har verdi.
+
+## 4. Personvern som en del av arkitekturen
+
+I en applikasjon som brukes til personalsituasjoner kan brukeren skrive navn, helseopplysninger eller andre identifikatorer. Jeg formulerte derfor prinsippet **«anonymiser identitet, ikke nødvendig kontekst»**. Dersom all kontekst fjernes, mister KI-svaret nytten; dersom personopplysninger sendes videre, oppstår en annen risiko. Løsningen bruker personvernkontroll i nettleseren og på serveren før KI-kall, samt begrensninger for lagring og logger.
+
+Dette var vanskeligere enn jeg først trodde. Ordet «Dag» kan være et fornavn, men «dag» er også vanlig norsk. Tidlige navneheuristikker kunne derfor blokkere ufarlig tekst. Ved en senere feiltest 18. november stoppet serveren spørsmålet «Hvordan spør jeg?» fordi «Hvordan» ble tolket som et personnavn. Testen gikk rødt, og jeg valgte å endre den delte navnedetektoren i stedet for å omskrive spørsmålet. Etter rettelsen besto både negative spørsmålstester og positive navnetester, blant annet «Knut spør …».
+
+Jeg ser dette som et etisk og funksjonelt avveiningsproblem, ikke bare en regex-feil. For strenge filtre kan hindre brukeren i å få hjelp; for svake filtre kan sende informasjon videre som aldri burde forlatt systemet. En god testpakke må derfor kontrollere både falske positive og falske negative. Automatiske regler kan redusere risikoen, men kan ikke garantere anonymitet.
+
+Tilgangsstyring krever en tilsvarende forsiktighet. Den faktiske Supabase-databasens metadata ble undersøkt skrivebeskyttet: Alle ti tabeller i public hadde RLS aktivert, samtalehistorikken hadde fire eierskapsbaserte policyer, og de andre serverstyrte tabellene hadde ikke direkte tabellrettigheter for vanlige innloggede brukere. En isolert HTTP-test med to fiktive brukere kontrollerte i tillegg at serverens historikkflyt ikke blandet brukernes data. Det siste foregikk imidlertid mot en lokal Auth/PostgREST-etterligning, ikke to faktiske Supabase-kontoer. Jeg ville ikke presentert dette som en fullstendig ekstern sikkerhetsgodkjenning. Supabase varslet også om at beskyttelsen mot kjente kompromitterte passord var deaktivert; dette står som et åpent punkt.
+
+## 5. KI-svar, kilder og kritisk testing
+
+En språkmodell kan gi overbevisende formuleringer selv når premissene er feil. Jeg har derfor forsøkt å skille mellom faktiske opplysninger, antakelser og avklaringsbehov. KI-en skal gi konkrete forslag som lederen faktisk kan bruke, men ikke konkludere om diagnose, skyld eller juridisk rett uten tilstrekkelig grunnlag. SOURCEBANK er en kuratert kildebank; kontrollert nettsøk kan supplere den ved behov. Særlig juridiske påstander må støtte seg på riktig lov, myndighetskilde eller relevant tariffområde, ikke bare en generelt troverdig lenke.
+
+Det viktigste gjennombruddet i testingen kom da jeg forsto at en «grønn» KI-test ikke nødvendigvis er en god test. Et tidlig testsystem ga pene resultater, men manglet tilstrekkelig synlighet i modellsvaret. Jeg fant også konkrete feil i testheuristikkene: «lat» ble tolket som delstreng i «arbeidsrelatert», og omtale av at skyld ikke må fastslås kunne utløse et forbud mot skyld. I slike tilfeller ville det vært feil å endre den gode KI-responsen for å tilfredsstille en dårlig test.
+
+Golden-banken ble gradvis utvidet, til slutt til 66 caser, hvorav 40 er særlig strenge på yrke, sektor, tariff og kilder. Den første fulle live-runden av de 40 ga 37 OK og tre «bør sjekkes». Gjennomgangen viste tre forskjellige årsaker: en for rigid temafasit, en upresis testheuristikk og én reell kildeprioriteringsfeil. I sistnevnte tilfelle var statsansatteloven omtalt i rådet, men falt ut av det strukturerte kildefeltet. Jeg valgte derfor ulike tiltak: endre fasiten når flere svar var faglig forsvarlige, endre testmetoden når den målte feil, og endre systemlogikken når systemet faktisk hadde en svakhet. En ny live-kjøring 9. november mot gpt-5.6-luna ga 40/40 OK uten kritiske eller tekniske feil.
+
+Dette resultatet må tolkes nøkternt. Det er prosjektets egen fasit, utarbeidet med KI-støtte, ikke en uavhengig juridisk eller arbeidspsykologisk ekspertvurdering. Det beviser heller ikke at alle framtidige svar fra en ikke-deterministisk modell vil være riktige. Det viser at den bestemte modellen besto et dokumentert testsett på et bestemt tidspunkt.
+
+På samme måte gir deterministiske tester viktig, men annen, kunnskap. De kan kontrollere at en kilde ikke lekkes til feil yrke, at personopplysninger avvises før KI-kall, eller at responsen følger et skjema. De kan ikke alene bevise at åpningen er menneskelig, omsorgsfull eller egnet i en virkelig personalsamtale. Der trengs faglig og menneskelig vurdering.
+
+## 6. Negativ testing og testdrevet feilretting
+
+I sluttfasen gikk jeg fra å kontrollere om funksjonene finnes til å spørre hvordan de feiler. Vi laget blant annet tester som starter den faktiske Express-serveren med lokale testverdier, sender uinnloggede API-kall og kontrollerer at interne repo-filer ikke publiseres. En separat test kjøres mot to syntetiske brukere i en isolert lokal database-etterligning. Disse testene er mer representative for HTTP-flyten enn bare å lete etter en bestemt kodestreng.
+
+Negative tester avdekket også konkrete kodefeil. Statusendepunktet for KI sjekket først bare om OpenAI var konfigurert, selv om løsningen også støttet OpenRouter. Testen med bare en dummy OpenRouter-nøkkel feilet i GitHub Actions. Serverens statuslogikk ble rettet til å bruke den felles providerkontrollen, og den påfølgende kjøringen var grønn. Testen beviste korrekt statuskontrakt, men ikke at en virkelig ekstern KI-provider ville akseptert nøkkelen.
+
+To-brukertesten avdekket en annen feil: En bruker som forsøkte å oppdatere en annen brukers samtale, fikk HTTP 500 i stedet for 404. Eierskapsfilteret i den lokale etterligningen avviste endringen, men serveren tolket tomt resultat som en generell feil. En minimal rettelse gir nå samme nøytrale «ikke funnet»-svar for en ukjent og en annen brukers ID. Det er viktig både for forståelige feilmeldinger og for ikke å avsløre informasjon om hvem som eier en samtale.
+
+Vi simulerte deretter 503-feil, rate limiting (429), ugyldig KI-output og brudd i forbindelsen til en lokal OpenAI-etterligning. Appens API skal da gi kontrollerte, generiske feilkoder uten å videreformidle leverandørens interne detaljer. Det var i denne testserien vi også fant den feilaktige blokkeringen av «Hvordan». Etter rettelsene besto Quality Gate 18. november med **35 automatiske deltester og 0 funn i npm audit** på revisjonsgrenen. Jeg skiller dette fra den tidligere feilende kjøringen på main og fra de historiske live KI-testene.
+
+For meg er det avgjørende å forstå **hva en bestått test er bevis for**. En strukturtest er ikke en nettlesertest, en lokal Auth-mock er ikke Supabases ekte RLS, og en mock-provider er ikke en modellkvalitetsmåling. Denne presisjonen ble også et direkte svar på faglærerens formative tilbakemelding om at krav måtte knyttes til observerbare akseptanser og verifiserbare konsekvenser.
+
+## 7. Kritisk vurdering av KI som utviklingsverktøy
+
+Den største fordelen har vært utviklingshastighet og læringstilgang. KI kunne foreslå kode, forklare feilmeldinger, generere testcaser, bidra til dokumentasjon og belyse alternativer jeg selv ikke kjente. Uten KI ville jeg trolig laget en betydelig enklere applikasjon innenfor semesteret. Jeg mener likevel ikke at KI dermed automatisk ga en bedre løsning.
+
+Den største risikoen har vært at KI kan produsere feil som ser plausible ut. Det gjelder ikke bare programkode, men også testfasit, kildeutvalg, forklaringer og dokumentasjon. KI kunne dessuten foreslå større endringer enn jeg hadde ønsket, særlig i frontend. Dette skapte ekstra arbeid og regresjoner. Jeg måtte lære å stoppe og snevre inn oppgavene, lese konsekvensene og forkaste forslag som gikk utover den bestilte endringen.
+
+En annen ulempe er at høy implementeringshastighet kan øke scope og teknisk gjeld. Det ble fristende å legge til administrasjon, benchmark, logging, flere modellvalg og mer avansert kildestyring. Noe økte nytteverdien, men alt økte også kompleksiteten. Jeg skulle tidligere ha prioritert kjerneflyten hardere og utsatt funksjoner som ikke var nødvendige for prosjektets første mål.
+
+Dette er grunnen til at jeg ser **human in the loop** som mer enn en formell godkjenningsknapp. Jeg må kunne forstå hva som er foreslått, utfordre antakelsene, kontrollere tester og ta ansvar for sluttresultatet. I et soloprosjekt kan dette være krevende fordi samme person også lager kravene og vurderer dem. Jeg ville derfor ønsket mer ekstern faglig og teknisk review ved videre utvikling.
+
+## 8. Hva forelesningene endret, og hva jeg ville gjort annerledes
+
+Forelesningene ga meg et språk for erfaringer jeg allerede hadde gjort: context engineering forklarte hvorfor eksisterende krav og beslutninger må inn i KI-oppgaven; BMAD forklarte hvorfor Product Brief, PRD, UX og arkitektur må henge sammen; epics/stories og sprintplanlegging forklarte hvorfor mindre, verifiserbare arbeidsoppgaver reduserer risiko og kontekstpress. Jeg fikk også større forståelse for hvorfor arkitektur bør begrense utilsiktet kobling mellom funksjoner, og hvorfor tester og reviews bør følge implementeringen fortløpende.
+
+Jeg ville etablert Git og strukturert kravarbeid tidligere, modularisert gradvis, planlagt reelle brukerprøver før flere avanserte funksjoner og definert negative testtilfeller fra starten. Jeg ville også skilt enda tydeligere mellom brukerens produktmål og KI-assistentens forslag til teknisk løsning. Det er mitt ansvar å beslutte om ny funksjonalitet gir tilstrekkelig verdi til å forsvare ekstra sikkerhets- og vedlikeholdsarbeid.
+
+Et siste eksempel på bevisst avgrensning er LIVE/tale. Vi har eksperimentert med norsk transkribering, blant annet problemer med «send» som ble «fem» og «hen» som ble «han». Fordi feiltranskribering kan endre innholdet i en sensitiv personalsituasjon, ligger denne funksjonen fremdeles kun på separat pilotgren og pilot-Render. Den er **ikke** en del av den ferdige produksjonsleveransen. FR-23 om mulig direkte tekstinngang er dessuten en annen hypotese enn tale og skal ikke blandes sammen med den.
+
+## 9. Konklusjon og videre arbeid
+
+Det største læringsutbyttet mitt er forskjellen mellom at KI kan skrive kode og at jeg kan stå inne for et system. Den første delen er ofte rask. Den andre krever krav, arkitektur, kildekritikk, testing, brukervurdering, personvern og ærlig dokumentasjon av avgrensninger.
+
+Samtalestøtte viser at KI kan gjøre et omfattende studentprosjekt mulig, men også at menneskelig vurdering blir viktigere når utviklingen går raskt. De mest verdifulle erfaringene kom ikke fra funksjoner som virket på første forsøk, men fra feil som tvang meg til å undersøke både produktet, testmetoden og mine egne antakelser.
+
+Før ordinær bruk ville jeg prioritert en isolert ekte Supabase-test med to innloggede brukere, bredere brukertesting og fysisk test av utskrift/mobil, ytterligere faglig review av KI-råd og kildegrunnlag, og vurdering av sikkerhetsinnstillinger og intern KI for miljøer med strengere krav. Jeg ville ikke utvidet med flere funksjoner før disse kontrollene var gjennomført.
+
+## Kildespor i prosjektet
+
+Dokumentasjonen nedenfor er **etterprøvbare prosjektspor**, ikke en påstand om at alle krav er fullstendig testet:
+
+- [Product Brief](../product-brief.md), [PRD](bmad/PRD.md), [Architecture](bmad/ARCHITECTURE-BMAD.md) og [Epics/Stories](bmad/EPICS-AND-STORIES-BMAD.md).
+- [Testbevis per krav](ai/TESTBEVIS-OG-DEKNING-2026-11-18.md), [KI-testplan](ai/AI-TESTPLAN.md) og [KI-logg](ai/AI-LOGG-SAMTALESTOTTE.md).
+- [Rød/grønn providerstatus](ai/REGRESJON-OPENROUTER-2026-11-18.md), [historikk med to syntetiske brukere](ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md) og [KI-feil/personvernsjekk](ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md).
+- [Supabase-metadata og åpne sikkerhetsfunn](ai/SUPABASE-SIKKERHET-2026-11-18.md), [full revisjonsrapport](REVISJON-IBE160-2026-11-18.md) og GitHub Actions [siste grønne revisjonsgren-CI](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44343038247).
+
+**Ikke ferdig innlevering:** Ordkrav, formalia og eventuell vedleggsbegrensning må kontrolleres mot den faktiske oppgaveteksten i Canvas. Originalt langt refleksjonsutkast med daterte tillegg beholdes som historisk arbeidsmateriale.
