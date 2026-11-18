@@ -1491,3 +1491,12 @@ Full sporbar rapport:
 **Ikke utført / ikke påstått:** Ingen merge til `main`, ingen prod-Render-deploy, ingen ny faktisk `npm test`/dependency audit eller live KI-kjøring i denne runden. LIVE/tale er fortsatt isolert pilot under testing; alternativ direkte tekstinngang (FR-23) er en annen hypotese og ikke ferdig produksjonsfunksjon.
 
 **Sporet videre:** `docs/REVISJON-IBE160-2026-11-18.md`, `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`, `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` og `.logs/cissi1981/issues.md`.
+
+
+---
+
+## 18.11.2026 – Sikkerhetskontroll og HTTP-test etter dokumentasjonsrevisjonen
+
+Oppdrag fra prosjekteieren var å fortsette med kvalitetskontroll av hele prosjektet, ikke bare skrive mer dokumentasjon. KI gjennomgikk `server.js`, Auth-/historikkendepunkter, Supabase-migrasjoner og eksisterende testkode. Et nytt isolert `tests/test-api-boundary-http.cjs` ble laget for faktisk Express-server uten eksterne nøkler eller persondata; `test-sensor-demo.cjs` ble utvidet med videre samtale, refleksjon, eksport, sletting og negative caser. Testene ble kjørt i revisjonsgrenens GitHub Actions 18.11, run `44338528651` med SUCCESS og `npm audit` 0 sårbarheter.
+
+Supabase ble kun lest via metadata og Security Advisor, **uten brukerdata eller prod-endringer**. Resultat: 10 av 10 `public`-tabeller har RLS, samtaleloggen har fire eierskapsbegrensede policies, og ni serverstyrte tabeller mangler direkte brukertilganger. Advisor ga WARN om deaktivert leaked-password protection; dette er dokumentert for beslutning senere. Det er **ikke** en påstand om faktisk innlogget bruker-til-bruker-test eller at feilscenarier med live KI er gjennomført. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md` og `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md`.

@@ -135,6 +135,10 @@ Forelesningen 12.11 vektlegger at hver story skal være **avgrenset, med etterpr
 
 **LIVE/tale:** egen `pilot-ux-v20.11` og separat Render-pilot; ikke `main`, ikke ferdig testet og ikke godkjent for produksjon. FR-23 i PRD omhandler alternativ direkte inngang uten full temameny og må **ikke** blandes sammen med eksperimentet for taletranskripsjon.
 
+**Utvidet revisjonsgren-CI 18.11.2026:** [GitHub Actions 44338528651](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44338528651), commit `206925b5a4d8e222c8811677d045859539f98447`, **SUCCESS** med 32 deltester, `npm audit` (0 sårbarheter), golden-oversikt (66/40), ekte HTTP-avvisningstest for uinnloggede API-kall og utvidet deterministisk demoflyt. Denne kjøringen tester **ikke** to innloggede brukere, RLS i live request-kontekst, faglige live KI-råd, fysisk mobil eller utskrift.
+
+**Read-only Supabase-sikkerhetskontroll 18.11.2026:** Live databasedefinisjoner viser RLS på alle 10 `public`-tabeller, fire eierskapsbaserte `conversations`-policyer, ingen SELECT for `anon`, og direkte `authenticated`-rettigheter kun på `conversations`. Security Advisor viser WARN om deaktivert leaked-password protection og ni INFO om policyfrie serverstyrte tabeller. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md`. Ingen persondata er lest eller databaseendringer utført.
+
 # 4. Fase 1 – Teknisk fundament
 
 ## Mål

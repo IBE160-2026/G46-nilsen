@@ -1,7 +1,7 @@
 # Testbevis og kravdekning – kontrollregister 18.11.2026
 
 **Grunnlag:** `main` commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026.  
-**Status:** Foreløpig kontroll mot testkoden, dokumentasjonen og GitHub Actions – ingen ny `npm test`, live KI-evaluering eller integrasjonstest er kjørt i denne dokumentasjonsrunden.  
+**Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
 ## 1. Testnivåer – bruk riktig bevis
@@ -24,11 +24,11 @@
 | FR-04 | Oppfølging | S + E2E mangler | `app.js`, `server.js` | Kontekst i samme sak og reset mellom saker |
 | FR-05 | Simulator | S/D + historisk L | `tests/test-simulation.js`, `tests/test-simulation-ai.js` | Rolle, kontekst, ubegrunnet diagnose/motiv |
 | FR-06 | Personvern | D + API-integrasjon gjenstår | `tests/test-privacy.js`, `tests/test-server-privacy.cjs` | Blokkering på server ved direkte API-anrop |
-| FR-07 | Innlogging | Kode og schema; I mangler | `server.js`, `database/` | Inn/utlogging og ugyldig sesjon |
+| FR-07 | Innlogging | Uinnlogget HTTP-grense bestått; innlogget I mangler | `server.js`, `database/` | Inn/utlogging og ugyldig sesjon |
 | FR-08 | Invitasjon | Kode; I mangler | `scripts/create-invite.js`, `server.js` | Utløpt/gjenbrukt token |
-| FR-09 | Historikk | S + I mangler | `tests/test-history-hotfix.cjs`, `database/` | Kryssbruker-ID, RLS, slett/refresh |
+| FR-09 | Historikk | Uinnlogget HTTP-grense bestått, demo lagre/slett bestått; innlogget I mangler | `tests/test-history-hotfix.cjs`, `database/` | Kryssbruker-ID, RLS, slett/refresh |
 | FR-10 | Rapportering | Kode; I mangler | `app.js`, `server.js` | Lagring/brukerbeskjed/tilgang |
-| FR-11 | Roller | Kode og schema; I mangler | `server.js`, `database/` | User/editor/admin over API og RLS |
+| FR-11 | Roller | Uinnlogget admin avvist; rollebytte med reelle konti mangler | `server.js`, `database/` | User/editor/admin over API og RLS |
 | FR-12 | Admin | Kode; I mangler | `app.js`, `server.js` | Uautorisert endring, persistens |
 | FR-13 | Modellvalg | Kode; I mangler | `server.js` | Tillatte provider/modeller og feilhåndtering |
 | FR-14 | Benchmark | D / fler-modell L mangler | `tests/test-benchmark-taxonomy.cjs`, `tests/test-model-compare.js` | Reell sammenligningsrapport for minst to modeller |
@@ -48,7 +48,7 @@
 | AI-04 | Juridisk/HR-usikkerhet | D + historisk L/M | `tests/test-source-policy.cjs`, `tests/AI-GOLDEN-CASES.json` | Kildeautoritet, tariff og avgrensning |
 | AI-05 | Kontekstisolasjon | Kode; E2E mangler | `app.js`, `server.js` | Reset og flerbrukertilgang |
 | AI-06 | Provideruavhengighet | Prototype; I mangler | `server.js`, `tests/test-model-compare.js` | Responskontrakt ved providerskifte |
-| NFR-01 | Sikkerhet | D enkelte regler; I mangler | `tests/test-server-privacy.cjs`, `server.js`, `database/` | RLS/IDOR, rate limit, cookies, headere |
+| NFR-01 | Sikkerhet | HTTP-grense og live RLS-metadata verifisert; konto-I mangler | `tests/test-server-privacy.cjs`, `server.js`, `database/` | RLS/IDOR, rate limit, cookies, headere |
 | NFR-02 | Personvern | D + I utvides | `tests/test-privacy-surfaces.cjs`, `tests/test-server-privacy.cjs` | Oppfølging, sletting, retensjon |
 | NFR-03 | Brukervennlighet | S + historisk M | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
 | NFR-04 | Feilhåndtering | Kode; negativ I mangler | `server.js`, `app.js` | Timeout, JSON-feil, nettutfall, DB feil |
@@ -65,6 +65,10 @@
 - Siste Quality Gate på `main`, run `43205812288` 12.11, **feilet** i `tests/test-repo-structure.cjs` på mappen `.docs`. Etterfølgende `npm audit` og strict golden-oppsummering ble **hoppet over**. Forrige run `43202363894` var grønn, men gjelder en eldre commit.
 
 **Revisjonsgren-CI 18.11.2026:** [GitHub Actions 44336281200](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44336281200), commit `d9234879e848219f7ea0b1fe87bf3bced9572615`, **SUCCESS** – `npm ci`, alle 31 `npm test`-delsteg, produksjonsdependency-audit (**0 sårbarheter**) og oppsummering av 66 golden-caser (40 strenge: 28 sektor, 8 tariff, 4 kildelekkasje). Dette er ikke en ny live KI-test eller E2E-/RLS-godkjenning, og `main` er fortsatt uendret.
+
+**Utvidet revisjonsgren-CI 18.11.2026:** [GitHub Actions 44338528651](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44338528651), commit `206925b5a4d8e222c8811677d045859539f98447`, **SUCCESS** med 32 deltester, `npm audit` (0 sårbarheter), golden-oversikt (66/40), ekte HTTP-avvisningstest for uinnloggede API-kall og utvidet deterministisk demoflyt. Denne kjøringen tester **ikke** to innloggede brukere, RLS i live request-kontekst, faglige live KI-råd, fysisk mobil eller utskrift.
+
+**Read-only Supabase-sikkerhetskontroll 18.11.2026:** Live databasedefinisjoner viser RLS på alle 10 `public`-tabeller, fire eierskapsbaserte `conversations`-policyer, ingen SELECT for `anon`, og direkte `authenticated`-rettigheter kun på `conversations`. Security Advisor viser WARN om deaktivert leaked-password protection og ni INFO om policyfrie serverstyrte tabeller. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md`. Ingen persondata er lest eller databaseendringer utført.
 
 ## 4. Viktigste åpne kvalitetsrisikoer
 

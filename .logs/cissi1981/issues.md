@@ -14,11 +14,16 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 - [x] Statisk kontrollert at 36 kravoverskrifter er unike, alle 36 refereres i tre oppfølgingsdokumenter, og 31 lokale testkommandoer i `package.json` finnes. Dette er **ikke** `npm test`.
 - [x] Rettet lenker slik at LIVE-spesifikasjonen peker til **pilotgrenen** og ikke en manglende fil i main-grunnlaget.
 
+- [x] Live Supabase-metadatasjekk uten persondata/endringer: 10/10 RLS; 4 `conversations`-policyer; ingen anon SELECT; auth-tabelltilgang kun `conversations`.
+- [x] HTTP-autorisasjonsgrense i faktisk Express-server bestått: 22 uinnloggede kall, 3 ugyldige Origin, 5 interne stier; utvidet deterministisk sensor-demo.
+- [x] Ny Quality Gate 18.11, run `44338528651`, **SUCCESS** med 32 deltester og audit 0 sårbarheter.
+
 ## Åpne oppgaver før sluttgodkjenning
 
 - [x] **Revisjonsgren Quality Gate utført 18.11:** run `44336281200` SUCCESS på `d9234879...`, 31 deltester + npm audit 0 sårbarheter + golden-opptelling 66/40.
 - [ ] **Før eventuell merge:** fjern den midlertidige ekstra branch-triggeren fra `.github/workflows/quality-gate.yml`, vurder andre dokumentasjonsendringer og kjør Quality Gate på endelig målcommit. `main` er fortsatt uendret og siste run der feilet.
-- [ ] **P0:** Test tilgang/RLS, historikk og admin med to fiktive kontoer, både normal og uautorisert API-/databaseadgang, uten ekte persondata.
+- [ ] **P0:** Fullfør innlogget E2E (HTTP uten sesjon er testet, live RLS-policyer er lest): test tilgang/RLS, historikk og admin med to fiktive kontoer, både normal og uautorisert API-/databaseadgang, uten ekte persondata.
+- [ ] **P0:** Vurder å aktivere Supabases leaked-password protection før bredere bruk; nåværende advisory WARN dokumentert, ikke endret.
 - [ ] **P1:** Test API-/provider-timeout, uventet/ugyldig KI-svar, nettverkstap og databasefeil. Dokumenter faktiske brukermeldinger og personverngrenser.
 - [ ] **P1:** Kontroller 36 akseptanser mot reell kode/atferd og status – ikke anta at tekstassert eller krav-ID er et E2E-bevis. Marker og prioriter eventuelle hull.
 - [ ] **P1:** Kjør faktisk brukerreise på desktop og fysisk mobil, inkl. PWA, personvern, oppfølgingsflyt, utskrift med hovedråd + videre råd og sensorens demomodus.

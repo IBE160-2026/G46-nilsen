@@ -16,7 +16,10 @@ Hele prosjektet kontrolleres på separat dokumentasjonsgren med `main` som kontr
 - [x] Oppdatert implementeringsplan, KI-logg, testplan, refleksjonsutkast og README på egen dokumentasjonsgren
 - [x] Identifisert siste main-CI 12.11 som feilet på `.docs`; smal dokumentasjonsgrenrettelse er skrevet
 - [x] Kontrollert statisk 36 unike PRD-overskrifter, plassering av FR-15A/FR-19–23/NFR-QA-01 og 36/36 ID-referanser, samt 31 eksisterende testskript og eksplisitt allowlist for lærerens eneste `.docs`-fil
-- [ ] **Kjør faktisk full ny npm/CI-test, audit og eventuelle E2E-tester på endelig commit** før påstand om grønn gate
+- [x] Full `npm ci`, 32 `npm test`-delsteg og dependency-audit bestått på revisjonsgren 18.11 (run `44338528651`, 0 sikkerhetsfunn i npm audit)
+- [x] Faktisk uinnlogget HTTP-smoke i `server.js` og deterministisk endepunkt-test i sensor-demo
+- [x] Supabase metadata/security-advisor kontrollert read-only (10/10 RLS, 4 eierskapspolicyer, tabellrettigheter)
+- [ ] Endelig CI etter eventuelle flere endringer, samt autentisert E2E/RLS og manuell UX før påstand om full produkttest
 - [ ] Kontroller konkrete API/RLS-/feilscenarier og print-preview/fysisk mobil; statiske tester er ikke tilstrekkelig bevis
 - [ ] Gjør en menneskelig sluttgjennomgang av nye akseptansekriterier og dokumentkonsistens
 - [ ] Sluttrediger refleksjonsrapport mot ord-/innleveringskrav i Canvas
