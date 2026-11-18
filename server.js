@@ -1689,7 +1689,8 @@ Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
 
 
 app.get("/api/status", requireUser, async (_req, res) => {
-  res.json({ aiConfigured: Boolean(client), model: client ? await getActiveModel() : null });
+  const aiConfigured = hasAnyAiClient();
+  res.json({ aiConfigured, model: aiConfigured ? await getActiveModel() : null });
 });
 
 app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
