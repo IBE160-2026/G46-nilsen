@@ -3,7 +3,7 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Revidert Implementation Plan  
 **Rammeverk:** BMAD  
-**Status:** Revidert plan og status per 29.10.2026 – produksjonsversjon 20.11.0  
+**Status:** Historisk utviklingsplan med fasebeskrivelser fra 29.10.2026; supplert med faktisk revisjonsstatus 18.11.2026  
 **Språk:** Norsk
 
 ---
@@ -107,6 +107,31 @@ Større endringer dokumenteres gjennom:
 - Git-historikken
 
 ---
+
+## 3.1 Gjeldende planstatus og gjennomføringslogikk (18.11.2026)
+
+Fasekapitlene nedenfor inneholder **historisk** status per 26.–29.10. De er ikke etterjustert for å late som hele planen var klar før prototypen. Dette prosjektet har vært iterativt: tidlig prototype → BMAD-formalisering → brukertesting → revisjon av krav/arkitektur → strengere regresjoner og kildekrav. Gjeldende krav er i `docs/bmad/PRD.md`, teknisk kobling er i `docs/bmad/ARCHITECTURE-BMAD.md`, og full krav-til-story-sporing er i `docs/bmad/EPICS-AND-STORIES-BMAD.md` § 25.3.
+
+### Fra epics/stories til faktisk arbeid (sprintprinsipp)
+
+Forelesningen 12.11 vektlegger at hver story skal være **avgrenset, med etterprøvbar akseptanse**, og at avhengigheter avgjør hvilken rekkefølge som er mulig. Vi har ikke dokumentert at utviklingen ble gjennomført som 179 ferdig planlagte stories, eller at subagenter/parallelle worktrees faktisk implementerte hver enkelt story. Å hevde dette ville vært etterrasjonalisering. Det vi kan dokumentere er iterasjoner og avgrensede arbeidsrunder i Git og KI-loggen.
+
+**Arbeidsplan for den pågående kvalitetssikringsrunden – ikke en retrospektiv påstand om tidligere sprinter:**
+
+| Rekkefølge | Oppgave | Krav og avhengighet | Kontroll før «ferdig» |
+|---|---|---|---|
+| S1 | Kontroller siste main-CI og løse falske strukturalarmer | NFR-05, NFR-QA-01; blokkerer grønn sluttstatus | Full ny quality gate inkl. audit, datert run-ID og commit |
+| S2 | Gjør PRD observerbar og scope entydig | FR/AI/NFR; grunnlag for S3–S5 | Stabil krav-ID, akseptanse, v1-kjerne og videre arbeid |
+| S3 | Koble tekniske valg til krav | AD-01–10 i Architecture; bygger på S2 | For hvert krav: komponent, tillitsgrense, feilmodus og status |
+| S4 | Oppdater stories og avhengigheter | Bygger på S2–S3 | Story, akseptanse, faktisk status og kontrollmetode |
+| S5 | Verifiser riktig testnivå for hvert krav | Bygger på S3–S4 | Static/deterministic/integrasjon/live/manuell skilles, åpne risikoer registreres |
+| S6 | Rediger refleksjon og sensorsti | Bygger på dokumentert S1–S5 | Pensumkobling, egen KI-styring, kilder, begrensninger, reproduserbar demo |
+
+**Kjente avhengigheter i produktet:** Auth/RLS, personvern og respons-/kildekontrakt er felles sikkerhetsmekanismer og kan ikke isoleres helt i hver vertikale slice. Endringer i `server.js`, `app.js` eller felles CSS kan påvirke flere funksjoner. Å beskrive Samtalestøtte som fullt oppdelt i uavhengige vertikale slices eller microservices ville være teknisk feil; det er et monorepo med enkelte gjenbrukbare moduler og felles funksjonelle avhengigheter. Denne tradeoffen forklarer hvorfor vi må ha bred regresjonstesting.
+
+**Siste faktisk verifiserte CI-status:** `main` 12.11.2026 (commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`), run `43205812288`, **feilet** på `.docs` i strukturtesten og hoppet over etterfølgende dependency audit. En spesifikk testrettelse ligger kun på dokumentasjonsgrenen og er ikke verifisert i ny CI. Historiske grønne run-ID-er er bevart som historikk i `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`.
+
+**LIVE/tale:** egen `pilot-ux-v20.11` og separat Render-pilot; ikke `main`, ikke ferdig testet og ikke godkjent for produksjon. FR-23 i PRD omhandler alternativ direkte inngang uten full temameny og må **ikke** blandes sammen med eksperimentet for taletranskripsjon.
 
 # 4. Fase 1 – Teknisk fundament
 
