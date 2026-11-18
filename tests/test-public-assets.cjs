@@ -66,6 +66,7 @@ async function waitForServer() {
       "/styles-overrides.css",
       "/src/client-data.js",
       "/src/client/guidance-fallback.js",
+      "/src/client/topic-search.js",
       "/src/privacy-name-data.js",
       "/src/privacy-detector.js",
       "/assets/images/logo.png",

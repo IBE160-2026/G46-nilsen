@@ -92,6 +92,8 @@ if (!process.exitCode) console.log("Kontakt-versjon: OK");
 const privacyNamePos = html.indexOf('src/privacy-name-data.js?v=');
 const privacyDetectorPos = html.indexOf('src/privacy-detector.js?v=');
 const clientDataPos = html.indexOf('src/client-data.js?v=');
+const topicSearchPos = html.indexOf('src/client/topic-search.js?v=');
+assert(topicSearchPos > clientDataPos && topicSearchPos < html.indexOf('app.js?v='), 'Temasøkmodul må lastes før app.js');
 const appScriptPos = html.indexOf('app.js?v=');
 assert(
   privacyNamePos >= 0 &&
