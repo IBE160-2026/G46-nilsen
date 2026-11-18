@@ -151,7 +151,9 @@ async function capture(cdp,baseUrl,width,theme,state,view) {
     const right=await capture(cdp,"http://127.0.0.1:"+PORT_B+"/",width,theme,state,page);
     const keys=new Set([...Object.keys(left.result),...Object.keys(right.result)]);
     for(const key of keys){
-      const l=JSON.stringify(left.result[key]),r=JSON.stringify(right.result[key]);
+      // Computed background-image URLs contain the local demo port, not a CSS difference.
+      const canonical = obj => JSON.stringify(obj).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
+      const l=canonical(left.result[key]),r=canonical(right.result[key]);
       if(l!==r){diff.push({case:[width,theme,state,page],node:key,before:left.result[key],after:right.result[key]});if(diff.length>=12)break;}
     }
     if(diff.length>=12)break;
