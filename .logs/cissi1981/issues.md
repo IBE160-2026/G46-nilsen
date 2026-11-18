@@ -1,15 +1,30 @@
 # Åpne punkter – IBE160 Samtalestøtte
 
-Oppdatert 18.11.2026. Dette er en aktiv arbeidsliste, ikke en påstand om at punktene er ferdig.
+Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnlag; dokumentasjonsrevisjon i `docs/ibe160-helhetlig-revisjon-20261118`. LIVE er bare pilot.
 
-- [ ] P0: Verifiser full Quality Gate på endelig branch/commit. Siste `main`-CI 12.11 feilet på .docs; smal testrettelse ligger bare i dokumentasjonsgrenen. `npm audit` ble hoppet over i feilet run.
-- [ ] P0: Bearbeid kanonisk `docs/bmad/PRD.md` mot faglærers formative tilbakemelding 12.11: målbare akseptanser, stabil ID-struktur, v1-kjerne/utvidelser, brukerreiser, glossar, mål og motmål.
-- [ ] P1: Verifiser 34 kanoniske krav (og FR-15A/NFR-QA-01/krav uten ID) mot faktisk kode, observerbare tester, status, commit og miljø. Bruk `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`.
-- [ ] P1: Koble PRD-krav eksplisitt til Architecture (mangler eksakte ID-er) og til alle Epics/stories; vurder avhengigheter, integrasjon og NFR-feilmodi.
-- [ ] P1: Kontroller sikkerhet/RLS/autentisering, feil ved API-timeout, kildevalg, negativ fasit, og skill strukturelle tester fra runtime/live-/manuelle tester.
-- [ ] P1: Legg fram samlet, datert testbevisregister uten å kalle historisk 40/40 live-golden et nytt resultat.
-- [ ] P1: Oppdater implementeringsplan og versjonsstatus uten å tilsløre at prototypen kom før fullt BMAD-arbeid.
-- [ ] P1: Rediger refleksjonsrapporten mot pensum og faktisk KI-/Git-prosess, kontroller ordkrav og endelige leveringskrav i Canvas.
-- [ ] P1: Verifiser sentrale brukerreiser på desktop/mobil og sensorsti, inkludert demomodus, personvern, utskrift og PWA.
-- [ ] P1: Hold LIVE/transkripsjon og tale i separat pilot. Ingen produksjonsmerge eller ferdigstatus uten egne akseptansetester og uttrykkelig beslutning.
-- [ ] P2: Avklar hvilke sesjonslogger som faktisk finnes lokalt, og hva som ble rekonstruert fra Git/chat. Ikke etterkonstruer historie.
+## Utført i dokumentasjonsrunden (ikke det samme som full produkttest)
+
+- [x] Konsolidert `docs/bmad/PRD.md` etter faglærertilbakemelding 12.11: FR-15A, FR-19–23 og NFR-QA-01 i hovedkrav, 36 krav med observerbare akseptanser, tydelig MVP, brukerreiser, mål, motmål og begreper.
+- [x] Flyttet datert test-/statushistorikk uten sletting til `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`.
+- [x] Knyttet 36/36 eksakte krav-ID-er til Architecture (AD-01–10), Epics/Stories (§ 25.3) og testbevisregister. Dette er **sporbarhet**, ikke bestått testdekning.
+- [x] Dokumentert logiske avhengigheter med redigerbart diagram; avgrenset mot faktisk maskinelt uttrekk og påstått microservice-/subagentbruk.
+- [x] Opprettet `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` for statisk, deterministisk, integrasjon, live og manuell evidens.
+- [x] Oppdatert implementeringsplan, refleksjonsutkast, KI-logg, AI-TESTPLAN og README med faglig teori, Git-historie, dokumentkilder og reell CI-status.
+- [x] Kontrollerte GitHub Actions-logg: siste `main`-CI 12.11 feilet på lærerens fil i `.docs`; korrigerte strukturtesten snevert på **dokumentasjonsgrenen**.
+- [x] Statisk kontrollert at 36 kravoverskrifter er unike, alle 36 refereres i tre oppfølgingsdokumenter, og 31 lokale testkommandoer i `package.json` finnes. Dette er **ikke** `npm test`.
+- [x] Rettet lenker slik at LIVE-spesifikasjonen peker til **pilotgrenen** og ikke en manglende fil i main-grunnlaget.
+
+## Åpne oppgaver før sluttgodkjenning
+
+- [ ] **P0:** Kjør faktisk full Quality Gate (inkl. `npm ci`, deterministisk `npm test`, `npm audit --omit=dev --audit-level=high` og golden-dekning) på identifisert endelig commit. Siste `main`-CI var ikke grønn. Dokumentasjonsgrenen har ingen ny verifisert full CI-kjøring.
+- [ ] **P0:** Test tilgang/RLS, historikk og admin med to fiktive kontoer, både normal og uautorisert API-/databaseadgang, uten ekte persondata.
+- [ ] **P1:** Test API-/provider-timeout, uventet/ugyldig KI-svar, nettverkstap og databasefeil. Dokumenter faktiske brukermeldinger og personverngrenser.
+- [ ] **P1:** Kontroller 36 akseptanser mot reell kode/atferd og status – ikke anta at tekstassert eller krav-ID er et E2E-bevis. Marker og prioriter eventuelle hull.
+- [ ] **P1:** Kjør faktisk brukerreise på desktop og fysisk mobil, inkl. PWA, personvern, oppfølgingsflyt, utskrift med hovedråd + videre råd og sensorens demomodus.
+- [ ] **P1:** Gjør en kritisk menneskelig sluttgjennomgang av nye formuleringer, tekniske spor og risikopåstander i PRD/arkitektur/stories. Ingen uavhengig ekspertvalidering er dokumentert.
+- [ ] **P1:** Sluttrediger refleksjonsrapporten – nå ca. 9 000 whitespace-ord – mot reell ord-/formgrense og innleveringskrav i Canvas. Konsolider kronologiske tillegg uten tap av læring.
+- [ ] **P1:** Behold LIVE/tale og alternativ direkte inngang (FR-23) som **to ulike, ikke-produksjonssatte** hypoteser. Krev egne personvern-, norsk-dialekt-, kommando- og brukerprøver før noen produksjonsbeslutning.
+- [ ] **P2:** Verifiser hvilke sesjonslogger som fantes lokalt fra før; AI-loggen er delvis rekonstruert og skal ikke omtales som ordrett/historisk komplett.
+- [ ] **P2:** Ny kvalitetskjøring mot faktisk kildeoppdatering/yrkeregler og faglig review ved senere leveranse-/modellendringer.
+
+Se `docs/REVISJON-IBE160-2026-11-18.md` og `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` for bevis og metode.
