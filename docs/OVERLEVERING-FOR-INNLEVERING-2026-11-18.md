@@ -6,6 +6,8 @@
 **Produksjon:** `main`, uendret ved denne kontrollen. **Ingen Render-deploy.**  
 **Separat eksperiment:** `pilot-ux-v20.11` med LIVE/tale; ikke til produksjon.
 
+**Siste kildekontroll – 18.11.2026:** [Revisjon av CSS, app.js og server.js](TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md) viser dagens tall og testbevis: 694 `!important` (fra 845), 14 ordnede CSS-deler, 4 329 linjer i app.js, 2 001 i server.js, fem nye ansvarsskilt moduler og grønn Quality Gate med 41 deltester og 90 Chrome-sammenligninger ([run 44364859955](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44364859955)). Merk at **manuell mobil/print og full refaktorering fortsatt gjenstår**. Historiske tabeller nedenfor kan vise eldre milepæler.
+
 ## Beslutning i dag
 
 **KLAR FOR FAGLIG GJENNOMGANG / IKKE GODKJENT FOR MERGE ELLER PRODUKSJON.**

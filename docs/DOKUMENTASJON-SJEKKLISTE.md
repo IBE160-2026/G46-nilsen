@@ -48,6 +48,11 @@ Dette er en datert revisjonsmilepæl, ikke en sluttrapport eller godkjenningsatt
 - [x] Oppdatert server, PWA og tester for nye CSS-ressurser. Modul-SHA-verifikasjon og 36-testers Quality Gate bestått, run `44356425430`.
 - [ ] Visuell CSS-regresjon på desktop/mobil/tema/kildebank/simulator/print gjenstår fortsatt.
 
+- [x] CSS: 845 → 694 `!important`, 14 funksjonsnavngitte ordnede delmoduler, 90 Chrome-paritetskontroller bestått mot tidligere fungerende commit.
+- [x] app.js/server.js: fem separat testbare ansvar trukket ut til `src/client/` og `src/server/`, app.js 4 632 → 4 329 linjer og server.js 2 100 → 2 001.
+- [x] 41 deterministiske deltester, Chrome-paritet og audit bestått i GitHub Actions `44364859955` på siste funksjonscommit. Spor: `docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md`.
+- [ ] Manuell kvalitetskontroll på faktisk mobil/utskrift, reell tobruker-RLS og faglig menneskelig review av sammenslåing gjenstår.
+
 ## Arbeidsregel
 
 Ved større endringer skal minst disse fire spørsmålene vurderes:

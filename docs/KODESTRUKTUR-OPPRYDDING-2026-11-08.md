@@ -1,5 +1,7 @@
 # Kodestruktur og opprydding – 08.11.2026
 
+**Dette er historisk status 8. november.** Ny rapport: [Teknisk CSS/app/server-revisjon 18. november](TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md). Dokumentasjonen nedenfor er ikke endret retroaktivt.
+
 ## Status
 
 Repoet ble gjennomgått med fokus på filstørrelse, ansvar og regresjonsrisiko.

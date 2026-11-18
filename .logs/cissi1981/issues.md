@@ -34,6 +34,10 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 - [x] Kraftigere CSS-opprydding: 75 fullt overstyrte regler + 265 enkeltdeklarasjoner fjernet; 845 → 711 `!important`, core delt fra ~6 000 linjer til fire moduler; 36 tester grønne, run `44356425430`.
 - [ ] Full visuell CSS-regresjon i nettleser, særlig mobil, kildebankpiler, logo/tema, minimert meny og utskrift. Ikke erklært ferdig bare ut fra statisk kaskade eller GitHub Actions.
 
+- [x] app.js/server.js: fem selvstendige moduler fra store hovedfiler (temasøk, lokal forståelse, reserveveiledning, historikk og kildenormalisering), 41 testdelsteg og 90 Chrome-scenarier bestått i `44364859955`.
+- [x] CSS: fra 845 til 694 `!important` uten påvist forskjell i Chrome-paritetstesten; ny budsjettgrense hindrer økende overstyringsgjeld.
+- [ ] Ytterligere logisk oppdeling av de gjenværende 4 329/2 001 linjene i app.js/server.js, men bare med begrenset risiko og tydelig PR-review.
+
 ## Åpne oppgaver før sluttgodkjenning
 
 - [x] **Revisjonsgren Quality Gate utført 18.11:** run `44336281200` SUCCESS på `d9234879...`, 31 deltester + npm audit 0 sårbarheter + golden-opptelling 66/40.

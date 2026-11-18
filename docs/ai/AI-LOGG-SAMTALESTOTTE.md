@@ -1551,3 +1551,18 @@ Etter forespørsel om kraftigere rydding ble det gjort to flere konservative pas
 Som et separat strukturtiltak ble `styles-core.css` på rundt 6 000 linjer **delt byteidentisk** i `styles-core-foundation.css`, `styles-core-dialogue.css`, `styles-core-simulation.css` og `styles-core-utilities.css`. CSS-ressurslisten i server, demo og PWA ble utvidet. Noen eksisterende tester leste bare gamle CSS-filer og ble oppdatert; CSS-auditen måtte skille root- og underimporter. En ny test, `tests/test-css-module-order.cjs`, kontrollerer at de fire modulfilene sammen har eksakt samme Git blob-SHA som den gamle core-filen på commit `3676885e`.
 
 **Bevis:** Full PR Quality Gate `44356425430` **SUCCESS**, 36 deltester og CSS-audit. Oppdatert `docs/CSS-REVISJON-2026-11-18.md`. **Åpent:** ingen faktisk browser-, mobil-, print- eller skjermbildebasert før-/etter-kontroll; ingen merge eller deploy. Denne begrensningen skal ikke skjules i refleksjonsrapporten.
+
+
+---
+
+## 18.11.2026 – Revisjon av CSS, app- og serverfilene etter faglærers kritikk
+
+Brukeren ba om at CSS-arbeidet skulle videreføres direkte til appens øvrige styling og de store filene som faglærer kommenterte i Product Brief 26. oktober, uten en ny detaljinstruks for hvert lite steg. Krav: ikke endre `main`, Render-produksjon eller separat LIVE-pilot.
+
+**CSS-endringer:** Antall `!important` ble ytterligere redusert fra 711 til 694. De tidligere fire store kjernedelene ble delt i 14 mindre, ordnede funksjonsnavngitte filer, med original byte-/importrekkefølge bevart. En ny faktisk Chrome/CDP-sammenligning med to lokale sensordemo-servere og en fast grønn referansecommit ble lagt inn i CI. Den første testen feilet fordi Github Actions hadde et shallow checkout som ikke inneholdt referansecommiten; det ble rettet til `fetch-depth: 0`. Neste feilet fordi interne bilde-URL-er hadde forskjellige lokale porter (`32970` og `32971`) – ikke en faktisk layoutendring. Normalisering av lokalportene ga grønn Chrome-paritet i 90 scenarier.
+
+**Modularisering:** `app.js` 4 632 → 4 329 og `server.js` 2 100 → 2 001 linjer. Tre rene klienthjelpere (`guidance-fallback.js`, `topic-search.js`, `situation-analysis.js`) og to rene serverhjelpere (`history-contracts.js`, `source-normalization.js`) er opprettet med egne, deterministiske tester. Serverens public assets, lokal demomodus, PWA-cache og klientens skript-rekkefølge ble oppdatert. Eldre simulator-test lette feilaktig etter historikkkode i `server.js` fremfor i den nye historieservermodulen; dette ble oppdaget av en rød CI og rettet i testens kildekontroll, uten å endre API-kontrakten.
+
+**Bevis:** [GitHub Actions #44364859955](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44364859955) grønn på funksjonscommit `5ba80c6f6` med 41 deltester, 90 Chrome-paritets-scenarier og audit uten funn på valgt nivå. Full rapport: `docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md`.
+
+**Begrensning:** Funksjonell modulering er påbegynt, ikke ferdig. Hovedfilene er store. 694 `!important` er fortsatt betydelig, Chrome-paritet tester ikke alle interaktive tilstander/print, og verken to reelle Supabase Auth-kontoer, produksjon eller LIVE-pilot ble berørt. Ingen selvstendig Claude-gjennomgang er gjennomført.
