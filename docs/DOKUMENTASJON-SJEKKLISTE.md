@@ -25,6 +25,8 @@ Hele prosjektet kontrolleres på separat dokumentasjonsgren med `main` som kontr
 - [ ] Sluttrediger refleksjonsrapport mot ord-/innleveringskrav i Canvas
 - [ ] Eventuell produksjonsmerge: **ikke utført**, og LIVE/tale skal fortsatt ikke inn i produksjon uten eget vedtak
 
+- [x] Reprodusert og rettet faktisk providerstatus-feil for OpenRouter-only (rød CI `44339406194`, grønn CI `44339569597`), alle 33 tester bestått på fix-commit
+
 Dette er en datert revisjonsmilepæl, ikke en sluttrapport eller godkjenningsattest. Se `docs/REVISJON-IBE160-2026-11-18.md` og `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md`.
 
 ## Arbeidsregel

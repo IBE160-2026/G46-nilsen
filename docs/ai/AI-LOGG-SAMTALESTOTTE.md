@@ -1500,3 +1500,10 @@ Full sporbar rapport:
 Oppdrag fra prosjekteieren var å fortsette med kvalitetskontroll av hele prosjektet, ikke bare skrive mer dokumentasjon. KI gjennomgikk `server.js`, Auth-/historikkendepunkter, Supabase-migrasjoner og eksisterende testkode. Et nytt isolert `tests/test-api-boundary-http.cjs` ble laget for faktisk Express-server uten eksterne nøkler eller persondata; `test-sensor-demo.cjs` ble utvidet med videre samtale, refleksjon, eksport, sletting og negative caser. Testene ble kjørt i revisjonsgrenens GitHub Actions 18.11, run `44338528651` med SUCCESS og `npm audit` 0 sårbarheter.
 
 Supabase ble kun lest via metadata og Security Advisor, **uten brukerdata eller prod-endringer**. Resultat: 10 av 10 `public`-tabeller har RLS, samtaleloggen har fire eierskapsbegrensede policies, og ni serverstyrte tabeller mangler direkte brukertilganger. Advisor ga WARN om deaktivert leaked-password protection; dette er dokumentert for beslutning senere. Det er **ikke** en påstand om faktisk innlogget bruker-til-bruker-test eller at feilscenarier med live KI er gjennomført. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md` og `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md`.
+
+
+---
+
+## 18.11.2026 – Rød/grønn providerstatus-regresjon
+
+KI analyserte serverens modellvelger og fant at statusendepunktet bare sjekket OpenAI-klienten, selv om `hasAnyAiClient()` også omfatter OpenRouter. Før kodeendring ble en faktisk HTTP-regresjonstest lagt til med lokale dummy-nøkler. CI `44339406194` feilet på forventet `OpenRouter-only skal regnes som KI-konfigurert`. Deretter ble kun `/api/status` endret til å bruke felles providerkontroll. CI `44339569597` var grønn med 33 deltester og audit uten sårbarheter. Dette er test av statuskontrakt, ikke av ekte provider eller KI-råd. Dokumentasjon: `docs/ai/REGRESJON-OPENROUTER-2026-11-18.md`. Produksjonskoden i `main` og LIVE-piloten er urørt.

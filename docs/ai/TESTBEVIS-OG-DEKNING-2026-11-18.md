@@ -30,7 +30,7 @@
 | FR-10 | Rapportering | Kode; I mangler | `app.js`, `server.js` | Lagring/brukerbeskjed/tilgang |
 | FR-11 | Roller | Uinnlogget admin avvist; rollebytte med reelle konti mangler | `server.js`, `database/` | User/editor/admin over API og RLS |
 | FR-12 | Admin | Kode; I mangler | `app.js`, `server.js` | Uautorisert endring, persistens |
-| FR-13 | Modellvalg | Kode; I mangler | `server.js` | Tillatte provider/modeller og feilhåndtering |
+| FR-13 | Modellvalg | **TDD-HTTP statuskontrakt bestått**, reell provider I gjenstår | `server.js` | Tillatte provider/modeller og feilhåndtering |
 | FR-14 | Benchmark | D / fler-modell L mangler | `tests/test-benchmark-taxonomy.cjs`, `tests/test-model-compare.js` | Reell sammenligningsrapport for minst to modeller |
 | FR-15 | Automatisert KI-test | D + historisk L | `tests/test-golden-schema.cjs`, `tests/test-ai-golden.js` | 66 caser, eval-resultat/commit, manuell fasit |
 | FR-15A | Negativ kildefasit | D + historisk L | `tests/test-golden-occupation-routing.cjs`, `tests/test-ai-golden.js` | Forbudte kilder regnes som kritiske |
@@ -47,7 +47,7 @@
 | AI-03 | Skyld/motiv | D/S + historisk L | `tests/test-guidance-quality.cjs`, `tests/AI-GOLDEN-CASES.json` | Skyld, motiv og tolkning |
 | AI-04 | Juridisk/HR-usikkerhet | D + historisk L/M | `tests/test-source-policy.cjs`, `tests/AI-GOLDEN-CASES.json` | Kildeautoritet, tariff og avgrensning |
 | AI-05 | Kontekstisolasjon | Kode; E2E mangler | `app.js`, `server.js` | Reset og flerbrukertilgang |
-| AI-06 | Provideruavhengighet | Prototype; I mangler | `server.js`, `tests/test-model-compare.js` | Responskontrakt ved providerskifte |
+| AI-06 | Provideruavhengighet | **OpenRouter-only statusverifikasjon bestått**, full provider-I gjenstår | `server.js`, `tests/test-model-compare.js` | Responskontrakt ved providerskifte |
 | NFR-01 | Sikkerhet | HTTP-grense og live RLS-metadata verifisert; konto-I mangler | `tests/test-server-privacy.cjs`, `server.js`, `database/` | RLS/IDOR, rate limit, cookies, headere |
 | NFR-02 | Personvern | D + I utvides | `tests/test-privacy-surfaces.cjs`, `tests/test-server-privacy.cjs` | Oppfølging, sletting, retensjon |
 | NFR-03 | Brukervennlighet | S + historisk M | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
@@ -69,6 +69,8 @@
 **Utvidet revisjonsgren-CI 18.11.2026:** [GitHub Actions 44338528651](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44338528651), commit `206925b5a4d8e222c8811677d045859539f98447`, **SUCCESS** med 32 deltester, `npm audit` (0 sårbarheter), golden-oversikt (66/40), ekte HTTP-avvisningstest for uinnloggede API-kall og utvidet deterministisk demoflyt. Denne kjøringen tester **ikke** to innloggede brukere, RLS i live request-kontekst, faglige live KI-råd, fysisk mobil eller utskrift.
 
 **Read-only Supabase-sikkerhetskontroll 18.11.2026:** Live databasedefinisjoner viser RLS på alle 10 `public`-tabeller, fire eierskapsbaserte `conversations`-policyer, ingen SELECT for `anon`, og direkte `authenticated`-rettigheter kun på `conversations`. Security Advisor viser WARN om deaktivert leaked-password protection og ni INFO om policyfrie serverstyrte tabeller. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md`. Ingen persondata er lest eller databaseendringer utført.
+
+**Ny regressjonskontroll 18.11.2026:** En ny HTTP-test beviste at `/api/status` ga feil status når bare OpenRouter var konfigurert: [rød CI 44339406194](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339406194). Minimal rettelse i `server.js` ble verifisert med [grønn CI 44339569597](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339569597), commit `561da3d4aaa5fc425e4ed991fa93c9ea6b6947ef`: **33 deterministiske deltester**, `npm audit` 0 sårbarheter. Se `docs/ai/REGRESJON-OPENROUTER-2026-11-18.md`. Testen bruker dummy-nøkler, ikke ekte KI eller DB; produksjonsgrenen er fortsatt uendret.
 
 ## 4. Viktigste åpne kvalitetsrisikoer
 

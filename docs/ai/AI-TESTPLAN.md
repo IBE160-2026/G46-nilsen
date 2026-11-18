@@ -51,6 +51,8 @@ Golden-banken er kontrollert direkte fra JSON i main og inneholder **66** caser,
 
 **Read-only Supabase-sikkerhetskontroll 18.11.2026:** Live databasedefinisjoner viser RLS på alle 10 `public`-tabeller, fire eierskapsbaserte `conversations`-policyer, ingen SELECT for `anon`, og direkte `authenticated`-rettigheter kun på `conversations`. Security Advisor viser WARN om deaktivert leaked-password protection og ni INFO om policyfrie serverstyrte tabeller. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md`. Ingen persondata er lest eller databaseendringer utført.
 
+**Ny regressjonskontroll 18.11.2026:** En ny HTTP-test beviste at `/api/status` ga feil status når bare OpenRouter var konfigurert: [rød CI 44339406194](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339406194). Minimal rettelse i `server.js` ble verifisert med [grønn CI 44339569597](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339569597), commit `561da3d4aaa5fc425e4ed991fa93c9ea6b6947ef`: **33 deterministiske deltester**, `npm audit` 0 sårbarheter. Se `docs/ai/REGRESJON-OPENROUTER-2026-11-18.md`. Testen bruker dummy-nøkler, ikke ekte KI eller DB; produksjonsgrenen er fortsatt uendret.
+
 # 2. Testprinsipp
 
 Samtalestøtte tester både:

@@ -321,6 +321,18 @@ Det er også viktig å skille **FR-23 (mulig direkte tekstbasert inngang uten te
 
 ---
 
+### 5.8 Testdrevet feilretting: OpenRouter-status som konkret etterprøvbart eksempel
+
+I den systematiske sikkerhets- og funksjonsgjennomgangen 18. november fant vi et smalt, men reelt avvik i serverens statusendepunkt. Koden kunne bruke enten OpenAI eller OpenRouter til å lage KI-svar, men `/api/status` sjekket bare om OpenAI-klienten fantes. Med kun OpenRouter konfigurert ville brukerflaten dermed kunne få beskjed om at KI ikke var konfigurert selv om en gyldig provider var tilgjengelig.
+
+I stedet for å rette koden og anta at alt var i orden, lot jeg KI lage en isolert HTTP-regresjonstest med fiktive lokale nøkler. Testen gikk **rødt** i GitHub Actions (run `44339406194`) på akkurat den forventede feilen. Deretter ble statusendepunktet endret til å bruke den felles `hasAnyAiClient()`-kontrollen som resten av KI-flyten allerede brukte. Hele testpakken gikk **grønt** i neste run (`44339569597`, 33 deltester; audit 0 sårbarheter).
+
+Dette illustrerer for meg forskjellen mellom å be KI om å «fikse noe» og å bruke etterprøvbar utviklingsmetodikk: Et presist krav om hvordan systemet skal oppføre seg gir en test som kan avdekke feil, og en så liten rettelse som mulig minsker risikoen for sideeffekter. Samtidig viser det en begrensning: Testen bruker en dummy-provider og beviser statuskontrakten, ikke faktisk modelltilgjengelighet eller korrekt KI-innhold. Jeg kan heller ikke bruke dette som bevis på bruker-til-bruker-sikkerhet i Supabase.
+
+Som del av den samme revisjonen undersøkte vi den faktiske Supabase-databasens **metadata, policies og grants i skrivebeskyttet modus**, uten å hente samtale- eller brukerdata. RLS var aktivert på samtlige ti tabeller, samtalehistorikken hadde fire eierskapspolicyer, og andre administrative tabeller var stengt for direkte brukerrolle. Samtidig varslet Supabase om at kontroll mot kjente kompromitterte passord var deaktivert. Jeg mener det er viktig å dokumentere dette som en åpen risiko og ikke endre live konfigurasjon under dokumentasjonsrevisjonen. Det konkrete sikkerhetsarbeidet er dokumentert i `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md`.
+
+---
+
 ## 6. Etiske implikasjoner
 
 Samtalestøtte behandler et område som krever særlig varsomhet. Selv om løsningen ikke skal brukes som journalsystem, vil brukere kunne beskrive reelle medarbeidere og sensitive situasjoner.

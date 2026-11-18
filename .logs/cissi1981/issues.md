@@ -18,6 +18,8 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 - [x] HTTP-autorisasjonsgrense i faktisk Express-server bestått: 22 uinnloggede kall, 3 ugyldige Origin, 5 interne stier; utvidet deterministisk sensor-demo.
 - [x] Ny Quality Gate 18.11, run `44338528651`, **SUCCESS** med 32 deltester og audit 0 sårbarheter.
 
+- [x] Testdrev OpenRouter-only `/api/status`: rød run `44339406194` bekreftet feilen, minimal fix i `server.js`, grønn run `44339569597` med 33 tester/audit. Ingen prod-merge.
+
 ## Åpne oppgaver før sluttgodkjenning
 
 - [x] **Revisjonsgren Quality Gate utført 18.11:** run `44336281200` SUCCESS på `d9234879...`, 31 deltester + npm audit 0 sårbarheter + golden-opptelling 66/40.
