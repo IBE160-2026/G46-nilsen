@@ -7,9 +7,11 @@
 
 > **Les før bruk:** «Ja/Nei» nedenfor betyr **utelukkende at eksakt krav-ID finnes/ikke finnes som tekst** i det aktuelle dokumentet. «Nei» betyr ikke nødvendigvis at funksjonaliteten mangler. Kolonnen «tekniske spor/testkandidater» viser konkrete steder som bør undersøkes; den er **ikke et nytt verifisert testresultat**. PRD-status er gjengitt fra dokumentet, ikke godkjent på nytt av denne revisjonen.
 
-## Kanoniske krav fra PRD
+## Historisk før-revisjonskontroll av kravsporing
 
-PRD inneholder 23 FR-krav (FR-01–FR-23), seks KI-krav (AI-01–AI-06) og fem NFR-krav (NFR-01–NFR-05): **34 krav**. I tillegg finnes senere `FR-15A`, `NFR-QA-01` og kravtekster uten stabil ID; disse må konsolideres før matrisen er endelig.
+**Denne tabellen er et frosset utgangsbilde fra `main` 12.11.2026 og skal ikke brukes som dagens status.** Ved første gjennomgang hadde PRD 23 ordinære FR-krav, seks AI-krav og fem ordinære NFR-krav (**34 ID-er**), mens `FR-15A` og `NFR-QA-01` lå i sene tillegg. Arkitekturen brukte 0/34 eksakte ID-er og epics 26/34 i dette *før-bildet*. Dette betydde manglende tekstuell sporbarhet, ikke nødvendigvis manglende funksjon.
+
+**Etter dokumentasjonsrevisjonen 18.11:** De to tilleggskravene er flyttet inn i hovedkravene, slik at gjeldende `PRD.md` har **36 unike kravoverskrifter**. Maskinell sammenligning viser **36/36 eksakte ID-treff i Architecture, 36/36 i Epics/Stories og 36/36 i `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md`**. Dette er en fullstendig *referansekobling*, **ikke** 36/36 beståtte tester. Den detaljerte matrisen nedenfor viser fortsatt det historiske utgangspunktet.
 
 | ID | Krav | Status som påstått i PRD | ID i Epics | ID i Architecture | Tekniske spor/testkandidater – **ikke nyverifisert** |
 |---|---|---|:---:|:---:|---|
@@ -48,11 +50,11 @@ PRD inneholder 23 FR-krav (FR-01–FR-23), seks KI-krav (AI-01–AI-06) og fem N
 | FR-22 | Yrke/bransje som valgfri kontekst | ikke eksplisitt lokalisert | **Nei** | **Nei** | `src/server/occupation-router.js`, `src/server/occupation-context.js`; `tests/test-occupation-router.cjs` |
 | FR-23 | Direkte samtale som alternativ inngang | ikke eksplisitt lokalisert | **Nei** | **Nei** | KUN PILOT (`pilot-ux-v20.11`, `docs/pilot/LIVE-V1-PILOT-SPEC.md`); ikke produksjonsbevis |
 
-## Viktige metodefunn
+## Viktige metodefunn – ved første kontroll (før revisjonen)
 
-1. **Arkitekturens 0/34 eksakte ID-treff** er et sporbarhetsproblem: dokumentet omtaler relevante komponenter, men eksplisitte FR/NFR/AI-koblinger mangler. Løs med seksjonsvise koblinger, ikke ved å legge inn en tilfeldig kravliste uten teknisk begrunnelse.
-2. **Epics-dokumentet har 26/34 eksakte ID-treff.** Manglende ID-er: `AI-04`, `AI-05`, `NFR-03`, `FR-19`, `FR-20`, `FR-21`, `FR-22`, `FR-23`. Les innholdet før mapping: flere kan allerede ha funksjonelt overlappende stories.
-3. **PRD inneholder ekstra ID-mønstre og sene tillegg:** FR-15A, NFR-QA-01, kildekrav og modulær frontend uten ID. Dette bekrefter hovedfunn i faglærers formative PRD-tilbakemelding 12.11.
+1. **Arkitekturens historiske 0/34 eksakte ID-treff** viste sporbarhetsproblemet. Dette er nå fulgt opp i Architecture § 2.1 med AD-01–AD-10 og kobling til konkrete komponenter og feilmodi; hver funksjons faktiske testbevis må fortsatt kontrolleres.
+2. **Epics-dokumentet hadde 26/34 eksakte ID-treff.** Ved første kontroll manglet: `AI-04`, `AI-05`, `NFR-03`, `FR-19`, `FR-20`, `FR-21`, `FR-22`, `FR-23`. Les innholdet før mapping: flere kan allerede ha funksjonelt overlappende stories.
+3. **PRD hadde ekstra ID-mønstre og sene tillegg.** FR-15A og NFR-QA-01 er nå flyttet inn i den gjeldende ID-rekken, mens opprinnelige formuleringer og testtall er bevart i `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`. Kildekrav og modulær CSS er koblet til FR-16/FR-22/AI-04 og NFR-05.
 4. En fil som `tests/test-ui-regression.cjs` kan sjekke tekst/DOM-struktur uten at reell brukerflyt er kjørt. Skill **fil finnes**, **statisk assert**, **deterministisk runtime**, **live KI** og **manuelt fysisk testet**.
 5. 66 golden-caser og 114 benchmark-caser er opptalt fra JSON-filene på `main`. Live resultat 40/40 er historisk dokumentert 09.11 i `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`, men ikke kjørt på nytt her.
 6. FR-23 og LIVE er **ikke produksjonskrav med oppfylt status**. LIVE er begrenset til pilotgren/-tjeneste inntil separat kvalitetssikring og eksplisitt beslutning.
@@ -134,4 +136,4 @@ Se også `docs/REVISJON-IBE160-2026-11-18.md` og `docs/bmad/tilbakemelding-prd.m
 - **Motmål C-2:** flere kilder skal ikke regnes som kvalitet dersom kildevirkeområdet blir feil.
 - **Motmål C-3:** grønn automatisk test skal ikke erstatte nødvendig menneskelig vurdering av reelle KI-svar.
 
-**Neste handling:** revider den kanoniske `PRD.md` først etter at forslagene er gjennomgått krav-for-krav mot eksisterende funksjoner og tester. Da flyttes kriteriene til riktige FR-/AI-/NFR-avsnitt og sene tillegg reorganiseres uten historietap; dette arbeidsdokumentet kan deretter arkiveres som dokumentert revisjonsgrunnlag.
+**Gjennomført i dokumentasjonsrunden:** Gjeldende PRD er konsolidert, og de 36 kravene har fått observerbare presiseringer. Architecture, Epics/Stories og testbevisregisteret har nå 36/36 eksakte ID-koblinger. **Gjenstår:** funksjonell verifikasjon av akseptansene på endelig commit, full CI inkl. audit, API/RLS- og manuelle testscenarier samt endelig menneskelig gjennomgang. Ikke rapporter denne matrisen som godkjent produkttest.
