@@ -177,7 +177,7 @@ Dette er gjort for å skille tydelig mellom faktisk leveranse og framtidig ambis
 
 **UJ-03 – Historikk og tilgang:** To separate fiktive brukere logger inn. Bruker A kan se/slette egen samtale, men ikke lese eller endre B sin historikk via direkte API-/databaseforespørsel. Kontrollpunkter: FR-07–11 og NFR-01/02. Krever faktisk rolle-/RLS-integrasjonstest.
 
-Pilotreise for tale er særskilt beskrevet i `docs/pilot/LIVE-V1-PILOT-SPEC.md` på pilotgrenen. Den er ikke del av UJ-01–03 eller produksjonsgodkjenningen.
+Pilotreise for tale er særskilt beskrevet i [LIVE-pilotspesifikasjonen (kun egen pilotgren)](https://github.com/IBE160-2026/G46-nilsen/blob/pilot-ux-v20.11/docs/pilot/LIVE-V1-PILOT-SPEC.md) på pilotgrenen. Den er ikke del av UJ-01–03 eller produksjonsgodkjenningen.
 
 ## 7.2 Felles begreper
 
