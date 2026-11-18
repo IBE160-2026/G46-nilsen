@@ -27,8 +27,8 @@ jobs:
       - name: Run deterministic test suite
         run: npm test
 
-      - name: Report CSS complexity (read-only)
-        run: npm run audit:css
+      - name: Report CSS complexity and prevent new important debt
+        run: npm run audit:css -- --enforce-budget
 
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high

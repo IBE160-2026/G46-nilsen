@@ -153,6 +153,13 @@ const result = {
   identicalPreviousBlocks: exactDuplicates.reduce((s,a)=>s+a.length-1,0),
   topConflicts: sortedConflicts
 };
+// Gjelder den fysiske CSS-koden, ikke per-komma ekspanderte deklarasjoner.
+// Et budsjettoversteg krever bevisst revisjon; grensen låses ved godkjent ryddebaseline.
+const IMPORTANT_BUDGET = 711;
+if (process.argv.includes("--enforce-budget") && result.important > IMPORTANT_BUDGET) {
+  console.error("CSS-gjeld økt: " + result.important + " !important (godkjent maks " + IMPORTANT_BUDGET + ").");
+  process.exitCode = 1;
+}
 if (process.argv.includes("--json")) console.log(JSON.stringify(result,null,2));
 else {
   for (const f of measurements) console.log(f.file + ": " + f.lines + " linjer, " + f.important + " !important, " + f.rules + " blokker");
