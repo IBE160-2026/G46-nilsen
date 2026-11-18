@@ -28,7 +28,7 @@ const allowedRootFiles = new Set([
   "sw.js",
   "tilbakemelding-product-brief.md"
 ]);
-const allowedRootDirs = new Set([".claude", ".github", ".logs", "assets", "data", "database", "docs", "scripts", "src", "tests"]);
+const allowedRootDirs = new Set([".claude", ".github", ".docs", ".logs", "assets", "data", "database", "docs", "scripts", "src", "tests"]);
 
 // Lærerens Claude-/sesjonslogg-verktøy ligger bevisst i repoet og kan opprette .logs/ senere.
 const trackedRootItems = [...new Set(tracked.map(file => file.split("/")[0]))].sort();
@@ -36,6 +36,13 @@ const unexpected = trackedRootItems.filter(item =>
   !allowedRootFiles.has(item) && !allowedRootDirs.has(item)
 );
 assert.deepEqual(unexpected, [], `Uventede/løse elementer spores i repo-roten: ${unexpected.join(", ")}`);
+
+// Faglærers arkitekturreferanse er lagt i .docs av prosjektet. Tillat bare den eksplisitte filen,
+// ikke en generell ny plass for vilkårlige kodefiler, hemmeligheter eller løse dokumenter.
+const allowedInstructorReference = ".docs/planning-artifacts/architecture/technology.md";
+const unexpectedInstructorFiles = tracked.filter(file => file.startsWith(".docs/") && file !== allowedInstructorReference);
+assert.deepEqual(unexpectedInstructorFiles, [], `Uventede filer i .docs: ${unexpectedInstructorFiles.join(", ")}`);
+
 
 const forbiddenTracked = tracked.filter(file =>
   /(^|\/)\.env$/i.test(file) ||
