@@ -53,6 +53,8 @@ Den viktigste arkitekturregelen er:
 
 ---
 
+**Visualisering:** En redigerbar oversikt over hovedkomponenter og logiske epic-avhengigheter ligger i `docs/bmad/ARKITEKTUR-OG-AVHENGIGHETSKART.md` (diagram, ikke maskinelt bevis).
+
 ## 2.1 Architecture Spine – eksplisitt kobling til produktkrav
 
 Dette arkitekturskjelettet er oppdatert med henvisninger til den **gjeldende PRD-en**, basert på produksjonskoden i `main` (commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`). Hver rad peker på relevant arkitekturvalg, men er **ikke** automatisk bevis på funksjonell testdekning. Se `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md` for akseptanser og åpne verifikasjoner.
