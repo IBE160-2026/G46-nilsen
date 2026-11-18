@@ -78,9 +78,6 @@
 }
 
 @media (max-width:640px) {
-  .app-shell.sidebar-collapsed-layout {
-    grid-template-columns: 72px minmax(0, 1fr) !important;
-  }
 
   .sidebar-toggle {
     right: -29px !important;
@@ -173,11 +170,6 @@
   .profile-chip .profile-text,
   .profile-chip .profile-caret {
     display: none !important;
-  }
-
-  .profile-avatar {
-    width: 36px;
-    height: 36px;
   }
 
   .view {
@@ -363,7 +355,6 @@
   }
 }
 
-
 /* MOBILE HYBRID NAV + COMPACT VISUAL IDENTITY */
 @media (max-width:640px) {
   .mobile-theme-cycle {
@@ -402,18 +393,10 @@
     transform: none !important;
   }
 
-  .simulation-hub-hero .simulation-logo-crop img {
-    width: 150px !important;
-    height: auto !important;
-    max-width: 100% !important;
-    object-fit: contain;
-  }
-
   html[data-theme="dark"] .simulation-hub-hero .simulation-logo-crop img {
     content: url("assets/images/logo-light.png") !important;
   }
 }
-
 
 /* PWA INSTALL */
 .install-app-body {
@@ -478,7 +461,6 @@
     width: 100%;
   }
 }
-
 
 /* MOBILE UX REFINEMENT 29.10
    Pilotfunn: mer innholdsflate, mindre hero, tydeligere kontrast,
@@ -655,7 +637,6 @@
     border-color: color-mix(in srgb,var(--accent) 28%,var(--border));
   }
 }
-
 
 /* PILOT 20.11 MOBILE CONSISTENCY 2026-10-29 */
 
@@ -841,10 +822,6 @@
     margin-top: 7px;
   }
 
-  .simulation-hub-hero > .simulation-logo-crop {
-    display: none !important;
-  }
-
   .utility-title-row {
     gap: 9px;
   }
@@ -869,7 +846,6 @@
     margin-bottom: 7px;
   }
 }
-
 
 /* REAL MOBILE TOPBAR BRAND FIX 2026-10-29 */
 
@@ -916,7 +892,6 @@
     max-width: 25vw !important;
   }
 }
-
 
 /* MOBILE PILOT ROUND 3 2026-10-29 */
 
@@ -981,12 +956,6 @@
   .topbar-mobile-brand-lockup {
     gap: 7px !important;
     flex: 1 1 auto !important;
-  }
-
-  .topbar-mobile-brand-symbol {
-    width: 38px !important;
-    height: 34px !important;
-    flex-basis: 38px !important;
   }
 
   .topbar-mobile-brand-word {
@@ -1092,10 +1061,6 @@
     object-position: right center;
   }
 
-  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img {
-    content: url("assets/images/logo-light.png");
-  }
-
   /* Selve øvelsesrommet får nesten hele skjermbredden. */
   #simulation-view.view {
     padding-left: 8px !important;
@@ -1144,7 +1109,6 @@
     padding-right: 12px;
   }
 }
-
 
 /* BRAND + INSTALL FIX 2026-10-29 */
 
@@ -1268,19 +1232,6 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
     justify-self: end !important;
   }
 
-  .simulation-hub-hero > .simulation-logo-crop img {
-    width: 82px !important;
-    height: 70px !important;
-    max-width: 82px !important;
-    object-fit: contain !important;
-    object-position: center !important;
-  }
-
-  html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img,
-  html[data-theme="hybrid"] .simulation-hub-hero > .simulation-logo-crop img {
-    content: url("assets/images/logo-symbol-light.png");
-  }
-
   .brand-logo-dialog {
     width: min(94vw,560px);
   }
@@ -1310,7 +1261,6 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
     font-size: 1.02rem !important;
   }
 }
-
 
 /* KI IDENTITY + IMAGE PREVIEW + PWA 2026-10-29 */
 
@@ -1401,7 +1351,6 @@ html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
   }
 }
 
-
 /* SIMULATION AI HEADING IMAGE */
 .simulation-ai-heading-icon {
   overflow: hidden;
@@ -1415,7 +1364,6 @@ html[data-theme="dark"] .image-preview-dialog .brand-logo-dialog-card img {
   object-fit: cover;
   border-radius: inherit;
 }
-
 
 /* COMPACT GUIDANCE + SIMULATION CTA 2026-10-29 */
 
@@ -1523,22 +1471,11 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
     margin-top: 14px;
   }
 
-  #structured-guidance .guidance-card {
-    grid-template-columns: 26px minmax(0,1fr) !important;
-    gap: 9px !important;
-    padding: 12px 12px !important;
-    border-radius: 13px !important;
-  }
-
   #structured-guidance .guidance-number {
     width: 25px;
     height: 25px;
     border-radius: 8px;
     font-size: .66rem;
-  }
-
-  #structured-guidance .guidance-card h3 {
-    font-size: .98rem;
   }
 
   #simulation-entry.simulation-entry {
@@ -1579,7 +1516,6 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
   }
 }
 
-
 /* FINAL MOBILE GUIDANCE TIGHTENING + AI HALO 2026-10-29 */
 
 /* Rådskort: nummer og overskrift på samme linje, teksten bruker hele bredden under. */
@@ -1597,10 +1533,6 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
   grid-row: 1 !important;
   align-self: center;
   margin: 0 !important;
-}
-
-#structured-guidance .guidance-card > div {
-  display: contents !important;
 }
 
 #structured-guidance .guidance-card h3 {
@@ -1621,21 +1553,6 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
 }
 
 /* KI-hodet: myk lys halo i mørk/hybrid så den mørke ansiktssiden ikke forsvinner. */
-html[data-theme="dark"] .mobile-nav-ai-glyph img,
-html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
-html[data-theme="dark"] .simulation-ai-heading-icon img,
-html[data-theme="hybrid"] .simulation-ai-heading-icon img,
-html[data-theme="dark"] .simulation-logo-crop img,
-html[data-theme="hybrid"] .simulation-logo-crop img,
-html[data-theme="dark"] .simulation-entry-icon img,
-html[data-theme="hybrid"] .simulation-entry-icon img,
-html[data-theme="dark"] .simulation-avatar img,
-html[data-theme="hybrid"] .simulation-avatar img {
-  filter:
-    drop-shadow(0 0 1px rgba(255,255,255,.85))
-    drop-shadow(0 0 5px rgba(220,242,246,.48))
-    drop-shadow(0 2px 7px rgba(0,0,0,.18)) !important;
-}
 
 @media (max-width:640px) {
   #structured-guidance .guidance-card {
@@ -1654,7 +1571,6 @@ html[data-theme="hybrid"] .simulation-avatar img {
     font-size: .97rem !important;
   }
 }
-
 
 /* AI WHITE OUTLINE DARK THEMES 2026-10-29 */
 
@@ -1682,7 +1598,6 @@ html[data-theme="dark"] .mobile-nav-ai-glyph img,
 html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
   border-width: 1.5px !important;
 }
-
 
 /* AI CONTOUR OUTLINE 2026-10-29 */
 
@@ -1723,7 +1638,6 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
     drop-shadow(0 1px 3px rgba(0,0,0,.16)) !important;
 }
 
-
 /* MOBILE NAV AUTO HIDE 2026-10-29 */
 
 @media (max-width:640px) {
@@ -1754,7 +1668,6 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
     transition: none !important;
   }
 }
-
 
 /* CLICKABLE TOPIC REPRESENTATIONS 2026-10-29 */
 
@@ -1817,7 +1730,6 @@ html[data-theme="hybrid"] .mobile-nav-ai-glyph img {
   }
 }
 
-
 /* DARK QUICK FILTER CONTRAST 2026-10-29 */
 
 html[data-theme="dark"] .representation-chip.active,
@@ -1866,5 +1778,4 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
     content: normal !important;
   }
 }
-
 
