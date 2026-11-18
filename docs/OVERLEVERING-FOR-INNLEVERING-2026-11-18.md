@@ -6,7 +6,7 @@
 **Produksjon:** `main`, uendret ved denne kontrollen. **Ingen Render-deploy.**  
 **Separat eksperiment:** `pilot-ux-v20.11` med LIVE/tale; ikke til produksjon.
 
-**Siste kontrollpunkt, 18.11.2026:** [Teknisk revisjon](TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md) viser `app.js` **4 632 → 4 274** linjer og `server.js` **2 100 → 1 844**, med **åtte** små, ansvarsskilt klient-/servermoduler og **694 `!important`** (fra 845). [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) er **SUCCESS**, med **43 deterministiske testdelsteg** og **99 Chrome-scenarier** (90 standard, 6 @media print, 3 åpne details). Kontrollen beviser ikke fullstendig visuell UX, fysisk mobil/utskrift, ekte Supabase RLS, live KI-råd eller innleveringskrav i Canvas. Historiske målepunkt nedenfor er bevart, men er ikke gjeldende sluttstatus.
+**Siste kontrollpunkt, 18.11.2026:** [Teknisk revisjon](TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md) viser `app.js` **4 632 → 4 274** linjer og `server.js` **2 100 → 1 844**, med **sju** små, ansvarsskilt klient-/servermoduler og **694 `!important`** (fra 845). [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) er **SUCCESS**, med **43 deterministiske testdelsteg** og **99 Chrome-scenarier** (90 standard, 6 @media print, 3 åpne details). Kontrollen beviser ikke fullstendig visuell UX, fysisk mobil/utskrift, ekte Supabase RLS, live KI-råd eller innleveringskrav i Canvas. Historiske målepunkt nedenfor er bevart, men er ikke gjeldende sluttstatus.
 
 ## Beslutning i dag
 

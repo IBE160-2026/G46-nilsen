@@ -14,7 +14,7 @@ Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy
 
 **CSS-status:** [CSS-revisjonen](docs/CSS-REVISJON-2026-11-18.md) dokumenterer **845 → 694 `!important`** og at største CSS-fil ble redusert fra **6 402 til 1 702 linjer**, ved kontrollert opprydding og funksjonsnavngitt oppdeling i 14 ordnede moduler. Chrome sammenligner nå også print-media og åpne hjelpedetaljer (totalt 99 scenarier). **Manuell fysisk mobil-, utskrifts- og innlogget UI-review gjenstår.** Maksgrensen på 694 i CSS-auditen er vern mot ny overstyringsgjeld, ikke et tegn på at 694 er ideelt.
 
-**Filene faglærer bemerket:** [Teknisk revisjon](docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md) viser `app.js` fra **4 632 til 4 274** linjer og `server.js` fra **2 100 til 1 844**, etter åtte avgrensede, testbare uttrekk: temasøk, situasjonsanalyse, reserveveiledning/oppfølgingsspørsmål, historikkontrakter, kildenormalisering, hjelp-kildebibliotek og kilderangering. **Hovedfilene er fremdeles store**, særlig admin-/autentiseringslogikk; ikke framstill prosjektet som ferdig refaktorert.
+**Filene faglærer bemerket:** [Teknisk revisjon](docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md) viser `app.js` fra **4 632 til 4 274** linjer og `server.js` fra **2 100 til 1 844**, etter sju avgrensede, testbare uttrekk: temasøk, situasjonsanalyse, reserveveiledning/oppfølgingsspørsmål, historikkontrakter, kildenormalisering, hjelp-kildebibliotek og kilderangering. **Hovedfilene er fremdeles store**, særlig admin-/autentiseringslogikk; ikke framstill prosjektet som ferdig refaktorert.
 
 **Les i denne rekkefølgen:**
 
