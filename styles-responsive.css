@@ -1683,10 +1683,6 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
     width: 112px !important;
     max-width: 112px !important;
     height: 104px !important;
-    overflow: hidden !important;
-    border-radius: 18px !important;
-    padding: 0 !important;
-    background: transparent !important;
     align-items: center !important;
     justify-content: center !important;
   }
@@ -1695,10 +1691,7 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
     width: 112px !important;
     max-width: none !important;
     height: 104px !important;
-    object-fit: cover !important;
     object-position: center !important;
-    border-radius: 14px !important;
-    content: normal !important;
   }
   html[data-theme="dark"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img,
   html[data-theme="hybrid"] #simulation-view .simulation-hub-hero > .simulation-logo-crop img {

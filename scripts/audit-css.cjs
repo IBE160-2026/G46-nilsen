@@ -186,7 +186,7 @@ const result = {
 };
 // Gjelder den fysiske CSS-koden, ikke per-komma ekspanderte deklarasjoner.
 // Et budsjettoversteg krever bevisst revisjon; grensen låses ved godkjent ryddebaseline.
-const IMPORTANT_BUDGET = 711;
+const IMPORTANT_BUDGET = 694;
 if (process.argv.includes("--enforce-budget") && result.important > IMPORTANT_BUDGET) {
   console.error("CSS-gjeld økt: " + result.important + " !important (godkjent maks " + IMPORTANT_BUDGET + ").");
   process.exitCode = 1;

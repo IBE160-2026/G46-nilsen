@@ -21,30 +21,20 @@
     min-height: 126px !important;
     margin: 0 !important;
     transform: none !important;
-    overflow: hidden !important;
     justify-self: end !important;
     align-items: center !important;
     justify-content: center !important;
-    border-radius: 20px !important;
-    border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border)) !important;
-    background: color-mix(in srgb,var(--surface) 88%,var(--accent-soft)) !important;
   }
 
   #simulation-view .simulation-logo-crop img,
   html[data-theme="light"] #simulation-view .simulation-logo-crop img,
   html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
   html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
-    content: normal !important;
     display: block !important;
     width: 100% !important;
     max-width: none !important;
     height: 100% !important;
-    object-fit: cover !important;
     object-position: center !important;
-    border: 0 !important;
-    border-radius: 18px !important;
-    box-shadow: none !important;
-    filter: none !important;
   }
 }
 
