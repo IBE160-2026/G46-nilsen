@@ -4,6 +4,12 @@
 **Gren:** `docs/ibe160-helhetlig-revisjon-20261118` (utkast-PR #12); **ikke** `main` eller LIVE-pilot  
 **Formål:** Dokumentere størrelsen på CSS, mange `!important`, gjentatte regler og en trygg oppryddingsstrategi – med reproduserbare målinger, ikke bare kosmetisk minifisering.
 
+## Siste oppdatering – 694 viktige overstyringer og Chrome-sammenligning
+
+Etter den daterte milepælen på 711 `!important` nedenfor ble ytterligere **17** overstyrte responsive deklarasjoner fjernet. **Gjeldende antall på revisjonsgrenen er 694**, kontrollert av `npm run audit:css -- --enforce-budget`. Kjerne-CSS er nå delt i 14 mindre, navngitte deler innenfor fire ordnede hovedimporter. Denne oppdelingen bevarer selve innholdet og kaskaderekkefølgen. [Chrome-basert Quality Gate #44364859955](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44364859955) består **90 beregnede-stiler-/geometri-scenarier** mot en låst, tidligere fungerende commit. Det er betydelig bedre evidens enn statisk tekstsøk, men omfatter ikke manuell print-kontroll, ekte touch-interaksjoner, alle åpne/lukkede dialoger eller en estetisk vurdering.
+
+For den videre, konkrete oppdelingen av `app.js`/`server.js`, se [den tekniske arkitekturrevisjonen](TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md). De historiske tabellene under beskriver **tidligere delmilepæler** og må ikke brukes som gjeldende tall.
+
 ## Status etter større kaskade- og modulopprydding – 18. november 2026
 
 **Gjennomført på separat revisjonsgren, ikke produksjon:**
