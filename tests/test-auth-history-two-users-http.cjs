@@ -71,7 +71,7 @@ const mock = http.createServer(async (req, res) => {
   }
   if (!user) return send(res, 401, { code: "PGRST301", message: "Invalid token" });
   if (dbReadFails && req.method === "GET") {
-    return send(res, 503, { code: "PGRST000", message: "Local database unavailable" });
+    return send(res, 400, { code: "PGRST100", message: "Simulated local database query failure" });
   }
   const id = queryId(target.searchParams);
   const mine = allRows.filter(row => row.user_id === user.id && (!id || row.id === id));
@@ -208,7 +208,7 @@ async function api(url, user, method = "GET", payload) {
     const failedRead = await api("/api/history", "alice");
     assert.equal(failedRead.status, 500);
     assert.equal(failedRead.body?.error, "HISTORY_READ_FAILED");
-    assert.ok(!JSON.stringify(failedRead.body).includes("Local database unavailable"), "No DB internal detail to client");
+    assert.ok(!JSON.stringify(failedRead.body).includes("Simulated local database query failure"), "No DB internal detail to client");
     dbReadFails = false;
 
     const ownDelete = await api(`/api/history/${aliceId}`, "alice", "DELETE");
