@@ -121,7 +121,7 @@ function expectStatus(result, status, errorCode) {
       const res = await fetch(base + route, { signal: AbortSignal.timeout(5000) });
       assert.equal(res.status, 404, `Følsom repo-fil skal ikke serveres: ${route}`);
     }
-    console.log("Faktisk Express HTTP-grense: 29 beskyttede kall, origin og sensitive assets: OK");
+    console.log("Faktisk Express HTTP-grense: 22 auth-avvisninger, 3 fremmede Origin og 5 interne filer: OK");
     console.log("Begrensning: bruker-til-bruker/RLS, DB, live KI og input etter innlogging er IKKE testet.");
   } finally {
     child.kill("SIGTERM");
