@@ -118,6 +118,8 @@ for (const filename of ["app.js", "styles.css", "styles-core.css", "styles-core-
 for (const filename of ["privacy-name-data.js", "privacy-detector.js", "client-data.js"]) {
   app.get(`/src/${filename}`, (_req, res) => res.sendFile(path.join(root, "src", filename)));
 }
+app.get("/src/client/guidance-fallback.js", (_req, res) =>
+  res.sendFile(path.join(root, "src", "client", "guidance-fallback.js")));
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
 
 app.get("/api/public-config", (_req, res) => res.json({

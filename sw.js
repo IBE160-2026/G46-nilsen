@@ -1,4 +1,4 @@
-const CACHE_NAME = 'samtalestotte-shell-v20-11-66';
+const CACHE_NAME = 'samtalestotte-shell-v20-11-67';
 
 const APP_SHELL = [
   '/',
@@ -28,6 +28,7 @@ const APP_SHELL = [
   '/app.js',
   '/manifest.webmanifest',
   '/src/client-data.js',
+  '/src/client/guidance-fallback.js',
   '/src/privacy-name-data.js',
   '/src/privacy-detector.js',
   '/assets/icons/app-icon.svg',
