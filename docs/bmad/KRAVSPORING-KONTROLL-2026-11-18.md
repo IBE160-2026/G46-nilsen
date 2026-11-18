@@ -48,7 +48,7 @@
 | FR-20 | Utskrift av samtalestøtte | ikke eksplisitt lokalisert | **Nei** | **Nei** | `app.js`; utskrift av hovedråd/videre råd må testes i nettleser |
 | FR-21 | Rolig standardnavigasjon | ikke eksplisitt lokalisert | **Nei** | **Nei** | `styles-responsive.css`, `app.js`; `tests/test-pilot-ux.cjs`, fysisk mobiltest |
 | FR-22 | Yrke/bransje som valgfri kontekst | ikke eksplisitt lokalisert | **Nei** | **Nei** | `src/server/occupation-router.js`, `src/server/occupation-context.js`; `tests/test-occupation-router.cjs` |
-| FR-23 | Direkte samtale som alternativ inngang | ikke eksplisitt lokalisert | **Nei** | **Nei** | KUN PILOT (`pilot-ux-v20.11`, `docs/pilot/LIVE-V1-PILOT-SPEC.md`); ikke produksjonsbevis |
+| FR-23 | Direkte samtale som alternativ inngang | ikke eksplisitt lokalisert | **Nei** | **Nei** | KUN PILOT (`pilot-ux-v20.11`, [LIVE-pilotspesifikasjonen (på separat pilotgren)](https://github.com/IBE160-2026/G46-nilsen/blob/pilot-ux-v20.11/docs/pilot/LIVE-V1-PILOT-SPEC.md)); ikke produksjonsbevis |
 
 ## Viktige metodefunn – ved første kontroll (før revisjonen)
 
