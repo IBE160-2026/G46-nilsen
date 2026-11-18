@@ -2,6 +2,10 @@
 
 **Formål:** holde dokumentasjonen synkron med faktisk kode og faktisk verifisert funksjonalitet frem mot innlevering.
 
+## Pågående revisjon 18.11.2026
+
+Hele prosjektet kontrolleres på separat dokumentasjonsgren med `main` som kontrollgrunnlag. Se `docs/REVISJON-IBE160-2026-11-18.md` for avvik, faglærertilbakemelding 12.11 og presis status på siste CI (feilet 12.11 etter tillegg av `.docs`), samt `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`. Eksisterende avkryssinger viser **historisk** dokumenterte arbeidstrinn og er ikke en ny friskmelding av hovedgrenen. LIVE/tale er fortsatt kun pilot, ikke produksjon.
+
 ## Arbeidsregel
 
 Ved større endringer skal minst disse fire spørsmålene vurderes:
@@ -132,4 +136,4 @@ Planlagte funksjoner skal aldri beskrives som ferdige før de er implementert og
 - [x] refleksjonsnotat og refleksjonsrapport synkronisert
 - [x] kilde-/yrkesaudits synkronisert
 - [x] hovedrapport opprettet: `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
-- [ ] 40 nye strict occupation-golden kjørt mot ekstern live modell – **ikke påstå bestått før faktisk kjøring**
+- [x] Historisk live-verifikasjon av 40 strict occupation-golden dokumentert 09.11.2026 mot `gpt-5.6-luna`: 40/40 OK i `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`. Dette er **ikke** en ny testkjøring eller garanti for dagens kode/andre modeller.
