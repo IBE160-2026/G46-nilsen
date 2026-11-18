@@ -14,7 +14,7 @@ if (JSON.stringify(actualCoreImports) !== JSON.stringify(expectedCoreImports)) {
 }
 const entry = fs.readFileSync("styles.css", "utf8");
 const imports = [...entry.matchAll(/@import\s+url\(["']?([^"')]+)["']?\)/g)].map(x => x[1]);
-const expected = files.map(x => "./" + x);
+const expected = ["styles-core.css", "styles-responsive.css", "styles-overrides.css"].map(x => "./" + x);
 if (JSON.stringify(imports) !== JSON.stringify(expected)) {
   throw new Error("Uventet importrekkefølge i styles.css: " + imports.join(", "));
 }
