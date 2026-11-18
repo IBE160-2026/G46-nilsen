@@ -30,6 +30,17 @@ const cross=mod.buildCrossThemeDilemmaGuidance({situation:"Anonym medarbeider vu
 assert.equal(cross.length,6);
 assert.ok(cross[0][1].includes("karrieremulighet"));
 assert.ok(cross[4][1].includes("fraværet alene"));
+const dilemmaQuestions = mod.buildFollowupQuestions("Sykefravær og opprykk", ()=>({special:true}));
+assert.deepEqual(Array.from(dilemmaQuestions, x=>x.id),["decision","criteria","expectation"]);
+assert.equal(dilemmaQuestions[0].question,"Er beslutningen om å vente med opprykket allerede tatt?");
+const briefQuestions = mod.buildFollowupQuestions("Medarbeideren er uenig.",()=>({special:false}));
+assert.equal(briefQuestions.length,1);
+assert.equal(briefQuestions[0].id,"clarify-situation");
+assert.equal(briefQuestions[0].multiSelect,true);
+const detailedNoGoal = "Medarbeideren har de siste månedene meldt om vansker med arbeidsmengden og kommunikasjonen med leder og resten av avdelingen og det er uklart hva som er blitt sagt tidligere.";
+assert.equal(mod.buildFollowupQuestions(detailedNoGoal,()=>({special:false}))[0].id,"goal");
+const detailedWithGoal = detailedNoGoal+" Jeg ønsker hjelp til å forberede samtalen.";
+assert.equal(mod.buildFollowupQuestions(detailedWithGoal,()=>({special:false})).length,0);
 const root=fs.readFileSync("app.js","utf8");
 const html=fs.readFileSync("index.html","utf8");
 assert.ok(root.includes("localFallbackGuidance.buildFravaerGuidance"));

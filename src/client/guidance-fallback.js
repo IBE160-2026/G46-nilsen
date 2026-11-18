@@ -178,10 +178,71 @@ function buildGenericGuidance() {
 }
 
 
+function buildFollowupQuestions(text, buildDilemmaUnderstanding) {
+  const normalized = String(text || '').toLowerCase();
+  const dilemma = buildDilemmaUnderstanding(text);
+
+  // A clearly identified multi-theme dilemma gets only questions that materially change the advice.
+  if (dilemma.special) {
+    return [
+      {
+        id: 'decision',
+        question: 'Er beslutningen om å vente med opprykket allerede tatt?',
+        options: ['Ja, beslutningen er tatt', 'Nei, jeg vurderer fortsatt', 'Jeg heller mot å vente, men har ikke bestemt meg', 'Usikker'],
+        customLabel: 'Annet / skriv selv'
+      },
+      {
+        id: 'criteria',
+        question: 'Hva er hovedgrunnen til at du vurderer å vente?',
+        options: ['Jeg vil se hvordan tilbakekomsten fungerer', 'Den nye stillingen har andre eller større krav', 'Jeg er usikker på kapasiteten i den nye rollen', 'Det handler om flere forhold'],
+        customLabel: 'Annen grunn / skriv selv'
+      },
+      {
+        id: 'expectation',
+        question: 'Vet medarbeideren at stillingen har vært aktuell for hen?',
+        options: ['Ja', 'Nei', 'Usikker'],
+        customLabel: 'Det er mer nyansert'
+      }
+    ];
+  }
+
+  // Local fallback should not behave like an HR questionnaire. Ask only when the
+  // description is genuinely too thin to understand what the user wants help with.
+  const meaningfulWords = normalized.match(/[a-zæøåéèáàíìóòúùüöäçñ]{3,}/gi) || [];
+  const hasConcreteSituation = meaningfulWords.length >= 12;
+  const hasExplicitGoal = /ønsker|vil|trenger hjelp|hvordan|bør jeg|skal jeg|samtale|ta opp|si til|formulere/i.test(normalized);
+
+  if (!hasConcreteSituation) {
+    return [{
+      id: 'clarify-situation',
+      question: 'Hva er det viktigste du ønsker hjelp til i denne situasjonen?',
+      multiSelect: true,
+      options: ['Forstå dilemmaet', 'Forberede hva jeg skal si', 'Håndtere en mulig reaksjon', 'Vurdere hva jeg bør gjøre først'],
+      customLabel: 'Noe annet / skriv selv'
+    }];
+  }
+
+  if (!hasExplicitGoal) {
+    return [{
+      id: 'goal',
+      question: 'Hva ønsker du mest hjelp til akkurat nå?',
+      multiSelect: true,
+      options: ['Hvordan åpne samtalen', 'Hvilke spørsmål jeg bør stille', 'Hvordan håndtere reaksjoner', 'Hvordan vurdere veien videre'],
+      customLabel: 'Noe annet / skriv selv'
+    }];
+  }
+
+  // If the user has supplied a reasonably detailed situation and a goal, do not
+  // manufacture standard follow-up questions in local fallback mode.
+  return [];
+}
+
+
   root.SamtalestotteGuidanceFallback = Object.freeze({
     getFravaerSubject,
     buildFravaerGuidance,
     buildCrossThemeDilemmaGuidance,
-    buildGenericGuidance
+    buildGenericGuidance,
+    buildFollowupQuestions
   });
 })(window);
