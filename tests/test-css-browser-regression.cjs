@@ -90,7 +90,8 @@ const pages=["topic-view","guidance-view","simulation-view","help-view","history
 const widths=[390,768,1440];
 const themes=["light","dark","hybrid"];
 const states=["expanded","collapsed"];
-async function capture(cdp,baseUrl,width,theme,state,view) {
+async function capture(cdp,baseUrl,width,theme,state,view,media="screen",openDetails=false) {
+  await cdp.send("Emulation.setEmulatedMedia",{media});
   await cdp.send("Emulation.setDeviceMetricsOverride",{
     width,height:900,deviceScaleFactor:1,mobile:false
   });
@@ -108,6 +109,7 @@ async function capture(cdp,baseUrl,width,theme,state,view) {
     "sidebar?.classList.toggle('sidebar-collapsed',"+(state==="collapsed")+");"+
     "document.querySelector('.app-shell')?.classList.toggle('sidebar-collapsed-layout',"+(state==="collapsed")+");"+
     "for(const v of document.querySelectorAll('.view'))v.classList.toggle('active',v.id==="+JSON.stringify(view)+");"+
+    "if("+JSON.stringify(openDetails)+"){document.querySelectorAll('#help-view details').forEach(d=>d.open=true);}"+
     "document.querySelector('#auth-dialog')?.setAttribute('hidden','');"+
     "document.querySelector('#auth-dialog')?.classList.remove('is-open');"+
     "const style=document.createElement('style');style.textContent='*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}';document.head.appendChild(style);"+
@@ -159,11 +161,42 @@ async function capture(cdp,baseUrl,width,theme,state,view) {
     if(diff.length>=12)break;
     cases++;
   }
+  // Ekstra sammenligning i utskriftsmedia; dette er ikke en fysisk print-test.
+  // Vi sammenligner den faktiske @media print-kaskaden mot låst referanse.
+  if(!diff.length)for(const width of [390,1440])for(const page of ["guidance-view","help-view","history-view"]){
+    const left=await capture(cdp,"http://127.0.0.1:"+PORT_A+"/",width,"light","expanded",page,"print");
+    const right=await capture(cdp,"http://127.0.0.1:"+PORT_B+"/",width,"light","expanded",page,"print");
+    const keys=new Set([...Object.keys(left.result),...Object.keys(right.result)]);
+    for(const key of keys){
+      const canonical=obj=>JSON.stringify(obj).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
+      if(canonical(left.result[key])!==canonical(right.result[key])){
+        diff.push({case:["print",width,page],node:key,before:left.result[key],after:right.result[key]});
+        if(diff.length>=12)break;
+      }
+    }
+    if(diff.length>=12)break;
+    cases++;
+  }
+  // Tester også åpne details-elementer i kildebankens visning, ikke bare standardtilstand.
+  if(!diff.length)for(const width of [390,768,1440]){
+    const left=await capture(cdp,"http://127.0.0.1:"+PORT_A+"/",width,"hybrid","expanded","help-view","screen",true);
+    const right=await capture(cdp,"http://127.0.0.1:"+PORT_B+"/",width,"hybrid","expanded","help-view","screen",true);
+    const keys=new Set([...Object.keys(left.result),...Object.keys(right.result)]);
+    for(const key of keys){
+      const canonical=obj=>JSON.stringify(obj).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
+      if(canonical(left.result[key])!==canonical(right.result[key])){
+        diff.push({case:["open-help-details",width],node:key,before:left.result[key],after:right.result[key]});
+        if(diff.length>=12)break;
+      }
+    }
+    if(diff.length>=12)break;
+    cases++;
+  }
   if(diff.length){
     console.error("CSS browser regression: differences (first 12):",JSON.stringify(diff,null,2).slice(0,14000));
     throw new Error("Computed styles/geometry differ for "+diff.length+" sampled elements");
   }
-  console.log("CSS browser parity OK: "+cases+" scenarios; widths 390/768/1440, three themes, expanded/collapsed sidebar, five views.");
+  console.log("CSS browser parity OK: "+cases+" scenarios (90 screen + 6 print media + 3 open help details); widths 390/768/1440, three themes, expanded/collapsed sidebar, five views.");
 })().catch(e=>{console.error("CSS browser parity failed:",e.stack||e);process.exitCode=1;}).finally(()=>{
   try{cdpsocket?.close();}catch{}
   for(const p of processes)try{p.kill("SIGTERM");}catch{}
