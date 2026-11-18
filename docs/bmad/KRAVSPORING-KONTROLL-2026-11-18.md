@@ -62,3 +62,76 @@ PRD inneholder 23 FR-krav (FR-01–FR-23), seks KI-krav (AI-01–AI-06) og fem N
 For hver ID må ansvarlig gå gjennom: (a) konkret observerbar akseptanse, (b) riktig nåstatus, (c) kodefil/funksjon, (d) testnavn og resultat/commit, (e) avvik eller manuell sjekk, (f) dato og miljø. Inntil dette er gjort er matrisen et **revisjonsgrunnlag**, ikke bevis på full dekning.
 
 Se også `docs/REVISJON-IBE160-2026-11-18.md` og `docs/bmad/tilbakemelding-prd.md`.
+
+
+## Utkast til observerbare akseptansekriterier
+
+**Dette er revisjonsforslag, ikke nye produktløfter eller gjennomførte tester.** Kriteriene må sammenholdes med faktisk kode, produktets formål og eksisterende PRD. Ved manglende funksjon skal den merkes som avvik/delvis – vi skal ikke endre testen eller omdefinere kravet for å få et grønt tall.
+
+| Krav | Observerbar akseptanse som bør testes/avklares |
+|---|---|
+| FR-01 | En anonymisert situasjon kan legges inn; starten av nytt løp gjenbruker ikke forrige situasjon; relevante verdier føres videre innenfor riktig samtale. |
+| FR-02 | Alle 9 temaer og 48 gjeldende undertemaer kan velges; valgt tema er konsistent mellom klient, backend og kildevalg; ukjent tema gir kontrollert håndtering. |
+| FR-03 | Anonymisert eksempel gir strukturert, forståelig hovedråd med praktisk samtaleåpning; ugyldig modellrespons håndteres, ikke stilletiende presenteres som gyldig. |
+| FR-04 | Bruker kan spørre videre og få svar som bruker relevant gjeldende kontekst; ny samtale eller annen bruker får ikke med tidligere kontekst. |
+| FR-05 | Øvelsen lar leder trene mot en separat medarbeiderrolle; KI skal ikke dikte opp personopplysninger som fakta; tilbakestilling starter ny øvelse. |
+| FR-06 | Utvalgte navn, e-post, telefon og identifiserende data i både hovedfelt og oppfølging avvises/varsles før ekstern KI-kall; serverkontroll fungerer selv om klienten omgås. |
+| FR-07 | Uautorisert bruker får ikke innlogget funksjon/data; autorisert innlogging etablerer riktig sesjon; utlogging/utløp opphever tilgangen. |
+| FR-08 | Gyldig invitasjon kan brukes i tiltenkt flyt; ugyldig/utløpt/gjenbrukt invitasjon avvises; hemmelig token skal ikke lekke i respons/logg. |
+| FR-09 | Bruker kan åpne og slette egne samtaler; slettet samtale vises ikke igjen etter oppdatering; forsøk på å hente en annens samtale avvises også på server-/RLS-nivå. |
+| FR-10 | Rapportering oppretter forventet post og knytter hendelsen korrekt; personvernhensyn er ivaretatt; bruker får tydelig tilbakemelding om utfallet. |
+| FR-11 | Bruker, redaktør og admin har nøyaktig tillatte rettigheter; serveren avviser handlinger over rollen uavhengig av skjult UI. |
+| FR-12 | Innholds- og brukeradministrasjon følger rollegrensene; endringer persistenteres korrekt; ugyldig endring avvises. |
+| FR-13 | Modellvalg godtar bare støttede modeller/providers; nøkler blir på serversiden; manglende provider gir forståelig feil, ikke skjult fall-back til uventet modell. |
+| FR-14 | Samme anonymiserte testgrunnlag kan brukes på minst to konfigurerte modeller ved faktisk tilgjengelig konfigurasjon; kostnad/latens og resultat holdes atskilt fra faglig fasit. **Bare prototype hvis ikke full kjøreport finnes.** |
+| FR-15 | Golden-bankens schema og temadekning valideres deterministisk; `npm test` krever ikke nøkkel; live-evaluering kjøres separat med bevart rapport, dato, modell og kodeversjon. |
+| FR-16 | Råd viser kun verifiserbar/kuraterbar kilde der kilde kreves; relevans og virkeområde er dokumentert; ugyldig/forbudt profesjons- eller tariffkilde avvises i definert negativ case. |
+| FR-17 | Gjennomført brukertest har anonymiserte observasjoner med antall testpersoner, metode, funn, beslutning og avgrensning; planlagt test er ikke ført som gjennomført. |
+| FR-18 | Kontrollert web-/kildeanalyse skiller faktisk hentet kilde fra intern modellkunnskap; utilgjengelige kilder fører ikke til fabrikkert rettskilde; delvis status beholdes der det ikke er testet. |
+| FR-19 | Ved oppfølging foreslås normalt 2–4 korte relevante spørsmål der funksjonen er aktiv; fritekst kan fortsatt brukes; relevans og mobilvisning kontrolleres manuelt. |
+| FR-20 | Utskrift inneholder situasjon, relevante hovedråd og oppfølgingsråd, også når skjermseksjon er sammenfoldet; knapper/nav/personvernvarsel skal ikke skrives ut; sjekk fysisk print preview. |
+| FR-21 | Sidebar er minimert som standard for ny bruker på desktop; manuelt valg bevares lokalt; verktøytips kan nås og er forståelige; mobilflyt kontrolleres separat. |
+| FR-22 | Yrke er valgfritt; irrelevante yrker gir ikke profesjonsjuss; tvetydig yrke avklares; tariffområde gjettes ikke; negativ kildefasit fanger kildelekkasje. Bekreft feature flagg og faktisk miljø. |
+| FR-23 | **IKKE oppfylt i main.** Direkte samtale/tale skal bare vurderes som eksperiment i isolert pilot. Test dialekt, transkripsjon, kommandoer, personvern, timeout og feil på mobil før produksjonsbeslutning. |
+| AI-01 | Modellen skiller eksplisitt observasjoner fra antakelser ved usikre saker; test mot caser med mangelfullt faktagrunnlag. |
+| AI-02 | Caser om helseplager/rus får ikke medisinsk diagnose eller fastslått avhengighet. |
+| AI-03 | Mobbing/konflikt-caser får ikke automatiske påstander om skyld, hensikt eller motiv. |
+| AI-04 | Komplekse juridiske/HR-saker har nøktern usikkerhet og anbefaler relevant faglig bistand, uten bastante rettslige konklusjoner uten grunnlag. |
+| AI-05 | Oppfølgingsdialog tar med relevant kontekst og holder brukere/samtaler isolert; kontroller også lang samtale og reset. |
+| AI-06 | Prototypens modell/providergrensesnitt kan bytte konfigurerbar provider uten at personvern-/responskontrakt faller bort; dokumenter begrensningene. |
+| NFR-01 | Sjekk header/cookie/sesjon/rolle/rate limit/sekretthåndtering med faktiske serverforespørsler og relevante databaserettigheter; statiske tekstsøk er ikke nok. |
+| NFR-02 | Personvernkontroll blokkerer definerte PII-kategorier før ekstern sending på server; lagring, sletting og retensjon dokumenteres for faktisk database. |
+| NFR-03 | Minst to representative brukerreiser kan fullføres på relevant desktop/mobil uten blokkerende UI-feil; faktisk testutvalg og resultat rapporteres, ikke antas. |
+| NFR-04 | Simuler API-timeout, avbrutt nett og uventet svar; brukeren får håndterbar feilmelding, pågående state ryddes og sensitivt råmateriale lekker ikke i feil. |
+| NFR-05 | Full `npm test` og avhengighetskontroll er grønne på endelig commit, kodeendringer har avgrenset konsekvens og dokumentert regressjonskontroll. **Ikke oppfylt som siste-verifisert CI på main 12.11.** |
+
+## Brukerreiser – forslag til å gjøre UX-kravene kontrollerbare
+
+**UJ-01 – Forberede en vanskelig fraværssamtale (produksjonskjerne):** En leder velger relevant fraværstema, beskriver en *anonymisert* situasjon, får konkrete åpninger/spørsmål, stiller et oppfølgingsspørsmål, øver i simulatoren og velger å lagre/åpne egen historikk. For hvert steg noteres både forventet skjermatferd og testbevis. Ingen ekte medarbeideropplysninger benyttes.
+
+**UJ-02 – Sektorspesifikk kildebruk (utvidelse):** En leder vurderer et yrkesrelevant spørsmål, velger yrke/arbeidsgivertype bare dersom relevant, får KI-råd med riktig avgrenset kilde og kontrollerer at en tilsynelatende lik men irrelevant kilde **ikke** foreslås. Den samme casen kjøres med irrelevant yrke for å avdekke overaktivering. Funksjonen vurderes mot faktisk feature flagg.
+
+**UJ-03 – LIVE tale (kun framtidig/pilot, ikke sensorkjerne):** En pilotbruker sier en anonymisert setning på norsk dialekt, retter en feiltranskripsjon, prøver stemmekommando og kontrollerer at ingen tekst sendes uten personvernsjekk. Feil dokumenteres uten å oppgradere produksjonsstatus.
+
+## Kort begrepsliste – felles språk i PRD, UX og kode
+
+- **Samtalestøtte:** hele produktet; **hovedveiledning:** første strukturerte KI-råd.
+- **Situasjon:** lederens anonymiserte beskrivelse; **tema/undertema:** strukturerte emnevalg som styrer kontekst.
+- **Oppfølgingsdialog:** videre spørsmål/svar innenfor en sak, ikke en ny hovedsak.
+- **Samtaleøvelse/simulator:** fiktiv samtalepartner for trening, ikke en faktisk medarbeider.
+- **Personverngateway:** klient- og serverkontroll før overføring til ekstern KI.
+- **SOURCEBANK:** kuratert kildegrunnlag; **RAG:** en mulig framtidig hentegenereringsarkitektur, ikke dagens ferdige lokal-RAG.
+- **Golden/fasitcase:** et definert evalueringsscenario, ikke uavhengig juridisk eller HR-fasit.
+- **Pilot:** isolert utprøving; **produksjon:** versjon fra `main`/produksjonstjenesten.
+
+## Mål og motmål – til avklaring før kanonisk PRD
+
+- **SM-1 (maskinelt):** alle 9 hovedtemaer skal ha minst to gyldige golden-caser. Verifiser direkte fra `tests/AI-GOLDEN-CASES.json` og dokumenter faktisk antall per tema.
+- **SM-2 (funksjonelt):** UJ-01 skal kunne gjennomføres uten API-nøkkel i sensordemo og med reell KI i separat test. Disse bevisene må rapporteres separat.
+- **SM-3 (faglig sikkerhet):** på definerte høyrisikocaser skal det ikke være kritiske brudd på diagnose-, skyld- eller kildekrav. Dokumenter modell, dato, testsett og vurderingsmetode.
+- **SM-4 (brukervennlighet):** mål om at representative pilotbrukere kan fullføre UJ-01 på mobil uten hjelp. **Terskel og datagrunnlag må settes før vurderingen**, ikke konstrueres i etterkant.
+- **Motmål C-1:** kortere eller mer bastante svar må aldri belønnes dersom de øker risiko for feilaktige juridiske råd.
+- **Motmål C-2:** flere kilder skal ikke regnes som kvalitet dersom kildevirkeområdet blir feil.
+- **Motmål C-3:** grønn automatisk test skal ikke erstatte nødvendig menneskelig vurdering av reelle KI-svar.
+
+**Neste handling:** revider den kanoniske `PRD.md` først etter at forslagene er gjennomgått krav-for-krav mot eksisterende funksjoner og tester. Da flyttes kriteriene til riktige FR-/AI-/NFR-avsnitt og sene tillegg reorganiseres uten historietap; dette arbeidsdokumentet kan deretter arkiveres som dokumentert revisjonsgrunnlag.
