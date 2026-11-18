@@ -53,6 +53,40 @@ Den viktigste arkitekturregelen er:
 
 ---
 
+## 2.1 Architecture Spine – eksplisitt kobling til produktkrav
+
+Dette arkitekturskjelettet er oppdatert med henvisninger til den **gjeldende PRD-en**, basert på produksjonskoden i `main` (commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`). Hver rad peker på relevant arkitekturvalg, men er **ikke** automatisk bevis på funksjonell testdekning. Se `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md` for akseptanser og åpne verifikasjoner.
+
+| Arkitekturbeslutning / komponent | PRD-krav | Implementeringsspor | Særlig feilmodus / kontroll |
+|---|---|---|---|
+| AD-01: Responsivt klientlag med modulær CSS og eksplisitt state | FR-01, FR-02, FR-19, FR-20, FR-21, NFR-03, NFR-05 | `index.html`, `app.js`, `styles-*.css` | Ny samtale, sammenfoldet utskrift, mobil/desktop kan påvirkes forskjellig; fysisk UX/print-test gjenstår |
+| AD-02: Applikasjonsserver som tillitsgrense for KI og data | FR-03, FR-04, AI-01, AI-05, NFR-04 | `server.js`, `src/server/ai-schemas.js` | Eksternt KI-kall, timeout, ugyldig JSON og kontekstlekkasje må kontrolleres særskilt |
+| AD-03: Separat simulatorflyt med kontrollert medarbeiderrolle | FR-05, AI-02, AI-03 | `app.js`, `server.js`, `tests/test-simulation.js` | Oppdiktet diagnose, familie, skyld eller motiv; deterministisk strukturtest erstatter ikke full live-vurdering |
+| AD-04: Personverngateway i både klient og server | FR-06, NFR-02 | `src/privacy-detector.js`, `server.js`, `tests/test-privacy.js`, `tests/test-server-privacy.cjs` | Klient kan omgås; vurder personopplysning ved både første og senere input |
+| AD-05: Supabase Auth, sesjoner, database- og rollegrenser | FR-07, FR-08, FR-09, FR-11, FR-12, NFR-01 | `server.js`, `database/`, `scripts/create-invite.js` | RLS/IDOR og rolleeskalering; ekte integrasjonstest kreves utover kildekodesøk |
+| AD-06: Tilbakemelding og feilhåndtering med dataminimering | FR-10, NFR-02, NFR-04 | `app.js`, `server.js`, `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` | Rapportering må ikke kopiere identifiserende tekst eller lekkasje i feilrespons |
+| AD-07: Provider-/modellabstraksjon med servereide nøkler | FR-13, FR-14, AI-06, NFR-01 | `server.js`, `tests/test-model-compare.js` | Modeller kan gi ulike strukturer, kostnader og feil; full modellbenchmark er ikke dokumentert |
+| AD-08: Kuraterte kilder, profesjonsruting og kildeautoritet | FR-16, FR-18, FR-22, AI-04 | `data/SOURCEBANK.json`, `src/server/occupation-router.js`, `src/server/occupation-context.js`, `tests/test-source-policy.cjs` | Feil tariff/virkeområde, overdreven kildebruk, foreldet kilde; webdelen er delvis/prototype |
+| AD-09: Separat test-, golden- og reviewarkitektur | FR-15, FR-15A, FR-17, NFR-QA-01 | `tests/`, `docs/ai/AI-TESTPLAN.md`, `.github/workflows/quality-gate.yml` | Egen fasit er ikke ekspertvalidering; falsk grønn og feil i testene må håndteres |
+| AD-10: Direkte samtaleinngang uten full temameny | FR-23 | Kun hypotese i PRD, ikke implementert i `main` | **Ikke** samme funksjon som LIVE/taletranskripsjon; ingen produksjonsgodkjenning |
+
+### 2.1.1 Tverrgående avhengigheter og modularisering
+
+Arkitekturen er i hovedsak ett repo, med felles server og klient. Det gir enkel lokal oppstart og en sensorvennlig demo, men også risiko for at endringer i `app.js` eller `server.js` påvirker flere epics samtidig. Dette er **ikke** en fullt isolert microservice-/vertikal-slice-arkitektur. De eksisterende modulene i `src/server/` og de oppdelte CSS-filene reduserer enkelte avhengigheter, men hovedfilene er fortsatt felles. Det er en kjent tradeoff for en studentprototype, og begrunner bred regresjonstesting ved endring.
+
+**Kritisk avhengighetsrekkefølge:** tilgang/personvern og kilde-/responskontrakter må fungere før full brukerstøtte og simulator kan godkjennes; kvalitetstestene må lese den faktisk brukte koden; databasetilganger må verifiseres for flere brukere. Parallelt arbeid i isolerte oppgaver kan spare tid, men ingen flere dokumenter bør anta at kode ble skrevet av subagenter eller Git worktrees uten faktiske Git-spor.
+
+### 2.1.2 Ikke-funksjonelle feilscenarier som krever bevis
+
+- **NFR-01/02 – Sikkerhet/personvern:** test uautorisert direkte API, utløpt sesjon, kryssbruker-ID, server-side PII og kilde-/feillogger.
+- **NFR-03 – Brukervennlighet:** vurder UJ-01 og UJ-02 på mobil og desktop, inkludert minimert meny, skjermstørrelse, PWA og utskrift.
+- **NFR-04 – Robusthet:** simuler nettutfall, provider-timeout, feil JSON, tomt modellresultat og databaseavbrudd. Verifiser kontrollert avslutning og brukerfeedback; ikke tilskriv utestede garantier til kildekoden.
+- **NFR-05/NFR-QA-01 – Vedlikehold:** kvalitetssperren må kjøres på identifisert commit, og avhengighetssjekken må faktisk fullføres. Siste `main`-run 12.11.2026 feilet på repo-struktur og hoppet over dependency audit; se revisjonsrapport.
+
+### 2.1.3 Status for LIVE-funksjonen
+
+Tale/transkripsjon er et **isolert piloteksperiment**, ikke funksjonalitet i `main`, og ikke en ferdig del av AD-02 eller FR-23. En grønn Render-pilotdeploy er ikke bevis for at transkripsjon, talekommandoer, mikrofon, personvern og modellkvalitet er godkjent. Detaljene ligger på pilotgrenen i `docs/pilot/LIVE-V1-PILOT-SPEC.md`; ingen produksjonsmerge er godkjent.
+
 # 3. Arkitekturstatus
 
 | Område | Status |
