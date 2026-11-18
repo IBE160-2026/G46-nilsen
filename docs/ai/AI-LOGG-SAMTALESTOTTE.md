@@ -1566,3 +1566,16 @@ Brukeren ba om at CSS-arbeidet skulle videreføres direkte til appens øvrige st
 **Bevis:** [GitHub Actions #44364859955](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44364859955) grønn på funksjonscommit `5ba80c6f6` med 41 deltester, 90 Chrome-paritets-scenarier og audit uten funn på valgt nivå. Full rapport: `docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md`.
 
 **Begrensning:** Funksjonell modulering er påbegynt, ikke ferdig. Hovedfilene er store. 694 `!important` er fortsatt betydelig, Chrome-paritet tester ikke alle interaktive tilstander/print, og verken to reelle Supabase Auth-kontoer, produksjon eller LIVE-pilot ble berørt. Ingen selvstendig Claude-gjennomgang er gjennomført.
+
+
+---
+
+## 18.11.2026 – Ytterligere kildemodularisering, oppfølgingsspørsmål og print-regresjon
+
+**Problem og mål:** Etter at `app.js` og `server.js` var redusert, var kategorisering av Hjelp-kildebanken og selve KI-kilderangeringen fortsatt inne i Express-serveren. Bruker ønsket fortsettelse uten å måtte instruere hvert enkelt steg. KI skilte derfor ut `src/server/help-library.js` (kategori-/sektorkilder) og `src/server/source-ranking.js` (den eksisterende kildealgoritmen med eksplisitte data-/regelhjelpere), og flyttet lokal logikk for oppfølgingsspørsmål inn i `src/client/guidance-fallback.js`.
+
+**Test/feil/læring:** Laget `tests/test-help-library.cjs` og `tests/test-source-ranking.cjs` med anonyme syntetiske caser for arbeidsgivertype, yrke, avtaleområde, myndighetskilder, kilde-URL-deduplisering og friteksttreff. Første nye kilderangeringstest var feilkonstruert ved å plassere statens personalhåndbok blant globale kilder i stedet for det dedikerte avtalesettet; dette ble rettet i testdata. Deretter feilet en eldre statisk kildepolicytest fordi den fremdeles krevde den bokstavelige koden `if (!matched) continue;` i `server.js` etter at algoritmen var flyttet uendret. Testen ble rettet til å kontrollere serverens modulimport og faktiske regel i den nye modulen, **ikke** ved å fjerne selve policykravet. De opprinnelige poeng- og rangeringsreglene ble ikke bevisst endret.
+
+**CSS og brukervisjon:** Utvidet `tests/test-css-browser-regression.cjs` fra 90 til **99 faktiske Chrome-scenarioer**, med 6 ekstra for `@media print` og 3 for åpne `details`-elementer i Hjelp. Det er computed-style-/geometriparitet i en deterministisk demo, ikke fysisk utskrift eller full brukeropplevelsestest. Den opprinnelige budsjettgrensen på **694 `!important`** er uendret.
+
+**Faktisk bevis:** [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) på commit `70118fbc23fca83a84fb2c96523fabd55228cce8` **SUCCESS**: 43 deterministiske testdelsteg, Chrome parity 99 scenarier, audit uten funn på valgt nivå. Samlet aktuell linjestørrelse: `app.js` **4 274** og `server.js` **1 844**, fra opprinnelig 4 632/2 100 ved denne refaktorrunden. Hovedfilene er fortsatt store, særlig lange admin-/benchmark-rutiner. Ingen endringer på `main`, LIVE-pilot, database eller Render.

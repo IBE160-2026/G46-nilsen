@@ -15,12 +15,12 @@ Det er **ikke** et krav å oppnå en bestemt linjegrense. Målet er ansvarsskill
 
 | Mål | Før denne strukturfasen | Etter foreløpig strukturrevisjon |
 |---|---:|---:|
-| `app.js`, fysisk antall linjer | 4 632 | **4 329** (−303) |
-| `server.js`, fysisk antall linjer | 2 100 | **2 001** (−99) |
+| `app.js`, fysisk antall linjer | 4 632 | **4 274** (−358) |
+| `server.js`, fysisk antall linjer | 2 100 | **1 844** (−256) |
 | `!important` i all CSS | 845 før CSS-ryddingen | **694** (−151) |
 | Største CSS-innholdsfil | 6 402 linjer | **1 702 linjer** (`styles-responsive.css`) |
 | Innholdsmoduler under `styles-core.css` | Én kjempestor fil | **14 mindre, navngitte deler** |
-| Deterministiske `npm test`-delsteg | 36 før ny app/server-modularisering | **41 definert** |
+| Deterministiske `npm test`-delsteg | 36 før ny app/server-modularisering | **43 bestått** |
 
 Disse tallene beskriver faktisk kildekode og konfigurerte tester på revisjonsgrenen. De betyr **ikke** at samtlige gjenstående `!important` er nødvendige, at de 14 CSS-delene er perfekt funksjonelt isolert, eller at større filer er ferdig refaktorert.
 
@@ -28,7 +28,7 @@ Disse tallene beskriver faktisk kildekode og konfigurerte tester på revisjonsgr
 
 | Ny fil | Omtrent linjer | Ansvar | Klientavhengighet |
 |---|---:|---|---|
-| `src/client/guidance-fallback.js` | 188 | Deterministisk lokal reserveveiledning, blant annet fravær og tverrtemadilemma | `analyzeSituation`, `currentSubtopic` og `buildDilemmaUnderstanding` injiseres |
+| `src/client/guidance-fallback.js` | ca. 245 | Deterministisk lokal reserveveiledning **og utvelgelse av oppfølgingsspørsmål** | `analyzeSituation`, `currentSubtopic` og `buildDilemmaUnderstanding` injiseres |
 | `src/client/topic-search.js` | 68 | Søketekstnormalisering, aliastabell og ranking av tema/undertema | `topics` sendes inn, ingen DOM |
 | `src/client/situation-analysis.js` | 119 | Lokal, forklarbar analyse av fravær, oppmøte og overlappende hensyn | `topics` og aktuell temakontekst sendes inn |
 
@@ -44,6 +44,8 @@ De tidligere funksjonene i `app.js` ble erstattet med små delegatorer, slik at 
 |---|---:|---|---|
 | `src/server/history-contracts.js` | 36 | Sanitær avgrensning av historikkfelt, simuleringsturer, JSON-deserialisering, konvertering til API-respons | `tests/test-history-contracts.cjs` + eksisterende tobruker-HTTP-test |
 | `src/server/source-normalization.js` | 71 | Normalisering av kilde-URL, fjerning av trackingparametre, utledning av verifiserte eksterne kilder og deduplisering | `tests/test-source-normalization.cjs` + eksisterende kildepolicytester |
+| `src/server/help-library.js` | ca. 103 | Kategorisering av Hjelp-kildebank uten Express og datahenting | `tests/test-help-library.cjs`, også for yrkesnivå og duplikatkontroll |
+| `src/server/source-ranking.js` | ca. 93 | Eksisterende kildeutvelgelses-/rangeringsalgoritme med eksplisitte avhengigheter | `tests/test-source-ranking.cjs` og kildepolicytester |
 
 Rutene for innlogging, tilgangsstyring, database og KI er foreløpig **beholdt i `server.js`**. Å flytte dem uten egen route-/middleware-plan ville være en større sikkerhetsrisiko. Uttrekkene over reduserer kjernefilens ansvar for datatransformasjon samtidig som URL-er og HTTP-kontrakter kan beholdes.
 
@@ -55,11 +57,17 @@ Den første CI-kjøringen etter historikkuttrekket fant at en eldre simulator-te
 
 CSS-kjernen er delt via ordnede `@import`-kjeder. Modulene er **navngitt etter dominerende ansvar**, men grensene er fremdeles delvis kronologiske for å bevare kaskaderekkefølgen. Det er en mellomfase, ikke bevis på perfekt komponentdesign. Vi har redusert `!important` fra 845 til 694 gjennom fjerning av identiske blokker, fullt overstyrte regler, overflødige enkeltdeklarasjoner og ytterligere 17 deklarasjoner som var overstyrt av senere ubetingede regler.
 
-Den nye `tests/test-css-browser-regression.cjs` starter **to lokale sensordemo-servere**: Én på pinnefestet, tidligere testet referansecommit og én på aktuell revisjonsgren. Den bruker Chrome DevTools Protocol og sammenligner faktisk `getComputedStyle`, pseudo-elementer og elementgeometri i **90 scenarioer** (390, 768, 1440 piksler × lyst/mørkt/hybrid × minimert/utvidet sidemeny × fem sentrale visninger). Portspesifikke bilde-URL-er normaliseres, da de ikke er visuelle forskjeller.
+Den nye `tests/test-css-browser-regression.cjs` starter **to lokale sensordemo-servere**: Én på pinnefestet, tidligere testet referansecommit og én på aktuell revisjonsgren. Den bruker Chrome DevTools Protocol og sammenligner faktisk `getComputedStyle`, pseudo-elementer og elementgeometri i **99 scenarier**: 90 standardtilstander (390/768/1440 piksler × tre temaer × to sidemenytilstander × fem visninger), 6 tilfeller med `@media print` og 3 med åpne `details` i hjelpeseksjonen. Portspesifikke bilde-URL-er normaliseres, da de ikke er visuelle forskjeller. Print-media i Chrome er **ikke** verifikasjon av en fysisk utskrift eller PDF-layout.
 
 Tidligere grønn test etter siste CSS-rydding: [Quality Gate #44362233570](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44362233570), **CSS-browser parity OK: 90 scenarios**. Denne testen gir klart bedre grunnlag enn et rent søk i CSS-kilden, men dekker **ikke** innloggede visninger med realistisk brukerdata, fysiske touch-interaksjoner, dialogtilstander, reell utskrift eller visuell vurdering av det estetiske uttrykket.
 
 CSS-audit har fortsatt en eksplisitt CI-grense på **694 `!important`**. Det er et **maksimum for ny gjeld**, ikke et kvalitetsmål som sier at 694 er bra.
+
+### Teknisk gjeld som fremdeles er målbar
+
+Ny statisk stilkontroll viser **59 linjer over 280 tegn, 21 over 600 tegn og 9 over 1 000 tegn i `app.js`**. Flere er komprimerte admin-funksjoner for brukere, KI-forbruk, tilbakemeldinger og benchmarking. I `server.js` finnes 33 linjer over 280 tegn, men flere av de lengste er bevisst lange KI-instruksjonsstrenger. Å presse all kode sammen på én linje reduserer ikke kompleksitet; den administrative koden trenger fremtidig, funksjonsvis formatering og ansvarsdeling med egne UI-/rollebaserte tester før den flyttes.
+
+**Ikke gjør følgende uten bedre testgrunnlag:** Flytt Auth-/admin-ruter, oppdater kildeprioritet uten faktiske faglige caser, slett mange CSS-overstyringer eller erstatt store KI-promptblokker bare for å få ned linjetall. Størrelse er sekundært til korrekt oppførsel og sporbarhet.
 
 ## Kriterier før videre splitting
 
@@ -74,6 +82,6 @@ CSS-audit har fortsatt en eksplisitt CI-grense på **694 `!important`**. Det er 
 
 Arbeidet svarer konkret på forelesningenes fokus på **arkitektur før større endringer**, små verifiserbare stories, avhengighetskontroll, context engineering og **human in the loop**. Vi har ikke skrevet om hele systemet som om BMAD var fulgt fra første dag. Vi dokumenterer i stedet den faktiske, iterative prosessen: Filer vokste, de ble identifisert som teknisk gjeld, ansvar ble trukket ut, første tester avdekket gamle antakelser, og rettelser ble verifisert.
 
-Samtidig gjenstår den sentrale innvendingen: `app.js` på over 4 300 linjer og `server.js` på rundt 2 000 linjer er fremdeles store. Dette er derfor **målbar framgang med gjenværende teknisk gjeld**, ikke ferdig profesjonell arkitektur. Neste beslutning bør bygge på faktisk browser-/runtime-evidens og isolere UI- og API-ansvar som det finnes gode tester for, ikke en ren linjetallmålsetting.
+Samtidig gjenstår den sentrale innvendingen: `app.js` på **4 274 linjer** og `server.js` på **1 844 linjer** er fremdeles store. Dette er derfor **målbar framgang med gjenværende teknisk gjeld**, ikke ferdig profesjonell arkitektur. Neste beslutning bør bygge på faktisk browser-/runtime-evidens og isolere UI- og API-ansvar som det finnes gode tester for, ikke en ren linjetallmålsetting.
 
-**Bekreftet teknisk test:** [Quality Gate #44364859955](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44364859955) på siste samlede funksjonscommit `5ba80c6f627a863a4868d3c96dc15233875fc7d2` er **SUCCESS** med 41 deterministiske deltester, 90 Chrome-scenarioer og dependency audit uten funn på valgt nivå. Dette er revisjonsgren-test, ikke produksjonssetting. Refleksjonens ordgrense og formkrav i Canvas er fortsatt ikke kontrollert.
+**Nyeste bekreftede tekniske test:** [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) på commit `70118fbc23fca83a84fb2c96523fabd55228cce8` er **SUCCESS** med 43 deterministiske deltester, 99 Chrome-scenarioer og dependency audit uten funn på valgt nivå. Dette er revisjonsgren-test, ikke produksjonssetting. Refleksjonens ordgrense og formkrav i Canvas er fortsatt ikke kontrollert.

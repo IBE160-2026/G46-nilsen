@@ -4,6 +4,10 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 
 ## Utført i dokumentasjonsrunden (ikke det samme som full produkttest)
 
+- [x] Påfølgende arkitekturpass: `app.js` 4 274 linjer, `server.js` 1 844, 43 automatiske testdelsteg og 99 Chrome-tilstander grønt på run `44402558539`.
+- [x] Hjelp-kildebank og rangeringsalgoritme flyttet til rene testbare servermoduler; oppfølgingsspørsmål til fallback-klientmodul. Test med arbeidsgivertype, yrkesomfang, statlig avtaleområde, juridisk relevans og duplikat-ID-er.
+- [ ] Restgjeld: de komprimerte admin-rutinene i app.js (9 linjer over 1000 tegn) trenger separat review og virkelig innlogget testgrunnlag før større omskriving.
+
 - [x] Konsolidert `docs/bmad/PRD.md` etter faglærertilbakemelding 12.11: FR-15A, FR-19–23 og NFR-QA-01 i hovedkrav, 36 krav med observerbare akseptanser, tydelig MVP, brukerreiser, mål, motmål og begreper.
 - [x] Flyttet datert test-/statushistorikk uten sletting til `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`.
 - [x] Knyttet 36/36 eksakte krav-ID-er til Architecture (AD-01–10), Epics/Stories (§ 25.3) og testbevisregister. Dette er **sporbarhet**, ikke bestått testdekning.

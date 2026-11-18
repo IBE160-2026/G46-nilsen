@@ -8,6 +8,9 @@ Hele prosjektet kontrolleres på separat dokumentasjonsgren med `main` som kontr
 
 ## Revisjonsstatus 18.11.2026 – hele Samtalestøtte (separat dokumentasjonsgren)
 
+- [x] Ny modulering av Hjelp-kildebiblioteket og kildeutvelgelsen på server, pluss lokal oppfølgingsspørsmålslogikk på klient. Nye isolerte tester og oppdaterte kildepolicytester, uten tilsiktet endring i rangeringen.
+- [ ] Manuell verifikasjon på fysisk mobil, faktisk utskrift, innlogget admin og kildebank på tvers av yrker og temaer gjenstår.
+
 - [x] Kartlagt 36 gjeldende krav-ID-er (23 FR, FR-15A, 6 AI, 5 NFR, NFR-QA-01)
 - [x] Fulgte opp faglærers PRD-tilbakemelding med samlet kravstruktur, observerbare akseptanser, scope, mål/motmål, brukerreiser og glossar
 - [x] Flyttet tidligere teststatuser og daterte tillegg til `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`, uten tap av historikk
@@ -50,7 +53,7 @@ Dette er en datert revisjonsmilepæl, ikke en sluttrapport eller godkjenningsatt
 
 - [x] CSS: 845 → 694 `!important`, 14 funksjonsnavngitte ordnede delmoduler, 90 Chrome-paritetskontroller bestått mot tidligere fungerende commit.
 - [x] app.js/server.js: fem separat testbare ansvar trukket ut til `src/client/` og `src/server/`, app.js 4 632 → 4 329 linjer og server.js 2 100 → 2 001.
-- [x] 41 deterministiske deltester, Chrome-paritet og audit bestått i GitHub Actions `44364859955` på siste funksjonscommit. Spor: `docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md`.
+- [x] 43 deterministiske deltester, 99 Chrome-scenarier inkl. print-media og åpne kildebank-details, npm audit grønt i [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539).
 - [ ] Manuell kvalitetskontroll på faktisk mobil/utskrift, reell tobruker-RLS og faglig menneskelig review av sammenslåing gjenstår.
 
 ## Arbeidsregel
