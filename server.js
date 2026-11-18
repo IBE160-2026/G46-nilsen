@@ -1131,6 +1131,11 @@ app.post("/api/history", requireUser, async (req, res) => {
   }
 
   const { data, error } = await query;
+  // En oppdatering av en ukjent eller annen brukers ID gir null rader pga. RLS.
+  // Returner samme nøytrale 404 i begge tilfeller (ikke lek opplysninger om eier).
+  if (body.id && !error && !data) {
+    return res.status(404).json({ error: "NOT_FOUND", message: "Samtalen ble ikke funnet." });
+  }
   if (error || !data) {
     console.error("Lagre historikk-feil:", error);
     return res.status(500).json({ error: "HISTORY_SAVE_FAILED", message: "Kunne ikke lagre samtalen." });
