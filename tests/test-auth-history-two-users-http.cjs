@@ -108,18 +108,22 @@ const mock = http.createServer(async (req, res) => {
 const sleep = ms => new Promise(resolve => setTimeout(resolve, ms));
 const cookie = user => `samtalestotte_access=local-${user}-access; sam talestotte_refresh=local-${user}-refresh`.replace("sam talestotte", "samtalestotte");
 async function api(url, user, method = "GET", payload) {
-  const r = await fetch(appUrl + url, {
-    method,
-    headers: {
-      ...(user ? { Cookie: cookie(user) } : {}),
-      "Content-Type": "application/json",
-      Origin: appUrl
-    },
-    body: payload === undefined ? undefined : JSON.stringify(payload),
-    signal: AbortSignal.timeout(7000)
-  });
-  const body = await r.json().catch(() => null);
-  return { status: r.status, body, headers: r.headers };
+  try {
+    const r = await fetch(appUrl + url, {
+      method,
+      headers: {
+        ...(user ? { Cookie: cookie(user) } : {}),
+        "Content-Type": "application/json",
+        Origin: appUrl
+      },
+      body: payload === undefined ? undefined : JSON.stringify(payload),
+      signal: AbortSignal.timeout(7000)
+    });
+    const body = await r.json().catch(() => null);
+    return { status: r.status, body, headers: r.headers };
+  } catch (error) {
+    throw new Error(`Test HTTP timeout: ${method} ${url} as ${user || "anonymous"}: ${error.message}`, { cause: error });
+  }
 }
 (async () => {
   await new Promise(resolve => mock.listen(mockPort, "127.0.0.1", resolve));
