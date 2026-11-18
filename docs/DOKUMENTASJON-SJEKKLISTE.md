@@ -44,6 +44,10 @@ Dette er en datert revisjonsmilepæl, ikke en sluttrapport eller godkjenningsatt
 - [x] To eksakt dupliserte KI-logo-regelblokker fjernet fra `styles-overrides.css` (−25 linjer, −13 `!important`). PR Quality Gate `44350121403` bestått.
 - [ ] Før større CSS-refaktorering: faktisk visuell før-/etter-sjekk i mobil/desktop/tre temaer, minimert sidemeny, kildebankpiler, simulering, utskrift; se `docs/CSS-REVISJON-2026-11-18.md`.
 
+- [x] Utvidet CSS-revisjon: 75 fullt overstyrte blokker, 265 enkeltdeklarasjoner og til sammen 134 `!important` fjernet; modulert 6 000-linjers core i fire ordnede filer.
+- [x] Oppdatert server, PWA og tester for nye CSS-ressurser. Modul-SHA-verifikasjon og 36-testers Quality Gate bestått, run `44356425430`.
+- [ ] Visuell CSS-regresjon på desktop/mobil/tema/kildebank/simulator/print gjenstår fortsatt.
+
 ## Arbeidsregel
 
 Ved større endringer skal minst disse fire spørsmålene vurderes:

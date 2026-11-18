@@ -34,6 +34,36 @@ Alle 36 krav-ID-er er referert i arkitektur, epics/stories og testbevisregister.
 - **Reell server, isolerte avhengigheter:** `tests/test-api-boundary-http.cjs` verifiserer uinnloggede kall, Origin og interne assets. `tests/test-auth-history-two-users-http.cjs` bruker lokal fake Auth/PostgREST. `tests/test-ai-provider-errors-http.cjs` bruker lokal fake provider. De beviser serverens HTTP-kontrakter i simulert miljø, **ikke** bruk av ekte produksjonsnøkler eller reell RLS med to kontoer.
 - **Supabase:** Metadata og grants fra den tilknyttede databasen er inspisert skrivebeskyttet (10/10 tabeller RLS på, eierskapspolicyer på `conversations`). Dette er ikke samme bevis som en innlogget bruker-til-bruker-test.
 
+## Ny kode- og testendring: CSS-modulering og redusert overstyring
+
+**Gjennomført på separat revisjonsgren, ikke produksjon:**
+
+1. Fjernet to 100 % identiske KI-logo-blokker: **−25 linjer, −13 `!important`**.
+2. Fjernet **75 fullt overstyrte CSS-blokker**: **−443 linjer, −52 `!important`**. Blokkene var for de samme selektorene, egenskapene og identiske at-regelkontekstene helt overstyrt av senere gyldige deklarasjoner.
+3. Fjernet **265 overstyrte enkeltdeklarasjoner** inne i blokker som ellers måtte beholdes: **−266 linjer, −69 `!important`**. Enkeltdeklarasjoner ble bare fjernet der alle selektorene i originalblokken hadde en senere deklarasjon for samme egenskap og identisk scope med minst like sterk prioritet. Senere verdier med `var()`, `env()` og enkelte potensielt inkompatible funksjoner ble holdt utenfor.
+4. Delte den 6 011 linjer lange `styles-core.css` i **fire moduler i opprinnelig rekkefølge**, rundt 1 500 linjer hver: `styles-core-foundation.css`, `styles-core-dialogue.css`, `styles-core-simulation.css` og `styles-core-utilities.css`. `styles-core.css` er nå kun en liten importfil. Serverens public asset-liste, demomodus, service-workerens offline-cache, repo-test og UI-testenes CSS-innlesing er oppdatert.
+5. Laget **`tests/test-css-module-order.cjs`**, som sjekker den nøyaktige importrekkefølgen og sammenligner sammenkjedede modulbytes med den opprinnelige `styles-core.css` ved Git blob-SHA **`28de97a17d2d5f8dad1265c51b5ec123b49fcadd`**. Det er et konkret bevis på at *moduldelingen i seg selv* ikke har endret én byte i kjerne-CSS-reglene. Testene totalt er nå **36 delsteg**.
+
+### Målt status
+
+| Kontroll | Før stor revisjon | Etter større revisjon |
+|---|---:|---:|
+| `!important` i fysisk CSS-kode | **845** | **711** (−134, ca. 16 %) |
+| Samlet fysisk linjetall inkludert importfiler | **9 870** | **ca. 9 146** (−724, ca. 7 %) |
+| Største CSS-fil | **6 402 linjer** | **1 709 linjer** (responsiv) |
+| Kjerne-CSS i én fil | **6 402 linjer** | **4 filer på ca. 1 500 linjer, pluss importer** |
+| Samme selector/egenskap/scope gjentatt | **587 grupper** | **108 grupper** |
+| Nye `!important` etter eldre `!important` for identisk selector/egenskap/scope | **149 fysiske deklarasjoner** | **19 fysiske deklarasjoner** |
+
+**Målepresisering:** `npm run audit:css` summerer **9 125 linjer i de seks CSS-innholdsfilene** (fire kjernedeler + responsive + overrides). Til totalsummen rundt 9 146 kommer også de to små importfilene `styles-core.css` og `styles.css`. Kildene har avsluttende linjeskift, så forskjeller på et fåtall linjer ved splitting er ren opptellingsmetode. `!important`-tellingen påvirkes ikke av dette.
+
+### Verifisering og stoppkriterium
+
+- Ryddecommits `545d19ce` og `3676885e` verifiserte uendret **sist vinnende deklarasjon** for over 5 300 eksakte kombinasjoner av selector/egenskap/at-rule-scope før/etter. Det er statisk kontroll, **ikke** et komplett bevis på kaskaden mellom ulike selektorer, inline style, shorthand eller nettleserstøtte.
+- Etter moduldeling feilet en tidlig CI fordi noen tester fortsatt leste den gamle CSS-listen. Testinnlesingen og import-audit ble deretter oppdatert. [Grønn Quality Gate på moduloppdelingen](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44356425430), commit `8b084af4`: **36 testdelsteg**, CSS-modul-SHA-test, audit og 0 funn i dependency-scan på valgt nivå. Dette er grunnlaget før denne dokumentasjonsoppdateringen.
+- **Fremdeles åpent:** visuell før-/etter-kontroll på ekte desktop/mobil i lys/mørk/hybrid, minimert og utvidet sidepanel, kildebankens kategori-/yrkes-/kildepiler, samtalesimulator og utskrift. En grønn CI og en byteidentisk moduldeling **erstatter ikke** dette. Vi fjerner ikke ytterligere hundrevis av `!important` bare for å nå et vilkårlig tall.
+
+
 ## Kodeendringer som krever særskilt gjennomgang
 
 | Fil | Endring | Kontroll / risiko |

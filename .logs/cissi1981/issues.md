@@ -31,6 +31,9 @@ Oppdatert 18.11.2026. **Omfatter hele prosjektet.** `main` er produksjonsgrunnla
 - [x] Gjennomført CSS-audit med konkrete målinger og automatisk rapportering i PR CI, pluss to trygt fjernede KI-logo-duplikatblokker (−25 linjer, −13 !important).
 - [ ] CSS: sammenlign fysisk mobil/desktop/lys/mørk/hybrid, simulator, topbar/minimert navigasjon, kildebankens piler og print før flere kaskadeoppryddinger. 136 fysiske senere !important er kun **kandidater**, ikke garantert død kode.
 
+- [x] Kraftigere CSS-opprydding: 75 fullt overstyrte regler + 265 enkeltdeklarasjoner fjernet; 845 → 711 `!important`, core delt fra ~6 000 linjer til fire moduler; 36 tester grønne, run `44356425430`.
+- [ ] Full visuell CSS-regresjon i nettleser, særlig mobil, kildebankpiler, logo/tema, minimert meny og utskrift. Ikke erklært ferdig bare ut fra statisk kaskade eller GitHub Actions.
+
 ## Åpne oppgaver før sluttgodkjenning
 
 - [x] **Revisjonsgren Quality Gate utført 18.11:** run `44336281200` SUCCESS på `d9234879...`, 31 deltester + npm audit 0 sårbarheter + golden-opptelling 66/40.

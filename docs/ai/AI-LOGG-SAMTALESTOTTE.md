@@ -1540,3 +1540,14 @@ Bruker ba om gjennomgang av stor CSS-fil, mange `!important`-overstyringer og mu
 KI kartla gjentatte selektorer/egenskaper med identiske `@media`-kontekster og opprettet en reproduserbar, **skrivebeskyttet** CSS-auditscript `scripts/audit-css.cjs` (`npm run audit:css`), kjørt automatisk i PR Quality Gate. Baseline viste 149 *fysiske* deklarasjoner hvor `!important` ble fulgt av en ny `!important` på samme selektor/egenskap/at-kontekst. Funn ble vurdert mot den mobile simulatoren, temaer og pilene i kildebanken – områder med høy risiko for skjulte visuelle regresjoner.
 
 Kun to **100 % identiske** KI-logo-blokker i `styles-overrides.css` ble fjernet (25 linjer og 13 `!important`). Sluttmåling: 9 845 linjer/832 `!important` og 136 tilsvarende kaskadekandidater. Full PR Quality Gate `44350121403` besto. **Ingen manuell skjermbilde-/nettlesertest ble påstått**, og større CSS-refaktorering ble uttrykkelig utsatt til visuelt før-/etter-grunnlag foreligger. Hele funnlisten og arbeidet videre: `docs/CSS-REVISJON-2026-11-18.md`. `main`, produksjons-Render og LIVE-pilot er uendret.
+
+
+---
+
+## 18.11.2026 – Utvidet CSS-refaktorering på revisjonsgren
+
+Etter forespørsel om kraftigere rydding ble det gjort to flere konservative pass over den faktiske CSS-kaskaden. Pass 1 fjernet **75 helt overstyrte regelblokker** (−443 linjer, −52 `!important`); pass 2 fjernet **265 overstyrte enkeltdeklarasjoner** (−266 linjer, −69 `!important`). Sammen med første identiske-duplikat-pass ble reduksjonen **845 → 711 `!important`**. Statisk sammenligning av siste deklarasjon for eksakt normalisert selektor, egenskap og identisk at-regelkontekst fant ingen endret sluttverdi i de aktuelle passene. Den metoden beviser ikke visuell likhet mellom overlappende selektorer.
+
+Som et separat strukturtiltak ble `styles-core.css` på rundt 6 000 linjer **delt byteidentisk** i `styles-core-foundation.css`, `styles-core-dialogue.css`, `styles-core-simulation.css` og `styles-core-utilities.css`. CSS-ressurslisten i server, demo og PWA ble utvidet. Noen eksisterende tester leste bare gamle CSS-filer og ble oppdatert; CSS-auditen måtte skille root- og underimporter. En ny test, `tests/test-css-module-order.cjs`, kontrollerer at de fire modulfilene sammen har eksakt samme Git blob-SHA som den gamle core-filen på commit `3676885e`.
+
+**Bevis:** Full PR Quality Gate `44356425430` **SUCCESS**, 36 deltester og CSS-audit. Oppdatert `docs/CSS-REVISJON-2026-11-18.md`. **Åpent:** ingen faktisk browser-, mobil-, print- eller skjermbildebasert før-/etter-kontroll; ingen merge eller deploy. Denne begrensningen skal ikke skjules i refleksjonsrapporten.
