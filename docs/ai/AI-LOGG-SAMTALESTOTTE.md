@@ -1463,3 +1463,31 @@ Jeg beskriver ikke dette som «KI-en er bevist korrekt». Live modelltesting er 
 
 Full sporbar rapport:
 `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
+
+
+---
+
+## 18.11.2026 – helhetlig BMAD-/dokumentasjonsrevisjon etter forelesninger og faglærertilbakemelding
+
+**Bakgrunn / oppdrag til KI:** Prosjekteieren ba om en svært nøye gjennomgang av **hele Samtalestøtte-prosjektet** opp mot forelesningene og Git-dokumentasjonen. Særlig viktig var å vise faktisk BMAD-/KI-styring, ikke bare mange filer, samt å holde siste LIVE/talefunksjon eksplisitt utenfor produksjon.
+
+**Dokumentert kildegrunnlag:** Faglærers formative PRD-tilbakemelding 12.11 (`docs/bmad/tilbakemelding-prd.md`), Product Brief-tilbakemelding 26.10, transkripsjoner av forelesningene, hoveddokumentene i `main`, GitHub-treet, testfilene og siste GitHub Actions-jobblogg. Utgangspunkt: `main` commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf` 12.11.
+
+**KI-bidrag og endringer (på isolert dokumentasjonsgren):**
+
+- registrerte 36 gjeldende krav-ID-er, der FR-15A og NFR-QA-01 først lå i senere tillegg
+- flyttet gjeldende krav til PRD §§ 8–10 og historiske tester/status til `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`, uten å slette opprinnelig innhold
+- foreslo observerbare akseptanser, brukerreiser og konkrete motmål
+- koblet alle 36 krav til dokumenterte arkitekturkomponenter, epics/stories og et eget testbevisregister
+- dokumenterte arkitekturavhengigheter med et redigerbart diagram, og presiserte at dette er en **illustrasjon**, ikke en maskinelt utledet dependency-graf
+- skilte statiske testasserts, deterministiske regeltester, E2E/integrasjon, live KI og menneskelig testing
+- identifiserte siste faktiske `main`-CI som **feilet** 12.11 (run `43205812288`) fordi struktursjekken avviste faglærers `.docs`-mappe; dependency audit ble hoppet over. KI foreslo og la inn en snever tillatelse for **kun** lærerens konkrete referansefil på dokumentasjonsgrenen, ikke en generelt svekket kvalitetskontroll
+- oppdaterte implementeringsplanen og refleksjonsutkastet med forholdet mellom den reelle utviklingshistorien og forelesningens metodikk, uten å hevde at prosjektet brukte parallelle subagenter/worktrees som ikke er dokumentert
+
+**Menneskelig styring og avgrensning:** Oppdraget er gitt og prioriteringen bestemt av prosjekteieren. KI har gjennomført dokumentrevisjonen via GitHub-tilkobling; det betyr **ikke** at prosjekteieren selv har håndkontrollert hvert nytt akseptansekriterium eller at et uavhengig fagmiljø har godkjent dette. Det er derfor lagt inn verifikasjonsforbehold og en åpen oppgaveliste. Kravene må testes mot kode og reell brukerflyt før status kan oppgraderes.
+
+**Kritisk læring:** 36/36 eksakte krav-ID-er i flere dokumenter er *sporbarhet*, ikke 36/36 beståtte funksjonstester. En omfattende testpakke kan inneholde strukturelle kontroller som ikke dokumenterer faktisk HTTP-/database-/mobilatferd. En historisk grønn CI-kjøring kan heller ikke brukes til å skjule senere feil. Dokumentasjon ble derfor behandlet som en kvalitets- og risikostyringsoppgave, ikke som etterrasjonalisering eller bare språkvask.
+
+**Ikke utført / ikke påstått:** Ingen merge til `main`, ingen prod-Render-deploy, ingen ny faktisk `npm test`/dependency audit eller live KI-kjøring i denne runden. LIVE/tale er fortsatt isolert pilot under testing; alternativ direkte tekstinngang (FR-23) er en annen hypotese og ikke ferdig produksjonsfunksjon.
+
+**Sporet videre:** `docs/REVISJON-IBE160-2026-11-18.md`, `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`, `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` og `.logs/cissi1981/issues.md`.
