@@ -4,7 +4,7 @@
 **Dokumenttype:** Epics & User Stories  
 **Rammeverk:** BMAD  
 **Status:** Revidert med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 02.11.2026  
+**Versjon ved dokumentasjon:** `main` v20.11.5, historiske stories supplert med kravsporing 18.11.2026  
 **Språk:** Norsk
 
 ---
@@ -88,6 +88,39 @@ Stories merkes med:
 - sammenleggbare områder er visuelt forståelige
 - chevron/indikator viser at innhold kan åpnes
 - sekundære sider bruker progressiv visning der dette er hensiktsmessig
+
+---
+
+## Story 1.4 – Utskrift av komplett råd (FR-20)
+
+**Status:** IMPLEMENTERT I KODE – ENDE-TIL-ENDE-UTSKRIFT MÅ VERIFISERES.
+
+**Som leder** vil jeg skrive ut situasjonen og både hoved- og oppfølgingsråd slik at jeg kan forberede meg uten å ta med navigasjonen.
+
+### Akseptansekriterier
+- situasjon, relevant tema, hovedråd og eventuelle videre spørsmål/svar følger med
+- sammenfoldet innhold presenteres lesbart i utskriftsversjonen
+- navigasjon, meldingsknapper og simulator vises ikke
+- print-preview testes faktisk i nettleser; statisk CSS-sjekk alene er utilstrekkelig
+
+### Spor
+`app.js`, `styles-core.css`, `styles-responsive.css`; manuell printkontroll gjenstår.
+
+---
+
+## Story 1.5 – Minimert navigasjon og mobilflyt (FR-21, NFR-03)
+
+**Status:** IMPLEMENTERT I KODE – MANUELL SLUTTVERIFISERING GJENSTÅR.
+
+**Som bruker** vil jeg få en rolig, plassbesparende navigasjon som fortsatt er enkel å åpne.
+
+### Akseptansekriterier
+- desktop starter med minimert sidebar; brukerens eksplisitte valg huskes
+- ikoner/tooltips i minimert modus er forståelige
+- endringen skader ikke mobilnavigasjon, overskrift eller PWA-flate
+
+### Spor
+`app.js`, `styles-responsive.css`, `tests/test-pilot-ux.cjs`; fysisk mobiltest er eget bevisnivå.
 
 ---
 
@@ -276,6 +309,22 @@ Siste kontroll:
 
 - gammel sak skal ikke lekke inn i ny sak
 - relevant samtaletilstand nullstilles
+
+---
+
+## Story 5.3 – Neste spørsmål i oppfølgingsflyten (FR-19)
+
+**Status:** IMPLEMENTERT I KODE – RELEVANS OG UI-FLYT MÅ VERIFISERES.
+
+**Som leder** vil jeg få 2–4 korte forslag til hva jeg kan spørre om videre, uten å bli fratatt fritekst.
+
+### Akseptansekriterier
+- forslag følger gjeldende kontekst og siste spørsmål/svar
+- det går fortsatt an å skrive egne spørsmål
+- forslag fra én sak følger ikke med til neste sak
+
+### Spor
+`app.js`, `server.js`; manuell brukerflyt er foreløpig eget kontrollpunkt.
 
 ---
 
@@ -616,6 +665,23 @@ Dette førte til mer kontekstbevisst testlogikk, helords-/frasematching, strenge
 
 ---
 
+## Story 13.4 – Negativ kildefasit og kildepresisjon (FR-15A)
+
+**Status:** IMPLEMENTERT SOM TESTGRUNNLAG; FERSK LIVE-VERIFISERING ER IKKE UTFØRT I DENNE REVISJONEN.
+
+**Som systemeier** vil jeg oppdage plausible, men feilaktige profesjons-, tariff- og kildevalg – ikke bare om svaret inneholder en kilde.
+
+### Akseptansekriterier
+- de 14 sektorene har positive og negative caser
+- kildefasiten kan kreve eller forby konkrete `source_id`-verdier
+- forbudt kilde regnes som kritisk avvik
+- resultat knyttes til testmodell, commit og dato; fasiten er ikke uavhengig ekspertgodkjenning
+
+### Spor
+`tests/AI-GOLDEN-CASES.json`, `tests/test-golden-occupation-routing.cjs`, `tests/test-ai-golden.js`, `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
+
+---
+
 # Epic 14 – Modellbenchmark
 
 ## Story 14.1 – Faste benchmark-caser
@@ -709,6 +775,23 @@ Full økonomisk produktmodell er ikke del av dagens leveranse.
 
 ---
 
+## Story 16.3 – Yrkesrelevans og kildeautoritet (FR-22, AI-04)
+
+**Status:** IMPLEMENTERT I PRODUKSJONSKODE / STYRES AV DRIFTSFLAGG. FAKTISK PRODUKSJONSFLAGG ER IKKE VERIFISERT I DENNE REVISJONEN.
+
+**Som leder** vil jeg bare få yrkes- eller avtalespesifikke kilder når de faktisk er relevante og korrekt avgrenset.
+
+### Akseptansekriterier
+- yrkesvalg er valgfritt
+- irrelevante yrker fører ikke til profesjonsjuss
+- arbeidsgivertype/tariff blir ikke gjettet
+- forbudte eller feil-sektorkilder skal oppdages i negative caser
+
+### Spor
+`src/server/occupation-router.js`, `src/server/occupation-context.js`, `data/OCCUPATION-SOURCE-MAP.json`, `tests/test-occupation-router.cjs`, `tests/test-source-policy.cjs`.
+
+---
+
 # Epic 17 – Web- og kildeanalyse
 
 ## Story 17.1 – Kontrollert webbruk
@@ -786,6 +869,22 @@ Mulig metadata:
 **Status:** IMPLEMENTERT PÅ PROTOTYPENIVÅ
 
 Serverkode, tester, SQL-filer og hemmeligheter skal ikke eksponeres som ordinære frontendressurser.
+
+---
+
+## Story 18.5 – Kontrollert feilrespons fra eksterne tjenester (NFR-04)
+
+**Status:** ARKITEKTURKRAV – ENDE-TIL-ENDE-TEST AV ALLE FEILSCENARIER GJENSTÅR.
+
+**Som bruker** vil jeg få forståelig respons når KI, database eller nettverk svikter uten at personvernet eller samtaletilstanden lekker.
+
+### Akseptansekriterier
+- timeout og ugyldig modellrespons gir ikke uendelig venting
+- tekniske detaljer og nøkler eksponeres ikke i klienten
+- delvis gjennomført forespørsel etterlater ikke utilsiktet aktiv samtale eller dataoverføring
+
+### Spor
+`server.js`, `app.js`, `docs/bmad/ARCHITECTURE-BMAD.md`; egne feilinjeksjonstester må etableres/verifiseres.
 
 ---
 
@@ -941,6 +1040,22 @@ Tidlige versjoner ble utviklet før prosjektet var koblet til Git/GitHub og ble 
 
 ---
 
+## Story 22.4 – Helhetlig CI og testdekning (NFR-QA-01)
+
+**Status:** KVALITETSPORT IMPLEMENTERT; SISTE `main`-RUN 12.11.2026 FEILET.
+
+**Som evaluator** vil jeg se om endelig commit består deterministiske tester, sikkerhetsskanning og golden-dekningsoversikt.
+
+### Akseptansekriterier
+- `npm ci`, `npm test`, `npm audit --omit=dev --audit-level=high` og golden-oppsummering blir gjennomført
+- en feil gir feilstatus, ikke skjult grønn status
+- run-ID, commit og eventuelle hoppet-over steg dokumenteres
+
+### Spor
+`.github/workflows/quality-gate.yml`, `tests/test-repo-structure.cjs`, `docs/REVISJON-IBE160-2026-11-18.md`.
+
+---
+
 # Epic 23 – Framtidig lukket/offline løsning
 
 ## Story 23.1 – Intern KI
@@ -970,6 +1085,23 @@ En framtidig variant kan bruke:
 En framtidig lukket variant kan bruke lokale godkjente dokumenter i stedet for ekstern webtilgang.
 
 Dette er ikke del av dagens implementerte leveranse.
+
+---
+
+# Epic 24 – Alternativ direkte inngang (hypotese)
+
+## Story 24.1 – Direkte tekstbasert samtaleinngang (FR-23)
+
+**Status:** VIDERE ARBEID / HYPOTESE – **IKKE PRODUKSJONSSATT**.
+
+**Som leder** ønsker jeg å kunne starte en sak med en direkte situasjonsbeskrivelse uten å velge et fullt tema/undertema først, dersom det viser seg mer brukervennlig og minst like trygt.
+
+### Akseptansekriterier før eventuell implementasjon
+- bruker kommer raskere til relevant råd uten økt risiko for generiske svar
+- personvern, kilde-/rollegrenser og kontekst fungerer like godt
+- løsningen vurderes som alternativ/supplement til dagens strukturerte inngang, ikke automatisk som erstatning
+
+**Viktig avgrensning:** FR-23 beskriver en alternativ **inngangs-/navigasjonsflyt**. Det er ikke synonymt med LIVE-transkripsjon; LIVE/tale er et annet, isolert piloteksperiment på `pilot-ux-v20.11` og er heller ikke produksjonssatt.
 
 ---
 
@@ -1025,6 +1157,7 @@ Eksempel:
 | 21 Brukertesting | Delvis | testopplegg |
 | 22 Repo/leveranse | Implementert | README/Git |
 | 23 Lukket løsning | Videre arbeid | arkitekturdokument |
+| 24 Direkte inngang | **Hypotese / videre arbeid** | FR-23; ingen produksjonsimplementasjon |
 
 ---
 
@@ -1053,7 +1186,7 @@ Denne matrisen er en navigasjonshjelp. Detaljerte krav og statuser ligger fortsa
 ---
 
 
-## 25.2 Full PRD-kravdekning
+## 25.2 Historisk PRD-kravdekning (FR-01–FR-18)
 
 | PRD-krav | Epic/Story | Leveransestatus | Viktigste bevis |
 |---|---|---|---|
@@ -1076,9 +1209,54 @@ Denne matrisen er en navigasjonshjelp. Detaljerte krav og statuser ligger fortsa
 | FR-17 Brukertesting | Epic 21 | Delvis/videre arbeid | testopplegg og feedbackfunksjon; fullskala test gjenstår |
 | FR-18 Web- og kildeanalyse | Epic 17 | Delvis/prototype | server/admin, kildelogging og SOURCEBANK |
 
-Alle funksjonelle PRD-krav er dermed knyttet til minst ett Epic/Story-område og et konkret implementasjons-, dokumentasjons- eller testspor. Statuskolonnen er bevisst brukt for å unngå at prototype- eller viderearbeid fremstilles som ferdig produksjonsfunksjonalitet.
+Denne **historiske** tabellen dekker FR-01–FR-18 slik status ble dokumentert før senere tillegg. Den var ikke fullstendig for dagens PRD. Den oppdaterte totaloversikten nedenfor tar med FR-15A, FR-19–FR-23, AI-krav og NFR-krav, og skiller kravsporing fra ferdig testbevis. Statuskolonnen er bevisst brukt for å unngå at prototype- eller viderearbeid fremstilles som ferdig produksjonsfunksjonalitet.
 
 ---
+
+## 25.3 Gjeldende krav-til-story-kobling – revisjon 18.11.2026
+
+Tabellen viser **kravreferanser**, ikke en verifisert påstand om at alle akseptansekriterier er bestått. `main` 12.11.2026 er kontrollgrunnlag; CI-feilen og åpne tester er synlig i revisjonsrapporten. FR-23 er **videre arbeid**, ikke del av ferdig leveranse. LIVE/tale er ikke inkludert i noen ferdig story.
+
+| PRD-krav | Epic/story som ivaretar kravet |
+|---|---|
+| FR-01 | Story 2.2 |
+| FR-02 | Story 2.1–2.3 |
+| FR-03 | Story 4.1 |
+| FR-04 | Story 5.1–5.2 |
+| FR-05 | Story 6.1–6.4 |
+| FR-06 | Story 3.1–3.3 |
+| FR-07 | Story 7.1 |
+| FR-08 | Story 7.2 |
+| FR-09 | Story 9.1–9.3 |
+| FR-10 | Story 10.1–10.3 |
+| FR-11 | Story 8.1 |
+| FR-12 | Story 11.1–11.3 |
+| FR-13 | Story 12.1–12.2 |
+| FR-14 | Story 14.1–14.3 |
+| FR-15 | Story 13.1–13.3 |
+| FR-15A | Story 13.4 |
+| FR-16 | Story 16.1–16.3 |
+| FR-17 | Story 21.1–21.2 |
+| FR-18 | Story 17.1–17.3 |
+| FR-19 | Story 5.3 |
+| FR-20 | Story 1.4 |
+| FR-21 | Story 1.5 |
+| FR-22 | Story 16.3 |
+| FR-23 | Story 24.1 – **videre arbeid** |
+| AI-01 | Story 4.1–4.2 |
+| AI-02 | Story 6.2 |
+| AI-03 | Story 4.2 og 6.2 |
+| AI-04 | Story 4.2 og 16.3 |
+| AI-05 | Story 5.1–5.2 |
+| AI-06 | Story 12.2 |
+| NFR-01 | Story 18.1–18.4 og 7.1/8.1 |
+| NFR-02 | Story 3.1–3.2 og 17.3 |
+| NFR-03 | Story 1.1–1.5 og 21.1 |
+| NFR-04 | Story 18.5 |
+| NFR-05 | Story 20.1–20.2 og 22.1–22.3 |
+| NFR-QA-01 | Story 22.4 |
+
+**Krav til sluttkontroll:** For hver row må vi vise aktuelt krav i PRD, teknisk komponent i Architecture, kode, testtype, datert resultat og eventuelle åpne avvik. Se `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`.
 
 # 26. Sammenheng med BMAD
 
