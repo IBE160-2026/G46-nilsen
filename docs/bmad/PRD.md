@@ -3,8 +3,8 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
-**Status:** Revidert PRD, sluttkontrollert mot faktisk leveransestatus 05.11.2026  
-**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 med senere dokumenterte patcher  
+**Status:** Gjeldende kravoversikt revidert 18.11.2026; tidligere status/testbevis beholdt som historiske  
+**Versjon ved dokumentasjon:** `main` v20.11.5 (kontrollgrunnlag `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026); LIVE/tale kun separat pilot  
 **Språk:** Norsk
 
 ---
@@ -66,6 +66,33 @@ Produktet skal:
 9. strukturere kunnskap og arkitektur slik at en framtidig lukket/offline variant kan bruke lokal fagbank, lokal RAG og intern KI
 
 ---
+
+## 3.1 Målbar suksess og motmål (knyttet til krav)
+
+Disse målene konkretiserer produktmålene uten å påstå at alle ende-til-ende-kontroller er utført. Kvalitetsresultater gjelder **identifisert kodeversjon, testsett og miljø**, ikke generelt enhver senere modellrespons.
+
+| ID | Mål / observerbart kriterium | Primærkobling | Test-/bevisnivå |
+|---|---|---|---|
+| SM-01 | Ni hovedtemaer og 48 gjeldende undertemaer finnes i gjeldende taksonomi; minst to golden-caser per hovedtema | FR-02, FR-15 | Maskinell schema-/data-kontroll; kontekstkretsen krever også runtime-test |
+| SM-02 | En anonymisert situasjon kan brukes i hovedveiledning og følges opp uten å miste relevant kontekst; ny samtale arver ikke den gamle | FR-01, FR-03, FR-04, AI-05 | Ende-til-ende-brukerreise UJ-01; må bekreftes på endelig commit |
+| SM-03 | Definerte PII-typer stoppes i serverkontroll selv om klientkontrollen omgås | FR-06, NFR-02 | Deterministiske negativtester og faktisk endepunktskontroll |
+| SM-04 | En bruker skal ikke kunne lese eller slette en annen brukers historikk | FR-07, FR-09, FR-11, NFR-01 | Server/RLS-integrasjonstest på testdatabase; ikke bevist kun med tekstsøk |
+| SM-05 | Høyrisiko-caser i definert golden-bank skal ikke ha kritiske avvik etter prosjektets eksplisitte fasit | FR-15A, AI-01–04, FR-16 | Datert live-evaluering + manuell vurdering; egen fasit er ikke ekspertgodkjenning |
+| SM-06 | Hovedflyten skal kunne prøves uten API-nøkler via deterministisk demomodus | NFR-05, FR-03 | `npm run demo`, kontroll av brukerreise i lokal demo |
+| C-01 (motmål) | Ikke fremstå sikrere ved å fjerne usikkerhetsmarkører, gjette tariff eller gi bastante juridiske konklusjoner | AI-04, FR-22 | Negativ fasit og kritisk menneskelig review |
+| C-02 (motmål) | Flere kildehenvisninger teller ikke som bedre svar dersom kilde er irrelevant eller virkeområdet er feil | FR-15A, FR-16 | Forbudte/forventede `source_id`-kontroller |
+
+For faktisk brukeropplevelse kan vi måle hvor mange som fullfører UJ-01 uten hjelp, men **terskel og utvalg må fastsettes før en ny test**, ikke baklengs fra observerte pilotfunn. Fire dokumenterte surveys kan ikke gi generaliserbare prosenter.
+
+## 3.2 Avgrensning av leveransen (MVP / utvidelser / videre arbeid)
+
+**V1-kjerne:** Situasjonsbeskrivelse og tema, strukturert KI-råd, oppfølgingsdialog, samtaleøvelse/refleksjon, personverngateway, innlogging og bruker-eid historikk samt fungerende brukerflate på desktop/mobil. Disse delene er utviklet i prototypen; faktisk godkjenningsstatus følger testregisteret.
+
+**Tillegg i prototypen med varierende modenhet:** Roller og admin, SOURCEBANK og yrkes-/sektorkontekst, kilde-/webfunksjoner, modellvalg, benchmark, kostnadsinformasjon, PWA og utskrift. Et implementert tillegg er ikke automatisk ende-til-ende-verifisert i produksjonsmiljø.
+
+**Utenfor ferdig produksjonsleveranse:** Full intern/offline KI med lokal RAG, native mobilapp, full ekstern ekspertvalidering, representativ fullskala brukertesting og LIVE/tale. **LIVE er kun i isolert pilotgren/-Render og skal ikke telle som ferdig FR-23.**
+
+Denne inndelingen bygger på `product-brief.md` og prosjektets faktiske utvikling. Sekundære roller (redaktør/admin) er tekniske tilleggsfunksjoner, ikke et løfte om separate komplette HR- eller lederutviklerprodukter.
 
 # 4. Ikke-mål
 
@@ -141,6 +168,34 @@ Denne PRD-en skiller mellom:
 Dette er gjort for å skille tydelig mellom faktisk leveranse og framtidig ambisjon.
 
 ---
+
+## 7.1 Brukerreiser (testgrunnlag, ikke påstander om utført test)
+
+**UJ-01 – Leder forbereder fraværssamtale:** En fiktiv leder velger fraværstema, beskriver en anonym situasjon, får forslag til muntlig åpning og spørsmål, spør videre og starter samtaleøvelse. Ved innlogging kan egen historikk åpnes; ved ny samtale er gammel kontekst borte. Kontrollpunkter: FR-01–07, FR-09, AI-01, AI-05 og NFR-03.
+
+**UJ-02 – Yrke og riktig kilde:** En fiktiv leder beskriver en situasjon der profesjon og arbeidsgivertype kan ha betydning. Med relevant yrkesvalg får løsningen riktig avgrenset regelverk; med irrelevant yrke skal unødvendig profesjonsjuss og ubegrunnet tariff fjernes. Kontrollpunkter: FR-16, FR-22, FR-15A, AI-04 og NFR-02. Denne reisen forutsetter at det aktuelle driftsflagget er aktivert i testmiljøet.
+
+**UJ-03 – Historikk og tilgang:** To separate fiktive brukere logger inn. Bruker A kan se/slette egen samtale, men ikke lese eller endre B sin historikk via direkte API-/databaseforespørsel. Kontrollpunkter: FR-07–11 og NFR-01/02. Krever faktisk rolle-/RLS-integrasjonstest.
+
+Pilotreise for tale er særskilt beskrevet i `docs/pilot/LIVE-V1-PILOT-SPEC.md` på pilotgrenen. Den er ikke del av UJ-01–03 eller produksjonsgodkjenningen.
+
+## 7.2 Felles begreper
+
+| Begrep | Betydning i dette prosjektet |
+|---|---|
+| Samtalestøtte | Hele produktet, ikke én bestemt svarboks |
+| Situasjon | Anonymisert beskrivelse av arbeidsrelatert utfordring |
+| Hovedveiledning | Første strukturerte KI-råd knyttet til situasjon og tema |
+| Oppfølgingsdialog | Flere spørsmål/svar i samme sak, med avgrenset kontekst |
+| Samtaleøvelse / simulator | Fiktiv KI-medarbeider brukt til trening, ikke observasjon av faktisk medarbeidersamtale |
+| Personverngateway | Klient- og serverkontroll før eksternt KI-kall |
+| SOURCEBANK | Kuratert kildebank med avgrensninger for kildebruk; ikke det samme som lokal RAG |
+| Golden/fasitcase | Definert testscenario med maskinelle og/eller faglige kriterier, ikke uavhengig ekspertfasit |
+| Pilot | Isolert eksperiment under utvikling; ikke en produksjonsgodkjent funksjon |
+
+## 7.3 Krav, historikk og verifikasjon
+
+Krav-ID-er i §§ 8–10 er den gjeldende **normative kravoversikten**. Daterte tillegg senere i dokumentet forteller hvordan kravene oppstod; det er ikke egne konkurrerende spesifikasjoner. Statusordene viser hva prosjektet **tidligere har dokumentert**, ikke at dagens bygg automatisk er testet på nytt. `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md` og `docs/REVISJON-IBE160-2026-11-18.md` er revisjonsunderlag med eksplisitte åpne punkter.
 
 # 8. Funksjonelle krav
 
@@ -495,6 +550,30 @@ Golden/fasittesten knytter representative KI-caser til eksplisitte kravreferanse
 
 ---
 
+## FR-15A – Kildepresisjon og negativ fasit
+
+**Status: IMPLEMENTERT 08.11.2026**
+
+Automatisert testing skal ikke bare kontrollere at et KI-svar har faglig grunnlag. For yrke, tariff og rettslige/formelle saker skal testgrunnlaget kunne uttrykke:
+
+- obligatorisk source_id
+- minst én av flere akseptable source_ids
+- eksplisitt forbudte source_ids
+- at ingen kuratert kilde normalt er nødvendig
+- forventet yrkesrelevans
+- forventet behov for arbeidsgivertype
+
+**Akseptansekriterier**
+1. Alle 14 sektorer har minst én positiv og én negativ yrkesrelevans-case.
+2. Positiv yrkescase kan ikke eksistere uten eksplisitt forventet kildefasit.
+3. Negativ yrkescase må ha negativ kildefasit.
+4. Kildelekkasjecase må ha minst én eksplisitt forbudt source_id.
+5. Forbudt source_id vurderes som kritisk avvik i golden-runneren.
+6. Privat/ukjent arbeidsgiver skal ikke få tariffområde gjettet.
+7. Generelt sykefravær skal ikke bli profesjonsjuss bare på grunn av yrkestittel.
+
+---
+
 ## FR-16 – Faggrunnlag
 
 **Status:** IMPLEMENTERT
@@ -552,6 +631,54 @@ Systemet har funksjoner og arkitektur knyttet til kilde- og webbruk.
 Målet er å kunne analysere hvilke kilder som brukes uten å bygge brukerprofiler eller lagre unødvendig samtaleinnhold.
 
 Videre utvikling av dette området er mulig.
+
+---
+
+## FR-19 – Videre oppfølgingsflyt
+Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+Etter et oppfølgingsspørsmål skal brukeren ikke måtte finne neste spørsmål helt alene. Systemet skal kunne foreslå 2–4 korte, situasjonsnære neste spørsmål basert på siste spørsmål og svar. Forslagene skal ikke erstatte fritekst.
+
+## FR-20 – Utskrift av samtalestøtte
+Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+Brukeren skal kunne skrive ut en enkel samtalemal som inneholder situasjonsbeskrivelse, tema/undertema når tilgjengelig, genererte hovedråd og eventuelle videre spørsmål/svar fra oppfølgingsdialogen. Sammenfoldet innhold skal presenteres lesbart i utskriftsversjonen. Navigasjon, personvernvarsler, rapporteringsknapper, samtaleøvelse og øvrige UI-elementer skal ikke inngå.
+
+## FR-21 – Rolig standardnavigasjon
+Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+På desktop skal sidebaren være minimert som standard for nye brukere. Brukerens eksplisitte valg om å åpne/lukke menyen skal lagres lokalt. Minimert modus skal ha forståelige tooltips.
+
+## FR-22 – Yrke/bransje som valgfri kontekst
+Status: IMPLEMENTERT I PRODUKSJONSKODEN / DRIFTSSTYRT MED FEATURE FLAGG
+
+Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Produksjonskoden har felt, lokal ruting, serverkontekst, kildebank og regresjonstester. `OCCUPATION_CONTEXT_ENABLED` beholdes som driftskontroll.
+
+Krav:
+- yrkesvalg skal være valgfritt
+- yrket skal ignoreres når det ikke endrer rådet
+- særkilder kan avgrenses til konkrete yrker, ikke bare sektor
+- et profesjonsregelverk skal ikke lekke til andre yrker i samme sektor
+- systemet skal ikke anta tariffområde bare ut fra yrkestittel
+- tidskritiske rettslige påstander skal kontrolleres mot gjeldende autoritativ kilde
+- ordinære mellommenneskelige samtaler skal ikke overjuridifiseres
+
+Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 86 startkilder etter gjennomgang av alle yrkene i sektorlisten.
+
+
+## FR-23 – Direkte samtale som alternativ inngang
+Status: VIDERE ARBEID / HYPOTESE – IKKE FERDIG FUNKSJON
+
+Prosjektet kan teste en mer direkte samtaleinngang der brukeren beskriver en krevende arbeidssituasjon og starter KI-dialog uten først å gå gjennom hele den strukturerte tema-/undertemaflyten.
+
+Dette skal ikke beskrives som en unik funksjon eller som implementert før faktisk kode og bruker-/regresjonstest foreligger.
+
+En eventuell prototype skal vurderes mot:
+- om brukeren kommer raskere til relevant støtte
+- om svarene blir for generelle uten strukturert temakontekst
+- om personvern og rollegrenser ivaretas like godt
+- om arbeidslivskontekst og kildebruk beholdes
+- om direkte samtale bør være alternativ inngang eller supplement til eksisterende flyt
 
 ---
 
@@ -698,6 +825,26 @@ Repoet er organisert i:
 - `database/`
 - `docs/`
 - `tests/`
+
+---
+
+## NFR-QA-01 – Automatisert quality gate
+
+**Status: IMPLEMENTERT**
+
+Push til `main` skal automatisk kjøre:
+- `npm ci`
+- full deterministic `npm test`
+- `npm audit --omit=dev --audit-level=high`
+- strict golden coverage summary
+
+High dependency audit skal være grønn før runden kan omtales som fullført.
+
+Siste dokumenterte grønne quality gate etter live-funn og kildeprioriteringsretting:
+- GitHub Actions **42646984725**
+- commit `a8756d36c492be39e70611c0946c026234beb965`
+
+Etterpå ble dokumentasjonen for 40/40-sluttresultatet slått inn på `main`, og ny full quality gate **42665279811** var også **SUCCESS**.
 
 ---
 
@@ -1131,56 +1278,13 @@ PWA er et installasjonslag rundt webapplikasjonen, ikke en separat native Androi
 Fysisk mobiltest på Samsung/Chrome brukes som supplement til testene for pilot-UX og PWA, fordi statiske tester ikke kan dokumentere all faktisk nettleser- og installasjonsatferd.
 
 
-# Pilotkrav 30.10.2026
+# Historisk bakgrunn – pilotkrav 30.10.2026
 
-## FR-19 – Videre oppfølgingsflyt
-Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+FR-19–FR-23 ble identifisert etter pilotbruk, og er nå samlet i hoveddelen § 8 slik at de er del av den gjeldende kravoversikten. Dette historiske avsnittet forklarer opprinnelsen uten å opprette konkurrerende krav.
 
-Etter et oppfølgingsspørsmål skal brukeren ikke måtte finne neste spørsmål helt alene. Systemet skal kunne foreslå 2–4 korte, situasjonsnære neste spørsmål basert på siste spørsmål og svar. Forslagene skal ikke erstatte fritekst.
+# Historiske tillegg – vedlikeholdbarhet og kildepresisjon 08.11.2026
 
-## FR-20 – Utskrift av samtalestøtte
-Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
-
-Brukeren skal kunne skrive ut en enkel samtalemal som inneholder situasjonsbeskrivelse, tema/undertema når tilgjengelig, genererte hovedråd og eventuelle videre spørsmål/svar fra oppfølgingsdialogen. Sammenfoldet innhold skal presenteres lesbart i utskriftsversjonen. Navigasjon, personvernvarsler, rapporteringsknapper, samtaleøvelse og øvrige UI-elementer skal ikke inngå.
-
-## FR-21 – Rolig standardnavigasjon
-Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
-
-På desktop skal sidebaren være minimert som standard for nye brukere. Brukerens eksplisitte valg om å åpne/lukke menyen skal lagres lokalt. Minimert modus skal ha forståelige tooltips.
-
-## FR-22 – Yrke/bransje som valgfri kontekst
-Status: IMPLEMENTERT I PRODUKSJONSKODEN / DRIFTSSTYRT MED FEATURE FLAGG
-
-Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Produksjonskoden har felt, lokal ruting, serverkontekst, kildebank og regresjonstester. `OCCUPATION_CONTEXT_ENABLED` beholdes som driftskontroll.
-
-Krav:
-- yrkesvalg skal være valgfritt
-- yrket skal ignoreres når det ikke endrer rådet
-- særkilder kan avgrenses til konkrete yrker, ikke bare sektor
-- et profesjonsregelverk skal ikke lekke til andre yrker i samme sektor
-- systemet skal ikke anta tariffområde bare ut fra yrkestittel
-- tidskritiske rettslige påstander skal kontrolleres mot gjeldende autoritativ kilde
-- ordinære mellommenneskelige samtaler skal ikke overjuridifiseres
-
-Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 86 startkilder etter gjennomgang av alle yrkene i sektorlisten.
-
-
-## FR-23 – Direkte samtale som alternativ inngang
-Status: VIDERE ARBEID / HYPOTESE – IKKE FERDIG FUNKSJON
-
-Prosjektet kan teste en mer direkte samtaleinngang der brukeren beskriver en krevende arbeidssituasjon og starter KI-dialog uten først å gå gjennom hele den strukturerte tema-/undertemaflyten.
-
-Dette skal ikke beskrives som en unik funksjon eller som implementert før faktisk kode og bruker-/regresjonstest foreligger.
-
-En eventuell prototype skal vurderes mot:
-- om brukeren kommer raskere til relevant støtte
-- om svarene blir for generelle uten strukturert temakontekst
-- om personvern og rollegrenser ivaretas like godt
-- om arbeidslivskontekst og kildebruk beholdes
-- om direkte samtale bør være alternativ inngang eller supplement til eksisterende flyt
-
-
-# Tillegg – vedlikeholdbarhet og kildepresisjon 08.11.2026
+FR-15A og NFR-QA-01 er nå samlet med henholdsvis FR-kravene i § 8 og NFR-kravene i § 10. Nedenstående tilleggsbeskrivelser bevares som datert endringshistorikk og er også styrende gjennom NFR-05 (modularisering) og FR-16/FR-22 (kildeavgrensning).
 
 ## NFR – modulær frontend-styling
 Den tidligere ca. 9 389 linjer lange CSS-filen er delt i `styles-core.css`, `styles-responsive.css` og `styles-overrides.css`, med `styles.css` som stabilt inngangspunkt. Delingen skal bevare cascade-rekkefølgen og redusere regresjonsrisiko.
@@ -1209,46 +1313,6 @@ Produktkrav:
 
 Regresjonsvern: `tests/test-source-policy.cjs`.
 
-
-## FR-15A – Kildepresisjon og negativ fasit
-
-**Status: IMPLEMENTERT 08.11.2026**
-
-Automatisert testing skal ikke bare kontrollere at et KI-svar har faglig grunnlag. For yrke, tariff og rettslige/formelle saker skal testgrunnlaget kunne uttrykke:
-
-- obligatorisk source_id
-- minst én av flere akseptable source_ids
-- eksplisitt forbudte source_ids
-- at ingen kuratert kilde normalt er nødvendig
-- forventet yrkesrelevans
-- forventet behov for arbeidsgivertype
-
-**Akseptansekriterier**
-1. Alle 14 sektorer har minst én positiv og én negativ yrkesrelevans-case.
-2. Positiv yrkescase kan ikke eksistere uten eksplisitt forventet kildefasit.
-3. Negativ yrkescase må ha negativ kildefasit.
-4. Kildelekkasjecase må ha minst én eksplisitt forbudt source_id.
-5. Forbudt source_id vurderes som kritisk avvik i golden-runneren.
-6. Privat/ukjent arbeidsgiver skal ikke få tariffområde gjettet.
-7. Generelt sykefravær skal ikke bli profesjonsjuss bare på grunn av yrkestittel.
-
-## NFR-QA-01 – Automatisert quality gate
-
-**Status: IMPLEMENTERT**
-
-Push til `main` skal automatisk kjøre:
-- `npm ci`
-- full deterministic `npm test`
-- `npm audit --omit=dev --audit-level=high`
-- strict golden coverage summary
-
-High dependency audit skal være grønn før runden kan omtales som fullført.
-
-Siste dokumenterte grønne quality gate etter live-funn og kildeprioriteringsretting:
-- GitHub Actions **42646984725**
-- commit `a8756d36c492be39e70611c0946c026234beb965`
-
-Etterpå ble dokumentasjonen for 40/40-sluttresultatet slått inn på `main`, og ny full quality gate **42665279811** var også **SUCCESS**.
 
 ## Testbevis og begrensning
 
