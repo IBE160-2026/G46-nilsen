@@ -4,7 +4,7 @@
 **Dokumenttype:** Architecture Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert arkitektur med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 08.11.2026  
+**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5, historisk synkronisering 08.11.2026; krav-/avhengighetskontroll 18.11.2026  
 **Språk:** Norsk
 
 ---
@@ -1299,7 +1299,7 @@ Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, 
 
 Framtidige mål som intern KI, lokal RAG og lukket nettverk er dokumentert separat og fremstilles ikke som ferdige deler av dagens leveranse.
 
-# 39. Sensor-demo og kjørbarhet uten eksterne tjenester
+# Tillegg A – Historisk dokumentasjon av sensor-demo og kjørbarhet
 
 Produksjonsarkitekturen bruker Supabase og ekstern KI-provider. For at repoet samtidig skal kunne vurderes lokalt uten studentens nøkler, betalte kontoer eller egen infrastruktur, finnes en separat test-/demoadapter:
 
@@ -1372,7 +1372,7 @@ Dette inkluderte blant annet:
 Modulariseringen beholdes derfor som en verifisert arkitekturforbedring og ikke som en utestet endring.
 
 
-# Produksjonstillegg – PWA-arkitektur i v20.11.0
+# Tillegg B – Historisk PWA- og produksjonsarkitektur fra v20.11.0
 
 PWA-funksjonaliteten er lagt som et klientnært installasjons- og cachelag over den eksisterende webarkitekturen:
 
