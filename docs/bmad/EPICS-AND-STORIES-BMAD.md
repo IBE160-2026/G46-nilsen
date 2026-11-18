@@ -1105,6 +1105,8 @@ Dette er ikke del av dagens implementerte leveranse.
 
 ---
 
+**Avhengighetsvisualisering:** `docs/bmad/ARKITEKTUR-OG-AVHENGIGHETSKART.md` viser et pedagogisk kart over tverrgående avhengigheter. Det er ikke et faktisk generert grafuttak fra alle stories.
+
 # 24. Definition of Done
 
 En story regnes som ferdig når relevante krav er oppfylt.
