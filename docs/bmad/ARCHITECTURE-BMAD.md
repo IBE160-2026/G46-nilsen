@@ -87,7 +87,7 @@ Arkitekturen er i hovedsak ett repo, med felles server og klient. Det gir enkel 
 
 ### 2.1.3 Status for LIVE-funksjonen
 
-Tale/transkripsjon er et **isolert piloteksperiment**, ikke funksjonalitet i `main`, og ikke en ferdig del av AD-02 eller FR-23. En grønn Render-pilotdeploy er ikke bevis for at transkripsjon, talekommandoer, mikrofon, personvern og modellkvalitet er godkjent. Detaljene ligger på pilotgrenen i `docs/pilot/LIVE-V1-PILOT-SPEC.md`; ingen produksjonsmerge er godkjent.
+Tale/transkripsjon er et **isolert piloteksperiment**, ikke funksjonalitet i `main`, og ikke en ferdig del av AD-02 eller FR-23. En grønn Render-pilotdeploy er ikke bevis for at transkripsjon, talekommandoer, mikrofon, personvern og modellkvalitet er godkjent. Detaljene ligger på pilotgrenen i [LIVE-pilotspesifikasjonen (kun egen pilotgren)](https://github.com/IBE160-2026/G46-nilsen/blob/pilot-ux-v20.11/docs/pilot/LIVE-V1-PILOT-SPEC.md); ingen produksjonsmerge er godkjent.
 
 # 3. Arkitekturstatus
 
