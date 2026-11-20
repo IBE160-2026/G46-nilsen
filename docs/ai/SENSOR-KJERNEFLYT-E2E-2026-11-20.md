@@ -23,11 +23,13 @@ Ny test: **`tests/test-sensor-journey-browser.cjs`**, kjørt som en egen obligat
 
 **Personvernbevis i denne reisen:** Brukergrensesnittet skal merke feltet ugyldig og avvise navn **uten å kontakte** `/api/analyze-situation` eller `/api/generate-guidance`. Deretter skal anonym tekst fungere i samme skjema. Dette er en syntetisk negativ test, ikke dokumentasjon på feilfri navnegjenkjenning i alle språk.
 
+**Ny, separat sikkerhetsintegrasjon 20.11:** `tests/test-supabase-local-auth-e2e.cjs` bruker **faktisk lokal** Supabase GoTrue, PostgREST, JWT og V20-8 RLS med to brukere og én admin. Den kjører som en egen CI-jobb og verifiserer direkte eierskap/forfalskning samt ugyldig og fornyet session. Dette er ikke et hosted prosjekt eller fysisk UI-test. Se [fullt bevis og restanser](SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md).
+
 **Valideringsmetode:** Faktisk headless Chrome/DevTools + ekte DOM + faktisk lokal demo-HTTP-server med syntetisk innlogging. Dette er **sterkere enn et statisk søk**, men **ikke** bevis for en ekte KI-leverandør, ekte Supabase Auth, mobil enhet, produksjonsdata eller fysisk utskrift.
 
 ## Streng kravstatus – samtlige 36 krav
 
-Merking: **D** = deterministisk/funksjonstest, **I-demo** = brukerreise i ekte Chrome mot lokal syntetisk server, **I-mock** = faktisk Express/Chrome med falske auth-/provider-/DB-svar, **I-SQL** = faktiske PostgreSQL-transaksjoner med syntetiske brukere, **L/M åpent** = faktisk live KI og/eller menneskelig/fysisk akseptanse mangler. «Testet» nedenfor betyr **innenfor angitt bevisnivå**, ikke produksjonsgodkjent.
+Merking: **D** = deterministisk/funksjonstest, **I-local-Auth** = faktisk lokal GoTrue + PostgREST/RLS (syntetiske brukere), **I-demo** = brukerreise i ekte Chrome mot lokal syntetisk server, **I-mock** = faktisk Express/Chrome med falske auth-/provider-/DB-svar, **I-SQL** = faktiske PostgreSQL-transaksjoner med syntetiske brukere, **L/M åpent** = faktisk live KI og/eller menneskelig/fysisk akseptanse mangler. «Testet» nedenfor betyr **innenfor angitt bevisnivå**, ikke produksjonsgodkjent.
 
 | Krav | Testgrunnlag fra denne revisjonen | Sensorens gjenværende spørsmål |
 |---|---|---|
@@ -37,11 +39,11 @@ Merking: **D** = deterministisk/funksjonstest, **I-demo** = brukerreise i ekte C
 | FR-04 – Oppfølgingsdialog | **I-demo** med lagret dialog | Samme kontekst hos leverandør og samtidige spørringer |
 | FR-05 – Simulering | **I-demo** med turn → svar → refleksjon | Faglig respons og vanskelige reaksjoner fra levende KI |
 | FR-06 – Personverngateway | **I-demo** fullnavn blokkert før API; **D/I-mock** på andre overflater | Ekte login/rolle og direkte omgåelsesforsøk i staging |
-| FR-07 – Innlogging | Syntetisk demoinnlogging og HTTP-grensetester | **Ekte Supabase Auth/JWT** i separat testprosjekt |
+| FR-07 – Innlogging | **I-local-Auth**: ekte GoTrue passordlogin, JWT/getUser, refresh, 401 for ugyldig tilgang | Hosted Auth-oppsett, logout/revokering, invitasjon/passordreset |
 | FR-08 – Engangsinvitasjoner | Serverkode/struktur eksisterer | Utløpt/brukt token i faktisk Auth-integrasjon |
-| FR-09 – Historikk | **I-demo** lagre → reload → åpne → slett/eksport; **I-mock/I-SQL** kryssbruker | Ekte bruker-A/B med Supabase Auth + RLS |
+| FR-09 – Historikk | **I-demo** UI lagre/reload/åpne/slett; **I-local-Auth** 2 reelle lokale kontoer + PostgREST RLS/eksport | Hosted migrasjons/ACL-paritet, nettleser med ekte session og retensjon |
 | FR-10 – Rapportering av svar | UI/HTTP-kode og personverntester | E2E rapportlagring med syntetisk konto og tilgang |
-| FR-11 – Roller | **I-mock** admin/user/editor; negativ HTTP-test | Faktisk Supabase-rolle, token og misbrukstest |
+| FR-11 – Roller | **I-local-Auth**: app_metadata admin godkjent, user_metadata-forfalskning avvist; **I-mock** editor-UI | Ekte editor-workflow og rolleendring mens sesjon lever |
 | FR-12 – Admin | Ekte Chrome med **I-mock**, API 401/403 | Bestående rolle-/innholdsoppdatering i staging |
 | FR-13 – Modellvalg | **D/I-mock** konfigurasjon og negative responser | Faktisk gyldig modell/provider |
 | FR-14 – Benchmark | **D**, lokal RPC + **I-SQL**; kostnadssperre aktiv | Betalte tester **ikke produksjonsgodkjent** |
@@ -59,10 +61,10 @@ Merking: **D** = deterministisk/funksjonstest, **I-demo** = brukerreise i ekte C
 | AI-02 – Ingen diagnoser | Personvern-/simulerings-/golden-kontroller **D** | Faglig live kontroll av sårbare scenarier |
 | AI-03 – Ingen oppdiktet skyld/motiv | Negative golden- og språkstandardtester **D** | Uavhengig KI-vurdering |
 | AI-04 – HR/juss-usikkerhet | Kildeprioritering/negative tester **D** | Ekspertkontroll av faktiske arbeidsrettslige råd |
-| AI-05 – Kontekstisolasjon | **I-demo** gjenåpning/oppfølging, **I-mock/I-SQL** eierskap | Ekte konto-JWT og flere brukere i staging |
+| AI-05 – Kontekstisolasjon | **I-demo** oppfølging/refresh; **I-local-Auth** faktisk JWT/RLS isolerer Alice og Bob | Flere samtaler/kontekstskifter og oppdaterte tokens i hosted staging |
 | AI-06 – Modelluavhengighet | Status- og modellkontrakt **I-mock/D** | To reelle providere med sammenliknbar fasit |
-| NFR-01 – Sikkerhet | **I-mock/I-SQL** RLS/privilegier, HTTP 401/403, lokal rate/kostnad | Ekte Auth/PostgREST, trusselmodell og sikkerhetsreview |
-| NFR-02 – Personvern | **D/I-mock**, **I-demo** sletting og tom eksport | Verifisert retensjon/sletting i ekte Supabase |
+| NFR-01 – Sikkerhet | **I-local-Auth** GoTrue/JWT/PostgREST RLS + direkte IDOR/owner-forfalskning; **I-SQL** isolerte rettigheter | Hosted ACL, sesjonsrevokering, full trusselmodell og sikkerhetsreview |
+| NFR-02 – Personvern | **I-local-Auth** eierbundet sletting/eksport; **I-demo** navn-blokkering og tom eksport | Hosted slett/retensjon, reelle personvernkrav og dataminimering |
 | NFR-03 – Brukervennlighet | **I-demo** full brukerreise, Chrome CSS/DOM | **Fysisk mobil** og skjermleser |
 | NFR-04 – Feilhåndtering | Negative HTTP-/provider-/RPC-tester **D/I-mock** | Faktiske nettavbrudd, loading/timeout i UI |
 | NFR-05 – Vedlikeholdbarhet | Dokumentert modularisering og CI | Betydelig teknisk gjeld i store filer / CSS-overstyringer |
@@ -73,7 +75,7 @@ Merking: **D** = deterministisk/funksjonstest, **I-demo** = brukerreise i ekte C
 ## Prioritering etter sensorrisiko
 
 1. **P0 – Ferdig kjernereise i faktisk UI:** Har en konkret Chrome-test på reell frontend og deterministisk API-demo. Dersom den feiler, stopp og rett *årsaken*. Ikke endre golden-test eller UI for å skjule feil.
-2. **P0 – Ekte Auth og RLS:** To testbrukere i isolert Supabase-testprosjekt, også ved reload, utløpt token, dele/slette andres historikk, endre rolle og egne/andres rapporter. Testoppgaver skal aldri bruke ekte brukerdata.
+2. **P0 – Utvid autentisering etter bestått lokal GoTrue/PostgREST/RLS:** Ekte lokal test er bestått for passordlogin, refresh, eierskapsbasert historikk og admin/user-rolle. Neste kontroll er hosted staging/konfigurasjonsparitet, logout og tokenrevokering, brukt/utløpt invitasjon, editor-rolle, rapporttilgang og eventuell egen browser-test med ekte lokal login. Bruk aldri ekte ansattopplysninger.
 3. **P1 – Manuell UX:** Android/Chrome og desktop med egen testkonto: scroll/tema→råd→simulering; tekst i historikk; print-preview, fysisk PDF/utskrift; tilgjengelighet og små skjermer.
 4. **P1 – KI/faglighet:** Uavhengig human-in-the-loop på kritiske personal-/lovverksscenarier, kontroller at kildene faktisk støtter påstandene og at KI markerer usikkerhet. Syntetiske golden-caser alene er ikke en fasit.
 5. **P1 – Innlevering:** Kontroller faktisk Canvas-rubrikk, refleksjonsrapportens formkrav og siste sensorsti. Revider støttetekst som feilaktig fremstår som nyere eller bredere kvalitetstest enn den er. Ingen betalte tester før godkjent kostnadshåndtering.
