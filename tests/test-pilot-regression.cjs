@@ -3,6 +3,7 @@ const assert=require('assert');
 
 const html=fs.readFileSync('index.html','utf8');
 const app=fs.readFileSync('app.js','utf8');
+const benchmarkEvaluator=fs.readFileSync('src/client/benchmark-evaluation.js','utf8');
 const server=fs.readFileSync('server.js','utf8');
 const bank=JSON.parse(fs.readFileSync('tests/AI-GOLDEN-CASES.json','utf8'));
 
@@ -15,7 +16,7 @@ assert(html.includes('id="pilot-regression-results"'),'Admin mangler område for
 assert(app.includes("async function runPilotRegression(mode='pilot')"),'Klienten mangler automatisk pilot/full produksjonsflyt-kjøring');
 assert(app.includes("runPilotRegression('full')"),'Full produksjonsflyt-test er ikke koblet til klienten');
 assert(app.includes("mode==='full'?'production-regression':'pilot-regression'"),'Fulltesten merkes ikke som egen testmodus');
-assert(app.includes("notes.push('Automatisk ordtreff"),'Ordtreff behandles fortsatt som hard feil i åpningen');
+assert(benchmarkEvaluator.includes("notes.push('Automatisk ordtreff") && app.includes('SamtalestotteBenchmarkEvaluation.evaluateOpening'), 'Myke ordtreff skal ligge i dedikert evaluator, ikke bli hard feil');
 assert(app.includes("const testMode=mode==='full'?'production-regression':'pilot-regression'") && app.includes("JSON.stringify({situation:testCase.input,testMode})") && app.includes("JSON.stringify({situation:testCase.input,analysis,followups:{},testMode})"),'Pilot/fulltest sender ikke testMode til begge KI-kall');
 assert(app.includes("fetch('/api/analyze-situation'"),'Pilotkjøringen bruker ikke ekte analyse-endepunkt');
 assert(app.includes("fetch('/api/generate-guidance'"),'Pilotkjøringen bruker ikke ekte veilednings-endepunkt');
