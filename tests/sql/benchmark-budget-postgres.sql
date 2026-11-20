@@ -92,6 +92,16 @@ BEGIN
   ticket_a := (r->>'ticket')::uuid;
   r := public.benchmark_budget_reserve(user_a,run_a,'B002','fake-model',30);
   IF r->>'error' <> 'BUDGET_RUN_BUSY' THEN RAISE EXCEPTION 'Concurrent call not blocked: %',r; END IF;
+  -- A rejected attempt on a NEW run must not leave behind an empty run row.
+  r := public.benchmark_budget_reserve(
+    user_a,'ffffffff-1111-4111-8111-111111111111'::uuid,'B900','fake-model',50);
+  IF r->>'error' <> 'BUDGET_RUN_BUSY' THEN
+    RAISE EXCEPTION 'New run was not rejected while another is pending: %',r;
+  END IF;
+  IF EXISTS (
+    SELECT 1 FROM benchmark_private.budget_runs
+    WHERE user_id=user_a AND run_id='ffffffff-1111-4111-8111-111111111111'::uuid
+  ) THEN RAISE EXCEPTION 'Rejected BUSY admission left a ghost run'; END IF;
   r := public.benchmark_budget_reserve(user_a,run_a,'B001','fake-model',30);
   IF r->>'error' <> 'BUDGET_DUPLICATE_CASE' THEN RAISE EXCEPTION 'In-flight duplicate not blocked: %',r; END IF;
 
