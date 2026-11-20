@@ -19,8 +19,9 @@ function containsNonNegatedInClause(rawClause, needle) {
     const prefix=text.slice(Math.max(0,index-150),index).trim();
     const suffix=text.slice(index+needle.length,index+needle.length+70).trim();
     // Unntak: manglende verneutstyr / manglende sikkerhetstiltak er risiko.
-    const missingProtection = /^(?:verneutstyr|sikkerhetstiltak|sikring|opplaring)\b/u.test(text.slice(index))
-      && /\b(?:ingen|ikke|uten)\b/u.test(prefix);
+    const explicitlyOutsideScope = /\b(?:ikke\s+(?:snakk|tale)\s+om|gjelder\s+ikke|ingen\s+(?:opplysning(?:er)?|tegn)\s+(?:om|til))\b/u.test(prefix);
+    const missingProtection = /^(?:verneutstyr|sikkerhetstiltak|sikring|opplæring|opplaring)\b/u.test(text.slice(index))
+      && /\b(?:ingen|ikke|uten)\b/u.test(prefix) && !explicitlyOutsideScope;
     const absentTopic =
       /\bingen\b(?:\s+(?:opplysning(?:er)?|tegn|konkret(?:e)?|aktuell(?:e)?))?[^.!?;:]{0,140}$/u.test(prefix) ||
       /\bgjelder\s+ikke\b[^.!?;:]{0,140}$/u.test(prefix) ||
