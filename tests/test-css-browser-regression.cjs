@@ -78,7 +78,8 @@ async function evaluate(cdp,src){
 }
 // The candidate adds two deliberate keyboard-accessibility elements. Exclude only
 // those new nodes from the historical index-based comparison; the separate real
-// keyboard-journey test verifies their behavior. All pre-existing DOM nodes stay covered.\nconst cssProps=[
+// keyboard-journey test verifies their behavior. All pre-existing DOM nodes stay covered.
+const cssProps=[
   "display","position","visibility","opacity","overflow","overflow-x","overflow-y",
   "width","height","min-width","max-width","min-height","max-height",
   "padding","margin","border","border-radius","box-shadow","background-color","background-image",
