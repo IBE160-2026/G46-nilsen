@@ -1463,3 +1463,139 @@ Jeg beskriver ikke dette som «KI-en er bevist korrekt». Live modelltesting er 
 
 Full sporbar rapport:
 `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
+
+
+---
+
+## 18.11.2026 – helhetlig BMAD-/dokumentasjonsrevisjon etter forelesninger og faglærertilbakemelding
+
+**Bakgrunn / oppdrag til KI:** Prosjekteieren ba om en svært nøye gjennomgang av **hele Samtalestøtte-prosjektet** opp mot forelesningene og Git-dokumentasjonen. Særlig viktig var å vise faktisk BMAD-/KI-styring, ikke bare mange filer, samt å holde siste LIVE/talefunksjon eksplisitt utenfor produksjon.
+
+**Dokumentert kildegrunnlag:** Faglærers formative PRD-tilbakemelding 12.11 (`docs/bmad/tilbakemelding-prd.md`), Product Brief-tilbakemelding 26.10, transkripsjoner av forelesningene, hoveddokumentene i `main`, GitHub-treet, testfilene og siste GitHub Actions-jobblogg. Utgangspunkt: `main` commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf` 12.11.
+
+**KI-bidrag og endringer (på isolert dokumentasjonsgren):**
+
+- registrerte 36 gjeldende krav-ID-er, der FR-15A og NFR-QA-01 først lå i senere tillegg
+- flyttet gjeldende krav til PRD §§ 8–10 og historiske tester/status til `docs/bmad/PRD-STATUS-OG-HISTORIKK.md`, uten å slette opprinnelig innhold
+- foreslo observerbare akseptanser, brukerreiser og konkrete motmål
+- koblet alle 36 krav til dokumenterte arkitekturkomponenter, epics/stories og et eget testbevisregister
+- dokumenterte arkitekturavhengigheter med et redigerbart diagram, og presiserte at dette er en **illustrasjon**, ikke en maskinelt utledet dependency-graf
+- skilte statiske testasserts, deterministiske regeltester, E2E/integrasjon, live KI og menneskelig testing
+- identifiserte siste faktiske `main`-CI som **feilet** 12.11 (run `43205812288`) fordi struktursjekken avviste faglærers `.docs`-mappe; dependency audit ble hoppet over. KI foreslo og la inn en snever tillatelse for **kun** lærerens konkrete referansefil på dokumentasjonsgrenen, ikke en generelt svekket kvalitetskontroll
+- oppdaterte implementeringsplanen og refleksjonsutkastet med forholdet mellom den reelle utviklingshistorien og forelesningens metodikk, uten å hevde at prosjektet brukte parallelle subagenter/worktrees som ikke er dokumentert
+
+**Menneskelig styring og avgrensning:** Oppdraget er gitt og prioriteringen bestemt av prosjekteieren. KI har gjennomført dokumentrevisjonen via GitHub-tilkobling; det betyr **ikke** at prosjekteieren selv har håndkontrollert hvert nytt akseptansekriterium eller at et uavhengig fagmiljø har godkjent dette. Det er derfor lagt inn verifikasjonsforbehold og en åpen oppgaveliste. Kravene må testes mot kode og reell brukerflyt før status kan oppgraderes.
+
+**Kritisk læring:** 36/36 eksakte krav-ID-er i flere dokumenter er *sporbarhet*, ikke 36/36 beståtte funksjonstester. En omfattende testpakke kan inneholde strukturelle kontroller som ikke dokumenterer faktisk HTTP-/database-/mobilatferd. En historisk grønn CI-kjøring kan heller ikke brukes til å skjule senere feil. Dokumentasjon ble derfor behandlet som en kvalitets- og risikostyringsoppgave, ikke som etterrasjonalisering eller bare språkvask.
+
+**Ikke utført / ikke påstått:** Ingen merge til `main`, ingen prod-Render-deploy, ingen ny faktisk `npm test`/dependency audit eller live KI-kjøring i denne runden. LIVE/tale er fortsatt isolert pilot under testing; alternativ direkte tekstinngang (FR-23) er en annen hypotese og ikke ferdig produksjonsfunksjon.
+
+**Sporet videre:** `docs/REVISJON-IBE160-2026-11-18.md`, `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`, `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` og `.logs/cissi1981/issues.md`.
+
+
+---
+
+## 18.11.2026 – Sikkerhetskontroll og HTTP-test etter dokumentasjonsrevisjonen
+
+Oppdrag fra prosjekteieren var å fortsette med kvalitetskontroll av hele prosjektet, ikke bare skrive mer dokumentasjon. KI gjennomgikk `server.js`, Auth-/historikkendepunkter, Supabase-migrasjoner og eksisterende testkode. Et nytt isolert `tests/test-api-boundary-http.cjs` ble laget for faktisk Express-server uten eksterne nøkler eller persondata; `test-sensor-demo.cjs` ble utvidet med videre samtale, refleksjon, eksport, sletting og negative caser. Testene ble kjørt i revisjonsgrenens GitHub Actions 18.11, run `44338528651` med SUCCESS og `npm audit` 0 sårbarheter.
+
+Supabase ble kun lest via metadata og Security Advisor, **uten brukerdata eller prod-endringer**. Resultat: 10 av 10 `public`-tabeller har RLS, samtaleloggen har fire eierskapsbegrensede policies, og ni serverstyrte tabeller mangler direkte brukertilganger. Advisor ga WARN om deaktivert leaked-password protection; dette er dokumentert for beslutning senere. Det er **ikke** en påstand om faktisk innlogget bruker-til-bruker-test eller at feilscenarier med live KI er gjennomført. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md` og `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md`.
+
+
+---
+
+## 18.11.2026 – Rød/grønn providerstatus-regresjon
+
+KI analyserte serverens modellvelger og fant at statusendepunktet bare sjekket OpenAI-klienten, selv om `hasAnyAiClient()` også omfatter OpenRouter. Før kodeendring ble en faktisk HTTP-regresjonstest lagt til med lokale dummy-nøkler. CI `44339406194` feilet på forventet `OpenRouter-only skal regnes som KI-konfigurert`. Deretter ble kun `/api/status` endret til å bruke felles providerkontroll. CI `44339569597` var grønn med 33 deltester og audit uten sårbarheter. Dette er test av statuskontrakt, ikke av ekte provider eller KI-råd. Dokumentasjon: `docs/ai/REGRESJON-OPENROUTER-2026-11-18.md`. Produksjonskoden i `main` og LIVE-piloten er urørt.
+
+
+---
+
+## 18.11.2026 – Ny integrasjonsrunde med negativ testing og dokumentert rød/grønn CI
+
+**Menneskelig oppdrag:** Fortsette å kvalitetssikre hele Samtalestøtte, prioritere virkelige feil og kvalitet i stedet for forhastet produksjonssetting.
+
+**KI-assistanse/arbeid:** Bygget en lokal Node.js Auth/PostgREST-simulator med to syntetiske brukere, testet den faktiske Express-serverens sesjons- og historikkruter og oppdaget at oppdatering av en utilgjengelig historikk-ID ga HTTP 500. Forventet 404 feilet i CI run `44341093359`, og den begrensede rettelsen i `server.js` bestod senere i run `44341831405` (34 deltester).
+
+Deretter ble OpenAI SDKs feilbetingelser simulert via en **test-only lokal fetch-omdirigering**; ingen ekte AI-API, brukerkonto eller database ble brukt. Et vanlig spørsmål, `Hvordan spør jeg?`, ble da uriktig blokkert som navn, påvist i rød CI `44342507107`. Den delte detektoren `src/privacy-detector.js` ble korrigert med norske spørreord som grammatisk ikke-navn. Både klient- og serversiden fikk negative og positive regresjonscaser, og full CI `44343038247` var grønn med 35 deltester og audit 0 sårbarheter.
+
+**Kritisk avgrensning:** Selv med grønn CI er dette ikke en ekte to-konto-test i Supabase, live modellkvalitetstest, fysisk mobilkontroll eller produktsikkerhetssertifisering. `main` og Render-produksjon er ikke berørt. Kildebevis, begrensninger og CI-URL-er er lagret i `docs/ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md` og `docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md`. LIVE/tale er fortsatt separat, ikke-produksjonssatt pilot.
+
+
+---
+
+## 18.11.2026 – Konsentrert refleksjonsutkast, uten å overskrive kildehistorikk
+
+KI leste det eksisterende refleksjonsutkastet (ca. 9 535 ord) og tok utgangspunkt i beskrevet faktisk utviklingshistorie, novemberforelesningene, formative tilbakemeldinger og nye røde/grønne testbevis. KI utarbeidet et **separat 2 646-ords redigeringsutkast** i `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md`. Originalen er beholdt med kronologiske tillegg og gamle testtall. Ny versjon prioriterer egen rolle, problemforståelse, BMAD etter prototype, context engineering, menneskelig kontroll, etiske avveininger, faktiske tekniske feil, testvaliditet og kildekritikk. Den markerer at pilot-tale ikke er i produksjon og at E2E-RLS med to ekte testkontoer ikke er gjennomført.
+
+**Forbehold:** Canvas' gjeldende ord- og formkrav er ikke inspisert i denne runden. Teksten er et forslag til studenten, ikke automatisk godkjent eller levert. Studenten må selv kvalitetssikre at refleksjonene uttrykker egne vurderinger.
+
+
+---
+
+## 18.11.2026 – Målrettet CSS-analyse etter spørsmål om 6 000 linjer og !important
+
+Bruker ba om gjennomgang av stor CSS-fil, mange `!important`-overstyringer og muligheter for å forkorte koden. KI åpnet **den faktiske** Product Brief-tilbakemeldingen 26.10 og de fire CSS-filene på revisjonsgrenen. Læreren hadde konkret kommentert størrelsen på app.js og server.js, men ikke oppgitt noe bestemt CSS-tall. Reell opptelling før rydding: 9 870 CSS-linjer inkludert importfil og 845 `!important`.
+
+KI kartla gjentatte selektorer/egenskaper med identiske `@media`-kontekster og opprettet en reproduserbar, **skrivebeskyttet** CSS-auditscript `scripts/audit-css.cjs` (`npm run audit:css`), kjørt automatisk i PR Quality Gate. Baseline viste 149 *fysiske* deklarasjoner hvor `!important` ble fulgt av en ny `!important` på samme selektor/egenskap/at-kontekst. Funn ble vurdert mot den mobile simulatoren, temaer og pilene i kildebanken – områder med høy risiko for skjulte visuelle regresjoner.
+
+Kun to **100 % identiske** KI-logo-blokker i `styles-overrides.css` ble fjernet (25 linjer og 13 `!important`). Sluttmåling: 9 845 linjer/832 `!important` og 136 tilsvarende kaskadekandidater. Full PR Quality Gate `44350121403` besto. **Ingen manuell skjermbilde-/nettlesertest ble påstått**, og større CSS-refaktorering ble uttrykkelig utsatt til visuelt før-/etter-grunnlag foreligger. Hele funnlisten og arbeidet videre: `docs/CSS-REVISJON-2026-11-18.md`. `main`, produksjons-Render og LIVE-pilot er uendret.
+
+
+---
+
+## 18.11.2026 – Utvidet CSS-refaktorering på revisjonsgren
+
+Etter forespørsel om kraftigere rydding ble det gjort to flere konservative pass over den faktiske CSS-kaskaden. Pass 1 fjernet **75 helt overstyrte regelblokker** (−443 linjer, −52 `!important`); pass 2 fjernet **265 overstyrte enkeltdeklarasjoner** (−266 linjer, −69 `!important`). Sammen med første identiske-duplikat-pass ble reduksjonen **845 → 711 `!important`**. Statisk sammenligning av siste deklarasjon for eksakt normalisert selektor, egenskap og identisk at-regelkontekst fant ingen endret sluttverdi i de aktuelle passene. Den metoden beviser ikke visuell likhet mellom overlappende selektorer.
+
+Som et separat strukturtiltak ble `styles-core.css` på rundt 6 000 linjer **delt byteidentisk** i `styles-core-foundation.css`, `styles-core-dialogue.css`, `styles-core-simulation.css` og `styles-core-utilities.css`. CSS-ressurslisten i server, demo og PWA ble utvidet. Noen eksisterende tester leste bare gamle CSS-filer og ble oppdatert; CSS-auditen måtte skille root- og underimporter. En ny test, `tests/test-css-module-order.cjs`, kontrollerer at de fire modulfilene sammen har eksakt samme Git blob-SHA som den gamle core-filen på commit `3676885e`.
+
+**Bevis:** Full PR Quality Gate `44356425430` **SUCCESS**, 36 deltester og CSS-audit. Oppdatert `docs/CSS-REVISJON-2026-11-18.md`. **Åpent:** ingen faktisk browser-, mobil-, print- eller skjermbildebasert før-/etter-kontroll; ingen merge eller deploy. Denne begrensningen skal ikke skjules i refleksjonsrapporten.
+
+
+---
+
+## 18.11.2026 – Revisjon av CSS, app- og serverfilene etter faglærers kritikk
+
+Brukeren ba om at CSS-arbeidet skulle videreføres direkte til appens øvrige styling og de store filene som faglærer kommenterte i Product Brief 26. oktober, uten en ny detaljinstruks for hvert lite steg. Krav: ikke endre `main`, Render-produksjon eller separat LIVE-pilot.
+
+**CSS-endringer:** Antall `!important` ble ytterligere redusert fra 711 til 694. De tidligere fire store kjernedelene ble delt i 14 mindre, ordnede funksjonsnavngitte filer, med original byte-/importrekkefølge bevart. En ny faktisk Chrome/CDP-sammenligning med to lokale sensordemo-servere og en fast grønn referansecommit ble lagt inn i CI. Den første testen feilet fordi Github Actions hadde et shallow checkout som ikke inneholdt referansecommiten; det ble rettet til `fetch-depth: 0`. Neste feilet fordi interne bilde-URL-er hadde forskjellige lokale porter (`32970` og `32971`) – ikke en faktisk layoutendring. Normalisering av lokalportene ga grønn Chrome-paritet i 90 scenarier.
+
+**Modularisering:** `app.js` 4 632 → 4 329 og `server.js` 2 100 → 2 001 linjer. Tre rene klienthjelpere (`guidance-fallback.js`, `topic-search.js`, `situation-analysis.js`) og to rene serverhjelpere (`history-contracts.js`, `source-normalization.js`) er opprettet med egne, deterministiske tester. Serverens public assets, lokal demomodus, PWA-cache og klientens skript-rekkefølge ble oppdatert. Eldre simulator-test lette feilaktig etter historikkkode i `server.js` fremfor i den nye historieservermodulen; dette ble oppdaget av en rød CI og rettet i testens kildekontroll, uten å endre API-kontrakten.
+
+**Bevis:** [GitHub Actions #44364859955](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44364859955) grønn på funksjonscommit `5ba80c6f6` med 41 deltester, 90 Chrome-paritets-scenarier og audit uten funn på valgt nivå. Full rapport: `docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md`.
+
+**Begrensning:** Funksjonell modulering er påbegynt, ikke ferdig. Hovedfilene er store. 694 `!important` er fortsatt betydelig, Chrome-paritet tester ikke alle interaktive tilstander/print, og verken to reelle Supabase Auth-kontoer, produksjon eller LIVE-pilot ble berørt. Ingen selvstendig Claude-gjennomgang er gjennomført.
+
+
+---
+
+## 18.11.2026 – Ytterligere kildemodularisering, oppfølgingsspørsmål og print-regresjon
+
+**Problem og mål:** Etter at `app.js` og `server.js` var redusert, var kategorisering av Hjelp-kildebanken og selve KI-kilderangeringen fortsatt inne i Express-serveren. Bruker ønsket fortsettelse uten å måtte instruere hvert enkelt steg. KI skilte derfor ut `src/server/help-library.js` (kategori-/sektorkilder) og `src/server/source-ranking.js` (den eksisterende kildealgoritmen med eksplisitte data-/regelhjelpere), og flyttet lokal logikk for oppfølgingsspørsmål inn i `src/client/guidance-fallback.js`.
+
+**Test/feil/læring:** Laget `tests/test-help-library.cjs` og `tests/test-source-ranking.cjs` med anonyme syntetiske caser for arbeidsgivertype, yrke, avtaleområde, myndighetskilder, kilde-URL-deduplisering og friteksttreff. Første nye kilderangeringstest var feilkonstruert ved å plassere statens personalhåndbok blant globale kilder i stedet for det dedikerte avtalesettet; dette ble rettet i testdata. Deretter feilet en eldre statisk kildepolicytest fordi den fremdeles krevde den bokstavelige koden `if (!matched) continue;` i `server.js` etter at algoritmen var flyttet uendret. Testen ble rettet til å kontrollere serverens modulimport og faktiske regel i den nye modulen, **ikke** ved å fjerne selve policykravet. De opprinnelige poeng- og rangeringsreglene ble ikke bevisst endret.
+
+**CSS og brukervisjon:** Utvidet `tests/test-css-browser-regression.cjs` fra 90 til **99 faktiske Chrome-scenarioer**, med 6 ekstra for `@media print` og 3 for åpne `details`-elementer i Hjelp. Det er computed-style-/geometriparitet i en deterministisk demo, ikke fysisk utskrift eller full brukeropplevelsestest. Den opprinnelige budsjettgrensen på **694 `!important`** er uendret.
+
+**Faktisk bevis:** [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) på commit `70118fbc23fca83a84fb2c96523fabd55228cce8` **SUCCESS**: 43 deterministiske testdelsteg, Chrome parity 99 scenarier, audit uten funn på valgt nivå. Samlet aktuell linjestørrelse: `app.js` **4 274** og `server.js` **1 844**, fra opprinnelig 4 632/2 100 ved denne refaktorrunden. Hovedfilene er fortsatt store, særlig lange admin-/benchmark-rutiner. Ingen endringer på `main`, LIVE-pilot, database eller Render.
+
+---
+
+## 20.11.2026 – Innleveringskontroll: avgrenset sensorkrav, riktig Git-versjon og menneskelig godkjenning
+
+**Oppdrag/kontekst:** Etter grønn Chrome-brukerreise, mobil-/PDF-kontroll og ekte lokal GoTrue/PostgREST/RLS ba prosjektansvarlig om «neste» trinn. Tidligere eksplisitt grense gjelder fortsatt: **ingen merge til `main`, endring i Render, live Supabase eller LIVE/tale-pilot** uten eget vedtak. KI fikk i oppgave å kontrollere det faktisk innleverbare prosjektet mot tilgjengelig sensorkunnskap, ikke å foreslå enda mer funksjonalitet.
+
+**Undersøkelse:** PR #12 var fremdeles et **draft** med rundt 125 filendringer og base `main` commit `2ae505ad...`. De nyeste kvalitetsbevisene gjaldt **revisjonsgrenen**, ikke publisert `main`. Det var også sprik mellom README og nyere dokumentasjon: README oppga ca. **2650 ord** for refleksjonsrapporten, mens opptellingen av det reviderte utkastet var rundt **3164 ord** inkludert overskrifter/metadata; ett eldre avsnitt hevdet at reell tobruker-Supabase Auth/PostgREST-test fremdeles manglet selv om isolert lokal fullkjedetest nå var bestått.
+
+**Kritisk begrensning:** Den tilgjengelige utdelte sensorveiledningen for **del 1** oppgir veiledende 30/20/15/10/10/10/5-prosentvekting for prosess, funksjon, testing, UX, kode, README og repo. Undervisningen omtaler samlet **70 % app/prosess og 30 % refleksjon**. KI fant derimot **ikke** endelig Canvas-innleveringstekst/ordgrense/frist eller fullstendig del 2-rubrikk. Disse kravene ble derfor eksplisitt merket **ikke verifisert** – ikke gjettet eller omskrevet til en ubegrunnet ferdigattest.
+
+**KI-forslag/valg og gjennomføring:**
+- I stedet for merge eller publisering ble det laget en [dateret innleveringskontroll](../INNLEVERINGSKONTROLL-2026-11-20.md) med kandidatversjon, separate testbevis og stoppunkter for reell avlevering.
+- I stedet for kun å stole på dokumenttekst ble `scripts/audit-submission.cjs` lagt til som et **offline** preflight-verktøy. Det verifiserer at **36 unike PRD-krav er identisk representert i de 36 oppføringene i sensormatrisen**, og sjekker dokumentasjon og leveransegrense. `--strict` skal *feile lukket* ved manglende erklært Canvas-kontroll, studentens godkjenning eller feil valgt Git SHA/gren. Dette er en manuell sign-off-mekanisme, **ikke** en automatisk Canvas-integrasjon.
+- README, PRD-headeren og eldre overleverings-/dokumentasjonssjekklister ble presisert slik at daterte historiske tall ikke fremstår som nyeste status. Refleksjonsrapporten er fremdeles studentens **arbeidsutkast**.
+- Den strenge kontrollen kjøres ikke som et krav om ferdig innlevering i vanlig CI; Quality Gate kjører rapportmodusen og en **negativ test** som skal bevise at `--strict` avviser manglende godkjenning og feil commit. Dermed unngås at «grønn CI» feilaktig blir synonymt med «klar til å levere».
+
+**Læring:** En god KI-assistert prosess krever også å si **stopp** når videre automatisering kan skape falsk trygghet. Det viktigste neste spørsmålet er ikke antall tester, men *hvilken konkret commit sensor får tilgang til*, *hvilket formelt regelsett som gjelder* og *hvem som eier de personlige refleksjonene*. Ingen personlig student-ID ble lagt inn i det offentlige repoet.
+
+**Avgrensning:** Ingen CI-status på senere commits gis som «grønn» uten en faktisk bestått Actions-run på akkurat den commiten. Ingen beslutning om innlevering eller merge er tatt av KI på vegne av studenten.

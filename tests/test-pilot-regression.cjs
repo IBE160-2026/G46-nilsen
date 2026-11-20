@@ -3,6 +3,7 @@ const assert=require('assert');
 
 const html=fs.readFileSync('index.html','utf8');
 const app=fs.readFileSync('app.js','utf8');
+const benchmarkEvaluator=fs.readFileSync('src/client/benchmark-evaluation.js','utf8');
 const server=fs.readFileSync('server.js','utf8');
 const bank=JSON.parse(fs.readFileSync('tests/AI-GOLDEN-CASES.json','utf8'));
 
@@ -12,10 +13,16 @@ assert((bank.cases||[]).length>=66,'Goldenbanken skal inneholde minst 66 saker e
 assert(html.includes('id="pilot-regression-run"'),'Admin mangler knapp for pilotkjøring');
 assert(html.includes('id="production-regression-run"'),'Admin mangler knapp for full produksjonsflyt-test');
 assert(html.includes('id="pilot-regression-results"'),'Admin mangler område for pilotresultater');
+assert(html.includes('id="pilot-regression-description"'),'Admin mangler dynamisk forklaring av antall testsaker');
+assert(!html.includes('Alle 26 saker')&&!html.includes('52 KI-kall')&&!html.includes('Kjør alle 26'),'Pilot/full-UI skal ikke bruke utdaterte 26/52');
+assert(app.includes("'/api/admin/pilot-regression/cases?summary=1'"),'Klienten må hente antall fra den faktiske golden-casebanken');
+assert(app.includes('pilotCount * 2')&&app.includes('fullCount * 2'),'Antall KI-kall skal utledes av antall testsaker');
+assert(app.includes('await loadRegressionCounts()'),'Adminvisningen må synkronisere dynamisk caseantall');
+assert(server.includes("req.query?.summary === '1'"),'Serveren må kunne returnere anonymisert antall uten casebeskrivelser');
 assert(app.includes("async function runPilotRegression(mode='pilot')"),'Klienten mangler automatisk pilot/full produksjonsflyt-kjøring');
 assert(app.includes("runPilotRegression('full')"),'Full produksjonsflyt-test er ikke koblet til klienten');
 assert(app.includes("mode==='full'?'production-regression':'pilot-regression'"),'Fulltesten merkes ikke som egen testmodus');
-assert(app.includes("notes.push('Automatisk ordtreff"),'Ordtreff behandles fortsatt som hard feil i åpningen');
+assert(benchmarkEvaluator.includes("notes.push('Automatisk ordtreff") && app.includes('SamtalestotteBenchmarkEvaluation.evaluateOpening'), 'Myke ordtreff skal ligge i dedikert evaluator, ikke bli hard feil');
 assert(app.includes("const testMode=mode==='full'?'production-regression':'pilot-regression'") && app.includes("JSON.stringify({situation:testCase.input,testMode})") && app.includes("JSON.stringify({situation:testCase.input,analysis,followups:{},testMode})"),'Pilot/fulltest sender ikke testMode til begge KI-kall');
 assert(app.includes("fetch('/api/analyze-situation'"),'Pilotkjøringen bruker ikke ekte analyse-endepunkt');
 assert(app.includes("fetch('/api/generate-guidance'"),'Pilotkjøringen bruker ikke ekte veilednings-endepunkt');
@@ -28,7 +35,7 @@ assert(app.includes("fetch('/api/admin/pilot-regression/result'"),'Klienten send
 assert(app.includes("rateLimitedModels"),'Benchmark stopper ikke videre kall til en modell som allerede er ratebegrenset');
 assert(app.includes("google/gemma-4-26b-a4b-it:free"),'Gemma Free-håndtering mangler');
 assert(server.includes('testMode === "production-regression"'),'Serveren mangler testmerking for full produksjonsflyt');
-assert(server.includes('effectiveRole(req.user) === "admin"'),'Serveren beskytter testmerking med adminrolle');
+assert(server.includes('req.user?.role === "admin"'), 'Serveren må bruke verifisert innlogget rolle for både testmerking og sperre');
 assert(pilot.every(x=>x.opening_checks?.max_words),'Alle pilotcaser skal ha konkret kontroll av åpningen');
 
 console.log(`Produksjonsflyt-regresjon: 5 pilotcaser + ${(bank.cases||[]).length} totalcaser, myk ordvurdering og adminvern OK`);

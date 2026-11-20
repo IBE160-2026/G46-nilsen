@@ -31,6 +31,11 @@ assert.deepEqual(pngSize('assets/icons/app-icon-maskable-512.png'),{width:512,he
 assert(html.includes('rel="manifest"') && html.includes('install-app-button'),'HTML mangler PWA/installasjons-UI');
 assert(app.includes('beforeinstallprompt') && app.includes("navigator.serviceWorker.register('/sw.js?"),'Klient mangler installprompt/service worker');
 assert(sw.includes("url.pathname.startsWith('/api/')") && sw.includes("if (request.method !== 'GET')"),'Service worker må ignorere API og ikke-GET');
+assert(html.includes('src/client/benchmark-evaluation.js?v=') && sw.includes('/src/client/benchmark-evaluation.js'), 'Benchmark-evalueringen må ligge i PWA-skallet');
+assert(html.includes('src/client/admin-content.js?v=') && sw.includes('/src/client/admin-content.js'),
+  'Innholdsredigeringsmodulen må lastes og være i PWA-skallet');
+assert(html.includes('src/client/admin-data.js?v=') && sw.includes('/src/client/admin-data.js'),
+  'Admin-modulen må lastes og inngå i offline-skallet');
 assert(sw.includes('/assets/icons/app-icon-192.png') && sw.includes('/assets/icons/app-icon-512.png'),'Service worker cacher ikke PWA-ikoner');
 assert(server.includes('"manifest.webmanifest"') && server.includes('"sw.js"') && server.includes('"assets/icons/app-icon-192.png"'),'Produksjonsserver eksponerer ikke PWA-filene');
 assert(demo.includes('"manifest.webmanifest"') && demo.includes('"sw.js"'),'Demo-server eksponerer ikke PWA-filer');

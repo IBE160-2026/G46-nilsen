@@ -1,0 +1,4 @@
+/* Funksjonsdeler i opprinnelig rekkefølge; ikke sorter importene. */
+@import url("./styles-core-05-guidance.css");
+@import url("./styles-core-06-auth-history.css");
+@import url("./styles-core-07-reports.css");

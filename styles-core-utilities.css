@@ -1,0 +1,5 @@
+/* Funksjonsdeler i opprinnelig rekkefølge; ikke sorter importene. */
+@import url("./styles-core-11-speech-bubbles.css");
+@import url("./styles-core-12-admin.css");
+@import url("./styles-core-13-survey.css");
+@import url("./styles-core-14-final-adjustments.css");

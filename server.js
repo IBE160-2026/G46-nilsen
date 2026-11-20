@@ -7,7 +7,13 @@ import crypto from "node:crypto";
 import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
+import { historyPayload, rowToHistory } from "./src/server/history-contracts.js";
+import { normalizeSourceUrl, webSources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } from "./src/server/source-normalization.js";
+import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
+import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
+import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
+import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
 import { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
@@ -93,11 +99,22 @@ const registerLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 8, keyPr
 const resetLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 6, keyPrefix: "reset" });
 const aiLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 80, keyPrefix: "ai" });
 const benchmarkLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 120, keyPrefix: "benchmark" });
+const benchmarkBudgetLedger = createBenchmarkBudgetLedger();
+// Den betalte ruten forblir AV i produksjon til budsjettet kan sikres i delt/varig lagring.
+// Denne snevre bryteren er utelukkende for en isolert lokal provider-simulator i testprosessen.
+const benchmarkLiveMockOnly = process.env.NODE_ENV === "test" &&
+  process.env.TEST_BENCHMARK_LIVE === "1" &&
+  /^\d{4,5}$/.test(String(process.env.TEST_FAKE_OPENAI_PORT || "")) &&
+  /^http:\/\/(127\.0\.0\.1|localhost):\d{2,5}\/?$/.test(String(process.env.SUPABASE_URL || ""));
+// Database-backed path is accessible ONLY from explicitly isolated fake-provider tests.
+// Do not enable on Render: proposal SQL has not been migrated to live Supabase.
+const benchmarkRpcTestOnly = benchmarkLiveMockOnly && process.env.TEST_BENCHMARK_LEDGER === "rpc";
+
 app.use("/api", generalApiLimiter);
 
 // Server kun eksplisitt offentlige frontend-filer. SQL, .env, tester og dokumentasjon er ikke web-tilgjengelige.
 const publicAssetNames = new Set([
-  "index.html", "app.js", "styles.css", "styles-core.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js", "src/client-data.js", "src/privacy-name-data.js", "src/privacy-detector.js", "assets/icons/app-icon.svg", "assets/icons/app-icon-192.png", "assets/icons/app-icon-512.png", "assets/icons/app-icon-maskable-512.png", "assets/images/snakkeboble.svg",
+  "index.html", "app.js", "styles.css", "styles-core.css", "styles-core-foundation.css", "styles-core-dialogue.css", "styles-core-simulation.css", "styles-core-utilities.css", "styles-core-01-shell.css", "styles-core-02-forms.css", "styles-core-03-situation.css", "styles-core-04-topic-layout.css", "styles-core-05-guidance.css", "styles-core-06-auth-history.css", "styles-core-07-reports.css", "styles-core-08-simulation-flow.css", "styles-core-09-simulation-controls.css", "styles-core-10-auth-views.css", "styles-core-11-speech-bubbles.css", "styles-core-12-admin.css", "styles-core-13-survey.css", "styles-core-14-final-adjustments.css", "styles-responsive.css", "styles-overrides.css", "manifest.webmanifest", "sw.js", "src/client-data.js", "src/client/guidance-fallback.js", "src/client/benchmark-evaluation.js", "src/client/admin-content.js", "src/client/admin-data.js", "src/client/topic-search.js", "src/client/situation-analysis.js", "src/privacy-name-data.js", "src/privacy-detector.js", "assets/icons/app-icon.svg", "assets/icons/app-icon-192.png", "assets/icons/app-icon-512.png", "assets/icons/app-icon-maskable-512.png", "assets/images/snakkeboble.svg",
   "assets/images/logo.png", "assets/images/logo-light.png", "assets/images/logo-symbol.png", "assets/images/logo-symbol-light.png",
   "assets/images/profile-ai.png", "assets/images/profile-ai-light.png", "assets/images/profile-human.png", "assets/images/profile-human-light.png",
   "assets/images/hero-conversation-exact.png",
@@ -119,10 +136,17 @@ app.get("/api/public-config", (_req, res) => {
 const apiKey = process.env.OPENAI_API_KEY;
 const openRouterApiKey = process.env.OPENROUTER_API_KEY;
 const defaultModel = process.env.OPENAI_MODEL || (openRouterApiKey ? "openrouter/free" : "gpt-5.6-luna");
-const client = apiKey ? new OpenAI({ apiKey, timeout: 90000, maxRetries: 0 }) : null;
+// Even if a test forgets the offline fetch guard, both AI providers are bound
+// to the loopback fake when synthetic benchmark mode is explicitly enabled.
+const fakeProviderBase = benchmarkLiveMockOnly
+  ? 'http://127.0.0.1:' + process.env.TEST_FAKE_OPENAI_PORT + '/v1' : null;
+const client = apiKey ? new OpenAI({
+  apiKey, timeout: 90000, maxRetries: 0,
+  ...(fakeProviderBase ? { baseURL:fakeProviderBase } : {})
+}) : null;
 const openRouterClient = openRouterApiKey ? new OpenAI({
   apiKey: openRouterApiKey,
-  baseURL: "https://openrouter.ai/api/v1",
+  baseURL: fakeProviderBase || "https://openrouter.ai/api/v1",
   timeout: 90000,
   maxRetries: 0,
   defaultHeaders: {
@@ -327,6 +351,9 @@ function authenticatedUserClient(accessToken) {
 
 const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
+const benchmarkRpcLedger = createBenchmarkRpcBudgetLedger({
+  rpc: (name, args) => supabaseAdmin.rpc(name, args)
 });
 
 // Automatisk dataminimering/lagringsbegrensning for logger, feedback, benchmark og brukertestdata.
@@ -686,7 +713,7 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   let storageReady=true;
   const probe=await supabaseAdmin.from('benchmark_results').select('id,source_pages').limit(1);
   if(probe.error) storageReady=false;
-  res.json({version:appVersion,totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+  res.json({version:appVersion,totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady,liveEnabled:benchmarkLiveMockOnly});
 });
 
 app.get('/api/admin/pilot-regression/cases', requireAdmin, async (req,res)=>{
@@ -694,9 +721,18 @@ app.get('/api/admin/pilot-regression/cases', requireAdmin, async (req,res)=>{
     const goldenPath = path.join(__dirname, 'tests/AI-GOLDEN-CASES.json');
     const bank = JSON.parse(fs.readFileSync(goldenPath, 'utf8'));
     const mode = String(req.query?.mode || 'pilot') === 'full' ? 'full' : 'pilot';
+    const allCases = Array.isArray(bank.cases) ? bank.cases : [];
+    // Count-only response for admin labels: never send full synthetic case text just to display counts.
+    if (req.query?.summary === '1') {
+      return res.json({
+        pilotCount: allCases.filter(item => item.pilot_regression).length,
+        fullCount: allCases.length,
+        paidRegressionEnabled: benchmarkLiveMockOnly
+      });
+    }
     const selected = mode === 'full'
-      ? (bank.cases || [])
-      : (bank.cases || []).filter(item => item.pilot_regression);
+      ? allCases
+      : allCases.filter(item => item.pilot_regression);
     const cases = selected.map(item => ({
       id:item.id,
       theme:item.theme,
@@ -705,7 +741,7 @@ app.get('/api/admin/pilot-regression/cases', requireAdmin, async (req,res)=>{
       opening_checks:item.opening_checks || {},
       manual_fasit:item.manual_fasit || null
     }));
-    res.json({ mode, count:cases.length, cases });
+    res.json({ mode, count:cases.length, cases, paidRegressionEnabled:benchmarkLiveMockOnly });
   } catch (error) {
     console.error('Kunne ikke lese produksjonsflyt-caser:', error?.message || error);
     res.status(500).json({ error:'REGRESSION_CASES_FAILED', message:'Kunne ikke hente testcasene.' });
@@ -760,7 +796,8 @@ app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
   for(const item of benchmarkCases){
     const key=`${item.topicId}|${item.subtopic}`; groups.set(key,(groups.get(key)||0)+1);
     if(!item.id||!item.situation||!item.topicId||!item.subtopic) problems.push(`${item.id||'ukjent'} mangler obligatorisk felt`);
-    if(serverPrivacyFindings(item.situation).length) problems.push(`${item.id} utløser personvernsjekk`);
+    const privacyFindings=serverPrivacyFindings(item.situation);
+    if(privacyFindings.length) problems.push(`${item.id} utløser personvernsjekk (${[...new Set(privacyFindings.map(f=>f.type))].join(', ')})`);
   }
   for(const [key,count] of groups) if(count<2) problems.push(`${key} har bare ${count} testsak(er)`);
   const topicCounts={}; for(const item of benchmarkCases) topicCounts[item.topic]=(topicCounts[item.topic]||0)+1;
@@ -768,64 +805,143 @@ app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
 });
 
 app.post('/api/admin/benchmark/live', benchmarkLimiter, requireAdmin, async (req,res)=>{
-  if(!hasAnyAiClient()) return res.status(503).json({error:'AI_NOT_CONFIGURED',message:'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.'});
-  const caseId=String(req.body?.caseId||''); const model=String(req.body?.model||'');
-  const runId=String(req.body?.runId||'').slice(0,80) || crypto.randomUUID();
-  const spentSoFar=Math.max(0,Number(req.body?.spentSoFar||0));
-  const budget=Math.min(5,Math.max(0.10,Number(req.body?.budgetUsd||2)));
+  if(!benchmarkLiveMockOnly) return res.status(503).json({
+    error:'BENCHMARK_PAID_DISABLED',
+    message:'Ekte benchmark er deaktivert til delt og varig kostnadskontroll er på plass.'
+  });
+  if(!hasAnyAiClient()) return res.status(503).json({
+    error:'AI_NOT_CONFIGURED',
+    message:'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.'
+  });
+  const caseId=String(req.body?.caseId||'');
+  const model=String(req.body?.model||'');
+  const runId=String(req.body?.runId||'').slice(0,80);
+  const budget=req.body?.budgetUsd;
   const item=benchmarkCaseById.get(caseId);
   if(!item) return res.status(400).json({error:'INVALID_CASE',message:'Ukjent testsak.'});
   if(!AI_MODELS[model]) return res.status(400).json({error:'INVALID_MODEL',message:'Ugyldig KI-modell.'});
-  // Reserve 5 cent before each call so the run stops before the requested budget is exhausted.
-  if(spentSoFar + 0.05 > budget) return res.status(409).json({error:'BUDGET_LIMIT',message:`Budsjettgrensen på $${budget.toFixed(2)} er nådd.`,spentSoFar,budget});
-  const benchmarkPrompt=`Du deltar i en kontrollert benchmark av Samtalestøtte. Gi et kort, konkret og profesjonelt råd til en leder.
-Forventet hovedtema: ${item.topic}
-Forventet undertema: ${item.subtopic}
-Situasjon: ${item.situation}
 
-Krav:
-- Svar på norsk.
-- 120–180 ord.
-- Skill mellom fakta og antakelser.
-- Ikke dikt opp virksomhetsregler eller personopplysninger.
-- Bruk nettsøk bare dersom oppdatert eller presis ekstern informasjon faktisk er nødvendig.
-- Hvis du søker: prioriter norske myndighetskilder og relevante fagmiljøer.
-- Ikke omtale dette som en test i selve rådet.`;
+  // Authenticated user ID from requireAdmin; NEVER the browser's spentSoFar.
+  const ledger=benchmarkRpcTestOnly ? benchmarkRpcLedger : benchmarkBudgetLedger;
+  let admission;
+  try {
+    admission=await ledger.reserve({
+      userId:req.user.id,runId,caseId,model,budgetUsd:budget
+    });
+  } catch(error) {
+    console.error('[benchmark-budget] Kunne ikke bekrefte reservasjon:',{code:error?.code});
+    return res.status(503).json({
+      error:'BENCHMARK_LEDGER_UNAVAILABLE',
+      message:'Budsjettjenesten er utilgjengelig. Ingen KI-kall ble startet.'
+    });
+  }
+  if(!admission.ok) return res.status(admission.status).json({
+    error:admission.error,message:admission.message
+  });
+
+  const benchmarkPrompt=[
+    'Du deltar i en kontrollert benchmark av Samtalestøtte. Gi et kort, konkret og profesjonelt råd til en leder.',
+    'Forventet hovedtema: '+item.topic,
+    'Forventet undertema: '+item.subtopic,
+    'Situasjon: '+item.situation,
+    '',
+    'Krav:',
+    '- Svar på norsk.',
+    '- 120–180 ord.',
+    '- Skill mellom fakta og antakelser.',
+    '- Ikke dikt opp virksomhetsregler eller personopplysninger.',
+    '- Bruk nettsøk bare dersom oppdatert eller presis ekstern informasjon faktisk er nødvendig.',
+    '- Hvis du søker: prioriter norske myndighetskilder og relevante fagmiljøer.',
+    '- Ikke omtale dette som en test i selve rådet.'
+  ].join('\n');
   const started=Date.now();
-  try{
-    const benchmarkTools = AI_MODELS[model]?.provider === 'openai' ? [{type:'web_search',search_context_size:'low'}] : undefined;
-    const benchmarkParams={_functionName:'benchmark',_userId:req.user.id,_topicId:item.topicId,_subtopic:item.subtopic,_trustedInternal:true,_modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],max_output_tokens:450};
+  let estimatedCost=null;
+  let outcome='uncertain';
+  let responseStatus=500;
+  let responseBody={error:'BENCHMARK_FAILED',message:'Benchmark-kallet feilet.'};
+  try {
+    const benchmarkTools=AI_MODELS[model]?.provider==='openai'
+      ? [{type:'web_search',search_context_size:'low'}] : undefined;
+    const benchmarkParams={
+      _functionName:'benchmark',_userId:req.user.id,
+      _topicId:item.topicId,_subtopic:item.subtopic,_trustedInternal:true,
+      _modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,
+      instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',
+      input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],
+      max_output_tokens:450
+    };
     if(benchmarkTools) benchmarkParams.tools=benchmarkTools;
     const response=await createTrackedResponse(benchmarkParams);
-    const latencyMs=Date.now()-started; const usage=response.__samtalestotteUsage||{}; const web=usage.web||extractWebSearchMeta(response);
-    const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id};
+    const latencyMs=Date.now()-started;
+    const usage=response.__samtalestotteUsage||{};
+    const web=usage.web||extractWebSearchMeta(response);
+    estimatedCost=usage.estimatedCostUsd;
+    const row={
+      run_id:runId,case_id:caseId,topic_id:item.topicId,
+      topic:item.topic,subtopic:item.subtopic,variant:item.variant,
+      model,response_text:String(response.output_text||''),
+      input_tokens:Number(usage.inputTokens||0),
+      output_tokens:Number(usage.outputTokens||0),
+      estimated_cost_usd:Number(usage.estimatedCostUsd||0),
+      web_search_count:Number(web.count||0),
+      web_search_queries:web.queries||[],source_domains:web.domains||[],
+      source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id
+    };
     const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
-    if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør database/migrations/V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
-    res.json({ok:true,id:save.data?.id,...row});
- }catch(error){
-  console.error("Benchmark-feil:", {
-    model,
-    caseId,
-    status: error?.status,
-    message: error?.message,
-    code: error?.code,
-    error: error?.error
-  });
+    if(save.error) {
+      responseStatus=503;
+      responseBody={
+        error:'BENCHMARK_STORAGE_MISSING',
+        message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør database/migrations/V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',
+        result:row
+      };
+      // Provider may have incurred cost. Storage failure does NOT release ticket.
+    } else {
+      responseStatus=200;
+      responseBody={ok:true,id:save.data?.id,...row};
+      outcome='success';
+    }
+  } catch(error) {
+    console.error('Benchmark-feil:',{
+      model,caseId,status:error?.status,message:error?.message,
+      code:error?.code,error:error?.error
+    });
+    const status=Number(error?.status)||500;
+    const providerRateLimited=status===429 && model==='google/gemma-4-26b-a4b-it:free';
+    responseStatus=status>=400&&status<600?status:500;
+    responseBody={
+      error:'BENCHMARK_FAILED',
+      message:providerRateLimited
+        ? 'Gemma Free er midlertidig ratebegrenset hos OpenRouter (429). Prøv senere eller velg en annen modell.'
+        : (error?.message || 'Benchmark-kallet feilet.'),
+      model,caseId,status:error?.status||null,code:error?.code||null
+    };
+    outcome='failed';
+  }
 
-  const status=Number(error?.status)||500;
-
-  const providerRateLimited = status === 429 && model === 'google/gemma-4-26b-a4b-it:free';
-  res.status(status>=400&&status<600?status:500).json({
-    error:'BENCHMARK_FAILED',
-    message:providerRateLimited
-      ? 'Gemma Free er midlertidig ratebegrenset hos OpenRouter (429). Prøv senere eller velg en annen modell.'
-      : (error?.message || 'Benchmark-kallet feilet.'),
-    model,
-    caseId,
-    status:error?.status || null,
-    code:error?.code || null
-  });
-}
+  // Never acknowledge even a successful AI response before durable settlement.
+  // RPC/storage outages leave a pending ticket to be reconciled, not "success".
+  let settled;
+  try {
+    settled=await ledger.settle(admission.ticket,estimatedCost,{
+      userId:req.user.id,outcome
+    });
+    if(!settled || typeof settled.chargedUsd!=='number') throw new Error('Invalid settlement');
+  } catch(error) {
+    console.error('[benchmark-budget] Oppgjør ikke bekreftet:',{
+      code:error?.code,runId,caseId,model
+    });
+    return res.status(503).json({
+      error:'BENCHMARK_SETTLEMENT_UNCONFIRMED',
+      message:'KI-forsøket kan ha medført kostnad, men oppgjøret ble ikke bekreftet. Kjøringen er sperret til administrator har avklart forsøket.'
+    });
+  }
+  if(settled.overBudget) console.warn(
+    '[benchmark-budget] Kostnadsestimat overskred reservasjonen; videre kall sperres.',
+    {runId,userId:req.user.id,chargedUsd:settled.chargedUsd,
+      runReservedUsd:settled.runReservedUsd,userDayReservedUsd:settled.userDayReservedUsd}
+  );
+  return res.status(responseStatus).json(responseBody);
 });
 
 app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
@@ -1066,39 +1182,6 @@ app.post("/api/auth/logout", async (req, res) => {
   res.json({ ok: true });
 });
 
-function historyPayload(body = {}) {
-  return {
-    title: String(body.title || "Samtale uten tittel").slice(0, 120),
-    topic: String(body.topic || "").slice(0, 80),
-    subtopic: String(body.subtopic || "").slice(0, 100),
-    situation: String(body.situation || "").slice(0, 20000),
-    analysis: body.analysis || null,
-    guidance: body.guidance || null,
-    conversation: Array.isArray(body.conversation) ? body.conversation.slice(-40) : [],
-    simulation: body.simulation && typeof body.simulation === "object" ? {
-      mode: String(body.simulation.mode || "solo").slice(0, 20),
-      style: String(body.simulation.style || "open").slice(0, 30),
-      turns: Array.isArray(body.simulation.turns) ? body.simulation.turns.slice(-40).map(turn => ({
-        role: turn?.role === "employee" ? "employee" : "leader",
-        text: String(turn?.text || "").slice(0, 5000)
-      })) : [],
-      feedback: body.simulation.feedback || null
-    } : null
-  };
-}
-
-function rowToHistory(row) {
-  let stored = {};
-  try { stored = JSON.parse(row.content || "{}"); } catch (_) {}
-  return {
-    id: String(row.id),
-    ...stored,
-    title: row.title || stored.title || "Samtale uten tittel",
-    createdAt: row.created_at,
-    updatedAt: row.updated_at
-  };
-}
-
 app.get("/api/history", requireUser, async (req, res) => {
   const { data, error } = await req.supabase
     .from("conversations")
@@ -1131,6 +1214,11 @@ app.post("/api/history", requireUser, async (req, res) => {
   }
 
   const { data, error } = await query;
+  // En oppdatering av en ukjent eller annen brukers ID gir null rader pga. RLS.
+  // Returner samme nøytrale 404 i begge tilfeller (ikke lek opplysninger om eier).
+  if (body.id && !error && !data) {
+    return res.status(404).json({ error: "NOT_FOUND", message: "Samtalen ble ikke funnet." });
+  }
   if (error || !data) {
     console.error("Lagre historikk-feil:", error);
     return res.status(500).json({ error: "HISTORY_SAVE_FAILED", message: "Kunne ikke lagre samtalen." });
@@ -1241,186 +1329,27 @@ app.get("/api/occupation-options", requireUser, (_req, res) => {
 
 app.get("/api/help-source-library", requireUser, (_req, res) => {
   try {
-    const normalizePublicSource = source => ({
-      id: source.id,
-      title: source.title || source.id || "Kilde",
-      author: source.author || source.authority || "",
-      year: source.year || "",
-      type: source.type || source.sourceType || "fagkilde",
-      url: source.url || (source.doi ? `https://doi.org/${source.doi}` : ""),
-      lastVerified: source.last_verified || source.lastVerified || null,
-      timeSensitive: Boolean(source.time_sensitive || source.timeSensitive),
-      useFor: source.use_when || source.useFor || [],
-      occupations: Array.isArray(source.occupations) ? source.occupations : [],
-      sourceTier: sourceTier(source),
-      bindingStatus: source.bindingStatus || null
-    });
-
-    const all = (sourceBank.sources || []).map(normalizePublicSource).filter(source => source.url);
-    const generalRules = all.filter(source =>
-      ["primary_law","authority_guidance","official_employer_reference","collective_agreement","authority_index"].includes(source.sourceTier)
-    );
-    const research = all.filter(source => ["research_evidence","research_communication"].includes(source.sourceTier));
-    const generalFrameworks = all.filter(source => !generalRules.includes(source) && !research.includes(source));
-    const globalEmployer = (occupationLegalSourceBank.sources || [])
-      .filter(source => (source.sectors || []).includes("*"))
-      .map(normalizePublicSource)
-      .filter(source => source.url);
-    const agreementSources = agreementCuratedSources.map(normalizePublicSource).filter(source => source.url);
-    const dedupePublic = items => {
-      const seen = new Set();
-      return items.filter(source => source.id && !seen.has(source.id) && seen.add(source.id));
-    };
-    const globalRules = globalEmployer.filter(source =>
-      ["primary_law","authority_guidance","official_employer_reference","collective_agreement"].includes(source.sourceTier)
-    );
-    const globalFrameworks = globalEmployer.filter(source => !globalRules.includes(source));
-    const authorityAndLaw = dedupePublic([
-      ...generalRules,
-      ...globalRules,
-      ...agreementSources
-    ]);
-    const frameworks = dedupePublic([
-      ...generalFrameworks,
-      ...globalFrameworks
-    ]);
-
-    const occupationGroups = (occupationSourceMap.sectors || [])
-      .filter(sector => sector.id !== "other")
-      .map(sector => {
-        const sources = (occupationLegalSourceBank.sources || [])
-          .filter(source => (source.sectors || []).includes(sector.id))
-          .map(normalizePublicSource);
-        return {
-          id: sector.id,
-          label: sector.label,
-          occupations: sector.occupations || [],
-          sources
-        };
-      })
-      .filter(group => group.sources.length);
-
-    res.json({
-      categories: {
-        rules: {
-          label: "Lovverk og myndigheter",
-          description: "Norske lover, forskrifter, myndighetsveiledning og offentlige arbeidsgiverressurser.",
-          groups: [{ id:"rules", label:"Lovverk og myndigheter", sources: authorityAndLaw }]
-        },
-        research: {
-          label: "Forskning og evidens",
-          description: "Fagfellevurdert forskning, meta-analyser, evidensgjennomganger og forskningsbaserte fagressurser.",
-          groups: [{ id:"research", label:"Forskning og evidens", sources: research }]
-        },
-        frameworks: {
-          label: "Faglig rammeverk",
-          description: "Praktiske fagveiledere, profesjonsressurser og ledelses-/samtalerammeverk.",
-          groups: [{ id:"frameworks", label:"Faglig rammeverk", sources: frameworks }]
-        },
-        occupations: {
-          label: "Yrkes- og sektorkilder",
-          description: "Sektorspesifikke myndighets- og regelverkskilder sortert etter arbeidsområde.",
-          groups: occupationGroups
-        }
-      }
-    });
+    res.json(buildHelpSourceLibrary({
+      sourceBank,
+      occupationLegalSourceBank,
+      agreementCuratedSources,
+      occupationSourceMap
+    }));
   } catch (error) {
     console.error("Kunne ikke bygge kildebank for Hjelp:", error?.message || error);
     res.status(500).json({ error:"HELP_SOURCE_LIBRARY_FAILED", message:"Kunne ikke hente kildebanken." });
   }
 });
 
-function sourceTier(source = {}) {
-  const role = source.sourceRole || source.source_role || "";
-  const type = String(source.type || source.sourceType || role || "").toLowerCase();
-  if (role === "primary_regulation" || /lovverk|law_database|regulation/.test(type)) return "primary_law";
-  if (role === "collective_agreement" || /collective_agreement/.test(type)) return "collective_agreement";
-  if (role === "official_employer_reference") return "official_employer_reference";
-  if (role === "authority_index") return "authority_index";
-  if (["professional_framework","international_framework"].includes(role)) return "professional_framework";
-  if (/myndighet|official_authority|authority_guidance/.test(type)) return "authority_guidance";
-  if (/forskningsformidling|forskningsbasert fagressurs/.test(type)) return "research_communication";
-  if (/meta-analyse|fagfelle|forskning|evidens/.test(type)) return "research_evidence";
-  if (["specialist_guidance","worklife_framework"].includes(role) || /specialist_worklife_guidance|worklife_framework/.test(type)) return "specialist_guidance";
-  return "professional_framework";
-}
-
-function selectRelevantSources(analysis = {}, situation = "", { employerType = "", sectorId = "", occupation = "", topic = "", subtopic = "" } = {}) {
-  const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
-  if (topic) topics.add(topic);
-  const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || []), subtopic]
-    .filter(Boolean).join(" ");
-  const q = `${situation || ""} ${analysisText}`.toLocaleLowerCase("nb-NO");
-  const agreementRelevant = shouldUseAgreementContext({ topic:[...topics].join(" "), subtopic, situation:q });
-  const legalContext = isLegalSourceContext(q);
-
-  const globalEmployerSources = (occupationLegalSourceBank.sources || []).filter(source => (source.sectors || []).includes("*"));
-  const agreementSources = agreementCuratedSources.filter(source => {
-    if (!employerType || !(source.employerTypes || []).includes(employerType)) return false;
-    if (source.id === "STATE_PERSONNEL_HANDBOOK") return legalContext;
-    return agreementRelevant;
-  });
-
-  const candidates = [...(sourceBank.sources || []), ...globalEmployerSources, ...agreementSources];
-  const seen = new Set();
-  const scored = [];
-
-  const normalizedOccupation = String(occupation || "").toLocaleLowerCase("nb-NO");
-  for (const source of candidates) {
-    if (!source?.id || seen.has(source.id)) continue;
-
-    const scopedEmployerTypes = Array.isArray(source.employerTypes) ? source.employerTypes : (Array.isArray(source.employer_types) ? source.employer_types : []);
-    if (scopedEmployerTypes.length && (!employerType || !scopedEmployerTypes.includes(employerType))) continue;
-
-    const scopedSectors = Array.isArray(source.sectors) ? source.sectors.filter(id => id !== "*") : [];
-    if (scopedSectors.length && (!sectorId || !scopedSectors.includes(sectorId))) continue;
-    const scopedOccupations = Array.isArray(source.occupations) ? source.occupations : [];
-    if (scopedOccupations.length && normalizedOccupation) {
-      const occupationMatch = scopedOccupations.some(value => {
-        const n = String(value || "").toLocaleLowerCase("nb-NO");
-        return n && (normalizedOccupation === n || normalizedOccupation.includes(n) || n.includes(normalizedOccupation));
-      });
-      if (!occupationMatch) continue;
-    } else if (scopedOccupations.length && !normalizedOccupation) {
-      continue;
-    }
-
-    seen.add(source.id);
-    let score = 0;
-    let matched = false;
-    for (const sourceTopic of source.topics || []) {
-      if (topics.has(sourceTopic)) { score += 5; matched = true; }
-    }
-    for (const term of source.use_when || source.useFor || []) {
-      const normalized = String(term).toLocaleLowerCase("nb-NO");
-      if (normalized && q.includes(normalized)) { score += 4; matched = true; }
-    }
-
-    const tier = sourceTier(source);
-    if (!matched) continue;
-
-    if (tier === "primary_law") score += legalContext ? 7 : 2;
-    else if (tier === "authority_guidance") score += legalContext ? 6 : 3;
-    else if (tier === "collective_agreement") score += agreementRelevant ? 7 : -20;
-    else if (tier === "official_employer_reference") score += 4;
-    else if (tier === "authority_index") score += 1;
-    else if (tier === "research_evidence") score += legalContext ? 1 : 4;
-    else if (tier === "research_communication") score += legalContext ? 0.5 : 2;
-    else if (tier === "specialist_guidance") score += 3;
-    else score += 1;
-
-    score += employerScopedPrimaryLawBonus(source, employerType);
-    if (source.authority === "high") score += 1;
-    if (source.authority === "medium") score += 0.5;
-    scored.push({ source:{ ...source, sourceTier:tier }, score });
-  }
-
-  scored.sort((a,b) => b.score - a.score || String(a.source.title||"").localeCompare(String(b.source.title||""),"nb"));
-  const legalTiers = ["primary_law","authority_guidance","collective_agreement","official_employer_reference","authority_index"];
-  const legal = scored.filter(item => legalTiers.includes(item.source.sourceTier)).slice(0,5);
-  const evidence = scored.filter(item => !legalTiers.includes(item.source.sourceTier)).slice(0,5);
-  return [...legal, ...evidence].sort((a,b)=>b.score-a.score).slice(0,10).map(item=>item.source);
-}
+const selectRelevantSources = createRelevantSourceSelector({
+  sourceBank,
+  occupationLegalSourceBank,
+  agreementCuratedSources,
+  shouldUseAgreementContext,
+  isLegalSourceContext,
+  sourceTier,
+  employerScopedPrimaryLawBonus
+});
 
 function normalizeGuidanceCandidate(source = {}) {
   if (!source?.id) return null;
@@ -1473,74 +1402,6 @@ function publicSources(ids = []) {
     url: source.url || "",
     doi: source.doi || null
   }));
-}
-
-function normalizeSourceUrl(value) {
-  try {
-    const url = new URL(String(value || ""));
-    for (const key of [...url.searchParams.keys()]) {
-      if (/^utm_/i.test(key)) url.searchParams.delete(key);
-    }
-    url.hash = "";
-    return url.toString();
-  } catch (_) {
-    return String(value || "").trim();
-  }
-}
-
-function webSources(response) {
-  const sources = new Map();
-  for (const item of response?.output || []) {
-    const actionSources = item?.action?.sources;
-    if (!Array.isArray(actionSources)) continue;
-    for (const source of actionSources) {
-      if (source?.type !== "url" || typeof source.url !== "string") continue;
-      const normalizedUrl = normalizeSourceUrl(source.url);
-      if (!normalizedUrl) continue;
-      sources.set(normalizedUrl, {
-        title: source.title || source.name || "",
-        url: normalizedUrl
-      });
-    }
-  }
-  return sources;
-}
-
-function markdownWebSources(text = "", verifiedSources = new Map()) {
-  const found = [];
-  const regex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
-  let match;
-  while ((match = regex.exec(String(text || "")))) {
-    const normalizedUrl = normalizeSourceUrl(match[2]);
-    const verified = verifiedSources.get(normalizedUrl);
-    if (!verified) continue;
-    found.push({
-      title: verified.title || match[1] || "Kilde",
-      author: (() => { try { return new URL(normalizedUrl).hostname.replace(/^www\./,""); } catch (_) { return ""; } })(),
-      year: "",
-      type: "nettkilde",
-      url: normalizedUrl
-    });
-  }
-  return found;
-}
-
-function stripInlineSourceLinks(text = "") {
-  return String(text || "")
-    .replace(/\s*\(\s*\[[^\]]+\]\(https?:\/\/[^)]+\)\s*\)/g, "")
-    .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, "$1")
-    .replace(/[ \t]+\n/g, "\n")
-    .trim();
-}
-
-function dedupeEvidenceSources(items = []) {
-  const seen = new Set();
-  return items.filter(source => {
-    const key = normalizeSourceUrl(source?.url || source?.doi || "") || String(source?.id || source?.title || "");
-    if (!key || seen.has(key)) return false;
-    seen.add(key);
-    return true;
-  });
 }
 
 const SERVER_HARD_PRIVACY_TYPES = new Set(["email", "phone", "birthdate", "identifier", "name", "address", "gendered_language"]);
@@ -1689,10 +1550,19 @@ Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
 
 
 app.get("/api/status", requireUser, async (_req, res) => {
-  res.json({ aiConfigured: Boolean(client), model: client ? await getActiveModel() : null });
+  const aiConfigured = hasAnyAiClient();
+  res.json({ aiConfigured, model: aiConfigured ? await getActiveModel() : null });
 });
 
 app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
+  // Administrative pilot/full regression mode can trigger many provider calls;
+  // it is restricted to the same isolated mock-only test window as paid benchmark.
+  const paidTestRequested = ["pilot-regression","production-regression"].includes(req.body?.testMode) &&
+    req.user?.role === "admin";
+  if (paidTestRequested && !benchmarkLiveMockOnly) return res.status(503).json({
+    error:"PAID_TEST_DISABLED",
+    message:"Betalte produksjonsflyt-tester er sperret inntil varig kostnadskontroll er tilgjengelig."
+  });
   if (!hasAnyAiClient()) {
     return res.status(503).json({
       error: "AI_NOT_CONFIGURED",
@@ -1701,7 +1571,7 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   }
 
   const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", occupation = "", sectorId = "", employerType = "", testMode = "", privacyNameOverrides = [] } = req.body || {};
-  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
+  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && req.user?.role === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
@@ -1755,12 +1625,20 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
 
 
 app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
+  // Administrative pilot/full regression mode can trigger many provider calls;
+  // it is restricted to the same isolated mock-only test window as paid benchmark.
+  const paidTestRequested = ["pilot-regression","production-regression"].includes(req.body?.testMode) &&
+    req.user?.role === "admin";
+  if (paidTestRequested && !benchmarkLiveMockOnly) return res.status(503).json({
+    error:"PAID_TEST_DISABLED",
+    message:"Betalte produksjonsflyt-tester er sperret inntil varig kostnadskontroll er tilgjengelig."
+  });
   if (!hasAnyAiClient()) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
 
   const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "", occupation = "", sectorId = "", employerType = "", employerContext = "", privacyNameOverrides = [] } = req.body || {};
-  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
+  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && req.user?.role === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }

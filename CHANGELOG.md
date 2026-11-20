@@ -1,3 +1,111 @@
+# 20.11.2026 – mobile:true/touch, faktisk Chromium-PDF og refleksjonskontroll (draft PR #12)
+
+- Ny obligatorisk `tests/test-mobile-print-browser.cjs` tester ekte prosjektfrontend mot lokal sensordemo med **faktisk Chrome mobilmodus**, viewport **320×700, 390×844 og 768×1024** uten horisontal side-overflyt, og berøringshendelser for tema/undertema. Det komplette brukerreise- og admin-testløpet beholdes.
+- Klikk på faktisk «Skriv ut råd» genererer popup-HTML fra appen; Chromium rendrer dette med utskrifts-CSS til en **2-siders PDF**. `pdfinfo` kontrollerer sideantall, `pdftotext` kontrollerer at hovedråd, situasjon og «Videre råd» finnes som tekst i PDF-en. Kun syntetiske data.
+- Første mobile touch-test stoppet fordi umiddelbar hit-test ble kjørt før scrolling var stabil. Nytt forsøk bruker `behavior:'instant'` med separat hit-test før berøring; **ingen CSS-regler ble endret basert på en misvisende testfeil**.
+- [Quality Gate #44794218055](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44794218055) er grønn i **tre** CI-jobber. Det er **automatisk mobil-/PDF-bevis**, ikke fysisk Android, printer eller uavhengig tilgjengelighetsreview.
+- `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md` er revidert for å skille historiske mocks fra faktisk lokal Auth/PostgREST, og beskrive egne KI-/testvurderinger mer kritisk. `docs/ai/MOBIL-PRINT-REFLEKSJON-2026-11-20.md` gir sensororientert bevis- og formaliakontroll; studentnummer/ordgrense/frist i Canvas er fortsatt **ikke bekreftet**.
+- `main`, Render-produksjon, ekte Supabase, betalt KI og LIVE/tale-pilot er **urørt**.
+
+---
+
+# 20.11.2026 – faktisk lokal Supabase Auth/PostgREST/RLS med to brukere (draft PR #12)
+
+- Ny **obligatorisk** `supabase-auth-local`-jobb i Quality Gate med fastlåst lokal CLI v2.122.1, ekte GoTrue Auth, PostgREST, PostgreSQL og lokal API-gateway. Ingen hosted prosjekt-token eller produksjonsnøkler.
+- `tests/sql/local-supabase-auth-fixture.sql` oppretter isolert testskjema, mens prosjektets **faktiske** V20-8 RLS-migrasjon brukes uendret. Systemrollen `auth.uid()` og Supabase Auth/JWT er **ikke** simulert i denne jobben.
+- `tests/test-supabase-local-auth-e2e.cjs` oppretter tre reelle lokale testbrukere (Alice/Bob/admin), logger inn gjennom `server.js`, tester access/refresh, rolle fra `app_metadata` (ikke brukerredigerbare `user_metadata`), egne/andres historikk-CRUD, direkte PostgREST-IDOR/forfalskningsforsøk, 401/403/404, anonym adgang, kontoeksport og sletting.
+- Testkjøringen avdekket en streng testassert som sammenlignet `bigint`-ID fra Express (tekst) med PostgREST (tall), uten at dette var et appavvik. Samtidig ble asynkron rollegating i tidligere admin-Chrome-test gjort stabil ved eksplisitt observasjon av ferdig UI.
+- [Quality Gate #44788004299](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44788004299) **SUCCESS alle tre jobber**; ingen ekte KI-kall, live Supabase-mutasjon, produksjonsdeploy, merge eller endring av LIVE/tale-pilot.
+- Gjenstår: hosted konfigurasjonsparitet, passordreset/invitasjon, logout/revokering, editorkonto, fysisk mobil/print, faglig KI-vurdering. Dokumentert i `docs/ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md`.
+
+---
+
+# 20.11.2026 – streng sensorkontroll av full brukerreise (draft PR #12)
+
+- Ny `tests/test-sensor-journey-browser.cjs` går gjennom **faktisk frontend i headless Chrome** mot lokal Express-sensordemo: tema og undertema, situasjonsbeskrivelse, analyse, hovedråd, oppfølgingsspørsmål, utskrifts-HTML inkl. «Videre råd», simulering, feedback, automatisk lagret historikk, reload/gjenåpning, sletting og tom kontoeksport.
+- Ny negativ integrasjonskontroll krever at et **fiktivt personnavn** blokkeres på personnverngatewayen før analyse/veiledning-POST; anonym tekst må kunne sendes etterpå.
+- Chrome-brukerreisen er et obligatorisk separat GitHub Actions-steg. Sensorregisteret `docs/ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md` graderer **alle 36 krav**, med eksplisitt skille mellom D, isolert I, ekte KI (L) og manuell/fysisk (M).
+- Testkjøring bruker kun syntetiske data og lokal demo; ekte Supabase Auth/PostgREST, reelle KI-råd og mobil-/utskriftstester er **ikke** erklært ferdig. Ingen `main`-merge, produksjonsdeploy, LIVE-endring eller betalte API-kall.
+
+---
+
+# 20.11.2026 – server-only benchmark-RPC og fullkjede-test mot isolert PostgreSQL (draft PR #12)
+
+- Ny `src/server/benchmark-budget-rpc.js` for tjenesteside-Supabase `rpc()` mot private, transaksjonelle `benchmark_budget_reserve/settle`. Inputvalidasjon og konservativ refusjon-/feilhåndtering; aldri brukerens `spentSoFar`.
+- `server.js` velger adapteren **kun** i isolert testmodus (`NODE_ENV=test`, `TEST_BENCHMARK_LIVE=1`, `TEST_BENCHMARK_LEDGER=rpc`, lokal `SUPABASE_URL`, fake-provider-port). Både OpenAI-/OpenRouter-klienter tvinges da til loopback. Produksjon forblir fail-closed.
+- Serveren svarer først 200 etter et bekreftet oppgjør. Ukjent/feilet reserve hindrer KI-kall; uavklart oppgjør gir 503 og varig sperret ticket. Providerfeil og feil i resultatlagring bokføres som `failed`/`uncertain`.
+- Nye tester `tests/test-benchmark-budget-rpc.cjs` og `tests/test-benchmark-rpc-http.cjs` gir totalt **52** ordinære npm-teststeg. Sistnevnte kjører faktisk Express og Supabase/OpenAI SDK med fiktiv Auth, PostgREST og AI. PostgreSQL-jobben kjører nå **samme fullkjede-HTTP-test** med lokal RPC-bro mot **ekte disponibel PostgreSQL 17**.
+- Fullkjede-testen avslørte at SQL kunne opprette tom `budget_runs` for et `BUDGET_RUN_BUSY`-avvist forsøk. Dette er rettet; egen SQL-regresjon krever ingen «spøkelseskjøring».
+- **Ingen** ekte KI-leverandørkall, Supabase-produksjonsmutasjoner, Render-deploy, `main`-merge eller LIVE-pilotendring. Ekte Supabase PostgREST/Auth, hard leverandørkostgrense og produksjonsdrift gjenstår.
+
+---
+
+# 20.11.2026 – transaksjonelt PostgreSQL-forslag for benchmarkbudsjett (kun draft PR #12)
+
+- `database/security/benchmark-budget-postgres-proposal.sql` gir en **ikke-deployet** modell med fire private RLS-tabeller, unike forsøks-/kjøre-ID-er, atomisk radlås per bruker, konservativt oppgjør, permanent historikk og service-role-only `SECURITY INVOKER`-RPC.
+- Fire nye testartefakter: SQL-integrasjon, SQL-omstart/recovery og Bash-konkurransetest, kjørt direkte mot PostgreSQL 17 i GitHub Actions. SQL-forslaget anvendes to ganger i en disponibel database, og en faktisk Docker/PostgreSQL-omstart kontrollerer uavklart reservasjon, ikke-refusjon og videre budsjett.
+- De to parallelle SQL-forbindelsene må gi ett godkjent forsøk og ett `BUDGET_RUN_BUSY`; ingen dobbeltbetaling. Klientrollene `anon`/`authenticated` nektes både private tabeller og RPC. Dagstak testes med 50 syntetiske forsøk.
+- `main`, Render, ekte Supabase og LIVE-pilot er **ikke endret**. Den nye SQL-prototypen er ikke koblet til betalingsendepunktene; KI-kostnadsgrense hos provider og ekte Supabase/Express-integrasjon må fortsatt gjennomgås. Betalte testmoduser er fortsatt sperret i produksjon.
+
+---
+
+# 20.11.2026 – dynamiske pilot- og benchmarkantall (draft PR #12)
+
+- Fjernet feil historisk tekst «Alle 26 saker / 52 KI-kall» fra administrasjon og `value="112"`/«Alle 112 saker» fra benchmark. Det gamle «alle»-valget tok dermed ikke med de to nyeste casene i en bank på 114.
+- Serverens eksisterende adminbeskyttede `/api/admin/pilot-regression/cases` har fått `?summary=1`, som returnerer golden- og pilotantall uten å overføre scenarioteks­ten.
+- Klienten henter og validerer faktiske tall; både knapper og KI-kall-anslag (`antall × 2`) endres ved oppdatering av banken. Symbolsk `value="all"` omfatter alle elementer fra API-listen. Uoverensstemmelse mellom `totalCases` og `cases.length` vises som feil.
+- Betalte knapper er deaktivert fra HTML-innlasting og forblir deaktivert uten eksplisitt mock-only serverstatus. Eksisterende kostnads- og test-only-sperrer beholdt. PWA-cache flyttet til **20.11.73**.
+- Regresjonstester i ekte Chrome, server-HTTP, frontend og ren benchmarkhjelper. Ingen betalte providerkall, merge til `main`, Render-deploy, Supabase-mutasjon eller LIVE-pilotendring.
+
+---
+
+# 20.11.2026 – servereid lokal benchmarkreserve og stengt betalt testtrafikk (draft PR #12)
+
+- Ny `src/server/benchmark-budget.js`: synkron per-bruker/run/beløp-reservasjon i minnet, USD 0,10 per kall, maksimal USD 5 per bruker/dag per prosess, låser parallelle kall, blokkerer duplikatcaser/budsjettendringer og ignorerer klientens `spentSoFar`. Ingen refusjon ved tvetydige provider-/lagringsfeil.
+- `/api/admin/benchmark/live` stengt i produksjonsmodus med `BENCHMARK_PAID_DISABLED`; åpnes bare i eksplisitt Node-test med lokal fiktiv OpenAI-provider. Klienten viser deaktivert knapp og status fra serveren.
+- Administrativ pilot- og fullproduksjonsflyt-test sperres tilsvarende med `PAID_TEST_DISABLED` utenfor lokal testmodus; vanlige KI-samtaler påvirkes ikke av denne testmodussperren.
+- Rettet rolleoppslag for administratorenes testmerking fra `effectiveRole(req.user)` (feil etter normalisert session) til `req.user.role`.
+- `tests/test-benchmark-budget.cjs` + `tests/test-benchmark-live-http.cjs`: faktisk regnskap, parallelle kall, omgåelsesforsøk, feiltilfeller, ekte Express/OpenAI SDK med lokal provider og lokale Auth/PostgREST-fakes. Utvidet `tests/test-admin-role-http.cjs` for 503-sperrer. Totalt **50** deterministiske npm-teststeg.
+- **Begrensning:** Budsjettet er ikke varig eller distribuert; reelt kostnadsoverslag kan overstige reserve. Derfor er produksjonsbetalte tester fortsatt **deaktivert**. Ingen betalte providerkall, produksjonsdeploy, databaseendring eller LIVE-pilotendring.
+
+---
+
+# 20.11.2026 – kostnadsfri benchmarkmodul og kontroll av testbank (draft PR #12)
+
+- Skilt ut ren `src/client/benchmark-evaluation.js` for caseutvalg og vurdering av åpningsreplikker, uten nettverk, KI-klient eller database.
+- `app.js` redusert fra 4 284 til 4 256 linjer (229 082 til 227 324 tegn); `index.html`, server-/demoallowlist og PWA-cache `20.11.72` synkronisert.
+- `tests/test-benchmark-evaluation.cjs` tester faktiske hjelpere, og Chrome-testen bruker kun syntetiske KI-svar for kansellering, gratis mock og simulert pilot/benchmark. Ingen providerkall.
+- Reell Express-gratistest med 60 rollebetingede negative API-forsøk. Ny `tests/test-benchmark-privacy-signal.cjs` kontrollerer samtlige 114 fiktive benchmarkcaser og positiv deteksjon av ekte navneform.
+- Gratis testbank fant falsk personnavnindikasjon i B113 («nærmeste»). Et nøyaktig ikke-navn-unntak i den delte navnedetektoren er lagt inn. Denne feilen ble ikke skjult ved å slakke på resten av navnefilteret.
+- Totalt **48** deterministiske teststeg. Historisk problem var brukerlevert `spentSoFar`; dette er senere erstattet av servereid lokal reservasjonslogg i kun testmodus. Produksjonssikkert, varig budsjettak er fortsatt ikke godkjent. Statisk UI-tekst med gamle caseantall gjenstår.
+- Endringer begrenset til revisjonsgrenen; ingen merge, Render-produksjonsdeploy, faktiske Supabase-mutasjoner eller LIVE-pilot.
+
+---
+
+# 20.11.2026 – modul for innholdsredigering (kun draft PR #12)
+
+- `src/client/admin-content.js` skiller redigerbare tekstfelt, dirty-/ulagret tilstand og `PUT`-lagring fra `app.js` med eksplisitte avhengigheter og dynamisk rolle.
+- `app.js` er 4 284 linjer / 229 082 tegn etter dette uttrekket (mot 4 278 linjer / 230 656 tegn før). Dette gir et tydeligere ansvarsområde, ikke en netto linjereduksjon.
+- Lastrekkefølge i `index.html`, eksplisitt public-assetliste, sensordemo, `sw.js`/PWA-cache `20.11.71`, syntaks- og strukturtester er synkronisert.
+- Ny `tests/test-admin-content-runtime.cjs`: brukerroller, XSS-escaping, dirty-state, lykkede lagringer, 403/503/nettverksfeil, retry og rolleveksling.
+- Utvidet ekte Chrome-admintest for redaktør og administrator: textareafelt, bekreftelse, vellykket og avvist lagring, samt valgfri forkasting av ulagrede endringer.
+- Utvidet isolert Express-HTTP-test: redaktør/admin kan oppdatere gyldige felt via faktisk API; serveren filtrerer ugyldige feltnavn, begrenser tekst til 20 000 tegn og håndterer manglende databasetabell uten ekte Supabase-kall.
+- `npm test` har nå **46** delsteg. [Quality Gate #44756081390](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44756081390) **SUCCESS** etter kodetester, inkludert Chrome, CSS-paritet og PostgreSQL/RLS. Ny dokumentasjonscommit må verifiseres separat.
+- Ingen prod-merge, Render-deploy, databaseendringer eller endring av separat LIVE-pilot.
+
+---
+
+# 20.11.2026 – adminmodul og sikkerhetstester (kun draft PR #12)
+
+- Flyttet bruker- og rollekontroll i adminvisningen, rapporterte KI-svar, modellvalg, KI-bruksoversikt og kostnadsformattering til `src/client/admin-data.js` med eksplisitt `document`, `fetch`, `escapeHtml` og dynamisk `getCurrentUser`.
+- Redusert `app.js` fra 4 354 til 4 278 linjer (237 462 til 230 656 tegn) uten å endre serverruter eller UI-kontrakter.
+- Oppdatert `index.html`, frontend-cache-markører (`20.11.70`), eksplisitte produksjons-/demoassets, PWA-shell og syntaks-/UI-/asset-/PWA-tester.
+- Utvidet isolert admin-kjøretidstest med rolleskifte i samme modulinstans og beholdt faktisk headless Chrome-admintest, Express-rolle-HTTP-regresjon og PostgreSQL 17/RLS-sikkerhetstester med syntetiske identiteter.
+- Første komplette Quality Gate for modulet: [#44752528974](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44752528974) **SUCCESS**. Senere dokumentasjons-/testsynkronisering verifiseres i egen CI.
+- **Kun revisjonsgren.** Ingen merge til `main`, ingen Render-produksjonsdeploy, ingen endring av Supabase-rettigheter/data eller LIVE-pilot. Ekte Supabase Auth/PostgREST og fysisk UI-review gjenstår.
+
+---
+
 # Arbeidsrunde 08.11.2026 – yrkespresisjon, kildebank og kodeopprydding
 
 - Yrkes-/sektorkilderegisteret utvidet fra 31 til 85 autoritative startkilder.

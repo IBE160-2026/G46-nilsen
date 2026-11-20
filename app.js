@@ -279,6 +279,19 @@ function showView(name, options = {}) {
     } else if (changingView) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+    // A SPA view change must not leave keyboard/screen-reader focus behind on
+    // a hidden card or navigation control. Preserve a deliberate field focus
+    // (e.g. a prefilled situation textarea) and never steal modal focus.
+    if (!changingView || activeViewName() !== name ||
+        document.querySelector('dialog[open]') ||
+        !document.querySelector('#auth-dialog')?.hidden) return;
+    const focused=document.activeElement;
+    if (views[name].contains(focused)) return;
+    const heading=views[name].querySelector('h1');
+    if (heading && heading.getClientRects().length && !heading.closest('[hidden],[inert]')) {
+      heading.setAttribute('tabindex','-1');
+      heading.focus({preventScroll:true});
+    }
   });
 }
 
@@ -1157,113 +1170,17 @@ async function classifyAndContinueFromFinder({ value, boxId, inputId, privacyBox
 }
 
 
+// Lokal reserveanalyse flyttet til uavhengig modul; her beholdes eksisterende grensesnitt.
+const situationAnalysis = window.SamtalestotteSituationAnalysis;
+if (!situationAnalysis) throw new Error('Lokal situasjonsmodul mangler.');
 function detectConversationThemes(text) {
-  const q = text.toLowerCase();
-  const hasSickLeave = /sykmeld|sykemeld|sykefravær|langtidssyk/i.test(q);
-  const hasPromotion = /opprykk|forfremm|karriere|utviklingsmulighet|ny stilling/i.test(q);
-
-  // Tydelig fler-tema-dilemma: unngå støy fra tilfeldige nøkkelord.
-  if (hasSickLeave && hasPromotion) {
-    return ['fravaer-oppfolging', 'lonn-utvikling']
-      .map(id => ({ topic: topics.find(topic => topic.id === id), score: 100 }))
-      .filter(item => item.topic);
-  }
-
-  const scored = topics.map(topic => {
-    let score = 0;
-    topic.keywords.forEach(keyword => { if (q.includes(keyword)) score += 4; });
-    topic.subtopics.forEach(([title, help]) => {
-      const hay = `${title} ${help}`.toLowerCase();
-      q.split(/\s+/).forEach(word => {
-        if (word.length > 5 && hay.includes(word)) score += 1;
-      });
-    });
-    return { topic, score };
-  }).filter(item => item.score > 0).sort((a,b) => b.score-a.score);
-
-  if (!scored.length) return [];
-  const best = scored[0].score;
-  return scored.filter(item => item.score >= Math.max(4, best * 0.6)).slice(0, 2);
+  return situationAnalysis.detectConversationThemes(text, topics);
 }
-
 function buildDilemmaUnderstanding(text) {
-  const q = text.toLowerCase();
-  const themes = detectConversationThemes(text);
-  const hasSickLeave = /sykmeld|sykemeld|sykefravær|langtidssyk/i.test(q);
-  const hasLongAbsence = hasSickLeave && /(år|måned|lenge|langvar)/i.test(q);
-  const hasPromotion = /opprykk|forfremm|stilling|karriere|utviklingsmulighet/i.test(q);
-  const wantsDelay = /avvente|vente|utsette|ikke ennå|først.*tilbake|vært tilbake/i.test(q);
-  const facts = [];
-  const tensions = [];
-  const unknowns = [];
-  const cautions = [];
-
-  if (hasLongAbsence) facts.push('Medarbeideren har vært borte fra arbeid over en lengre periode.');
-  else if (hasSickLeave) facts.push('Du beskriver et sykefravær.');
-  if (hasPromotion) facts.push('Det finnes en utviklings- eller opprykksmulighet som er relevant for medarbeideren.');
-  if (wantsDelay) facts.push('Du vurderer å vente med opprykk eller videre utvikling til medarbeideren har vært tilbake i arbeid en periode.');
-
-  if (hasSickLeave && hasPromotion) {
-    tensions.push('Du forsøker å balansere hensynet til en reell utviklingsmulighet mot usikkerhet knyttet til tilbakekomst etter et langt fravær.');
-    tensions.push('Hvordan beslutningen begrunnes og kommuniseres kan være like viktig som selve samtaleformen.');
-    unknowns.push('Er beslutningen om å vente allerede tatt, eller vurderer du fortsatt hva som er riktig?');
-    unknowns.push('Hvilke konkrete krav i den nye stillingen gjør at en periode tilbake i arbeid eventuelt er relevant?');
-    unknowns.push('Vet medarbeideren at stillingen tidligere har vært aktuell for hen?');
-    // Eventuelle juridiske eller prinsipielle varsler vises først når begrunnelsen er bedre avklart.
-  }
-
-  if (!facts.length) facts.push('Jeg har foreløpig bare den situasjonen du selv har beskrevet å bygge på.');
-  if (!tensions.length) tensions.push('Målet er å forstå hva som står på spill for deg og medarbeideren før vi går til konkrete formuleringer.');
-
-  return { themes, facts, tensions, unknowns: unknowns.slice(0,3), cautions, special: hasSickLeave && hasPromotion };
+  return situationAnalysis.buildDilemmaUnderstanding(text, topics);
 }
-
 function analyzeSituation(text) {
-  const normalized = text.toLowerCase();
-  const signals = [];
-  const unknowns = [];
-  const cautions = [];
-
-  const hasRepeatedAbsence = /ofte borte|mye borte|gjentatt|flere fravær|korttidsfravær|stadig borte|fravær/i.test(normalized);
-  const hasLateness = /for sent|forsink|sen til jobb|punktlig|oppmøte/i.test(normalized);
-  const hasSickLeave = /sykmeld|sykemeld|langtidssyk|gradert|sykefravær/i.test(normalized);
-  const hasReturn = /tilbake etter|tilbakekomst|kommer tilbake|returnerer|begynner igjen/i.test(normalized);
-  const hasAccommodation = /tilrette|lettere oppgaver|redusert arbeidstid|juster.*oppgave|arbeidstid|kapasitet/i.test(normalized);
-  const hasImpact = /påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(normalized);
-  const hasPattern = /\b\d+\b|uke|måned|dag|periode|siden|ofte|gjentatt|hver/i.test(normalized);
-  const hasPrevious = /snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(normalized);
-
-  let classification = currentSubtopic || 'Uavklart';
-  if (currentTopic?.id === 'fravaer-oppfolging') {
-    if (hasLateness) classification = 'Oppmøte og punktlighet';
-    else if (hasReturn) classification = 'Tilbakekomst til arbeid';
-    else if (hasAccommodation) classification = 'Tilrettelegging';
-    else if (hasSickLeave && /lang|lenge|måned/i.test(normalized)) classification = 'Langvarig fravær';
-    else if (hasRepeatedAbsence) classification = 'Korttidsfravær';
-  }
-
-  if (hasLateness) signals.push('Du beskriver utfordringer knyttet til oppmøte eller punktlighet.');
-  if (hasSickLeave) signals.push('Du beskriver sykefravær eller sykmelding.');
-  if (hasRepeatedAbsence && !hasSickLeave) signals.push('Du beskriver et fraværsmønster, men årsaken er ikke fastslått.');
-  if (hasReturn) signals.push('Tilbakekomst til arbeid ser ut til å være en del av situasjonen.');
-  if (hasAccommodation) signals.push('Tilrettelegging eller kapasitet ser ut til å være relevant.');
-  if (hasImpact) signals.push('Du har beskrevet en konsekvens for arbeid, kolleger eller drift.');
-
-  if (!hasPattern) unknowns.push('Hvor ofte eller hvor lenge dette har pågått.');
-  if (!hasImpact) unknowns.push('Hvordan dette konkret påvirker arbeidssituasjonen.');
-  if (!hasPrevious) unknowns.push('Om temaet er tatt opp tidligere eller om noe allerede er avtalt.');
-
-  if (/lat|skulker|gidder ikke|uansvarlig|upålitelig|bryr seg ikke/i.test(normalized)) {
-    cautions.push('Beskrivelsen inneholder en tolkning eller merkelapp. Rådene bør i stedet bygge på konkrete observasjoner.');
-  }
-  if (/depres|angst|alkoholiker|misbruker|diagnose|psykisk syk/i.test(normalized)) {
-    cautions.push('Beskrivelsen kan inneholde en antakelse om helse eller årsak. Dette skal ikke behandles som et faktum uten dokumentert grunnlag.');
-  }
-
-  const evidenceCount = [hasRepeatedAbsence, hasLateness, hasSickLeave, hasReturn, hasAccommodation, hasImpact, hasPattern, hasPrevious].filter(Boolean).length;
-  const confidence = evidenceCount >= 5 ? 'Høy' : evidenceCount >= 2 ? 'Middels' : 'Lav';
-
-  return { classification, signals, unknowns, cautions, confidence };
+  return situationAnalysis.analyzeSituation(text, currentTopic, currentSubtopic);
 }
 
 function renderSituationUnderstanding(analysis) {
@@ -2028,62 +1945,7 @@ window.addEventListener('resize', queueSpeechBubbleRefresh);
 
 
 function buildFollowupQuestions(text) {
-  const normalized = String(text || '').toLowerCase();
-  const dilemma = buildDilemmaUnderstanding(text);
-
-  // A clearly identified multi-theme dilemma gets only questions that materially change the advice.
-  if (dilemma.special) {
-    return [
-      {
-        id: 'decision',
-        question: 'Er beslutningen om å vente med opprykket allerede tatt?',
-        options: ['Ja, beslutningen er tatt', 'Nei, jeg vurderer fortsatt', 'Jeg heller mot å vente, men har ikke bestemt meg', 'Usikker'],
-        customLabel: 'Annet / skriv selv'
-      },
-      {
-        id: 'criteria',
-        question: 'Hva er hovedgrunnen til at du vurderer å vente?',
-        options: ['Jeg vil se hvordan tilbakekomsten fungerer', 'Den nye stillingen har andre eller større krav', 'Jeg er usikker på kapasiteten i den nye rollen', 'Det handler om flere forhold'],
-        customLabel: 'Annen grunn / skriv selv'
-      },
-      {
-        id: 'expectation',
-        question: 'Vet medarbeideren at stillingen har vært aktuell for hen?',
-        options: ['Ja', 'Nei', 'Usikker'],
-        customLabel: 'Det er mer nyansert'
-      }
-    ];
-  }
-
-  // Local fallback should not behave like an HR questionnaire. Ask only when the
-  // description is genuinely too thin to understand what the user wants help with.
-  const meaningfulWords = normalized.match(/[a-zæøåéèáàíìóòúùüöäçñ]{3,}/gi) || [];
-  const hasConcreteSituation = meaningfulWords.length >= 12;
-  const hasExplicitGoal = /ønsker|vil|trenger hjelp|hvordan|bør jeg|skal jeg|samtale|ta opp|si til|formulere/i.test(normalized);
-
-  if (!hasConcreteSituation) {
-    return [{
-      id: 'clarify-situation',
-      question: 'Hva er det viktigste du ønsker hjelp til i denne situasjonen?',
-      multiSelect: true,
-      options: ['Forstå dilemmaet', 'Forberede hva jeg skal si', 'Håndtere en mulig reaksjon', 'Vurdere hva jeg bør gjøre først'],
-      customLabel: 'Noe annet / skriv selv'
-    }];
-  }
-
-  if (!hasExplicitGoal) {
-    return [{
-      id: 'goal',
-      question: 'Hva ønsker du mest hjelp til akkurat nå?',
-      multiSelect: true,
-      options: ['Hvordan åpne samtalen', 'Hvilke spørsmål jeg bør stille', 'Hvordan håndtere reaksjoner', 'Hvordan vurdere veien videre'],
-      customLabel: 'Noe annet / skriv selv'
-    }];
-  }
-
-  // If the user has supplied a reasonably detailed situation and a goal, do not
-  // manufacture standard follow-up questions in local fallback mode.
-  return [];
+  return localFallbackGuidance.buildFollowupQuestions(text, buildDilemmaUnderstanding);
 }
 
 function renderFollowupQuestions(questions) {
@@ -2126,179 +1988,20 @@ function collectFollowupAnswers() {
   return answers;
 }
 
-function getFravaerSubject(classification) {
-  const map = {
-    'Korttidsfravær': 'fraværet den siste tiden',
-    'Langvarig fravær': 'oppfølgingen under det lengre fraværet og veien videre',
-    'Oppmøte og punktlighet': 'oppmøtet og punktligheten den siste tiden',
-    'Tilbakekomst til arbeid': 'tilbakekomsten til arbeid',
-    'Tilrettelegging': 'arbeidssituasjonen og mulig tilrettelegging',
-    'Arbeidsevne og kapasitet': 'hvordan arbeidssituasjonen og kapasiteten fungerer i praksis'
-  };
-  return map[classification] || 'fraværet og arbeidssituasjonen';
-}
+// Lokal reserveflyt isolert fra DOM/UI og nettverk for å kunne testes separat.
+const localFallbackGuidance = window.SamtalestotteGuidanceFallback;
+if (!localFallbackGuidance) throw new Error('Lokal veiledningsmodul mangler.');
 
 function buildFravaerGuidance(context) {
-  const combined = [context.situation, ...Object.values(context.followups || {})].filter(Boolean).join(' ');
-  const analysis = analyzeSituation(combined);
-  const classification = analysis.classification || currentSubtopic || 'Uavklart';
-  const subject = getFravaerSubject(classification);
-  const normalized = combined.toLowerCase();
-  const previousKnown = /snakk|samtal|fulgt opp|tilbakemeld|tidligere|avklart|avtalt/i.test(normalized);
-  const impactKnown = /påvirk|konsekvens|kollega|drift|bemanning|oppgave|lever|frist/i.test(normalized);
-
-  let opening;
-  let questions;
-  let attentionParts = [
-    'Skill tydelig mellom det du har observert, det du vet og det du antar.'
-  ];
-  let followup;
-
-  if (classification === 'Oppmøte og punktlighet') {
-    opening = '«Jeg ønsker å snakke med deg om oppmøtet den siste tiden. Jeg vil være konkret på det jeg har observert og høre hvordan du opplever situasjonen, slik at vi kan avklare forventninger og hva som skal til for at oppmøtet blir mer forutsigbart.»';
-    questions = [
-      'Hvordan opplever du selv oppmøtet ditt den siste tiden?',
-      'Er det noe ved arbeidssituasjonen eller organiseringen som påvirker muligheten til å møte som avtalt?',
-      'Hva mener du er realistisk å gjøre for at oppmøtet blir mer forutsigbart fremover?'
-    ];
-    attentionParts.push('Hold deg til konkrete tidspunkter, hendelser eller mønstre – ikke antakelser om motiv eller holdning.');
-    attentionParts.push('Vær tydelig på hvilke forventninger som gjelder for oppmøte og hvordan avvik påvirker arbeidssituasjonen.');
-    followup = 'Oppsummer hva som forventes fremover, eventuelle tiltak dere er enige om, og når dere skal følge opp om oppmøtet har blitt mer stabilt.';
-  } else if (classification === 'Korttidsfravær') {
-    opening = '«Jeg ønsker å snakke med deg om fraværet den siste tiden. Jeg ser et mønster jeg ønsker å forstå bedre, og vil høre hvordan du opplever arbeidssituasjonen og om det er noe vi bør følge opp.»';
-    questions = [
-      'Hvordan opplever du selv fraværet den siste tiden?',
-      'Er det noe ved arbeidssituasjonen som er relevant for oss å se nærmere på?',
-      'Er det noe vi kan gjøre på jobb som kan bidra til en mer stabil arbeidshverdag?'
-    ];
-    attentionParts.push('Ikke anta at gjentatt fravær skyldes sykdom, motivasjon eller private forhold dersom dette ikke er kjent.');
-    attentionParts.push('Fokuser på fraværsmønsteret, arbeidssituasjonen og hva som kan følges opp på arbeidsplassen.');
-    followup = 'Avtal hva dere eventuelt skal prøve ut, hva som forventes fremover og et konkret tidspunkt for ny oppfølging dersom fraværsmønsteret fortsetter.';
-  } else if (classification === 'Langvarig fravær') {
-    opening = '«Jeg ønsker å snakke om hvordan vi best kan følge deg opp under fraværet og planlegge veien videre. Jeg vil gjerne høre hva som er relevant for arbeidssituasjonen, og hva vi eventuelt kan tilrettelegge for.»';
-    questions = [
-      'Hva er viktig for oss å vite om arbeidsevnen din i forhold til arbeidsoppgavene?',
-      'Er det oppgaver, arbeidstid eller andre forhold på jobben som kan tilpasses?',
-      'Hva vil være et realistisk neste steg i oppfølgingen?'
-    ];
-    attentionParts.push('Hold samtalen til arbeidsfunksjon, muligheter og tilrettelegging – ikke be om diagnose eller unødvendige medisinske opplysninger.');
-    attentionParts.push('Hvis dette er formell sykefraværsoppfølging, må virksomhetens rutiner og gjeldende krav til oppfølging følges.');
-    followup = 'Oppsummer aktuelle tiltak, ansvar og tidspunkt for ny vurdering. Dersom dette er formell sykefraværsoppfølging, må oppfølgingsplan og eventuelle dialogmøter håndteres etter gjeldende rutiner.';
-  } else if (classification === 'Tilbakekomst til arbeid') {
-    opening = '«Jeg ønsker å snakke om tilbakekomsten til arbeid og hva som skal til for at den fungerer best mulig i praksis. Målet er å avklare forventninger, arbeidsoppgaver og eventuell støtte underveis.»';
-    questions = [
-      'Hvordan oppleves det å være tilbake i arbeid nå?',
-      'Er det bestemte arbeidsoppgaver eller deler av arbeidshverdagen som fungerer godt eller mindre godt?',
-      'Hva bør vi avtale for den første tiden fremover?'
-    ];
-    attentionParts.push('Unngå å gjøre medisinske årsaker til tema hvis de ikke er nødvendige for å tilrettelegge arbeidssituasjonen.');
-    attentionParts.push('Vær konkret på hva som skal prøves ut og hvor lenge før dere vurderer løsningen på nytt.');
-    followup = 'Lag en konkret plan for den første perioden tilbake: oppgaver, eventuelle justeringer, ansvar og dato for ny samtale.';
-  } else if (classification === 'Tilrettelegging') {
-    opening = '«Jeg ønsker å se nærmere på arbeidssituasjonen og om det er justeringer som kan gjøre det lettere å fungere godt i jobben. Jeg vil gjerne høre hva som fungerer, hva som er krevende og hvilke løsninger som kan være realistiske.»';
-    questions = [
-      'Hvilke deler av arbeidet fungerer godt nå, og hvilke er mest krevende?',
-      'Er det konkrete oppgaver, arbeidstid eller organisering vi bør vurdere å justere?',
-      'Hvilke tiltak tror du selv vil være realistiske å prøve ut?'
-    ];
-    attentionParts.push('Tilrettelegging bør knyttes til arbeidsoppgaver og funksjon, ikke til antakelser om diagnose eller privatliv.');
-    attentionParts.push('Vær tydelig på at mulige tiltak må vurderes opp mot hva virksomheten faktisk kan gjennomføre.');
-    followup = 'Avtal ett eller noen få konkrete tiltak, hvem som følger dem opp, hvor lenge de skal prøves og når effekten skal vurderes.';
-  } else if (classification === 'Arbeidsevne og kapasitet') {
-    opening = '«Jeg ønsker å snakke om hvordan arbeidssituasjonen fungerer i praksis akkurat nå. Målet er å forstå hvilke deler av arbeidet som fungerer, hvor det oppstår utfordringer og hva vi eventuelt bør justere.»';
-    questions = [
-      'Hvilke arbeidsoppgaver opplever du at fungerer godt nå?',
-      'Hvor i arbeidshverdagen opplever du at kapasiteten ikke strekker til?',
-      'Hva kan være et realistisk tiltak eller neste steg?'
-    ];
-    attentionParts.push('Snakk om konkret funksjon i arbeidet fremfor medisinske forklaringer.');
-    followup = 'Oppsummer hvilke oppgaver eller rammer dere eventuelt skal justere, og sett en dato for å evaluere hvordan det fungerer.';
-  } else {
-    opening = `«Jeg ønsker å snakke med deg om ${subject}. Jeg vil være konkret på det jeg har observert og høre hvordan du opplever situasjonen før vi blir enige om veien videre.»`;
-    questions = [
-      'Hvordan opplever du situasjonen?',
-      'Hva mener du er viktig at jeg forstår om arbeidssituasjonen?',
-      'Hva kan være et realistisk neste steg?'
-    ];
-    attentionParts.push('Beskriv situasjonen mer konkret før du trekker konklusjoner eller foreslår omfattende tiltak.');
-    followup = 'Avslutt med en konkret oppsummering av hva dere vet, hva som eventuelt må avklares og når dere følger opp igjen.';
-  }
-
-  if (!impactKnown) attentionParts.push('Avklar hvilken konkret betydning situasjonen har for arbeid, oppgaver, kolleger eller drift dersom dette er relevant.');
-  if (!previousKnown) attentionParts.push('Avklar om temaet er tatt opp tidligere før du legger til grunn at medarbeideren kjenner forventningene.');
-
-  let reactions;
-  if (/uenig|konflikt|sint|irritert|forsvar/i.test(normalized)) {
-    reactions = 'Det kan være uenighet om selve beskrivelsen. Hold deg til konkrete observasjoner, la medarbeideren korrigere faktiske feil og skill mellom uenighet om fakta og uenighet om forventninger.';
-  } else if (/lei seg|gråt|trist|bekymr|stress|press/i.test(normalized)) {
-    reactions = 'Samtalen kan vekke sterke følelser. Gi rom for reaksjonen og vis forståelse, men unngå å tolke årsaken på medarbeiderens vegne. Gå tilbake til det konkrete temaet når det er naturlig.';
-  } else {
-    reactions = 'Medarbeideren kan bli overrasket, bekymret, stille eller uenig. Gi rom for perspektivet deres, og gå tilbake til konkrete observasjoner og formålet med samtalen dersom dialogen glir over i antakelser.';
-  }
-
-  return [
-    ['Forslag til åpning', opening],
-    ['Forslag til spørsmål', questions.map(q => `• ${q}`).join('<br>')],
-    ['Mulige reaksjoner', reactions],
-    ['Vær oppmerksom på', attentionParts.map(item => `• ${item}`).join('<br>')],
-    ['Videre oppfølging', followup]
-  ];
+  return localFallbackGuidance.buildFravaerGuidance(context, { analyzeSituation, currentSubtopic });
 }
 
 function buildCrossThemeDilemmaGuidance(context) {
-  const situation = context.situation || '';
-  const dilemma = buildDilemmaUnderstanding(situation);
-  if (!dilemma.special) return null;
-
-  const answers = context.followups || {};
-  const decisionKnown = answers.decision || '';
-  const criteriaKnown = answers.criteria || '';
-  const expectationKnown = answers.expectation || '';
-
-  const opening = '«Jeg ønsker å snakke med deg om utviklingsmuligheten som har vært aktuell, og om hvordan vi skal vurdere veien videre nå som du er på vei tilbake. Jeg vil være åpen om hvilke vurderinger som ligger på bordet, og jeg vil gjerne høre hvordan du ser på situasjonen.»';
-
-  const questions = [
-    'Hvordan ser du selv på tidspunktet for et eventuelt opprykk eller nye oppgaver?',
-    'Hva tenker du er viktig for at en overgang til en ny rolle skal fungere godt?',
-    'Er det noe ved forventningene til den nye rollen du ønsker at vi avklarer nærmere?'
-  ];
-
-  const attention = [
-    'Ikke begrunn en beslutning med sykefraværet alene. Skill mellom fraværet som faktum og konkrete, relevante krav i den nye rollen.',
-    'Hvis beslutningen ikke er tatt, unngå å presentere den som avgjort i samtalen.',
-    'Hvis beslutningen kan få arbeidsrettslige eller diskrimineringsrettslige konsekvenser, bør vurderingsgrunnlaget kvalitetssikres før du kommuniserer en endelig beslutning.'
-  ];
-
-  if (!decisionKnown) attention.push('Det er fortsatt uklart om du ønsker hjelp til selve vurderingen eller bare til hvordan en allerede tatt beslutning skal kommuniseres.');
-  if (!criteriaKnown) attention.push('Gjør eventuelle krav til den nye rollen konkrete før du bruker dem som begrunnelse.');
-  if (!expectationKnown) attention.push('Avklar hva medarbeideren allerede har fått signaler om, fordi det påvirker hvordan samtalen bør åpnes.');
-
-  const reactions = [
-    ['«Dette føles urettferdig – jeg blir straffet for å ha vært syk.»', 'Ikke gå i forsvar. Anerkjenn opplevelsen og forklar hvilke konkrete forhold du faktisk legger til grunn. Hvis vurderingen i realiteten bygger på fraværet alene, bør beslutningen kvalitetssikres før du argumenterer videre.'],
-    ['«Betyr dette at dere ikke har tro på meg lenger?»', 'Skill mellom personens verdi og tidspunktet eller kravene i rollen. Vær konkret på hva som er avklart, og hva som fortsatt vurderes.'],
-    ['Medarbeideren blir stille eller tydelig skuffet.', 'Gi litt rom. Du kan si at du ser at dette treffer, og spørre hva medarbeideren trenger å få avklart før dere går videre.'],
-    ['Medarbeideren blir sint eller utfordrer begrunnelsen.', 'Hold deg til saklige forhold og unngå å diskutere motiv. Be gjerne medarbeideren si hva de opplever som feil eller urimelig i vurderingen.']
-  ];
-  const reactionHtml = reactions.map(([reaction, response]) => `<strong>${reaction}</strong><br>${response}`).join('<br><br>');
-
-  return [
-    ['Hva dilemmaet egentlig handler om', 'Dette er ikke bare en fraværssamtale. Det handler om hvordan du håndterer en mulig karrieremulighet samtidig som medarbeideren kommer tilbake etter et langt fravær.'],
-    ['Forslag til åpning', opening],
-    ['Spørsmål du kan bruke', questions.map(q => `• ${q}`).join('<br>')],
-    ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
-    ['Vær særlig oppmerksom på', attention.map(item => `• ${item}`).join('<br>')],
-    ['Neste steg', 'Avklar først om du trenger hjelp til å vurdere selve beslutningen, eller til å kommunisere en beslutning som allerede er tatt. De to samtalene bør ikke blandes sammen.']
-  ];
+  return localFallbackGuidance.buildCrossThemeDilemmaGuidance(context, buildDilemmaUnderstanding);
 }
 
 function buildGenericGuidance() {
-  return [
-    ['Forslag til åpning', 'Start rolig og konkret. Beskriv hva samtalen gjelder uten å legge til antakelser om årsak eller motiv. Forklar hensikten og inviter medarbeideren inn i samtalen.'],
-    ['Forslag til spørsmål', '• Hvordan opplever du situasjonen? <br>• Hva mener du er viktig at jeg forstår? <br>• Hva tenker du kan være en god vei videre?'],
-    ['Mulige reaksjoner', 'Vær forberedt på stillhet, overraskelse, uenighet eller sterke følelser. Gi rom for reaksjonen uten å miste retningen i samtalen.'],
-    ['Vær oppmerksom på', 'Skill mellom det du vet, det du har observert og det du antar. Unngå diagnostisering, merkelapper og unødvendige personopplysninger.'],
-    ['Videre oppfølging', 'Avslutt med tydelige avtaler: hva som skal skje, hvem som har ansvar og når dere følger opp igjen.']
-  ];
+  return localFallbackGuidance.buildGenericGuidance();
 }
 
 function renderStructuredGuidance() {
@@ -2503,41 +2206,14 @@ async function appendConversationTurn(question) {
   }
 }
 
-const searchAliases = {
-  'fravaer-oppfolging': ['sykemelding','sykmelding','sykemeldt','sykmeldt','sykemeld','sykmeld','sykefravær','fravær','langtidsfravær','langtidssyk','borte fra jobb','mye borte','korttidsfravær','oppmøte','for sent','tilbake etter sykmelding','tilrettelegging'],
-  'prestasjon-utvikling': ['prestasjon','leveranse','resultat','måloppnåelse','kvalitet','frister','kompetanse','mestring','arbeidsutførelse','gjør ikke jobben','sitter på internett','internett i arbeidstiden','surfer på nettet','privat surfing','sosiale medier','bruker mye tid på nettet','telefonen i arbeidstiden','mobilen i arbeidstiden','bruker tiden på'],
-  'lonn-utvikling': ['lønn','lønnsøkning','opprykk','forfremmelse','ny stilling','karriere','utviklingsmulighet','ansvarstillegg'],
-  'samarbeid-kommunikasjon': ['konflikt','samarbeid','kommunikasjon','uenighet','tillit','tone','team','krangel','snakker ikke sammen'],
-  'alkohol-rus': ['alkohol','rus','beruset','påvirket','drikking','narkotika','stoff','promille'],
-  'avslutning-arbeidsforhold': ['oppsigelse','avslutte arbeidsforhold','prøvetid','nedbemanning','slutte','avskjed'],
-  'sikkerhet-ansvar': ['sikkerhet','avvik','hendelse','risiko','prosedyre','rutinebrudd','informasjonssikkerhet'],
-  'livssituasjoner': ['sorg','familie','samlivsbrudd','omsorg','privat belastning','stress','utmattelse','vanskelig hjemme']
-};
-
-function normalizeSearchText(value) {
-  return (value || '').toLowerCase().trim().replace(/\s+/g, ' ');
-}
-
-function scoreTopic(topic, query) {
-  const q = normalizeSearchText(query);
-  if (!q) return 0;
-  let score = 0;
-  const aliases = searchAliases[topic.id] || [];
-  aliases.forEach(alias => { if (q.includes(alias)) score += alias.length > 8 ? 8 : 6; });
-  topic.keywords.forEach(keyword => { if (q.includes(keyword.toLowerCase())) score += 5; });
-  if (q.includes(topic.title.toLowerCase())) score += 8;
-  const words = q.split(/\s+/).filter(word => word.length > 3);
-  topic.subtopics.forEach(([title, help]) => {
-    const haystack = `${title} ${help}`.toLowerCase();
-    words.forEach(word => { if (haystack.includes(word)) score += 1; });
-  });
-  return score;
-}
-
+// Lokal temasøk-logikk ligger i en ren, uavhengig modul.
+const topicSearch = window.SamtalestotteTopicSearch;
+if (!topicSearch) throw new Error('Lokal temasøkmodul mangler.');
+const normalizeSearchText = topicSearch.normalizeSearchText;
+const scoreTopic = topicSearch.scoreTopic;
+const scoreSubtopicForTopic = topicSearch.scoreSubtopicForTopic;
 function suggestTopics(query) {
-  return topics
-    .map(topic => ({ topic, score: scoreTopic(topic, query) }))
-    .sort((a, b) => b.score - a.score);
+  return topicSearch.suggestTopics(query, topics);
 }
 
 function renderSuggestion(query) {
@@ -2611,27 +2287,6 @@ function filterTopicCards(query) {
     card.hidden = false;
     card.classList.toggle('search-match', normalized.length > 1 && (scores.get(card.dataset.topicId) || 0) > 0);
   });
-}
-
-
-function scoreSubtopicForTopic(topic, [title, help], query) {
-  const q = normalizeSearchText(query);
-  const haystack = `${title} ${help}`.toLowerCase();
-  let score = 0;
-  const t = title.toLowerCase();
-  const aliasMap = {
-    'korttidsfravær': ['ofte borte','mye borte','gjentatt fravær','korttidsfravær','enkeltdager'],
-    'langvarig fravær': ['sykemelding','sykmelding','sykemeldt','sykmeldt','langtidssyk','langtidsfravær','lenge borte','måneder','ett år','et år'],
-    'oppmøte og punktlighet': ['for sent','forsinket','oppmøte','punktlighet','kommer sent'],
-    'tilbakekomst til arbeid': ['tilbake etter sykmelding','kommer tilbake','tilbake i jobb','retur','tilbakekomst'],
-    'tilrettelegging': ['tilrettelegging','lettere oppgaver','redusert tid','arbeidstid','justere oppgaver'],
-    'arbeidsevne og kapasitet': ['arbeidsevne','kapasitet','orker ikke','funksjon','arbeidsmengde']
-  };
-  (aliasMap[t] || []).forEach(alias => { if (q.includes(alias)) score += 8; });
-  q.split(/\s+/).forEach(word => { if (word.length > 2 && haystack.includes(word)) score += 2; });
-  if (q.includes(t)) score += 6;
-  if (topic?.id === 'fravaer-oppfolging' && /syk[e]?meld|sykefravær/i.test(q) && t === 'langvarig fravær') score += 5;
-  return score;
 }
 
 
@@ -3255,8 +2910,14 @@ async function refreshAuth() {
     setAppLocked(true);
   }
 }
+let authFocusReturn = null;
 function openAuth(mode='login', required = !currentUser) {
   const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
+  // Changing login/register/forgot panels must not overwrite the original opener.
+  if(dlg.hidden){
+    const opener=document.activeElement;
+    authFocusReturn=(opener instanceof HTMLElement && !dlg.contains(opener)) ? opener : null;
+  }
   const panels={
     login:document.querySelector('#login-panel'),
     register:document.querySelector('#register-panel'),
@@ -3288,7 +2949,34 @@ function closeAuth(force=false){
   dlg.hidden=true;
   document.body.classList.remove('auth-open');
   if(currentUser) setAppLocked(false);
+  const opener=authFocusReturn;
+  authFocusReturn=null;
+  if(opener?.isConnected && !opener.closest('[hidden],[inert]') && opener.getClientRects().length){
+    opener.focus({preventScroll:true});
+  }
 }
+// Unlike a native <dialog>, this auth overlay needs explicit Tab containment.
+// The native dialogs retain their own Escape, focus trap and focus restoration.
+document.querySelector('#auth-dialog')?.addEventListener('keydown', event=>{
+  const dlg=event.currentTarget;
+  if(dlg.hidden || document.querySelector('dialog[open]')) return;
+  if(event.key==='Escape'){
+    event.preventDefault();
+    event.stopPropagation();
+    if(!dlg.classList.contains('required-auth')) closeAuth();
+    return;
+  }
+  if(event.key!=='Tab') return;
+  const focusable=[...dlg.querySelectorAll('a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>!el.matches(':disabled') && !el.closest('[hidden],[inert]') && el.getClientRects().length && getComputedStyle(el).visibility!=='hidden');
+  if(!focusable.length){event.preventDefault();dlg.focus();return;}
+  const first=focusable[0], last=focusable[focusable.length-1], active=document.activeElement;
+  if(event.shiftKey && (active===first || !dlg.contains(active))){
+    event.preventDefault();last.focus();
+  }else if(!event.shiftKey && (active===last || !dlg.contains(active))){
+    event.preventDefault();first.focus();
+  }
+});
 function requireLogin() {
   if (currentUser) return true;
   openAuth('login', true);
@@ -3365,6 +3053,11 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
   clearDocumentSelection(); loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   const storedSituation = cleanStoredSituationText(item.situation||'');
+  // A newly loaded history entry can be opened directly after a page reload:
+  // the guidance heading must have meaningful text before focus moves there.
+  const historyHeading=document.querySelector('#guidance-title');
+  if(historyHeading) historyHeading.textContent =
+    [item.topic,item.subtopic].filter(Boolean).join(': ') || String(item.title||'Lagret samtale');
   document.querySelector('#situation').value=storedSituation; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
   const thread=document.querySelector('#conversation-thread');
@@ -3496,33 +3189,37 @@ function applyContentOverrides(){
   if(currentTopic && views.topic?.classList.contains('active-view')) openTopic(currentTopic,pendingSituationText);
 }
 async function loadContentOverrides(){try{const response=await fetch('/api/content',{cache:'no-store'});if(response.ok){const payload=await response.json();contentOverrides=payload.values||{};applyContentOverrides();return payload;}}catch(_){}return{values:{},setupRequired:false};}
-function renderAdminContentFields(){
-  const host=document.querySelector('#admin-content-fields');if(!host)return;
-  host.className='admin-content-fields admin-content-sections';
-  host.innerHTML=allContentSections().map((section,sectionIndex)=>`<details class="admin-content-section" ${sectionIndex===0?'open':''}><summary><span>${escapeHtml(section.title)}</span><small>${section.fields.length} tekstfelt</small></summary><div class="admin-section-fields">${section.fields.map(field=>`<label class="admin-edit-field"><span>${escapeHtml(field.label)}</span><small>${escapeHtml(field.key)}</small><textarea data-admin-content-key="${escapeHtml(field.key)}" rows="${field.multiline?4:2}">${escapeHtml(contentValue(field.key,defaultContentValue(field)))}</textarea></label>`).join('')}</div></details>`).join('');
-  host.querySelectorAll('[data-admin-content-key]').forEach(input=>input.addEventListener('input',markAdminDirty));
-}
-let adminContentDirty=false;
-function markAdminDirty(){adminContentDirty=true;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=false;const save=document.querySelector('#admin-save-content');if(save)save.disabled=false;}
-function clearAdminDirty(){adminContentDirty=false;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=true;const save=document.querySelector('#admin-save-content');if(save)save.disabled=true;}
-async function saveAdminContent(){const msg=document.querySelector('#admin-content-message'),values={};document.querySelectorAll('[data-admin-content-key]').forEach(input=>{values[input.dataset.adminContentKey]=input.value.trim();});try{const response=await fetch('/api/admin/content',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({values})});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke lagre innholdet.');contentOverrides={...contentOverrides,...values};applyContentOverrides();clearAdminDirty();if(msg){msg.className='auth-message success';msg.textContent='Endringene er lagret og vises med en gang.';}}catch(error){if(msg){msg.className='auth-message error';msg.textContent=error.message;}}}
-async function loadAdminUsers(){const card=document.querySelector('#admin-users-card'),list=document.querySelector('#admin-users-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter brukere …</div>';try{const response=await fetch('/api/admin/users',{credentials:'include',cache:'no-store'});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke hente brukere.');list.innerHTML=(payload.users||[]).map(user=>`<div class="admin-user-row" data-admin-user="${escapeHtml(user.id)}"><div class="admin-user-copy"><strong>${escapeHtml(user.username||'Bruker')}</strong><small>${escapeHtml(user.email||'')}</small></div><select data-admin-role ${user.id===currentUser.id?'disabled':''}><option value="user" ${user.role==='user'?'selected':''}>Bruker</option><option value="editor" ${user.role==='editor'?'selected':''}>Redaktør</option><option value="admin" ${user.role==='admin'?'selected':''}>Admin</option></select><button class="secondary-button" type="button" data-save-admin-role ${user.id===currentUser.id?'disabled':''}>Lagre rolle</button></div>`).join('')||'<div class="history-empty">Ingen brukere funnet.</div>';list.querySelectorAll('[data-save-admin-role]').forEach(button=>button.addEventListener('click',async()=>{const row=button.closest('[data-admin-user]'),role=row.querySelector('[data-admin-role]').value;button.disabled=true;try{const r=await fetch(`/api/admin/users/${encodeURIComponent(row.dataset.adminUser)}/role`,{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke endre rollen.');const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message success';msg.textContent=`Rollen er endret til ${role}.`;}}catch(error){const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message error';msg.textContent=error.message;}}finally{button.disabled=false;}}));}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
-async function loadAdminFeedback(){const card=document.querySelector('#admin-feedback-card'),list=document.querySelector('#admin-feedback-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter rapporterte svar …</div>';try{const r=await fetch('/api/admin/ai-feedback',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente rapporterte svar.');list.innerHTML=(p.items||[]).map(item=>`<article class="admin-feedback-item"><div><strong>${escapeHtml(item.category||'Tilbakemelding')}</strong><small>${new Date(item.created_at).toLocaleString('nb-NO')} · ${escapeHtml(item.surface||'')}</small></div><p>${escapeHtml(item.comment||'')}</p>${item.include_conversation?`<details><summary>Vedlagt samtale</summary><pre class="admin-feedback-snapshot">${escapeHtml(JSON.stringify(item.conversation_snapshot||{},null,2))}</pre></details>`:'<small>Ingen samtale vedlagt.</small>'}</article>`).join('')||'<div class="history-empty">Ingen rapporterte KI-svar ennå.</div>';}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
-async function loadAdminAiSettings(){const card=document.querySelector('#admin-ai-card');if(!card)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;try{const r=await fetch('/api/admin/ai-settings',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente modellvalg.');const select=document.querySelector('#admin-ai-model');select.innerHTML=(p.models||[]).map(m=>`<option value="${escapeHtml(m.id)}" ${m.id===p.activeModel?'selected':''}>${escapeHtml(m.label)} · ${escapeHtml(m.tier)} · $${m.inputPerMillion}/$${m.outputPerMillion} per 1M tokens</option>`).join('');}catch(error){const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message error';msg.textContent=error.message;}}
-function formatUsd(value){return `$${Number(value||0).toFixed(3)}`;}
-async function loadAdminAiUsage(){if(currentUser?.role!=='admin')return;try{const includeTests=Boolean(document.querySelector('#admin-usage-include-tests')?.checked);const r=await fetch(`/api/admin/ai-usage?includeTests=${includeTests?'1':'0'}`,{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente KI-bruk.');document.querySelector('#admin-cost-24h').textContent=formatUsd(p.summary?.cost24h);document.querySelector('#admin-cost-7d').textContent=formatUsd(p.summary?.cost7d);document.querySelector('#admin-cost-30d').textContent=formatUsd(p.summary?.cost30d);document.querySelector('#admin-calls-30d').textContent=String(p.summary?.calls30d||0);const domains=document.querySelector('#admin-source-domains');domains.innerHTML=(p.topDomains||[]).map(x=>`<div><span>${escapeHtml(x.name)}</span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen webkilder registrert ennå.</small>';const queries=document.querySelector('#admin-source-queries');queries.innerHTML=(p.topQueries||[]).map(x=>`<div><span>${escapeHtml(x.name)}</span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen søk registrert ennå.</small>';const pages=document.querySelector('#admin-source-pages');if(pages)pages.innerHTML=(p.topPages||[]).map(x=>`<div><span><a href="${escapeHtml(x.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(x.title||x.url)}</a><small>${escapeHtml(x.domain||'')}</small></span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen konkrete kildesider registrert ennå.</small>';const recent=document.querySelector('#admin-ai-recent');recent.innerHTML=(p.recent||[]).slice(0,40).map(x=>`<div class="admin-usage-row"><div><strong>${escapeHtml(x.function_name||'KI-kall')}</strong><small>${new Date(x.created_at).toLocaleString('nb-NO')} · ${escapeHtml(x.model||'')}${x.is_test?' · TEST':''}${x.subtopic?` · ${escapeHtml(x.subtopic)}`:''}</small>${(x.web_search_queries||[]).length?`<small>Søk: ${escapeHtml((x.web_search_queries||[]).join(' | '))}</small>`:''}</div><div><span>${Number(x.total_tokens||0).toLocaleString('nb-NO')} tokens</span><strong>${formatUsd(x.estimated_cost_usd)}</strong>${x.web_search_used?`<small>${Number(x.web_search_call_count||1)} websøk</small>`:''}</div></div>`).join('')||'<small>Ingen KI-kall registrert ennå.</small>';}catch(error){const domains=document.querySelector('#admin-source-domains');if(domains)domains.innerHTML=`<small>${escapeHtml(error.message)}</small>`;}}
+// Redigerbar tekst har egen tilstand, men deler samme contentOverrides som klienten.
+// Rolle og tekstdata leses på nytt ved hver handling, ikke fra en oppstartskopi.
+const { renderAdminContentFields, clearAdminDirty, isAdminContentDirty, saveAdminContent } =
+  window.SamtalestotteAdminContent.create({
+    document,
+    fetch: (...args) => window.fetch(...args),
+    escapeHtml,
+    allContentSections,
+    contentValue,
+    defaultContentValue,
+    getCurrentUser: () => currentUser,
+    persistContentOverrides: values => {
+      contentOverrides = { ...contentOverrides, ...values };
+      applyContentOverrides();
+    }
+  });
+// Admin-datafunksjoner er isolert fra resten av appens globale tilstand.
+// Brukeren leses ved hvert kall, slik at rolleendringer etter innlogging ikke fryses.
+const { loadAdminUsers, loadAdminFeedback, loadAdminAiSettings, loadAdminAiUsage, formatUsd } =
+  window.SamtalestotteAdminData.create({
+    document,
+    fetch: (...args) => window.fetch(...args),
+    escapeHtml,
+    getCurrentUser: () => currentUser
+  });
 
 let benchmarkConfig=null;
 let benchmarkStopRequested=false;
 let benchmarkRunning=false;
 function benchmarkSelectedModels(){return [...document.querySelectorAll('[data-benchmark-model]:checked')].map(x=>x.value);}
-function benchmarkSelectCases(count){
-  const all=benchmarkConfig?.cases||[]; if(count>=all.length)return all.slice();
-  const grouped=new Map(); for(const c of all){if(!grouped.has(c.topicId))grouped.set(c.topicId,[]);grouped.get(c.topicId).push(c);}
-  const selected=[]; let round=0; const groups=[...grouped.values()];
-  while(selected.length<count){let added=false;for(const g of groups){if(g[round]&&selected.length<count){selected.push(g[round]);added=true;}}if(!added)break;round++;}
-  return selected;
-}
+function benchmarkSelectCases(count){return window.SamtalestotteBenchmarkEvaluation.selectCases(benchmarkConfig,count);}
 function renderBenchmarkSummary(results){
   const host=document.querySelector('#benchmark-summary');if(!host)return;
   const cost=results.reduce((a,r)=>a+Number(r.estimated_cost_usd||0),0),tokens=results.reduce((a,r)=>a+Number(r.input_tokens||0)+Number(r.output_tokens||0),0),web=results.reduce((a,r)=>a+Number(r.web_search_count||0),0),avg=results.length?results.reduce((a,r)=>a+Number(r.latency_ms||0),0)/results.length:0;
@@ -3534,29 +3231,7 @@ function renderBenchmarkResults(results){
   host.innerHTML=[...groups.values()].map(rows=>{const first=rows[0];return `<article class="benchmark-case-result"><h4>${escapeHtml(first.topic)} → ${escapeHtml(first.subtopic)} · ${escapeHtml(first.variant||'')}</h4><div class="benchmark-model-grid">${rows.map(r=>`<div class="benchmark-model-result"><h5>${escapeHtml((benchmarkConfig?.models||[]).find(m=>m.id===r.model)?.label||r.model)}</h5><div class="benchmark-metrics"><span>${Number(r.input_tokens||0)+Number(r.output_tokens||0)} tokens</span><span>${formatUsd(r.estimated_cost_usd)}</span><span>${Number(r.web_search_count||0)} websøk</span><span>${(Number(r.latency_ms||0)/1000).toFixed(1)} s</span></div><p>${escapeHtml(r.response_text||'')}</p>${(r.web_search_queries||[]).length?`<div class="benchmark-source-detail"><strong>Søk:</strong><ul>${(r.web_search_queries||[]).map(q=>`<li>${escapeHtml(q)}</li>`).join('')}</ul></div>`:''}${(r.source_pages||[]).length?`<div class="benchmark-source-detail"><strong>Konkrete kilder:</strong><ul>${(r.source_pages||[]).map(p=>`<li><a href="${escapeHtml(p.url||'')}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.title||p.url||p.domain||'Kilde')}</a></li>`).join('')}</ul></div>`:(r.source_domains||[]).length?`<small>Domener: ${escapeHtml((r.source_domains||[]).join(', '))}</small>`:''}</div>`).join('')}</div></article>`}).join('')||'<small>Ingen benchmark-resultater ennå.</small>';
 }
 
-function evaluatePilotOpening(testCase, guidance){
-  const opening=String(guidance?.opening||'').trim();
-  const issues=[];
-  const notes=[];
-  const words=opening?opening.split(/\s+/u).filter(Boolean).length:0;
-  const checks=testCase?.opening_checks||{};
-  const maxWords=Number(checks.max_words||65);
-  if(!opening)issues.push('Mangler forslag til åpning');
-  if(words>maxWords)issues.push(`For lang åpning: ${words} ord (maks ${maxWords})`);
-  if(/\b(?:du bør|bør du|kontakt HR|kontakt juridisk|følg (?:virksomhetens|lokal|intern|gjeldende)?\s*prosedyre|varsle (?:ansvarlig|nærmeste)?\s*leder|kvalitetssikre)\b/iu.test(opening))issues.push('Inneholder instruksjoner til lederen i stedet for bare replikk');
-  for(const pattern of checks.forbidden_patterns||[]){
-    try{if(new RegExp(pattern,'iu').test(opening))issues.push('Treffer en formulering vi tidligere har identifisert som mekanisk eller uheldig');}catch(_){}
-  }
-  const required=checks.required_patterns_any||[];
-  if(required.length){
-    const matched=required.some(pattern=>{try{return new RegExp(pattern,'iu').test(opening);}catch(_){return false;}});
-    if(!matched)notes.push('Automatisk ordtreff fant ikke forventet situasjonsspråk – bør vurderes menneskelig, ikke regnes som feil alene');
-  }
-  const sentences=opening.split(/[.!?]+(?:\s|$)/u).map(x=>x.trim()).filter(Boolean).length;
-  if(sentences>4)issues.push(`For mange setninger i åpningen: ${sentences}`);
-  return {ok:issues.length===0,opening,words,issues,notes};
-}
-
+function evaluatePilotOpening(testCase,guidance){return window.SamtalestotteBenchmarkEvaluation.evaluateOpening(testCase,guidance);}
 function renderPilotRegressionResults(results){
   const host=document.querySelector('#pilot-regression-results');if(!host)return;
   host.innerHTML=results.map(result=>{
@@ -3580,6 +3255,7 @@ async function runPilotRegression(mode='pilot'){
     const r=await fetch(`/api/admin/pilot-regression/cases?mode=${mode==='full'?'full':'pilot'}`,{credentials:'include',cache:'no-store'});
     const payload=await r.json();
     if(!r.ok)throw new Error(payload.message||'Kunne ikke hente testcasene.');
+    if(payload.paidRegressionEnabled!==true){if(status)status.textContent='Betalte pilot- og fulltester er sperret inntil varig kostnadskontroll er klar.';return;}
     cases=payload.cases||[];
   }catch(error){if(status)status.textContent=error.message;return;}
   if(!cases.length){if(status)status.textContent='Fant ingen testcaser.';return;}
@@ -3617,24 +3293,124 @@ async function runPilotRegression(mode='pilot'){
     const passed=results.filter(x=>!x.error&&x.evaluation?.ok).length;
     if(status)status.textContent=`Ferdig: ${passed}/${results.length} åpninger uten automatiske avvik. ${mode==='full'?'Resultatene er logget så de kan gjennomgås samlet.':''}`;
   }finally{
-    if(pilotButton)pilotButton.disabled=false;
-    if(fullButton)fullButton.disabled=false;
+    const canRun=benchmarkConfig?.liveEnabled === true &&
+      regressionCounts?.paidRegressionEnabled === true;
+    if(pilotButton) pilotButton.disabled = !canRun || !(regressionCounts?.pilotCount > 0);
+    if(fullButton) fullButton.disabled = !canRun || !(regressionCounts?.fullCount > 0);
     await loadAdminAiUsage();
   }
 }
-async function loadBenchmarkConfig(){
-  if(currentUser?.role!=='admin')return;const coverage=document.querySelector('#benchmark-coverage');
-  try{const r=await fetch('/api/admin/benchmark/cases',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente testbanken.');benchmarkConfig=p;if(coverage)coverage.textContent=`${p.totalCases} faste testsaker · ${p.totalSubtopics} undertemaer · minst 2 saker per undertema`;const models=document.querySelector('#benchmark-models');if(models)models.innerHTML=(p.models||[]).map(m=>{const gemmaFree=m.id==='google/gemma-4-26b-a4b-it:free';return `<label class="benchmark-model-option"><input type="checkbox" data-benchmark-model value="${escapeHtml(m.id)}" ${gemmaFree?'':'checked'}><span>${escapeHtml(m.label)}${gemmaFree?' · kan ratebegrenses':''}</span></label>`;}).join('');const run=document.querySelector('#benchmark-run-live');if(run)run.disabled=!p.storageReady;const status=document.querySelector('#benchmark-live-status');if(!p.storageReady&&status)status.textContent='Kjør database/migrations/V20-4-SUPABASE-MIGRATION.sql før ekte benchmark.';try{const rr=await fetch('/api/admin/benchmark/results',{credentials:'include',cache:'no-store'});const rp=await rr.json();if(rr.ok){renderBenchmarkResults((rp.items||[]).slice(0,24));renderBenchmarkSummary((rp.items||[]).slice(0,24));}}catch(_){}}catch(error){if(coverage)coverage.textContent=error.message;}
+let regressionCounts = null;
+
+async function loadRegressionCounts() {
+  const description = document.querySelector('#pilot-regression-description');
+  const pilotButton = document.querySelector('#pilot-regression-run');
+  const fullButton = document.querySelector('#production-regression-run');
+  if(pilotButton) pilotButton.disabled = true;
+  if(fullButton) fullButton.disabled = true;
+  regressionCounts = null;
+  try {
+    const response = await fetch('/api/admin/pilot-regression/cases?summary=1', {
+      credentials:'include',cache:'no-store'
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.message || 'Kunne ikke hente golden-casebanken.');
+    const { pilotCount, fullCount } = data;
+    if(!Number.isSafeInteger(pilotCount) || !Number.isSafeInteger(fullCount) ||
+       pilotCount < 0 || fullCount < 1 || pilotCount > fullCount) {
+      throw new Error('Golden-casebanken returnerte ugyldige antall.');
+    }
+    regressionCounts = { pilotCount, fullCount, paidRegressionEnabled:data.paidRegressionEnabled === true };
+    const pilotWord = pilotCount === 1 ? 'pilotcase' : 'pilotcaser';
+    const fullWord = fullCount === 1 ? 'sak' : 'saker';
+    // In the existing markup this warning has three <strong> elements.
+    // Keep the same hierarchy to preserve CSS/browser parity and readable emphasis.
+    // Counts are validated integers and labels are fixed strings; no user text enters HTML.
+    if(description) description.innerHTML =
+      '<strong>Produksjonsflyt-test:</strong> Disse testene bruker samme analyse og samtalestøtte som vanlige brukere. ' +
+      `<strong>${pilotCount} ${pilotWord}</strong> bruker ${pilotCount * 2} KI-kall. ` +
+      `<strong>Alle ${fullCount} ${fullWord}</strong> bruker ${fullCount * 2} KI-kall ` +
+      '(analyse + veiledning), inkludert pilotcasene. ' +
+      'Resultatene merkes som testtrafikk og åpningene logges for samlet gjennomgang.';
+    const enabled = benchmarkConfig?.liveEnabled === true &&
+      regressionCounts.paidRegressionEnabled && pilotCount > 0;
+    if(pilotButton) {
+      pilotButton.textContent = `Kjør ${pilotCount} ${pilotWord}`;
+      pilotButton.disabled = !enabled;
+    }
+    if(fullButton) {
+      fullButton.textContent = `Kjør alle ${fullCount} i produksjonsflyt`;
+      fullButton.disabled = !enabled;
+    }
+  } catch(error) {
+    if(description) description.textContent =
+      'Kunne ikke hente antall pilot- og fulltestsaker: ' + error.message;
+  }
+}
+
+async function loadBenchmarkConfig() {
+  if(currentUser?.role !== 'admin') return;
+  const coverage = document.querySelector('#benchmark-coverage');
+  const run = document.querySelector('#benchmark-run-live');
+  const allOption = document.querySelector('#benchmark-case-set option[value="all"]');
+  if(run) run.disabled = true;
+  if(allOption) allOption.disabled = true;
+  try {
+    const response = await fetch('/api/admin/benchmark/cases', {
+      credentials:'include',cache:'no-store'
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.message || 'Kunne ikke hente testbanken.');
+    if(!Array.isArray(data.cases) || !Number.isSafeInteger(data.totalCases) ||
+       data.totalCases < 1 || data.cases.length !== data.totalCases) {
+      throw new Error('Benchmarkbanken har motstridende eller tomt antall testsaker.');
+    }
+    benchmarkConfig = data;
+    if(coverage) coverage.textContent =
+      `${data.totalCases} faste testsaker · ${data.totalSubtopics} undertemaer · minst 2 saker per undertema`;
+    if(allOption) {
+      allOption.textContent = `Alle ${data.cases.length} saker`;
+      allOption.disabled = false;
+    }
+    const models = document.querySelector('#benchmark-models');
+    if(models) models.innerHTML = (data.models || []).map(model => {
+      const gemmaFree = model.id === 'google/gemma-4-26b-a4b-it:free';
+      return `<label class="benchmark-model-option"><input type="checkbox" data-benchmark-model value="${escapeHtml(model.id)}" ${gemmaFree ? '' : 'checked'}><span>${escapeHtml(model.label)}${gemmaFree ? ' · kan ratebegrenses' : ''}</span></label>`;
+    }).join('');
+    if(run) run.disabled = !(data.storageReady && data.liveEnabled === true);
+    const status = document.querySelector('#benchmark-live-status');
+    if(!data.storageReady && status) status.textContent =
+      'Kjør database/migrations/V20-4-SUPABASE-MIGRATION.sql før ekte benchmark.';
+    if(!data.liveEnabled && status) status.textContent =
+      'Betalt benchmark er sperret inntil varig, atomisk serverbudsjett er klart.';
+    await loadRegressionCounts();
+    try {
+      const resultsResponse = await fetch('/api/admin/benchmark/results', {
+        credentials:'include',cache:'no-store'
+      });
+      const payload = await resultsResponse.json();
+      if(resultsResponse.ok) {
+        renderBenchmarkResults((payload.items || []).slice(0,24));
+        renderBenchmarkSummary((payload.items || []).slice(0,24));
+      }
+    } catch(_) {}
+  } catch(error) {
+    benchmarkConfig = null;
+    regressionCounts = null;
+    if(coverage) coverage.textContent = error.message;
+    const description = document.querySelector('#pilot-regression-description');
+    if(description) description.textContent = 'Antall kan ikke vises før testbanken er tilgjengelig.';
+  }
 }
 async function runBenchmarkMock(){const button=document.querySelector('#benchmark-run-mock'),status=document.querySelector('#benchmark-mock-result');if(button)button.disabled=true;if(status)status.textContent=`Tester ${benchmarkConfig?.totalCases||'alle'} saker …`;try{const r=await fetch('/api/admin/benchmark/mock',{method:'POST',credentials:'include'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Fulltesten feilet.');if(status)status.textContent=p.ok?`Bestått: ${p.checks.cases} saker / ${p.checks.subtopics} undertemaer · 0 KI-kostnad`:`Feil: ${(p.problems||[]).join('; ')}`;}catch(error){if(status)status.textContent=error.message;}finally{if(button)button.disabled=false;}}
 async function runBenchmarkLive(){
-  if(benchmarkRunning||!benchmarkConfig)return;const models=benchmarkSelectedModels();if(!models.length){alert('Velg minst én KI-modell.');return;}const count=Math.min(Number(document.querySelector('#benchmark-case-set')?.value||8),benchmarkConfig.totalCases||112);const cases=benchmarkSelectCases(count);const budget=Math.min(5,Math.max(.1,Number(document.querySelector('#benchmark-budget')?.value||2)));const total=cases.length*models.length;
+  if(benchmarkRunning||!benchmarkConfig?.liveEnabled||!benchmarkConfig.storageReady)return;const models=benchmarkSelectedModels();if(!models.length){alert('Velg minst én KI-modell.');return;}const count=window.SamtalestotteBenchmarkEvaluation.resolveCaseCount(document.querySelector('#benchmark-case-set')?.value,benchmarkConfig.cases.length);const cases=benchmarkSelectCases(count);const budget=Math.min(5,Math.max(.1,Number(document.querySelector('#benchmark-budget')?.value||2)));const total=cases.length*models.length;
   if(!confirm(`Kjøre ${cases.length} testsaker på ${models.length} modeller = ${total} ekte KI-kall?
 
 Maks budsjett: $${budget.toFixed(2)}. Testen kan stoppes når som helst.`))return;
   benchmarkRunning=true;benchmarkStopRequested=false;const runId=crypto.randomUUID();const results=[];const rateLimitedModels=new Set();let spent=0,done=0;const start=document.querySelector('#benchmark-run-live'),stop=document.querySelector('#benchmark-stop-live'),status=document.querySelector('#benchmark-live-status'),bar=document.querySelector('#benchmark-progress-bar');start.disabled=true;stop.disabled=false;renderBenchmarkResults([]);renderBenchmarkSummary([]);
   outer: for(const c of cases){for(const model of models){if(benchmarkStopRequested)break outer;if(rateLimitedModels.has(model)){results.push({run_id:runId,case_id:c.id,topic_id:c.topicId,topic:c.topic,subtopic:c.subtopic,variant:c.variant,model,response_text:'HOPPET OVER: modellen ble ratebegrenset (429) tidligere i denne kjøringen.',input_tokens:0,output_tokens:0,estimated_cost_usd:0,web_search_count:0,web_search_queries:[],source_domains:[],source_pages:[],latency_ms:0,benchmark_failed:true});done++;if(bar)bar.style.width=`${Math.round(done/total*100)}%`;renderBenchmarkSummary(results);renderBenchmarkResults(results);continue;}if(status)status.textContent=`${done+1}/${total}: ${c.topic} → ${c.subtopic} · ${model.replace('gpt-5.6-','')}`;try{const r=await fetch('/api/admin/benchmark/live',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({caseId:c.id,model,runId,spentSoFar:spent,budgetUsd:budget})});const p=await r.json();if(r.status===409&&p.error==='BUDGET_LIMIT'){if(status)status.textContent=`Stoppet ved budsjettgrensen. Brukt ca. ${formatUsd(spent)}.`;break outer;}if(!r.ok)throw new Error(p.message||'Benchmark-kall feilet.');results.push(p);spent+=Number(p.estimated_cost_usd||0);}catch(error){const rateLimited=/\b429\b|ratebegrenset|rate-limited/i.test(String(error.message||''));if(rateLimited)rateLimitedModels.add(model);if(status)status.textContent=rateLimited?`${model}: 429/ratebegrenset – hopper over resten for denne modellen`:`Feil på ${model}: ${error.message} – fortsetter`;results.push({run_id:runId,case_id:c.id,topic_id:c.topicId,topic:c.topic,subtopic:c.subtopic,variant:c.variant,model,response_text:`FEIL: ${error.message||'Benchmark-kall feilet.'}`,input_tokens:0,output_tokens:0,estimated_cost_usd:0,web_search_count:0,web_search_queries:[],source_domains:[],source_pages:[],latency_ms:0,benchmark_failed:true});}done++;if(bar)bar.style.width=`${Math.round(done/total*100)}%`;renderBenchmarkSummary(results);renderBenchmarkResults(results);if(model.startsWith('openrouter/')||model.includes('gemma')){await new Promise(resolve=>setTimeout(resolve,5000));}}}
-  benchmarkRunning=false;start.disabled=!benchmarkConfig.storageReady;stop.disabled=true;if(!benchmarkStopRequested&&done===total&&status)status.textContent=`Ferdig: ${done} kall · ca. ${formatUsd(spent)}.`;else if(benchmarkStopRequested&&status)status.textContent=`Stoppet manuelt etter ${done} kall · ca. ${formatUsd(spent)}.`;await loadAdminAiUsage();
+  benchmarkRunning=false;start.disabled=!(benchmarkConfig.storageReady&&benchmarkConfig.liveEnabled===true);stop.disabled=true;if(!benchmarkStopRequested&&done===total&&status)status.textContent=`Ferdig: ${done} kall · ca. ${formatUsd(spent)}.`;else if(benchmarkStopRequested&&status)status.textContent=`Stoppet manuelt etter ${done} kall · ca. ${formatUsd(spent)}.`;await loadAdminAiUsage();
 }
 
 async function loadAdminSurvey(){
@@ -3889,7 +3665,15 @@ document.querySelector('#profile-button')?.addEventListener('click',(event)=>{
 });
 document.querySelector('#profile-menu')?.addEventListener('click',event=>event.stopPropagation());
 document.addEventListener('click',()=>closeProfileMenu());
-document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfileMenu();});
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape' || document.querySelector('dialog[open]') ||
+     !document.querySelector('#auth-dialog')?.hidden) return;
+  const menu=document.querySelector('#profile-menu');
+  if(menu && !menu.hidden){
+    closeProfileMenu();
+    document.querySelector('#profile-button')?.focus({preventScroll:true});
+  }
+});
 
 async function ensurePrivacyAcknowledgement(){
   if(!currentUser)return;
@@ -3905,9 +3689,12 @@ document.querySelector('[data-profile-action="contact"]')?.addEventListener('cli
 document.querySelector('[data-profile-action="survey"]')?.addEventListener('click',()=>{closeProfileMenu();openSurvey();});
 document.querySelector('[data-profile-action="admin"]')?.addEventListener('click',()=>{closeProfileMenu();openAdmin();});
 document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
-document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
+document.querySelector('#auth-close')?.addEventListener('click',()=>closeAuth()); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth();});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape' && !document.querySelector('dialog[open]') &&
+     !document.querySelector('#auth-dialog')?.hidden) closeAuth();
+});
 document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>navigateAppBack(()=>showView('home')));
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(legalReturnView))));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
@@ -3941,8 +3728,16 @@ document.querySelector('#ai-feedback-comment')?.addEventListener('input',()=>{
 document.querySelector('#ai-feedback-form')?.addEventListener('submit',async event=>{event.preventDefault();const category=document.querySelector('#ai-feedback-category')?.value||'Annet';const comment=document.querySelector('#ai-feedback-comment')?.value.trim()||'';const message=document.querySelector('#ai-feedback-message');const findings=detectSensitiveInfo(comment);if(splitPrivacyFindings(findings).hard.length){message.className='auth-message error';message.textContent='Fjern navn eller andre tydelige personopplysninger før tilbakemeldingen sendes.';return;}if(comment.length<3){message.className='auth-message error';message.textContent='Skriv kort hva som var problemet.';return;}const includeConversation=Boolean(document.querySelector('#ai-feedback-include-conversation')?.checked);let conversationSnapshot=null;if(includeConversation){const attachmentFindings=updateFeedbackAttachmentPrivacy();if(splitPrivacyFindings(attachmentFindings).hard.length){message.className='auth-message error';message.textContent='Samtalen må anonymiseres før den kan legges ved.';return;}conversationSnapshot=buildFeedbackConversationSnapshot(pendingAiFeedback.surface,pendingAiFeedback.turnIndex);}try{const r=await fetch('/api/ai-feedback',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({category,comment,surface:pendingAiFeedback.surface,turnIndex:pendingAiFeedback.turnIndex,conversationId:currentConversationId||null,topicId:currentTopic?.id||null,subtopic:currentSubtopic||null,includeConversation,conversationSnapshot})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke sende tilbakemeldingen.');message.className='auth-message success';message.textContent=includeConversation?'Takk. Tilbakemeldingen og samtalen er lagret.':'Takk. Tilbakemeldingen er lagret uten samtaleteksten.';setTimeout(closeAiFeedback,800);}catch(error){message.className='auth-message error';message.textContent=error.message;}});
 
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
-document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(adminContentDirty&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;await loadContentOverrides();renderAdminContentFields();clearAdminDirty();});
-document.querySelector('#admin-content-form')?.addEventListener('submit',event=>{event.preventDefault();if(!adminContentDirty)return;document.querySelector('#admin-save-dialog')?.showModal();});
+document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(isAdminContentDirty()&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;await loadContentOverrides();renderAdminContentFields();clearAdminDirty();});
+document.querySelector('#admin-content-form')?.addEventListener('submit',event=>{event.preventDefault();if(!isAdminContentDirty())return;document.querySelector('#admin-save-dialog')?.showModal();});
+// Native focus return is not consistent when this modal is opened from a
+// form submit. Restore focus explicitly after Escape/Cancel if Save is still enabled.
+document.querySelector('#admin-save-dialog')?.addEventListener('close',()=>{
+  const opener=document.querySelector('#admin-save-content');
+  if(opener && !opener.disabled && opener.isConnected && opener.getClientRects().length){
+    opener.focus({preventScroll:true});
+  }
+});
 document.querySelector('#admin-save-cancel')?.addEventListener('click',()=>document.querySelector('#admin-save-dialog')?.close());
 document.querySelector('#admin-save-confirm')?.addEventListener('click',async()=>{document.querySelector('#admin-save-dialog')?.close();await saveAdminContent();});
 document.querySelector('#admin-save-ai-model')?.addEventListener('click',async()=>{const model=document.querySelector('#admin-ai-model')?.value;const option=document.querySelector('#admin-ai-model')?.selectedOptions?.[0]?.textContent||model;if(!model)return;if(!confirm(`Bytte KI-modell til ${option}?\n\nEn dyrere modell kan øke API-kostnadene for alle nye KI-kall.`))return;const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message';msg.textContent='Lagrer …';try{const r=await fetch('/api/admin/ai-settings',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({model})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre modellvalget.');msg.className='auth-message success';msg.textContent='KI-modellen er endret. Nye KI-kall bruker dette valget.';}catch(error){msg.className='auth-message error';msg.textContent=error.message;}});

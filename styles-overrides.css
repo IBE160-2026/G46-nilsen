@@ -21,30 +21,20 @@
     min-height: 126px !important;
     margin: 0 !important;
     transform: none !important;
-    overflow: hidden !important;
     justify-self: end !important;
     align-items: center !important;
     justify-content: center !important;
-    border-radius: 20px !important;
-    border: 1px solid color-mix(in srgb,var(--accent) 18%,var(--border)) !important;
-    background: color-mix(in srgb,var(--surface) 88%,var(--accent-soft)) !important;
   }
 
   #simulation-view .simulation-logo-crop img,
   html[data-theme="light"] #simulation-view .simulation-logo-crop img,
   html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
   html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
-    content: normal !important;
     display: block !important;
     width: 100% !important;
     max-width: none !important;
     height: 100% !important;
-    object-fit: cover !important;
     object-position: center !important;
-    border: 0 !important;
-    border-radius: 18px !important;
-    box-shadow: none !important;
-    filter: none !important;
   }
 }
 
@@ -66,7 +56,6 @@
     min-height: 150px !important;
   }
 }
-
 
 /* v20.11.2 COMPACT DESKTOP TOPBAR
    Keep desktop identity, but prevent logo/breadcrumb/profile collisions. */
@@ -151,12 +140,6 @@
     width: 100% !important;
   }
 
-  .topbar-right {
-    width: 100% !important;
-    justify-content: flex-start !important;
-    flex-wrap: wrap !important;
-  }
-
   .profile-chip {
     max-width: none !important;
   }
@@ -165,7 +148,6 @@
     max-width: 180px !important;
   }
 }
-
 
 /* v20.11.3 COMPACT DESKTOP ALIGNMENT
    Keep profile anchored at the right edge and reserve space for the sidebar toggle. */
@@ -196,32 +178,6 @@
     max-width: 172px !important;
   }
 }
-
-
-#simulation-view .simulation-logo-crop,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop {
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
-}
-
-#simulation-view .simulation-logo-crop img,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop img,
-html[data-theme="light"] #simulation-view .simulation-logo-crop img,
-html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
-html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  filter: none !important;
-  object-fit: contain !important;
-  content: normal !important;
-}
-
 
 /* v20.11.5 CLEAN SIMULATION MARK
    Keep the KI illustration free of card/frame styling. */
@@ -290,7 +246,6 @@ html[data-theme="dark"] .sidebar .nav-item.active .nav-glyph {
   box-shadow: inset 0 0 0 1px rgba(255,255,255,.18) !important;
 }
 
-
 /* SAFE UX REBUILD 2026-10-30 */
 .info-icon {
   width: 46px;
@@ -329,7 +284,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   .help-section-heading { padding-left: 0; padding-right: 0; }
 }
 
-
 .guidance-complete {
   margin: 0 0 14px;
   padding: 10px 13px;
@@ -351,7 +305,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     pointer-events: none;
   }
 }
-
 
 /* SAFE UX: progressive disclosure + full collapsed desktop width */
 @media (min-width:981px) {
@@ -377,7 +330,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
 /* Flytende sidebar-tooltip rendres i body for å unngå clipping/overflow. */
 .sidebar.sidebar-collapsed .nav-item[data-tooltip]::after {
   display: none !important;
@@ -401,7 +353,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .sidebar-floating-tooltip[hidden] {
   display: none !important;
 }
-
 
 /* Tydelig avslutning av vanlig Samtalestøtte */
 .conversation-end-row {
@@ -470,7 +421,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
 /* Fortsett samtalen: forslag vises ved siste svar og avslutningspanelet respekterer hidden. */
 .continue-suggestions {
   margin-top: 12px;
@@ -496,16 +446,9 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   font-weight: 700;
 }
 
-
 /* Samordnet knappestil for oppfølgingsfelt og samtaleavslutning */
 .continue-form .continue-submit-button,
 .conversation-end-row .conversation-end-button {
-  min-height: 42px;
-  height: 42px;
-  padding: 0 18px;
-  border-radius: 14px;
-  font-size: .92rem;
-  font-weight: 700;
   white-space: nowrap;
 }
 
@@ -626,7 +569,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
 /* Spør videre og Avslutt samtale skal ha samme mål */
 .continue-form .continue-submit-button,
 .conversation-end-row .conversation-end-button {
@@ -641,7 +583,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     min-width: 0;
   }
 }
-
 
 /* Samme kompakte knappestil for Spør videre og Avslutt samtale */
 .continue-form .continue-submit-button,
@@ -672,7 +613,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   outline: 2px solid color-mix(in srgb,var(--accent) 55%,transparent);
   outline-offset: 2px;
 }
-
 
 /* GJENOPPRETT HISTORISK RÅDSKORT-UTSEENDE (fasit fra b5e3acb) */
 #structured-guidance .guidance-card {
@@ -730,22 +670,9 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
-
 /* v20.11.24 GUIDANCE COLUMN ALIGNMENT
    Hold input-/oppsummeringsfelt og resultat i samme visuelle kolonne. */
 @media (min-width:761px) {
-  #guidance-view .situation-form,
-  #guidance-view .temporary-chat-option,
-  #guidance-view .ai-thinking,
-  #guidance-view .situation-understanding,
-  #guidance-view .followup-panel,
-  #guidance-view .prototype-result {
-    width: min(100%, 980px) !important;
-    max-width: 980px !important;
-    margin-left: 0 !important;
-    margin-right: auto !important;
-  }
 
   #guidance-view .situation-form .main-situation-field,
   #guidance-view .situation-form .situation-input-shell,
@@ -757,13 +684,10 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
-
 /* v20.11.31 HERO RESTORE FROM PILOT */
 .hero-intro-collapsed {
   display: none !important;
 }
-
 
 /* v20.11.32 RESTORE PILOT TOPBAR
    Gjenopprett minimert toppfelt slik pilot hadde det: én rad på desktop,
@@ -795,8 +719,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
-
 /* v20.11.33 GUIDANCE PRE-RESULT WIDTH ALIGNMENT
    Hold alle felter før «Forslag til samtalen» i samme visuelle kolonne. */
 @media (min-width:761px) {
@@ -824,7 +746,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     max-width: none !important;
   }
 }
-
 
 /* v20.11.34 GUIDANCE COLUMN COMPLETION
    Fullfør samme kolonnebredde for alle relevante blokker i veiledningsvisningen. */
@@ -857,14 +778,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
-
-
-
-
-
-
-
 /* v20.11.44 INTRO BELOW IMAGE IN COLLAPSED VIEW
    Kun den lille introteksten får egne regler.
    I minimert desktop dyttes den ned til under bildets bunn og får deretter full bredde.
@@ -885,7 +798,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
 /* v20.11.45 Valgfri yrkes-/sektorkontekst */
 .occupation-context-panel{margin:10px 0 2px;border:1px solid var(--border);border-radius:14px;background:var(--surface-2);overflow:hidden}
 .occupation-context-fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:14px}
@@ -898,14 +810,12 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #occupation-context-summary{display:block;margin-top:4px;font-size:.98rem;line-height:1.4}
 @media(max-width:650px){.occupation-context-fields{grid-template-columns:1fr}.occupation-context-suggestion{padding:16px;border-radius:18px}}
 
-
 /* v20.11.46 KILDEHENVISNINGER */
 .inline-source-links{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:12px;padding-top:10px;border-top:1px solid var(--border);font-size:.88rem}
 .inline-source-links>span{color:var(--muted);font-weight:700}
 .inline-source-links a{display:inline-flex;align-items:center;gap:4px;padding:5px 9px;border:1px solid var(--border);border-radius:999px;background:var(--surface);color:var(--accent);font-weight:750;text-decoration:none}
 .inline-source-links a:hover{text-decoration:underline;background:var(--surface-2)}
 .evidence-list a em{display:block;margin-top:5px;color:var(--accent);font-size:.82rem;font-style:normal;font-weight:750}
-
 
 /* v20.11.47 KATEGORISERT KILDEBANK PÅ HJELP */
 .source-library-intro{max-width:980px;margin-bottom:14px}
@@ -933,7 +843,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 .source-item-use{margin:2px 0 0;color:var(--muted);font-size:.9rem;line-height:1.45}
 @media(max-width:680px){.source-library-tabs{display:grid;grid-template-columns:1fr}.source-library-tab{text-align:left;border-radius:12px}.source-group>summary{align-items:flex-start;flex-direction:column;gap:3px}}
 
-
 /* v20.11.48 KILDEBANK - TILBAKE TIL OVERSIKTLIG ACCORDION */
 #help-source-library.source-library{display:block;max-width:980px}
 #help-source-library .help-source-category{margin:0 0 12px}
@@ -951,7 +860,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   #help-source-library .help-source-category>summary{align-items:flex-start;flex-direction:column;gap:3px}
 }
 
-
 /* v20.11.49 TYDELIG KILDEBANK MED PILER */
 #help-source-library .help-source-category>summary,
 #help-source-library .source-group>summary{
@@ -962,34 +870,17 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 }
 #help-source-library .help-source-category>summary::after,
 #help-source-library .source-group>summary::after{
-  content:"›";
-  position:absolute;
-  right:16px;
-  top:50%;
-  transform:translateY(-50%) rotate(90deg);
-  transform-origin:center;
-  font-size:1.45rem;
-  line-height:1;
-  font-weight:800;
   color:var(--accent);
   transition:transform .18s ease;
 }
-#help-source-library .help-source-category[open]>summary::after,
-#help-source-library .source-group[open]>summary::after{
-  transform:translateY(-50%) rotate(270deg);
-}
+
 #help-source-library .help-source-category>summary{
-  min-height:54px;
-  font-size:1rem;
   border-radius:14px;
 }
 #help-source-library .help-source-category>summary span{
   font-weight:850;
 }
-#help-source-library .source-group>summary{
-  min-height:46px;
-  font-size:.95rem;
-}
+
 #help-source-library .help-source-category>summary::-webkit-details-marker,
 #help-source-library .source-group>summary::-webkit-details-marker{
   display:none;
@@ -998,7 +889,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-source-library .source-group>summary::marker{
   content:"";
 }
-
 
 /* v20.11.50 TVING TYDELIGE PILER I HJELP-KILDEBANK */
 #help-source-library .help-source-category>summary,
@@ -1033,11 +923,10 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   transform:translateY(-50%) rotate(270deg) !important;
 }
 
-
 /* v20.11.51 GJENOPPRETT GAMMEL HJELP-KILDEVISNING */
-#help-view .resource-links{margin:0;padding-left:20px}
+
 #help-view .resource-links li{margin:8px 0}
-#help-view .resource-links a{color:var(--accent);text-decoration:none;font-weight:650}
+#help-view .resource-links a{color:var(--accent);font-weight:650}
 #help-view .resource-links a:hover{text-decoration:underline}
 #help-view .help-sector-source-summary{display:grid;gap:8px}
 #help-view .help-mini-source-group{border-top:1px solid var(--border);padding-top:8px}
@@ -1048,7 +937,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view .compact-full-source-library .help-source-category{margin-bottom:8px}
 #help-view .compact-full-source-library .source-item-use,
 #help-view .compact-full-source-library .source-item-meta{display:none}
-
 
 /* v20.11.52 GJENOPPRETT GAMMEL KILDEVISNING + VENSTREPIL */
 #help-view details.utility-accordion > summary{
@@ -1088,7 +976,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view .resource-links a{color:var(--accent);text-decoration:none;font-weight:600}
 #help-view .resource-links a:hover{text-decoration:underline}
 
-
 /* v20.11.53 ENKEL, KATEGORISERT FULL KILDEBANK */
 #help-view .complete-source-library-simple{display:grid;gap:10px;margin-top:12px}
 #help-view .source-bank-category,
@@ -1115,8 +1002,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view .compact-source-detail p{margin:3px 0;font-size:.9rem;line-height:1.45}
 #help-view .compact-source-detail a{display:inline-block;margin-top:5px;color:var(--accent);font-weight:700;text-decoration:none}
 #help-view .compact-source-detail a:hover{text-decoration:underline}
-
-
 
 /* v20.11.61 KILDEBANK - SMALERE KORT, ROLIGERE YRKESKILDER OG PIL PÅ TITTEL */
 #help-view #complete-source-library{
@@ -1161,8 +1046,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view #complete-source-library .source-bank-top-title::after,
 #help-view #complete-source-library .source-bank-sector-title::after,
 #help-view #complete-source-library .compact-source-title::after{
-  content:"›";
-  display:inline-block;
   flex:0 0 auto;
   color:var(--muted);
   font-size:1.08em;
@@ -1206,11 +1089,7 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 /* Selve kildene under yrke skal være diskrete, ikke se ut som nye hovedoverskrifter. */
 #help-view #complete-source-library .source-bank-sector-body .compact-source-row>summary{
-  padding:6px 0 !important;
   color:var(--text) !important;
-  font-size:.80rem !important;
-  font-weight:500 !important;
-  line-height:1.3 !important;
 }
 #help-view #complete-source-library .source-bank-sector-body .compact-source-title::after{
   font-size:.96em !important;
@@ -1235,17 +1114,10 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
 /* v20.11.62 KILDEHIERARKI - GAMMEL PIL PÅ HOVEDKATEGORI, LITEN PIL KUN PÅ KILDER */
 /* De fire hovedkategoriene bruker den gamle venstrepilen. */
-#help-view #complete-source-library .source-bank-top-category>summary{
-  display:flex !important;
-  align-items:center !important;
-  gap:8px !important;
-}
+
 #help-view #complete-source-library .source-bank-top-category>summary::before{
-  content:"›" !important;
-  display:inline-block !important;
   flex:0 0 auto !important;
   width:auto !important;
   height:auto !important;
@@ -1260,31 +1132,12 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view #complete-source-library .source-bank-top-category[open]>summary::before{
   transform:rotate(90deg) !important;
 }
-#help-view #complete-source-library .source-bank-top-title::after{
-  content:none !important;
-  display:none !important;
-}
 
 /* Sektornivået skal ikke ha samme pil som kildene. */
-#help-view #complete-source-library .source-bank-sector-title::after{
-  content:none !important;
-  display:none !important;
-}
 
 /* Den lille inline-pilen beholdes kun på konkrete kilder. */
 #help-view #complete-source-library .compact-source-title::after{
-  content:"›" !important;
-  display:inline-block !important;
-  flex:0 0 auto !important;
   color:var(--muted) !important;
-  font-size:.92em !important;
-  line-height:1 !important;
-  font-weight:600 !important;
-  transform:rotate(0deg) !important;
-  transition:transform .18s ease !important;
-}
-#help-view #complete-source-library .compact-source-row[open]>summary .compact-source-title::after{
-  transform:rotate(90deg) !important;
 }
 
 /* Konkrete kilder skal være små og IKKE bold. Gjelder alle kategorier. */
@@ -1296,34 +1149,18 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   font-weight:400 !important;
   line-height:1.28 !important;
 }
-#help-view #complete-source-library .compact-source-title{
-  font-size:inherit !important;
-  font-weight:400 !important;
-}
+
 #help-view #complete-source-library .compact-source-detail{
   padding:0 0 7px 11px !important;
 }
-#help-view #complete-source-library .compact-source-detail p,
-#help-view #complete-source-library .compact-source-detail a{
-  font-size:.76rem !important;
-  line-height:1.35 !important;
-}
+
 #help-view #complete-source-library .compact-source-detail a{
   font-weight:500 !important;
 }
 
-
 /* v20.11.63 KOMPAKTE SAMMENTRUKNE RÅDSKORT */
 @media (min-width:641px){
   /* Lukkede kort trenger ikke fylle hele 980px-resultatkolonnen. */
-  #structured-guidance .guidance-card:has(.evidence-details:not([open])){
-    width:min(100%,600px) !important;
-    max-width:600px !important;
-    justify-self:start !important;
-    padding:10px 12px !important;
-    grid-template-columns:26px minmax(0,1fr) !important;
-    gap:8px !important;
-  }
 
   /* Når kortet åpnes får innholdet full tilgjengelig bredde igjen. */
   #structured-guidance .guidance-card:has(.evidence-details[open]){
@@ -1335,15 +1172,8 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     gap:10px !important;
   }
 
-  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .evidence-details>summary{
-    font-size:.92rem !important;
-    line-height:1.2 !important;
-    margin:0 !important;
-  }
-
   #structured-guidance .guidance-card:has(.evidence-details:not([open])) .guidance-number{
     font-size:.88rem !important;
-    line-height:1.2 !important;
   }
 }
 
@@ -1354,24 +1184,17 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   }
 }
 
-
 /* v20.11.64 KORRIGERT PILHIERARKI + PUNKTLISTE + SMALERE RÅDSKORT */
 
 /* HOVEDKATEGORIER:
    Bruk samme inline-pil som tidligere ble brukt på yrkes-/sektoroverskriftene. */
-#help-view #complete-source-library .source-bank-top-category>summary::before,
-#help-view #complete-source-library .source-bank-top-category>summary::after{
-  content:none !important;
-  display:none !important;
-}
+
 #help-view #complete-source-library .source-bank-top-title{
   display:inline-flex !important;
   align-items:center !important;
   gap:6px !important;
 }
 #help-view #complete-source-library .source-bank-top-title::after{
-  content:"›" !important;
-  display:inline-block !important;
   flex:0 0 auto !important;
   color:var(--muted) !important;
   font-size:1.08em !important;
@@ -1393,22 +1216,12 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* KONKRETE KILDER:
    Punktvis liste + liten inline-pil etter kildenavnet. */
 #help-view #complete-source-library .compact-source-row>summary{
-  display:flex !important;
-  align-items:center !important;
-  gap:7px !important;
   padding:6px 0 !important;
   color:var(--text) !important;
-  font-size:.84rem !important;
-  font-weight:400 !important;
   line-height:1.32 !important;
 }
 #help-view #complete-source-library .compact-source-row>summary::before{
-  content:"•" !important;
-  display:inline-block !important;
-  flex:0 0 auto !important;
   color:var(--muted) !important;
-  font-size:.90rem !important;
-  line-height:1 !important;
   transform:none !important;
 }
 #help-view #complete-source-library .compact-source-title{
@@ -1419,8 +1232,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   font-weight:400 !important;
 }
 #help-view #complete-source-library .compact-source-title::after{
-  content:"›" !important;
-  display:inline-block !important;
   flex:0 0 auto !important;
   color:var(--muted) !important;
   font-size:.90em !important;
@@ -1474,7 +1285,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     line-height:1 !important;
   }
 }
-
 
 /* v20.11.65 EKSPLISITTE PILER - INGEN PSEUDO-ELEMENTER */
 #help-view #complete-source-library .source-bank-top-category>summary::before,
@@ -1563,7 +1373,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   transform:rotate(90deg);
 }
 
-
 /* v20.11.66 KOMPAKTE HISTORIKK-KNAPPER */
 .history-actions{
   gap:6px !important;
@@ -1579,4 +1388,32 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   font-size:.80rem !important;
   line-height:1.15 !important;
   font-weight:650 !important;
+}
+
+/* Tastatursnarvei som kun er synlig når den får fokus. */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 12px;
+  z-index: 10000;
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: #123e4a;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+}
+.skip-link:focus {
+  top: 12px;
+  outline: 3px solid #ffdd57;
+  outline-offset: 3px;
+}
+.main-skip-target {
+  scroll-margin-top: 108px;
+  height: 0;
+}
+.main-skip-target:focus {
+  outline: 3px solid var(--accent);
+  outline-offset: 0;
 }

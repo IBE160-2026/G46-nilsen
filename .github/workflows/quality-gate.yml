@@ -3,6 +3,8 @@ name: Quality Gate
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 jobs:
@@ -12,6 +14,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Needed to compare browser layout against pinned pre-refactor commit
 
       - name: Setup Node
         uses: actions/setup-node@v4
@@ -24,6 +28,53 @@ jobs:
 
       - name: Run deterministic test suite
         run: npm test
+
+      - name: Verify submission document/36-requirement consistency (report only)
+        run: npm run audit:submission
+        # Canvas requirements and human sign-off intentionally NOT inferred from a green CI.
+
+      - name: Prove strict submission sign-off rejects missing approval and wrong SHA
+        run: |
+          node - <<'NODE'
+          const assert=require('node:assert/strict');
+          const {spawnSync}=require('node:child_process');
+          const base={...process.env,SUBMISSION_CANVAS_CONFIRMED:'0',
+            SUBMISSION_REFLECTION_APPROVED:'0',SUBMISSION_TARGET_COMMIT:'',
+            SUBMISSION_BRANCH_APPROVED:''};
+          const run=(env)=>spawnSync(process.execPath,
+            ['scripts/audit-submission.cjs','--strict'],{encoding:'utf8',env});
+          const missing=run(base);
+          assert.equal(missing.status,2,'Unsigned submission must fail strict gate');
+          assert.match(missing.stderr,/Strict submission sign-off blocked/);
+          const invalid=run({...base,SUBMISSION_CANVAS_CONFIRMED:'1',
+            SUBMISSION_REFLECTION_APPROVED:'1',
+            SUBMISSION_TARGET_COMMIT:'0000000000000000000000000000000000000000',
+            SUBMISSION_BRANCH_APPROVED:process.env.GITHUB_HEAD_REF||'main'});
+          assert.equal(invalid.status,2,'Wrong submission commit must fail strict gate');
+          console.log('Strict delivery gate: missing approval and wrong commit correctly REJECTED');
+          NODE
+
+      - name: Exercise admin interface with fake roles in Chrome
+        run: node tests/test-admin-browser.cjs
+
+      - name: Exercise entire sensor user journey in real Chrome and deterministic demo
+        run: node tests/test-sensor-journey-browser.cjs
+
+      - name: Install PDF inspection utilities for actual Chrome print-preview test
+        run: |
+          if ! command -v pdfinfo >/dev/null 2>&1 || ! command -v pdftotext >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq poppler-utils
+          fi
+
+      - name: Exercise emulated mobile touch and printable advice PDF in Chrome
+        run: node tests/test-mobile-print-browser.cjs
+
+      - name: Report CSS complexity and prevent new important debt
+        run: npm run audit:css -- --enforce-budget
+
+      - name: Compare CSS rendering against pre-refactor baseline in headless Chrome
+        run: node tests/test-css-browser-regression.cjs
 
       - name: Audit production dependencies
         run: npm audit --omit=dev --audit-level=high
@@ -38,3 +89,154 @@ jobs:
           const counts=strict.reduce((a,x)=>(a[x.golden_group]=(a[x.golden_group]||0)+1,a),{});
           console.log({totalGolden:cases.length, strictOccupationGolden:strict.length, groups:counts});
           NODE
+
+  rls-postgres:
+    name: Real PostgreSQL RLS policy regression (ephemeral database)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: test_rls
+          POSTGRES_PASSWORD: isolated_test_only
+        options: >-
+          --health-cmd "pg_isready -U postgres -d test_rls"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize disposable RLS fixture
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/rls-postgres-fixture.sql
+
+      - name: Apply actual V20-8 RLS policy migration
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/migrations/V20-8-SUPABASE-MIGRATION.sql
+
+      - name: Reproduce excessive permissions before hardening (ephemeral only)
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/conversations-privileges-before.sql
+
+      - name: Apply privilege-hardening proposal to disposable PostgreSQL ONLY
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/security/conversations-least-privilege-proposal.sql
+
+      - name: Confirm denied TRUNCATE, minimal grants and preserved service permissions
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/conversations-privileges-after.sql
+
+      - name: Prove hardening is repeatable without changing privileges
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/security/conversations-least-privilege-proposal.sql
+
+      - name: Test two synthetic users, cross-user isolation and anonymous access
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/rls-two-users.sql
+
+      - name: Apply private benchmark budget proposal to disposable PostgreSQL ONLY
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/security/benchmark-budget-postgres-proposal.sql
+
+      - name: Verify proposed migration is repeatable without losing state
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/security/benchmark-budget-postgres-proposal.sql
+
+      - name: Test service-only budget RPC and actual SQL transactions
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/benchmark-budget-postgres.sql
+
+      - name: Race independent database sessions for the same owner
+        run: bash tests/sql/benchmark-budget-concurrency.sh "${{ job.services.postgres.id }}"
+
+      - name: Restart disposable database to prove durable pending reservations
+        run: |
+          docker restart "${{ job.services.postgres.id }}"
+          for i in {1..30}; do
+            if docker exec "${{ job.services.postgres.id }}" pg_isready -U postgres -d test_rls; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+
+      - name: Verify crash-safe settlement and daily limit after database restart
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/benchmark-budget-postgres-restart.sql
+
+      - name: Setup Node for isolated Express-to-actual-Postgres flow
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Install dependencies for local PostgREST bridge
+        run: npm ci
+
+      - name: Test Express + Supabase JS RPC + REAL ephemeral PostgreSQL + fake OpenAI
+        env:
+          BENCHMARK_PG_CONTAINER: ${{ job.services.postgres.id }}
+        run: node tests/test-benchmark-rpc-http.cjs
+
+
+
+  supabase-auth-local:
+    name: Real LOCAL Supabase Auth + PostgREST + RLS + Express (synthetic users)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # No hosted Supabase tokens, environments, secrets or databases are used.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 26
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Install app dependencies
+        run: npm ci
+
+      - name: Install pinned Supabase CLI v2 for isolated GoTrue/PostgREST stack
+        uses: supabase/setup-cli@v3
+        with:
+          version: 2.122.1
+
+      - name: Initialize and start disposable local Supabase Auth + PostgREST
+        env:
+          SUPABASE_YES: "true"
+          SUPABASE_TELEMETRY_ENABLED: "false"
+        run: |
+          mkdir -p .local-supabase-ci
+          cd .local-supabase-ci
+          supabase init --yes
+          # Keep only Postgres, GoTrue, PostgREST and API gateway. Not a cloud project.
+          supabase start --exclude realtime,storage-api,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor,mailpit
+
+      - name: Apply actual conversation RLS migration to LOCAL database only
+        run: |
+          set -euo pipefail
+          (cd .local-supabase-ci && supabase status -o env) > /tmp/samtalestotte-local-supabase.env
+          set -a
+          source /tmp/samtalestotte-local-supabase.env
+          set +a
+          # Hard guard: refuse any host, scheme or port except local Supabase CLI.
+          [[ "${API_URL}" =~ ^http://127\.0\.0\.1:[0-9]{2,5}/?$ ]] || exit 1
+          [[ "${DB_URL}" =~ ^postgresql://postgres:.*@127\.0\.0\.1:[0-9]{2,5}/postgres$ ]] || exit 1
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq postgresql-client
+          fi
+          psql "${DB_URL}" -X -v ON_ERROR_STOP=1 -f tests/sql/local-supabase-auth-fixture.sql
+          psql "${DB_URL}" -X -v ON_ERROR_STOP=1 -f database/migrations/V20-8-SUPABASE-MIGRATION.sql
+          psql "${DB_URL}" -X -v ON_ERROR_STOP=1 -c "NOTIFY pgrst, 'reload schema';"
+          echo "::add-mask::${ANON_KEY}"
+          echo "::add-mask::${SERVICE_ROLE_KEY}"
+          {
+            echo "SUPABASE_URL=${API_URL}"
+            echo "SUPABASE_PUBLISHABLE_KEY=${ANON_KEY}"
+            echo "SUPABASE_SECRET_KEY=${SERVICE_ROLE_KEY}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Two REAL local GoTrue users, JWT refresh and PostgREST RLS via Express
+        env:
+          SUPABASE_AUTH_LOCAL_CI: "1"
+        run: node tests/test-supabase-local-auth-e2e.cjs
+
+      - name: Stop and discard local Supabase containers
+        if: always()
+        run: |
+          if [ -d .local-supabase-ci/supabase ]; then
+            (cd .local-supabase-ci && supabase stop --no-backup) || true
+          fi

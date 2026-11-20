@@ -29,6 +29,38 @@ Testing brukes gjennom utviklingsprosessen og ikke bare som sluttkontroll.
 
 ---
 
+**Revisjonsgren-CI 18.11.2026:** [GitHub Actions 44336281200](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44336281200), commit `d9234879e848219f7ea0b1fe87bf3bced9572615`, **SUCCESS** – `npm ci`, alle 31 `npm test`-delsteg, produksjonsdependency-audit (**0 sårbarheter**) og oppsummering av 66 golden-caser (40 strenge: 28 sektor, 8 tariff, 4 kildelekkasje). Dette er ikke en ny live KI-test eller E2E-/RLS-godkjenning, og `main` er fortsatt uendret.
+
+## 1.1 Verifikasjonsstatus per 18.11.2026 – må leses før testtallene nedenfor
+
+Denne planen beskriver metoder og **historisk gjennomførte testkjøringer**, ikke en ny grønn kvalitetserklæring for siste `main`-commit. Et separat, krav-for-krav testbevisregister er opprettet i `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md` (36 krav). Registeret skiller:
+
+1. **S – statisk:** kildekode-/DOM-/schemaassert; kontrollerer struktur, ikke hel UI-/API-atferd.
+2. **D – deterministisk:** faktiske isolerte regler/data med forventet utfallet.
+3. **I – integrasjon/E2E:** faktisk klient, server, database, autorisasjon og negativ testflyt.
+4. **L – live KI:** modellrespons med navngitt modell, testsett, dato og evaluering; ikke deterministisk.
+5. **M – menneskelig/fysisk:** brukerscenario, mobil, utskrift, kvalitativ brukertest og faglig vurdering.
+
+**Viktig nytt funn:** Siste GitHub Actions Quality Gate på `main` **12.11.2026**, run `43205812288`, var **FAILURE**. `npm test` stoppet på `tests/test-repo-structure.cjs` etter at legitim faglærerreferanse ble lagt i `.docs`; etterfølgende `npm audit --omit=dev --audit-level=high` ble ikke kjørt i denne runen. En smal tilpasning av struktursjekken er nå **re-verifisert på revisjonsgrenen** med full Quality Gate (run `44336281200`, SUCCESS 18.11, inkludert audit med 0 sårbarheter). Ikke skriv «alle tester grønne på dagens main» før endelig suite/audit faktisk er kjørt.
+
+Golden-banken er kontrollert direkte fra JSON i main og inneholder **66** caser, mens benchmarkbanken har **114**. Historisk live-resultat 09.11.2026 mot `gpt-5.6-luna` var **40/40** for den særskilte yrke/sektor/tariff/kilde-suiten, etter analyse av tidligere 37/40. Dette er prosjektets egen fasit og ikke en uavhengig HR-/juridisk ekspertvalidering.
+
+**LIVE/tale:** Taletranskripsjon testes kun i pilotgren og pilot-Render; egne tale-/kommando-/personverntester er fortsatt nødvendige og **skal ikke** summeres inn i produksjonens deterministic eller golden-resultater.
+
+**Utvidet revisjonsgren-CI 18.11.2026:** [GitHub Actions 44338528651](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44338528651), commit `206925b5a4d8e222c8811677d045859539f98447`, **SUCCESS** med 32 deltester, `npm audit` (0 sårbarheter), golden-oversikt (66/40), ekte HTTP-avvisningstest for uinnloggede API-kall og utvidet deterministisk demoflyt. Denne kjøringen tester **ikke** to innloggede brukere, RLS i live request-kontekst, faglige live KI-råd, fysisk mobil eller utskrift.
+
+**Read-only Supabase-sikkerhetskontroll 18.11.2026:** Live databasedefinisjoner viser RLS på alle 10 `public`-tabeller, fire eierskapsbaserte `conversations`-policyer, ingen SELECT for `anon`, og direkte `authenticated`-rettigheter kun på `conversations`. Security Advisor viser WARN om deaktivert leaked-password protection og ni INFO om policyfrie serverstyrte tabeller. Se `docs/ai/SUPABASE-SIKKERHET-2026-11-18.md`. Ingen persondata er lest eller databaseendringer utført.
+
+**Ny regressjonskontroll 18.11.2026:** En ny HTTP-test beviste at `/api/status` ga feil status når bare OpenRouter var konfigurert: [rød CI 44339406194](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339406194). Minimal rettelse i `server.js` ble verifisert med [grønn CI 44339569597](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339569597), commit `561da3d4aaa5fc425e4ed991fa93c9ea6b6947ef`: **33 deterministiske deltester**, `npm audit` 0 sårbarheter. Se `docs/ai/REGRESJON-OPENROUTER-2026-11-18.md`. Testen bruker dummy-nøkler, ikke ekte KI eller DB; produksjonsgrenen er fortsatt uendret.
+
+## Ny verifisert kvalitetssikring – 18.11.2026
+
+**Siste komplette CI-kjøring:** [44343038247](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44343038247) på revisjonsgrenen, commit `4d78bcbc02d665c3cfa0ae68289b81370621dfc3`, **SUCCESS**: 35 automatiske deltester, dependency audit med 0 sårbarheter og 66/40 golden-opptelling (ikke en ny live modellkjøring).
+
+- **To fiktive brukere:** `tests/test-auth-history-two-users-http.cjs` kjører selve Express-serveren mot en lokal Auth/PostgREST-simulator. Opprett/les/endre/slett, eksport, uautoriserte operasjoner og databasefeil testes. Den første røde kjøringen `44341093359` fant en misvisende HTTP 500 ved oppdatering av ukjent/andres ID; nå nøytral 404. Grønn kjøring `44341831405`. Se `docs/ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md`. **Ekte Supabase RLS med to reelle kontoer er ikke gjennomført.**
+- **Feil fra KI-provider:** `tests/test-ai-provider-errors-http.cjs` med offline fetch-stub tester 503, 429, ugyldig leverandørrespons, nettverksbrudd og personvernblokkering før KI. En rød kjøring `44342507107` avdekket et falskt personnavntreff på `Hvordan`. Det delte navnefilteret og klient-/servertestene er korrigert med spørreord pluss fortsatt positiv navnegjenkjenning. Grønn kjøring `44343038247`. Se `docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md`.
+- Ingen produksjonsmerge, ingen Render-deploy, ingen endringer i LIVE-piloten og ingen lesing/endring av reelle brukerrader. `main` er fortsatt produksjonsreferanse. Alle testkonklusjonene gjelder **den isolerte revisjonsgrenen**, ikke en ny `main`-CI.
+
 # 2. Testprinsipp
 
 Samtalestøtte tester både:
@@ -151,9 +183,7 @@ Brukes når faglig kvalitet, språk, realisme eller nyanser ikke kan avgjøres s
 
 ## Nivå 6 – Brukertesting
 
-Skal senere brukes til å undersøke faktisk brukeropplevelse og nytte.
-
-Dette er ikke ferdig fullskala testaktivitet i nåværende prosjektstatus.
+Begrenset kvalitativ pilot-/brukertesting er gjennomført og dokumentert i `docs/BRUKERTEST-FUNN-OG-BACKLOG.md`. Et større og representativt utvalg samt fullstendig faglig validering gjenstår. Pilotinntrykk og surveyresultater er ikke statistiske bevis eller juridisk ekspertgodkjenning.
 
 ---
 

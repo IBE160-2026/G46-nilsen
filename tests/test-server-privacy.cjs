@@ -33,6 +33,11 @@ for(const [text,type] of cases){
   if(type!=='name') assert(!got.includes('name'),`Uventet navnetreff i: ${text}; fikk ${got.join(',')}`);
 }
 const ambiguousNameCases=[
+  ['Hvordan spør jeg?',false],
+  ['Hvordan mener du at jeg bør åpne samtalen?',false],
+  ['Hvorfor kommer medarbeideren for sent?',false],
+  ['Når begynner oppfølgingen?',false],
+  ['Knut spør hvordan vi bør følge opp.',true],
   ['Dette skjer hver dag.',false],
   ['Hver dag har vi møte.',false],
   ['Neste dag har vi møte.',false],

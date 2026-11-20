@@ -4,8 +4,76 @@
 **Dokumenttype:** Architecture Document  
 **Rammeverk:** BMAD  
 **Status:** Revidert arkitektur med faktisk leveransestatus  
-**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 08.11.2026  
+**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5, historisk synkronisering 08.11.2026; krav-/avhengighetskontroll 18.11.2026  
 **Språk:** Norsk
+
+---
+
+## Tillegg 20.11.2026 – server-only RPC-adapter og testbevis i faktiske SQL-transaksjoner
+
+Arkitekturgrensen er videreført med `src/server/benchmark-budget-rpc.js`: en test-only serveradapter som injiserer `supabaseAdmin.rpc` for `benchmark_budget_reserve/settle`. Alle bruker-ID-er kommer fra verifisert serverøkt; `spentSoFar` fra browser brukes ikke. Adapteren aksepterer kun godkjente JSON-kontrakter og feiler lukket ved manglende/ugyldig RPC-svar. Ingen KI-kall kan utføres uten bekreftet reservasjon; vellykket svar gis først etter bekreftet oppgjør. Uavklart oppgjør returnerer 503 og bevarer den varige ticketen.
+
+I **vanlig produksjonsmodus er denne flyten fortsatt deaktivert**. Lokal testmodus krever loopback-Supabase, fake-provider-port og `NODE_ENV=test`; både OpenAI og OpenRouter SDK rutes til lokal fake. I GitHub Actions kan den lokale PostgREST-formatbroen videresende faktiske RPC-er til **disponibel PostgreSQL 17**. Dermed testes grensesnittet `Express → Supabase JS → lokal RPC-bro → ekte PostgreSQL → lokal KI-simulator → oppgjør`, men fortsatt **ikke ekte Supabase PostgREST/Auth eller live KI**.
+
+Integrasjonstesten avslørte en SQL-transaksjonsfeil: nytt run-ID ble opprettet før `BUDGET_RUN_BUSY`. Den faktiske SQL-filen er rettet til å unngå «spøkelseskjøringer» på avviste forsøk; SQL-testen verifiserer dette. Se [separat RPC-rapport](../ai/BENCHMARK-RPC-INTEGRASJON-2026-11-20.md). Det gjenstår varig drift/avviksavklaring, ekte isolert Supabase/PostgREST-akseptanse og pålitelig KI-kostnadsbegrensning før produksjon.
+
+---
+
+## Tillegg 20.11.2026 – varig, atomisk benchmark-regnskap som SQL-forslag
+
+Arkitekturgrensen er nå tydelig dokumentert: Tildeling og oppgjør av budsjett er planlagt som **egen PostgreSQL-transaksjon**, ikke som en klientvariabel eller Node-minnekart. `database/security/benchmark-budget-postgres-proposal.sql` inneholder private `budget_owners/days/runs/attempts` med RLS og backend-only `SECURITY INVOKER`-RPC `benchmark_budget_reserve/settle`. En radlås på bruker serialiserer parallelle forsøk fra forskjellige DB-forbindelser. Uavklarte forsøk forblir sperret over omstarter til eksplisitt avklaring. Ingen prompt eller samtaletekst lagres i regnskapet.
+
+Prosjektets GitHub Actions verifiserer **faktisk PostgreSQL 17** med reelle transaksjoner, tilgangsnekt, konkurrerende separate forbindelser, omstart, oppgjør og dagsgrense. SQL-forslaget er **ikke** en deployet Supabase-migrasjon. Betalt benchmark-/pilottest i Express er fortsatt fail-closed og bruker bare den tidligere in-memory-prototypen i lokal fiktiv providertest. Innføring av en testet Supabase-serviceadapter, driftbar sikkerhetskopi/revisjonslogg, testmiljø og faktisk provider-kostgrense gjenstår før det er forsvarlig å åpne betalte kjøringer.
+
+Se [full teknisk design](../ai/BENCHMARK-POSTGRES-LEDGER-2026-11-20.md).
+
+---
+
+## Tillegg 20.11.2026 – datadrevet antall testsaker i adminvisningen
+
+Kilde til antall pilot-/fulltester er nå den faktisk lagrede `tests/AI-GOLDEN-CASES.json` på serveren, ikke hardkodet markup. Adminbeskyttet `GET /api/admin/pilot-regression/cases?summary=1` returnerer bare tellinger og flagget for lokal test-only tilgang. Klientens `loadRegressionCounts` oppdaterer tekst, knapper og anslag (`2` KI-kall per testcase). Benchmarkvalget «alle» er nå `value="all"` og løses via ren `resolveCaseCount` mot hele den innlastede, validerte API-listen. Dette fjerner feilvalg `112` som tidligere kunne hoppe over to av 114 benchmarkcaser.
+
+Feil i data eller manglende servergodkjenning holder betalte knapper deaktivert; admin-UI blir aldri selvstendig autorisasjonsgrense. Reell Express-HTTP-test, isolert hjelpefunksjonstest og full headless Chrome-flyttest med syntetiske banker er lagt til, uten eksterne KI-kall. PWA-cache `20.11.73`. Den fail-closed serverkontrollen og kravet om varig budsjettregnskap fra forrige revisjon gjelder uendret.
+
+---
+
+## Tillegg 20.11.2026 – kostnadssperre og autoritativ rolle for pilottest
+
+På revisjonsgrenen er `src/server/benchmark-budget.js` et eget, konservativt testregnskap som reserverer før lokale fiktive providerkall; det ignorerer nettleserens påståtte `spentSoFar`. Ledgeren er minnebasert og er derfor **ikke** et produksjonsegnet system for atomisk regnskap på flere instanser, omstart eller faktisk dollar-tak.
+
+Serverruten for betalt benchmark er **fail-closed utenfor eksplisitt testmodus**. Administrasjonens pilot-/full-produksjonsflyt-tester må ha samme test-only tillatelse og er ellers sperret før de kan kalle KI. Normale brukerforespørsler forblir tilgjengelige. Testmerkingen benytter nå rollen som autentiseringslaget allerede har kontrollert (`req.user.role`), ikke et forsøk på å rekalkulere rollen fra feil format. Klienten respekterer `liveEnabled` og viser stengte knapper.
+
+Verifisering: `tests/test-benchmark-budget.cjs` og `tests/test-benchmark-live-http.cjs` (lokal, syntetisk HTTP OpenAI SDK-provider og Auth/PostgREST); ekstra negative Express HTTP-tester for sperret benchmark/pilot, samt Chrome og PostgreSQL/RLS. Total nå **50** npm-delsteg. Dette er et testet sikkerhetsmellomsteg, ikke grunnlag for produksjonsutrulling uten videre design og testing. Se [benchmarkrapport](../ai/BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md).
+
+---
+
+## Tillegg 20.11.2026 – avgrenset benchmarkevaluering og kostnadsrisiko
+
+I draft-PR #12 er de rene funksjonene for representativt testutvalg og evalueringsregler for samtaleåpninger flyttet til `src/client/benchmark-evaluation.js` (klassisk, frontendlastet modul). Dette laget bruker ikke DOM, nettverk, nøkkel eller KI-provider. `app.js` beholder betalt benchmark- og pilotorkestrering, kontrollknapper, visning av resultater og serverkontakt. `src/client/benchmark-evaluation.js` lastes før `app.js` fra eksplisitt asset-allowlist og PWA-cache.
+
+Lagdelte kontroller: Node-VM tester pure funksjoner, ekte Chrome med injiserte fiktive responser tester bekreftelse/kansellering og visning, og Express med lokal Auth-fake tester gratis fulltest og administratorgrense. Den faktiske navnedetektoren kontrolleres mot hele syntetisk benchmarkbank. Innholdsfeil i B113 (adjektivet «nærmeste» feilidentifisert som navn) er snevert utbedret uten svekket gjenkjenning av reelle navn.
+
+**Arkitektonisk gjeld:** Den tidligere `spentSoFar`-baserte kostnadskontrollen er erstattet av servereid lokal reservasjon **kun i isolert testmodus**, og betalte testmoduser avvises i produksjon. En sikker, varig atomisk budsjettgrense er fortsatt ikke implementert. Dette er **ikke** en verifisert kostnadsgaranti og må rettes og testes uten ekte API-kostnader før betalt benchmarkkjøring kan godkjennes. Se [benchmarkrapport](../ai/BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md). Ingen produksjonsmerge eller LIVE-endringer.
+
+---
+
+## Tillegg 20.11.2026 – innholdsredigering på revisjonsgrenen
+
+`src/client/admin-content.js` kapsler nå visningen av redigerbare tekster, tilstanden «ulagret» og `PUT`-lagring. Modulen bruker eksplisitt dependency injection for DOM, nettverk, HTML-escaping, feltliste, oppdatering av globale innholdstekster og dynamisk brukerrolle. `app.js` er fortsatt integrasjonspunktet; de eksisterende dialog-eventene, feltkatalogen, `GET /api/content` og generelle innholdsoppdateringer er ikke flyttet.
+
+Klientens rollekontroll er et grensesnittvern, **ikke** autorisasjonsgrensen. Express `requireContentEditor` håndhever dette separat. Testbevis er både VM-runtime og headless Chrome for redaktør/admin, og en Express-HTTP-integrasjon mot lokalt syntetisk Supabase/PostgREST. Ingen ekte Supabase-endepunkter eller persondata brukes. Eksisterende benchmark og KI-kostnadsflyt er uendret.
+
+Frontendfilen er eksplisitt tillatt fra produksjonsserver og sensordemo, lastes før `app.js`, og inngår i PWA-shell `20.11.71`. Se [testbevis](../ai/TESTBEVIS-OG-DEKNING-2026-11-18.md) og [teknisk revisjon](../TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md). Ingen merge/deploy fra draft-PR er gjennomført.
+
+---
+
+## Teknisk revisjonsnotat 20.11.2026 – kun draft-PR #12
+
+Den **pågående revisjonsgrenen**, ikke deployet `main`, har fått et separat klientansvar for administrasjonsdata: `src/client/admin-data.js` registrerer `window.SamtalestotteAdminData.create({ document, fetch, escapeHtml, getCurrentUser })`. `app.js` sender inn avhengighetene og bruker modulens fem funksjoner for brukeroversikt/rolleknapper, rapporterte KI-svar, KI-modellvalg, forbruksstatistikk og kostnadsformattering. `getCurrentUser` leses ved behov slik at endret rolle får virkning i klienten uten ny modulinstans. **Autorisasjonsgrensen ligger fortsatt i Express-serveren**, ikke i disse UI-funksjonene.
+
+Modulen er en klassisk `script`-fil, lastet før `app.js`, med eksplisitt server-/demoasset og PWA-cache. Ingen ny bundle-/byggeprosess er innført. Isolert runtime-test av modulen, headless Chrome-adminflow med fiktive brukere og egen server-HTTP-rollegrensetest dekker regressjoner. Den isolerte PostgreSQL-jobben tester faktisk `V20-8` RLS-policyatferd, men **ikke** reell Supabase Auth/PostgREST, som krever separat testmiljø. Se [Teknisk revisjon](../TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md) og [Testbevis og dekning](../ai/TESTBEVIS-OG-DEKNING-2026-11-18.md).
+
+Dette er et avgrenset skritt mot mindre hovedfil og tydeligere ansvar. Innlogging, benchmark, øvrig admin-UI, serverruter og eventuell offline/RAG-arkitektur er **ikke** endret av dette moduluttrekket. Ingen produksjonsdeploy eller LIVE-endringer.
 
 ---
 
@@ -52,6 +120,42 @@ Den viktigste arkitekturregelen er:
 > Sensitive nøkler, tilgangskontroll og sentrale sikkerhetsbeslutninger skal ligge på serversiden.
 
 ---
+
+**Visualisering:** En redigerbar oversikt over hovedkomponenter og logiske epic-avhengigheter ligger i `docs/bmad/ARKITEKTUR-OG-AVHENGIGHETSKART.md` (diagram, ikke maskinelt bevis).
+
+## 2.1 Architecture Spine – eksplisitt kobling til produktkrav
+
+Dette arkitekturskjelettet er oppdatert med henvisninger til den **gjeldende PRD-en**, basert på produksjonskoden i `main` (commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`). Hver rad peker på relevant arkitekturvalg, men er **ikke** automatisk bevis på funksjonell testdekning. Se `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md` for akseptanser og åpne verifikasjoner.
+
+| Arkitekturbeslutning / komponent | PRD-krav | Implementeringsspor | Særlig feilmodus / kontroll |
+|---|---|---|---|
+| AD-01: Responsivt klientlag med modulær CSS og eksplisitt state | FR-01, FR-02, FR-19, FR-20, FR-21, NFR-03, NFR-05 | `index.html`, `app.js`, `styles-*.css` | Ny samtale, sammenfoldet utskrift, mobil/desktop kan påvirkes forskjellig; fysisk UX/print-test gjenstår |
+| AD-02: Applikasjonsserver som tillitsgrense for KI og data | FR-03, FR-04, AI-01, AI-05, NFR-04 | `server.js`, `src/server/ai-schemas.js` | Eksternt KI-kall, timeout, ugyldig JSON og kontekstlekkasje må kontrolleres særskilt |
+| AD-03: Separat simulatorflyt med kontrollert medarbeiderrolle | FR-05, AI-02, AI-03 | `app.js`, `server.js`, `tests/test-simulation.js` | Oppdiktet diagnose, familie, skyld eller motiv; deterministisk strukturtest erstatter ikke full live-vurdering |
+| AD-04: Personverngateway i både klient og server | FR-06, NFR-02 | `src/privacy-detector.js`, `server.js`, `tests/test-privacy.js`, `tests/test-server-privacy.cjs` | Klient kan omgås; vurder personopplysning ved både første og senere input |
+| AD-05: Supabase Auth, sesjoner, database- og rollegrenser | FR-07, FR-08, FR-09, FR-11, FR-12, NFR-01 | `server.js`, `database/`, `scripts/create-invite.js` | RLS/IDOR og rolleeskalering; ekte integrasjonstest kreves utover kildekodesøk |
+| AD-06: Tilbakemelding og feilhåndtering med dataminimering | FR-10, NFR-02, NFR-04 | `app.js`, `server.js`, `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` | Rapportering må ikke kopiere identifiserende tekst eller lekkasje i feilrespons |
+| AD-07: Provider-/modellabstraksjon med servereide nøkler | FR-13, FR-14, AI-06, NFR-01 | `server.js`, `tests/test-model-compare.js` | Modeller kan gi ulike strukturer, kostnader og feil; full modellbenchmark er ikke dokumentert |
+| AD-08: Kuraterte kilder, profesjonsruting og kildeautoritet | FR-16, FR-18, FR-22, AI-04 | `data/SOURCEBANK.json`, `src/server/occupation-router.js`, `src/server/occupation-context.js`, `tests/test-source-policy.cjs` | Feil tariff/virkeområde, overdreven kildebruk, foreldet kilde; webdelen er delvis/prototype |
+| AD-09: Separat test-, golden- og reviewarkitektur | FR-15, FR-15A, FR-17, NFR-QA-01 | `tests/`, `docs/ai/AI-TESTPLAN.md`, `.github/workflows/quality-gate.yml` | Egen fasit er ikke ekspertvalidering; falsk grønn og feil i testene må håndteres |
+| AD-10: Direkte samtaleinngang uten full temameny | FR-23 | Kun hypotese i PRD, ikke implementert i `main` | **Ikke** samme funksjon som LIVE/taletranskripsjon; ingen produksjonsgodkjenning |
+
+### 2.1.1 Tverrgående avhengigheter og modularisering
+
+Arkitekturen er i hovedsak ett repo, med felles server og klient. Det gir enkel lokal oppstart og en sensorvennlig demo, men også risiko for at endringer i `app.js` eller `server.js` påvirker flere epics samtidig. Dette er **ikke** en fullt isolert microservice-/vertikal-slice-arkitektur. De eksisterende modulene i `src/server/` og de oppdelte CSS-filene reduserer enkelte avhengigheter, men hovedfilene er fortsatt felles. Det er en kjent tradeoff for en studentprototype, og begrunner bred regresjonstesting ved endring.
+
+**Kritisk avhengighetsrekkefølge:** tilgang/personvern og kilde-/responskontrakter må fungere før full brukerstøtte og simulator kan godkjennes; kvalitetstestene må lese den faktisk brukte koden; databasetilganger må verifiseres for flere brukere. Parallelt arbeid i isolerte oppgaver kan spare tid, men ingen flere dokumenter bør anta at kode ble skrevet av subagenter eller Git worktrees uten faktiske Git-spor.
+
+### 2.1.2 Ikke-funksjonelle feilscenarier som krever bevis
+
+- **NFR-01/02 – Sikkerhet/personvern:** test uautorisert direkte API, utløpt sesjon, kryssbruker-ID, server-side PII og kilde-/feillogger.
+- **NFR-03 – Brukervennlighet:** vurder UJ-01 og UJ-02 på mobil og desktop, inkludert minimert meny, skjermstørrelse, PWA og utskrift.
+- **NFR-04 – Robusthet:** simuler nettutfall, provider-timeout, feil JSON, tomt modellresultat og databaseavbrudd. Verifiser kontrollert avslutning og brukerfeedback; ikke tilskriv utestede garantier til kildekoden.
+- **NFR-05/NFR-QA-01 – Vedlikehold:** kvalitetssperren må kjøres på identifisert commit, og avhengighetssjekken må faktisk fullføres. Siste `main`-run 12.11.2026 feilet på repo-struktur og hoppet over dependency audit; se revisjonsrapport.
+
+### 2.1.3 Status for LIVE-funksjonen
+
+Tale/transkripsjon er et **isolert piloteksperiment**, ikke funksjonalitet i `main`, og ikke en ferdig del av AD-02 eller FR-23. En grønn Render-pilotdeploy er ikke bevis for at transkripsjon, talekommandoer, mikrofon, personvern og modellkvalitet er godkjent. Detaljene ligger på pilotgrenen i [LIVE-pilotspesifikasjonen (kun egen pilotgren)](https://github.com/IBE160-2026/G46-nilsen/blob/pilot-ux-v20.11/docs/pilot/LIVE-V1-PILOT-SPEC.md); ingen produksjonsmerge er godkjent.
 
 # 3. Arkitekturstatus
 
@@ -1265,7 +1369,7 @@ Det betyr at dokumentet ikke beskriver en idealisert plan som aldri ble prøvd, 
 
 Framtidige mål som intern KI, lokal RAG og lukket nettverk er dokumentert separat og fremstilles ikke som ferdige deler av dagens leveranse.
 
-# 39. Sensor-demo og kjørbarhet uten eksterne tjenester
+# Tillegg A – Historisk dokumentasjon av sensor-demo og kjørbarhet
 
 Produksjonsarkitekturen bruker Supabase og ekstern KI-provider. For at repoet samtidig skal kunne vurderes lokalt uten studentens nøkler, betalte kontoer eller egen infrastruktur, finnes en separat test-/demoadapter:
 
@@ -1338,7 +1442,7 @@ Dette inkluderte blant annet:
 Modulariseringen beholdes derfor som en verifisert arkitekturforbedring og ikke som en utestet endring.
 
 
-# Produksjonstillegg – PWA-arkitektur i v20.11.0
+# Tillegg B – Historisk PWA- og produksjonsarkitektur fra v20.11.0
 
 PWA-funksjonaliteten er lagt som et klientnært installasjons- og cachelag over den eksisterende webarkitekturen:
 

@@ -1,0 +1,4 @@
+/* Funksjonsdeler i opprinnelig rekkefølge; ikke sorter importene. */
+@import url("./styles-core-08-simulation-flow.css");
+@import url("./styles-core-09-simulation-controls.css");
+@import url("./styles-core-10-auth-views.css");

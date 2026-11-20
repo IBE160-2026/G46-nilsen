@@ -102,6 +102,71 @@ async function jsonRequest(url, options) {
       throw new Error("Demo-simulator feilet");
     }
 
+    // Integrert sensorflyt: analyse -> råd -> oppfølging -> øving -> feedback -> historikk.
+    // Dette er en deterministisk mock, ikke live KI eller en autentisert produksjonstest.
+    const followup = await jsonRequest("/api/continue-conversation", {
+      method: "POST", headers: { "content-type": "application/json" },
+      body: JSON.stringify({ question: "Hvordan følger jeg opp en medarbeider som er uenig?" })
+    });
+    if (!followup.response.ok || !followup.payload?.reply?.includes("uenig") || followup.payload?.ai !== false) {
+      throw new Error("Demo-oppfølgingsflyt feilet");
+    }
+
+    const help = await jsonRequest("/api/simulation-help", {
+      method: "POST", headers: { "content-type": "application/json" }, body: "{}"
+    });
+    if (!help.response.ok || !help.payload?.help || help.payload?.ai !== false) {
+      throw new Error("Demo-simulatorhjelp feilet");
+    }
+
+    const feedback = await jsonRequest("/api/simulation-feedback", {
+      method: "POST", headers: { "content-type": "application/json" }, body: "{}"
+    });
+    if (!feedback.response.ok || !Array.isArray(feedback.payload?.worked_well) || feedback.payload?.ai !== false) {
+      throw new Error("Demo-refleksjon etter simulering feilet");
+    }
+
+    const storedHistory = await jsonRequest("/api/history");
+    if (!storedHistory.response.ok ||
+        !storedHistory.payload?.items?.some(item => item.id === saved.payload.item.id)) {
+      throw new Error("Demo-historikk kunne ikke hentes etter lagring");
+    }
+
+    const dataExport = await jsonRequest("/api/account/export");
+    if (!dataExport.response.ok ||
+        !dataExport.payload?.conversations?.some(item => item.id === saved.payload.item.id)) {
+      throw new Error("Demo-eksport manglet lagret samtale");
+    }
+
+    const deleted = await jsonRequest(`/api/history/${saved.payload.item.id}`, { method: "DELETE" });
+    if (!deleted.response.ok || deleted.payload?.ok !== true) {
+      throw new Error("Demo-historikk kunne ikke slettes");
+    }
+
+    const afterDelete = await jsonRequest("/api/history");
+    if (afterDelete.payload?.items?.some(item => item.id === saved.payload.item.id)) {
+      throw new Error("Slettet demo-historikk var fortsatt synlig");
+    }
+
+    const secondDelete = await jsonRequest(`/api/history/${saved.payload.item.id}`, { method: "DELETE" });
+    if (secondDelete.response.status !== 404 || secondDelete.payload?.error !== "NOT_FOUND") {
+      throw new Error("Forventet 404 ved ny sletting av samme demo-samtale");
+    }
+
+    const noQuestion = await jsonRequest("/api/continue-conversation", {
+      method: "POST", headers: { "content-type": "application/json" }, body: "{}"
+    });
+    if (noQuestion.response.status !== 400 || noQuestion.payload?.error !== "MISSING_QUESTION") {
+      throw new Error("Tomt demo-oppfølgingsspørsmål skulle vært avvist");
+    }
+
+    const noSituation = await jsonRequest("/api/generate-guidance", {
+      method: "POST", headers: { "content-type": "application/json" }, body: "{}"
+    });
+    if (noSituation.response.status !== 400 || noSituation.payload?.error !== "MISSING_SITUATION") {
+      throw new Error("Tom demo-situasjon skulle vært avvist");
+    }
+
     console.log("Sensor-demo-regresjon: OK");
   } finally {
     child.kill("SIGTERM");

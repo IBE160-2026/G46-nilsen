@@ -6,6 +6,10 @@ const html = fs.readFileSync('index.html', "utf8");
 const css = [
   fs.readFileSync('styles.css', "utf8"),
   fs.readFileSync('styles-core.css', "utf8"),
+  fs.readFileSync('styles-core-foundation.css', 'utf8'),
+  fs.readFileSync('styles-core-dialogue.css', 'utf8'),
+  fs.readFileSync('styles-core-simulation.css', 'utf8'),
+  fs.readFileSync('styles-core-utilities.css', 'utf8'),
   fs.readFileSync('styles-responsive.css', "utf8"),
   fs.readFileSync('styles-overrides.css', "utf8")
 ].join("\n");
@@ -31,7 +35,7 @@ const checks = [
   ["Simulator forbyr oppdiktet diagnose", server.includes("Ikke finn på diagnose")],
   ["Simulator forbyr oppdiktet familie", server.includes("familieforhold")],
   ["Ingen poengsum i feedback", server.includes("Ingen poengsum")],
-  ["Historikk inkluderer simulation", server.includes("simulation: body.simulation")],
+  ["Historikk inkluderer simulation", server.includes("src/server/history-contracts.js") && fs.readFileSync("src/server/history-contracts.js","utf8").includes("simulation: body.simulation")],
   ["Snakkeboble-stiler finnes", css.includes(".simulation-bubble")],
   ["Visuelt simulatornav finnes", css.includes(".simulation-hub-hero")],
   ["Live testsett finnes", fs.existsSync("tests/SIMULATION-TEST-CASES.json") && fs.existsSync("tests/test-simulation-ai.js")],

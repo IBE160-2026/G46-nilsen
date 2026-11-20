@@ -4,6 +4,24 @@ const html = fs.readFileSync('index.html', 'utf8');
 const css = [
   fs.readFileSync('styles.css', 'utf8'),
   fs.readFileSync('styles-core.css', 'utf8'),
+  fs.readFileSync('styles-core-foundation.css', 'utf8'),
+  fs.readFileSync('styles-core-dialogue.css', 'utf8'),
+  fs.readFileSync('styles-core-simulation.css', 'utf8'),
+  fs.readFileSync('styles-core-utilities.css', 'utf8'),
+  fs.readFileSync('styles-core-01-shell.css', 'utf8'),
+  fs.readFileSync('styles-core-02-forms.css', 'utf8'),
+  fs.readFileSync('styles-core-03-situation.css', 'utf8'),
+  fs.readFileSync('styles-core-04-topic-layout.css', 'utf8'),
+  fs.readFileSync('styles-core-05-guidance.css', 'utf8'),
+  fs.readFileSync('styles-core-06-auth-history.css', 'utf8'),
+  fs.readFileSync('styles-core-07-reports.css', 'utf8'),
+  fs.readFileSync('styles-core-08-simulation-flow.css', 'utf8'),
+  fs.readFileSync('styles-core-09-simulation-controls.css', 'utf8'),
+  fs.readFileSync('styles-core-10-auth-views.css', 'utf8'),
+  fs.readFileSync('styles-core-11-speech-bubbles.css', 'utf8'),
+  fs.readFileSync('styles-core-12-admin.css', 'utf8'),
+  fs.readFileSync('styles-core-13-survey.css', 'utf8'),
+  fs.readFileSync('styles-core-14-final-adjustments.css', 'utf8'),
   fs.readFileSync('styles-responsive.css', 'utf8'),
   fs.readFileSync('styles-overrides.css', 'utf8')
 ].join('\n');
@@ -74,6 +92,41 @@ if (!process.exitCode) console.log("Kontakt-versjon: OK");
 const privacyNamePos = html.indexOf('src/privacy-name-data.js?v=');
 const privacyDetectorPos = html.indexOf('src/privacy-detector.js?v=');
 const clientDataPos = html.indexOf('src/client-data.js?v=');
+const topicSearchPos = html.indexOf('src/client/topic-search.js?v=');
+const situationAnalysisPos = html.indexOf('src/client/situation-analysis.js?v=');
+assert(situationAnalysisPos > clientDataPos && situationAnalysisPos < html.indexOf('app.js?v='), 'Situasjonsanalyse må lastes før app.js');
+assert(topicSearchPos > clientDataPos && topicSearchPos < html.indexOf('app.js?v='), 'Temasøkmodul må lastes før app.js');
+const benchmarkEvaluationPos = html.indexOf('src/client/benchmark-evaluation.js?v=');
+assert(benchmarkEvaluationPos > 0 && benchmarkEvaluationPos < html.indexOf('app.js?v='), 'Benchmark-evaluering må lastes før app.js');
+assert(app.includes('window.SamtalestotteBenchmarkEvaluation.selectCases(') && app.includes('window.SamtalestotteBenchmarkEvaluation.evaluateOpening('), 'app.js må delegere benchmarkvurdering til egen modul');
+const adminContentPos = html.indexOf('src/client/admin-content.js?v=');
+assert(adminContentPos > topicSearchPos && adminContentPos < html.indexOf('app.js?v='),
+  'Innholdsredigeringsmodulen må lastes før app.js');
+assert(app.includes('window.SamtalestotteAdminContent.create('),
+  'app.js må bruke innholdsredigering via egen modul');
+const adminDataPos = html.indexOf('src/client/admin-data.js?v=');
+assert(adminDataPos > topicSearchPos && adminDataPos < html.indexOf('app.js?v='),
+  'Administrasjonsmodulen må lastes før app.js');
+assert(app.includes('window.SamtalestotteAdminData.create('),
+  'app.js må bruke administrasjonsmodulen via avhengighetsinjeksjon');
+
+const pilotWarningStart = html.indexOf('id="pilot-regression-description"');
+const pilotWarningEnd = html.indexOf('</div>', pilotWarningStart);
+const pilotWarning = pilotWarningStart >= 0 && pilotWarningEnd > pilotWarningStart
+  ? html.slice(pilotWarningStart, pilotWarningEnd) : '';
+assert.equal(pilotWarning.split('<strong>').length - 1, 3,
+  'Dynamisk pilot-/fulltestinformasjon må beholde tre eksisterende uthevingselementer for CSS/DOM-paritet');
+assert(html.includes('<option value="all" disabled>Alle testsaker') &&
+  !html.includes('value="112"') &&
+  !html.includes('Alle 112 saker'),'Benchmark-UI må ha symbolsk «alle»-valg uten foreldet 112');
+assert(app.includes('SamtalestotteBenchmarkEvaluation.resolveCaseCount('),
+  'Benchmark skal omsette «alle» til gjeldende lengde på testsaklisten');
+assert(app.includes('data.cases.length !== data.totalCases'),
+  'Klienten skal avvise API-svar med motstridende antall caser');
+assert(html.includes('id="pilot-regression-run" type="button" disabled') &&
+  html.includes('id="production-regression-run" type="button" disabled') &&
+  html.includes('id="benchmark-run-live" type="button" disabled'),
+  'Kostnadsbærende knapper må være avstengt før serveren har verifisert tilgangen');
 const appScriptPos = html.indexOf('app.js?v=');
 assert(
   privacyNamePos >= 0 &&

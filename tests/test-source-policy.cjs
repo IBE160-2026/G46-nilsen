@@ -5,6 +5,8 @@ const sourceBank=JSON.parse(fs.readFileSync("data/SOURCEBANK.json","utf8"));
 const occupationBank=JSON.parse(fs.readFileSync("data/OCCUPATION-LEGAL-SOURCES.json","utf8"));
 const agreementMap=JSON.parse(fs.readFileSync("data/AGREEMENT-SOURCE-MAP.json","utf8"));
 const server=fs.readFileSync("server.js","utf8");
+const sourceRanking=fs.readFileSync("src/server/source-ranking.js","utf8");
+const helpLibrary=fs.readFileSync("src/server/help-library.js","utf8");
 const app=fs.readFileSync("app.js","utf8");
 const systemPrompt=fs.readFileSync("docs/ai/AI-SYSTEMPROMPT.md","utf8");
 
@@ -91,8 +93,8 @@ for(const source of agreementSources){
 
 assert(server.includes("allCuratedSourceById"),"Serveren samler ikke kilde-ID-er på tvers av bankene");
 assert(app.includes('<option value="">Ikke valgt</option>'),"Arbeidsgivertype skal ikke defaultes til privat");
-assert(server.includes("if (!matched) continue;"),"Kilder skal ikke få automatisk plass uten konkret treff");
-assert(server.includes("authority_index"),"Serveren skiller ikke oppslagsinngang fra konkret myndighetskilde");
+assert(server.includes("createRelevantSourceSelector") && sourceRanking.includes("if (!matched) continue;"),"Kilder skal ikke få automatisk plass uten konkret treff");
+assert(sourceRanking.includes("authority_index") && helpLibrary.includes("authority_index"),"Kilderangering og kildebank må skille oppslagsinngang fra konkret myndighetskilde");
 assert(server.includes("Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant"),"Tariffavgrensning mangler i KI-reglene");
 assert(server.includes("mergeGuidanceSourceCandidates"),"Veiledningen prioriterer ikke yrkes-/tariffkilder sammen med generell fagbank");
 assert(server.includes("allowedCandidateIds"),"Modellens source_ids avgrenses ikke til faktisk tilbudte kandidat-kilder");

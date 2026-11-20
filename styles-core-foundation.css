@@ -1,0 +1,5 @@
+/* Funksjonsdeler i opprinnelig rekkefølge; ikke sorter importene. */
+@import url("./styles-core-01-shell.css");
+@import url("./styles-core-02-forms.css");
+@import url("./styles-core-03-situation.css");
+@import url("./styles-core-04-topic-layout.css");

@@ -23,12 +23,30 @@ const allowedRootFiles = new Set([
   "server.js",
   "styles.css",
   "styles-core.css",
+  "styles-core-foundation.css",
+  "styles-core-dialogue.css",
+  "styles-core-simulation.css",
+  "styles-core-utilities.css",
+  "styles-core-01-shell.css",
+  "styles-core-02-forms.css",
+  "styles-core-03-situation.css",
+  "styles-core-04-topic-layout.css",
+  "styles-core-05-guidance.css",
+  "styles-core-06-auth-history.css",
+  "styles-core-07-reports.css",
+  "styles-core-08-simulation-flow.css",
+  "styles-core-09-simulation-controls.css",
+  "styles-core-10-auth-views.css",
+  "styles-core-11-speech-bubbles.css",
+  "styles-core-12-admin.css",
+  "styles-core-13-survey.css",
+  "styles-core-14-final-adjustments.css",
   "styles-responsive.css",
   "styles-overrides.css",
   "sw.js",
   "tilbakemelding-product-brief.md"
 ]);
-const allowedRootDirs = new Set([".claude", ".github", ".logs", "assets", "data", "database", "docs", "scripts", "src", "tests"]);
+const allowedRootDirs = new Set([".claude", ".github", ".docs", ".logs", "assets", "data", "database", "docs", "scripts", "src", "tests"]);
 
 // Lærerens Claude-/sesjonslogg-verktøy ligger bevisst i repoet og kan opprette .logs/ senere.
 const trackedRootItems = [...new Set(tracked.map(file => file.split("/")[0]))].sort();
@@ -36,6 +54,13 @@ const unexpected = trackedRootItems.filter(item =>
   !allowedRootFiles.has(item) && !allowedRootDirs.has(item)
 );
 assert.deepEqual(unexpected, [], `Uventede/løse elementer spores i repo-roten: ${unexpected.join(", ")}`);
+
+// Faglærers arkitekturreferanse er lagt i .docs av prosjektet. Tillat bare den eksplisitte filen,
+// ikke en generell ny plass for vilkårlige kodefiler, hemmeligheter eller løse dokumenter.
+const allowedInstructorReference = ".docs/planning-artifacts/architecture/technology.md";
+const unexpectedInstructorFiles = tracked.filter(file => file.startsWith(".docs/") && file !== allowedInstructorReference);
+assert.deepEqual(unexpectedInstructorFiles, [], `Uventede filer i .docs: ${unexpectedInstructorFiles.join(", ")}`);
+
 
 const forbiddenTracked = tracked.filter(file =>
   /(^|\/)\.env$/i.test(file) ||

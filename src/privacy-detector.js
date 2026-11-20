@@ -14,7 +14,7 @@
     "jeg","vi","du","dere","de","dem","oss","meg","deg","seg",
     "han","hun","hen","ham","henne","den","det","dette","disse",
     "man","noen","noe","alle","andre","hverandre","en","et",
-    "hva","hvem","hvilken","hvilke","varsler","varsleren",
+    "hva","hvem","hvilken","hvilke","hvordan","hvorfor","hvor","når","hvorvidt","varsler","varsleren",
     "vårt","våre","mitt","mine","ditt","dine","sitt","sine","deres",
 
     // Roller, yrker og gruppeord er arbeidskontekst – ikke personnavn.
@@ -35,6 +35,8 @@
     "operatør","operatøren","operatører","operatørene",
     "tekniker","teknikeren","teknikere","teknikerne",
     "leder","lederen","ledere","lederne",
+    // «til nærmeste leder har ...» inneholder et adjektiv, ikke et personnavn.
+    "nærmeste",
     "medarbeider","medarbeideren","medarbeidere","medarbeiderne",
     "kollega","kollegaen","kollegaer","kollegaene",
     "ansatt","ansatte","ansatten","personen","personer"
