@@ -50,6 +50,18 @@ De tidligere funksjonene i `app.js` ble erstattet med små delegatorer, slik at 
 
 **Begrensning og videre arbeid:** Resterende `app.js` inneholder fortsatt mye auth, innholdsredigering, simulering og benchmark. Om disse delene flyttes, må de ha egne runtime-/Chrome- og HTTP-regresjonstester før uttrekk. Ingen produksjonsmerge eller deploy er gjort, og LIVE-piloten er urørt.
 
+### Videreføring 20.11.2026 – redigerbart innhold som separat klientansvar
+
+**Ny fil:** `src/client/admin-content.js` (ca. 105 fysiske linjer) eier rendring av redigerbare tekstfelt, dirty-/unsaved-tilstand, klientkontroll av redaktør-/administratorrollen, lagringskall og statusmeldinger. `app.js` injiserer `document`, `fetch`, `escapeHtml`, `allContentSections`, `contentValue`, `defaultContentValue`, `persistContentOverrides` og `getCurrentUser`. Innholdskatalogen, `contentOverrides`, den generelle `GET /api/content`, dialog-/reload-eventene og serverens tilgangskontroll er beholdt i eksisterende ansvar. Uthenting av aktiv rolle skjer ved hver redigerings-/lagringshandling.
+
+**Presise mål:** I dette trinnet ble `app.js` redusert fra **230 656 til 229 082 tegn** (−1 574), men økte fra **4 278 til 4 284 fysiske linjer** (+6) på grunn av tydelig factory-kobling. Å rapportere dette som en netto linjereduksjon ville vært misvisende. Hensikten er testbar kapsling av tilstand og mindre tett sammenkobling, ikke bare færre linjer.
+
+**Egen regresjon:** `tests/test-admin-content-runtime.cjs` prøver rendring/HTML-escaping, markering og tilbakestilling av ulagrede endringer, vellykket `PUT /api/admin/content`, 403/503/nettverksfeil, retry og rolleveksling. `tests/test-admin-browser.cjs` tester nå også redaktør og administrator som bruker faktisk innholds-`textarea`, lagringsbekreftelse, en avvist lagring og valg om å forkaste ulagrede endringer. `tests/test-admin-role-http.cjs` prøver den **ekte Express-ruten**, med syntetisk Auth/PostgREST-fake, og verifiserer autorisert redaktør-/admin-upsert, avvisning av uvedkommende, feltnavnfilter, 20 000 tegn-grense og feil ved manglende innholdstabell. Dette er ikke ekte Supabase-persistens.
+
+**Infrastruktur:** `index.html` laster `src/client/admin-content.js` før `app.js`, produksjonsserverens assetliste og lokal sensordemo er oppdatert, PWA-cache er løftet til `20.11.71` og asset-/PWA-/lastrekkefølge-/syntakstester kontrollert. `npm test` inneholder nå **46 delsteg**. Benchmark og KI-kostnadstriggende handlinger er ikke berørt.
+
+**Begrensninger:** Nettleseren bruker fiktive roller og API-svar; faktisk Supabase Auth/PostgREST, databasepersistens, mobile touch-interaksjoner, fysisk utskrift og faglig vurdering av KI-råd er ikke dekket av dette uttrekket. `main`, Render, live Supabase og LIVE-pilot er urørt.
+
 ## Uttrekk fra server.js
 
 | Ny fil | Omtrent linjer | Ansvar | Kontroll |
