@@ -24,6 +24,8 @@ const required=[
 const read=file=>fs.readFileSync(path.join(root,file),"utf8");
 const checks=[],blockers=[];
 function check(condition,label){checks.push({ok:!!condition,label});if(!condition)blockers.push(label);}
+// Human approvals are expected to be absent on a draft, not broken artifacts.
+function approval(condition,label){checks.push({ok:!!condition,label});}
 function git(...args){
   try{return execFileSync("git",args,{cwd:root,encoding:"utf8",stdio:["ignore","pipe","ignore"]}).trim();}
   catch{return "not-a-git-checkout";}
@@ -73,11 +75,11 @@ else{
     const canvas=process.env.SUBMISSION_CANVAS_CONFIRMED==="1";
     const reflection=process.env.SUBMISSION_REFLECTION_APPROVED==="1";
     const submissionBranch=(process.env.SUBMISSION_BRANCH_APPROVED||"").trim();
-    check(canvas,"Human confirmed official Canvas deadline, word limit, format and rubric");
-    check(reflection,"Student reviewed and approved reflection text for submission");
-    check(/^[0-9a-f]{40}$/i.test(target)&&target===gitSha,
+    approval(canvas,"Human confirmed official Canvas deadline, word limit, format and rubric");
+    approval(reflection,"Student reviewed and approved reflection text for submission");
+    approval(/^[0-9a-f]{40}$/i.test(target)&&target===gitSha,
       "Human-chosen submission commit matches checked-out Git HEAD");
-    check(Boolean(submissionBranch)&&submissionBranch===branch,
+    approval(Boolean(submissionBranch)&&submissionBranch===branch,
       "Human-approved branch equals the checked-out branch");
     if(!checks.at(-4).ok||!checks.at(-3).ok||!checks.at(-2).ok||!checks.at(-1).ok){
       console.error("Strict submission sign-off blocked; official Canvas criteria and human decisions remain mandatory.");
