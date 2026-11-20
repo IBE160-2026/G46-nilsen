@@ -15,17 +15,36 @@ export function normalizeSourceUrl(value) {
 
 export function webSources(response) {
   const sources = new Map();
+  const remember = (rawUrl, title = "") => {
+    if (typeof rawUrl !== "string") return;
+    let url;
+    try {
+      url = new URL(rawUrl);
+      if (!["https:","http:"].includes(url.protocol)) return;
+    } catch (_) { return; }
+    const normalizedUrl = normalizeSourceUrl(url.toString());
+    if (!normalizedUrl) return;
+    sources.set(normalizedUrl, {
+      title: String(title || "").trim().slice(0, 500),
+      url: normalizedUrl
+    });
+  };
   for (const item of response?.output || []) {
-    const actionSources = item?.action?.sources;
-    if (!Array.isArray(actionSources)) continue;
-    for (const source of actionSources) {
-      if (source?.type !== "url" || typeof source.url !== "string") continue;
-      const normalizedUrl = normalizeSourceUrl(source.url);
-      if (!normalizedUrl) continue;
-      sources.set(normalizedUrl, {
-        title: source.title || source.name || "",
-        url: normalizedUrl
-      });
+    // OpenAI Responses API: source-list som eksplisitt ble hentet med
+    // include: ["web_search_call.action.sources"].
+    for (const source of item?.action?.sources || []) {
+      if (source?.type !== "url") continue;
+      remember(source.url, source.title || source.name);
+    }
+    // Alternativ provider-proveniens: annotasjoner på selve modellmeldingen.
+    // Ikke godta løse lenker skrevet av språkmodellen som dokumentert nettsøk.
+    if (item?.type !== "message") continue;
+    for (const part of item.content || []) {
+      for (const annotation of part.annotations || []) {
+        if (annotation?.type !== "url_citation" && !annotation?.url_citation) continue;
+        const citation = annotation.url_citation || annotation;
+        remember(citation.url, citation.title);
+      }
     }
   }
   return sources;
