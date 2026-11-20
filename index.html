@@ -802,26 +802,26 @@
   </div>
 
 
-  <dialog id="image-preview-dialog" class="brand-logo-dialog image-preview-dialog">
+  <dialog id="image-preview-dialog" class="brand-logo-dialog image-preview-dialog" aria-label="Forstørret bilde">
     <div class="brand-logo-dialog-card">
       <button class="brand-logo-dialog-close" id="image-preview-dialog-close" type="button" aria-label="Lukk">×</button>
       <img id="image-preview-dialog-image" src="assets/images/logo.png" alt="Samtalestøtte" />
     </div>
   </dialog>
 
-  <dialog id="admin-save-dialog" class="confirm-dialog"><form method="dialog" class="confirm-dialog-card"><h2>Lagre endringene?</h2><p>Er du sikker på at du vil lagre endringene? De blir synlige for brukerne med en gang.</p><div class="dialog-actions"><button class="secondary-button" id="admin-save-cancel" type="button">Avbryt</button><button class="primary-button" id="admin-save-confirm" type="button">Lagre endringer</button></div></form></dialog>
+  <dialog id="admin-save-dialog" class="confirm-dialog" aria-labelledby="admin-save-title"><form method="dialog" class="confirm-dialog-card"><h2 id="admin-save-title">Lagre endringene?</h2><p>Er du sikker på at du vil lagre endringene? De blir synlige for brukerne med en gang.</p><div class="dialog-actions"><button class="secondary-button" id="admin-save-cancel" type="button">Avbryt</button><button class="primary-button" id="admin-save-confirm" type="button">Lagre endringer</button></div></form></dialog>
 
-  <dialog id="ai-feedback-dialog" class="confirm-dialog"><form id="ai-feedback-form" class="confirm-dialog-card"><h2>Rapporter KI-svar</h2><p>Fortell kort hva som var galt eller lite nyttig.</p><label>Hva var problemet?<select id="ai-feedback-category"><option>Misforstod situasjonen</option><option>Ikke relevant</option><option>Faglig tvilsomt</option><option>For generelt</option><option>Uheldig formulering</option><option>Urealistisk simulatorrespons</option><option>Annet</option></select></label><label>Kommentar<textarea id="ai-feedback-comment" rows="4" placeholder="Hva burde vært annerledes? Unngå navn og andre personopplysninger."></textarea></label><div id="ai-feedback-comment-privacy" class="privacy-check" hidden></div><label class="report-log-option ai-feedback-attach"><input id="ai-feedback-include-conversation" type="checkbox"><span><strong>Legg ved samtalen</strong><small>Av som standard. Personvernsjekken kjøres før samtalen eventuelt lagres sammen med rapporten.</small></span></label><div id="ai-feedback-privacy" class="privacy-check" hidden></div><div class="auth-message" id="ai-feedback-message" aria-live="polite"></div><div class="dialog-actions"><button class="secondary-button" id="ai-feedback-cancel" type="button">Avbryt</button><button class="primary-button" type="submit">Send tilbakemelding</button></div></form></dialog>
-  <dialog id="privacy-ack-dialog" class="confirm-dialog privacy-ack-dialog">
+  <dialog id="ai-feedback-dialog" class="confirm-dialog" aria-labelledby="ai-feedback-title"><form id="ai-feedback-form" class="confirm-dialog-card"><h2 id="ai-feedback-title">Rapporter KI-svar</h2><p>Fortell kort hva som var galt eller lite nyttig.</p><label>Hva var problemet?<select id="ai-feedback-category"><option>Misforstod situasjonen</option><option>Ikke relevant</option><option>Faglig tvilsomt</option><option>For generelt</option><option>Uheldig formulering</option><option>Urealistisk simulatorrespons</option><option>Annet</option></select></label><label>Kommentar<textarea id="ai-feedback-comment" rows="4" placeholder="Hva burde vært annerledes? Unngå navn og andre personopplysninger."></textarea></label><div id="ai-feedback-comment-privacy" class="privacy-check" hidden></div><label class="report-log-option ai-feedback-attach"><input id="ai-feedback-include-conversation" type="checkbox"><span><strong>Legg ved samtalen</strong><small>Av som standard. Personvernsjekken kjøres før samtalen eventuelt lagres sammen med rapporten.</small></span></label><div id="ai-feedback-privacy" class="privacy-check" hidden></div><div class="auth-message" id="ai-feedback-message" aria-live="polite"></div><div class="dialog-actions"><button class="secondary-button" id="ai-feedback-cancel" type="button">Avbryt</button><button class="primary-button" type="submit">Send tilbakemelding</button></div></form></dialog>
+  <dialog id="privacy-ack-dialog" class="confirm-dialog privacy-ack-dialog" aria-labelledby="privacy-ack-title">
     <div class="confirm-dialog-card">
-      <span class="eyebrow">FØR DU BRUKER SAMTALESTØTTE</span><h2>Personvern og faglige begrensninger</h2>
+      <span class="eyebrow">FØR DU BRUKER SAMTALESTØTTE</span><h2 id="privacy-ack-title">Personvern og faglige begrensninger</h2>
       <p>Ikke skriv navn eller andre opplysninger som kan identifisere virkelige personer. Personvernkontrollen reduserer risiko, men kan ikke garantere at alt oppdages.</p>
       <p><strong>KI-rådene er veiledning, ikke en faglig fasit.</strong> De kan være ufullstendige eller feil. Bruk relevant kompetanse, virksomhetens rutiner og gjeldende regelverk når saken krever det. Ingen enkelt faggruppe eller samtalemetode er fasit for alle situasjoner.</p>
       <div class="dialog-actions"><button class="secondary-button" id="privacy-ack-read-more" type="button">Les personvernerklæringen</button><button class="primary-button" id="privacy-ack-confirm" type="button">Jeg har lest og forstått</button></div>
     </div>
   </dialog>
 
-  <div id="auth-dialog" class="auth-dialog auth-overlay required-auth" aria-modal="true" role="dialog" aria-labelledby="auth-title" hidden>
+  <div id="auth-dialog" class="auth-dialog auth-overlay required-auth" aria-modal="true" role="dialog" aria-labelledby="auth-title" tabindex="-1" hidden>
     <div class="auth-shell">
       <button class="dialog-close" id="auth-close" type="button" aria-label="Lukk">×</button>
       <div id="login-panel">
@@ -874,13 +874,13 @@
     </div>
   </div>
 
-  <dialog id="discard-dialog" class="auth-dialog confirm-dialog">
-    <div class="auth-shell"><h2>Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
+  <dialog id="discard-dialog" class="auth-dialog confirm-dialog" aria-labelledby="discard-title">
+    <div class="auth-shell"><h2 id="discard-title">Start ny samtale?</h2><p id="discard-message">Denne samtalen er ikke lagret og kan ikke gjenopprettes.</p><div class="confirm-actions"><button class="danger-button" id="confirm-new-chat" type="button">Start ny samtale</button><button class="secondary-button" id="cancel-new-chat" type="button">Avbryt</button></div></div>
   </dialog>
 
-  <dialog id="end-conversation-dialog" class="confirm-dialog">
+  <dialog id="end-conversation-dialog" class="confirm-dialog" aria-labelledby="end-conversation-title">
     <div class="confirm-dialog-card">
-      <h2>Avslutte samtalen?</h2>
+      <h2 id="end-conversation-title">Avslutte samtalen?</h2>
       <p>Er du sikker på at du vil avslutte denne samtalen? Rådene og samtalen beholdes i historikken når lagring er aktiv.</p>
       <div class="confirm-dialog-actions">
         <button class="secondary-button" id="cancel-end-conversation" type="button">Fortsett samtalen</button>
