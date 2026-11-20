@@ -4,6 +4,24 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: innholdsredigeringsmodul og egne negative tester
+
+**Endring og avgrensning:** `src/client/admin-content.js` kapsler `renderAdminContentFields`, markering og nullstilling av ulagret tilstand og `saveAdminContent`. `app.js` oppretter modulen via `SamtalestotteAdminContent.create(...)` med injisert DOM, `fetch`, HTML-escaping, feltkatalog, aktive tekstverdier og dynamisk rolle. Redigering er kun tillatt som redaktør eller administrator i klienten. **Express-serveren, ikke denne klientkontrollen, håndhever autorisasjonen.** Innholdskatalog, generelle innholdsoppdateringer og benchmark/AI-forbruk ligger fortsatt i sine etablerte deler.
+
+**Ramme og målegrunnlag:** For dette uttrekket er `app.js` **4 278 → 4 284 fysiske linjer** (+6), men **230 656 → 229 082 tegn** (−1 574). Modulen har ca. 105 linjer. Netto prosjektstørrelse går ikke nødvendigvis ned; det som forbedres er separat, etterprøvbar tilstandshåndtering. Shell-cache og klientversjon for dette trinnet er `20.11.71`.
+
+**Isolert runtime (D):** Ny `tests/test-admin-content-runtime.cjs` verifiserer at ugyldig rolle ikke utløser API-kall, at redigerbare tekstfelt HTML-escapes og første gruppe åpnes, at `input` aktiverer lagreknapp/ulagret indikator, at `PUT /api/admin/content` inneholder riktig JSON med trimmet tekst og cookies, og at vellykket lagring oppdaterer synlig innhold og tilbakestiller dirty. HTTP 403, 503 og nettverksfeil må beholde dirty, vise lesbar feilmelding og tillate vellykket retry. Endring av rolle etter modulstart testes særskilt.
+
+**Chrome-klient (I, simulert Auth/API):** Utvidet `tests/test-admin-browser.cjs` klikker den faktiske `textarea`-/lagre-/bekreftelses-/reload-flyten i headless Chrome som både redaktør og administrator. Kontrollerer at ingen `PUT` sendes før bekreftelse, vellykket oppdatering av forsiden, 403 med fortsatt ulagrede endringer, og avvis/aksept ved forespørsel om å forkaste endringer. Admin-synlighet, KI-bruk og rollehåndtering testes fortsatt.
+
+**Express-server (I, lokal Auth/PostgREST-fake):** Utvidet `tests/test-admin-role-http.cjs` kontrollerer positive redaktør-/administratorlagringer mot *ekte Express-rute* og isolert fiktiv PostgREST-upsert, samt 401/403 for uvedkommende, avvisning av ugyldig payload, serverfiltrering av ukjente feltnavn, avgrensning til 20 000 tegn og 503 ved manglende innholdstabell. Dette er ikke bevis på faktisk databasepersistens eller real Supabase Auth.
+
+**Infrastruktur/andre tester:** `index.html`, serverens public assetliste, sensordemo, `sw.js`, UI-/asset-/PWA-kontroll og syntaks er oppdatert. **46 deterministiske npm-delsteg**, i tillegg til særskilt Chrome-admin, 99 Chrome/CSS-paritetskontroller og engangs PostgreSQL/RLS. Ingen faktisk KI-/benchmark-kostnad under testene.
+
+**Åpent:** Ekte Supabase Auth/PostgREST og RLS i separat miljø, manuell mobil/utskrift, uavhengig faglig kontroll og komplett UX-gjennomgang. PR #12 forblir draft; produksjon, LIVE-pilot og data i faktisk Supabase er uendret.
+
+---
+
 ## Tillegg 20.11.2026: refaktorert administrasjonsdata i egen klientmodul
 
 **Nytt avgrenset uttrekk:** `src/client/admin-data.js` inneholder nå de opprinnelige funksjonene `loadAdminUsers`, `loadAdminFeedback`, `loadAdminAiSettings`, `loadAdminAiUsage` og kostnadsformattering. `app.js` injiserer `document`, `fetch`, `escapeHtml` og `getCurrentUser` gjennom modulens `create()`. Admininnhold, benchmark, rollebeskyttet Express-API og innloggingsflyten er fortsatt der de var. Brukerrollen hentes **ved hvert kall**, ikke bare ved modulinitialisering.
