@@ -1,35 +1,41 @@
 # CSS – målrettet opprydding og verifikasjon 20.11.2026
 
-**Repo:** `IBE160-2026/G46-nilsen` · **arbeidsgren:** `audit/ibe160-final-quality-2026-11-20` · **PR:** #13 (draft).
+**Repo:** `IBE160-2026/G46-nilsen` · **gren:** `audit/ibe160-final-quality-2026-11-20` · **PR:** #13 (draft). Ingen endring i `main` eller produksjon.
 
-## Hvorfor dette ble gjort
+## Problem og metode
 
-Etter ny gjennomgang av riktig innleveringsrepo viste de tre aktive CSS-filene samlet **845 `!important`-deklarasjoner**. Filene er allerede strukturelt delt i `styles-core.css`, `styles-responsive.css` og `styles-overrides.css`, men oppdelingen alene hadde ikke fjernet gamle overstyringer. Denne runden retter bare *beviselig identiske* tidligere deklarasjoner – den er ikke en full CSS-refaktorering.
+Etter gjennomgang av innleveringsrepoet fant vi **845** `!important` i de aktive stilfilene. Core/responsive/overrides var allerede delt, men mange historiske CSS-overstyringer ble fortsatt liggende. Vi fjernet bare tidligere `!important`-deklarasjoner når en **senere deklarasjon i samme fil** har **nøyaktig samme selektortekst, egenskap og mediekontekst**. Den gjeldende siste deklarasjonen er beholdt, og `@import`-rekkefølgen er urørt.
 
-## Endring og målbar effekt
+Dette ble gjennomført i to avgrensede omganger:
 
-| Stilfil | Før | Etter | Fjernet |
-|---|---:|---:|---:|
-| `styles-core.css` | 83 | 82 | 1 |
-| `styles-responsive.css` | 326 | 318 | 8 |
-| `styles-overrides.css` | 436 | 392 | 44 |
-| **Sum** | **845** | **792** | **53 (6,3 %)** |
+1. **Identiske verdier:** 53 tidligere deklarasjoner som ble gjentatt senere med identisk verdi.
+2. **Forskjellige verdier:** 55 tidligere deklarasjoner som ble overstyrt senere med en ny verdi, men med eksakt samme selektor, egenskap og mediekontekst. Den senere verdien er beholdt.
 
-En deklarasjon ble vurdert som overflødig bare dersom en **senere deklarasjon i samme fil** hadde *eksakt samme selektortekst, samme CSS-egenskap, identisk `!important`-verdi og identisk innramming av `@media`/andre at-regler*. Den eldre deklarasjonen kunne derfor ikke avgjøre sluttresultatet for denne egenskapen ved CSS-kaskadeberegning. Senere regel ble alltid beholdt, og importrekkefølgen ble ikke endret.
+En regel med annen selektor, annen mediekontekst eller usikker kaskade er ikke endret. En slik kontroll er mer konservativ enn å fjerne `!important` vilkårlig; eventuelle fallback-egenskaper for svært gamle nettlesere må likevel vurderes i praktisk verifisering.
 
-Eksempler: eldre simulatormerke-regler for transparent bakgrunn/ramme, gjentatte mobilmål i `.simulation-hub-hero` og dublerte ikon-/pilstiler i fullstendig kildebibliotek. **Syv** hele regelblokker ble tomme og ble fjernet.
+## Målbar effekt
 
-## Regresjonskontroll
+| Stilfil | Opprinnelig | Etter første runde | Etter andre runde | Totalt fjernet |
+|---|---:|---:|---:|---:|
+| `styles-core.css` | 83 | 82 | 80 | 3 |
+| `styles-responsive.css` | 326 | 318 | 279 | 47 |
+| `styles-overrides.css` | 436 | 392 | 378 | 58 |
+| **Totalt** | **845** | **792** | **737** | **108 (12,8 %)** |
 
-- `tests/test-css-duplicate-important.cjs` inspiserer de tre CSS-filene, oppdager samme signatur innen samme mediekontekst, kontrollerer at ingen slike eksakte duplikater er igjen og varsler om samlet antall `!important` øker uten bevisst baselineendring.
-- Den sikrer også `@import`-rekkefølgen: core → responsive → overrides.
-- Ny test er koblet til `npm test`/GitHub Actions. Quality Gate kjøring **44730967652** på commit `c7fd6e4f1cdf` bestod med full deterministisk testpakke og dependency audit.
+**Regelblokker:** 7 tomme blokker ble fjernet i første omgang og ytterligere 24 i andre, totalt 31. Disse inkluderte allerede tomme mobilmedieregler og regler som ble tomme etter oppryddingen.
 
-## Begrensninger og videre arbeid
+## Automatiserte kontroller
 
-- Dette er en **kaskadebasert kodekontroll**, ikke et bevis for pikselidentisk visning i alle nettlesere. Det er **ikke** gjennomført praktisk skjermtest av mobil/desktop i denne runden.
-- Fortsatt gjenstår **792** `!important`. Det er teknisk gjeld, men enkelte regler kan være bevisst nødvendige. Videre reduksjon krever analyse av spesifisitet, breakpoints, tema og visuell pilotregresjon.
-- `app.js` har 4 632 linjer, `server.js` har 2 094 linjer. I `app.js` finnes over 100 `.innerHTML`-tildelinger; dette er **ikke i seg selv bevis for XSS**, men en viktig risikogruppe å gjennomgå selektivt for usanitert bruker-/servertekst.
-- Videre moduluttrekk skal bare skje der ansvaret kan avgrenses og funksjonaliteten kan kontrolleres i eksisterende tester og i pilot. Ikke flytt kode fra det private repoet over uten sammenligning av faktisk implementasjon.
+- `tests/test-css-duplicate-important.cjs` oppdager tidligere overstyrte `!important` med samme **selektor + egenskap + mediekontekst**, også der verdiene er forskjellige; kontrollerer baseline **737** og avviser tomme regelblokker.
+- Testen sikrer også at importrekkefølgen i `styles.css` forblir **core → responsive → overrides**.
+- `npm test` og dependency audit bestod på PR-grenens commit `b8ea9108865f` i GitHub Actions **run 44735621973**. Den samlede testen inneholder også kontroll av eksterne kildelenker og historikk-ID-er.
+- Grønne tester er evidens for avgrensede regler og programmatisk syntaks/struktur, **ikke** et visuelt skjermbevis.
 
-**Status:** CSS-rydding i egen PR, ikke `main` og ingen produksjonsdeploy.
+## Gjenstående risiko og videre arbeid
+
+- **737** `!important` gjenstår. Noen kan være bevisste for PWA, mørk/hybrid modus, simulator og mobil. Videre reduksjon krever sterkere visuell regresjonstesting og vurdering av spesifisitet og responsive bruddpunkter.
+- Verifiser i faktisk nettleser, minst PC og mobil, både lys, mørk og hybrid. Sjekk spesielt simulering, sidepanel, kildebibliotek og sammenfoldede råd.
+- UI-syntakstester bekrefter ikke at innholdet vises korrekt ved alle skjermbredder. Ingen skjerm-/pilottest er gjennomført i denne runden.
+- `app.js` og `server.js` er store; målrettede refaktoreringer med tester bør prioriteres fremfor en full omskriving før sensur. Endringer i det separate private repoet kan ikke regnes som levert her.
+
+**Status:** Dokumentert og maskinelt testet i utkast-PR #13, uten merge eller produksjonsdeploy.
