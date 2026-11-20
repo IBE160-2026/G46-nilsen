@@ -32,16 +32,24 @@ export function webSources(response) {
   for (const item of response?.output || []) {
     // OpenAI Responses API: source-list som eksplisitt ble hentet med
     // include: ["web_search_call.action.sources"].
-    for (const source of item?.action?.sources || []) {
-      if (source?.type !== "url") continue;
-      remember(source.url, source.title || source.name);
+    // Bare søkekall kan bekrefte action.sources. Andre tool-calls kan ha
+    // samme feltnavn uten å være et dokumentert nettsøk.
+    if (item?.type === "web_search_call" && Array.isArray(item?.action?.sources)) {
+      for (const source of item.action.sources) {
+        if (source?.type !== "url") continue;
+        remember(source.url, source.title || source.name);
+      }
     }
     // Alternativ provider-proveniens: annotasjoner på selve modellmeldingen.
     // Ikke godta løse lenker skrevet av språkmodellen som dokumentert nettsøk.
     if (item?.type !== "message") continue;
     for (const part of item.content || []) {
       for (const annotation of part.annotations || []) {
-        if (annotation?.type !== "url_citation" && !annotation?.url_citation) continue;
+        // Aksepter Responses-annotasjoner og eldre nestet url_citation-form,
+        // men aldri en annen eksplisitt annotasjonstype.
+        const hasNestedCitation = annotation?.type == null &&
+          annotation?.url_citation && typeof annotation.url_citation === "object";
+        if (annotation?.type !== "url_citation" && !hasNestedCitation) continue;
         const citation = annotation.url_citation || annotation;
         remember(citation.url, citation.title);
       }
