@@ -58,6 +58,36 @@ export function webSources(response) {
   return sources;
 }
 
+
+ // Kildemetadatata fra modellen er ikke autoritativ. Velg bare lenker som
+ // finnes i søkeresultatet, og foretrekk metadata fra søkeleverandøren.
+export function verifiedSupplementarySources(items = [], verifiedSources = new Map(), limit = 2) {
+  const result = [];
+  if (!Array.isArray(items) || !(verifiedSources instanceof Map)) return result;
+  const max = Math.max(0, Math.min(2, Number.isInteger(limit) ? limit : 2));
+  if (max === 0) return result;
+  const seen = new Set();
+  for (const item of items) {
+    if (!item || typeof item.url !== "string") continue;
+    const url = normalizeSourceUrl(item.url);
+    const verified = verifiedSources.get(url);
+    if (!verified || seen.has(url)) continue;
+    let domain;
+    try {
+      const parsed = new URL(url);
+      if (!["https:", "http:"].includes(parsed.protocol)) continue;
+      domain = parsed.hostname.replace(/^www\./, "");
+    } catch (_) { continue; }
+    seen.add(url);
+    result.push({
+      title: String(verified.title || domain).trim().slice(0, 500),
+      author: domain, year: "", type: "nettkilde", url
+    });
+    if (result.length >= max) break;
+  }
+  return result;
+}
+
 export function markdownWebSources(text = "", verifiedSources = new Map()) {
   const found = [];
   const regex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
