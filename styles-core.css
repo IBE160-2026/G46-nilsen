@@ -5570,8 +5570,6 @@ html[data-theme="dark"] .conversation-user {
 }
 
 html[data-theme="hybrid"] .sidebar .brand-logo {
-  content: url("assets/images/logo.png") !important;
-  filter: none !important;
 }
 
 html[data-theme="hybrid"] .sidebar .brand-button::after {
