@@ -44,7 +44,30 @@ Skrivebeskyttede SQL-kontroller av `pg_class`, `pg_policies` og `information_sch
 - Supabase Security Advisor gir varsel `auth_leaked_password_protection`: lekket-passord-beskyttelse er av. Vurder aktivering og eventuelle lisens-/innloggingskonsekvenser før bredere distribusjon. [Supabase-veiledning](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection).
 - Ni `rls_enabled_no_policy`-informasjonstreff gjelder tabeller som i gjeldende kontroll ikke hadde vanlig `anon`/`authenticated`-CRUD-tilgang; treffene er ikke alene dokumentasjon på dataeksponering. [Supabase Advisor](https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy).
 
-## 3. Reell RLS-akseptansetest som gjenstår
+## 3. Ny faktisk PostgreSQL-policytest – isolert CI (20.11.2026)
+
+**Kildekode:** `tests/sql/rls-postgres-fixture.sql` og `tests/sql/rls-two-users.sql`. `.github/workflows/quality-gate.yml` har en selvstendig `rls-postgres`-jobb som oppretter et **engangs PostgreSQL 17-miljø** i GitHub Actions. Miljøet slettes når jobben er avsluttet. Ingen Supabase-ressurser, betalingspliktig Supabase-gren, nøkkel eller reell brukerkonto opprettes.
+
+**Viktig:** Denne kjøringen bruker **den faktiske** `database/migrations/V20-8-SUPABASE-MIGRATION.sql` fra repoet til å opprette de fire RLS-policyene og indeksene. Den bruker et minimalt, isolert tabell- og `auth.uid()`-testoppsett som etterligner PostgreSQL-rolle- og JWT-sub-konteksten; dette er **ikke** hele Supabase Auth- eller PostgREST-installasjonen. `conversations`-testtabellen gjenspeiler de seks produksjonskolonnene (inkludert `bigint` ID); de ni øvrige interne tabellene er lette skall for migrasjon/tilgangsprøving.
+
+**Verifisert testutfall:** [Quality Gate #44748685274](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44748685274) – `Real PostgreSQL RLS policy regression (ephemeral database)` **SUCCESS** på implementeringscommiten `b3d8f76ec3ec8920f4bfb3c4e1d81b732b40a153`.
+
+**Gjennomførte PostgreSQL-kontroller:**
+- Prosjektets migrasjon gir fire `authenticated`-eierskapspolicyer på `conversations`, inkludert eksplisitt `WITH CHECK` for `INSERT` og `UPDATE`.
+- Bruker A og B oppretter hver sin rad med separat, syntetisk JWT-`sub`, faktisk `SET ROLE authenticated` og SQL-`auth.uid()`.
+- Begge kan se, oppdatere og slette egne rader, men begge får null treff ved forsøk på å lese, oppdatere eller slette den andres rad.
+- Forsøk på `INSERT` med falsk eier og `UPDATE` som bytter `user_id` avvises av den faktiske RLS-motoren.
+- `anon` får ikke lese eller opprette samtaler, heller ikke med et påstått UUID-sub.
+- `authenticated` får ikke lese de ni tjenestestyrte interne tabellene direkte i testfixturen.
+- Tabellens faktiske innhold kontrolleres etter angrepsforsøk, slik at en grønn test ikke kan skyldes en tyst, uoppdaget endring.
+
+**Presist bevisnivå:** Lokal reell PostgreSQL-policyintegrasjon med prosjektets migrasjon, ikke simulator/mock for selve RLS-evalueringen. **Ikke** reell Supabase Auth, PostgREST API-nøkler, JWT-signaturvalidering, bruk av ekte sesjoner eller bit-for-bit-kopi av produksjonsdatabasen. Testen gir trygg regresjonsdekning av RLS-logikken, men erstatter **ikke** den separate Supabase-akseptansetesten beskrevet nedenfor.
+
+**Uendret åpen risiko:** Skrivebeskyttet undersøkelse av faktisk Supabase viste fortsatt `TRUNCATE`-grant til `anon`/`authenticated` på `conversations`. RLS kontrollerer ikke `TRUNCATE`. Dette krever separat, godkjent minimumsprivilegium-innstramming; ingen privilegier er endret.
+
+---
+
+## 4. Reell Supabase RLS-akseptansetest som gjenstår
 
 **Blokker:** Ikke kjør på det eneste tilknyttede Supabase-prosjektet. Et separat testprosjekt/-gren må etableres og kontrolleres før noen syntetiske kontoer opprettes, særlig fordi det finnes ekte brukerdata i den eksisterende løsningen.
 
@@ -59,9 +82,9 @@ I isolert Supabase-testmiljø bør to autentiserte, fiktive kontoer A og B oppre
 
 Dokumenter statuskoder, databaseeffekt, testdato og opprydding av **kun syntetiske** rader. Testen er **ikke gjennomført** per dette notatet.
 
-## 4. Begrensning og beslutning
+## 5. Begrensning og beslutning
 
-- **Bestått på lokal fake:** Backendrollegrenser og positive/negative administrator-HTTP-caser, dersom tilhørende Quality Gate er grønn.
+- **Bestått på lokal fake:** Backendrollegrenser og positive/negative administrator-HTTP-caser. **Bestått i faktisk PostgreSQL:** RLS-policyene fra V20-8 på isolert database med to syntetiske brukeridentiteter. Ingen reell Supabase Auth/PostgREST-akseptanse foreligger.
 - **Verifisert skrivebeskyttet:** RLS-policymetadata og grant-oversikt i eksisterende Supabase.
 - **Ikke dokumentert:** Ekte tobruker-RLS, reell Supabase Auth mot server, fullt rollebytte med ekte sesjonsfornyelse, fysisk brukerreise.
 - **Beslutning:** Fortsett på revisjonsgrenen, men ingen prod-merge, databaseendring eller påstand om komplett sikkerhet uten eget testmiljø og faglig/teknisk akseptanse.
