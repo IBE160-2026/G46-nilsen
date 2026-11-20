@@ -355,6 +355,8 @@ Videre ville jeg planlagt brukertesting tidligere. Prosjektet har mange automati
 
 Jeg ville også vært strengere med scope tidligere. Muligheten til å bygge raskt med KI gjorde det fristende å legge til flere funksjoner. Noen av dem ga reell verdi, mens andre først og fremst økte kompleksiteten.
 
+Etter faglærers PRD-tilbakemelding 12.11.2026 ble svakheten konkret: mange krav var skrevet som leveransestatus med løse tillegg, ikke som akseptansekriterier som kunne etterprøves. I en egen arbeidsgren 20.11 skilte jeg derfor gjeldende krav fra historikk og testbevis, samlet alle 24 FR-er og formulerte mål, motmål og brukerreiser. Det opprinnelige dokumentet er bevart. Dette er en senere **korrigering av min arbeidsmåte**, ikke et forsøk på å fremstille BMAD-dokumentasjonen som ferdig før den første koden. En automatisk PRD-test finner manglende kravkoblinger, men kan ikke bekrefte at en test faktisk beviser riktig oppførsel.
+
 ---
 
 ## 10. Anbefalinger for videre utvikling
@@ -391,6 +393,8 @@ Sentrale spor som underbygger refleksjonen:
 
 - `product-brief.md`
 - `docs/bmad/PRD.md`
+- `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md` – testbevis, åpne hull og oppfølging av lærerens PRD-tilbakemelding
+- `docs/bmad/historikk/PRD-2026-11-12.md` – eldre PRD bevart før revisjonen
 - `docs/bmad/ARCHITECTURE-BMAD.md`
 - `docs/bmad/EPICS-AND-STORIES-BMAD.md`
 - `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
@@ -420,6 +424,8 @@ Sentrale spor som underbygger refleksjonen:
 - siste verifiserte live occupation-golden-kjøring mot gpt-5.6-luna 09.11.2026: 40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil; tidligere 21-case-resultat beholdes som historisk teststeg
 
 **Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt gjentatte ganger gjennom prosjektet og besto etter de siste kodeendringene. Den endelige KI-kvalitetsrunden 09.11.2026 bygget videre på dette med 40 strenge yrke/sektor/tariff/kilde-caser. Første fullrunde ga 37/40 og førte til målrettet retting av fasit, testheuristikk og kildeprioritering. Etter nye regresjonstester og quality gate ga sluttkjøringen 40/40 OK. Dokumentasjonsoppdateringen etterpå utløste også en ny full GitHub Actions quality gate på `main`, run 42665279811, som var SUCCESS. Dermed bruker jeg ikke en eldre grønn kjøring som bevis for senere kode eller dokumentasjon.
+
+**Presisering 20.11.2026:** Historiske grønne CI-kjøringer beviser ikke automatisk en senere endring. En commit 12.11 la ved en `.docs`-fil om et annet prosjekt; siste quality gate på `main` feilet da i repo-strukturtesten. I utkast-PR #13 på egen gren ble filen fjernet, PR-kontroll aktivert og CI igjen kjørt grønt. `main` er fremdeles uendret, og denne dokumentasjonsrevisjonen innebærer ingen ny reell KI- eller brukerakseptansetest.
 
 
 ## Tillegg 28.–29.10.2026 – produksjonsflyt som avdekket feil utenfor KI-modellen
