@@ -10,6 +10,15 @@ export function createRelevantSourceSelector({
   sourceTier,
   employerScopedPrimaryLawBonus
 }) {
+  // Hovedtemaene er brede UI-kategorier. De skal ikke alene gjøre en
+  // kilde om for eksempel rus eller vold relevant for en konkret SHA-sak.
+  const broadTopics = new Set([
+    "Sikkerhet og ansvar","Samarbeid og kommunikasjon",
+    "Fravær og oppfølging","Prestasjon og utvikling","Livssituasjoner"
+  ]);
+  // Generiske stikkord alene legitimerer ikke en snever spesialistkilde.
+  const genericSourceHints = new Set(["sikkerhet","hendelse","støtte","oppfølging"]);
+
   function selectRelevantSources(analysis = {}, situation = "", { employerType = "", sectorId = "", occupation = "", topic = "", subtopic = "" } = {}) {
     const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
     if (topic) topics.add(topic);
@@ -52,17 +61,25 @@ export function createRelevantSourceSelector({
 
       seen.add(source.id);
       let score = 0;
-      let matched = false;
-      for (const sourceTopic of source.topics || []) {
-        if (topics.has(sourceTopic)) { score += 5; matched = true; }
-      }
-      for (const term of source.use_when || source.useFor || []) {
-        const normalized = String(term).toLocaleLowerCase("nb-NO");
-        if (normalized && q.includes(normalized)) { score += 4; matched = true; }
-      }
+      const matchedTopics = (source.topics || []).filter(sourceTopic => topics.has(sourceTopic));
+      score += 5 * matchedTopics.length;
+      const hints = source.use_when || source.useFor || [];
+      const matchedHints = hints
+        .map(term => String(term).toLocaleLowerCase("nb-NO"))
+        .filter(term => term && q.includes(term));
+      score += 4 * matchedHints.length;
+
+      // Et generelt tema kan brukes til å rangere, men ikke som eneste
+      // begrunnelse for en kilde med spesifiserte bruksvilkår. Oppdaterte
+      // use_when/useFor-termer lar f.eks. utestenging hente AML/AT, mens
+      // SHA-plan ikke automatisk trekker inn rus, trakassering eller vold.
+      const onlyBroadTopics = matchedTopics.length > 0 &&
+        matchedTopics.every(sourceTopic => broadTopics.has(sourceTopic));
+      const hasSpecificMatch = matchedHints.some(term => !genericSourceHints.has(term));
+      if (onlyBroadTopics && hints.length && !hasSpecificMatch) continue;
 
       const tier = sourceTier(source);
-      if (!matched) continue;
+      if (!matchedTopics.length && !matchedHints.length) continue;
 
       if (tier === "primary_law") score += legalContext ? 7 : 2;
       else if (tier === "authority_guidance") score += legalContext ? 6 : 3;
