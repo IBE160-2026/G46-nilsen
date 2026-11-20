@@ -138,8 +138,44 @@ export function stripInlineSourceLinks(text = "") {
     .replace(/\s*\(\s*\[[^\]]+\]\(\s*\[https?:\/\/[^\]]+\]\(https?:\/\/[^)]+\)\s*\)\s*\)/g, "")
     .replace(/\s*\(\s*\[[^\]]+\]\(https?:\/\/[^)]+\)\s*\)/g, "")
     .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, "$1")
+    // Kilden skal stå i strukturert kildeliste. Ikke vis rå URL-er,
+    // autolenker eller domener fra modellens fritekst som bevis.
+    .replace(/\(\s*<?(?:https?:\/\/|www\.)[^\s<>()\[\]]+>?\s*\)/gi, "")
+    .replace(/<(?:https?:\/\/|www\.)[^\s<>]+>/gi, "")
+    .replace(/\b(?:https?:\/\/|www\.)[^\s<>()\[\]{}"'\x60]+/gi, "")
+    .replace(/\(\s*\)/g, "")
+    .replace(/[ \t]+([,.;:!?])/g, "$1")
+    .replace(/[ \t]{2,}/g, " ")
     .replace(/[ \t]+\n/g, "\n")
     .trim();
+}
+
+
+/**
+ * Rens KUN modellens brukerrettede rådtekst, ikke den separate
+ * strukturerte kildelisten. Holder kilde-ID og søkeresultat intakte.
+ * Ingen mutasjon av responsobjektet.
+ */
+export function stripGuidanceInlineLinks(guidance = {}) {
+  const clean = value => typeof value === "string" ? stripInlineSourceLinks(value) : value;
+  const cleanList = value => Array.isArray(value) ? value.map(clean) : value;
+  return {
+    ...guidance,
+    opening: clean(guidance.opening),
+    questions: cleanList(guidance.questions),
+    reactions: Array.isArray(guidance.reactions)
+      ? guidance.reactions.map(reaction => ({
+          ...reaction,
+          reaction: clean(reaction.reaction),
+          why_plausible: clean(reaction.why_plausible),
+          leader_response: clean(reaction.leader_response)
+        }))
+      : guidance.reactions,
+    attention: cleanList(guidance.attention),
+    check_before_meeting: cleanList(guidance.check_before_meeting),
+    legal_hr_note: clean(guidance.legal_hr_note),
+    next_steps: cleanList(guidance.next_steps)
+  };
 }
 
 export function dedupeEvidenceSources(items = []) {
