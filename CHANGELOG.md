@@ -1,3 +1,16 @@
+# 20.11.2026 – modul for innholdsredigering (kun draft PR #12)
+
+- `src/client/admin-content.js` skiller redigerbare tekstfelt, dirty-/ulagret tilstand og `PUT`-lagring fra `app.js` med eksplisitte avhengigheter og dynamisk rolle.
+- `app.js` er 4 284 linjer / 229 082 tegn etter dette uttrekket (mot 4 278 linjer / 230 656 tegn før). Dette gir et tydeligere ansvarsområde, ikke en netto linjereduksjon.
+- Lastrekkefølge i `index.html`, eksplisitt public-assetliste, sensordemo, `sw.js`/PWA-cache `20.11.71`, syntaks- og strukturtester er synkronisert.
+- Ny `tests/test-admin-content-runtime.cjs`: brukerroller, XSS-escaping, dirty-state, lykkede lagringer, 403/503/nettverksfeil, retry og rolleveksling.
+- Utvidet ekte Chrome-admintest for redaktør og administrator: textareafelt, bekreftelse, vellykket og avvist lagring, samt valgfri forkasting av ulagrede endringer.
+- Utvidet isolert Express-HTTP-test: redaktør/admin kan oppdatere gyldige felt via faktisk API; serveren filtrerer ugyldige feltnavn, begrenser tekst til 20 000 tegn og håndterer manglende databasetabell uten ekte Supabase-kall.
+- `npm test` har nå **46** delsteg. [Quality Gate #44756081390](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44756081390) **SUCCESS** etter kodetester, inkludert Chrome, CSS-paritet og PostgreSQL/RLS. Ny dokumentasjonscommit må verifiseres separat.
+- Ingen prod-merge, Render-deploy, databaseendringer eller endring av separat LIVE-pilot.
+
+---
+
 # 20.11.2026 – adminmodul og sikkerhetstester (kun draft PR #12)
 
 - Flyttet bruker- og rollekontroll i adminvisningen, rapporterte KI-svar, modellvalg, KI-bruksoversikt og kostnadsformattering til `src/client/admin-data.js` med eksplisitt `document`, `fetch`, `escapeHtml` og dynamisk `getCurrentUser`.
