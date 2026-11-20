@@ -62,6 +62,16 @@ De tidligere funksjonene i `app.js` ble erstattet med små delegatorer, slik at 
 
 **Begrensninger:** Nettleseren bruker fiktive roller og API-svar; faktisk Supabase Auth/PostgREST, databasepersistens, mobile touch-interaksjoner, fysisk utskrift og faglig vurdering av KI-råd er ikke dekket av dette uttrekket. `main`, Render, live Supabase og LIVE-pilot er urørt.
 
+### Videreføring 20.11.2026 – kostnadsfri benchmarkevaluering
+
+**Ny klientmodul:** `src/client/benchmark-evaluation.js` isolerer `selectCases(config,count)` og `evaluateOpening(testCase,guidance)`, uten DOM, `fetch` eller KI-klient. `app.js` beholder tynne delegatorer for eksisterende kall. Ved delutvalg benyttes representativ rundgang mellom temaer; ved utvalg av hele banken beholdes opprinnelig rekkefølge. Manglende forventede fraser gir fortsatt myk merknad for menneskelig vurdering fremfor automatisk feil.
+
+**Målt:** `app.js` **4 284 → 4 256 linjer**, **229 082 → 227 324 tegn**, en avgrenset reduksjon på 28 linjer / 1 758 tegn. Den 39-linjers klientmodulen øker det samlede filantallet, men gir mer presis testbarhet. `index.html`, produksjonsserverens asset-allowlist, sensordemo og PWA-shell (cache `20.11.72`) er oppdatert.
+
+**Bevis:** `tests/test-benchmark-evaluation.cjs` kjører modulen med nettverks-/DOM-feller. `tests/test-admin-browser.cjs` prøver kansellert betalt kjøring, kostnadsfri mock og fiktiv positiv benchmark/pilot i ekte Chrome der analyse-, veilednings- og live-benchmark-endepunktene alltid er mock-et. `tests/test-admin-role-http.cjs` prøver kostnadsfritt `POST /api/admin/benchmark/mock` i ekte Express med lokale syntetiske roller og uten KI-konfigurasjon. Ny `tests/test-benchmark-privacy-signal.cjs` prøver navnefilteret mot alle 114 caser. **48 deterministiske npm-teststeg** er etablert. CSS- og PostgreSQL/RLS-kontrollene beholdes.
+
+**Funn:** B113 trigget feilaktig personnavn på adjektivet «nærmeste»; den delte navnedetektoren er snevert rettet uten å endre navnereglene for faktiske navn. Den betalte serverruten baserer løpende kostnad på klientens `spentSoFar`, altså **ikke** et sikkert serverhåndhevet budsjettak. Admin-HTML har også foreldede 26/52- og 112-tall mot dagens banker på 66 golden- og 114 benchmark-caser. Ingen betalte providerkall er kjørt eller flyttet. Se [egen benchmark-/kostnadsrapport](ai/BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md). Reell KI-akseptanse og faglig vurdering gjenstår.
+
 ## Uttrekk fra server.js
 
 | Ny fil | Omtrent linjer | Ansvar | Kontroll |
