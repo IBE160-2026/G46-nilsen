@@ -1760,7 +1760,7 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     );
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
-    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, source_provenance: evidenceProvenance(response, finalSourceIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
+    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, source_provenance: evidenceProvenance(response, selectedSourceIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -1876,7 +1876,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
       reply: stripInlineSourceLinks(parsed.reply),
       suggestions: parsed.suggestions.map(stripInlineSourceLinks),
       evidence_sources: evidenceSources,
-      source_provenance: evidenceProvenance(response, finalIds, evidenceSources),
+      source_provenance: evidenceProvenance(response, selectedIds, evidenceSources),
       ai: true,
       model: responseModel(response)
     });
