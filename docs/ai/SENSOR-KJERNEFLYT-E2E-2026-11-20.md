@@ -13,13 +13,15 @@ Ny test: **`tests/test-sensor-journey-browser.cjs`**, kjørt som en egen obligat
 ### Én sammenhengende scenarioflyt
 
 1. Åpner den ekte appen i Chrome og bekrefter at fiktiv demoidentitet er lastet. Navigerer **via faktiske tema- og undertemaknapper** til fravær/oppfølging.
-2. Skriver en anonym situasjon i det ekte tekstfeltet, sender skjemaet og bekrefter **begge** demo-API-ene `/api/analyze-situation` og `/api/generate-guidance`, samt rådskort med forslag til åpning og spørsmål. Avviser at UI har falt tilbake til reserveveiledning etter feil.
+2. Prøver først en fiktiv tekst med **«Knut Hansen»** og krever blokkering fra den faktiske personverngatewayen **før noen analyse-/veiledningsforespørsel blir sendt**. Skriver deretter en anonym situasjon i det ekte tekstfeltet, sender skjemaet og bekrefter **begge** demo-API-ene `/api/analyze-situation` og `/api/generate-guidance`, samt rådskort med forslag til åpning og spørsmål. Avviser at UI har falt tilbake til reserveveiledning etter feil.
 3. Skriver oppfølgingsspørsmål i det faktiske skjemaet. Bekrefter begge samtaleboblene og at assistentsvaret gjelder spørsmålet; verifiserer kontekst og lagring i samme samtale.
 4. Bruker **«Skriv ut råd»**. Fanget utskriftsdokument kontrolleres for situasjon, hovedråd og **«Videre råd»**, inkludert oppfølgingsspørsmålet. Printdialog/driver eller fysisk papir er **ikke** testet.
 5. Klikker **«Øv på samtalen»**, starter øvelsen, sender en lederreplikk via faktisk skjema og venter på svar fra simulatoren. Avslutter og verifiserer refleksjons-/tilbakemeldingsvisningen.
 6. Leser **faktisk innhold** i demoens serverhistorikk: Én samtale med riktig situasjon, analyse, veiledning, brukerens oppfølgingsreplikk, simulatorreplikker og refleksjon.
 7. Laster hele nettlesersiden på nytt, åpner historikk via hovedmenyen, gjenåpner saken, og verifiserer at situasjon og dialog er gjenopprettet i appen.
 8. Sletter via faktisk historikk-knapp etter bekreftelse. Krever at **serverens historikk er tom** og at kontoeksporten ikke inneholder den slettede saken. Bekrefter ingen ufangede JavaScript-feil ved gjenåpning/sletting.
+
+**Personvernbevis i denne reisen:** Brukergrensesnittet skal merke feltet ugyldig og avvise navn **uten å kontakte** `/api/analyze-situation` eller `/api/generate-guidance`. Deretter skal anonym tekst fungere i samme skjema. Dette er en syntetisk negativ test, ikke dokumentasjon på feilfri navnegjenkjenning i alle språk.
 
 **Valideringsmetode:** Faktisk headless Chrome/DevTools + ekte DOM + faktisk lokal demo-HTTP-server med syntetisk innlogging. Dette er **sterkere enn et statisk søk**, men **ikke** bevis for en ekte KI-leverandør, ekte Supabase Auth, mobil enhet, produksjonsdata eller fysisk utskrift.
 
@@ -34,7 +36,7 @@ Merking: **D** = deterministisk/funksjonstest, **I-demo** = brukerreise i ekte C
 | FR-03 – Hovedveiledning | **I-demo**, kontrakt/golden **D** | Faglig vurdering av levende KI-svar |
 | FR-04 – Oppfølgingsdialog | **I-demo** med lagret dialog | Samme kontekst hos leverandør og samtidige spørringer |
 | FR-05 – Simulering | **I-demo** med turn → svar → refleksjon | Faglig respons og vanskelige reaksjoner fra levende KI |
-| FR-06 – Personverngateway | **D/I-mock** for ulike overflater og HTTP | Ekte login/rolle og direkte omgåelsesforsøk i staging |
+| FR-06 – Personverngateway | **I-demo** fullnavn blokkert før API; **D/I-mock** på andre overflater | Ekte login/rolle og direkte omgåelsesforsøk i staging |
 | FR-07 – Innlogging | Syntetisk demoinnlogging og HTTP-grensetester | **Ekte Supabase Auth/JWT** i separat testprosjekt |
 | FR-08 – Engangsinvitasjoner | Serverkode/struktur eksisterer | Utløpt/brukt token i faktisk Auth-integrasjon |
 | FR-09 – Historikk | **I-demo** lagre → reload → åpne → slett/eksport; **I-mock/I-SQL** kryssbruker | Ekte bruker-A/B med Supabase Auth + RLS |
