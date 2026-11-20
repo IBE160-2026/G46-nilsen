@@ -99,6 +99,20 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   await cdp.send("Page.navigate",{url:BASE+"?sensor-journey=1"});
   await wait(cdp,"document.readyState==='complete' && document.querySelector('#profile-name')?.textContent?.includes('Sensor demo')","demo user login");
   await wait(cdp,"document.querySelector('#topic-grid .topic-card[data-topic-id=\\\"fravaer-oppfolging\\\"]')","real topic rendering");
+  // Keyboard shortcut: Tab must expose the skip link and Enter must move
+  // focus to the main landmark, without forcing keyboard users through the nav.
+  assert.equal(await js(cdp,"document.querySelector('.skip-link')?.getAttribute('href')"),"#main-content");
+  assert.equal(await js(cdp,"document.querySelector('#main-content')?.getAttribute('tabindex')"),"-1");
+  await js(cdp,"document.activeElement?.blur()");
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyDown",key:"Tab",code:"Tab",windowsVirtualKeyCode:9});
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",key:"Tab",code:"Tab",windowsVirtualKeyCode:9});
+  const skip=await js(cdp,"(()=>{const x=document.activeElement;const r=x.getBoundingClientRect();return {name:x.className,visible:r.top>=0&&r.bottom<=window.innerHeight,focused:x.matches(':focus'),blocked:!!x.closest('[inert]')}})()");
+  assert.equal(skip.name,"skip-link","Tab did not focus the first keyboard shortcut");
+  assert.ok(skip.visible&&skip.focused&&!skip.blocked,"Skip-link is not visible and keyboard-focusable: "+JSON.stringify(skip));
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyDown",key:"Enter",code:"Enter",windowsVirtualKeyCode:13});
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",key:"Enter",code:"Enter",windowsVirtualKeyCode:13});
+  await wait(cdp,"document.activeElement?.id==='main-content'","Enter moves focus to main landmark");
+  console.log("Keyboard accessibility: Tab -> visible skip link -> Enter -> main content: PASS");
   assert.equal((await serverHistory()).length,0,"Demo must begin with an empty history");
   await js(cdp,"document.querySelector('#topic-grid [data-topic-id=\\\"fravaer-oppfolging\\\"]').click()");
   await wait(cdp,"document.querySelector('#topic-view')?.classList.contains('active-view')","topic navigation");
