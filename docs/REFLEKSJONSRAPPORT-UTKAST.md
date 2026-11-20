@@ -353,6 +353,8 @@ Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært 
 
 Jeg gjorde også en avgrenset kodegjennomgang av eksterne kildelenker og historikk. Her lærte jeg at HTML-escaping av en URL ikke er tilstrekkelig: en lenke med `javascript:` er fortsatt en utrygg URL selv om anførselstegn er escaped. KI-assistenten la derfor inn protokollvalidering og sikker ID-håndtering, mens regresjonstester prøver utrygge URL-er og anførselstegn i historikk-ID-er. Jeg tolker dette som konkret risikoreduksjon, ikke som bevis på en full sikkerhetsrevisjon av alle dynamiske HTML-visninger.
 
+En videre kodegjennomgang 20.11.2026 viste at de vanskelige feilene ikke nødvendigvis var synlige på skjermen: et gammelt asynkront serversvar kunne fylle adminvisningen eller historikken etter at brukeren hadde forlatt siden eller byttet konto. Jeg fikk KI-assistenten til å bryte opp deler av innlastingslogikken, legge inn økt- og forespørselskontroll og skrive tester som bevisst lot svarene komme i feil rekkefølge. På serveren ble det også oppdaget at lagret JSON kunne overstyre database-ID-en i historikkobjektet; databasen er nå autoritativ for ID og tidsstempler. Dette var en konkret forbedring av dataintegritet, men testene bruker simulerte svar og erstatter ikke kontroll med reelle testkontoer eller nettleser. Prosessen lærte meg at KI-kvalitetssikring krever å utfordre ikke bare det som blir generert, men også antakelser om timing, tillit til data og hvilket testbevis som faktisk gjelder.
+
 Videre ville jeg planlagt brukertesting tidligere. Prosjektet har mange automatiserte tester og mye teknisk kvalitetssikring, mens faktisk brukertesting kom sent. Mot slutten ble det derfor satt opp en liten pilot med ett felles, kort skjema for alle testpersoner. Utvalget er målrettet og lite, med rom for både vanlig helhetsvurdering, UX-blikk og innspill fra personer med relevant leder-/samtaleerfaring. Resultatene skal brukes deskriptivt og kvalitativt, ikke som statistisk dokumentasjon eller ekspertgodkjenning. For et produkt som først og fremst skal støtte mennesker i vanskelige samtaler, er faktisk brukeropplevelse minst like viktig som tekniske tester.
 
 Jeg ville også vært strengere med scope tidligere. Muligheten til å bygge raskt med KI gjorde det fristende å legge til flere funksjoner. Noen av dem ga reell verdi, mens andre først og fremst økte kompleksiteten.
@@ -398,6 +400,7 @@ Sentrale spor som underbygger refleksjonen:
 - `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md` – testbevis, åpne hull og oppfølging av lærerens PRD-tilbakemelding
 - `docs/CSS-KVALITETSREVISJON-2026-11-20.md` – begrunnet stilarkopprydding og begrensninger
 - `docs/FRONTEND-LENKER-HISTORIKK-2026-11-20.md` – URL-sjekk, historikk-ID-escaping og testbegrensninger
+- `docs/ADMIN-HISTORIKK-KVALITET-2026-11-20.md` – asynkrone svar, konto-isolasjon, server-ID og fire regresjonstester
 - `docs/bmad/historikk/PRD-2026-11-12.md` – eldre PRD bevart før revisjonen
 - `docs/bmad/ARCHITECTURE-BMAD.md`
 - `docs/bmad/EPICS-AND-STORIES-BMAD.md`
