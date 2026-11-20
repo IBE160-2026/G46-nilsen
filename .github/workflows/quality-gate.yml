@@ -91,3 +91,28 @@ jobs:
 
       - name: Test two synthetic users, cross-user isolation and anonymous access
         run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/rls-two-users.sql
+
+      - name: Apply private benchmark budget proposal to disposable PostgreSQL ONLY
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/security/benchmark-budget-postgres-proposal.sql
+
+      - name: Verify proposed migration is repeatable without losing state
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/security/benchmark-budget-postgres-proposal.sql
+
+      - name: Test service-only budget RPC and actual SQL transactions
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/benchmark-budget-postgres.sql
+
+      - name: Race independent database sessions for the same owner
+        run: bash tests/sql/benchmark-budget-concurrency.sh "${{ job.services.postgres.id }}"
+
+      - name: Restart disposable database to prove durable pending reservations
+        run: |
+          docker restart "${{ job.services.postgres.id }}"
+          for i in {1..30}; do
+            if docker exec "${{ job.services.postgres.id }}" pg_isready -U postgres -d test_rls; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+
+      - name: Verify crash-safe settlement and daily limit after database restart
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/benchmark-budget-postgres-restart.sql
+
