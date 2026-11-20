@@ -104,7 +104,8 @@ const benchmarkBudgetLedger = createBenchmarkBudgetLedger();
 // Denne snevre bryteren er utelukkende for en isolert lokal provider-simulator i testprosessen.
 const benchmarkLiveMockOnly = process.env.NODE_ENV === "test" &&
   process.env.TEST_BENCHMARK_LIVE === "1" &&
-  /^\d{4,5}$/.test(String(process.env.TEST_FAKE_OPENAI_PORT || ""));
+  /^\d{4,5}$/.test(String(process.env.TEST_FAKE_OPENAI_PORT || "")) &&
+  /^http:\/\/(127\.0\.0\.1|localhost):\d{2,5}\/?$/.test(String(process.env.SUPABASE_URL || ""));
 // Database-backed path is accessible ONLY from explicitly isolated fake-provider tests.
 // Do not enable on Render: proposal SQL has not been migrated to live Supabase.
 const benchmarkRpcTestOnly = benchmarkLiveMockOnly && process.env.TEST_BENCHMARK_LEDGER === "rpc";
@@ -135,10 +136,17 @@ app.get("/api/public-config", (_req, res) => {
 const apiKey = process.env.OPENAI_API_KEY;
 const openRouterApiKey = process.env.OPENROUTER_API_KEY;
 const defaultModel = process.env.OPENAI_MODEL || (openRouterApiKey ? "openrouter/free" : "gpt-5.6-luna");
-const client = apiKey ? new OpenAI({ apiKey, timeout: 90000, maxRetries: 0 }) : null;
+// Even if a test forgets the offline fetch guard, both AI providers are bound
+// to the loopback fake when synthetic benchmark mode is explicitly enabled.
+const fakeProviderBase = benchmarkLiveMockOnly
+  ? 'http://127.0.0.1:' + process.env.TEST_FAKE_OPENAI_PORT + '/v1' : null;
+const client = apiKey ? new OpenAI({
+  apiKey, timeout: 90000, maxRetries: 0,
+  ...(fakeProviderBase ? { baseURL:fakeProviderBase } : {})
+}) : null;
 const openRouterClient = openRouterApiKey ? new OpenAI({
   apiKey: openRouterApiKey,
-  baseURL: "https://openrouter.ai/api/v1",
+  baseURL: fakeProviderBase || "https://openrouter.ai/api/v1",
   timeout: 90000,
   maxRetries: 0,
   defaultHeaders: {
