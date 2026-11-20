@@ -37,7 +37,9 @@ export function markdownWebSources(text = "", verifiedSources = new Map()) {
   let match;
   // Enkelte modellversjoner lager nestede lenker: [navn]([url](url)).
   // Normaliser formatet før vi slår opp URL mot faktisk dokumenterte webkilder.
-  const normalizedText = String(text || "").replace(
+  const normalizedText = String(text || "")
+    .replace(/\\\((?=\[https?:\/\/)/g, "(")
+    .replace(
     /\[([^\]]+)\]\(\[https?:\/\/[^\]]+\]\((https?:\/\/[^)]+)\)\)/g,
     "[$1]($2)"
   );
@@ -58,6 +60,7 @@ export function markdownWebSources(text = "", verifiedSources = new Map()) {
 
 export function stripInlineSourceLinks(text = "") {
   return String(text || "")
+    .replace(/\\\((?=\[https?:\/\/)/g, "(")
     // KI kan lage dobbel Markdown: ([virke.no]([https://...](https://...))).
     // Fjern hele henvisningen når den strukturerte kildelisten skal være fasit.
     .replace(/\s*\(\s*\[[^\]]+\]\(\s*\[https?:\/\/[^\]]+\]\(https?:\/\/[^)]+\)\s*\)\s*\)/g, "")
