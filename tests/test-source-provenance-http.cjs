@@ -139,7 +139,25 @@ function checkResult(result,label) {
     assert(!continuation.reply.includes("oppdiktet.example.test"),"Bogus inline source URL visible in follow-up");
     assert(!JSON.stringify(continuation.suggestions).includes("oppdiktet.example.test"),
       "Bogus URL visible in follow-up suggested questions");
-    assert.equal(providerRequests.length,2,"Both endpoints must reach only local fake provider");
+    // Ekte serverruting: statlig lovkilde legges automatisk til i en
+    // konkret oppsigelsessak, selv om modellen returnerer source_ids=[].
+    // Den skal IKKE fremstilles som KI-valgt dokumentasjon.
+    const stateGuidance=await call("/api/generate-guidance",{
+      situation:"En statsansatt i en statlig virksomhet har fått varsel om mulig oppsigelse. Jeg må forberede en saklig samtale om prosess og rettigheter.",
+      analysis:{primary_topic:"Oppsigelse og avslutning av arbeidsforhold"},
+      followups:{},topicId:"Oppsigelse og avslutning av arbeidsforhold",
+      subtopic:"Oppsigelse",employerType:"state"
+    });
+    const scoped=stateGuidance.evidence_sources.find(x=>x.id==="STATE_EMPLOYEE_ACT");
+    assert(scoped,"Statlig primærlov må være tilgjengelig som kontrollgrunnlag");
+    assert.equal(scoped.evidenceRole,"scope_reference",
+      "Automatisk statlig lovhenvisning må ikke fremstå som KI-valgt kilde");
+    assert.equal(stateGuidance.source_provenance.selectedCuratedSourceCount,0,
+      "Modellen valgte ingen kuratert kilde i state-mocksvar");
+    assert(stateGuidance.source_provenance.scopeReferenceCount>=1,
+      "Systemets egne lovhenvisninger må telles separat");
+    assert.equal(stateGuidance.source_provenance.contentVerified,false);
+    assert.equal(providerRequests.length,3,"Both endpoints and scope case must use only local fake provider");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
