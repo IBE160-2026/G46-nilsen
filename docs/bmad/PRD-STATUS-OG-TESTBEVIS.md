@@ -58,8 +58,18 @@ Dette er en sporbar respons på `docs/bmad/tilbakemelding-prd.md`, ikke en ny el
 
 1. **Historisk teststatus:** 73 personvernscenarier og 24 simulator-kontroller, golden-schema 66 caser, 114 benchmarktilfeller på 48 undertemaer, og 40/40 rapportert live KI-yrkestest mot gpt-5.6-luna 09.11.2026. Dette er resultater for avgrensede testsett, ikke garanti for juridisk/faglig kvalitet.
 2. **Siste `main`-CI før revisjonen:** Run `43205812288` (12.11.2026) var rød fordi et urelatert Pytagoras-dokument lå i `.docs/`, og struktursjekken avviste mappen. Dokumentet ble fjernet **kun i arbeidsgrenen**. Etter opprettet draft-PR #13 ble quality gate på arbeidsgrenen grønn. `main` og Render-produksjon er uendret.
-3. **Åpent om kodekvalitet:** `app.js` og `server.js` er store. De tre aktive CSS-filene har totalt 845 `!important`, inkludert gjentakelser. Opprydding bør skje med visuell regresjonskontroll; mål ikke bare antall linjer.
+3. **Åpent om kodekvalitet:** `app.js` og `server.js` er store. Opprinnelig hadde de tre aktive CSS-filene **845** `!important`; to målrettede, testede oppryddingsrunder i PR #13 reduserte dette til **737** ved å fjerne 108 tidligere overstyrte deklarasjoner. De gjenværende reglene krever visuell verifisering; antall linjer alene er ikke et kvalitetsmål.
 4. **Oppgave og planlegging:** Den tidlige prototypen kom før fullstendig BMAD. Eksisterende dokumenter skal ikke tilbakedateres eller fremstilles som om alle krav var definert før implementasjon.
+
+## Kodekvalitet og konkrete regresjonsbevis 20.11.2026
+
+| Kvalitetsmål | Verifisert endring | Gjenstående risiko |
+|---|---|---|
+| **NFR-05/06** CSS-kaskade | `tests/test-css-duplicate-important.cjs`: 108 eldre `!important` fjernet, ingen dupliserte prioriterte egenskaper i samme selektor/mediekontekst, importrekkefølge låst. `docs/CSS-KVALITETSREVISJON-2026-11-20.md` dokumenterer begrensningene | Responsivt grensesnitt og temaer må testes visuelt på mobil og PC; 737 deklarasjoner gjenstår |
+| **FR-16, AI-08** kildevisning | `tests/test-safe-source-urls-history.cjs`: ekstern kilde-URL valideres til HTTP(S), farlige protokoller blir ikke klikkbare i hovedråd/hjelp/admin-kildelister | Ikke en komplett kilde-/juridisk evaluering eller XSS-pentest |
+| **FR-09, NFR-02** historikk | Historikk-ID-er escapes i HTML-attributter og kodes med `encodeURIComponent` i slettesti; samme test dekker problematiske ID-er | Eierskap, RLS, faktisk sletting og kontobytte krever to-konto-test |
+
+Full `npm test` og dependency audit på endringene bestod i GitHub Actions **run 44735621973**. Dette er et avgrenset testbevis, ikke en erklæring om at alle punktene over er manuelt godkjent.
 
 ## Prioritert verifisering før merge og innlevering
 
