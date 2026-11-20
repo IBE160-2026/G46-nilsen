@@ -1,0 +1,183 @@
+// Faktisk Express-HTTP mot isolert, lokal Supabase Auth-fake.
+// Ingen ekte brukere, database, nøkler eller eksterne nettverkskall.
+// Tester serverens rollegrenser – IKKE ekte Supabase RLS eller ekte Auth.
+const assert = require("node:assert/strict");
+const http = require("node:http");
+const { spawn } = require("node:child_process");
+const path = require("node:path");
+
+const root=path.resolve(__dirname,"..");
+const mockPort=32630,appPort=32631;
+const mockUrl="http://127.0.0.1:"+mockPort;
+const appUrl="http://127.0.0.1:"+appPort;
+const actor=(id,name,role,userMetadata={})=>({
+  id,email:name+"@example.invalid",
+  app_metadata:{role},
+  user_metadata:{username:name,...userMetadata},
+  created_at:"2026-11-20T09:00:00.000Z"
+});
+const users={
+  ordinary:actor("11111111-1111-4111-8111-111111111111","ordinary","user"),
+  editor:actor("22222222-2222-4222-8222-222222222222","editor","editor"),
+  admin:actor("33333333-3333-4333-8333-333333333333","admin","admin"),
+  forged:actor("44444444-4444-4444-8444-444444444444","forged","user",{role:"admin",isAdmin:true}),
+  invalid:actor("55555555-5555-4555-8555-555555555555","invalid","superadmin"),
+  target:actor("66666666-6666-4666-8666-666666666666","target","user")
+};
+users.target.app_metadata.protected_test_flag="keep";
+const tokens=new Map(Object.entries(users).map(([name,user])=>["local-"+name+"-access",user]));
+const calls=[];
+const json=(res,status,data)=>{
+  res.writeHead(status,{"Content-Type":"application/json"});
+  res.end(JSON.stringify(data));
+};
+async function parseBody(req){
+  let text="";
+  for await(const part of req)text+=part.toString();
+  return text?JSON.parse(text):{};
+}
+const mock=http.createServer(async (req,res)=>{
+  const url=new URL(req.url,mockUrl);
+  const token=String(req.headers.authorization||"").replace(/^Bearer\s+/i,"");
+  const user=tokens.get(token);
+  if(url.pathname==="/auth/v1/user"&&req.method==="GET"){
+    return user?json(res,200,user):json(res,401,{message:"Invalid JWT",code:"bad_jwt"});
+  }
+  if(url.pathname==="/auth/v1/token")return json(res,400,{message:"Invalid refresh token"});
+  if(url.pathname==="/auth/v1/admin/users"&&req.method==="GET"){
+    calls.push({type:"admin-list"});
+    return json(res,200,{users:Object.values(users),aud:"authenticated",next_page:null});
+  }
+  if(url.pathname.startsWith("/auth/v1/admin/users/")){
+    const id=decodeURIComponent(url.pathname.slice("/auth/v1/admin/users/".length));
+    const found=Object.values(users).find(x=>x.id===id);
+    calls.push({type:"admin-user",method:req.method,id});
+    if(!found)return json(res,404,{message:"User not found"});
+    if(req.method==="GET")return json(res,200,{user:found});
+    if(req.method==="PUT"){
+      const body=await parseBody(req);
+      assert.deepEqual(Object.keys(body),["app_metadata"],"Role changes must only touch app_metadata");
+      found.app_metadata={...body.app_metadata};
+      return json(res,200,{user:found});
+    }
+  }
+  if(url.pathname.startsWith("/rest/v1/")){
+    calls.push({type:"database",path:url.pathname,method:req.method});
+    return json(res,500,{message:"Unexpected DB request in isolated role test"});
+  }
+  return json(res,404,{message:"Unexpected local mock path: "+url.pathname});
+});
+const sleep=ms=>new Promise(done=>setTimeout(done,ms));
+async function request(route,who,method="GET",body,headers={}){
+  const cookie=who?"samtalestotte_access=local-"+who+"-access; samtalestotte_refresh=local-"+who+"-refresh":null;
+  const response=await fetch(appUrl+route,{
+    method,
+    headers:{
+      "Content-Type":"application/json",
+      Origin:appUrl,
+      ...(cookie?{Cookie:cookie}:{}),
+      ...headers
+    },
+    body:body===undefined?undefined:JSON.stringify(body),
+    signal:AbortSignal.timeout(8000)
+  });
+  return {status:response.status,body:await response.json().catch(()=>({}))};
+}
+(async()=>{
+  await new Promise(resolve=>mock.listen(mockPort,"127.0.0.1",resolve));
+  let serverErrors="";
+  const app=spawn(process.execPath,[path.join(root,"server.js")],{
+    cwd:root,
+    env:{
+      ...process.env,
+      NODE_ENV:"production",
+      PORT:String(appPort),APP_BASE_URL:appUrl,
+      SUPABASE_URL:mockUrl,
+      SUPABASE_PUBLISHABLE_KEY:"isolated-public-key",
+      SUPABASE_SECRET_KEY:"isolated-service-key",
+      ADMIN_EMAILS:"",TEST_AUTH_BYPASS:"0",
+      OPENAI_API_KEY:"",OPENROUTER_API_KEY:""
+    },
+    stdio:["ignore","pipe","pipe"]
+  });
+  app.stderr.on("data",buf=>serverErrors=(serverErrors+buf.toString()).slice(-4000));
+  try{
+    let ready=false;
+    for(let i=0;i<110;i++){
+      if(app.exitCode!==null)throw Error("Express exited: "+serverErrors);
+      try{
+        const r=await fetch(appUrl+"/api/public-config",{signal:AbortSignal.timeout(700)});
+        if(r.ok){ready=true;break;}
+      }catch{}
+      await sleep(100);
+    }
+    assert.ok(ready,"Express was not ready: "+serverErrors);
+    const guarded=[
+      ["GET","/api/admin/users",undefined],
+      ["PATCH","/api/admin/users/"+users.target.id+"/role",{role:"admin"}],
+      ["GET","/api/admin/ai-feedback",undefined],
+      ["GET","/api/admin/ai-settings",undefined],
+      ["PUT","/api/admin/ai-settings",{model:"gpt-5.6-luna"}],
+      ["GET","/api/admin/ai-usage",undefined],
+      ["GET","/api/admin/benchmark/cases",undefined],
+      ["GET","/api/admin/survey",undefined],
+      ["PUT","/api/admin/survey/settings",{enabled:false}],
+      ["POST","/api/admin/invites",{role:"admin"}],
+      ["GET","/api/auth/diagnostic",undefined]
+    ];
+    let denied=0;
+    for(const who of [null,"ordinary","editor","forged","invalid"]){
+      for(const [method,route,body] of guarded){
+        const r=await request(route,who,method,body);
+        const expected=who===null?401:403;
+        assert.equal(r.status,expected,method+" "+route+" "+(who||"anonymous")+": "+JSON.stringify(r.body));
+        assert.equal(r.body.error,who===null?"AUTH_REQUIRED":"ADMIN_REQUIRED");
+        denied++;
+      }
+    }
+    assert.equal(calls.length,0,"Denied admin calls unexpectedly reached privileged Supabase services");
+    const editorContent=await request("/api/admin/content","editor","PUT",{values:null});
+    assert.equal(editorContent.status,400,"Editor must pass requireContentEditor before validating input");
+    assert.equal(editorContent.body.error,"INVALID_CONTENT");
+    const adminContent=await request("/api/admin/content","admin","PUT",{values:null});
+    assert.equal(adminContent.status,400);
+    for(const who of [null,"ordinary","forged","invalid"]){
+      const r=await request("/api/admin/content",who,"PUT",{values:{"home.title":"forged"}});
+      assert.equal(r.status,who===null?401:403,"Cannot modify editable content: "+who);
+      assert.equal(r.body.error,who===null?"AUTH_REQUIRED":"EDITOR_REQUIRED");
+    }
+    assert.equal((await request("/api/auth/diagnostic","admin")).status,200);
+    assert.equal((await request("/api/auth/me","forged")).body.user.role,"user");
+    assert.equal((await request("/api/auth/me","invalid")).body.user.role,"user");
+    assert.equal((await request("/api/auth/me","editor")).body.user.role,"editor");
+    const list=await request("/api/admin/users","admin");
+    assert.equal(list.status,200,"Admin list failed: "+JSON.stringify(list.body));
+    assert.ok(list.body.users.some(x=>x.id===users.target.id));
+    assert.equal(list.body.users.find(x=>x.id===users.forged.id).role,"user");
+    assert.equal(list.body.users.find(x=>x.id===users.invalid.id).role,"user");
+    const patch="/api/admin/users/"+users.target.id+"/role";
+    const before=calls.length;
+    const self=await request("/api/admin/users/"+users.admin.id+"/role","admin","PATCH",{role:"user"});
+    assert.equal(self.status,400);
+    assert.equal(self.body.error,"SELF_ROLE_CHANGE");
+    const invalidRole=await request(patch,"admin","PATCH",{role:"root"});
+    assert.equal(invalidRole.status,400);
+    assert.equal(invalidRole.body.error,"INVALID_ROLE");
+    assert.equal(calls.length,before,"Self/invalid role validation should not call Supabase Admin API");
+    const unknown=await request("/api/admin/users/00000000-0000-4000-8000-000000000099/role","admin","PATCH",{role:"editor"});
+    assert.equal(unknown.status,404);
+    assert.equal(unknown.body.error,"USER_NOT_FOUND");
+    const update=await request(patch,"admin","PATCH",{role:"editor"});
+    assert.equal(update.status,200,"Valid admin role change failed: "+JSON.stringify(update.body));
+    assert.equal(update.body.user.role,"editor");
+    assert.equal(users.target.app_metadata.role,"editor");
+    assert.equal(users.target.app_metadata.protected_test_flag,"keep","Other app_metadata must be retained");
+    assert.equal((await request("/api/auth/me","target")).body.user.role,"editor");
+    assert.equal(calls.filter(x=>x.type==="database").length,0,"Test accidentally touched a DB route");
+    console.log("Admin HTTP roles: "+denied+" anonymous/user/editor/forged/invalid-role denials, editor content guard, admin list, self-change, invalid role, unknown target and authorized role update OK");
+    console.log("Isolated local Auth only. No production records, live Supabase account, or actual RLS tested.");
+  }finally{
+    app.kill("SIGTERM");
+    await new Promise(resolve=>mock.close(resolve));
+  }
+})().catch(e=>{console.error("Admin HTTP role regression failed:",e.stack||e);process.exitCode=1;});
