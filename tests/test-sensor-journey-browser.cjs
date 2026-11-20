@@ -139,7 +139,15 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   await wait(cdp,"document.querySelectorAll('#simulation-thread .simulation-bubble').length>=2 && !document.querySelector('#simulation-thread .simulation-waiting')","real simulator response");
   await js(cdp,"document.querySelector('#end-simulation').click()");
   await wait(cdp,"!document.querySelector('#simulation-feedback').hidden && document.querySelector('#simulation-feedback-content')?.textContent.includes('Du gjennomførte')","simulation feedback and reflection");
-  const rows=await serverHistory();
+  // Rendering the reflection precedes the final awaited history POST. Wait for
+  // the observable server result, not an arbitrary timeout or DOM-only success.
+  let rows=[];
+  for(let i=0;i<120;i++){
+    rows=await serverHistory();
+    if(rows.length===1 && rows[0].simulation?.feedback?.worked_well?.length &&
+       rows[0].simulation?.turns?.some(x=>x.role==='leader'))break;
+    await sleep(50);
+  }
   assert.equal(rows.length,1,"One real journey should be persisted as one conversation");
   const saved=rows[0];
   assert.ok(saved.id);
