@@ -151,12 +151,6 @@
     width: 100% !important;
   }
 
-  .topbar-right {
-    width: 100% !important;
-    justify-content: flex-start !important;
-    flex-wrap: wrap !important;
-  }
-
   .profile-chip {
     max-width: none !important;
   }
@@ -197,30 +191,6 @@
   }
 }
 
-
-#simulation-view .simulation-logo-crop,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop {
-  border: 0 !important;
-  background: transparent !important;
-  box-shadow: none !important;
-  border-radius: 0 !important;
-  padding: 0 !important;
-  overflow: visible !important;
-}
-
-#simulation-view .simulation-logo-crop img,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop img,
-html[data-theme="light"] #simulation-view .simulation-logo-crop img,
-html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
-html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
-  background: transparent !important;
-  border: 0 !important;
-  border-radius: 0 !important;
-  box-shadow: none !important;
-  filter: none !important;
-  object-fit: contain !important;
-  content: normal !important;
-}
 
 
 /* v20.11.5 CLEAN SIMULATION MARK
@@ -1238,11 +1208,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
 /* v20.11.62 KILDEHIERARKI - GAMMEL PIL PÅ HOVEDKATEGORI, LITEN PIL KUN PÅ KILDER */
 /* De fire hovedkategoriene bruker den gamle venstrepilen. */
-#help-view #complete-source-library .source-bank-top-category>summary{
-  display:flex !important;
-  align-items:center !important;
-  gap:8px !important;
-}
 #help-view #complete-source-library .source-bank-top-category>summary::before{
   content:"›" !important;
   display:inline-block !important;
@@ -1260,32 +1225,8 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 #help-view #complete-source-library .source-bank-top-category[open]>summary::before{
   transform:rotate(90deg) !important;
 }
-#help-view #complete-source-library .source-bank-top-title::after{
-  content:none !important;
-  display:none !important;
-}
-
-/* Sektornivået skal ikke ha samme pil som kildene. */
-#help-view #complete-source-library .source-bank-sector-title::after{
-  content:none !important;
-  display:none !important;
-}
 
 /* Den lille inline-pilen beholdes kun på konkrete kilder. */
-#help-view #complete-source-library .compact-source-title::after{
-  content:"›" !important;
-  display:inline-block !important;
-  flex:0 0 auto !important;
-  color:var(--muted) !important;
-  font-size:.92em !important;
-  line-height:1 !important;
-  font-weight:600 !important;
-  transform:rotate(0deg) !important;
-  transition:transform .18s ease !important;
-}
-#help-view #complete-source-library .compact-source-row[open]>summary .compact-source-title::after{
-  transform:rotate(90deg) !important;
-}
 
 /* Konkrete kilder skal være små og IKKE bold. Gjelder alle kategorier. */
 #help-view #complete-source-library .compact-source-row>summary,
@@ -1296,17 +1237,8 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   font-weight:400 !important;
   line-height:1.28 !important;
 }
-#help-view #complete-source-library .compact-source-title{
-  font-size:inherit !important;
-  font-weight:400 !important;
-}
 #help-view #complete-source-library .compact-source-detail{
   padding:0 0 7px 11px !important;
-}
-#help-view #complete-source-library .compact-source-detail p,
-#help-view #complete-source-library .compact-source-detail a{
-  font-size:.76rem !important;
-  line-height:1.35 !important;
 }
 #help-view #complete-source-library .compact-source-detail a{
   font-weight:500 !important;
@@ -1316,14 +1248,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* v20.11.63 KOMPAKTE SAMMENTRUKNE RÅDSKORT */
 @media (min-width:641px){
   /* Lukkede kort trenger ikke fylle hele 980px-resultatkolonnen. */
-  #structured-guidance .guidance-card:has(.evidence-details:not([open])){
-    width:min(100%,600px) !important;
-    max-width:600px !important;
-    justify-self:start !important;
-    padding:10px 12px !important;
-    grid-template-columns:26px minmax(0,1fr) !important;
-    gap:8px !important;
-  }
 
   /* Når kortet åpnes får innholdet full tilgjengelig bredde igjen. */
   #structured-guidance .guidance-card:has(.evidence-details[open]){
@@ -1335,15 +1259,8 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     gap:10px !important;
   }
 
-  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .evidence-details>summary{
-    font-size:.92rem !important;
-    line-height:1.2 !important;
-    margin:0 !important;
-  }
-
   #structured-guidance .guidance-card:has(.evidence-details:not([open])) .guidance-number{
     font-size:.88rem !important;
-    line-height:1.2 !important;
   }
 }
 
@@ -1393,22 +1310,11 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* KONKRETE KILDER:
    Punktvis liste + liten inline-pil etter kildenavnet. */
 #help-view #complete-source-library .compact-source-row>summary{
-  display:flex !important;
-  align-items:center !important;
-  gap:7px !important;
   padding:6px 0 !important;
   color:var(--text) !important;
-  font-size:.84rem !important;
-  font-weight:400 !important;
   line-height:1.32 !important;
 }
 #help-view #complete-source-library .compact-source-row>summary::before{
-  content:"•" !important;
-  display:inline-block !important;
-  flex:0 0 auto !important;
-  color:var(--muted) !important;
-  font-size:.90rem !important;
-  line-height:1 !important;
   transform:none !important;
 }
 #help-view #complete-source-library .compact-source-title{

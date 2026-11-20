@@ -6,6 +6,8 @@
 **Status:** Revidert plan og status per 29.10.2026 – produksjonsversjon 20.11.0  
 **Språk:** Norsk
 
+**Kravsynk 20.11.2026:** Denne planen er historisk/iterativ, ikke bevis for en lineær BMAD-prosess før første kode. [PRD.md](PRD.md) er revidert etter lærerens tilbakemelding 12.11 og inneholder testbare krav med kjerne/utvidelse/hypotese. Status og gjenstående kontroll føres i [PRD-STATUS-OG-TESTBEVIS.md](PRD-STATUS-OG-TESTBEVIS.md), ikke ved å oppjustere historiske leveransestatuslinjer.
+
 ---
 
 ## 1. Formål

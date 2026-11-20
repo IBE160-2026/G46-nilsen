@@ -7,6 +7,8 @@
 **Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 08.11.2026  
 **Språk:** Norsk
 
+**Kravsynk 20.11.2026:** Dette dokumentet forklarer teknisk løsning og historiske arkitekturvalg, mens [PRD.md](PRD.md) er gjeldende kravgrunnlag. [PRD-STATUS-OG-TESTBEVIS.md](PRD-STATUS-OG-TESTBEVIS.md) skiller implementert kode fra verifisert testbevis. AI-07/AI-08 og NFR-01–08 er samlet i PRD; tidligere daterte tillegg gir ikke selvstendige, motstridende krav.
+
 ---
 
 # 1. Formål

@@ -7,6 +7,8 @@
 **Versjon ved dokumentasjon:** 20.11.5  
 **Språk:** Norsk
 
+**Kravsynk 20.11.2026:** UX-dokumentet beholder historiske layout- og brukerfunn. Den normative hovedflyten beskrives nå som UJ-01 (situasjon → råd → oppfølging) og UJ-02 (øving → refleksjon) i [PRD.md](PRD.md). Akseptansekriterier for mobil, minimert navigasjon og utskrift følger FR-20/FR-21 og NFR-03/06. Praktisk visuell regresjon i pilot gjenstår og er ikke erstattet av statiske tester.
+
 ---
 
 # 1. Formål

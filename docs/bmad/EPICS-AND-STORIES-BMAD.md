@@ -7,6 +7,8 @@
 **Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 · synkronisert 02.11.2026  
 **Språk:** Norsk
 
+**Kravsynk 20.11.2026:** Storytekstene dokumenterer den historiske iterative utviklingen og skal ikke leses som om alle krav var definert før prototypen. Gjeldende funksjonelle krav FR-01–23 (inkludert FR-15A), akseptansekriterier, UJ-01/UJ-02 og scope står i [PRD.md](PRD.md). Om faktisk leveranse/test, se [PRD-STATUS-OG-TESTBEVIS.md](PRD-STATUS-OG-TESTBEVIS.md). FR-23 er en framtidig hypotese, ikke en ferdig story. Full én-til-én-mapping av story-ID-er til reviderte FR-kriterier gjenstår.
+
 ---
 
 # 1. Formål

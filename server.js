@@ -1089,10 +1089,14 @@ function historyPayload(body = {}) {
 
 function rowToHistory(row) {
   let stored = {};
-  try { stored = JSON.parse(row.content || "{}"); } catch (_) {}
+  try {
+    const value = JSON.parse(row.content || "{}");
+    if (value && typeof value === "object" && !Array.isArray(value)) stored = value;
+  } catch (_) {}
   return {
-    id: String(row.id),
     ...stored,
+    // Database row metadata is authoritative, never user-provided stored JSON.
+    id: String(row.id),
     title: row.title || stored.title || "Samtale uten tittel",
     createdAt: row.created_at,
     updatedAt: row.updated_at

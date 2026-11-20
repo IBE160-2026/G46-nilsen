@@ -4434,9 +4434,6 @@ html[data-theme="hybrid"] .sidebar-toggle:hover {
   flex-wrap: wrap;
 }
 
-@media (max-width:760px) {
-}
-
 html[data-theme="hybrid"] .sidebar .brand-logo {
   filter: brightness(1.24) saturate(.94);
 }
@@ -4516,9 +4513,6 @@ html[data-theme="hybrid"] .sidebar .brand-logo {
   filter: brightness(1.55) saturate(.88) contrast(.96);
 }
 
-@media (max-width:760px) {
-}
-
 .topic-choice-button {
   display: grid;
   gap: 2px;
@@ -4542,9 +4536,6 @@ html[data-theme="hybrid"] .sidebar .brand-logo {
 .auth-dialog.required-auth::backdrop {
   background: rgba(8,24,29,.78);
   backdrop-filter: blur(3px);
-}
-
-@media (max-width:760px) {
 }
 
 .profile-chip:hover,
@@ -4674,9 +4665,6 @@ html[data-theme="hybrid"] .sidebar .brand-button::after {
   mix-blend-mode: screen;
 }
 
-@media (max-width:760px) {
-}
-
 #contact-view .contact-layout {
   display: flex;
   flex-direction: column;
@@ -4689,9 +4677,6 @@ html[data-theme="hybrid"] .sidebar .brand-button::after {
 
 #contact-view .contact-card {
   order: 2;
-}
-
-@media (max-width:760px) {
 }
 
 .login-debug-panel {
@@ -4710,32 +4695,14 @@ html[data-theme="hybrid"] .sidebar .brand-button::after {
   color: var(--success,#26745f);
 }
 
-@media (max-width:760px) {
-}
-
-@media (max-width:760px) {
-}
-
 .auth-overlay[hidden] {
   display: none !important;
-}
-
-@media (max-width:760px) {
 }
 
 .simulation-bubble > *,
 .conversation-turn > * {
   position: relative;
   z-index: 1;
-}
-
-@media (max-width:760px) {
-}
-
-@media (max-width:760px) {
-}
-
-@media (max-width:760px) {
 }
 
 .formatted-reply p {
@@ -4749,12 +4716,6 @@ html[data-theme="hybrid"] .sidebar .brand-button::after {
 
 .formatted-reply .reply-section {
   margin: .45rem 0;
-}
-
-@media (max-width:760px) {
-}
-
-@media (max-width:760px) {
 }
 
 .simulation-bubble-row {
@@ -5569,11 +5530,6 @@ html[data-theme="dark"] .conversation-user {
 
 }
 
-html[data-theme="hybrid"] .sidebar .brand-logo {
-  content: url("assets/images/logo.png") !important;
-  filter: none !important;
-}
-
 html[data-theme="hybrid"] .sidebar .brand-button::after {
   display: none !important;
   content: none !important;
@@ -6172,10 +6128,6 @@ html[data-theme="hybrid"] .app-shell.sidebar-collapsed-layout .topbar-brand-logo
   background: var(--surface) !important;
   border: 1px solid var(--border) !important;
   box-shadow: 0 7px 20px rgba(18,55,53,.04) !important;
-}
-
-#guidance-view.history-loaded-mode #temporary-chat-option {
-  display: flex !important;
 }
 
 /* ==========================================================

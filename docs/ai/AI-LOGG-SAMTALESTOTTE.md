@@ -1463,3 +1463,60 @@ Jeg beskriver ikke dette som «KI-en er bevist korrekt». Live modelltesting er 
 
 Full sporbar rapport:
 `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
+
+## 20.11.2026 – revisjon av innleveringsrepo og PRD etter faglærers tilbakemelding
+
+### Oppgave og plan
+
+Jeg ba KI-assistenten gå tilbake til de siste forelesningsnotatene, lærerens skriftlige tilbakemelding på PRD og hele repoet, og deretter starte en kontrollert sluttføring. Prioriteten var riktig innleveringsrepo, reproduserbar GitHub-test, testbare krav og dokumentasjon av hva som faktisk er verifisert.
+
+### Funn og vurderinger
+
+- Jeg har to forskjellige repoer: det offisielle `IBE160-2026/G46-nilsen` med `main` og et separat privat utviklingsrepo. Bare førstnevnte er oppgitt som korrekt innleveringsrepo i lærerens tilbakemelding. Tidligere feilrettinger i det private repoet kan ikke regnes som levert i innleveringsrepoet.
+- Siste quality gate på `G46-nilsen/main` var rød fordi `.docs/planning-artifacts/architecture/technology.md` handlet om Pytagoras Forlag og ikke var tillatt i repo-strukturtesten. Assistenten fjernet denne irrelevante filen kun i ny arbeidsgren, ikke fra `main`.
+- Faglærerens PRD-tilbakemelding fra 12.11 dokumenterte særlig manglende akseptansekriterier og en PRD med fragmenterte krav og testtall.
+- CSS i riktig repo hadde 845 `!important`-deklarasjoner fordelt på tre stiler; dette er teknisk gjeld som ikke ble forsøkt masseredusert i denne dokumentasjonsrunden.
+
+### KI-bidrag og kontroll
+
+- KI foreslo en avgrenset arbeidsgren og PR #13 i riktig repo, kvalitetskjøring på pull requests og en ny kravstruktur. Jeg har ikke bedt om produksjonsdeploy eller merge.
+- Opprinnelig PRD er bevart i `docs/bmad/historikk/PRD-2026-11-12.md`. Gjeldende PRD samler 24 funksjonelle krav med akseptansekriterier, to brukerreiser, ordliste, målbare mål/motmål og AI-/NFR-krav. Tilhørende test-/statusbevis er lagt separat i `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md`.
+- En ny deterministisk test (`tests/test-prd-consistency.cjs`) kontrollerer ID-er, akseptansekriterier, scope og kobling til testbevis. Dette verifiserer dokumentstruktur, **ikke** at hver funksjon er kvalitativt god eller testet E2E.
+- GitHub Actions ble grønn på PR-grenen etter fjerning av det feilplasserte dokumentet og etter PRD-revisjonen. Sluttstatus må fortsatt bekreftes på siste commit.
+
+### Åpne punkter og læring
+
+- Test statusmatrisen mot ekte brukerflyter (to kontoer, mobil/desktop, utskrift, simulering) og faglig kildekritikk; ikke merk umålte mål som oppnådd.
+- Synkroniser arkitektur/stories og refleksjonsrapport med gjeldende krav, men hold gamle historiske valg synlige og daterte.
+- PRD ble revidert **etter** mye av implementasjonen. En styrke ved KI-assistert arbeid kan være rask iterasjon; en svakhet er at dokumentasjon og kode ellers glir fra hverandre. Det er behov for kontinuerlig krav-til-test-kobling fremfor å skrive status som krav.
+- Ikke slå sammen privat repo-PR eller denne utkast-PR-en ukritisk; visuelt og praktisk pilotbevis gjenstår.
+
+## 20.11.2026 – kontrollert CSS-opprydding i riktig skolerepo
+
+**Behov:** Kodegjennomgangen fant 845 `!important` fordelt på core/responsive/overrides. Å flytte CSS til nye filer hadde ikke fjernet motstridende overstyringer. Jeg ønsket å redusere teknisk gjeld uten at et KI-generert redesign endret fungerende brukergrensesnitt.
+
+**KI-bidrag:** Assistenten analyserte CSS-kaskaden og fant tidligere deklarasjoner som senere ble gjentatt med samme selektor, egenskap, eksakte verdi og `@media`-kontekst i samme fil. Bare disse tidligere identiske kopiene ble slettet. To deltiltak fulgte: sju tomme regelblokker ble fjernet, og en deterministisk analyse-/regresjonstest ble lagt til i `npm test`.
+
+**Kontrollert resultat:** Første runde reduserte `!important` fra **845 til 792** ved å fjerne 53 eksakt identiske duplikater. I neste runde samme dag ble **55** tidligere overstyrte deklarasjoner med forskjellige verdier fjernet, forutsatt samme selektor, egenskap og mediekontekst: **845 → 737 totalt**, fordelt på core 83→80, responsive 326→279 og overrides 436→378. Til sammen er 31 tomme CSS-regelblokker fjernet. Regresjonstesten ble skjerpet til å fange også duplikater med ulike verdier. Hele GitHub Actions-pakken bestod på siste funksjonelle commit (run **44735621973**). Metode og begrensninger er dokumentert i `docs/CSS-KVALITETSREVISJON-2026-11-20.md`.
+
+**Min kritiske vurdering:** For nyere nettlesere blir en eldre `!important` med samme selektor/egenskap/mediekontekst overstyrt av den senere deklarasjonen. Likevel kan gamle CSS-fallbacker ha betydning i eldre nettlesere. Vi har derfor ikke endret senere sluttverdier eller gjort generelle spesifisitetsendringer. Det gjenstår **737** `!important` som krever faktisk visuell og responsiv kontroll før videre rydding. Dette er ikke en full CSS-refaktorering.
+
+## 20.11.2026 – sikkerhetstest av kilde-URL-er og historikk-ID-er
+
+**Funn:** I kodegjennomgangen så jeg at `escapeHtml` ble brukt på eksterne kilde-URL-er, men escaping av HTML-attributter alene avviser ikke `javascript:` eller `data:`. Historikk-ID-er ble også interpolert direkte i HTML-attributter og i URL-baner uten eksplisitt ID-enkoding. Kildene og ID-ene er vanligvis kuratert/UUID, og dette er derfor en forsvar-i-dybden-retting, ikke et dokumentert utnyttet angrep.
+
+**Tiltak:** KI-assistenten innførte en felles URL-validator som kun godtar absolutte HTTP(S)-adresser, oppdaterte kildevisning og administratorens kildelogg, og sikret tre historikkattributter og slettesti. Ny `tests/test-safe-source-urls-history.cjs` tester ugyldige protokoller, HTML-injeksjon i ID og riktig URL-enkoding. Testen er tatt inn i `npm test` og CI bestod i run **44735621973**.
+
+**Egen vurdering og begrensning:** Et pass i simulert DOM og en URL-allowlist viser at noen konkrete usikre kodestrenger er fjernet. Det er **ikke** det samme som komplett XSS-audit av hele `app.js`, testing av to autentiserte kontoer eller bevis for sikker produksjon. Dokumentasjon: `docs/FRONTEND-LENKER-HISTORIKK-2026-11-20.md`.
+
+## 20.11.2026 – asynkron administrasjon, historikk og database-ID
+
+**Oppdrag:** Fortsette den kvalitetssikrende gjennomgangen av `G46-nilsen` uten å endre produksjon. Etter CSS-rundene ble store funksjoner i klient og server undersøkt for feil som kan ha betydning for personvern og korrekthet.
+
+**Funn:** Administrasjonsskjermen startet flere asynkrone hentinger uten å kontrollere om brukeren fremdeles var autorisert når svaret kom. Historikk kunne også bli liggende i skjult klient-DOM etter kontobytte, og lagret JSON kunne i serverens `rowToHistory` overskrive database-ID-en.
+
+**KI-bidrag:** Assistenten foreslo og implementerte `adminViewEpoch`, forespørselssekvenser, rydding ved kontobytte og validering av etterfølgende API-svar. `openAdmin` og `loadContentOverrides` ble delt opp i mer lesbare trinn. `openHistory` sammenligner både forespørselsgenerasjon, konto og aktiv visning. Serverens `rowToHistory` prioriterer databasens ID og tidsstempler over innholdet i lagret samtale-JSON.
+
+**Kvalitetssikring:** Fire nye deterministiske tester ble koblet til `npm test`: `test-admin-async-session.cjs`, `test-admin-content-generation.cjs`, `test-history-session-cleanup.cjs`, `test-history-row-identity.cjs`. Testene fremprovoserer forsinkede svar, logout/kontobytte, svar i feil rekkefølge og forsøkt ID-overstyring. GitHub Actions bestod etter at testene ble lagt inn, og ny sluttkontroll følger siste commit.
+
+**Begrensninger:** Dette er simulerte DOM-/HTTP-svar, ikke faktisk innlogging med flere Supabase-kontoer. Spesielt betalte benchmark- og pilotkjøringer må få egen test av hva som skjer når brukeren navigerer bort under kjøringen. Endringene er dokumentert i `docs/ADMIN-HISTORIKK-KVALITET-2026-11-20.md`. Ingen merge eller deploy.

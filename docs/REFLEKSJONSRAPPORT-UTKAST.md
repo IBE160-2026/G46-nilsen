@@ -349,11 +349,17 @@ Golden-testingen oppsummerer denne læringen best. Først var målet å få gode
 
 Dersom jeg startet prosjektet på nytt, ville jeg etablert Git/GitHub fra første dag. Det ville gjort den tidlige utviklingen mer sporbar og redusert behovet for å rekonstruere deler av prosessen senere.
 
-Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært enklere å splitte `app.js`, `server.js` og `styles.css` gradvis enn å gjøre det etter at filene var blitt store.
+Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært enklere å splitte `app.js`, `server.js` og `styles.css` gradvis enn å gjøre det etter at filene var blitt store. I en kontrollert opprydding 20.11.2026 brukte jeg KI-assistenten til å identifisere eldre CSS-deklarasjoner som ble overstyrt av en senere regel med identisk selektor, egenskap og mediekontekst. Første runde fjernet 53 identiske duplikater; neste runde fjernet 55 eldre deklarasjoner med ulike verdier der en senere regel overtok. `!important` gikk samlet fra **845 til 737**, og 31 tomme regelblokker ble fjernet. Vi beholdt de siste sluttverdiene og la inn en automatisk regresjonskontroll. Dette reduserer vedlikeholdsgjeld, men ikke alle 737 gjenstående overstyringer er nødvendigvis overflødige. Eldre nettleserfallback og faktisk mobil-/desktopvisning må vurderes før videre opprydding. En grønn quality gate er ikke det samme som en visuell nettlesertest.
+
+Jeg gjorde også en avgrenset kodegjennomgang av eksterne kildelenker og historikk. Her lærte jeg at HTML-escaping av en URL ikke er tilstrekkelig: en lenke med `javascript:` er fortsatt en utrygg URL selv om anførselstegn er escaped. KI-assistenten la derfor inn protokollvalidering og sikker ID-håndtering, mens regresjonstester prøver utrygge URL-er og anførselstegn i historikk-ID-er. Jeg tolker dette som konkret risikoreduksjon, ikke som bevis på en full sikkerhetsrevisjon av alle dynamiske HTML-visninger.
+
+En videre kodegjennomgang 20.11.2026 viste at de vanskelige feilene ikke nødvendigvis var synlige på skjermen: et gammelt asynkront serversvar kunne fylle adminvisningen eller historikken etter at brukeren hadde forlatt siden eller byttet konto. Jeg fikk KI-assistenten til å bryte opp deler av innlastingslogikken, legge inn økt- og forespørselskontroll og skrive tester som bevisst lot svarene komme i feil rekkefølge. På serveren ble det også oppdaget at lagret JSON kunne overstyre database-ID-en i historikkobjektet; databasen er nå autoritativ for ID og tidsstempler. Dette var en konkret forbedring av dataintegritet, men testene bruker simulerte svar og erstatter ikke kontroll med reelle testkontoer eller nettleser. Prosessen lærte meg at KI-kvalitetssikring krever å utfordre ikke bare det som blir generert, men også antakelser om timing, tillit til data og hvilket testbevis som faktisk gjelder.
 
 Videre ville jeg planlagt brukertesting tidligere. Prosjektet har mange automatiserte tester og mye teknisk kvalitetssikring, mens faktisk brukertesting kom sent. Mot slutten ble det derfor satt opp en liten pilot med ett felles, kort skjema for alle testpersoner. Utvalget er målrettet og lite, med rom for både vanlig helhetsvurdering, UX-blikk og innspill fra personer med relevant leder-/samtaleerfaring. Resultatene skal brukes deskriptivt og kvalitativt, ikke som statistisk dokumentasjon eller ekspertgodkjenning. For et produkt som først og fremst skal støtte mennesker i vanskelige samtaler, er faktisk brukeropplevelse minst like viktig som tekniske tester.
 
 Jeg ville også vært strengere med scope tidligere. Muligheten til å bygge raskt med KI gjorde det fristende å legge til flere funksjoner. Noen av dem ga reell verdi, mens andre først og fremst økte kompleksiteten.
+
+Etter faglærers PRD-tilbakemelding 12.11.2026 ble svakheten konkret: mange krav var skrevet som leveransestatus med løse tillegg, ikke som akseptansekriterier som kunne etterprøves. I en egen arbeidsgren 20.11 skilte jeg derfor gjeldende krav fra historikk og testbevis, samlet alle 24 FR-er og formulerte mål, motmål og brukerreiser. Det opprinnelige dokumentet er bevart. Dette er en senere **korrigering av min arbeidsmåte**, ikke et forsøk på å fremstille BMAD-dokumentasjonen som ferdig før den første koden. En automatisk PRD-test finner manglende kravkoblinger, men kan ikke bekrefte at en test faktisk beviser riktig oppførsel.
 
 ---
 
@@ -391,6 +397,11 @@ Sentrale spor som underbygger refleksjonen:
 
 - `product-brief.md`
 - `docs/bmad/PRD.md`
+- `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md` – testbevis, åpne hull og oppfølging av lærerens PRD-tilbakemelding
+- `docs/CSS-KVALITETSREVISJON-2026-11-20.md` – begrunnet stilarkopprydding og begrensninger
+- `docs/FRONTEND-LENKER-HISTORIKK-2026-11-20.md` – URL-sjekk, historikk-ID-escaping og testbegrensninger
+- `docs/ADMIN-HISTORIKK-KVALITET-2026-11-20.md` – asynkrone svar, konto-isolasjon, server-ID og fire regresjonstester
+- `docs/bmad/historikk/PRD-2026-11-12.md` – eldre PRD bevart før revisjonen
 - `docs/bmad/ARCHITECTURE-BMAD.md`
 - `docs/bmad/EPICS-AND-STORIES-BMAD.md`
 - `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
@@ -420,6 +431,8 @@ Sentrale spor som underbygger refleksjonen:
 - siste verifiserte live occupation-golden-kjøring mot gpt-5.6-luna 09.11.2026: 40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil; tidligere 21-case-resultat beholdes som historisk teststeg
 
 **Sluttverifisering:** Hele den deterministiske `npm test`-pakken ble kjørt gjentatte ganger gjennom prosjektet og besto etter de siste kodeendringene. Den endelige KI-kvalitetsrunden 09.11.2026 bygget videre på dette med 40 strenge yrke/sektor/tariff/kilde-caser. Første fullrunde ga 37/40 og førte til målrettet retting av fasit, testheuristikk og kildeprioritering. Etter nye regresjonstester og quality gate ga sluttkjøringen 40/40 OK. Dokumentasjonsoppdateringen etterpå utløste også en ny full GitHub Actions quality gate på `main`, run 42665279811, som var SUCCESS. Dermed bruker jeg ikke en eldre grønn kjøring som bevis for senere kode eller dokumentasjon.
+
+**Presisering 20.11.2026:** Historiske grønne CI-kjøringer beviser ikke automatisk en senere endring. En commit 12.11 la ved en `.docs`-fil om et annet prosjekt; siste quality gate på `main` feilet da i repo-strukturtesten. I utkast-PR #13 på egen gren ble filen fjernet, PR-kontroll aktivert og CI igjen kjørt grønt. `main` er fremdeles uendret, og denne dokumentasjonsrevisjonen innebærer ingen ny reell KI- eller brukerakseptansetest.
 
 
 ## Tillegg 28.–29.10.2026 – produksjonsflyt som avdekket feil utenfor KI-modellen
