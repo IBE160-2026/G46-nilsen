@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 (async () => {
-const { normalizeSourceUrl, webSources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
+const { normalizeSourceUrl, webSources, verifiedSupplementarySources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
 assert.equal(normalizeSourceUrl("https://example.org/a?utm_source=x&b=2&utm_campaign=y#section"),"https://example.org/a?b=2");
 assert.equal(normalizeSourceUrl("not a web address"),"not a web address");
 const response = { output: [
@@ -59,6 +59,26 @@ assert.deepEqual([...providerAnnotations.keys()], [
   "https://www.vetinst.no/fagomrader"
 ],"Bare offisielle søkekildeobjekter og URL-annotasjoner skal bli kildegrunnlag");
 assert.equal(markdownWebSources("Kilde [ukjent](https://ikke-verifisert.example) og [DMP](https://www.dmp.no/veterinermedisin)",providerAnnotations).length,1);
+
+const suggested = verifiedSupplementarySources([
+  {url:"https://www.dmp.no/veterinermedisin?utm_source=untrusted",title:"FALSK LOV",author:"Regjeringen",year:"2027",type:"bindende lov"},
+  {url:"https://www.dmp.no/veterinermedisin",title:"Duplikat"},
+  {url:"https://unverified.example/law",title:"Oppdiktet lov",author:"Lovdata"},
+  {url:"https://www.vetinst.no/fagomrader#details",title:"Feilaktig etikett"},
+  {url:"javascript:alert(1)",title:"Skadelig"}
+],providerAnnotations);
+assert.equal(suggested.length,2,"Bare dokumenterte unike nettsøk kan supplere kildelisten");
+assert.deepEqual(suggested[0],{
+  title:"Veterinærmedisin",author:"dmp.no",year:"",type:"nettkilde",
+  url:"https://www.dmp.no/veterinermedisin"
+},"Språkmodellen må ikke kunne oppgradere et søkeresultat til bindende lov eller dikte opp forfatter");
+assert.deepEqual(suggested[1],{
+  title:"Fagområder",author:"vetinst.no",year:"",type:"nettkilde",
+  url:"https://www.vetinst.no/fagomrader"
+});
+assert.deepEqual(verifiedSupplementarySources([{url:"https://unverified.example"}],providerAnnotations),[]);
+assert.deepEqual(verifiedSupplementarySources([{url:"https://www.dmp.no/veterinermedisin"}],providerAnnotations,0),[]);
+assert.deepEqual(verifiedSupplementarySources(null,providerAnnotations),[]);
 const nestedCitation = webSources({output:[{type:"message",content:[{annotations:[
   {url_citation:{url:"https://example.org/godkjent",title:"Eldre format"}}
 ]}]}]});
