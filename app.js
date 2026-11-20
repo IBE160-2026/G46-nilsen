@@ -19,6 +19,9 @@ let legalReturnView = "home";
 let infoReturnView = "home";
 let publicConfig = { appVersion: "20.11.5", contactEmail: "" };
 let contentOverrides = {};
+let contentOverridesRequestSequence = 0;
+let adminViewEpoch = 0;
+let adminIdentityKey = '';
 let loadedHistoryItem = null;
 let surveySubmitting = false;
 const clientErrorLog = [];
@@ -219,6 +222,45 @@ function saveCurrentHistoryScroll() {
   }, '');
 }
 
+function isActiveAdminView(epoch, userId, allowEditor = false) {
+  const roles = allowEditor ? ['admin', 'editor'] : ['admin'];
+  return epoch === adminViewEpoch &&
+    roles.includes(currentUser?.role) &&
+    String(currentUser?.id ?? '') === String(userId) &&
+    Boolean(views.admin?.classList.contains('active-view'));
+}
+
+function clearAdminPrivateData() {
+  // Hidden DOM nodes can retain personal feedback after a session or view change.
+  const selectors = [
+    '#admin-users-list', '#admin-users-message', '#admin-feedback-list',
+    '#admin-survey-summary', '#admin-source-domains', '#admin-source-queries',
+    '#admin-source-pages', '#admin-ai-recent', '#admin-ai-model-message',
+    '#benchmark-models', '#benchmark-summary', '#benchmark-results',
+    '#benchmark-coverage', '#benchmark-live-status', '#admin-current-role',
+    '#admin-content-fields', '#admin-content-message'
+  ];
+  selectors.forEach(selector => {
+    const node = document.querySelector(selector);
+    if (node) node.replaceChildren();
+  });
+  document.querySelector('#admin-ai-model')?.replaceChildren();
+  for (const selector of ['#admin-cost-24h', '#admin-cost-7d', '#admin-cost-30d', '#admin-calls-30d']) {
+    const node = document.querySelector(selector);
+    if (node) node.textContent = '–';
+  }
+  const surveyToggle = document.querySelector('#admin-survey-enabled');
+  if (surveyToggle) surveyToggle.checked = false;
+  const benchmarkRun = document.querySelector('#benchmark-run-live');
+  if (benchmarkRun) benchmarkRun.disabled = true;
+  const unsavedIndicator = document.querySelector('#admin-unsaved-indicator');
+  if (unsavedIndicator) unsavedIndicator.hidden = true;
+  const saveButton = document.querySelector('#admin-save-content');
+  if (saveButton) saveButton.disabled = true;
+  adminContentDirty = false;
+  benchmarkConfig = null;
+}
+
 function showView(name, options = {}) {
   const { historyMode = 'push', restoreScroll = null } = options;
   if (!views[name]) return;
@@ -229,6 +271,10 @@ function showView(name, options = {}) {
 
   const previousView = activeViewName();
   const changingView = previousView !== name;
+  if (changingView && previousView === 'admin') {
+    adminViewEpoch += 1;
+    clearAdminPrivateData();
+  }
 
   if (historyMode === 'push' && changingView) {
     saveCurrentHistoryScroll();
@@ -3254,6 +3300,12 @@ function updateAuthUi() {
   const status=document.querySelector('#settings-account-status'), del=document.querySelector('#delete-account-button'), exp=document.querySelector('#export-account-data');
   if(currentUser){ name.textContent=currentUser.username; note.textContent=currentUser.role==='admin'?'Administrator':currentUser.role==='editor'?'Redaktør':'Historikk aktiv'; avatar.textContent=initialsFor(currentUser.username); if(histNote) histNote.textContent=''; if(temp) temp.hidden=false; if(status) status.textContent=`Logget inn som ${currentUser.username}.`; if(del) del.hidden=false; if(exp) exp.hidden=false; }
   else { name.textContent='Logg på'; note.textContent='for historikk'; avatar.textContent='○'; if(histNote) histNote.textContent='logg inn'; if(temp) temp.hidden=true; if(status) status.textContent='Du er ikke logget inn. Samtaler lagres ikke permanent.'; if(del) del.hidden=true; if(exp) exp.hidden=true; }
+  const identityKey = currentUser ? String(currentUser.id) + '|' + String(currentUser.role) : '';
+  if (identityKey !== adminIdentityKey) {
+    adminIdentityKey = identityKey;
+    adminViewEpoch += 1;
+    clearAdminPrivateData();
+  }
   document.querySelectorAll('.admin-only').forEach(el=>{el.hidden=!['editor','admin'].includes(currentUser?.role||'user');});
 }
 function setAppLocked(locked){
