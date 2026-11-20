@@ -35,6 +35,16 @@ jobs:
       - name: Exercise entire sensor user journey in real Chrome and deterministic demo
         run: node tests/test-sensor-journey-browser.cjs
 
+      - name: Install PDF inspection utilities for actual Chrome print-preview test
+        run: |
+          if ! command -v pdfinfo >/dev/null 2>&1 || ! command -v pdftotext >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq poppler-utils
+          fi
+
+      - name: Exercise emulated mobile touch and printable advice PDF in Chrome
+        run: node tests/test-mobile-print-browser.cjs
+
       - name: Report CSS complexity and prevent new important debt
         run: npm run audit:css -- --enforce-budget
 
