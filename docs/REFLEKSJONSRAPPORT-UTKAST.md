@@ -349,7 +349,7 @@ Golden-testingen oppsummerer denne læringen best. Først var målet å få gode
 
 Dersom jeg startet prosjektet på nytt, ville jeg etablert Git/GitHub fra første dag. Det ville gjort den tidlige utviklingen mer sporbar og redusert behovet for å rekonstruere deler av prosessen senere.
 
-Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært enklere å splitte `app.js`, `server.js` og `styles.css` gradvis enn å gjøre det etter at filene var blitt store.
+Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært enklere å splitte `app.js`, `server.js` og `styles.css` gradvis enn å gjøre det etter at filene var blitt store. I en kontrollert opprydding 20.11.2026 analyserte jeg CSS-kaskaden i det offisielle innleveringsrepoet og reduserte antallet `!important` fra 845 til 792 ved å fjerne 53 tidligere, identiske overstyringer i samme selektor-/mediekontekst. Dette gjorde jeg med en avgrenset endring og en test for å hindre at nøyaktig de samme duplikatene kommer tilbake. Det ville vært mer risikabelt å fjerne alle `!important` bare for å få tallet ned: resterende regler kan være nødvendige ved spesielle brytpunkter eller temaer. At quality gate er grønn, er heller ikke en visuell nettlesertest.
 
 Videre ville jeg planlagt brukertesting tidligere. Prosjektet har mange automatiserte tester og mye teknisk kvalitetssikring, mens faktisk brukertesting kom sent. Mot slutten ble det derfor satt opp en liten pilot med ett felles, kort skjema for alle testpersoner. Utvalget er målrettet og lite, med rom for både vanlig helhetsvurdering, UX-blikk og innspill fra personer med relevant leder-/samtaleerfaring. Resultatene skal brukes deskriptivt og kvalitativt, ikke som statistisk dokumentasjon eller ekspertgodkjenning. For et produkt som først og fremst skal støtte mennesker i vanskelige samtaler, er faktisk brukeropplevelse minst like viktig som tekniske tester.
 
@@ -394,6 +394,7 @@ Sentrale spor som underbygger refleksjonen:
 - `product-brief.md`
 - `docs/bmad/PRD.md`
 - `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md` – testbevis, åpne hull og oppfølging av lærerens PRD-tilbakemelding
+- `docs/CSS-KVALITETSREVISJON-2026-11-20.md` – begrunnet stilarkopprydding og begrensninger
 - `docs/bmad/historikk/PRD-2026-11-12.md` – eldre PRD bevart før revisjonen
 - `docs/bmad/ARCHITECTURE-BMAD.md`
 - `docs/bmad/EPICS-AND-STORIES-BMAD.md`
