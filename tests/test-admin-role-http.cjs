@@ -27,6 +27,8 @@ const users={
 users.target.app_metadata.protected_test_flag="keep";
 const tokens=new Map(Object.entries(users).map(([name,user])=>["local-"+name+"-access",user]));
 const calls=[];
+const contentWrites=[];
+let rejectContentWrites=false;
 const json=(res,status,data)=>{
   res.writeHead(status,{"Content-Type":"application/json"});
   res.end(JSON.stringify(data));
@@ -60,6 +62,14 @@ const mock=http.createServer(async (req,res)=>{
       found.app_metadata={...body.app_metadata};
       return json(res,200,{user:found});
     }
+  }
+  // Isolated PostgREST upsert – only for explicit content editor HTTP tests.
+  if(url.pathname==="/rest/v1/content_overrides"&&req.method==="POST"){
+    if(rejectContentWrites)return json(res,404,{code:"42P01",message:"relation public.content_overrides does not exist"});
+    const body=await parseBody(req);
+    contentWrites.push({rows:body,conflict:url.searchParams.get("on_conflict")});
+    calls.push({type:"content-write",method:req.method,path:url.pathname});
+    return json(res,201,[]);
   }
   if(url.pathname.startsWith("/rest/v1/")){
     calls.push({type:"database",path:url.pathname,method:req.method});
@@ -139,6 +149,40 @@ async function request(route,who,method="GET",body,headers={}){
     const editorContent=await request("/api/admin/content","editor","PUT",{values:null});
     assert.equal(editorContent.status,400,"Editor must pass requireContentEditor before validating input");
     assert.equal(editorContent.body.error,"INVALID_CONTENT");
+    // Positive role-based writes must use the actual Express endpoint, not a browser mock.
+    const editorWrite=await request("/api/admin/content","editor","PUT",{values:{
+      "home.hero.title":"Oppdatert av redaktør",
+      "privacy.intro":"Nytt personvern",
+      "bad.key":"should not persist",
+      "admin.system":"should not persist"
+    }});
+    assert.equal(editorWrite.status,200,"Editor should be able to persist allowed fields: "+JSON.stringify(editorWrite.body));
+    assert.equal(editorWrite.body.saved,2);
+    assert.equal(contentWrites.length,1);
+    assert.equal(contentWrites[0].conflict,"content_key");
+    assert.deepEqual(contentWrites[0].rows.map(x=>x.content_key).sort(),["home.hero.title","privacy.intro"]);
+    assert.equal(contentWrites[0].rows.find(x=>x.content_key==="home.hero.title").content_value,"Oppdatert av redaktør");
+    assert.ok(contentWrites[0].rows.every(x=>x.updated_by===users.editor.id));
+    assert.ok(contentWrites[0].rows.every(x=>!Number.isNaN(Date.parse(x.updated_at))));
+    const adminWrite=await request("/api/admin/content","admin","PUT",{values:{
+      "contact.intro":"x".repeat(20024)
+    }});
+    assert.equal(adminWrite.status,200,"Admin should be able to persist allowed fields");
+    assert.equal(adminWrite.body.saved,1);
+    assert.equal(contentWrites.length,2);
+    assert.equal(contentWrites[1].rows[0].content_value.length,20000,"Long text must be bounded on server");
+    assert.equal(contentWrites[1].rows[0].updated_by,users.admin.id);
+    const emptyWrite=await request("/api/admin/content","editor","PUT",{values:{"not-allowed":"ignore"}});
+    assert.equal(emptyWrite.status,200);
+    assert.equal(emptyWrite.body.saved,0);
+    assert.equal(contentWrites.length,2,"No upsert when all keys are forbidden");
+    rejectContentWrites=true;
+    const dbFailure=await request("/api/admin/content","editor","PUT",{values:{"home.hero.title":"Should fail"}});
+    rejectContentWrites=false;
+    assert.equal(dbFailure.status,503,"Missing content table should be reported as setup error");
+    assert.equal(dbFailure.body.error,"CONTENT_TABLE_MISSING");
+    assert.equal(contentWrites.length,2,"Failed DB request must not count as persisted");
+
     const adminContent=await request("/api/admin/content","admin","PUT",{values:null});
     assert.equal(adminContent.status,400);
     for(const who of [null,"ordinary","forged","invalid"]){
@@ -183,7 +227,7 @@ async function request(route,who,method="GET",body,headers={}){
     ]);
     assert.ok(calls.filter(x=>x.type==="database").every(x=>permittedRetentionRequests.has(x.method+" "+x.path)),
       "Unexpected database request beyond server retention cleanup: "+JSON.stringify(calls));
-    console.log("Admin HTTP roles: "+denied+" anonymous/user/editor/forged/invalid-role denials, editor content guard, admin list, self-change, invalid role, unknown target and authorized role update OK");
+    console.log("Admin HTTP roles: "+denied+" denials; editor/admin content writes, field filtering, size limit, DB setup error, role changes: OK");
     console.log("Isolated local Auth only. No production records, live Supabase account, or actual RLS tested.");
   }finally{
     app.kill("SIGTERM");
