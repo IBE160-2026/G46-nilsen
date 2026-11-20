@@ -1,5 +1,7 @@
 import express from "express";
 import crypto from "node:crypto";
+import fs from "node:fs";
+import { buildHelpSourceLibrary } from "../src/server/help-library.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -33,6 +35,15 @@ const topics = [
 ];
 
 const history = [];
+// Offentlig visuell Render-test: aldri del en felles samtalehistorikk mellom besøkende.
+const visualPreview = process.env.VISUAL_PREVIEW_SAFE === "1";
+const sourceData = name => JSON.parse(fs.readFileSync(path.join(root,"data",name),"utf8"));
+const demoSources = buildHelpSourceLibrary({
+  sourceBank: sourceData("SOURCEBANK.json"),
+  occupationLegalSourceBank: sourceData("OCCUPATION-LEGAL-SOURCES.json"),
+  agreementCuratedSources: sourceData("AGREEMENT-SOURCE-MAP.json").agreementAreas.flatMap(item => item.curatedSources || []),
+  occupationSourceMap: sourceData("OCCUPATION-SOURCE-MAP.json")
+});
 
 function inferTopic(text, selectedId = "") {
   const selected = topics.find(topic => topic.id === selectedId);
@@ -133,10 +144,11 @@ app.get("/src/client/situation-analysis.js", (_req, res) =>
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
 
 app.get("/api/public-config", (_req, res) => res.json({
-  appVersion: "20.11.5",
+  appVersion: visualPreview ? "20.11.6 - VISUELL TEST (MOCK)" : "20.11.5",
   contactEmail: "",
   demoMode: true
 }));
+app.get("/api/help-source-library", (_req, res) => res.json(demoSources));
 app.get("/api/auth/me", (_req, res) => res.json({ user: demoUser }));
 app.post("/api/auth/login", (_req, res) => res.json({ user: demoUser }));
 app.post("/api/auth/register", (_req, res) => res.json({ user: demoUser }));
@@ -222,9 +234,12 @@ app.post("/api/simulation-feedback", (_req, res) => res.json({
 }));
 
 app.get("/api/history", (_req, res) => {
-  res.json({ items: [...history].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt))) });
+  res.setHeader("Cache-Control","no-store");
+  res.json({ items: visualPreview ? [] : [...history].sort((a, b) => String(b.updatedAt).localeCompare(String(a.updatedAt))) });
 });
 app.post("/api/history", (req, res) => {
+  // Ingen datalagring i offentlig Render-forhåndsvisning.
+  if (visualPreview) return res.json({ skipped:true });
   const body = req.body || {};
   const now = new Date().toISOString();
   let item;
@@ -261,7 +276,7 @@ app.get("/api/account/export", (_req, res) => {
     exported_at: new Date().toISOString(),
     app_version: "20.11.0-preview",
     account: demoUser,
-    conversations: history,
+    conversations: visualPreview ? [] : history,
     feedback: []
   };
   res.type("application/json").send(JSON.stringify(payload, null, 2));
