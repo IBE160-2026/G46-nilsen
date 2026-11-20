@@ -83,3 +83,23 @@ Bruk anonymiserte caser: (A) privat butikk/utestenging + oppfølging «Kan jeg g
 For hver case må vi lagre forventet sektor, valgte kilde-ID-er, visningslenker, om faktisk nettsøk ble brukt, og en **manuell** vurdering av at lenket tekst støtter påstanden. A–D skal ikke gi tomt kildegrunnlag ved konkrete rettslige/faglige påstander. E skal ikke overfylles med irrelevante kilder.
 
 **Publiseringsregel:** Ikke slå sammen PR #15 i `main` på bakgrunn av en pen kildeoversikt alene. Først grønn CI, deretter dokumentert ekte KI-prøve av kildepresisjon (og kontroll av riktig Render-innstilling). Visuell test på egen Render-adresse er bare en mock-demonstrasjon.
+
+
+## 6. Fem anonymiserte akseptanseprøver – reelle KI-svar og kildekontroll
+
+`tests/AI-SOURCE-ACCEPTANCE-CASES.json` inneholder fem syntetiske caser med faglig fasit, anbefalte kildesignaler og forbudte kilder: (A) privat butikk/utestenging og mulig advarsel, (B) statlig sykefravær, tilrettelegging og diagnosedeling, (C) veterinærkolleger og profesjonsetikk, (D) byggeplass/SHA-risiko og (E) ordinær kontorsamtale uten konkret kildebehov. Alle fem har oppfølgingsspørsmål.
+
+**Deterministisk kontroll:** `npm run test-source-acceptance-contract` validerer sektorene, faktiske kilde-ID-er, casenes forventninger og den menneskelige fasiten. Denne testen kjører i CI og gjør **ingen KI-kall**.
+
+**Ekte KI-test (manuell opt-in):** `tests/test-source-acceptance-live.js` kjører analyse, veiledning og oppfølgingsspørsmål for hver case mot en egen lokal Node-server, og skriver rapporter til `test-results/source-acceptance-*.md` og `.json`. Testen krever lokal `OPENAI_API_KEY`, flagget `--run-live` og eksplisitt `SOURCE_ACCEPTANCE_LIVE=I_ACCEPT_API_COSTS`. I PowerShell:
+
+```powershell
+$env:SOURCE_ACCEPTANCE_LIVE = 'I_ACCEPT_API_COSTS'
+npm run test-ai:source-acceptance -- --run-live
+```
+
+Skriptet starter med `NODE_ENV=test`, syntetiske caser og falsk lokal Supabase-adresse; det er ikke koblet til Render eller produksjonsdatabase. `OCCUPATION_CONTEXT_ENABLED=true` settes bare for testprosessen. Ingen reelle personopplysninger skal brukes. Den betalte testen er **ikke** i automatisk CI og kan ikke hevdes gjennomført uten et faktisk resultat.
+
+**Proveniens via HTTP:** Begge KI-svarløpene returnerer nå `source_provenance` med `webSearchPerformed` (om nettsøk faktisk er kjørt), `providerUrlCount` (unike leverandørdokumenterte nettlenker), `selectedCuratedSourceCount` (valgte bankkilder), `visibleEvidenceCount` (viste kilder) og `contentVerified: false`. Selv et reelt søkeresultat beviser **ikke** at nettsiden er lest eller støtter en konkret påstand. Automatisk rapport sjekker struktur, kildemengde og feil sektor; menneskelig kontroll må vurdere rett paragraf, virkeområde, kildeinnhold, tariff og faglig presisjon. Rapportens sjekkbokser skal signeres før godkjenning.
+
+**Gjenstående før merge:** Grønn Quality Gate på siste commit, reell KI-kjøring med fem caser, manuell kildekontroll og separat kontroll av faktisk `OCCUPATION_CONTEXT_ENABLED` i riktig Render-miljø. Ingen Render-innstillinger endres automatisk.
