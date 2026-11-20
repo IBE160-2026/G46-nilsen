@@ -177,7 +177,10 @@
         "arbeidsbelastning",
         "rolleuklarhet",
         "støtte",
-        "trakassering"
+        "trakassering",
+        "utesteng",
+        "utfrys",
+        "holdt utenfor"
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
@@ -247,7 +250,8 @@
       "use_when": [
         "mobbing",
         "utestenging",
-        "utfrysing"
+        "utfrysing",
+        "holdt utenfor"
       ],
       "authority": "high",
       "last_verified": "2026-10-07",
@@ -305,7 +309,10 @@
         "trakassering",
         "konflikt",
         "påstand",
-        "saksbehandling"
+        "saksbehandling",
+        "advarsel",
+        "utesteng",
+        "holdt utenfor"
       ],
       "authority": "high",
       "last_verified": "2026-10-26",
@@ -439,7 +446,10 @@
         "kontradiksjon",
         "habilitet",
         "undersøkelse",
-        "høre begge sider"
+        "høre begge sider",
+        "utesteng",
+        "utfrys",
+        "holdt utenfor"
       ],
       "authority": "high",
       "last_verified": "2026-10-26",
