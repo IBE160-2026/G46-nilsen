@@ -23,13 +23,13 @@ De gamle funksjonene i `app.js` delegerer nå til modulen. Uttrekket reduserte `
 | `tests/test-admin-browser.cjs` | Ekte headless Chrome med tre fiktive roller; admin: kansellerte betalte kjøringer uten POST; gratis mock-POST; positiv **syntetisk** benchmark og pilot med testdata og avskjærte API-svar; status og HTML-escaping | Alle testens `fetch`-svar er simulert; ingen ekte KI/DB |
 | `tests/test-admin-role-http.cjs` | Faktisk Express-rute `POST /api/admin/benchmark/mock` uten AI-nøkler; 401/403 for andre roller, responskontrakt og kontroll av at lokal Auth/PostgREST-fake ikke berøres | Selve testbanken kan rapportere `ok:false`; det er et kvalitetsfunn og ikke det samme som feil i ruten |
 | `tests/test-benchmark-taxonomy.cjs` | 114 saker, 48 tema-/undertemaparsrelasjoner, minst to saker per undertema | Tester taksonomi, ikke fullstendig personvern eller faglig fasit |
-| Ordinær Quality Gate | 47 `npm test`-delsteg, Chrome/admin, CSS, 99 browser-paritetscenarier, PostgreSQL/RLS og avhengighetskontroll | Ikke ekte Supabase Auth/PostgREST eller live KI |
+| Ordinær Quality Gate | 48 `npm test`-delsteg, Chrome/admin, CSS, 99 browser-paritetscenarier, PostgreSQL/RLS og avhengighetskontroll | Ikke ekte Supabase Auth/PostgREST eller live KI |
 
 **Første komplette grønne modul-/browserkjøring:** [Quality Gate #44758243989](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44758243989), før utvidet server-HTTP-test og senere dokumentasjon. Etterfølgende CI må kontrolleres særskilt på siste commit.
 
 ## 3. Kritiske funn og gjenværende risikoer
 
-**Funn A – personvernkontroll av testbank:** `POST /api/admin/benchmark/mock` fungerer uten KI-provider, men rapporterer `ok:false` med *`B113 utløser personvernsjekk`*. B113 er en fiktiv samtale om konflikt mellom medarbeider og leder uten eksplisitte navn, men dens formulering utløser dagens detektor. **Dette er ikke ferdig godkjent.** Serverens mock rapporterer nå bare typekategorier (uten personopplysningstekst) for å kunne diagnostisere om dette skyldes reell risiko eller falsk positiv. Ikke endre personverndetektor eller golden-case blindt for å få grønn markering.
+**Funn A – navnefalsk positiv i testbank B113, rettet på revisjonsgrenen:** `POST /api/admin/benchmark/mock` rapporterte først `ok:false` med `B113 utløser personvernsjekk (name)`. Diagnosetesten kjørte den faktiske delte navnedetektoren og isolerte den feilaktige kandidaten til ordet **«nærmeste»** i «til nærmeste leder har …». Dette er et adjektiv, ikke personnavn. `src/privacy-detector.js` har derfor fått **kun dette ordet** i grammatisk ikke-navn-liste; ingen navneregler eller hardfilter ble deaktivert. Ny `tests/test-benchmark-privacy-signal.cjs` kontrollerer samtlige 114 syntetiske caser og verifiserer eksplisitt at *Knut* fortsatt detekteres som personnavn. Express-integrasjonstesten krever nå at den kostnadsfrie bankkontrollen faktisk returnerer `ok:true` og null problemer. **Endelig grønn CI på siste commit kreves før funnet lukkes.**
 
 **Funn B – kostnadsgrensen er ikke selvstendig håndhevet på server:** Betalt `POST /api/admin/benchmark/live` tar imot `spentSoFar` og `budgetUsd` fra klienten, og bruker et fast tillegg på USD 0,05 før hvert kall. Det finnes ikke en dokumentert autoritativ, serverlagret løpende budsjettføring per kjøring. En klient kan derfor potensielt sende utdatert/manipulert bruktbeløp, og ett API-kall kan koste mer enn estimert reserve. **Budsjettkontrollen kan ikke markedsføres som garantert kostnadstak.** Krever separat serverstyrt budsjett-/kvotereservasjon, samtidighetskontroll, test med mock provider og gjennomgang av oppgjør etter feil/lagringsbrudd, **før** reelle KI-kostnadstester slippes løs.
 
@@ -37,9 +37,9 @@ De gamle funksjonene i `app.js` delegerer nå til modulen. Uttrekket reduserte `
 
 ## 4. Beslutning og neste arbeidssteg
 
-1. Gjør B113-feiltypen eksplisitt, undersøk hvorfor den utløses og rett enten den fiktive testsaken eller en dokumentert falsk positiv uten å svekke navnefilteret.
+1. Bekreft siste Quality Gate etter den snevre B113/navnefilterrettelsen. Sørg for at `test-benchmark-privacy-signal` og den faktiske gratis Express-mock-kontrollen forblir automatiske regressjonsporter.
 2. Oppdater feilaktige historiske antall i admin-UI, og la «alle saker» komme fra verifisert API-antall i stedet for en hardkodet verdi.
 3. Legg inn ekte serverstyrt, per-bruker/per-kjøring budsjettgrense med atomiske reservasjoner, abort og audit-spor. Verifiser med **lokal mock-provider**, ikke live AI.
 4. Først deretter vurder å isolere betalte benchmarkløp i egen modul. Ekte Supabase Auth/PostgREST og menneskelig faglig vurdering kreves fortsatt separat.
 
-**Status:** Klientmodul og nettlesertest av fiktive resultater er testet; live benchmark og full testbankkvalitet er **ikke** godkjent.
+**Status:** Pure klientmodul og nettlesertest med fiktive resultater er verifisert. B113-navnekandidaten er diagnostisert og målrettet rettet; siste fullstendige CI skal dokumentere bankens faktiske godkjenning. **Live benchmark er fortsatt ikke godkjent** på grunn av manglende autoritativ serverbudsjettgrense.
