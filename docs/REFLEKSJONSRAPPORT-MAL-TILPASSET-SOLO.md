@@ -14,7 +14,7 @@
 **Gruppemedlemmer:** Én student (meg)  
 **Dato:** 20.11.2026 (utkast)  
 
-Selv om prosjektet er registrert som gruppe, har jeg arbeidet individuelt. Jeg har hatt ansvaret for prosjektmål, prioriteringer, valg av løsninger, teknisk kvalitet, dokumentasjon og sluttvurdering. Brukertestere og KI-assistenter har gitt innspill, men har ikke vært medlemmer i gruppen.
+Selv om prosjektet er registrert som gruppe, har jeg vært eneste student. Jeg har hatt ansvaret for idé, prioriteringer og beslutninger. Samtidig føltes det ofte som om ChatGPT var mitt «andre gruppemedlem»: Jeg diskuterte ideer, stilte spørsmål, ble frustrert og fikk hjelp til å komme videre. Det er en beskrivelse av opplevelsen, ikke en påstand om at KI er en person eller kan ta ansvar for arbeidet.
 
 ## 2. Utviklingsprosessen
 
@@ -27,13 +27,13 @@ Løsningen lar brukeren beskrive en situasjon, velge eller få foreslått tema, 
 
 ### 2.2 Arbeidsmetodikk
 
-Jeg har gjennomført prosjektet alene. Jeg har derfor hatt rollene som produkteier, kravstiller, utviklingsleder, tester, dokumentasjonsansvarlig og den som må avgjøre om KI-forslag kan godkjennes. Det har gjort prosjektet lærerikt, men også sårbart. Uten et ordinært utviklingsteam og uavhengig code review kan det være lett å godta en plausibel løsning for raskt. En stor del av læringen min har handlet om å bygge kontrollmekanismer som motvirker nettopp dette.
+Jeg startet med svært begrenset kunnskap om programmering og kan fremdeles omtrent ikke skrive kode på egen hånd. Jeg hadde aldri arbeidet i Git, og begreper som Node.js, API og backend var helt nye for meg. Læringskurven ble derfor svært bratt. Som eneste student har jeg styrt produktmålene, beskrevet ønsket funksjonalitet, prøvd løsningen og tatt beslutningene, mens KI har vært avgjørende for å skrive og endre koden. Uten et utviklingsteam eller uavhengig kodegjennomgang er det vanskelig å vite om et tilsynelatende godt forslag faktisk er riktig.
 
 Prosjektet begynte utforskende. Jeg beskrev ønsket funksjon, KI foreslo kode, jeg testet og ga nye instruksjoner. Dette var effektivt i en enkel prototype, men etter hvert ble konsekvensene av små endringer større. Et CSS-tiltak kunne påvirke mobilvisningen, og en justering av KI-råd kunne påvirke responskontrakter og tester. Jeg oppdaget at en generell beskjed om å «fikse» noe ofte ga KI for mye tolkningsrom.
 
-Arbeidsmåten ble derfor gradvis mer kontrollert: Jeg presiserte mål, avgrenset hva som ikke skulle endres, gjennomgikk kodeforskjeller, kjørte regresjonstester og brukte Git-commits til å bevare fungerende tilstander. Jeg ser dette som forskjellen mellom enkel prompt engineering og det forelesningene omtaler som **context engineering**: KI må få riktig prosjektkontekst, tidligere beslutninger, akseptansekriterier og dokumenterte feil. Ellers kan den lage kode som ser riktig ut isolert, men er feil i systemet som helhet.
+Arbeidsmåten ble derfor gradvis mer kontrollert: Jeg presiserte mål og avgrensninger, fikk hjelp av KI til å forstå endringer og feil, brukte automatiserte tester som kontroll og lærte hvordan Git-commits kunne bevare fungerende tilstander. Jeg ser dette som forskjellen mellom enkel prompt engineering og det forelesningene omtaler som **context engineering**: KI må få riktig prosjektkontekst, tidligere beslutninger, akseptansekriterier og dokumenterte feil. Ellers kan den lage kode som ser riktig ut isolert, men er feil i systemet som helhet.
 
-Det var ingen oppgaver å fordele mellom gruppemedlemmer. Git og GitHub har i stedet gitt struktur for versjoner og endringer, mens Markdown-dokumenter og testskript har vært mine arbeidsnotater og kontrollspor. KI hjalp med å foreslå løsninger, men var ikke en likeverdig samarbeidspartner som kunne ta faglig ansvar. En svakhet ved soloprosjektet er mangelen på løpende, uavhengig code review. Jeg måtte derfor være ekstra bevisst på egne blindsoner og innhente tilbakemeldinger utenfra.
+Det var ingen oppgaver å fordele mellom studenter. Jeg opplevde likevel ChatGPT som en slags ekstra gruppedeltaker i det daglige, særlig fordi jeg kunne diskutere produktvalg og få teknisk hjelp når jeg sto fast. Forskjellen er at KI verken kan ta ansvar eller erstatte en medstudents kritiske vurdering. Git og GitHub ga meg etter hvert struktur for versjoner og endringer, mens dokumentasjon og tester hjalp meg å kontrollere resultatene.
 
 
 ### 2.3 Teknologi og verktøy
@@ -123,7 +123,7 @@ En risiko for egen læring er at jeg kan bli en bestiller av kode jeg ikke fullt
 
 ### 4.3 Sammenligning: med og uten KI
 
-Uten KI ville jeg sannsynligvis utviklet en enklere applikasjon med færre funksjoner. Det ville tatt lengre tid å implementere hvert steg, men jeg kunne også fått grundigere forståelse av et mindre system og brukt mindre tid på å rydde etter raske endringer. Jeg kan ikke konkludere med at sluttresultatet entydig ville blitt bedre eller dårligere. KI ga stort funksjonsomfang og rask utvikling, men også høyere krav til styring, kontroll og vedlikehold. Det viktigste var ikke å produsere flest mulig funksjoner, men å stoppe når nye funksjoner truet kvaliteten.
+Uten KI ville jeg ikke ha utviklet Samtalestøtte. Jeg hadde rett og slett ikke programmeringskunnskapene til å lage en slik applikasjon selv, heller ikke en vesentlig enklere versjon. Alternativet ville vært å lære programmering over langt lengre tid før jeg kunne begynne å bygge. KI var derfor en forutsetning for at prosjektet ble mulig, ikke bare et hjelpemiddel som økte hastigheten. Samtidig betyr ikke dette at all KI-generert kode var god: Det store omfanget skapte behov for testing, opprydding og kritiske valg.
 
 
 ### 4.4 Samlet vurdering
@@ -152,7 +152,7 @@ Det bør være åpenhet om at Samtalestøtte er laget med omfattende KI-assistan
 
 Forelesningene ga meg et språk for erfaringer jeg allerede hadde gjort: context engineering forklarte hvorfor eksisterende krav og beslutninger må inn i KI-oppgaven; BMAD forklarte hvorfor Product Brief, PRD, UX og arkitektur må henge sammen; epics/stories og sprintplanlegging forklarte hvorfor mindre, verifiserbare arbeidsoppgaver reduserer risiko og kontekstpress. Jeg fikk også større forståelse for hvorfor arkitektur bør begrense utilsiktet kobling mellom funksjoner, og hvorfor tester og reviews bør følge implementeringen fortløpende.
 
-Min viktigste kompetanseutfordring har vært å forstå det KI foreslår godt nok til å kunne ta ansvar for det. Hurtig kodegenerering kan redusere muligheten til å øve på grunnleggende programmering og feilsøking. Det taler for å kombinere KI-assistert utvikling med selvstendig lesing, forklaring og testing av kode – også når det er mer tidkrevende.
+Min viktigste kompetanseutfordring har vært å forstå noe av det KI foreslår, selv om jeg ennå ikke behersker selve programmeringen. Jeg har lært hva Git, Node.js, API-er og tester brukes til, men det er stor forskjell på å forstå begrepene og å kunne skrive eller feilsøke kode uten hjelp. Hurtig kodegenerering gjør dette skillet ekstra viktig. Jeg ønsker derfor å fortsette med grunnleggende programmeringsøving parallelt med KI-assistert utvikling.
 
 
 ### 5.4 Arbeidsmarkedet
@@ -229,9 +229,9 @@ Start med ett tydelig behov og en liten fungerende versjon. Bruk Git fra første
 
 ### 7.4 Personlig refleksjon (individuelt)
 
-Som eneste gruppemedlem har jeg hatt stor frihet til å utvikle et verktøy jeg selv ser nytteverdien av. Samtidig har jeg erfart at det er lett å miste oversikten når KI gjør det mulig å legge til funksjoner svært raskt. Jeg har lært mest når jeg har måttet utfordre mine egne antakelser og avvise forslag som så imponerende ut, men ikke var tilstrekkelig gjennomtenkt.
+Som eneste student startet jeg i praksis uten erfaring med utviklingsverktøy og med svært lite kodekunnskap. Jeg opplevde ofte ChatGPT som mitt «andre gruppemedlem» – en jeg kunne spørre om alt det jeg ikke engang visste hvordan jeg skulle begynne med. Det gjorde det mulig å gå fra en idé til en fungerende applikasjon. Læringskurven var bratt, og jeg ble ofte overrasket over hvor mye som måtte læres bare for å forstå hva KI hadde gjort. Den viktigste rollen min ble å stille krav, teste det jeg så og våge å være kritisk til svarene.
 
-Jeg er særlig opptatt av at teknologien skal gjøre vanskelige menneskelige samtaler bedre, ikke overta beslutningene. Min erfaring fra arbeidslivet hjelper meg å se slike behov. Jeg har fremdeles tekniske ferdigheter jeg må utvikle, og denne rapporten skal ikke gi inntrykk av at jeg er ekspert på hele stakken. Det jeg opplever som mitt viktigste fremskritt, er at jeg stiller mer kritiske spørsmål til både KI, dokumentasjon og testresultater.
+Jeg er særlig opptatt av at teknologien skal gjøre vanskelige menneskelige samtaler bedre, ikke overta beslutningene. Min erfaring fra arbeidslivet hjelper meg å se slike behov, selv om jeg ennå ikke kan kode løsningen selv. Mitt viktigste fremskritt er derfor ikke at jeg har blitt programmerer på et semester, men at jeg har lært å styre et KI-assistert prosjekt, stille bedre spørsmål og være mer kritisk til både forslag og testresultater.
 
 
 ## 8. Vedlegg (valgfritt)
@@ -244,4 +244,4 @@ Jeg er særlig opptatt av at teknologien skal gjøre vanskelige menneskelige sam
 
 **Før innlevering:** Kontroller at studentopplysninger, eget språk, kildehenvisninger, personlig vurdering og alle faktiske forhold stemmer. Valg av endelig Git-commit og Canvas-frist må bekreftes. Arbeidet i PR #12 er ennå ikke en endring i main eller produksjon.
 
-**Omtrentlig ordantall for dette utkastet:** 4816 ord inkludert overskrifter, vedlegg, URL-tekst og metadata (automatisk opptelling, ikke Canvas-telling). Malen oppgir forventet 3000–5000 ord, avhengig av gruppestørrelse og kompleksitet. For soloprosjektet bør alle faglig relevante deler dekkes, uten å dikte opp gruppesamarbeid.
+**Omtrentlig ordantall for dette utkastet:** 4919 ord inkludert overskrifter, vedlegg, URL-tekst og metadata (automatisk opptelling, ikke Canvas-telling). Malen oppgir forventet 3000–5000 ord, avhengig av gruppestørrelse og kompleksitet. For soloprosjektet bør alle faglig relevante deler dekkes, uten å dikte opp gruppesamarbeid.
