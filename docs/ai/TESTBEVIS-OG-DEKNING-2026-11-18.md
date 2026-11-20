@@ -4,6 +4,18 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: fail-closed betalte tester og lokal serverbudsjettsperre
+
+**Implementert:** `src/server/benchmark-budget.js` gir et synkront, servereid in-memory budsjettregnskap på USD 0,10 forhåndsreserve per forsøk, fast run-budsjett og maks USD 5 per bruker/dag per Node-prosess. Parallelle kall for samme bruker, gjenbruk av case/modell, ugyldige kjøre-ID-er, budsjettøkning under kjøring og nullstilling via nytt run-ID/klientens `spentSoFar` avvises. Kostnadsestimat over reserveringen trekkes, og provider-/lagringsfeil beholder minst reserveringen. **Dette er ikke delt/varig over flere instanser eller restart og er ikke garanti mot overskytende faktisk leverandørkostnad.**
+
+**Sikker driftsgrense:** `POST /api/admin/benchmark/live` er deaktivert i produksjonsmodus med 503 `BENCHMARK_PAID_DISABLED`, uansett budsjett fra nettleseren. Bare eksplisitt isolert Node-test med fiktiv provider kan starte ruten. Den administrative `pilot-regression`/`production-regression`-flyten er sperret med 503 `PAID_TEST_DISABLED` før providerkall; normale KI-samtaler går som før. Testmerking bruker nå verifisert normalisert `req.user.role` i stedet for å rekalkulere rolle fra feil objekt.
+
+**Tester og bevis:** `tests/test-benchmark-budget.cjs` (D) prøver den ekte servermodulen med grensetilfeller, parallelle kall, brukerisolasjon, budsjettreplay og feiloppgjør. `tests/test-benchmark-live-http.cjs` (I) tester den reelle Express-ruten og OpenAI SDK med `--import tests/support/offline-openai-fetch.mjs` og en fiktiv, lokal HTTP-provider, samt syntetisk lokal Auth/PostgREST. Ingen eksterne nettverkskall eller betalte nøkler. `tests/test-admin-role-http.cjs` tester at benchmark/pilot/fulltest er sperret i produksjonsmodus, og at vanlig bruker ikke får admin-testrettigheter. Headless Chrome bruker bare syntetiske endepunkter. Totalt **50** deterministiske npm-teststeg, i tillegg til Chrome/CSS og PostgreSQL/RLS-jobbene.
+
+**Gjenstår før enhver reell betalingsflyt:** Transaksjonelt, varig DB-regnskap på tvers av instanser; leverandørgrenser som tar høyde for kostnad over forhåndsreserve; robust auth/rollesjekk; E2E med fiktive brukere i separat Supabase; driftsreview. Betalte rutiner er ikke startet mot ekstern KI eller deployet. For detaljer, se [benchmarkrapport](BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026: ren benchmarkmodul, syntetiske KI-kjøringer og kostnadsrisiko
 
 **Metode:** Faktisk `src/client/benchmark-evaluation.js` evalueres isolert med deterministiske fiktive inputs i `tests/test-benchmark-evaluation.cjs`. Round-robin-utvalg, fullbankrekkefølge, ordgrense, mekanisk språk, manglende åpning og myke funn dekkes uten nettverk. Den delte navnedetektoren kjøres i ny `tests/test-benchmark-privacy-signal.cjs` mot alle **114** benchmarkcaser; den har bevart positivt treff på et faktisk navn i en syntetisk testtekst.
@@ -14,7 +26,7 @@
 
 **B113-funn:** Gratis bankkontroll avdekket `B113 utløser personvernsjekk (name)`. Den delte navnedetektoren identifiserte det vanlige adjektivet «nærmeste» i «til nærmeste leder har ...» som et navn. En minimal grammatisk stoppliste-justering i `src/privacy-detector.js` er utført, og testene krever at et reelt personnavn fortsatt oppdages. Dette er et dokumentert feilfunn → retting → ny test, **ikke** svekket blokkering av reelle opplysninger.
 
-**Fortsatt ikke godkjent:** Ekte benchmarkkostnadstak. Backend stoler på klientens `spentSoFar` og bruker 0,05 USD reserve, som ikke garanterer et hardt tak ved feil/misbruk/samtidige kall. Tekst i Admin viser også foreldede casetall. Betalte rutiner er **ikke** flyttet, aktivert eller kalt mot leverandør. `main`, produksjon og LIVE-pilot er urørt.
+**Fortsatt ikke godkjent:** Ekte benchmarkkostnadstak. Dette var det opprinnelige funnet: backend stolte på klientens `spentSoFar` og brukte 0,05 USD reserve. Den nye løsningen ignorerer klientforbruket, har kun lokal servereid reservering og blokkerer alle betalte testmoduser i produksjon. Et garantert, distribuert kostnadstak finnes fortsatt ikke. Tekst i Admin viser også foreldede casetall. Betalte rutiner er **ikke** flyttet, aktivert eller kalt mot leverandør. `main`, produksjon og LIVE-pilot er urørt.
 
 **Detaljer og testmatrise:** [Benchmark, kostnad og kvalitet – 20.11](BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md). 48 deterministiske delsteg pluss Chrome og PostgreSQL/RLS; siste CI-head må være grønn før endelig aksept.
 
