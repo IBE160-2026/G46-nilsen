@@ -1516,6 +1516,12 @@ function printCurrentGuidance() {
   printWindow.print();
 }
 
+function formatSpeechExamples(text) {
+  const safe = escapeHtml(String(text || ''));
+  // Bruk bare tydelige muntlige sitattegn, ikke generelle klammer/kilde-ID-er.
+  return safe.replace(/«([^»\n]{2,500})»/g, '<em class="spoken-example">«$1»</em>');
+}
+
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
   const reactionHtml = (guidance.reactions || []).map((item, index) => `
@@ -1523,7 +1529,7 @@ function renderAiGuidance(guidance) {
       <summary class="reaction-card-title"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(item.reaction)}</strong></summary>
       <div class="reaction-card-body">
         <div><small>Hvorfor dette kan skje</small><p>${escapeHtml(item.why_plausible)}</p></div>
-        <div><small>Slik kan du møte det</small><p>${escapeHtml(item.leader_response)}</p></div>
+        <div><small>Slik kan du møte det</small><p>${formatSpeechExamples(item.leader_response)}</p></div>
       </div>
     </details>`).join('');
   const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
@@ -1549,7 +1555,7 @@ function renderAiGuidance(guidance) {
     : '';
 
   const sections = [
-    ['Forslag til åpning', escapeHtml(guidance.opening || '')],
+    ['Forslag til åpning', `<span class="guidance-spoken-example spoken-example">${escapeHtml(guidance.opening || '')}</span>`],
     ['Spørsmål som passer denne saken', list(guidance.questions)],
     ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
@@ -2867,7 +2873,8 @@ function formatInlineReplyMarkdown(text) {
 
   // Begrenset inline-Markdown: fet tekst.
   safe = safe.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-  return safe;
+  // Sitatet er det lederen kan si høyt, mens teksten rundt er forklaring.
+  return safe.replace(/«([^»\n]{2,500})»/g, '<em class="spoken-example">«$1»</em>');
 }
 
 function formatContinuationReply(text) {
