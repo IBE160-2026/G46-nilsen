@@ -9,6 +9,16 @@
 
 ---
 
+## Tillegg 20.11.2026 – innholdsredigering på revisjonsgrenen
+
+`src/client/admin-content.js` kapsler nå visningen av redigerbare tekster, tilstanden «ulagret» og `PUT`-lagring. Modulen bruker eksplisitt dependency injection for DOM, nettverk, HTML-escaping, feltliste, oppdatering av globale innholdstekster og dynamisk brukerrolle. `app.js` er fortsatt integrasjonspunktet; de eksisterende dialog-eventene, feltkatalogen, `GET /api/content` og generelle innholdsoppdateringer er ikke flyttet.
+
+Klientens rollekontroll er et grensesnittvern, **ikke** autorisasjonsgrensen. Express `requireContentEditor` håndhever dette separat. Testbevis er både VM-runtime og headless Chrome for redaktør/admin, og en Express-HTTP-integrasjon mot lokalt syntetisk Supabase/PostgREST. Ingen ekte Supabase-endepunkter eller persondata brukes. Eksisterende benchmark og KI-kostnadsflyt er uendret.
+
+Frontendfilen er eksplisitt tillatt fra produksjonsserver og sensordemo, lastes før `app.js`, og inngår i PWA-shell `20.11.71`. Se [testbevis](../ai/TESTBEVIS-OG-DEKNING-2026-11-18.md) og [teknisk revisjon](../TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md). Ingen merge/deploy fra draft-PR er gjennomført.
+
+---
+
 ## Teknisk revisjonsnotat 20.11.2026 – kun draft-PR #12
 
 Den **pågående revisjonsgrenen**, ikke deployet `main`, har fått et separat klientansvar for administrasjonsdata: `src/client/admin-data.js` registrerer `window.SamtalestotteAdminData.create({ document, fetch, escapeHtml, getCurrentUser })`. `app.js` sender inn avhengighetene og bruker modulens fem funksjoner for brukeroversikt/rolleknapper, rapporterte KI-svar, KI-modellvalg, forbruksstatistikk og kostnadsformattering. `getCurrentUser` leses ved behov slik at endret rolle får virkning i klienten uten ny modulinstans. **Autorisasjonsgrensen ligger fortsatt i Express-serveren**, ikke i disse UI-funksjonene.
