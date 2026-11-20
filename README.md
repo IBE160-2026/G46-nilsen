@@ -6,9 +6,13 @@ Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeiders
 
 Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy. KI-en skal støtte lederens vurdering, ikke erstatte lederens ansvar eller relevant fagkompetanse.
 
-## Prosjektstatus og dokumentasjon – 18.11.2026
+## Prosjektstatus, testbevis og innleveringsgrense – 20.11.2026
+
+**Leveransestatus:** [Innleveringskontroll 20.11](docs/INNLEVERINGSKONTROLL-2026-11-20.md) er fasit for hva som kan dokumenteres. **PR #12 (125 endrede filer) er draft, og `main` inneholder ikke disse revisjonsendringene.** Leveransegren, Canvas-krav og studentens godkjenning er ikke avklart; ingen merge eller deploy er foretatt. Kjør `npm run audit:submission` for en lokal, offline sjekk. **Ikke oppgi at PR-CI er CI for `main`.**
 
 **Samtalestøtte v20.11.5** er en studentprototype. `main` er produksjonsgrunnlaget; alle forbedringene fra den siste kvalitetsrevisjonen ligger på `docs/ibe160-helhetlig-revisjon-20261118` og **er ikke slått sammen eller deployet til produksjon**. LIVE/tale er fortsatt **kun på en separat pilotgren** (`pilot-ux-v20.11`), ikke en del av produksjonsleveransen. FR-23 (en alternativ direkte tekstinngang) er en annen hypotese enn LIVE/tale.
+
+**Historiske milepæler, ikke gjeldende sluttstatus:** Følgende avsnitt beskriver daterte test- og kodeendringer under PR-revisjonen; tall og uavklarte forhold i hvert avsnitt var status *da det trinnet ble gjennomført*. For nyeste samlede status se [leveransekontrollen](docs/INNLEVERINGSKONTROLL-2026-11-20.md), [kravmatrisen](docs/ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md) og siste PR-Quality Gate.
 
 **Historisk Quality Gate for adminmodul-uttrekket (før siste E2E-utvidelser):** [GitHub Actions #44752528974](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44752528974) på commit `a3ca6c2557ddfdb3c5e08ddf9f508f6e6c3dffdd` er **SUCCESS**: **45 deterministiske npm-teststeg**, egen Chrome-test av administrasjon for tre roller, 99 Chrome/CSS-paritetsscenarier, faktisk PostgreSQL/RLS-gransking med to fiktive identiteter, avhengighetsaudit og golden-opptelling. Dette gjelder **bare revisjonsgrenen**, er **ikke** live KI-evaluering og erstatter ikke ekte Supabase Auth/PostgREST-akseptanse.
 
@@ -40,11 +44,11 @@ Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy
 
 1. [PRD – 36 krav](docs/bmad/PRD.md), [arkitektur](docs/bmad/ARCHITECTURE-BMAD.md) og [epics/stories](docs/bmad/EPICS-AND-STORIES-BMAD.md) viser hva appen skal gjøre og hvordan det er tenkt implementert.
 2. [Testbevis per krav](docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md) skiller statisk kontroll, deterministisk test, integrasjon, live KI og menneskelig vurdering. [Revisjonsrapporten](docs/REVISJON-IBE160-2026-11-18.md) viser hva som er rettet og hva som gjenstår.
-3. [Konsentrert refleksjonsutkast](docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md) er på rundt 2 650 ord. [Originalt refleksjonsutkast](docs/REFLEKSJONSRAPPORT-UTKAST.md) med datert historikk er bevart. Innleveringskrav og ordgrense i Canvas er **ikke bekreftet**.
-4. [Sikkerhetskontroll for Supabase](docs/ai/SUPABASE-SIKKERHET-2026-11-18.md), [sikkerhetstest av roller/RLS](docs/ai/SIKKERHETSTEST-ROLLER-RLS-2026-11-20.md) og [historikk-HTTP-test](docs/ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md) dokumenterer faktisk RLS-metadata, lokal Express-test og en **ekte PostgreSQL/RLS-test av V20-8-policyene** med syntetiske identiteter. Dette er fremdeles **ikke** en reell tobrukertest mot Supabase Auth/PostgREST.
+3. [Konsentrert refleksjonsutkast](docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md) er nå på rundt **3 160 ord** (enkel opptelling inkludert overskrifter/metadata), og har ikke status som innlevert. [Originalt refleksjonsutkast](docs/REFLEKSJONSRAPPORT-UTKAST.md) med datert historikk er bevart. **Innleveringskrav, ordgrense og Del 2-rubrikk fra Canvas er fortsatt ikke bekreftet.**
+4. [Sikkerhetskontroll for Supabase](docs/ai/SUPABASE-SIKKERHET-2026-11-18.md), [rolle-/RLS-test](docs/ai/SIKKERHETSTEST-ROLLER-RLS-2026-11-20.md) og [faktisk lokal Supabase Auth/PostgREST-test](docs/ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md) dokumenterer reelle, **lokale** GoTrue-sesjoner og isolasjon av to fiktive brukeres historikk gjennom PostgREST/RLS. **Hosted produksjons-/stagingkonfigurasjon er ikke validert.**
 5. [KI-providerfeil og personvern](docs/ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md) samt [OpenRouter-status](docs/ai/REGRESJON-OPENROUTER-2026-11-18.md) inneholder test → feilfunn → rettelse → ny test.
 
-**Før endelig godkjenning:** Ekte Supabase Auth/RLS i isolert testprosjekt, manuell mobil-/utskrifts-/brukerreise, menneskelig kontroll av dokumentene og faktisk Canvas-rubrikk gjenstår. Supabases varsel om deaktivert kontroll mot kompromitterte passord må vurderes før ordinær bruk. Ikke oppgi at dette er bestått eller publisert bare fordi CI er grønn.
+**Før endelig skoleinnlevering:** Den **ekte lokale** Supabase Auth/RLS-testen, Chromium mobil-touch og PDF-generering er nå bestått på revisjonsgrenen. Gjenstår: faktisk Canvas-oppgave/Del 2-rubrikk, studentens personlige godkjenning av refleksjonen, valgt **leveransegren og SHA**, og ny kvalitetssjekk på akkurat denne commiten. Fysisk mobil-/printreview, hosted Supabase-konfigurasjon og uavhengig KI-faglighet er fortsatt åpne begrensninger. Se [innleveringskontrollen](docs/INNLEVERINGSKONTROLL-2026-11-20.md). Supabases varsel om deaktivert kontroll mot kompromitterte passord må også vurderes før ordinær bruk.
 
 ## Rask tilgang for vurdering
 
