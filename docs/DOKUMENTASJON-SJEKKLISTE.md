@@ -2,6 +2,21 @@
 
 **Formål:** holde dokumentasjonen synkron med faktisk kode og faktisk verifisert funksjonalitet frem mot innlevering.
 
+## Oppdatert beslutningspunkt 20.11.2026
+
+- [x] 36 unike normative PRD-krav og 36 unike sensormatriserader er kontrollert med automatisk, offline `npm run audit:submission`.
+- [x] Faktisk **lokal** GoTrue/PostgREST/RLS med to syntetiske brukere og én admin er bestått; hosted produksjon ikke validert.
+- [x] Reell Chrome-brukerreise, emulert mobile:true/touch (320/390/768 px), samt faktisk 2-siders PDF-rendering med lesbar rådgivning og «Videre råd» er bestått.
+- [x] Refleksjonsutkast er oppdatert til ca. 3 160 ord (ukjent Canvas-ordgrense), med mer presist skille mellom tidligere mocks, reelle lokale integrasjoner og egne læringspunkter.
+- [x] [Quality Gate #44795391699](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44795391699) besto **tre CI-jobber** på revisjonsgren 20.11. Senere commits krever sin egen sluttkontroll.
+- [ ] **Må avklares:** Eksakt Canvas-oppgave/Del 2-rubrikk, frist, ordgrense, rapportformat og forventet GitHub-branch/lenke.
+- [ ] **Må avklares:** Studenten har lest og godkjent eget refleksjonsutkast; eventuelt studentnummer legges **bare** i privat innleveringsfil/Canvas.
+- [ ] **Må avklares:** Velg eksplisitt revisjonsgren/commit eller godkjent merge til `main`, og test på akkurat den leverte versjonen.
+- [ ] Fysisk mobil, menneskelig print-/tilgjengelighetskontroll og eventuelle hosted Auth-krav er åpne; fremstill ikke studentprototypen som produksjonsgodkjent.
+
+**Fasit for gjeldende leveransestatus:** [Innleveringskontroll – 20. november](INNLEVERINGSKONTROLL-2026-11-20.md). Daterte avkryssinger lenger ned viser **historiske milepæler**, ikke gjeldende restanser.
+
+
 ## Pågående revisjon 18.11.2026
 
 Hele prosjektet kontrolleres på separat dokumentasjonsgren med `main` som kontrollgrunnlag. Se `docs/REVISJON-IBE160-2026-11-18.md` for avvik, faglærertilbakemelding 12.11 og presis status på siste CI (feilet 12.11 etter tillegg av `.docs`), samt `docs/bmad/KRAVSPORING-KONTROLL-2026-11-18.md`. Eksisterende avkryssinger viser **historisk** dokumenterte arbeidstrinn og er ikke en ny friskmelding av hovedgrenen. LIVE/tale er fortsatt kun pilot, ikke produksjon.
