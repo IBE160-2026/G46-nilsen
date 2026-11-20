@@ -9,6 +9,16 @@
 
 ---
 
+## Tillegg 20.11.2026 – server-only RPC-adapter og testbevis i faktiske SQL-transaksjoner
+
+Arkitekturgrensen er videreført med `src/server/benchmark-budget-rpc.js`: en test-only serveradapter som injiserer `supabaseAdmin.rpc` for `benchmark_budget_reserve/settle`. Alle bruker-ID-er kommer fra verifisert serverøkt; `spentSoFar` fra browser brukes ikke. Adapteren aksepterer kun godkjente JSON-kontrakter og feiler lukket ved manglende/ugyldig RPC-svar. Ingen KI-kall kan utføres uten bekreftet reservasjon; vellykket svar gis først etter bekreftet oppgjør. Uavklart oppgjør returnerer 503 og bevarer den varige ticketen.
+
+I **vanlig produksjonsmodus er denne flyten fortsatt deaktivert**. Lokal testmodus krever loopback-Supabase, fake-provider-port og `NODE_ENV=test`; både OpenAI og OpenRouter SDK rutes til lokal fake. I GitHub Actions kan den lokale PostgREST-formatbroen videresende faktiske RPC-er til **disponibel PostgreSQL 17**. Dermed testes grensesnittet `Express → Supabase JS → lokal RPC-bro → ekte PostgreSQL → lokal KI-simulator → oppgjør`, men fortsatt **ikke ekte Supabase PostgREST/Auth eller live KI**.
+
+Integrasjonstesten avslørte en SQL-transaksjonsfeil: nytt run-ID ble opprettet før `BUDGET_RUN_BUSY`. Den faktiske SQL-filen er rettet til å unngå «spøkelseskjøringer» på avviste forsøk; SQL-testen verifiserer dette. Se [separat RPC-rapport](../ai/BENCHMARK-RPC-INTEGRASJON-2026-11-20.md). Det gjenstår varig drift/avviksavklaring, ekte isolert Supabase/PostgREST-akseptanse og pålitelig KI-kostnadsbegrensning før produksjon.
+
+---
+
 ## Tillegg 20.11.2026 – varig, atomisk benchmark-regnskap som SQL-forslag
 
 Arkitekturgrensen er nå tydelig dokumentert: Tildeling og oppgjør av budsjett er planlagt som **egen PostgreSQL-transaksjon**, ikke som en klientvariabel eller Node-minnekart. `database/security/benchmark-budget-postgres-proposal.sql` inneholder private `budget_owners/days/runs/attempts` med RLS og backend-only `SECURITY INVOKER`-RPC `benchmark_budget_reserve/settle`. En radlås på bruker serialiserer parallelle forsøk fra forskjellige DB-forbindelser. Uavklarte forsøk forblir sperret over omstarter til eksplisitt avklaring. Ingen prompt eller samtaletekst lagres i regnskapet.
