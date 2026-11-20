@@ -43,6 +43,11 @@ const assert=require("node:assert/strict");
       retain:false,occupation:false,term:"verneutstyr",termPresent:false
     },
     {
+      id:"compound-no-problem",
+      situation:"En utvikler leverer gjentatte ganger senere enn avtalt, uten sikkerhets- eller personvernproblem.",
+      retain:false,occupation:false,term:"sikkerhet",termPresent:false
+    },
+    {
       id:"risk-not-relevant",
       situation:"Vi avklarer hvem som bestiller materiell. Sikkerhet er ikke et tema i denne saken.",
       retain:false,occupation:false,term:"sikkerhet",termPresent:false
