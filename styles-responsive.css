@@ -823,9 +823,6 @@
     margin-top: 7px;
   }
 
-  .simulation-hub-hero > .simulation-logo-crop {
-  }
-
   .utility-title-row {
     gap: 9px;
   }
@@ -961,9 +958,6 @@
 
   .topbar-mobile-brand-lockup {
     flex: 1 1 auto !important;
-  }
-
-  .topbar-mobile-brand-symbol {
   }
 
   .topbar-mobile-brand-word {
@@ -1230,9 +1224,6 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
     place-items: center !important;
     overflow: visible !important;
     justify-self: end !important;
-  }
-
-  .simulation-hub-hero > .simulation-logo-crop img {
   }
 
   html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img,
@@ -1578,17 +1569,6 @@ html[data-theme="hybrid"] #simulation-entry .simulation-entry-icon img {
 }
 
 /* KI-hodet: myk lys halo i mørk/hybrid så den mørke ansiktssiden ikke forsvinner. */
-html[data-theme="dark"] .mobile-nav-ai-glyph img,
-html[data-theme="hybrid"] .mobile-nav-ai-glyph img,
-html[data-theme="dark"] .simulation-ai-heading-icon img,
-html[data-theme="hybrid"] .simulation-ai-heading-icon img,
-html[data-theme="dark"] .simulation-logo-crop img,
-html[data-theme="hybrid"] .simulation-logo-crop img,
-html[data-theme="dark"] .simulation-entry-icon img,
-html[data-theme="hybrid"] .simulation-entry-icon img,
-html[data-theme="dark"] .simulation-avatar img,
-html[data-theme="hybrid"] .simulation-avatar img {
-}
 
 @media (max-width:640px) {
   #structured-guidance .guidance-card {
