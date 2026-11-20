@@ -116,3 +116,18 @@ jobs:
       - name: Verify crash-safe settlement and daily limit after database restart
         run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/benchmark-budget-postgres-restart.sql
 
+      - name: Setup Node for isolated Express-to-actual-Postgres flow
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Install dependencies for local PostgREST bridge
+        run: npm ci
+
+      - name: Test Express + Supabase JS RPC + REAL ephemeral PostgreSQL + fake OpenAI
+        env:
+          BENCHMARK_PG_CONTAINER: ${{ job.services.postgres.id }}
+        run: node tests/test-benchmark-rpc-http.cjs
+
+
