@@ -180,6 +180,7 @@ async function scenario(cdp,role){
     }
     await wait(cdp,"document.querySelector('#admin-view')?.classList.contains('active-view')","nav "+role);
     if(role==="editor"){
+      await wait(cdp,"document.querySelector('#admin-current-role')?.textContent==='Redaktør' && document.querySelector('#admin-users-card')?.hidden && document.querySelector('#admin-ai-card')?.hidden && document.querySelector('#admin-feedback-card')?.hidden","editor role gating completed");
       const v=await js(cdp,"({role:document.querySelector('#admin-current-role').textContent,users:document.querySelector('#admin-users-card').hidden,ai:document.querySelector('#admin-ai-card').hidden,feedback:document.querySelector('#admin-feedback-card').hidden,calls:window.__fixture.calls})");
       assert.equal(v.role,"Redaktør");assert.equal(v.users,true);assert.equal(v.ai,true);assert.equal(v.feedback,true);assert.equal(v.calls.length,0);
       await verifyContentEditingInChrome(cdp,role);return;
