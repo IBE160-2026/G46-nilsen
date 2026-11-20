@@ -35,7 +35,7 @@ Første mobile touch-kjøring ga **godkjent layout i alle tre bredder**, men sto
 
 ## 3. Refleksjonsrapport kontrollert mot kjent faggrunnlag
 
-Arbeidsutkast: `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md`, oppdatert 20.11.2026, ca. **3036 ord** i nåværende Markdown-tekst (enkel whitespace-opptelling, inklusive overskrifter og lenker). Dette er **ikke en godkjent ordgrense**.
+Arbeidsutkast: `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md`, oppdatert 20.11.2026, ca. **3164 ord** i nåværende Markdown-tekst (enkel whitespace-opptelling, inklusive overskrifter og lenker). Dette er **ikke en godkjent ordgrense**.
 
 Kjent undervisnings- og sensorgrunnlag: applikasjon/prosess omtales som **70 %** av vurderingen og refleksjonsrapport som **30 %**; sensorveiledningen for applikasjon/prosess vekter **prosess/KI-styring 30 %, funksjon 20 %, testing 15 %, design/UX 10 %, arkitektur 10 %, README/kjørbarhet 10 %, repo 5 %** *innenfor del 1*. Dette er veiledende vurdering, ikke automatisk karakter eller bekreftede sluttkrav for selve refleksjonsrapporten.
 
