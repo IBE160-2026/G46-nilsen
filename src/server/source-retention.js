@@ -12,7 +12,11 @@ const concreteSourceTerms = [
   "vold", "trus", "ulykke", "sikkerhet", "sikkerhets", "fatigue", "arbeidsevne",
   "hviletid", "arbeidstid", "kjøretid", "autorisasjon", "journal", "taushetsplikt",
   "plantevern", "dyrevelferd", "maskin", "verneutstyr", "høydearbeid", "elektr",
-  "kjemikal", "pasient", "elevkrenk", "elevsikkerhet"
+  "kjemikal", "pasient", "elevkrenk", "elevsikkerhet",
+  // Eksplisitte rettslige spørsmål og systematisk utestenging trenger kildesjekk,
+  // selv når KI har plassert saken under et ordinært samarbeids-/fraværstema.
+  "advarsel", "regelverk", "lovverk", "hvilke regler", "paragraf",
+  "arbeidsmiljøloven", "juridisk", "utesteng", "utfrys", "holdt utenfor", "holdes utenfor"
 ];
 
 export function containsNonNegatedSourceTerm(textValue, termValue) {
@@ -90,7 +94,7 @@ export function requiredEmployerScopedPrimaryLawIds(sources = [], employerType =
 
 export function isLegalSourceContext(textValue = "") {
   const text = normalize(textValue);
-  return /\b(?:lov\w*|regelverk\w*|rettighet\w*|plikt\w*|oppsig\w*|avskjed\w*|varsling\w*|trakassering\w*|diskrimin\w*|sykefravær\w*|sykmeld\w*|tilrettelegg\w*|arbeidstid\w*|overtid\w*|kontrolltiltak\w*|overvåk\w*|hms\w*|sikkerhet\w*|tariff\w*|lønn\w*|forhandling\w*|medbestemmelse\w*|tillitsvalgt\w*)\b/u.test(text);
+  return /\b(?:lov\w*|regelverk\w*|advarsel\w*|rettighet\w*|plikt\w*|oppsig\w*|avskjed\w*|varsling\w*|trakassering\w*|diskrimin\w*|sykefravær\w*|sykmeld\w*|tilrettelegg\w*|arbeidstid\w*|overtid\w*|kontrolltiltak\w*|overvåk\w*|hms\w*|sikkerhet\w*|tariff\w*|lønn\w*|forhandling\w*|medbestemmelse\w*|tillitsvalgt\w*)\b/u.test(text);
 }
 
 export function employerScopedPrimaryLawBonus(source = {}, employerType = "") {
