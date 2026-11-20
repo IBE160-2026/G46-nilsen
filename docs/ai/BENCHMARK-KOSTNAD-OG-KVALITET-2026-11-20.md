@@ -4,6 +4,14 @@
 **Prosjekt:** Samtalestøtte / IBE160, draft PR #12  
 **Miljø:** Bare revisjonsgren, syntetiske testdata, ingen Render-deploy, betalte KI-kall eller Supabase-mutasjoner.
 
+## Tillegg 20.11.2026 – faktisk Express + SDK + disponibel PostgreSQL, fortsatt test-only
+
+Nå finnes en dedikert **server-only RPC-adapter** (`src/server/benchmark-budget-rpc.js`) og to nye tester. `tests/test-benchmark-rpc-http.cjs` verifiserer faktisk Express, Supabase JS SDK og OpenAI SDK mot lokale HTTP-simulatorer. I den disponible PostgreSQL-jobben videresendes **de samme RPC-kallene** fra lokal PostgREST-formatbro til den faktiske PostgreSQL 17-databasen; øvrige tjenester er fortsatt simulerte. Serveren reserverer før provider og gjør opp før den eventuelt svarer 200. Uavklarte oppgjør gir 503 og en vedvarende sperret reservasjon. **52** npm-teststeg.
+
+Den utvidede testen avdekket en SQL-feil: en avvist `BUDGET_RUN_BUSY` opprettet en tom `budget_runs`-rad. Dette er rettet ved å utsette opprettelse til etter kontrollene, og dekket av egen SQL-regresjon. Ingen ekte Supabase PostgREST/Auth-akseptansetest eller betalte KI-kall er gjennomført. **Produksjonsbetalte tester forblir deaktivert.** Se [fullkjede-rapport](BENCHMARK-RPC-INTEGRASJON-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026 – varig PostgreSQL-budsjett: gjennomtestet SQL-forslag, fortsatt ingen produksjonsintegrasjon
 
 Forrige trinn krevde et transaksjonelt, varig regnskap på tvers av instanser. **Forslag og faktiske PostgreSQL-tester finnes nå**, men appens betalte ruter er fortsatt deaktivert i produksjon:
