@@ -94,6 +94,14 @@ De tidligere funksjonene i `app.js` ble erstattet med små delegatorer, slik at 
 
 **Arkitekturbetraktning:** `app.js` ble noe lengre fordi innlasting og feilbehandling er formatert lesbart; det er tilsiktet og ikke framstilt som en ren linjereduksjon. Et eget adminpresentasjonsmodul kan vurderes senere hvis det gjør ansvarsgrensene tydeligere, men ikke som en kosmetisk linjetallsøvelse. Betalte tester er fortsatt blokkert i produksjonsmodus.
 
+### Videreføring 20.11.2026 – isolert PostgreSQL-forslag for atomisk benchmark-regnskap
+
+**SQL-forslag, ikke migrert i produksjon:** `database/security/benchmark-budget-postgres-proposal.sql` oppretter private, RLS-beskyttede `budget_owners`, `budget_days`, `budget_runs` og `budget_attempts`. Eksplisitte rettigheter begrenser både tabeller og `public.benchmark_budget_reserve/settle` (`SECURITY INVOKER`, aldri `SECURITY DEFINER`) til backend-`service_role`. Eiers radlås serialiserer alle transaksjoner for én bruker på tvers av uavhengige PostgreSQL-tilkoblinger. Run-budsjett og dagskvote kan ikke resettes via ny kjøre-ID eller klientens forbrukstall; duplikater og uavklarte forsøk blir stående.
+
+**Ekte PostgreSQL 17-CI:** `tests/sql/benchmark-budget-postgres.sql` verifiserer SQL-grants/denied calls, RLS, transaksjonelle reserveringer, oppgjør, duplikater, feilutfall, kostnad over reserve og at andre brukere ikke kan gjøre opp hverandres tickets. `tests/sql/benchmark-budget-concurrency.sh` lar to databaseprosesser konkurrere om samme bruker og krever nøyaktig én reservasjon. GitHub Actions **restarter faktisk den isolerte databasecontaineren**, før `tests/sql/benchmark-budget-postgres-restart.sql` verifiserer at en uavklart reservasjon fortsatt blokkerer, må avklares eksplisitt og aldri refunderes uten kostnadsbevis. En 500-cent dagskvote testes med 50 syntetiske forsøk. Forslagets idempotente påføring testes to ganger.
+
+**Avgrensning:** Node/Express bruker fremdeles in-memory-konto **kun i isolert testmodus**. SQL-funksjonene er **ikke** aktivert som Supabase-RPC på virkelig prosjekt, og integrasjon hos flere faktiske Render-instanser eller hard leverandørkostgrense er ikke verifisert. Betalte tester forblir deaktivert. Se [utvidet design og kontroll](ai/BENCHMARK-POSTGRES-LEDGER-2026-11-20.md).
+
 ## Uttrekk fra server.js
 
 | Ny fil | Omtrent linjer | Ansvar | Kontroll |
