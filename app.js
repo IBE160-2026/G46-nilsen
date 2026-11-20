@@ -3242,18 +3242,114 @@ async function runPilotRegression(mode='pilot'){
     const passed=results.filter(x=>!x.error&&x.evaluation?.ok).length;
     if(status)status.textContent=`Ferdig: ${passed}/${results.length} åpninger uten automatiske avvik. ${mode==='full'?'Resultatene er logget så de kan gjennomgås samlet.':''}`;
   }finally{
-    if(pilotButton)pilotButton.disabled=false;
-    if(fullButton)fullButton.disabled=false;
+    const canRun=benchmarkConfig?.liveEnabled === true &&
+      regressionCounts?.paidRegressionEnabled === true;
+    if(pilotButton) pilotButton.disabled = !canRun || !(regressionCounts?.pilotCount > 0);
+    if(fullButton) fullButton.disabled = !canRun || !(regressionCounts?.fullCount > 0);
     await loadAdminAiUsage();
   }
 }
-async function loadBenchmarkConfig(){
-  if(currentUser?.role!=='admin')return;const coverage=document.querySelector('#benchmark-coverage');
-  try{const r=await fetch('/api/admin/benchmark/cases',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente testbanken.');benchmarkConfig=p;if(coverage)coverage.textContent=`${p.totalCases} faste testsaker · ${p.totalSubtopics} undertemaer · minst 2 saker per undertema`;const models=document.querySelector('#benchmark-models');if(models)models.innerHTML=(p.models||[]).map(m=>{const gemmaFree=m.id==='google/gemma-4-26b-a4b-it:free';return `<label class="benchmark-model-option"><input type="checkbox" data-benchmark-model value="${escapeHtml(m.id)}" ${gemmaFree?'':'checked'}><span>${escapeHtml(m.label)}${gemmaFree?' · kan ratebegrenses':''}</span></label>`;}).join('');const run=document.querySelector('#benchmark-run-live');if(run)run.disabled=!(p.storageReady&&p.liveEnabled===true);const pilot=document.querySelector('#pilot-regression-run'),full=document.querySelector('#production-regression-run');if(pilot)pilot.disabled=!p.liveEnabled;if(full)full.disabled=!p.liveEnabled;const status=document.querySelector('#benchmark-live-status');if(!p.storageReady&&status)status.textContent='Kjør database/migrations/V20-4-SUPABASE-MIGRATION.sql før ekte benchmark.';if(!p.liveEnabled&&status)status.textContent='Betalt benchmark er sperret inntil varig, atomisk serverbudsjett er klart.';try{const rr=await fetch('/api/admin/benchmark/results',{credentials:'include',cache:'no-store'});const rp=await rr.json();if(rr.ok){renderBenchmarkResults((rp.items||[]).slice(0,24));renderBenchmarkSummary((rp.items||[]).slice(0,24));}}catch(_){}}catch(error){if(coverage)coverage.textContent=error.message;}
+let regressionCounts = null;
+
+async function loadRegressionCounts() {
+  const description = document.querySelector('#pilot-regression-description');
+  const pilotButton = document.querySelector('#pilot-regression-run');
+  const fullButton = document.querySelector('#production-regression-run');
+  if(pilotButton) pilotButton.disabled = true;
+  if(fullButton) fullButton.disabled = true;
+  regressionCounts = null;
+  try {
+    const response = await fetch('/api/admin/pilot-regression/cases?summary=1', {
+      credentials:'include',cache:'no-store'
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.message || 'Kunne ikke hente golden-casebanken.');
+    const { pilotCount, fullCount } = data;
+    if(!Number.isSafeInteger(pilotCount) || !Number.isSafeInteger(fullCount) ||
+       pilotCount < 0 || fullCount < 1 || pilotCount > fullCount) {
+      throw new Error('Golden-casebanken returnerte ugyldige antall.');
+    }
+    regressionCounts = { pilotCount, fullCount, paidRegressionEnabled:data.paidRegressionEnabled === true };
+    const pilotWord = pilotCount === 1 ? 'pilotcase' : 'pilotcaser';
+    const fullWord = fullCount === 1 ? 'sak' : 'saker';
+    if(description) description.textContent =
+      `Produksjonsflyt-test: ${pilotCount} ${pilotWord} bruker ${pilotCount * 2} KI-kall. ` +
+      `Alle ${fullCount} ${fullWord} bruker ${fullCount * 2} KI-kall ` +
+      '(analyse + veiledning), inkludert pilotcasene. ' +
+      'Resultatene merkes som testtrafikk og åpningene logges for samlet gjennomgang.';
+    const enabled = benchmarkConfig?.liveEnabled === true &&
+      regressionCounts.paidRegressionEnabled && pilotCount > 0;
+    if(pilotButton) {
+      pilotButton.textContent = `Kjør ${pilotCount} ${pilotWord}`;
+      pilotButton.disabled = !enabled;
+    }
+    if(fullButton) {
+      fullButton.textContent = `Kjør alle ${fullCount} i produksjonsflyt`;
+      fullButton.disabled = !enabled;
+    }
+  } catch(error) {
+    if(description) description.textContent =
+      'Kunne ikke hente antall pilot- og fulltestsaker: ' + error.message;
+  }
+}
+
+async function loadBenchmarkConfig() {
+  if(currentUser?.role !== 'admin') return;
+  const coverage = document.querySelector('#benchmark-coverage');
+  const run = document.querySelector('#benchmark-run-live');
+  const allOption = document.querySelector('#benchmark-case-set option[value="all"]');
+  if(run) run.disabled = true;
+  if(allOption) allOption.disabled = true;
+  try {
+    const response = await fetch('/api/admin/benchmark/cases', {
+      credentials:'include',cache:'no-store'
+    });
+    const data = await response.json();
+    if(!response.ok) throw new Error(data.message || 'Kunne ikke hente testbanken.');
+    if(!Array.isArray(data.cases) || !Number.isSafeInteger(data.totalCases) ||
+       data.totalCases < 1 || data.cases.length !== data.totalCases) {
+      throw new Error('Benchmarkbanken har motstridende eller tomt antall testsaker.');
+    }
+    benchmarkConfig = data;
+    if(coverage) coverage.textContent =
+      `${data.totalCases} faste testsaker · ${data.totalSubtopics} undertemaer · minst 2 saker per undertema`;
+    if(allOption) {
+      allOption.textContent = `Alle ${data.cases.length} saker`;
+      allOption.disabled = false;
+    }
+    const models = document.querySelector('#benchmark-models');
+    if(models) models.innerHTML = (data.models || []).map(model => {
+      const gemmaFree = model.id === 'google/gemma-4-26b-a4b-it:free';
+      return `<label class="benchmark-model-option"><input type="checkbox" data-benchmark-model value="${escapeHtml(model.id)}" ${gemmaFree ? '' : 'checked'}><span>${escapeHtml(model.label)}${gemmaFree ? ' · kan ratebegrenses' : ''}</span></label>`;
+    }).join('');
+    if(run) run.disabled = !(data.storageReady && data.liveEnabled === true);
+    const status = document.querySelector('#benchmark-live-status');
+    if(!data.storageReady && status) status.textContent =
+      'Kjør database/migrations/V20-4-SUPABASE-MIGRATION.sql før ekte benchmark.';
+    if(!data.liveEnabled && status) status.textContent =
+      'Betalt benchmark er sperret inntil varig, atomisk serverbudsjett er klart.';
+    await loadRegressionCounts();
+    try {
+      const resultsResponse = await fetch('/api/admin/benchmark/results', {
+        credentials:'include',cache:'no-store'
+      });
+      const payload = await resultsResponse.json();
+      if(resultsResponse.ok) {
+        renderBenchmarkResults((payload.items || []).slice(0,24));
+        renderBenchmarkSummary((payload.items || []).slice(0,24));
+      }
+    } catch(_) {}
+  } catch(error) {
+    benchmarkConfig = null;
+    regressionCounts = null;
+    if(coverage) coverage.textContent = error.message;
+    const description = document.querySelector('#pilot-regression-description');
+    if(description) description.textContent = 'Antall kan ikke vises før testbanken er tilgjengelig.';
+  }
 }
 async function runBenchmarkMock(){const button=document.querySelector('#benchmark-run-mock'),status=document.querySelector('#benchmark-mock-result');if(button)button.disabled=true;if(status)status.textContent=`Tester ${benchmarkConfig?.totalCases||'alle'} saker …`;try{const r=await fetch('/api/admin/benchmark/mock',{method:'POST',credentials:'include'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Fulltesten feilet.');if(status)status.textContent=p.ok?`Bestått: ${p.checks.cases} saker / ${p.checks.subtopics} undertemaer · 0 KI-kostnad`:`Feil: ${(p.problems||[]).join('; ')}`;}catch(error){if(status)status.textContent=error.message;}finally{if(button)button.disabled=false;}}
 async function runBenchmarkLive(){
-  if(benchmarkRunning||!benchmarkConfig)return;const models=benchmarkSelectedModels();if(!models.length){alert('Velg minst én KI-modell.');return;}const count=Math.min(Number(document.querySelector('#benchmark-case-set')?.value||8),benchmarkConfig.totalCases||112);const cases=benchmarkSelectCases(count);const budget=Math.min(5,Math.max(.1,Number(document.querySelector('#benchmark-budget')?.value||2)));const total=cases.length*models.length;
+  if(benchmarkRunning||!benchmarkConfig?.liveEnabled||!benchmarkConfig.storageReady)return;const models=benchmarkSelectedModels();if(!models.length){alert('Velg minst én KI-modell.');return;}const count=window.SamtalestotteBenchmarkEvaluation.resolveCaseCount(document.querySelector('#benchmark-case-set')?.value,benchmarkConfig.cases.length);const cases=benchmarkSelectCases(count);const budget=Math.min(5,Math.max(.1,Number(document.querySelector('#benchmark-budget')?.value||2)));const total=cases.length*models.length;
   if(!confirm(`Kjøre ${cases.length} testsaker på ${models.length} modeller = ${total} ekte KI-kall?
 
 Maks budsjett: $${budget.toFixed(2)}. Testen kan stoppes når som helst.`))return;
