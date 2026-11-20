@@ -88,6 +88,21 @@ export function verifiedSupplementarySources(items = [], verifiedSources = new M
   return result;
 }
 
+// Kildeproveniens som kan testes gjennom det faktiske HTTP-svaret.
+// Et utført søk eller en URL-annotasjon beviser IKKE at en side er lest,
+// eller at den støtter en konkret juridisk/faglig påstand.
+export function evidenceProvenance(response, curatedSourceIds = [], evidenceSources = []) {
+  const output = Array.isArray(response?.output) ? response.output : [];
+  const providerUrls = webSources(response);
+  return {
+    webSearchPerformed: output.some(item => item?.type === "web_search_call"),
+    providerUrlCount: providerUrls.size,
+    selectedCuratedSourceCount: Array.isArray(curatedSourceIds) ? curatedSourceIds.length : 0,
+    visibleEvidenceCount: Array.isArray(evidenceSources) ? evidenceSources.length : 0,
+    contentVerified: false
+  };
+}
+
 export function markdownWebSources(text = "", verifiedSources = new Map()) {
   const found = [];
   const regex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
