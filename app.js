@@ -3138,16 +3138,22 @@ function applyContentOverrides(){
   if(currentTopic && views.topic?.classList.contains('active-view')) openTopic(currentTopic,pendingSituationText);
 }
 async function loadContentOverrides(){try{const response=await fetch('/api/content',{cache:'no-store'});if(response.ok){const payload=await response.json();contentOverrides=payload.values||{};applyContentOverrides();return payload;}}catch(_){}return{values:{},setupRequired:false};}
-function renderAdminContentFields(){
-  const host=document.querySelector('#admin-content-fields');if(!host)return;
-  host.className='admin-content-fields admin-content-sections';
-  host.innerHTML=allContentSections().map((section,sectionIndex)=>`<details class="admin-content-section" ${sectionIndex===0?'open':''}><summary><span>${escapeHtml(section.title)}</span><small>${section.fields.length} tekstfelt</small></summary><div class="admin-section-fields">${section.fields.map(field=>`<label class="admin-edit-field"><span>${escapeHtml(field.label)}</span><small>${escapeHtml(field.key)}</small><textarea data-admin-content-key="${escapeHtml(field.key)}" rows="${field.multiline?4:2}">${escapeHtml(contentValue(field.key,defaultContentValue(field)))}</textarea></label>`).join('')}</div></details>`).join('');
-  host.querySelectorAll('[data-admin-content-key]').forEach(input=>input.addEventListener('input',markAdminDirty));
-}
-let adminContentDirty=false;
-function markAdminDirty(){adminContentDirty=true;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=false;const save=document.querySelector('#admin-save-content');if(save)save.disabled=false;}
-function clearAdminDirty(){adminContentDirty=false;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=true;const save=document.querySelector('#admin-save-content');if(save)save.disabled=true;}
-async function saveAdminContent(){const msg=document.querySelector('#admin-content-message'),values={};document.querySelectorAll('[data-admin-content-key]').forEach(input=>{values[input.dataset.adminContentKey]=input.value.trim();});try{const response=await fetch('/api/admin/content',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({values})});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke lagre innholdet.');contentOverrides={...contentOverrides,...values};applyContentOverrides();clearAdminDirty();if(msg){msg.className='auth-message success';msg.textContent='Endringene er lagret og vises med en gang.';}}catch(error){if(msg){msg.className='auth-message error';msg.textContent=error.message;}}}
+// Redigerbar tekst har egen tilstand, men deler samme contentOverrides som klienten.
+// Rolle og tekstdata leses på nytt ved hver handling, ikke fra en oppstartskopi.
+const { renderAdminContentFields, clearAdminDirty, isAdminContentDirty, saveAdminContent } =
+  window.SamtalestotteAdminContent.create({
+    document,
+    fetch: (...args) => window.fetch(...args),
+    escapeHtml,
+    allContentSections,
+    contentValue,
+    defaultContentValue,
+    getCurrentUser: () => currentUser,
+    persistContentOverrides: values => {
+      contentOverrides = { ...contentOverrides, ...values };
+      applyContentOverrides();
+    }
+  });
 // Admin-datafunksjoner er isolert fra resten av appens globale tilstand.
 // Brukeren leses ved hvert kall, slik at rolleendringer etter innlogging ikke fryses.
 const { loadAdminUsers, loadAdminFeedback, loadAdminAiSettings, loadAdminAiUsage, formatUsd } =
@@ -3587,8 +3593,8 @@ document.querySelector('#ai-feedback-comment')?.addEventListener('input',()=>{
 document.querySelector('#ai-feedback-form')?.addEventListener('submit',async event=>{event.preventDefault();const category=document.querySelector('#ai-feedback-category')?.value||'Annet';const comment=document.querySelector('#ai-feedback-comment')?.value.trim()||'';const message=document.querySelector('#ai-feedback-message');const findings=detectSensitiveInfo(comment);if(splitPrivacyFindings(findings).hard.length){message.className='auth-message error';message.textContent='Fjern navn eller andre tydelige personopplysninger før tilbakemeldingen sendes.';return;}if(comment.length<3){message.className='auth-message error';message.textContent='Skriv kort hva som var problemet.';return;}const includeConversation=Boolean(document.querySelector('#ai-feedback-include-conversation')?.checked);let conversationSnapshot=null;if(includeConversation){const attachmentFindings=updateFeedbackAttachmentPrivacy();if(splitPrivacyFindings(attachmentFindings).hard.length){message.className='auth-message error';message.textContent='Samtalen må anonymiseres før den kan legges ved.';return;}conversationSnapshot=buildFeedbackConversationSnapshot(pendingAiFeedback.surface,pendingAiFeedback.turnIndex);}try{const r=await fetch('/api/ai-feedback',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({category,comment,surface:pendingAiFeedback.surface,turnIndex:pendingAiFeedback.turnIndex,conversationId:currentConversationId||null,topicId:currentTopic?.id||null,subtopic:currentSubtopic||null,includeConversation,conversationSnapshot})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke sende tilbakemeldingen.');message.className='auth-message success';message.textContent=includeConversation?'Takk. Tilbakemeldingen og samtalen er lagret.':'Takk. Tilbakemeldingen er lagret uten samtaleteksten.';setTimeout(closeAiFeedback,800);}catch(error){message.className='auth-message error';message.textContent=error.message;}});
 
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
-document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(adminContentDirty&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;await loadContentOverrides();renderAdminContentFields();clearAdminDirty();});
-document.querySelector('#admin-content-form')?.addEventListener('submit',event=>{event.preventDefault();if(!adminContentDirty)return;document.querySelector('#admin-save-dialog')?.showModal();});
+document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(isAdminContentDirty()&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;await loadContentOverrides();renderAdminContentFields();clearAdminDirty();});
+document.querySelector('#admin-content-form')?.addEventListener('submit',event=>{event.preventDefault();if(!isAdminContentDirty())return;document.querySelector('#admin-save-dialog')?.showModal();});
 document.querySelector('#admin-save-cancel')?.addEventListener('click',()=>document.querySelector('#admin-save-dialog')?.close());
 document.querySelector('#admin-save-confirm')?.addEventListener('click',async()=>{document.querySelector('#admin-save-dialog')?.close();await saveAdminContent();});
 document.querySelector('#admin-save-ai-model')?.addEventListener('click',async()=>{const model=document.querySelector('#admin-ai-model')?.value;const option=document.querySelector('#admin-ai-model')?.selectedOptions?.[0]?.textContent||model;if(!model)return;if(!confirm(`Bytte KI-modell til ${option}?\n\nEn dyrere modell kan øke API-kostnadene for alle nye KI-kall.`))return;const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message';msg.textContent='Lagrer …';try{const r=await fetch('/api/admin/ai-settings',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({model})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre modellvalget.');msg.className='auth-message success';msg.textContent='KI-modellen er endret. Nye KI-kall bruker dette valget.';}catch(error){msg.className='auth-message error';msg.textContent=error.message;}});
