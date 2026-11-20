@@ -1424,6 +1424,35 @@
       "bindingStatus": "binding_law"
     },
     {
+      "id": "LOVDATA_BARNEHAGELOVEN",
+      "authority": "Lovdata",
+      "title": "Barnehageloven – barnehagemiljø og ansvar",
+      "url": "https://lovdata.no/dokument/NL/lov/2005-06-17-64",
+      "sectors": [
+        "education_childcare"
+      ],
+      "occupations": [
+        "barnehagelærer",
+        "barnehagestyrer",
+        "pedagogisk leder",
+        "barnehageassistent"
+      ],
+      "useFor": [
+        "barnehageloven",
+        "barnehagemiljø",
+        "barnehagebemanning",
+        "barns rettigheter",
+        "barnehageplikt",
+        "oplysningsplikt"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "law_database",
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law",
+      "contextualOnly": true
+    },
+    {
       "id": "LOVDATA_DYREHELSEPERSONELLOVEN",
       "authority": "Lovdata",
       "title": "Dyrehelsepersonelloven – lov om veterinærer og annet dyrehelsepersonell",
@@ -1474,6 +1503,103 @@
         "forsvarlig stell",
         "dyrebeskyttelse",
         "dyrevelferdstilsyn"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "law_database",
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law",
+      "contextualOnly": true
+    },
+    {
+      "id": "LOVDATA_HELSEPERSONELLOVEN",
+      "authority": "Lovdata",
+      "title": "Helsepersonelloven – plikter ved helsehjelp",
+      "url": "https://lovdata.no/dokument/NL/lov/1999-07-02-64",
+      "sectors": [
+        "health_care"
+      ],
+      "occupations": [
+        "lege",
+        "sykepleier",
+        "vernepleier",
+        "psykolog",
+        "tannlege",
+        "tannpleier",
+        "fysioterapeut",
+        "ergoterapeut",
+        "jordmor",
+        "bioingeniør",
+        "ambulansearbeider",
+        "helsefagarbeider",
+        "helsesekretær",
+        "radiograf",
+        "fotterapeut",
+        "apotektekniker"
+      ],
+      "useFor": [
+        "helsepersonelloven",
+        "forsvarlighet",
+        "taushetsplikt",
+        "journalplikt",
+        "pasientsikkerhet",
+        "opplysningsplikt",
+        "autorisasjon"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "law_database",
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law",
+      "contextualOnly": true
+    },
+    {
+      "id": "LOVDATA_LUFTFARTSLOVEN",
+      "authority": "Lovdata",
+      "title": "Luftfartsloven – lov om luftfart",
+      "url": "https://lovdata.no/dokument/NL/lov/1993-06-11-101",
+      "sectors": [
+        "aviation"
+      ],
+      "useFor": [
+        "luftfartsloven",
+        "luftfartssikkerhet",
+        "sertifikat",
+        "flyoperasjon",
+        "luftfart",
+        "luftfartøy"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "law_database",
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law",
+      "contextualOnly": true
+    },
+    {
+      "id": "LOVDATA_OPPLAERINGSLOVA_2023",
+      "authority": "Lovdata",
+      "title": "Opplæringslova – skole, skolemiljø og aktivitetsplikt",
+      "url": "https://lovdata.no/dokument/NL/lov/2023-06-09-30",
+      "sectors": [
+        "education_childcare"
+      ],
+      "occupations": [
+        "lærer",
+        "spesialpedagog",
+        "skoleleder",
+        "lærerassistent",
+        "skoleassistent",
+        "SFO/AKS-medarbeider"
+      ],
+      "useFor": [
+        "opplæringslova",
+        "skolemiljø",
+        "elevsikkerhet",
+        "aktivitetsplikt",
+        "eleven sin rett",
+        "særskilt tilrettelegging",
+        "skoleansvar"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-20",
