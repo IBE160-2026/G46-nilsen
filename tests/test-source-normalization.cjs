@@ -27,7 +27,7 @@ assert.equal(sources[0].url,"https://example.org/item");
 assert.equal(stripInlineSourceLinks("Les https://falsk.example/lov og gå videre."),
   "Les og gå videre.","Rå URL-er må aldri slippe gjennom kilderensingen");
 assert.equal(stripInlineSourceLinks("Se (https://falsk.example/lov) og <https://falsk.example/anna>."),
-  "Se og .","Rå URL-er i parentes eller autolenker skal fjernes");
+  "Se og.","Rå URL-er i parentes eller autolenker skal fjernes");
 assert.equal(stripInlineSourceLinks("Ikke stol på www.falsk.example/guide."),
   "Ikke stol på","www-lenker er også uverifiserte kildehenvisninger");
 const sourceText = "Se https://falsk.example/lov for flere råd.";
