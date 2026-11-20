@@ -25,8 +25,8 @@ const fakeProvider = http.createServer(async(req,res)=>{
   const continuation = request?.text?.format?.name === "samtalestotte_oppfolging";
   const modelContent = continuation
     ? {
-        reply:"Be om fakta og hør begge sider. Les [kilde](" + expectedUrl + ") før du vurderer videre reaksjon.",
-        suggestions:["Hvordan dokumenterer jeg saken?","Hva bør jeg spørre om?"],
+        reply:"Be om fakta og hør begge sider. Les [kilde](" + expectedUrl + ") før du vurderer videre reaksjon. En oppdiktet nettside " + forgedUrl + " må ikke stå i svaret.",
+        suggestions:["Hvordan dokumenterer jeg saken?","Hva bør jeg spørre om? Se www.oppdiktet.example.test/tiltak"],
         source_ids:[],
         supplementary_sources:[
           {title:"FALSK LOV",author:"Lovdata",year:"2026",type:"bindende lov",url:expectedUrl+"?utm_source=modell"},
@@ -34,10 +34,10 @@ const fakeProvider = http.createServer(async(req,res)=>{
         ]
       }
     : {
-        opening:"Jeg vil gjerne forstå hva som har skjedd og høre din opplevelse før vi bestemmer oss.",
-        questions:["Hva skjedde konkret?","Hvem bør vi snakke med?"],
-        reactions:[],check_before_meeting:[],attention:[],next_steps:[],
-        legal_hr_note:"Se [kilde](" + expectedUrl + ") og [oppdiktet](" + forgedUrl + ").",
+        opening:"Jeg vil gjerne forstå hva som har skjedd og høre din opplevelse før vi bestemmer oss. Se " + forgedUrl,
+        questions:["Hva skjedde konkret?","Hvem bør vi snakke med? Se <" + forgedUrl + ">."],
+        reactions:[{reaction:"Se " + forgedUrl,why_plausible:"Fordi se " + forgedUrl,leader_response:"Avklar før du bruker ( " + forgedUrl + " )"}],check_before_meeting:["Bruk " + forgedUrl],attention:["Ikke kopier " + forgedUrl],next_steps:["Kontroller www.oppdiktet.example.test/tiltak"],
+        legal_hr_note:"Se [kilde](" + expectedUrl + ") og [oppdiktet](" + forgedUrl + "). Besøk " + forgedUrl,
         source_ids:[],
         supplementary_sources:[
           {title:"FALSK LOV",author:"Lovdata",year:"2026",type:"bindende lov",url:expectedUrl+"?utm_campaign=test"},
@@ -126,12 +126,17 @@ function checkResult(result,label) {
       topicId:"Samarbeid og kommunikasjon",subtopic:"Utestenging",employerType:"private"};
     const guidance=await call("/api/generate-guidance",data);
     checkResult(guidance,"Første råd");
-    assert(!guidance.legal_hr_note.includes(forgedUrl),"Bogus inline source URL visible in initial advice");
+    for(const field of ["opening","questions","reactions","check_before_meeting","attention","next_steps","legal_hr_note"]){
+      assert(!JSON.stringify(guidance[field]).includes("oppdiktet.example.test"),
+        "Forged URL in guidance display field: "+field);
+    }
     const continuation=await call("/api/continue-conversation",{
       ...data,guidance,question:"Kan jeg gi en skriftlig advarsel med en gang?"
     });
     checkResult(continuation,"Oppfølging");
-    assert(!continuation.reply.includes(forgedUrl),"Bogus inline source URL visible in follow-up");
+    assert(!continuation.reply.includes("oppdiktet.example.test"),"Bogus inline source URL visible in follow-up");
+    assert(!JSON.stringify(continuation.suggestions).includes("oppdiktet.example.test"),
+      "Bogus URL visible in follow-up suggested questions");
     assert.equal(providerRequests.length,2,"Both endpoints must reach only local fake provider");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
