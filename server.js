@@ -13,6 +13,7 @@ import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
+import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
 import { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
@@ -104,6 +105,9 @@ const benchmarkBudgetLedger = createBenchmarkBudgetLedger();
 const benchmarkLiveMockOnly = process.env.NODE_ENV === "test" &&
   process.env.TEST_BENCHMARK_LIVE === "1" &&
   /^\d{4,5}$/.test(String(process.env.TEST_FAKE_OPENAI_PORT || ""));
+// Database-backed path is accessible ONLY from explicitly isolated fake-provider tests.
+// Do not enable on Render: proposal SQL has not been migrated to live Supabase.
+const benchmarkRpcTestOnly = benchmarkLiveMockOnly && process.env.TEST_BENCHMARK_LEDGER === "rpc";
 
 app.use("/api", generalApiLimiter);
 
@@ -339,6 +343,9 @@ function authenticatedUserClient(accessToken) {
 
 const supabaseAdmin = createClient(supabaseUrl, supabaseSecretKey, {
   auth: { persistSession: false, autoRefreshToken: false, detectSessionInUrl: false }
+});
+const benchmarkRpcLedger = createBenchmarkRpcBudgetLedger({
+  rpc: (name, args) => supabaseAdmin.rpc(name, args)
 });
 
 // Automatisk dataminimering/lagringsbegrensning for logger, feedback, benchmark og brukertestdata.
@@ -790,81 +797,143 @@ app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
 });
 
 app.post('/api/admin/benchmark/live', benchmarkLimiter, requireAdmin, async (req,res)=>{
-  if(!benchmarkLiveMockOnly) return res.status(503).json({error:'BENCHMARK_PAID_DISABLED',message:'Ekte benchmark er deaktivert til delt og varig kostnadskontroll er på plass.'});
-  if(!hasAnyAiClient()) return res.status(503).json({error:'AI_NOT_CONFIGURED',message:'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.'});
-  const caseId=String(req.body?.caseId||''); const model=String(req.body?.model||'');
+  if(!benchmarkLiveMockOnly) return res.status(503).json({
+    error:'BENCHMARK_PAID_DISABLED',
+    message:'Ekte benchmark er deaktivert til delt og varig kostnadskontroll er på plass.'
+  });
+  if(!hasAnyAiClient()) return res.status(503).json({
+    error:'AI_NOT_CONFIGURED',
+    message:'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.'
+  });
+  const caseId=String(req.body?.caseId||'');
+  const model=String(req.body?.model||'');
   const runId=String(req.body?.runId||'').slice(0,80);
   const budget=req.body?.budgetUsd;
-  // spentSoFar fra klienten blir aldri brukt til kostnadsbeslutninger.
-  // Regnskapet er servereid, og reservasjonsfunksjonen er synkron før første await.
   const item=benchmarkCaseById.get(caseId);
   if(!item) return res.status(400).json({error:'INVALID_CASE',message:'Ukjent testsak.'});
   if(!AI_MODELS[model]) return res.status(400).json({error:'INVALID_MODEL',message:'Ugyldig KI-modell.'});
-  const admission=benchmarkBudgetLedger.reserve({
-    userId:req.user.id, runId, caseId, model, budgetUsd:budget
-  });
+
+  // Authenticated user ID from requireAdmin; NEVER the browser's spentSoFar.
+  const ledger=benchmarkRpcTestOnly ? benchmarkRpcLedger : benchmarkBudgetLedger;
+  let admission;
+  try {
+    admission=await ledger.reserve({
+      userId:req.user.id,runId,caseId,model,budgetUsd:budget
+    });
+  } catch(error) {
+    console.error('[benchmark-budget] Kunne ikke bekrefte reservasjon:',{code:error?.code});
+    return res.status(503).json({
+      error:'BENCHMARK_LEDGER_UNAVAILABLE',
+      message:'Budsjettjenesten er utilgjengelig. Ingen KI-kall ble startet.'
+    });
+  }
   if(!admission.ok) return res.status(admission.status).json({
     error:admission.error,message:admission.message
   });
-  let estimatedCost=null;
 
-  const benchmarkPrompt=`Du deltar i en kontrollert benchmark av Samtalestøtte. Gi et kort, konkret og profesjonelt råd til en leder.
-Forventet hovedtema: ${item.topic}
-Forventet undertema: ${item.subtopic}
-Situasjon: ${item.situation}
-
-Krav:
-- Svar på norsk.
-- 120–180 ord.
-- Skill mellom fakta og antakelser.
-- Ikke dikt opp virksomhetsregler eller personopplysninger.
-- Bruk nettsøk bare dersom oppdatert eller presis ekstern informasjon faktisk er nødvendig.
-- Hvis du søker: prioriter norske myndighetskilder og relevante fagmiljøer.
-- Ikke omtale dette som en test i selve rådet.`;
+  const benchmarkPrompt=[
+    'Du deltar i en kontrollert benchmark av Samtalestøtte. Gi et kort, konkret og profesjonelt råd til en leder.',
+    'Forventet hovedtema: '+item.topic,
+    'Forventet undertema: '+item.subtopic,
+    'Situasjon: '+item.situation,
+    '',
+    'Krav:',
+    '- Svar på norsk.',
+    '- 120–180 ord.',
+    '- Skill mellom fakta og antakelser.',
+    '- Ikke dikt opp virksomhetsregler eller personopplysninger.',
+    '- Bruk nettsøk bare dersom oppdatert eller presis ekstern informasjon faktisk er nødvendig.',
+    '- Hvis du søker: prioriter norske myndighetskilder og relevante fagmiljøer.',
+    '- Ikke omtale dette som en test i selve rådet.'
+  ].join('\n');
   const started=Date.now();
-  try{
-    const benchmarkTools = AI_MODELS[model]?.provider === 'openai' ? [{type:'web_search',search_context_size:'low'}] : undefined;
-    const benchmarkParams={_functionName:'benchmark',_userId:req.user.id,_topicId:item.topicId,_subtopic:item.subtopic,_trustedInternal:true,_modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],max_output_tokens:450};
+  let estimatedCost=null;
+  let outcome='uncertain';
+  let responseStatus=500;
+  let responseBody={error:'BENCHMARK_FAILED',message:'Benchmark-kallet feilet.'};
+  try {
+    const benchmarkTools=AI_MODELS[model]?.provider==='openai'
+      ? [{type:'web_search',search_context_size:'low'}] : undefined;
+    const benchmarkParams={
+      _functionName:'benchmark',_userId:req.user.id,
+      _topicId:item.topicId,_subtopic:item.subtopic,_trustedInternal:true,
+      _modelOverride:model,_isTest:true,_benchmarkRunId:runId,_benchmarkCaseId:caseId,
+      instructions:'Du er Samtalestøtte, et beslutningsstøtteverktøy for ledere. Vær konkret, nøktern og ikke-diagnostiserende.',
+      input:[{role:'user',content:[{type:'input_text',text:benchmarkPrompt}]}],
+      max_output_tokens:450
+    };
     if(benchmarkTools) benchmarkParams.tools=benchmarkTools;
     const response=await createTrackedResponse(benchmarkParams);
-    const latencyMs=Date.now()-started; const usage=response.__samtalestotteUsage||{}; const web=usage.web||extractWebSearchMeta(response);
+    const latencyMs=Date.now()-started;
+    const usage=response.__samtalestotteUsage||{};
+    const web=usage.web||extractWebSearchMeta(response);
     estimatedCost=usage.estimatedCostUsd;
-    const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id};
+    const row={
+      run_id:runId,case_id:caseId,topic_id:item.topicId,
+      topic:item.topic,subtopic:item.subtopic,variant:item.variant,
+      model,response_text:String(response.output_text||''),
+      input_tokens:Number(usage.inputTokens||0),
+      output_tokens:Number(usage.outputTokens||0),
+      estimated_cost_usd:Number(usage.estimatedCostUsd||0),
+      web_search_count:Number(web.count||0),
+      web_search_queries:web.queries||[],source_domains:web.domains||[],
+      source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id
+    };
     const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
-    if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør database/migrations/V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
-    res.json({ok:true,id:save.data?.id,...row});
- }catch(error){
-  console.error("Benchmark-feil:", {
-    model,
-    caseId,
-    status: error?.status,
-    message: error?.message,
-    code: error?.code,
-    error: error?.error
-  });
+    if(save.error) {
+      responseStatus=503;
+      responseBody={
+        error:'BENCHMARK_STORAGE_MISSING',
+        message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør database/migrations/V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',
+        result:row
+      };
+      // Provider may have incurred cost. Storage failure does NOT release ticket.
+    } else {
+      responseStatus=200;
+      responseBody={ok:true,id:save.data?.id,...row};
+      outcome='success';
+    }
+  } catch(error) {
+    console.error('Benchmark-feil:',{
+      model,caseId,status:error?.status,message:error?.message,
+      code:error?.code,error:error?.error
+    });
+    const status=Number(error?.status)||500;
+    const providerRateLimited=status===429 && model==='google/gemma-4-26b-a4b-it:free';
+    responseStatus=status>=400&&status<600?status:500;
+    responseBody={
+      error:'BENCHMARK_FAILED',
+      message:providerRateLimited
+        ? 'Gemma Free er midlertidig ratebegrenset hos OpenRouter (429). Prøv senere eller velg en annen modell.'
+        : (error?.message || 'Benchmark-kallet feilet.'),
+      model,caseId,status:error?.status||null,code:error?.code||null
+    };
+    outcome='failed';
+  }
 
-  const status=Number(error?.status)||500;
-
-  const providerRateLimited = status === 429 && model === 'google/gemma-4-26b-a4b-it:free';
-  res.status(status>=400&&status<600?status:500).json({
-    error:'BENCHMARK_FAILED',
-    message:providerRateLimited
-      ? 'Gemma Free er midlertidig ratebegrenset hos OpenRouter (429). Prøv senere eller velg en annen modell.'
-      : (error?.message || 'Benchmark-kallet feilet.'),
-    model,
-    caseId,
-    status:error?.status || null,
-    code:error?.code || null
-  });
-} finally {
-  // Oppgjør også ved providerfeil og DB-lagringsfeil. Reservasjonen blir aldri
-  // tilbakebetalt på grunnlag av manglende svar eller klientrapporterte tall.
-  const ledger=benchmarkBudgetLedger.settle(admission.ticket,estimatedCost);
-  if(ledger.overBudget) console.warn('[benchmark-budget] Kostnadsestimat overskred reservasjonen; videre kall sperres.',{
-    runId,userId:req.user.id,chargedUsd:ledger.chargedUsd,
-    runReservedUsd:ledger.runReservedUsd,userDayReservedUsd:ledger.userDayReservedUsd
-  });
-}
+  // Never acknowledge even a successful AI response before durable settlement.
+  // RPC/storage outages leave a pending ticket to be reconciled, not "success".
+  let settled;
+  try {
+    settled=await ledger.settle(admission.ticket,estimatedCost,{
+      userId:req.user.id,outcome
+    });
+    if(!settled || typeof settled.chargedUsd!=='number') throw new Error('Invalid settlement');
+  } catch(error) {
+    console.error('[benchmark-budget] Oppgjør ikke bekreftet:',{
+      code:error?.code,runId,caseId,model
+    });
+    return res.status(503).json({
+      error:'BENCHMARK_SETTLEMENT_UNCONFIRMED',
+      message:'KI-forsøket kan ha medført kostnad, men oppgjøret ble ikke bekreftet. Kjøringen er sperret til administrator har avklart forsøket.'
+    });
+  }
+  if(settled.overBudget) console.warn(
+    '[benchmark-budget] Kostnadsestimat overskred reservasjonen; videre kall sperres.',
+    {runId,userId:req.user.id,chargedUsd:settled.chargedUsd,
+      runReservedUsd:settled.runReservedUsd,userDayReservedUsd:settled.userDayReservedUsd}
+  );
+  return res.status(responseStatus).json(responseBody);
 });
 
 app.get('/api/admin/benchmark/results', requireAdmin, async (req,res)=>{
