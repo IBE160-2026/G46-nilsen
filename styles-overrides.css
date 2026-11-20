@@ -196,17 +196,6 @@
 }
 
 
-#simulation-view .simulation-logo-crop,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop {
-}
-
-#simulation-view .simulation-logo-crop img,
-#simulation-view .simulation-hub-hero > .simulation-logo-crop img,
-html[data-theme="light"] #simulation-view .simulation-logo-crop img,
-html[data-theme="hybrid"] #simulation-view .simulation-logo-crop img,
-html[data-theme="dark"] #simulation-view .simulation-logo-crop img {
-}
-
 
 /* v20.11.5 CLEAN SIMULATION MARK
    Keep the KI illustration free of card/frame styling. */
@@ -1248,15 +1237,9 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   display:none !important;
 }
 
-/* Sektornivået skal ikke ha samme pil som kildene. */
-#help-view #complete-source-library .source-bank-sector-title::after{
-}
-
 /* Den lille inline-pilen beholdes kun på konkrete kilder. */
 #help-view #complete-source-library .compact-source-title::after{
   font-size:.92em !important;
-}
-#help-view #complete-source-library .compact-source-row[open]>summary .compact-source-title::after{
 }
 
 /* Konkrete kilder skal være små og IKKE bold. Gjelder alle kategorier. */
@@ -1267,8 +1250,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   font-size:.76rem !important;
   font-weight:400 !important;
   line-height:1.28 !important;
-}
-#help-view #complete-source-library .compact-source-title{
 }
 #help-view #complete-source-library .compact-source-detail{
   padding:0 0 7px 11px !important;
@@ -1302,9 +1283,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
     padding:14px 15px !important;
     grid-template-columns:30px minmax(0,1fr) !important;
     gap:10px !important;
-  }
-
-  #structured-guidance .guidance-card:has(.evidence-details:not([open])) .evidence-details>summary{
   }
 
   #structured-guidance .guidance-card:has(.evidence-details:not([open])) .guidance-number{
