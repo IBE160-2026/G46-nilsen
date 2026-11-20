@@ -35,7 +35,15 @@ export function markdownWebSources(text = "", verifiedSources = new Map()) {
   const found = [];
   const regex = /\[([^\]]+)\]\((https?:\/\/[^)]+)\)/g;
   let match;
-  while ((match = regex.exec(String(text || "")))) {
+  // Enkelte modellversjoner lager nestede lenker: [navn]([url](url)).
+  // Normaliser formatet før vi slår opp URL mot faktisk dokumenterte webkilder.
+  const normalizedText = String(text || "")
+    .replace(/\\\((?=\[https?:\/\/)/g, "(")
+    .replace(
+    /\[([^\]]+)\]\(\[https?:\/\/[^\]]+\]\((https?:\/\/[^)]+)\)\)/g,
+    "[$1]($2)"
+  );
+  while ((match = regex.exec(normalizedText))) {
     const normalizedUrl = normalizeSourceUrl(match[2]);
     const verified = verifiedSources.get(normalizedUrl);
     if (!verified) continue;
@@ -52,6 +60,10 @@ export function markdownWebSources(text = "", verifiedSources = new Map()) {
 
 export function stripInlineSourceLinks(text = "") {
   return String(text || "")
+    .replace(/\\\((?=\[https?:\/\/)/g, "(")
+    // KI kan lage dobbel Markdown: ([virke.no]([https://...](https://...))).
+    // Fjern hele henvisningen når den strukturerte kildelisten skal være fasit.
+    .replace(/\s*\(\s*\[[^\]]+\]\(\s*\[https?:\/\/[^\]]+\]\(https?:\/\/[^)]+\)\s*\)\s*\)/g, "")
     .replace(/\s*\(\s*\[[^\]]+\]\(https?:\/\/[^)]+\)\s*\)/g, "")
     .replace(/\[([^\]]+)\]\(https?:\/\/[^)]+\)/g, "$1")
     .replace(/[ \t]+\n/g, "\n")

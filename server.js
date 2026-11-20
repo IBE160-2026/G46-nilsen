@@ -26,7 +26,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
-const appVersion = process.env.APP_VERSION || "20.11.5";
+const appVersion = process.env.APP_VERSION || "20.11.6";
 const contactEmail = process.env.CONTACT_EMAIL || "";
 const occupationContextEnabled = String(process.env.OCCUPATION_CONTEXT_ENABLED || "false").toLowerCase() === "true";
 
@@ -1770,9 +1770,21 @@ const continuationSchema = {
       minItems: 2,
       maxItems: 4,
       items: { type: 'string' }
+    },
+    source_ids: { type: "array", maxItems: 4, items: { type: "string", enum: sourceIds } },
+    supplementary_sources: {
+      type: "array", maxItems: 2,
+      items: {
+        type: "object", additionalProperties: false,
+        properties: {
+          title: { type: "string" }, author: { type: "string" }, year: { type: "string" },
+          type: { type: "string" }, url: { type: "string" }
+        },
+        required: ["title", "author", "year", "type", "url"]
+      }
     }
   },
-  required: ['reply', 'suggestions']
+  required: ['reply', 'suggestions', 'source_ids', 'supplementary_sources']
 };
 
 app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) => {
@@ -1802,7 +1814,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   });
   const relevantSources = retainContinueSources ? mergedContinueSources : [];
   const continueOccupationPrompt = continueOccupationContext?.prompt ? "\n\n" + continueOccupationContext.prompt + "\n" : "";
-  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.\n- Hvis fagbanken er tilstrekkelig, ikke bruk nettsøk bare for å legge til flere lenker.\n- Hold svaret kort, direkte og situasjonsnært.
+  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.\n- Hvis fagbanken er tilstrekkelig, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridiske, arbeidsrettslige eller andre etterprøvbare faglige påstander: velg 1–4 presise kilde-ID-er fra "Relevante kilder i fagbanken" og legg dem i source_ids. Ikke finn på kilder eller kilde-ID-er.\n- supplementary_sources skal bare inneholde inntil 2 kilder du faktisk har funnet gjennom nettsøk. Ikke konstruer URL-er, forfattere eller kildetitler.\n- Hvis saken ikke krever konkret kilde, returner tomme lister i source_ids og supplementary_sources.\n- Ikke legg rå URL-er eller Markdown-lenker i reply. Kilder skal ligge i source_ids/supplementary_sources og presenteres separat i grensesnittet.\n- Hold svaret kort, direkte og situasjonsnært.
 - Svar på akkurat spørsmålet som ble stilt; ikke skriv hovedveiledningen på nytt.
 - Sikt mot ca. 90–160 ord. Gå bare over dette når det er nødvendig av sikkerhets- eller juridiske grunner.
 - Bruk maksimalt 4 korte avsnitt eller 3 korte punkter.
@@ -1828,7 +1840,32 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
       }
     });
     const parsed = JSON.parse(response.output_text);
-    return res.json({ reply: parsed.reply, suggestions: parsed.suggestions, ai: true, model: responseModel(response) });
+    const allowedIds = new Set(relevantSources.map(source => source.id));
+    const selectedIds = (Array.isArray(parsed.source_ids) ? parsed.source_ids : []).filter(id => allowedIds.has(id));
+    const scopedLaws = isLegalSourceContext(question)
+      ? requiredEmployerScopedPrimaryLawIds(relevantSources, employerType)
+      : [];
+    const finalIds = retainContinueSources ? [...new Set([...scopedLaws, ...selectedIds])].slice(0, 4) : [];
+    const verifiedWeb = webSources(response);
+    const supplementary = retainContinueSources
+      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
+          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
+          .filter(source => source.url && verifiedWeb.has(source.url))
+          .slice(0, 2)
+      : [];
+    // Bare kilde-ID-er fra vår kildebank og lenker bekreftet av faktisk nettsøk.
+    // Modellens eventuelle lenker i svarteksten kan være uriktige og vises ikke som dokumentasjon.
+    const citedInReply = retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : [];
+    const evidenceSources = dedupeEvidenceSources([
+      ...publicSources(finalIds), ...supplementary, ...citedInReply
+    ]);
+    return res.json({
+      reply: stripInlineSourceLinks(parsed.reply),
+      suggestions: parsed.suggestions,
+      evidence_sources: evidenceSources,
+      ai: true,
+      model: responseModel(response)
+    });
   } catch (error) {
     console.error("OpenAI continuation failed:", error);
     const status = Number(error?.status) || 500;

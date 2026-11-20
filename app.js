@@ -17,7 +17,7 @@ let simulationSource = "current";
 let simulationDirectSituation = "";
 let legalReturnView = "home";
 let infoReturnView = "home";
-let publicConfig = { appVersion: "20.11.5", contactEmail: "" };
+let publicConfig = { appVersion: "20.11.6", contactEmail: "" };
 let contentOverrides = {};
 let loadedHistoryItem = null;
 let surveySubmitting = false;
@@ -1441,7 +1441,7 @@ function printCurrentGuidance() {
     if (turns[i]?.role !== 'user') continue;
     const answer = turns.slice(i + 1).find(turn => turn.role === 'assistant');
     if (!answer) continue;
-    followupPairs.push({ question: turns[i].text, answer: answer.text });
+    followupPairs.push({ question: turns[i].text, answer: answer.text, sources: answer.sources || [] });
     i = turns.indexOf(answer);
   }
 
@@ -1452,6 +1452,7 @@ function printCurrentGuidance() {
           <article class="followup-item">
             <h3>${index + 1}. ${escapeHtml(pair.question)}</h3>
             <div>${formatContinuationReply(pair.answer)}</div>
+            ${pair.sources.length ? `<p><strong>Kilder:</strong> ${normalizeContinuationSources(pair.sources).map(src => `<a href="${escapeHtml(src.url)}">${escapeHtml(src.title)}</a>`).join(' · ')}</p>` : ''}
           </article>`).join('')}
       </section>`
     : '';
@@ -1477,6 +1478,9 @@ function printCurrentGuidance() {
   .advice-body summary{font-weight:700;margin:7px 0 4px}
   .advice-body details>summary{list-style:none}
   .advice-body details>summary::-webkit-details-marker{display:none}
+  .spoken-example { color:#1d7184; font-style:italic; font-weight:600; }
+  .guidance-spoken-example { display:inline-block; padding:6px 8px; border-left:3px solid #1d7184; background:#eef7f8; }
+  @media print { .spoken-example { color:#124956; } }
   .reaction-card{border:1px solid #d7e0e2;border-radius:9px;padding:9px 11px;margin:7px 0}
   .reaction-card-title{margin:0 0 5px}
   .reaction-card-body{display:block}
@@ -1515,6 +1519,12 @@ function printCurrentGuidance() {
   printWindow.print();
 }
 
+function formatSpeechExamples(text) {
+  const safe = escapeHtml(String(text || ''));
+  // Bruk bare tydelige muntlige sitattegn, ikke generelle klammer/kilde-ID-er.
+  return safe.replace(/«([^»\n]{2,500})»/g, '<em class="spoken-example">«$1»</em>');
+}
+
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
   const reactionHtml = (guidance.reactions || []).map((item, index) => `
@@ -1522,10 +1532,10 @@ function renderAiGuidance(guidance) {
       <summary class="reaction-card-title"><span>${String(index + 1).padStart(2, '0')}</span><strong>${escapeHtml(item.reaction)}</strong></summary>
       <div class="reaction-card-body">
         <div><small>Hvorfor dette kan skje</small><p>${escapeHtml(item.why_plausible)}</p></div>
-        <div><small>Slik kan du møte det</small><p>${escapeHtml(item.leader_response)}</p></div>
+        <div><small>Slik kan du møte det</small><p>${formatSpeechExamples(item.leader_response)}</p></div>
       </div>
     </details>`).join('');
-  const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
+  const list = items => (items || []).map(item => `• ${formatSpeechExamples(item)}`).join('<br>');
   const evidenceSources = guidance.evidence_sources || [];
   const sourceHost = source => {
     try { return new URL(source.url).hostname.replace(/^www\./,''); }
@@ -1538,7 +1548,7 @@ function renderAiGuidance(guidance) {
         const meta = [source.author && source.author !== host ? source.author : '', source.year ? String(source.year) : '', source.type || '', host].filter(Boolean).join(' · ');
         return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>Åpne kilde ↗</em></a>`;
       }).join('')}</div>`
-    : '';
+    : '<p class="muted-note guidance-source-empty">Ingen etterprøvbare kildehenvisninger registrert for dette rådet.</p>';
   const compactEvidence = evidenceSources.length
     ? `<div class="inline-source-links"><span>Kilder:</span>${evidenceSources.slice(0,4).map(source => {
         const host = sourceHost(source);
@@ -1548,7 +1558,7 @@ function renderAiGuidance(guidance) {
     : '';
 
   const sections = [
-    ['Forslag til åpning', escapeHtml(guidance.opening || '')],
+    ['Forslag til åpning', `<span class="guidance-spoken-example spoken-example">${escapeHtml(guidance.opening || '')}</span>`],
     ['Spørsmål som passer denne saken', list(guidance.questions)],
     ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
@@ -1732,17 +1742,35 @@ function compactSourceUsage(source){
   return 'faglig støtte når temaet er relevant';
 }
 
+function readableSourceTier(source = {}) {
+  const tiers = {
+    primary_law: 'Lov eller forskrift – bindende der den gjelder',
+    authority_guidance: 'Offentlig myndighetsveiledning – ikke lovtekst',
+    authority_index: 'Offentlig oppslagsinngang – kontroller den konkrete regelen',
+    official_employer_reference: 'Offisiell arbeidsgiverveiledning',
+    collective_agreement: 'Tariffavtale – bare når avtaledekningen er relevant',
+    research_evidence: 'Forskning/evidens – ikke rettslig hjemmel',
+    research_communication: 'Forskningsbasert fagkunnskap – ikke lov',
+    professional_framework: 'Faglig/profesjonsetisk rammeverk – ikke lov',
+    specialist_guidance: 'Praktisk fagveiledning – ikke lov'
+  };
+  return tiers[source.sourceTier] || 'Faglig kildemateriale – vurder gyldighet og relevans';
+}
+
 function compactSourceRow(source){
   const title=escapeHtml(source.title||source.id||'Kilde');
   const usage=escapeHtml(compactSourceUsage(source));
   const author=escapeHtml(source.author||'');
+  const sourceType=escapeHtml(readableSourceTier(source));
+  const lastChecked=source.lastVerified ? escapeHtml(source.lastVerified) : '';
   const occupations=Array.isArray(source.occupations) ? source.occupations.filter(Boolean) : [];
   return `<details class="compact-source-row">
     <summary><span class="compact-source-title">${title}</span><span class="compact-source-chevron" aria-hidden="true">›</span></summary>
     <div class="compact-source-detail">
-      <p><strong>Brukes ved:</strong> ${usage}.</p>
+      <p><strong>Hvorfor kilden er relevant:</strong> ${usage}.</p>
+      <p><strong>Kildetype:</strong> ${sourceType}.</p>
       ${occupations.length ? `<p><strong>Gjelder særlig:</strong> ${escapeHtml(occupations.join(', '))}.</p>` : ''}
-      ${author ? `<p class="muted-note">${author}</p>` : ''}
+      ${author ? `<p class="muted-note">${author}${lastChecked ? ' · Kontrollert '+lastChecked : ''}</p>` : ''}
       <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Åpne kilde ↗</a>
     </div>
   </details>`;
@@ -1761,6 +1789,21 @@ async function loadCompleteSourceLibrary(){
     const payload=await response.json();
     if(!response.ok) throw new Error(payload.message||'Kunne ikke hente kildegrunnlaget.');
     const c=payload.categories||{};
+    const quickHost=document.querySelector('#leader-quick-references');
+    if(quickHost){
+      const quickRefs=(Array.isArray(payload.leaderQuickReferences) ? payload.leaderQuickReferences : [])
+        .filter(item => {
+          try { return ['https:', 'http:'].includes(new URL(item.url).protocol); }
+          catch (_) { return false; }
+        });
+      quickHost.innerHTML=quickRefs.length
+        ? quickRefs.map(item=>`<a class="leader-quick-reference" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
+            <strong>${escapeHtml(item.label)}</strong>
+            <small>${escapeHtml(item.category)}</small>
+            <span>${escapeHtml(item.description)}</span>
+          </a>`).join('')
+        : '<p class="muted-note">Oppslagsverket er ikke tilgjengelig akkurat nå. Du finner fortsatt fagbankens øvrige kilder nedenfor.</p>';
+    }
 
     const renderCategory=(cat)=>{
       const sources=sortSourcesAlphabetically((cat?.groups||[]).flatMap(group=>group.sources||[]));
@@ -1805,6 +1848,8 @@ async function loadCompleteSourceLibrary(){
     if(status) status.textContent='Kildene er sortert alfabetisk etter navn.';
   }catch(error){
     root.innerHTML=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
+    const quickHost=document.querySelector('#leader-quick-references');
+    if(quickHost) quickHost.innerHTML='<p class="muted-note">Kunne ikke hente oppslagsverket. Prøv igjen senere.</p>';
     if(status) status.textContent='Kildebanken er ikke tilgjengelig akkurat nå.';
   }
 }
@@ -2126,6 +2171,37 @@ function cleanStoredConversationText(text, role='assistant') {
   return value;
 }
 
+function normalizeContinuationSources(sources = []) {
+  return (Array.isArray(sources) ? sources : [])
+    .filter(source => source && typeof source === 'object')
+    .filter(source => {
+      try { return ['https:', 'http:'].includes(new URL(source.url).protocol); }
+      catch (_) { return false; }
+    })
+    .slice(0, 6)
+    .map(source => ({
+      title: String(source.title || source.author || 'Kilde').slice(0, 250),
+      author: String(source.author || '').slice(0, 150),
+      url: String(source.url)
+    }));
+}
+
+function renderContinuationEvidence(sources = []) {
+  const verified = normalizeContinuationSources(sources);
+  if (!verified.length) {
+    return '<small class="continuation-source-note">Ingen etterprøvbare kildehenvisninger registrert for dette svaret.</small>';
+  }
+  return `<details class="continuation-evidence">
+    <summary>Kildegrunnlag (${verified.length})</summary>
+    <div class="evidence-list">${verified.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong>${source.author ? `<span>${escapeHtml(source.author)}</span>` : ''}<em>Åpne kilde ↗</em></a>`).join('')}</div>
+  </details>`;
+}
+
+function setConversationTurnSources(element, sources) {
+  if (!element) return;
+  element.dataset.messageSources = JSON.stringify(normalizeContinuationSources(sources));
+}
+
 function setConversationTurnText(element, role, text) {
   if (!element) return;
   element.dataset.messageText = cleanStoredConversationText(text, role);
@@ -2191,8 +2267,10 @@ async function appendConversationTurn(question) {
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
     const payload = await response.json();
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
-    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div><button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
+    const verifiedSources = normalizeContinuationSources(payload.evidence_sources);
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>${renderContinuationEvidence(verifiedSources)}<button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
+    setConversationTurnSources(assistant, verifiedSources);
     renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
     conversationDirty = true;
@@ -2833,7 +2911,8 @@ function formatInlineReplyMarkdown(text) {
 
   // Begrenset inline-Markdown: fet tekst.
   safe = safe.replace(/\*\*([^*\n]+)\*\*/g, '<strong>$1</strong>');
-  return safe;
+  // Sitatet er det lederen kan si høyt, mens teksten rundt er forklaring.
+  return safe.replace(/«([^»\n]{2,500})»/g, '<em class="spoken-example">«$1»</em>');
 }
 
 function formatContinuationReply(text) {
@@ -2986,7 +3065,12 @@ function getConversationTurns(){
   return [...document.querySelectorAll('#conversation-thread .conversation-turn')]
     .map(el => {
       const role = el.classList.contains('conversation-user') ? 'user' : 'assistant';
-      return { role, text: getConversationTurnText(el) };
+      const turn = { role, text: getConversationTurnText(el) };
+      if (role === 'assistant' && el.dataset.messageSources !== undefined) {
+        try { turn.sources = normalizeContinuationSources(JSON.parse(el.dataset.messageSources)); }
+        catch (_) { turn.sources = []; }
+      }
+      return turn;
     })
     .filter(turn => turn.text);
 }
@@ -3070,8 +3154,9 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
     el.className=`conversation-turn ${role==='user'?'conversation-user':'conversation-assistant'}`;
     el.innerHTML=role==='user'
       ? `${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(cleanText)}</p>`
-      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>`;
+      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>${Array.isArray(turn.sources) ? renderContinuationEvidence(turn.sources) : ''}`;
     setConversationTurnText(el, role, cleanText);
+    if (role === 'assistant' && Array.isArray(turn.sources)) setConversationTurnSources(el, turn.sources);
     thread.appendChild(el);
     queueSpeechBubbleRefresh();
   });

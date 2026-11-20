@@ -28,6 +28,36 @@ const css = [
 const app = fs.readFileSync('app.js', 'utf8');
 const server = fs.readFileSync('server.js', 'utf8');
 
+const overrides = fs.readFileSync('styles-overrides.css','utf8');
+assert(
+  overrides.includes('.spoken-example {') &&
+  overrides.includes('font-style: italic;') &&
+  overrides.includes('color: var(--accent);'),
+  'Muntlige KI-formuleringer skal ha kursiv og en egen lesbar aksentfarge'
+);
+assert(
+  app.includes('function formatSpeechExamples(text)') &&
+  app.includes('class="spoken-example"') &&
+  app.includes('class="guidance-spoken-example spoken-example"'),
+  'Hovedråd, muntlige sitater og åpning må skilles visuelt fra lederinstruksjonene'
+);
+assert(
+  app.includes('map(item => `• ${formatSpeechExamples(item)}`)') &&
+  app.includes('formatSpeechExamples(item.leader_response)'),
+  'Muntlige eksempler i spørsmål, punkter og reaksjoner skal fremheves'
+);
+assert(
+  app.includes('formatInlineReplyMarkdown(headingText)') &&
+  app.includes('formatInlineReplyMarkdown(line)'),
+  'Oppfølgingssvar må beholde særskilt sitatformatering'
+);
+assert(
+  app.includes('.spoken-example { color:#1d7184; font-style:italic;') &&
+  app.includes('guidance-spoken-example'),
+  'Utskrift må beholde skille mellom sitert muntlig tekst og veiledning'
+);
+
+
 for (const page of ['admin', 'help', 'survey']) {
   assert(html.includes(`data-page-icon="${page}"`), `${page}: mangler minimert sideikon`);
 }
@@ -83,10 +113,10 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.5");
+assert(/id=["']about-app-version["']>20\.11\.6</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.5");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
-assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.5");
+assert(/id=["']report-meta["']>Versjon 20\.11\.6</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.5");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
 const privacyNamePos = html.indexOf('src/privacy-name-data.js?v=');

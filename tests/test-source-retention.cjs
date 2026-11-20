@@ -149,6 +149,28 @@ const assert = require("node:assert/strict");
     "Statlig primærlov skal ikke få bonus i kommunal sak"
   );
 
+  // Regresjon: reelle spørsmål om lovverk, advarsel og utestenging skal ikke miste kilder.
+  const legalCases = [
+    ["hvilke regler", "En medarbeider møter for sent. Hvilke regler bør jeg være oppmerksom på?"],
+    ["skriftlig advarsel", "Kan jeg gi en skriftlig advarsel etter flere forsinkelser?"],
+    ["lovverk", "Hvilket lovverk gjelder før jeg gir en advarsel?"],
+    ["utestenging", "En medarbeider opplever systematisk utestenging fra kollegaene."],
+    ["holdt utenfor", "Den ene ansatte opplever å bli systematisk holdt utenfor."]
+  ];
+  for (const [name, situation] of legalCases) {
+    assert.equal(shouldRetainCuratedSources({
+      requestedTopic:"Samarbeid og kommunikasjon",
+      situation,
+      occupationContext:ordinaryContext
+    }), true, name+" skal aktivere relevant kildegrunnlag");
+  }
+  assert.equal(shouldRetainCuratedSources({
+    requestedTopic:"Samarbeid og kommunikasjon",
+    situation:"Ingen advarsel er vurdert. Vi skal bare avklare oppgavefordeling.",
+    occupationContext:ordinaryContext
+  }), false, "Eksplisitt avkreftet advarsel skal ikke blåse opp kildegrunnlaget");
+  assert.equal(isLegalSourceContext("Kan jeg gi en advarsel?"),true,"Advarsel er juridisk kontekst");
+
   console.log("SOURCE RETENTION OK: live-avvik + juridisk kilderangering + positive kontroller");
 })().catch(error => {
   console.error(error);

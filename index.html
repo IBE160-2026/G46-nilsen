@@ -12,7 +12,7 @@
   <link rel="manifest" href="/manifest.webmanifest" />
   <link rel="icon" href="/assets/icons/app-icon.svg" type="image/svg+xml" />
   <link rel="apple-touch-icon" href="/assets/images/logo-symbol.png" />
-  <link rel="stylesheet" href="styles.css?v=20.11.60" />
+  <link rel="stylesheet" href="styles.css?v=20.11.61" />
 </head>
 <body>
   <div class="app-shell" inert aria-hidden="true">
@@ -680,7 +680,7 @@
           <section class="settings-card about-section"><h2>Personvern og ansvarlig bruk</h2><p>Brukeren skal ikke legge inn navn eller andre unødvendige opplysninger som kan identifisere virkelige personer. Personvernkontrollene reduserer risikoen for at identifiserende informasjon sendes videre, men kan ikke garantere at alle slike opplysninger oppdages.</p></section>
           <section class="settings-card about-section"><h2>Om prosjektet</h2><p>Samtalestøtte er utviklet som del av en prosjektoppgave ved Høgskolen i Molde. Studenten har hatt ansvar for behovsforståelse, krav, faglig retning, innhold og produktvalg. ChatGPT fra OpenAI er brukt som støtte i blant annet idéutvikling, programmering, dokumentasjon, testing og kvalitetssikring.</p><p><strong>Status:</strong> Betaversjon – under utvikling og testing.</p></section>
           <div class="about-link-row"><button class="secondary-button" type="button" data-open-info="contact">Kontakt og tilbakemelding</button></div>
-          <p class="app-version-line">Versjon <strong id="about-app-version">20.11.5</strong></p>
+          <p class="app-version-line">Versjon <strong id="about-app-version">20.11.6</strong></p>
         </div>
       </section>
 
@@ -745,7 +745,7 @@
           <p class="muted-note"><strong>Personvern:</strong> Ikke skriv navn, fødselsdato, kontaktopplysninger eller andre opplysninger som kan identifisere medarbeidere. Beskriv problemet generelt.</p>
           <div class="compact-form-grid"><label>Hva gjelder det?<select id="report-category"><option>Teknisk feil</option><option>Uklart eller dårlig KI-svar</option><option>Feil eller manglende kilde</option><option>Personvern</option><option>Forslag til forbedring</option><option>Annet spørsmål</option></select></label><label>Beskriv kort hva som skjedde<textarea id="report-description" rows="4" placeholder="Hva gjorde du, hva forventet du, og hva skjedde? Unngå personopplysninger."></textarea></label></div>
           <label class="report-log-option"><input id="report-include-log" type="checkbox" checked><span>Ta med teknisk logg <small>Ingen samtaletekst tas med automatisk.</small></span></label>
-          <div class="report-meta" id="report-meta">Versjon 20.11.5</div>
+          <div class="report-meta" id="report-meta">Versjon 20.11.6</div>
           <div class="report-actions"><button class="primary-button" id="report-email-button" type="submit">Åpne e-post</button><button class="secondary-button" id="copy-report-button" type="button">Kopier rapport</button></div>
           <div class="auth-message" id="report-message" aria-live="polite"></div>
         </form>
@@ -758,6 +758,10 @@
         <button class="back-link info-back" type="button">← Tilbake</button>
         <div class="content-header utility-header compact-utility-header"><div class="utility-header-copy"><span class="eyebrow">HJELP</span><div class="utility-title-row"><span class="collapsed-page-icon collapsed-page-icon-text" data-page-icon="help" aria-hidden="true">?</span><h1>Hjelp</h1><div class="utility-page-brand" aria-hidden="true"><img class="brand-logo utility-page-logo" src="assets/images/logo-symbol.png" alt="" /></div></div><p>Finn enten hjelp til å bruke Samtalestøtte eller gå videre til faglige ressurser og eksterne lenker.</p></div></div>
         <div class="help-grid">
+          <section class="leader-reference-section" aria-labelledby="leader-reference-title">
+            <div class="help-section-heading"><span class="eyebrow">HURTIGOPPSLAG</span><h2 id="leader-reference-title">Oppslagsverk for ledere</h2><p>De viktigste norske inngangene til regelverk og praktisk veiledning. Her skilles lovtekst, myndighetsveiledning og faglig støtte tydelig. Bruk relevante kilder for den konkrete saken.</p></div>
+            <div id="leader-quick-references" class="leader-quick-reference-grid"><p class="muted-note">Henter oppslagsverk …</p></div>
+          </section>
           <div class="help-section-heading"><span class="eyebrow">BRUK AV SAMTALESTØTTE</span><h2>Hjelp til å bruke Samtalestøtte</h2><p>Kort veiledning til de viktigste funksjonene i løsningen.</p></div>
          <details class="settings-card utility-accordion">
   <summary>Slik bruker du Samtalestøtte</summary>
@@ -773,7 +777,12 @@
   </div>
 </details>
 
-<div class="help-section-heading help-resource-heading"><span class="eyebrow">EKSTERNE KILDER</span><h2>Ressurser og lenker</h2><p>Faglige kilder, regelverk og veiledere som kan være relevante ved behov.</p></div>
+<section class="help-contact-entry settings-card" aria-labelledby="help-contact-title">
+  <div><h2 id="help-contact-title">Kontakt og tilbakemelding</h2><p>Får du problemer, finner en feil i et råd eller ønsker å foreslå en kilde? Gå til kontaktsiden for e-post og feilrapportering. Ikke send opplysninger om identifiserbare ansatte.</p></div>
+  <button class="secondary-button" type="button" data-open-info="contact">Åpne Kontakt</button>
+</section>
+
+<div class="help-section-heading help-resource-heading"><span class="eyebrow">EKSTERNE KILDER</span><h2>Ressurser og lenker</h2><p>Felles arbeidslivsregler gjelder alle sektorer. Yrkes- og sektorkildene er tillegg når særregler faktisk er relevante – ikke en fullstendig oversikt over alle kilder KI kan bruke. Kildetypen vises slik at lov, myndighetsveiledning, forskning og faglige anbefalinger ikke forveksles.</p></div>
 <div id="complete-source-library" class="source-bank-top-level"></div>
 <small id="complete-source-library-status"></small>
           
@@ -897,6 +906,6 @@
   <script src="src/client/benchmark-evaluation.js?v=20.11.73"></script>
   <script src="src/client/admin-content.js?v=20.11.71"></script>
   <script src="src/client/admin-data.js?v=20.11.70"></script>
-  <script src="app.js?v=20.11.73"></script>
+  <script src="app.js?v=20.11.74"></script>
 </body>
 </html>

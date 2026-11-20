@@ -117,7 +117,8 @@ async function capture(cdp,baseUrl,width,theme,state,view,media="screen",openDet
     "document.querySelector('#auth-dialog')?.classList.remove('is-open');"+
     "const style=document.createElement('style');style.textContent='*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}';document.head.appendChild(style);"+
     "const props="+JSON.stringify(cssProps)+";"+
-    "const all=[...document.querySelectorAll('body *:not(.skip-link):not(.main-skip-target)')];"+
+    // Nye Help-seksjoner finnes bare i etterversjonen. Sammenlign fortsatt alle eksisterende noder.
+    "const all=[...document.querySelectorAll('body *:not(.skip-link):not(.main-skip-target)')].filter(e=>!e.closest('.leader-reference,.leader-reference-section,.help-contact-entry'));"+
     "const result={};"+
     "all.forEach((e,i)=>{const rect=e.getBoundingClientRect();if(rect.width<0.5||rect.height<0.5)return;"+
     "const st=getComputedStyle(e),x=props.map(p=>st.getPropertyValue(p));"+
@@ -157,7 +158,7 @@ async function capture(cdp,baseUrl,width,theme,state,view,media="screen",openDet
     const keys=new Set([...Object.keys(left.result),...Object.keys(right.result)]);
     for(const key of keys){
       // Computed background-image URLs contain the local demo port, not a CSS difference.
-      const canonical = obj => JSON.stringify(obj).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
+      const canonical = obj => JSON.stringify(obj ?? null).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
       const l=canonical(left.result[key]),r=canonical(right.result[key]);
       if(l!==r){diff.push({case:[width,theme,state,page],node:key,before:left.result[key],after:right.result[key]});if(diff.length>=12)break;}
     }
@@ -171,7 +172,7 @@ async function capture(cdp,baseUrl,width,theme,state,view,media="screen",openDet
     const right=await capture(cdp,"http://127.0.0.1:"+PORT_B+"/",width,"light","expanded",page,"print");
     const keys=new Set([...Object.keys(left.result),...Object.keys(right.result)]);
     for(const key of keys){
-      const canonical=obj=>JSON.stringify(obj).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
+      const canonical=obj=>JSON.stringify(obj ?? null).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
       if(canonical(left.result[key])!==canonical(right.result[key])){
         diff.push({case:["print",width,page],node:key,before:left.result[key],after:right.result[key]});
         if(diff.length>=12)break;
@@ -186,7 +187,7 @@ async function capture(cdp,baseUrl,width,theme,state,view,media="screen",openDet
     const right=await capture(cdp,"http://127.0.0.1:"+PORT_B+"/",width,"hybrid","expanded","help-view","screen",true);
     const keys=new Set([...Object.keys(left.result),...Object.keys(right.result)]);
     for(const key of keys){
-      const canonical=obj=>JSON.stringify(obj).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
+      const canonical=obj=>JSON.stringify(obj ?? null).replaceAll("http://127.0.0.1:"+PORT_A+"/","http://127.0.0.1:PORT/").replaceAll("http://127.0.0.1:"+PORT_B+"/","http://127.0.0.1:PORT/");
       if(canonical(left.result[key])!==canonical(right.result[key])){
         diff.push({case:["open-help-details",width],node:key,before:left.result[key],after:right.result[key]});
         if(diff.length>=12)break;

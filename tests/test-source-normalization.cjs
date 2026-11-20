@@ -25,5 +25,15 @@ assert.equal(dedupeEvidenceSources([
  {url:"https://example.org/item?utm_source=test"},{url:"https://example.org/item#fragment"},{id:"NOE",title:"Uten URL"},
  {id:"NOE",title:"Uten URL"}
 ]).length,2);
+const malformed = "Først hør begge sider. ([virke.no]([https://www.virke.no/a?utm_source=openai](https://www.virke.no/a?utm_source=openai)))";
+assert.equal(stripInlineSourceLinks(malformed),"Først hør begge sider.","Modellens doble Markdown-lenker skal fjernes fra svarteksten");
+const verifiedNested = new Map([["https://www.virke.no/a", {title:"Arbeidsgiverveiledning",url:"https://www.virke.no/a"}]]);
+const escapedMalformed = "Sjekk dette. ([virke.no]\\([https://www.virke.no/a?utm_source=openai](https://www.virke.no/a?utm_source=openai)))";
+assert.equal(stripInlineSourceLinks(escapedMalformed),"Sjekk dette.","Backslash i doble kildehenvisninger må fjernes sammen med lenken");
+assert.equal(markdownWebSources(escapedMalformed,verifiedNested).length,1,"Ekte kilde i escaped dobbel Markdown må gjenkjennes");
+const nestedSources = markdownWebSources(malformed,verifiedNested);
+assert.equal(nestedSources.length,1,"Dokumenterte webkilder med doble Markdown-lenker skal samles i kildefeltet");
+assert.equal(nestedSources[0].url,"https://www.virke.no/a");
+assert.equal(markdownWebSources(malformed,new Map()).length,0,"Uverifiserte lenker skal ikke godkjennes som kilder");
 console.log("Kildenormalisering: trackingparametre, dokumenterte URLer, kildeavgrensning og deduplisering OK");
 })().catch(e=>{console.error(e);process.exitCode=1});
