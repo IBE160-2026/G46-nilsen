@@ -1739,17 +1739,35 @@ function compactSourceUsage(source){
   return 'faglig støtte når temaet er relevant';
 }
 
+function readableSourceTier(source = {}) {
+  const tiers = {
+    primary_law: 'Lov eller forskrift – bindende der den gjelder',
+    authority_guidance: 'Offentlig myndighetsveiledning – ikke lovtekst',
+    authority_index: 'Offentlig oppslagsinngang – kontroller den konkrete regelen',
+    official_employer_reference: 'Offisiell arbeidsgiverveiledning',
+    collective_agreement: 'Tariffavtale – bare når avtaledekningen er relevant',
+    research_evidence: 'Forskning/evidens – ikke rettslig hjemmel',
+    research_communication: 'Forskningsbasert fagkunnskap – ikke lov',
+    professional_framework: 'Faglig/profesjonsetisk rammeverk – ikke lov',
+    specialist_guidance: 'Praktisk fagveiledning – ikke lov'
+  };
+  return tiers[source.sourceTier] || 'Faglig kildemateriale – vurder gyldighet og relevans';
+}
+
 function compactSourceRow(source){
   const title=escapeHtml(source.title||source.id||'Kilde');
   const usage=escapeHtml(compactSourceUsage(source));
   const author=escapeHtml(source.author||'');
+  const sourceType=escapeHtml(readableSourceTier(source));
+  const lastChecked=source.lastVerified ? escapeHtml(source.lastVerified) : '';
   const occupations=Array.isArray(source.occupations) ? source.occupations.filter(Boolean) : [];
   return `<details class="compact-source-row">
     <summary><span class="compact-source-title">${title}</span><span class="compact-source-chevron" aria-hidden="true">›</span></summary>
     <div class="compact-source-detail">
-      <p><strong>Brukes ved:</strong> ${usage}.</p>
+      <p><strong>Hvorfor kilden er relevant:</strong> ${usage}.</p>
+      <p><strong>Kildetype:</strong> ${sourceType}.</p>
       ${occupations.length ? `<p><strong>Gjelder særlig:</strong> ${escapeHtml(occupations.join(', '))}.</p>` : ''}
-      ${author ? `<p class="muted-note">${author}</p>` : ''}
+      ${author ? `<p class="muted-note">${author}${lastChecked ? ' · Kontrollert '+lastChecked : ''}</p>` : ''}
       <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Åpne kilde ↗</a>
     </div>
   </details>`;
