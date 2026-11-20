@@ -11,6 +11,16 @@
     return selected;
   }
 
+  // The all-cases choice is symbolic, never a stale hardcoded numeric option.
+  function resolveCaseCount(selection, totalCases) {
+    if (!Number.isSafeInteger(totalCases) || totalCases <= 0) return 0;
+    if (selection === "all") return totalCases;
+    const requested = Number(selection);
+    return Number.isSafeInteger(requested) && requested > 0
+      ? Math.min(requested, totalCases)
+      : Math.min(8, totalCases);
+  }
+
   function evaluateOpening(testCase, guidance){
     const opening=String(guidance?.opening||'').trim();
     const issues=[];
@@ -34,5 +44,5 @@
     return {ok:issues.length===0,opening,words,issues,notes};
   }
 
-  root.SamtalestotteBenchmarkEvaluation = Object.freeze({ selectCases, evaluateOpening });
+  root.SamtalestotteBenchmarkEvaluation = Object.freeze({ selectCases, evaluateOpening, resolveCaseCount });
 })(typeof window === "undefined" ? globalThis : window);
