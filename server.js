@@ -1472,7 +1472,7 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   // Administrative pilot/full regression mode can trigger many provider calls;
   // it is restricted to the same isolated mock-only test window as paid benchmark.
   const paidTestRequested = ["pilot-regression","production-regression"].includes(req.body?.testMode) &&
-    effectiveRole(req.user) === "admin";
+    req.user?.role === "admin";
   if (paidTestRequested && !benchmarkLiveMockOnly) return res.status(503).json({
     error:"PAID_TEST_DISABLED",
     message:"Betalte produksjonsflyt-tester er sperret inntil varig kostnadskontroll er tilgjengelig."
@@ -1485,7 +1485,7 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   }
 
   const { situation, helpRequest = "", selectedTopic = "", selectedSubtopic = "", occupation = "", sectorId = "", employerType = "", testMode = "", privacyNameOverrides = [] } = req.body || {};
-  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
+  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && req.user?.role === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
@@ -1542,7 +1542,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
   // Administrative pilot/full regression mode can trigger many provider calls;
   // it is restricted to the same isolated mock-only test window as paid benchmark.
   const paidTestRequested = ["pilot-regression","production-regression"].includes(req.body?.testMode) &&
-    effectiveRole(req.user) === "admin";
+    req.user?.role === "admin";
   if (paidTestRequested && !benchmarkLiveMockOnly) return res.status(503).json({
     error:"PAID_TEST_DISABLED",
     message:"Betalte produksjonsflyt-tester er sperret inntil varig kostnadskontroll er tilgjengelig."
@@ -1552,7 +1552,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
   }
 
   const { situation, analysis = null, followups = {}, topicId = "", subtopic = "", testMode = "", occupation = "", sectorId = "", employerType = "", employerContext = "", privacyNameOverrides = [] } = req.body || {};
-  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && effectiveRole(req.user) === "admin";
+  const adminPilotTest = (testMode === "pilot-regression" || testMode === "production-regression") && req.user?.role === "admin";
   if (typeof situation !== "string" || !situation.trim()) {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
