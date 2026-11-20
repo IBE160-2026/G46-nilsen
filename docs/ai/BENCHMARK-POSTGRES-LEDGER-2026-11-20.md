@@ -4,6 +4,14 @@
 **Prosjekt:** Samtalestøtte / IBE160  
 **Status:** Grønn i disponibel PostgreSQL 17 i CI, **ikke deployet til Supabase** og **ikke integrert i produksjon**. Del av draft [PR #12](https://github.com/IBE160-2026/G46-nilsen/pull/12).
 
+## Oppfølging: Express/Supabase RPC-test og korrigert SQL-radopprettelse
+
+`src/server/benchmark-budget-rpc.js` kaller nå de to regnskapsfunksjonene fra **serverens** `supabaseAdmin.rpc`, men **kun i eksplisitt lokal testmodus**. Den ordinære produksjonsserveren er fortsatt sperret for betalt benchmark. I CI er den faktiske Express-/Supabase JS SDK-HTTP-testen koblet via lokal PostgREST-protokollbro til **den samme disponible PostgreSQL 17** som SQL-regresjonene kjører mot. Dette er ikke ekte Supabase PostgREST/Auth; KI er simulert. Se [egen fullkjede-rapport](BENCHMARK-RPC-INTEGRASJON-2026-11-20.md).
+
+**Kritisk feil funnet i første fullkjede-kjøring:** En `BUDGET_RUN_BUSY`-avvisning opprettet en tom `budget_runs`-rad før funksjonen returnerte. Det er rettet ved å utsette INSERT til alle opptatt-/duplikat-/budsjettkontrollene har bestått. `tests/sql/benchmark-budget-postgres.sql` krever nå at en slik avvisning **ikke etterlater en kjøre-ID-rad**. Det er fortsatt ikke utført SQL på ekte Supabase-prosjekt.
+
+---
+
 ## Avgrensning og motivasjon
 
 Forrige trinn demonstrerte at et synkront Node-minneregister kan låse parallelle HTTP-kall i **én** serverprosess og ignorere klientens `spentSoFar`. Det er utilstrekkelig ved serveromstart, flere Render-instanser og uavklarte KI-kall etter krasj. Derfor er det laget et eget, **foreløpig gjennomgåbart SQL-forslag**:
