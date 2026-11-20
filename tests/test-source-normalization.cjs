@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 (async () => {
-const { normalizeSourceUrl, webSources, verifiedSupplementarySources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
+const { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
 assert.equal(normalizeSourceUrl("https://example.org/a?utm_source=x&b=2&utm_campaign=y#section"),"https://example.org/a?b=2");
 assert.equal(normalizeSourceUrl("not a web address"),"not a web address");
 const response = { output: [
@@ -68,6 +68,16 @@ const suggested = verifiedSupplementarySources([
   {url:"javascript:alert(1)",title:"Skadelig"}
 ],providerAnnotations);
 assert.equal(suggested.length,2,"Bare dokumenterte unike nettsøk kan supplere kildelisten");
+const provenance = evidenceProvenance({output:[
+  {type:"web_search_call",action:{sources:[{type:"url",url:"https://www.dmp.no/veterinermedisin",title:"Veterinærmedisin"}]}},
+  {type:"message",content:[{annotations:[{type:"url_citation",url:"https://www.vetinst.no/fagomrader",title:"Fagområder"}]}]}
+]},["DNV_VETERINARY_COLLEGIALITY"],suggested);
+assert.deepEqual(provenance,{
+  webSearchPerformed:true,providerUrlCount:2,selectedCuratedSourceCount:1,visibleEvidenceCount:2,contentVerified:false
+},"Søk og synlige kilder må rapporteres uten å påstå at innholdet er fagkontrollert");
+assert.equal(evidenceProvenance({output:[]}).webSearchPerformed,false,
+  "Et vanlig KI-svar er ikke bevis for faktisk nettsøk");
+
 assert.deepEqual(suggested[0],{
   title:"Veterinærmedisin",author:"dmp.no",year:"",type:"nettkilde",
   url:"https://www.dmp.no/veterinermedisin"
