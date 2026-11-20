@@ -1,0 +1,51 @@
+name: Real AI source acceptance (explicit PR revision only)
+
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/live-ai-source-acceptance.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  five-source-cases:
+    # Only this project's own review branch, never untrusted forks.
+    if: github.event.pull_request.head.repo.full_name == github.repository && github.head_ref == 'fix/evidence-sources-20261120'
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout isolated acceptance revision
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+      - name: Install locked project dependencies
+        run: npm ci
+      - name: Confirm an existing GitHub API secret is available
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          if [ -z "$OPENAI_API_KEY" ]; then
+            echo "::error::No GitHub Actions OPENAI_API_KEY secret is configured. Live AI was not run."
+            exit 2
+          fi
+          echo "GitHub API secret present (value not shown)."
+      - name: Run five REAL AI cases against isolated local app
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          SOURCE_ACCEPTANCE_LIVE: I_ACCEPT_API_COSTS
+        run: npm run test-ai:source-acceptance -- --run-live
+      - name: Upload synthetic acceptance report without secrets
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-acceptance-review
+          path: |
+            test-results/source-acceptance-*.md
+            test-results/source-acceptance-*.json
+          if-no-files-found: ignore
+          retention-days: 3
