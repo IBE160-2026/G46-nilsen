@@ -18,13 +18,13 @@ En autoritativ kilde betyr ikke at den automatisk gjelder alle yrker. Viktigere 
 
 ## Tre forskjellige kildeoverflater
 
-1. **Oppslagsverk for ledere i Hjelp** er en frivillig hurtigmeny med sju mye brukte eksterne steder, blant annet NAV, Arbeidstilsynet, Lovdata/AML, Datatilsynet, Akan, DFØ og STAMI. Dette er navigasjon, **ikke** en påstand om at KI faktisk konsulterte sidene.
+1. **Oppslagsverk for ledere i Hjelp** er en frivillig hurtigmeny med åtte kuraterte oppslagsinnganger, blant annet NAV, Arbeidstilsynet, Lovdata/AML, Datatilsynet, Akan, DFØ og STAMI. Dette er navigasjon, **ikke** en påstand om at KI faktisk konsulterte sidene.
 2. **Kildebanken i Hjelp** viser generelle arbeidslivskilder, forskning, faglig rammeverk og et eget tillegg for hver sektor. De generelle kildene gjelder på tvers av yrker og **dupliseres ikke** under hver sektorkategori. Derfor er antallet som står ved én sektor ikke hele den tilgjengelige kildemengden.
 3. **Kildegrunnlag i KI-rådet** skal bare vise kilder som den aktuelle saken gir grunnlag for. Serveren velger kandidater fra bankene, avgrenser etter sektor, yrke, tariff og situasjon, og viser strukturerte kuraterte kilder eller nettlenker fra faktisk verifisert søk. Kilder skal ikke genereres fritt av modellen.
 
 ## Dokumentert inventar
 
-Ved denne revisjonen har databankene **58 generelle kilder**, **96 arbeidsgiver-/yrkeskilder** og **7 kilder i tarifftillegget**, før deduplisering og relevansfiltrering. Totalsummen er **ikke** det samme som antall kilder i ett KI-svar.
+Ved denne revisjonen har databankene **59 generelle kilder**, **96 arbeidsgiver-/yrkeskilder** og **7 kilder i tarifftillegget**, før deduplisering og relevansfiltrering. Totalsummen er **ikke** det samme som antall kilder i ett KI-svar.
 
 | Sektor | Yrker | Sektortillegg | Behov og begrunnelse |
 |---|---:|---:|---|
@@ -159,7 +159,7 @@ Luftfartsloven er lagt til som direkte primærlov. I tillegg finnes Luftfartstil
 
 ## Konkret endring i denne revisjonen
 
-Ti kildeposter er lagt til etter kontroll av utgiver-/Lovdata-sidene: dyrehelsepersonelloven, dyrevelferdsloven, DMPs veterinærmedisin, Veterinærinstituttets fagstoff og Dyrehelserapporten 2025, Veterinærforeningens profesjonsetiske retningslinjer, helsepersonelloven, opplæringslova (2023), barnehageloven og luftfartsloven.
+Elleve kildeposter er lagt til etter kontroll av utgiver-/Lovdata-sidene: dyrehelsepersonelloven, dyrevelferdsloven, DMPs veterinærmedisin, Veterinærinstituttets fagstoff og Dyrehelserapporten 2025, Veterinærforeningens profesjonsetiske retningslinjer, helsepersonelloven, opplæringslova (2023), barnehageloven og luftfartsloven.
 
 Veterinær: fra **fem** Mattilsynet-kilder til **elleve** kilder med flere ulike autoriteter. Sektortillegget erstatter ikke generelle lov-/arbeidsmiljøkilder.
 
