@@ -56,6 +56,11 @@ async function js(cdp,expression){
   if(x.exceptionDetails)throw Error("Browser exception: "+JSON.stringify(x.exceptionDetails));
   return x.result?.value;
 }
+async function keyboardActivate(cdp,selector){
+  await js(cdp,"document.querySelector("+JSON.stringify(selector)+")?.focus()");
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyDown",key:"Enter",code:"Enter",windowsVirtualKeyCode:13});
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",key:"Enter",code:"Enter",windowsVirtualKeyCode:13});
+}
 async function wait(cdp,expression,meaning){
   for(let i=0;i<160;i++){
     if(await js(cdp,"Boolean("+expression+")"))return;
@@ -114,10 +119,18 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   await wait(cdp,"document.activeElement?.id==='main-content'","Enter moves focus to main landmark");
   console.log("Keyboard accessibility: Tab -> visible skip link -> Enter -> main content: PASS");
   assert.equal((await serverHistory()).length,0,"Demo must begin with an empty history");
-  await js(cdp,"document.querySelector('#topic-grid [data-topic-id=\\\"fravaer-oppfolging\\\"]').click()");
-  await wait(cdp,"document.querySelector('#topic-view')?.classList.contains('active-view')","topic navigation");
-  await js(cdp,"document.querySelector('#subtopic-grid .subtopic-card').click()");
-  await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view')","subtopic navigation");
+  await keyboardActivate(cdp,'#topic-grid [data-topic-id="fravaer-oppfolging"]');
+  await wait(cdp,"document.querySelector('#topic-view')?.classList.contains('active-view') && document.activeElement?.id==='topic-title'","keyboard topic navigation focuses heading");
+  assert.equal(await js(cdp,"document.querySelector('#topic-title').getAttribute('tabindex')"),"-1");
+  await keyboardActivate(cdp,"#subtopic-grid .subtopic-card");
+  await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.activeElement?.id==='guidance-title'","keyboard subtopic navigation focuses guidance heading");
+  // Browser history should move focus to the restored view, not leave it in
+  // a now-hidden subtopic card or a stale element from the prior view.
+  await js(cdp,"history.back()");
+  await wait(cdp,"document.querySelector('#topic-view')?.classList.contains('active-view') && document.activeElement?.id==='topic-title'","browser back focuses topic heading");
+  await js(cdp,"history.forward()");
+  await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.activeElement?.id==='guidance-title'","browser forward focuses guidance heading");
+  console.log("Keyboard view focus: topic -> guidance -> browser back/forward: PASS");
   // Strict privacy admission: a fictitious full name is blocked IN THE BROWSER
   // before analysis/guidance is allowed to leave the page.
   await js(cdp,"(()=>{const t=document.querySelector('#situation');t.value='Jeg skal snakke med Knut Hansen om fravær.';t.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#situation-form').requestSubmit()})()");
@@ -145,8 +158,8 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   assert.ok(print.includes("Forslag til samtalen")&&print.includes("Videre råd")&&print.includes(followupQuestion));
   assert.ok(print.includes("Forslag til åpning")&&!print.includes("undefined"),"Printed guidance must include content and context");
 
-  await js(cdp,"document.querySelector('#open-simulation').click()");
-  await wait(cdp,"document.querySelector('#simulation-view')?.classList.contains('active-view') && !document.querySelector('#simulation-panel').hidden","simulation setup");
+  await keyboardActivate(cdp,"#open-simulation");
+  await wait(cdp,"document.querySelector('#simulation-view')?.classList.contains('active-view') && !document.querySelector('#simulation-panel').hidden && document.activeElement===document.querySelector('#simulation-view h1')","keyboard simulation focuses heading");
   await js(cdp,"document.querySelector('#start-simulation').click()");
   await wait(cdp,"!document.querySelector('#simulation-live').hidden","simulation started");
   await js(cdp,"(()=>{const t=document.querySelector('#simulation-input');t.value='Jeg ønsker å forstå hvordan du opplever fraværsoppfølgingen.';t.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#simulation-form').requestSubmit()})()");
@@ -173,10 +186,14 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
 
   await cdp.send("Page.navigate",{url:BASE+"?sensor-journey=reload"});
   await wait(cdp,"document.readyState==='complete' && document.querySelector('#profile-name')?.textContent?.includes('Sensor demo')","page reload with demo session");
-  await js(cdp,"document.querySelector('.nav-item[data-view=\\\"history\\\"]').click()");
-  await wait(cdp,"document.querySelector('#history-view')?.classList.contains('active-view') && document.querySelectorAll('#history-list [data-open-history]').length===1","saved history after reload");
-  await js(cdp,"document.querySelector('#history-list [data-open-history]').click()");
-  await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.querySelector('#situation')?.value.length>0","reopen saved guidance");
+  await keyboardActivate(cdp,'.nav-item[data-view="history"]');
+  await wait(cdp,"document.querySelector('#history-view')?.classList.contains('active-view') && document.activeElement===document.querySelector('#history-view h1') && document.querySelectorAll('#history-list [data-open-history]').length===1","keyboard history navigation");
+  await keyboardActivate(cdp,"#history-list [data-open-history]");
+  await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.querySelector('#situation')?.value.length>0 && document.activeElement?.id==='guidance-title'","keyboard open saved guidance focuses meaningful heading");
+  assert.ok((await js(cdp,"document.querySelector('#guidance-title')?.textContent||''")).includes("fravær") ||
+    (await js(cdp,"document.querySelector('#guidance-title')?.textContent||''")).includes("Fravær"),
+    "Reopened history must have a meaningful, announced heading");
+  console.log("Keyboard view focus: simulation, saved history and reopened guidance: PASS");
   assert.equal(await js(cdp,"document.querySelector('#situation').value"),caseText);
   assert.equal(await js(cdp,"document.querySelectorAll('#conversation-thread .conversation-turn').length"),2);
   await js(cdp,"document.querySelector('.nav-item[data-view=\\\"history\\\"]').click()");
