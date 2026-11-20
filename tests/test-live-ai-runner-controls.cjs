@@ -8,8 +8,13 @@ const runner = fs.readFileSync(path.join(root, "tests/test-ai-golden.js"), "utf8
 
 assert.match(
   server,
-  /new OpenAI\(\{ apiKey, timeout: 90000, maxRetries: 0 \}\)/,
+  /new OpenAI\(\{\s*apiKey,\s*timeout:\s*90000,\s*maxRetries:\s*0,/,
   "OpenAI-klienten skal ha eksplisitt timeout og ingen skjulte SDK-retries"
+);
+assert.match(
+  server,
+  /fakeProviderBase\s*=\s*benchmarkLiveMockOnly[\s\S]*?127\\.0\\.0\\.1/,
+  "Testmodus må tvinge KI-klienten til lokal simulator"
 );
 assert.match(
   runner,
