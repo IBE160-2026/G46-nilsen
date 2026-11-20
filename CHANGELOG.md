@@ -1,3 +1,14 @@
+# 20.11.2026 – adminmodul og sikkerhetstester (kun draft PR #12)
+
+- Flyttet bruker- og rollekontroll i adminvisningen, rapporterte KI-svar, modellvalg, KI-bruksoversikt og kostnadsformattering til `src/client/admin-data.js` med eksplisitt `document`, `fetch`, `escapeHtml` og dynamisk `getCurrentUser`.
+- Redusert `app.js` fra 4 354 til 4 278 linjer (237 462 til 230 656 tegn) uten å endre serverruter eller UI-kontrakter.
+- Oppdatert `index.html`, frontend-cache-markører (`20.11.70`), eksplisitte produksjons-/demoassets, PWA-shell og syntaks-/UI-/asset-/PWA-tester.
+- Utvidet isolert admin-kjøretidstest med rolleskifte i samme modulinstans og beholdt faktisk headless Chrome-admintest, Express-rolle-HTTP-regresjon og PostgreSQL 17/RLS-sikkerhetstester med syntetiske identiteter.
+- Første komplette Quality Gate for modulet: [#44752528974](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44752528974) **SUCCESS**. Senere dokumentasjons-/testsynkronisering verifiseres i egen CI.
+- **Kun revisjonsgren.** Ingen merge til `main`, ingen Render-produksjonsdeploy, ingen endring av Supabase-rettigheter/data eller LIVE-pilot. Ekte Supabase Auth/PostgREST og fysisk UI-review gjenstår.
+
+---
+
 # Arbeidsrunde 08.11.2026 – yrkespresisjon, kildebank og kodeopprydding
 
 - Yrkes-/sektorkilderegisteret utvidet fra 31 til 85 autoritative startkilder.
