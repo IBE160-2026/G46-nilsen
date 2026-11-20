@@ -3712,6 +3712,14 @@ document.querySelector('#ai-feedback-form')?.addEventListener('submit',async eve
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
 document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(isAdminContentDirty()&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;await loadContentOverrides();renderAdminContentFields();clearAdminDirty();});
 document.querySelector('#admin-content-form')?.addEventListener('submit',event=>{event.preventDefault();if(!isAdminContentDirty())return;document.querySelector('#admin-save-dialog')?.showModal();});
+// Native focus return is not consistent when this modal is opened from a
+// form submit. Restore focus explicitly after Escape/Cancel if Save is still enabled.
+document.querySelector('#admin-save-dialog')?.addEventListener('close',()=>{
+  const opener=document.querySelector('#admin-save-content');
+  if(opener && !opener.disabled && opener.isConnected && opener.getClientRects().length){
+    opener.focus({preventScroll:true});
+  }
+});
 document.querySelector('#admin-save-cancel')?.addEventListener('click',()=>document.querySelector('#admin-save-dialog')?.close());
 document.querySelector('#admin-save-confirm')?.addEventListener('click',async()=>{document.querySelector('#admin-save-dialog')?.close();await saveAdminContent();});
 document.querySelector('#admin-save-ai-model')?.addEventListener('click',async()=>{const model=document.querySelector('#admin-ai-model')?.value;const option=document.querySelector('#admin-ai-model')?.selectedOptions?.[0]?.textContent||model;if(!model)return;if(!confirm(`Bytte KI-modell til ${option}?\n\nEn dyrere modell kan øke API-kostnadene for alle nye KI-kall.`))return;const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message';msg.textContent='Lagrer …';try{const r=await fetch('/api/admin/ai-settings',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({model})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke lagre modellvalget.');msg.className='auth-message success';msg.textContent='KI-modellen er endret. Nye KI-kall bruker dette valget.';}catch(error){msg.className='auth-message error';msg.textContent=error.message;}});
