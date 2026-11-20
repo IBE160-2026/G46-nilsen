@@ -5,12 +5,13 @@ const fs = require("node:fs");
 const vm = require("node:vm");
 const assert = require("node:assert/strict");
 
-const source = fs.readFileSync("app.js", "utf8");
-const start = source.indexOf("async function loadAdminUsers(){");
-const end = source.indexOf("\nlet benchmarkConfig=null;", start);
-assert(start >= 0 && end > start, "Expected admin function block could not be located");
-const code = source.slice(start, end)
-  + "\nthis.adminApi={loadAdminUsers,loadAdminFeedback,loadAdminAiSettings,loadAdminAiUsage};";
+const app = fs.readFileSync("app.js", "utf8");
+const source = fs.readFileSync("src/client/admin-data.js", "utf8");
+assert(app.includes("window.SamtalestotteAdminData.create("), "App must load and inject the admin module");
+assert(source.includes("function loadAdminUsers(){") && source.includes("function loadAdminAiUsage(){"),
+  "Admin functions missing from extracted module");
+const code = source +
+  "\nthis.adminApi = this.SamtalestotteAdminData.create({ document, fetch, escapeHtml, getCurrentUser: () => currentUser });";
 
 function htmlEscape(value) {
   return String(value ?? "").replace(/&/g, "&amp;").replace(/</g, "&lt;")
