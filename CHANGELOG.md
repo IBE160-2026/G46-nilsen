@@ -1,3 +1,14 @@
+# 20.11.2026 – servereid lokal benchmarkreserve og stengt betalt testtrafikk (draft PR #12)
+
+- Ny `src/server/benchmark-budget.js`: synkron per-bruker/run/beløp-reservasjon i minnet, USD 0,10 per kall, maksimal USD 5 per bruker/dag per prosess, låser parallelle kall, blokkerer duplikatcaser/budsjettendringer og ignorerer klientens `spentSoFar`. Ingen refusjon ved tvetydige provider-/lagringsfeil.
+- `/api/admin/benchmark/live` stengt i produksjonsmodus med `BENCHMARK_PAID_DISABLED`; åpnes bare i eksplisitt Node-test med lokal fiktiv OpenAI-provider. Klienten viser deaktivert knapp og status fra serveren.
+- Administrativ pilot- og fullproduksjonsflyt-test sperres tilsvarende med `PAID_TEST_DISABLED` utenfor lokal testmodus; vanlige KI-samtaler påvirkes ikke av denne testmodussperren.
+- Rettet rolleoppslag for administratorenes testmerking fra `effectiveRole(req.user)` (feil etter normalisert session) til `req.user.role`.
+- `tests/test-benchmark-budget.cjs` + `tests/test-benchmark-live-http.cjs`: faktisk regnskap, parallelle kall, omgåelsesforsøk, feiltilfeller, ekte Express/OpenAI SDK med lokal provider og lokale Auth/PostgREST-fakes. Utvidet `tests/test-admin-role-http.cjs` for 503-sperrer. Totalt **50** deterministiske npm-teststeg.
+- **Begrensning:** Budsjettet er ikke varig eller distribuert; reelt kostnadsoverslag kan overstige reserve. Derfor er produksjonsbetalte tester fortsatt **deaktivert**. Ingen betalte providerkall, produksjonsdeploy, databaseendring eller LIVE-pilotendring.
+
+---
+
 # 20.11.2026 – kostnadsfri benchmarkmodul og kontroll av testbank (draft PR #12)
 
 - Skilt ut ren `src/client/benchmark-evaluation.js` for caseutvalg og vurdering av åpningsreplikker, uten nettverk, KI-klient eller database.
@@ -5,7 +16,7 @@
 - `tests/test-benchmark-evaluation.cjs` tester faktiske hjelpere, og Chrome-testen bruker kun syntetiske KI-svar for kansellering, gratis mock og simulert pilot/benchmark. Ingen providerkall.
 - Reell Express-gratistest med 60 rollebetingede negative API-forsøk. Ny `tests/test-benchmark-privacy-signal.cjs` kontrollerer samtlige 114 fiktive benchmarkcaser og positiv deteksjon av ekte navneform.
 - Gratis testbank fant falsk personnavnindikasjon i B113 («nærmeste»). Et nøyaktig ikke-navn-unntak i den delte navnedetektoren er lagt inn. Denne feilen ble ikke skjult ved å slakke på resten av navnefilteret.
-- Totalt **48** deterministiske teststeg. Den betalte serverens kostnadsgrense hviler fortsatt på brukerleverte `spentSoFar` og er derfor ikke sikkerhetsmessig godkjent. Statisk UI-tekst med gamle caseantall gjenstår.
+- Totalt **48** deterministiske teststeg. Historisk problem var brukerlevert `spentSoFar`; dette er senere erstattet av servereid lokal reservasjonslogg i kun testmodus. Produksjonssikkert, varig budsjettak er fortsatt ikke godkjent. Statisk UI-tekst med gamle caseantall gjenstår.
 - Endringer begrenset til revisjonsgrenen; ingen merge, Render-produksjonsdeploy, faktiske Supabase-mutasjoner eller LIVE-pilot.
 
 ---
