@@ -200,6 +200,7 @@ async function request(route,who,method="GET",body,headers={}){
     assert.ok(Array.isArray(freeBenchmark.body.problems),"Mock må oppgi konkrete kvalitetsavvik, også når testbanken ikke består");
     assert.equal(freeBenchmark.body.ok,freeBenchmark.body.problems.length===0,
       "Mockens ok-flagg må samsvare med dokumenterte problemer");
+    assert.equal(freeBenchmark.body.ok,true,"Den kostnadsfrie testbanken må bestå etter at navnefeil er løst: "+freeBenchmark.body.problems.join("; "));
     console.log("Gratis benchmark – bankkontroll:",JSON.stringify({ok:freeBenchmark.body.ok,problems:freeBenchmark.body.problems.slice(0,25)}));
     assert.ok(freeBenchmark.body.checks.cases>=100,"Mock skal bruke faktisk testbank");
     assert.equal(calls.length,callsBeforeMock,"Gratis fulltest må ikke bruke Auth Admin eller PostgREST");
