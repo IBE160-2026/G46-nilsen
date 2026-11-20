@@ -4,6 +4,20 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: serverroller og skrivebeskyttet Supabase-sjekk
+
+**Ny verifisert test:** `tests/test-admin-role-http.cjs` er lagt til `npm test`: **45 deterministiske teststeg**. [Quality Gate #44746493058](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44746493058) er **SUCCESS** på server-/test-commit `929056f72a608d4d101fd4b1ccb3d2e23dd900ca`.
+
+**Bevis:** Faktisk Express-server mot en isolert lokal Supabase Auth-simulator, 55 avviste admin-HTTP-operasjoner (anonym/bruker/redaktør/forfalsket rolle/ugyldig rolle), redaktørtilgang til innholdsredigering, admin-brukerliste, avvist endring av egen rolle, avvist ugyldig rolle/ukjent ID, og autorisert rolleoppdatering som skriver `app_metadata`. Den eksisterende retention-oppryddingen ved API-oppstart ble særskilt kontrollert som en **intern bakgrunnsprosess** i fake-backend.
+
+**Skrivebeskyttet faktisk Supabase-kontroll 20.11:** Alle 10 `public`-tabeller har RLS på. `conversations` har eierskapspolicyer for alle fire CRUD-operasjoner, inkludert `WITH CHECK` ved opprettelse/oppdatering. De ni øvrige interne tabellene har ingen direkte RLS-policyer og ingen vanlig CRUD-grant til `anon` eller `authenticated` i den kontrollerte oversikten. **Åpent sikkerhetsfunn:** `TRUNCATE`/`TRIGGER`-privilegier på `conversations` er bredere enn nødvendig og bør vurderes for `REVOKE` etter test, siden RLS ikke kontrollerer `TRUNCATE`. Supabase varsler også om deaktivert leaked-password protection. Det finnes kun ett tilkoblet Supabase-prosjekt og ingen testgren. **Ingen ekte kontoer, data eller rettigheter ble endret.**
+
+**Begrensning:** Ekte Auth-/PostgREST-/RLS-test med to syntetiske kontoer **gjenstår** og må bare utføres i separat database/testmiljø. Dette resultatet kan ikke presenteres som full sikkerhetsgodkjenning.
+
+**Metode, detaljer, testmatrise og åpne risikoer:** [Sikkerhetstest – roller og RLS 20.11](SIKKERHETSTEST-ROLLER-RLS-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026: ekte Chrome-regresjon for administrasjonsvisningen
 
 **Implementering:** `tests/test-admin-browser.cjs` (commit `69a184bfda798a2539e78bb7ff26541d919d7e96`), utløst av den ordinære `.github/workflows/quality-gate.yml` (commit `6bc6209c3045525fc1cd935634da964c4b6575a1`). [Quality Gate #44744143602](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44744143602). **Nytt headless Chrome-adminsteg bekreftet bestått**. Status for hele CI-løpet må kontrolleres separat før merge.
