@@ -59,7 +59,7 @@ async function wait(cdp,expression,title){
   }
   throw Error("Timeout: "+title+"; state="+JSON.stringify(await js(cdp,"({profile:document.querySelector('#profile-name')?.textContent,view:document.querySelector('#admin-view')?.className,calls:window.__fixture?.calls,errors:window.__jsErrors})")));
 }
-function fixture(role){return "(()=>{\nconst role=ROLE_LITERAL,realFetch=window.fetch.bind(window);\nwindow.__jsErrors=[];\nwindow.addEventListener('error',e=>window.__jsErrors.push(String(e.message)));\nwindow.addEventListener('unhandledrejection',e=>window.__jsErrors.push(String(e.reason)));\nconst state={role,calls:[],status:200,contentStatus:200};window.__fixture=state;\nconst fake=(data,status=200)=>Promise.resolve(new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}}));\nwindow.fetch=(input,opt={})=>{\n const url=new URL(typeof input==='string'?input:input.url,location.href),p=url.pathname,method=String(opt.method||'GET').toUpperCase();\n if(p==='/api/auth/me')return fake({user:{id:'admin-current',username:role==='admin'?'Admin Test':role==='editor'?'Editor Test':'User Test',email:'synthetic@example.invalid',role}});\n if(p.startsWith('/api/admin/')){\n  state.calls.push({path:p,search:url.search,method,body:opt.body||null});\n  if(p==='/api/admin/content'&&method==='PUT')return ['editor','admin'].includes(role)?(state.contentStatus===200?fake({ok:true,saved:2}):fake({message:'Lagring avvist'},state.contentStatus)):fake({message:'Forbidden'},403);\n  if(role!=='admin')return fake({message:'Forbidden'},403);\n  if(p==='/api/admin/users'&&method==='GET')return fake({users:[{id:'admin-current',username:'Admin Test',email:'admin@example.invalid',role:'admin'},{id:'user-2',username:'<script>unsafe</script>',email:'user&test@example.invalid',role:'user'}]});\n  if(p==='/api/admin/users/user-2/role'&&method==='PATCH')return state.status===200?fake({ok:true}):fake({message:'Rolleendring avvist'},state.status);\n  if(p==='/api/admin/ai-feedback')return fake({items:[{category:'<label>',surface:'main-guidance',created_at:'2026-11-20T09:00:00Z',comment:'<img src=x onerror=alert(1)>',include_conversation:false}]});\n  if(p==='/api/admin/ai-settings')return fake({models:[{id:'model-a',label:'Test Model',tier:'standard',inputPerMillion:1,outputPerMillion:2}],activeModel:'model-a'});\n  if(p==='/api/admin/ai-usage')return fake({summary:{cost24h:0.25,cost7d:1.5,cost30d:2,calls30d:17},topDomains:[],topQueries:[],topPages:[],recent:[]});\n  if(p==='/api/admin/survey')return fake({count:0,averages:{},responses:[]});\n  if(p==='/api/admin/survey/settings')return fake({enabled:true});\n  if(p==='/api/admin/benchmark/cases')return fake({totalCases:0,totalSubtopics:0,cases:[],models:[],storageReady:false});\n  return fake({message:'Unmocked test endpoint '+p},404);\n }\n return realFetch(input,opt);\n};\n})();".replace("ROLE_LITERAL",JSON.stringify(role));}
+function fixture(role){return "(()=>{\nconst role=ROLE_LITERAL,realFetch=window.fetch.bind(window);\nwindow.__jsErrors=[];\nwindow.addEventListener('error',e=>window.__jsErrors.push(String(e.message)));\nwindow.addEventListener('unhandledrejection',e=>window.__jsErrors.push(String(e.reason)));\nconst state={role,calls:[],status:200,contentStatus:200};window.__fixture=state;\nconst fake=(data,status=200)=>Promise.resolve(new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}}));\nwindow.fetch=(input,opt={})=>{\n const url=new URL(typeof input==='string'?input:input.url,location.href),p=url.pathname,method=String(opt.method||'GET').toUpperCase();\n if(p==='/api/auth/me')return fake({user:{id:'admin-current',username:role==='admin'?'Admin Test':role==='editor'?'Editor Test':'User Test',email:'synthetic@example.invalid',role}});\n if(p==='/api/analyze-situation'||p==='/api/generate-guidance'){\n   state.calls.push({path:p,search:url.search,method,body:opt.body||null});\n   if(role!=='admin')return fake({message:'Forbidden'},403);\n   return p==='/api/analyze-situation'?fake({model:'synthetic-analysis',relevant_topics:['Samarbeid']}):fake({model:'synthetic-guidance',opening:'Jeg vil gjerne forstå hvordan du opplever situasjonen.'});\n }\n if(p.startsWith('/api/admin/')){\n  state.calls.push({path:p,search:url.search,method,body:opt.body||null});\n  if(p==='/api/admin/content'&&method==='PUT')return ['editor','admin'].includes(role)?(state.contentStatus===200?fake({ok:true,saved:2}):fake({message:'Lagring avvist'},state.contentStatus)):fake({message:'Forbidden'},403);\n  if(role!=='admin')return fake({message:'Forbidden'},403);\n  if(p==='/api/admin/users'&&method==='GET')return fake({users:[{id:'admin-current',username:'Admin Test',email:'admin@example.invalid',role:'admin'},{id:'user-2',username:'<script>unsafe</script>',email:'user&test@example.invalid',role:'user'}]});\n  if(p==='/api/admin/users/user-2/role'&&method==='PATCH')return state.status===200?fake({ok:true}):fake({message:'Rolleendring avvist'},state.status);\n  if(p==='/api/admin/ai-feedback')return fake({items:[{category:'<label>',surface:'main-guidance',created_at:'2026-11-20T09:00:00Z',comment:'<img src=x onerror=alert(1)>',include_conversation:false}]});\n  if(p==='/api/admin/ai-settings')return fake({models:[{id:'model-a',label:'Test Model',tier:'standard',inputPerMillion:1,outputPerMillion:2}],activeModel:'model-a'});\n  if(p==='/api/admin/ai-usage')return fake({summary:{cost24h:0.25,cost7d:1.5,cost30d:2,calls30d:17},topDomains:[],topQueries:[],topPages:[],recent:[]});\n  if(p==='/api/admin/survey')return fake({count:0,averages:{},responses:[]});\n  if(p==='/api/admin/survey/settings')return fake({enabled:true});\n  if(p==='/api/admin/benchmark/cases')return fake({totalCases:1,totalSubtopics:1,cases:[{id:'case-1',topicId:'test',topic:'Testtema',subtopic:'Fiktiv situasjon',variant:'A'}],models:[{id:'model-a',label:'Syntetisk testmodell'}],storageReady:true});\n  if(p==='/api/admin/benchmark/mock'&&method==='POST')return fake({ok:true,mode:'mock',checks:{cases:114,subtopics:48},problems:[]});\n  if(p==='/api/admin/benchmark/live'&&method==='POST')return fake({case_id:'case-1',topic:'Testtema',subtopic:'Fiktiv situasjon',variant:'A',model:'model-a',response_text:'<img src=x onerror=alert(1)> Fiktivt råd.',estimated_cost_usd:0.01,input_tokens:10,output_tokens:20,web_search_count:0,web_search_queries:[],source_domains:[],source_pages:[],latency_ms:100});\n  if(p==='/api/admin/pilot-regression/cases')return fake({cases:[{id:'pilot-1',theme:'Fiktivt samarbeid',input:'Testscenario uten persondata.',pilot_regression:true,opening_checks:{max_words:65}}]});\n  if(p==='/api/admin/pilot-regression/result'&&method==='POST')return fake({ok:true});\n  return fake({message:'Unmocked test endpoint '+p},404);\n }\n return realFetch(input,opt);\n};\n})();".replace("ROLE_LITERAL",JSON.stringify(role));}
 async function verifyContentEditingInChrome(cdp, role){
   await wait(cdp,
     "document.querySelector('#admin-content-fields textarea[data-admin-content-key=\"home.hero.title\"]')",
@@ -102,6 +102,47 @@ async function verifyContentEditingInChrome(cdp, role){
   await js(cdp,"(()=>{window.confirm=()=>true;document.querySelector('#admin-reload-content').click()})()");
   await wait(cdp,"document.querySelector('#admin-unsaved-indicator').hidden&&document.querySelector('#admin-save-content').disabled","accepted reload");
 }
+async function verifyBenchmarkIsolation(cdp){
+  const paid=['/api/admin/benchmark/live','/api/analyze-situation','/api/generate-guidance'];
+  const countPaid=async()=>await js(cdp,"window.__fixture.calls.filter(x=>"+JSON.stringify(paid)+".includes(x.path)).length");
+  await wait(cdp,"document.querySelector('#benchmark-run-live')?.disabled===false","mock benchmark configured");
+  const before=await countPaid();
+  await js(cdp,"(()=>{window.confirm=()=>false;document.querySelector('#benchmark-run-live').click();document.querySelector('#pilot-regression-run').click()})()");
+  await wait(cdp,"window.__fixture.calls.some(x=>x.path==='/api/admin/pilot-regression/cases')","pilot cases fetched before cancellation");
+  await sleep(120);
+  assert.equal(await countPaid(),before,"Cancelled paid benchmark/pilot actions must not send a billable request");
+  await js(cdp,"document.querySelector('#benchmark-run-mock').click()");
+  await wait(cdp,"document.querySelector('#benchmark-mock-result')?.textContent.includes('0 KI-kostnad')","free benchmark mock");
+  const mockCalls=await js(cdp,"window.__fixture.calls.filter(x=>x.path==='/api/admin/benchmark/mock')");
+  assert.equal(mockCalls.length,1,"Free benchmark must invoke only the mock API");
+  assert.equal(mockCalls[0].method,"POST");
+  assert.equal(await countPaid(),before,"Free benchmark unexpectedly started a provider request");
+
+  // All billable-looking URLs are intercepted by fake fetch responses installed before page load.
+  // These tests NEVER contact an actual AI provider or the production backend.
+  await js(cdp,"(()=>{window.confirm=()=>true;document.querySelector('#benchmark-run-live').click()})()");
+  await wait(cdp,"document.querySelector('#benchmark-live-status')?.textContent.startsWith('Ferdig:')","synthetic live benchmark completion");
+  const live=await js(cdp,"window.__fixture.calls.filter(x=>x.path==='/api/admin/benchmark/live')");
+  assert.equal(live.length,1,"One synthetic model and one synthetic case should cause one intercepted call");
+  assert.equal(live[0].method,"POST");
+  const data=JSON.parse(live[0].body);
+  assert.equal(data.caseId,"case-1");
+  assert.equal(data.model,"model-a");
+  assert.equal(data.budgetUsd,2);
+  assert.equal(data.spentSoFar,0);
+  assert.equal((await js(cdp,"document.querySelector('#benchmark-results img')!==null")),false,
+    "Synthetic provider HTML should be escaped in rendered benchmark results");
+  assert.ok((await js(cdp,"document.querySelector('#benchmark-results').textContent")).includes("<img src=x onerror=alert(1)>"));
+
+  await js(cdp,"document.querySelector('#pilot-regression-run').click()");
+  await wait(cdp,"document.querySelector('#pilot-regression-status')?.textContent.startsWith('Ferdig:')","synthetic pilot completion");
+  const pilot=await js(cdp,"window.__fixture.calls.filter(x=>x.path==='/api/analyze-situation'||x.path==='/api/generate-guidance')");
+  assert.deepEqual(pilot.map(x=>x.path),["/api/analyze-situation","/api/generate-guidance"]);
+  assert.equal(JSON.parse(pilot[0].body).testMode,"pilot-regression");
+  assert.equal(JSON.parse(pilot[1].body).testMode,"pilot-regression");
+  assert.equal((await js(cdp,"window.__fixture.calls.filter(x=>x.path==='/api/admin/pilot-regression/result').length")),1);
+  assert.deepEqual(await js(cdp,"window.__jsErrors"),[],"Synthetic benchmark path should not throw browser exceptions");
+}
 async function scenario(cdp,role){
   const script=await cdp.send("Page.addScriptToEvaluateOnNewDocument",{source:fixture(role)});
   try{
@@ -137,6 +178,7 @@ async function scenario(cdp,role){
     await js(cdp,"(()=>{const input=document.querySelector('#admin-usage-include-tests');input.checked=true;input.dispatchEvent(new Event('change',{bubbles:true}))})()");
     await wait(cdp,"window.__fixture.calls.some(x=>x.path==='/api/admin/ai-usage'&&x.search==='?includeTests=1')","usage filter");
     await verifyContentEditingInChrome(cdp,role);
+    await verifyBenchmarkIsolation(cdp);
     assert.deepEqual(await js(cdp,"window.__jsErrors"),[]);
   }finally{
     await cdp.send("Page.removeScriptToEvaluateOnNewDocument",{identifier:script.identifier});
