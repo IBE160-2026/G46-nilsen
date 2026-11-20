@@ -1,152 +1,72 @@
-# Product Requirements Document – Samtalestøtte
+# Product Requirements Document (PRD) – Samtalestøtte
 
-**Prosjekt:** Samtalestøtte  
-**Dokumenttype:** Product Requirements Document  
-**Rammeverk:** BMAD  
-**Status:** Revidert PRD, sluttkontrollert mot faktisk leveransestatus 05.11.2026  
-**Versjon ved dokumentasjon:** Produksjonsgrunnlag 20.11.5 med senere dokumenterte patcher  
-**Språk:** Norsk
+**Emne:** IBE160 Programmering med KI  
+**Gjeldende kravrevisjon:** 20.11.2026  
+**Rolle:** Stabilt kravgrunnlag for v1, avgrensede utvidelser og framtidig arbeid.  
+**Historikk:** [Tidligere PRD av 12.11.2026](historikk/PRD-2026-11-12.md) er bevart uendret.
 
----
+> Akseptansekriteriene beskriver hva som skal kunne bevises, ikke hva som automatisk er bestått. Faktisk implementering, teststatus og begrensninger føres i [PRD-STATUS-OG-TESTBEVIS.md](PRD-STATUS-OG-TESTBEVIS.md). Dette skiller lærerens etterspurte krav fra leveransestatus.
 
-# 1. Formål
+## 1. Produktproblem, målgruppe og avgrensning
 
-Samtalestøtte er en KI-basert webapplikasjon for ledere som skal forberede og øve på krevende samtaler med medarbeidere.
+Ledere kan trenge praktisk trening før krevende medarbeidersamtaler. Generelle chatboter gir ikke nødvendigvis en sammenhengende lederrettet arbeidsflyt, realistisk samtaleøvelse eller kontroll av identifiserende informasjon før et KI-kall. Samtalestøtte er et **domenespesifikt støtteverktøy**, ikke en generell chatbot, et personalsystem eller et beslutningssystem.
 
-Løsningen skal gi praktisk støtte til:
+**Primærbruker:** Leder med personalansvar, spesielt ved lite HR-støtte eller begrenset ledererfaring. Roller som redaktør og administrator er tekniske driftsroller, ikke egne primærbrukere i v1.
 
-- å strukturere situasjonen
-- forberede samtalen
-- finne relevante spørsmål og formuleringer
-- vurdere mulige reaksjoner
-- øve gjennom samtalesimulering
-- reflektere over videre oppfølging
+**Ikke-mål:** Føre formelle personalsaker, automatisere oppsigelse, diagnostisere, fastslå skyld/motiv, erstatte HR/jurist/bedriftshelsetjeneste, bruke brukerinnhold til skjult modelltrening eller påstå sikker drift på klassifiserte/lukkede nettverk.
 
-KI skal støtte lederens vurderinger, ikke overta beslutningsansvaret.
+## 2. Scope
 
-Produktet skal derfor kombinere praktisk KI-støtte med tydelige grenser for:
+| Nivå | Innhold | Aksept |
+|---|---|---|
+| **V1-kjerne** | Situasjon, tema, hovedveiledning, oppfølging, samtaleøvelse, personvern, innlogging og egen historikk | Brukerreisene UJ-01 og UJ-02 kan gjennomføres |
+| **Nødvendig kvalitet** | Kildeautoritet, faggrunnlag, serverkontroll, golden/personverntester, reproducerbar demo | Kritiske krav og negative caser kan verifiseres |
+| **Utvidelser/prototype** | Rapportering, admin/redaktør, modellvalg, benchmark, utskrift, yrke/tariff, PWA, webanalyse | Må ikke fremstilles som mer testet enn dokumentert |
+| **Utenfor levert v1** | Direkte åpen KI-inngang, live tale som ordinær flyt, lokal RAG/intern KI, fullskala representativ forskning | Egen pilot/kravbeslutning før eventuell leveranse |
 
-- personvern
-- sikkerhet
-- faglig usikkerhet
-- juridiske og HR-relaterte vurderinger
-- menneskelig ansvar
+Ni hovedtemaer og 48 undertemaer er gjeldende. Tidligere 56 undertemaer er historikk, ikke et alternativt samtidig krav. De ni er: Alkohol og rus; Fravær og oppfølging; Prestasjon og utvikling; Lønn og utvikling; Samarbeid og kommunikasjon; Oppsigelse og avslutning av arbeidsforhold; Sikkerhet og ansvar; Livssituasjoner; Mobbing og trakassering.
 
----
+## 3. Målbare mål og motmål
 
-# 2. Produktproblem
+| ID | Kriterium | Verifikasjon |
+|---|---|---|
+| SM-01 | Minst **2 golden-caser per hovedtema** i alle 9 temaer | Golden-schema og manuell gjennomgang av case-relevans |
+| SM-02 | Bruker A skal aldri få lese, endre eller slette bruker Bs historikk | RLS, server og test med **to faktiske kontoer** |
+| SM-03 | **Minst 4/5 i en ny pilot** kan gjennomføre situasjon → råd → øvelse uten hjelp | Observerte oppgavegjennomføringer; **mål, ikke rapportert oppnådd** |
+| SM-04 | Demo og deterministic testpakke kjører uten eksterne API-nøkler | Ren installasjon, npm run demo, npm test |
+| SM-C1 | Økt nyttescore må ikke bety flere bastante juridiske påstander eller forbudte kilder | Negative KI-/kilde-caser og manuell fagkritikk |
+| SM-C2 | Raskere flyt må ikke omgå personverngateway i oppfølging eller øvelse | Klient- og serverregresjoner |
 
-Krevende medarbeidersamtaler er en vanlig del av lederrollen, men mange ledere får begrenset praktisk trening før situasjonene oppstår.
+## 4. Brukerreiser
 
-Eksisterende generelle KI-verktøy kan gi hjelp, men mangler ofte:
+**UJ-01 – forberedelse:** En leder skal snakke om gjentatt korttidsfravær. Hen beskriver situasjonen uten identifiserende detaljer, velger eller korrigerer et KI-forslått tema, får mål/åpning/spørsmål og stiller et oppfølgingsspørsmål. Relevant kontekst beholdes; nytt emne starter rent. Dekkes av FR-01–04, FR-06, AI-01/04/05.
 
-- struktur for lederens arbeidsflyt
-- relevant faglig kontekst
-- personvernbeskyttelse før KI-kall
-- simulering av selve samtalen
-- tydelige begrensninger mot diagnoser, skyld og bastante konklusjoner
-- systematisk kvalitetssikring
+**UJ-02 – øving:** En leder tar med gjeldende situasjon til samtaleøvelse, møter minst to simulerte medarbeiderreaksjoner, avslutter og reflekterer. Hen kan gjenåpne egne lagrede samtaler, eventuelt skrive ut. Verken simulering eller svar tillegger noen oppdiktet diagnose eller skyld. Dekkes av FR-05, FR-07/09, AI-02/03 og valgfritt FR-20.
 
-Samtalestøtte skal derfor være et domenespesifikt støtteverktøy fremfor en generell chatbot.
+## 5. Felles ordliste
 
----
+| Begrep | Definisjon |
+|---|---|
+| Situasjon | Brukerens beskrivelse av en arbeidssituasjon |
+| Tema/undertema | Kuratert samtalekontekst som brukeren kan velge eller korrigere |
+| Hovedveiledning | Strukturert første KI-svar med mål, åpning, spørsmål og videre råd |
+| Oppfølgingsdialog | Videre KI-spørsmål i samme relevante kontekst |
+| Samtaleøvelse | Dialog med simulert medarbeider |
+| Personverngateway | Kontroll i klient og server før relevant ekstern KI-forsendelse |
+| Faggrunnlag/SOURCEBANK | Kuraterte lov-, myndighets-, forsknings- og fagkilder |
+| Kildeautoritet | Regel for hva som er en egnet kilde til en bestemt påstand |
+| Rolle | Serverhåndhevet user, editor eller admin |
+| Golden-case | Scenario med maskinelle kontroller og menneskelig fasit |
+| Benchmark | Prototypemiljø for sammenligning av modeller på felles tester |
+| Demo/live KI | Mocket deterministisk flyt uten nøkler kontra reelt modellkall |
 
-# 3. Produktmål
+## 6. Funksjonelle krav
 
-Produktet skal:
-
-1. gjøre det enklere å forberede krevende medarbeidersamtaler
-2. gi konkret og situasjonstilpasset KI-støtte
-3. redusere risikoen for deling av identifiserende informasjon
-4. tilby praktisk samtaletrening
-5. støtte flere relevante samtaletemaer
-6. gi innloggede brukere tilgang til egen historikk
-7. støtte kvalitetssikring av KI gjennom testing og modellvurdering
-8. kunne videreutvikles uten å være låst til én enkelt KI-provider
-9. strukturere kunnskap og arkitektur slik at en framtidig lukket/offline variant kan bruke lokal fagbank, lokal RAG og intern KI
-
----
-
-# 4. Ikke-mål
-
-Samtalestøtte skal ikke:
-
-- være et HR-system
-- være et personalsystem eller journalsystem
-- lagre formelle personalsaker
-- ta beslutninger om medarbeidere
-- automatisere oppsigelser eller andre personalvedtak
-- stille medisinske eller psykologiske diagnoser
-- fastslå motiv, skyld eller sannhet i konflikter
-- erstatte HR, jurist, bedriftshelsetjeneste eller lederens eget skjønn
-- trene egen språkmodell på brukerdata
-- bruke brukerens samtaler som skjult treningsgrunnlag
-- være ferdig produksjonsløsning for klassifiserte eller lukkede nettverk
-
----
-
-# 5. Primærbruker
-
-Primærbrukeren er en leder som står foran en krevende samtale med en medarbeider.
-
-Typiske behov:
-
-- forstå hva som er kjernen i situasjonen
-- finne mål for samtalen
-- formulere en god åpning
-- stille relevante spørsmål
-- forberede seg på reaksjoner
-- øve på samtalen
-- reflektere før eller etter samtalen
-
-Sekundære brukergrupper kan være:
-
-- HR
-- lederutviklere
-- redaktører
-- systemadministratorer
-
----
-
-# 6. Hovedtemaer
-
-Leveransen støtter ni hovedtemaer:
-
-1. Alkohol og rus
-2. Fravær og oppfølging
-3. Prestasjon og utvikling
-4. Lønn og utvikling
-5. Samarbeid og kommunikasjon
-6. Oppsigelse og avslutning av arbeidsforhold
-7. Sikkerhet og ansvar
-8. Livssituasjoner
-9. Mobbing og trakassering
-
-Hvert tema kan ha undertemaer som brukes som kontekst for KI-en.
-
-Den gjeldende V1-taksonomien består av **48 undertemaer**. Tidligere versjoner hadde 56. Reduksjonen kom etter klarspråkgjennomgang, pilotbruk og tilbakemeldinger som viste at enkelte kategorier var for vage, overlappende eller unødvendig smale. De ble slått sammen, omformulert eller fjernet. Dette er en produktforbedring, ikke bare et scope-kutt: målet er at brukeren lettere skal kjenne igjen egen situasjon samtidig som KI-en får tilstrekkelig kontekst.
-
-Brukeren skal ikke være låst til en rigid menystruktur dersom situasjonen beskrives bedre med egne ord.
-
----
-
-# 7. Kravstatus
-
-Denne PRD-en skiller mellom:
-
-- **IMPLEMENTERT** – finnes i dagens prototype
-- **DELVIS** – deler finnes, men området er ikke fullt ferdigstilt
-- **VIDERE ARBEID** – planlagt eller ønsket videreutvikling
-
-Dette er gjort for å skille tydelig mellom faktisk leveranse og framtidig ambisjon.
-
----
-
-# 8. Funksjonelle krav
+Status for hver FR er skilt ut i vedlegget. Listen omfatter hele v1 og eksplisitt videre arbeid – ingen nye FR-patcher er lagt etter siste kapittel.
 
 ## FR-01 – Situasjonsbeskrivelse
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Brukeren skal kunne beskrive en krevende situasjon i fritekst.
 
@@ -156,21 +76,13 @@ Brukeren skal ikke måtte fylle ut et omfattende HR-skjema før KI-en kan hjelpe
 
 ### Akseptansekriterier
 
-- bruker kan skrive situasjonen i hovedfeltet
-- teksten kan analyseres av KI
-- relevant kontekst videreføres i samtalen
-- ny samtale starter uten gammel samtalekontekst
-
-### Spor i repoet
-
-- `app.js`
-- `server.js`
-
----
+1. Situasjonsbeskrivelsen kan skrives og endres uten omfattende HR-skjema.
+2. Den blir brukt som grunnlag for hovedveiledning etter personvernkontroll.
+3. Ny samtale sender ikke gammel situasjon videre til KI.
 
 ## FR-02 – Tema og undertema
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Systemet skal støtte de ni definerte hovedtemaene og tilhørende undertemaer.
 
@@ -178,17 +90,15 @@ KI kan foreslå relevant tema ut fra brukerens tekst.
 
 Brukeren skal kunne korrigere eller velge tema selv.
 
-### Spor
+### Akseptansekriterier
 
-- `app.js`
-- `index.html`
-- `docs/faggrunnlag/`
-
----
+1. Ni hovedtemaer og 48 gjeldende undertemaer kan velges.
+2. KI-forslag kan korrigeres av brukeren uten tap av situasjonstekst.
+3. Temabytte skal ikke ta med kontekst fra avsluttet samtale.
 
 ## FR-03 – KI-basert hovedveiledning
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 KI-veiledningen skal kunne gi støtte til:
 
@@ -204,37 +114,34 @@ Svarene skal være praktiske og menneskelig formulert.
 
 KI skal være tilbakeholden med bastante HR-, juridiske og psykologiske konklusjoner.
 
-### Spor
+### Akseptansekriterier
 
-- `server.js`
-- `docs/ai/AI-SYSTEMPROMPT.md`
-- `docs/ai/AI-RESPONSE-CONTRACT.md`
-
----
+1. Hovedrådet har identifiserbare mål, åpning, relevante spørsmål og oppfølging.
+2. Åpningen kan sies av en leder, ikke bare leses som instruksjon.
+3. Uavklart juss/HR gis ikke som sikker konklusjon (AI-04/AI-07).
 
 ## FR-04 – Oppfølgingsdialog
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Brukeren skal kunne fortsette dialogen med KI etter første veiledning.
 
-### Krav
+**Nærmere krav**
 
 - relevant kontekst beholdes
 - unødvendig repetisjon begrenses
 - KI kan gi konkrete formuleringseksempler
 - nye brukerinnspill skal passere personvernkontroll
 
-### Spor
+### Akseptansekriterier
 
-- `app.js`
-- `server.js`
-
----
+1. Oppfølgingsspørsmål kan stilles uten å gjenta hele situasjonen.
+2. Gjeldende tema og relevant kontekst beholdes, uvedkommende historikk ekskluderes.
+3. Nye innspill kontrolleres for personvern før ekstern KI.
 
 ## FR-05 – Samtaleøvelse (samtalesimulering)
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Systemet skal tilby en egen simulator der KI spiller medarbeider.
 
@@ -248,16 +155,15 @@ Simulatoren skal:
 - la brukeren avslutte øvelsen
 - støtte refleksjon etterpå
 
-### Testbevis
+### Akseptansekriterier
 
-- `tests/test-simulation.js`
-- siste kontroll: **24/24 kontroller bestått**
-
----
+1. Brukeren kan sende flere replikker til simulert medarbeider og avslutte øvelsen.
+2. Reaksjonene følger scenario og brukerens replikker, med refleksjon etterpå.
+3. Ingen oppdiktede diagnoser, familieforhold, skyld eller motiv vises som fakta.
 
 ## FR-06 – Personverngateway
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Alle sentrale tekstfelt som kan føre til KI-kall skal passere personvernkontroll.
 
@@ -283,20 +189,20 @@ Kontrollen skal finnes både:
 
 Systemet skal ikke love full anonymitet.
 
-### Testbevis
+### Akseptansekriterier
 
-- `tests/test-privacy.js`
-- historisk kontroll: **33/33**; senere dokumentert personvernspakke: **56/56**
-
----
+1. Klient og server kontrollerer representative navn, telefon, e-post, arbeidssted og familieopplysninger.
+2. Eksempel med navn og telefonnummer gir kontroll; data skal ikke ukritisk sendes uendret til ekstern KI.
+3. Serverkontroll gjelder også ved omgått klient.
+4. «Jobbet i 20 år» alene skal ikke feilaktig regnes som alder. Full anonymitet loves ikke.
 
 ## FR-07 – Autentisering
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Systemet skal ha brukerkontoer og lukket registrering.
 
-### Krav
+**Nærmere krav**
 
 - bruker kan logge inn
 - bruker kan logge ut
@@ -304,33 +210,29 @@ Systemet skal ha brukerkontoer og lukket registrering.
 - sesjon kan beholdes mellom sideoppdateringer
 - innlogget bruker skal ikke kunne lese andre brukeres historikk
 
-### Spor
+### Akseptansekriterier
 
-- `server.js`
-- Supabase-oppsett
-- `database/`
-
----
+1. Gyldig bruker kan logge inn/ut og får kontrollert feilmelding ved ugyldig sesjon.
+2. Beskyttede serverruter avviser uautentiserte brukere.
+3. Bruker A får ikke lese, endre eller slette Bs historikk; kontrolleres med to reelle testkontoer.
 
 ## FR-08 – Engangsinvitasjoner
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Nye kontoer opprettes gjennom engangsinvitasjoner.
 
 Invitasjoner kan brukes til kontrollert tilgang til beta- og vurderingsmiljø.
 
-### Spor
+### Akseptansekriterier
 
-- `scripts/create-invite.js`
-- adminfunksjoner
-- serverlogikk
-
----
+1. Registrering uten gyldig invitasjon avvises.
+2. Brukt eller utløpt engangsinvitasjon kan ikke gjenbrukes.
+3. Invitasjonsadministrasjon krever administratorrolle på serveren.
 
 ## FR-09 – Historikk
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Innlogget bruker skal kunne:
 
@@ -341,15 +243,15 @@ Innlogget bruker skal kunne:
 
 Historikk skal være knyttet til riktig bruker.
 
-### Testbevis
+### Akseptansekriterier
 
-- `tests/test-history-hotfix.cjs`
-
----
+1. Brukeren kan lagre, åpne og slette egen samtale.
+2. Slettet samtale er borte også etter ny innlogging.
+3. En annen brukers samtale-ID avvises og midlertidig øvelse lagres ikke som normal historikk.
 
 ## FR-10 – Rapportering av KI-svar
 
-**Status:** IMPLEMENTERT
+**Omfang:** Utvidelse / pilot / drift.
 
 Brukeren skal kunne rapportere et KI-svar som oppleves problematisk.
 
@@ -365,9 +267,15 @@ Samtaleinnhold skal ikke inkluderes automatisk.
 
 ---
 
+### Akseptansekriterier
+
+1. Brukeren kan rapportere kategori og kommentar om KI-svar.
+2. Samtaleinnhold inkluderes bare etter eksplisitt valg.
+3. Rapporterte utdrag er bare tilgjengelige for administrator.
+
 ## FR-11 – Roller
 
-**Status:** IMPLEMENTERT
+**Omfang:** Utvidelse / pilot / drift.
 
 Systemet støtter tre roller:
 
@@ -391,9 +299,15 @@ Kritiske rettigheter skal valideres server-side.
 
 ---
 
+### Akseptansekriterier
+
+1. User/editor/admin får forskjellige serverhåndhevede rettigheter.
+2. User kan ikke redigere administrasjonsinnhold, editor kan bare redigere tillatt innhold.
+3. Bruker kan ikke gi seg selv høyere rolle ved klientmanipulasjon.
+
 ## FR-12 – Admin
 
-**Status:** IMPLEMENTERT
+**Omfang:** Utvidelse / pilot / drift.
 
 Adminområdet skal gi tilgang til relevante drifts- og kvalitetsfunksjoner.
 
@@ -411,9 +325,15 @@ Store adminområder skal kunne minimeres for å redusere visuell belastning.
 
 ---
 
+### Akseptansekriterier
+
+1. Relevante drifts- og kvalitetspaneler kan benyttes av administrator.
+2. Direkte HTTP-kall fra vanlig bruker til adminrutene gir avslag.
+3. Ved skifte av konto vises ikke tidligere administrators private rapportinnhold.
+
 ## FR-13 – Modellvalg
 
-**Status:** IMPLEMENTERT I PROTOTYPEFORM
+**Omfang:** Utvidelse / pilot / drift.
 
 Systemet skal ikke være permanent låst til én KI-modell.
 
@@ -427,17 +347,15 @@ Arkitekturen skal støtte flere providere.
 - OpenRouter
 - modellkonfigurasjon via server
 
-### Spor
+### Akseptansekriterier
 
-- `server.js`
-- adminlogikk
-- `data/BENCHMARK-CASES.json`
-
----
+1. Admin kan se og velge mellom støttede modeller i prototypeoppsettet.
+2. Ukjent modell-ID skal ikke omgå tillatt serverkonfigurasjon.
+3. Nøkler skal ikke eksponeres i klienten; live-providerbytte krever egen test.
 
 ## FR-14 – Modellbenchmark
 
-**Status:** IMPLEMENTERT I PROTOTYPE/TESTFORM
+**Omfang:** Utvidelse / pilot / drift.
 
 Prosjektet skal kunne sammenligne KI-modeller på et felles testgrunnlag.
 
@@ -454,17 +372,15 @@ Systemet inneholder også støtte for blind modell-sammenligning.
 
 Selve benchmarkverktøyet og testgrunnlaget er implementert i prototype/testform. En full fler-modell-benchmark er ikke dokumentert som gjennomført og skal derfor ikke fremstilles som et ferdig evalueringsresultat.
 
-### Spor
+### Akseptansekriterier
 
-- `tests/test-model-compare.js`
-- benchmarklogikk i app/server
-- `data/BENCHMARK-CASES.json`
-
----
+1. Testbank kan brukes på sammenlignbare modellkjøringer.
+2. Mockresultater er tydelig skilt fra faktiske live-kjøringer.
+3. Ingen full, reell modellbenchmark hevdes uten dokumenterte modellkall og resultater.
 
 ## FR-15 – Automatisert KI-testing
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Prosjektet skal ha automatiserte testoppsett for KI-svar.
 
@@ -477,27 +393,37 @@ Dette omfatter:
 - simulator-live-test
 - modell-sammenligning
 
-### Spor
+Testbanken kombinerer maskinelle kriterier og en menneskelig vurderingsfasit med MÅ, BØR og kritiske avvik.
 
-- `tests/test-ai.js`
-- `tests/test-ai-stress.js`
-- `tests/test-simulation-ai.js`
-- `tests/test-model-compare.js`
-- `tests/test-ai-golden.js`
-- `tests/test-golden-schema.cjs`
-- `tests/test-golden-utils.js`
-- `tests/AI-GOLDEN-CASES.json`
-- `tests/cases/`
+### Akseptansekriterier
 
-Automatisert vurdering skal brukes som støtte og ikke erstatte manuell vurdering av KI-kvalitet.
+1. Deterministiske tester kan kjøres uten eksterne KI-kall.
+2. Minst to representative golden-caser per hovedtema dekker alle ni temaer.
+3. Live modelltest er separat og rapporteres med modell, dato, avvik og begrensning.
 
-Golden/fasittesten knytter representative KI-caser til eksplisitte kravreferanser, maskinelle kontrollpunkter og en menneskelig vurderingsfasit med `MÅ`, `BØR` og kritiske feil. Fasitbankens struktur og 9/9 temadekning kan verifiseres uten API-nøkkel.
+## FR-15A – Kildepresisjon og negativ fasit
 
----
+**Omfang:** Kjerne eller nødvendig kvalitet.
+
+Automatisert testing skal ikke bare kontrollere at et KI-svar har faglig grunnlag. For yrke, tariff og rettslige/formelle saker skal testgrunnlaget kunne uttrykke:
+
+- obligatorisk source_id
+- minst én av flere akseptable source_ids
+- eksplisitt forbudte source_ids
+- at ingen kuratert kilde normalt er nødvendig
+- forventet yrkesrelevans
+- forventet behov for arbeidsgivertype
+
+### Akseptansekriterier
+
+1. Alle 14 sektorer har minst en positiv og en negativ yrkescase.
+2. Positiv case krever forventet kilde; negativ case må ha eksplisitt negativ fasit.
+3. Forbudt source_id gir kritisk avvik, og ukjent arbeidsgivertype skal ikke utløse gjettet tariff.
+4. Generelt sykefravær blir ikke profesjonsjuss bare på grunn av yrkestittel.
 
 ## FR-16 – Faggrunnlag
 
-**Status:** IMPLEMENTERT
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Produktet skal ha dokumentert faglig grunnlag.
 
@@ -515,17 +441,18 @@ Dette finnes som:
 - temaspecifikke faggrunnlag
 - KI-regler for faglig usikkerhet
 
-### Spor
+Faggrunnlag skal være tilgjengelig i brukerflaten uten å overlesse hovedsvaret.
 
-- `docs/SOURCEBANK.md`
-- `data/SOURCEBANK.json`
-- `docs/faggrunnlag/`
+### Akseptansekriterier
 
----
+1. Fagbanken skiller lov/myndighet, forskning, faglige rammeverk og yrkes-/tariffkilder.
+2. Rettslige plikter må støttes av gjeldende autoritativ kilde når dette finnes.
+3. Kilder skal kunne åpnes og kontrolleres uten å overfylle hovedsvaret.
+4. Ingen oppdiktede kildehenvisninger presenteres som fakta.
 
 ## FR-17 – Brukertesting
 
-**Status:** PILOT GJENNOMFØRT / VIDERE EVALUERING
+**Omfang:** Utvidelse / pilot / drift.
 
 Produktet skal kunne brukertestes systematisk.
 
@@ -543,9 +470,15 @@ Resultater fra brukertesting har allerede ført til konkrete revisjoner av krav,
 
 ---
 
+### Akseptansekriterier
+
+1. Det finnes oppgaver, dokumentert kvalitativ pilot og en sporbar funnlogg.
+2. Funn skilles som rapportert, bekreftet, rettet eller kandidat.
+3. Liten pilot omtales ikke som representativ; minst én funn-til-test-kjede synliggjøres.
+
 ## FR-18 – Web- og kildeanalyse
 
-**Status:** DELVIS / PROTOTYPE
+**Omfang:** Utvidelse / pilot / drift.
 
 Systemet har funksjoner og arkitektur knyttet til kilde- og webbruk.
 
@@ -555,601 +488,51 @@ Videre utvikling av dette området er mulig.
 
 ---
 
-# 9. KI-krav
-
-## AI-01 – Fakta og antakelser
-
-**Status:** IMPLEMENTERT SOM KI-REGEL
-
-KI skal skille mellom:
-
-- informasjon brukeren faktisk har oppgitt
-- mulige tolkninger
-- antakelser
-- informasjon som mangler
-
----
-
-## AI-02 – Ingen oppdiktede diagnoser
-
-**Status:** IMPLEMENTERT OG TESTET
-
-KI skal ikke dikte opp medisinske eller psykologiske diagnoser.
-
-Dette gjelder også simulatoren.
-
----
-
-## AI-03 – Ingen oppdiktet skyld eller motiv
-
-**Status:** IMPLEMENTERT SOM KI-REGEL
-
-KI skal ikke fastslå:
-
-- skyld
-- motiv
-- personlighet
-- sannheten i en konflikt
-
-uten tilstrekkelig grunnlag.
-
----
-
-## AI-04 – HR og juridiske spørsmål
-
-**Status:** IMPLEMENTERT SOM KI-REGEL
-
-KI skal være tydelig på usikkerhet og anbefale relevant faglig bistand når situasjonen krever det.
-
----
-
-## AI-05 – Kontekst
-
-**Status:** IMPLEMENTERT
-
-KI skal beholde nødvendig samtalekontekst, men ny samtale skal ikke arve uvedkommende tidligere kontekst.
-
----
-
-## AI-06 – Modelluavhengighet
-
-**Status:** IMPLEMENTERT I PROTOTYPEFORM
-
-KI-laget skal støtte at modell/provider kan endres uten at hele applikasjonen bygges om.
-
----
-
-# 10. Ikke-funksjonelle krav
-
-## NFR-01 – Sikkerhet
-
-**Status:** IMPLEMENTERT PÅ PROTOTYPENIVÅ
-
-Systemet skal blant annet bruke:
-
-- server-side tilgangskontroll
-- databasepolicy/RLS
-- sikre sessions/cookies
-- rate limiting
-- same-origin-kontroll
-- sikkerhetsheadere
-- begrenset offentlig filtilgang
-- server-side personverngateway
-- API-nøkler utenfor frontend
-
-### Dokumentasjon
-
-`docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
-
----
-
-## NFR-02 – Personvern
-
-**Status:** IMPLEMENTERT
-
-Produktet skal følge prinsipper om:
-
-- dataminimering
-- formålsbegrensning
-- minst mulig unødvendig logging
-- bruker-eid historikk
-- frivillig deling av samtaleinnhold
-- separasjon mellom brukerdata og teknisk analyse
-
----
-
-## NFR-03 – Brukervennlighet
-
-**Status:** IMPLEMENTERT MED VIDERE FORBEDRINGSMULIGHET
-
-Løsningen skal ha:
-
-- tydelig navigasjon
-- konsekvente komponenter
-- forståelige tilbakemeldinger
-- lys/mørk/hybrid visning
-- responsiv utforming
-- minst mulig unødvendig teknisk språk
-
-UX er iterativt forbedret gjennom prosjektet.
-
----
-
-## NFR-04 – Feilhåndtering
-
-**Status:** IMPLEMENTERT
-
-Tekniske feil skal så langt som mulig håndteres uten at brukerflyten kollapser.
-
-Sluttbruker skal ikke eksponeres for unødvendig tekniske debugdetaljer.
-
----
-
-## NFR-05 – Vedlikeholdbarhet
-
-**Status:** IMPLEMENTERT SOM ARKITEKTURMÅL
-
-Kode, dokumentasjon, tester og ressurser skal holdes logisk adskilt.
-
-Repoet er organisert i:
-
-- `assets/`
-- `data/`
-- `database/`
-- `docs/`
-- `tests/`
-
----
-
-# 11. Testing og kvalitetssikring
-
-## T-01 – Personvern
-
-**Status:** BESTÅTT
-
-Kommando:
-
-```bash
-npm run test-privacy
-```
-
-Siste dokumenterte kontroll:
-
-**73/73 bestått**
-
----
-
-## T-02 – Samtalesimulering
-
-**Status:** BESTÅTT
-
-Kommando:
-
-```bash
-npm run test-simulation
-```
-
-Siste kontroll:
-
-**24/24 bestått**
-
----
-
-## T-03 – Server-personvern
-
-**Status:** IMPLEMENTERT
-
-```bash
-npm run test-server-privacy
-```
-
----
-
-## T-04 – UI-regresjon
-
-**Status:** IMPLEMENTERT
-
-```bash
-npm run test-ui-regression
-```
-
----
-
-## T-05 – Historikk
-
-**Status:** BESTÅTT VED SISTE KONTROLL
-
-```bash
-npm run test-history-hotfix
-```
-
----
-
-## T-06 – Samtaleboble-regresjon
-
-**Status:** BESTÅTT VED SISTE KONTROLL
-
-```bash
-npm run test-bubble-cleanup
-```
-
-En tidligere versjon av testen feilet fordi den kontrollerte en foreldet CSS-kommentar fremfor faktisk funksjonalitet.
-
-Testen ble korrigert fremfor å endre fungerende produksjonskode.
-
----
-
-## T-07 – KI-tester
-
-**Status:** IMPLEMENTERT
-
-```bash
-npm run test-ai
-npm run test-ai:full
-npm run test-ai:stress
-npm run test-ai:stress:full
-npm run test-ai:stress:problems
-npm run test-ai:golden
-npm run test-ai:occupation-golden
-npm run test-golden-schema
-```
-
-KI-testene gjør faktiske modellkall og krever API-konfigurasjon.
-
-Golden/fasitbanken inneholder nå **66 caser**. De 26 tidligere generelle/pilotcasene er supplert med 40 strenge yrke/sektor/tariff/kilde-caser: 28 sektorcaser, 8 arbeidsgiver-/tariffcaser og 4 kildelekkasjecaser.
-
-Den dokumenterte live-kjøringen 26.10.2026 omfattet **21 caser** mot GPT-5.6 Luna og ga **19 maskinelt OK + 2 manuelt akseptert etter kontroll**, 0 kritiske avvik og 0 tekniske feil.
-
-Etter senere utvidelse til 26 caser ble hele produksjonsflyten kjørt. Første kjøring avdekket tre falske personverntreff før KI-kall; etter retting nådde **26/26** fram til KI-svar. Historiske 9/9- og 21-case-resultater beholdes som tidligere teststeg, men skal ikke beskrives som dagens testbank.
-
-Etter utvidelsen til 66 golden/fasitcaser ble de **40 strenge yrke/sektor/tariff/kilde-casene** kjørt separat live mot **gpt-5.6-luna** 09.11.2026. Første fullrunde ga **37 OK / 3 BØR SJEKKES / 0 kritiske / 0 tekniske**. De tre avvikene ble analysert hver for seg og viste henholdsvis en for rigid tema-fasit, en for grov testheuristikk og en reell svakhet i kildeprioriteringen for statsansatteloven. Etter retting og regresjonstesting ga sluttkjøringen **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil**.
-
-Dette resultatet dokumenterer samsvar med prosjektets definerte fasit og kilde-/sikkerhetsregler i disse 40 casene. Det er ikke en garanti for at en stokastisk språkmodell alltid vil gi korrekt eller optimalt svar i alle framtidige saker.
-
----
-
-## T-08 – Modell-sammenligning
-
-**Status:** IMPLEMENTERT
-
-```bash
-npm run test-model-compare
-```
-
-Testen støtter blind sammenligning av KI-modeller.
-
----
-
-# 12. Akseptansekriterier for levert prototype
-
-Leveransen anses som funksjonelt komplett som prosjektprototype når følgende er oppfylt:
-
-1. appen kan startes og brukes
-2. innlogging fungerer
-3. lukket registrering fungerer
-4. ni hovedtemaer er tilgjengelige
-5. situasjonsbeskrivelse kan analyseres
-6. KI gir strukturert samtalestøtte
-7. oppfølgingsdialog fungerer
-8. personverngateway beskytter sentrale KI-flyter
-9. samtalesimulering fungerer
-10. historikk er tilgjengelig for innlogget bruker
-11. rollemodell finnes
-12. adminfunksjoner finnes
-13. KI-modell kan konfigureres
-14. automatiserte tester finnes
-15. sentrale personvern- og simulator-tester består
-16. dokumentasjon gjør løsning og prosess etterprøvbar
-17. gjeldende taksonomi består av 9 hovedtemaer og 48 undertemaer
-18. mobil/PWA-flyten fungerer som installasjonslag på støttede nettlesere uten å være avhengig av en native app
-
----
-
-# 13. Status ved levering
-
-| Område | Status | Bevis |
-|---|---|---|
-| Webapplikasjon | Implementert | `app.js`, `index.html`, `server.js` |
-| KI-veiledning | Implementert | server + systemprompt |
-| 9 hovedtemaer | Implementert | app + faggrunnlag |
-| Personverngateway | Implementert/testet | 73/73 i siste dokumenterte personvernpakke |
-| Samtaleøvelse | Implementert/testet | 24/24 tester |
-| Autentisering | Implementert | Supabase/server |
-| Historikk | Implementert | Supabase/regresjonstest |
-| Roller | Implementert | app/server |
-| Admin | Implementert | app/server |
-| Modellvalg | Implementert i prototypeform | admin/server |
-| Benchmark | Prototype/testform | 114 saker synkronisert med 48 undertemaer |
-| KI-testing | Implementert / utvidet | 66 golden/fasitcaser, 28/28 deterministic sektor-golden og dokumentert live occupation-golden 40/40 mot gpt-5.6-luna 09.11.2026 |
-| Faggrunnlag | Implementert | `docs/faggrunnlag/` |
-| SOURCEBANK | Implementert | `docs/`, `data/` |
-| Brukertesting | Pilot gjennomført / videre evaluering | brukertestplan, backlog og dokumenterte produktendringer |
-| Web/kildeanalyse | Delvis/prototype | server/admin |
-| Lukket/offline løsning | Videre arbeid, men arkitektur er tilrettelagt | provider-abstraksjon, SOURCEBANK, lokal RAG-/intern KI-målarkitektur |
-
----
-
-# 14. Kjente avgrensninger
-
-Leveransen er en prototype og har derfor bevisste avgrensninger.
-
-Blant annet:
-
-- full produksjonsherding er ikke gjennomført
-- fullskala/representativ brukertesting gjenstår; gjennomført pilot er kvalitativ og begrenset
-- lukket/offline løsning er ikke implementert
-- modellbenchmark er et test- og prototypeområde
-- enkelte admin- og analysefunksjoner kan videreutvikles
-- KI-kvalitet kan aldri garanteres fullt ut gjennom automatiserte regler
-
-Disse områdene skal ikke fremstilles som ferdige krav i dagens leveranse.
-
----
-
-# 15. Risikoer
-
-## R-01 – KI kan gi svake eller feilaktige svar
-
-Tiltak:
-
-- systemprompt
-- responskontrakt
-- faggrunnlag
-- testcaser
-- menneskelig ansvar
-- rapporteringsfunksjon
-
----
-
-## R-02 – Personopplysninger kan bli skrevet inn
-
-Tiltak:
-
-- klientkontroll
-- serverkontroll
-- anonymisering
-- tydelig informasjon
-- dataminimering
-
----
-
-## R-03 – KI-testing kan gi falske resultater
-
-Tiltak:
-
-- manuell vurdering
-- kontekstbevisste tester
-- regresjonstesting av selve testlogikken
-
----
-
-## R-04 – Eksterne tjenester kan endre seg
-
-Tiltak:
-
-- provider-abstraksjon
-- konfigurerbart modellvalg
-- kuratert og flyttbar SOURCEBANK
-- dokumentert framtidig lokal RAG/intern KI-arkitektur
-- bruk av nettsøk som supplement fremfor eneste kunnskapsgrunnlag
-
----
-
-## R-05 – Prosjektomfang kan bli for stort
-
-Tiltak:
-
-- tydelig avgrensning
-- skille mellom levert og framtidig funksjonalitet
-- modulær utvikling
-- prioritering
-- dokumentert endringskontroll
-
----
-
-# 16. Videre arbeid
-
-Følgende er eksplisitt videre arbeid og ikke nødvendige ferdigkrav for dagens leveranse:
-
-- større ordinær brukertest
-- ytterligere tilgjengelighetstesting
-- videre benchmarking av KI-modeller
-- videre kildeanalyse
-- lokal RAG/kunnskapsbank
-- intern KI-modell
-- intern database/autentisering
-- full lukket nettverksvariant
-- tale/voice i samtaleøvelse, trinnvis fra opplesing og trykk-og-snakk til eventuell realtime/WebRTC etter særskilt personvernvurdering
-- videre mobil/PWA-verifisering og eventuelle framtidige native-løsninger dersom et reelt behov oppstår
-- videre sikkerhetsherding før eventuell ordinær produksjonsbruk
-
----
-
-# 17. Sporbarhet mot øvrig dokumentasjon
-
-Denne PRD-en skal leses sammen med:
-
-## Produkt og utvikling
-
-- `product-brief.md`
-- `docs/bmad/IMPLEMENTATION-PLAN-BMAD.md`
-- `docs/bmad/ARCHITECTURE-BMAD.md`
-- `docs/bmad/UX-DESIGN-BMAD.md`
-- `docs/bmad/EPICS-AND-STORIES-BMAD.md`
-
-## KI
-
-- `docs/ai/AI-LOGG-SAMTALESTOTTE.md`
-- `docs/ai/AI-SYSTEMPROMPT.md`
-- `docs/ai/AI-RESPONSE-CONTRACT.md`
-- `docs/ai/AI-TESTPLAN.md`
-
-## Sikkerhet og faglig grunnlag
-
-- `docs/SIKKERHET-OG-PERSONVERN-v20.4.md`
-- `docs/SOURCEBANK.md`
-- `data/SOURCEBANK.json`
-- `docs/faggrunnlag/`
-
-## Testing
-
-- `tests/`
-- `tests/cases/`
-
-## Historikk
-
-- `CHANGELOG.md`
-- Git commit-historikken
-
----
-
-# 18. Endringskontroll
-
-Når et nytt krav vurderes, skal følgende spørsmål stilles:
-
-1. Hvilket problem løser det?
-2. Er det nødvendig for levert prototype?
-3. Påvirker det personvern?
-4. Påvirker det sikkerhet?
-5. Påvirker det KI-atferd?
-6. Krever det nye tester?
-7. Påvirker det eksisterende brukerflyt?
-8. Krever det endring i PRD, arkitektur eller UX?
-9. Er det implementert, delvis implementert eller videre arbeid?
-
-Dette skal redusere risikoen for at nye KI-genererte forslag automatisk blir lagt inn i produktet uten vurdering.
-
----
-
-
-# 19. Oppsummering
-
-Samtalestøtte er levert som en omfattende KI-basert prototype for lederstøtte ved krevende medarbeidersamtaler.
-
-Kjerneleveransen består av:
-
-- strukturert samtalestøtte
-- ni hovedtemaer
-- oppfølgingsdialog
-- personverngateway
-- samtaleøvelse
-- autentisering
-- historikk
-- roller og admin
-- faglig kildegrunnlag
-- automatiserte tester
-- KI-testing og modellvurdering
-
-Produktet er utviklet iterativt.
-
-PRD-en beskriver derfor både hva som faktisk er levert og hvilke områder som er eksplisitt videre arbeid.
-
-Dette skillet er viktig for at krav, kode, tester og dokumentasjon skal kunne sammenlignes direkte uten at framtidige ambisjoner framstår som ferdig funksjonalitet.
-
-
-# Tillegg – faglig transparens og brukerinnsyn
-
-## Produktkrav: Etterprøvbart faggrunnlag
-
-**Status:** IMPLEMENTERT / DELVIS VIDEREUTVIKLING
-
-Samtalestøtte skal ikke være en svart boks der brukeren må stole blindt på KI-genererte råd.
-
-Når faglig grunnlag er relevant for et råd, skal løsningen så langt som mulig gjøre det mulig for brukeren å:
-
-- se at rådet har faglig forankring
-- se relevante kilder eller faggrunnlag
-- åpne relevante fagtekster eller fagsider
-- følge lenker til autoritative eksterne kilder når slike brukes
-- undersøke grunnlaget selv før viktige beslutninger tas
-
-Dette er særlig viktig ved spørsmål om:
-
-- lovverk og formelle personalprosesser
-- sykefravær og tilrettelegging
-- varsling
-- mobbing og trakassering
-- vold og trusler
-- HMS og sikkerhet
-
-## Krav til KI og kildebruk
-
-Systemet skal skille mellom:
-
-1. konkret informasjon fra en kilde
-2. faglig forankret veiledning
-3. KI-modellens egen sammenstilling eller formulering
-
-KI skal ikke fremstille modellens egen syntese som et direkte utsagn fra en kilde.
-
-Kilder skal bare presenteres som støtte når de faktisk er relevante for påstanden eller rådet.
-
-Systemet skal ikke konstruere eller finne på kilder dersom konkret kildegrunnlag ikke er tilgjengelig.
-
-## Brukeropplevelse
-
-Faggrunnlag skal være tilgjengelig uten å gjøre hovedveiledningen unødvendig tung.
-
-Aktuelle løsninger kan være:
-
-- kildehenvisninger i eller under KI-svaret
-- «Les mer»
-- sammenleggbare kildeområder
-- relevante fagsider
-- lenker til myndighetskilder eller annet faggrunnlag
-
-Brukeren skal kunne velge hvor mye faglig detalj som ønskes.
-
-## Sporbarhet
-
-Kravet støttes av:
-
-- `docs/faggrunnlag/`
-- `docs/SOURCEBANK.md`
-- `data/SOURCEBANK.json`
-- `docs/ai/AI-SYSTEMPROMPT.md`
-- `docs/ai/AI-RESPONSE-CONTRACT.md`
-- `docs/ai/SAMTALEPARTNER-MODELL.md`
-- `docs/bmad/UX-DESIGN-BMAD.md`
-
-Prinsippet er at KI-støtte skal være **etterprøvbar**, ikke bare overbevisende formulert.
-
-# Produksjonstillegg – v20.11.0 mobil/PWA
-
-Pilotbruk viste at mobil er en faktisk brukerflate i prosjektet. Leveransen i v20.11.0 omfatter derfor:
-
-- responsiv mobilvisning for hovedflytene
-- egen mobilnavigasjon og mobiltilpasset toppfelt
-- bedre breddeutnyttelse i Samtaleøvelse
-- tydelig og klikkbar merkevare/illustrasjon
-- PWA-manifest, appikoner og service worker
-- installasjonsveiledning og standalone-visning i støttede nettlesere
-- komplette kildehenvisninger i Hjelp
-
-PWA er et installasjonslag rundt webapplikasjonen, ikke en separat native Android/iOS-applikasjon. Browserstøtte kan variere. Kjernefunksjonen skal fortsatt fungere som vanlig webapp dersom installasjon ikke tilbys.
-
-Fysisk mobiltest på Samsung/Chrome brukes som supplement til testene for pilot-UX og PWA, fordi statiske tester ikke kan dokumentere all faktisk nettleser- og installasjonsatferd.
-
-
-# Pilotkrav 30.10.2026
+### Akseptansekriterier
+
+1. Kilde-/webanalyse unngår unødvendig logging av samtaletekst.
+2. Kilden kan ikke rapporteres som faktisk brukt dersom den ikke var relevant/tilgjengelig.
+3. Dette området beskrives som prototype/delvis der end-to-end-verifisering mangler.
 
 ## FR-19 – Videre oppfølgingsflyt
-Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 Etter et oppfølgingsspørsmål skal brukeren ikke måtte finne neste spørsmål helt alene. Systemet skal kunne foreslå 2–4 korte, situasjonsnære neste spørsmål basert på siste spørsmål og svar. Forslagene skal ikke erstatte fritekst.
 
+### Akseptansekriterier
+
+1. Etter oppfølging kan 2–4 situasjonsnære forslag til neste spørsmål vises.
+2. Forslagene erstatter aldri fri formulering.
+3. Forslag fra gammel samtale følger ikke med inn i ny samtale.
+
 ## FR-20 – Utskrift av samtalestøtte
-Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+**Omfang:** Utvidelse / pilot / drift.
 
 Brukeren skal kunne skrive ut en enkel samtalemal som inneholder situasjonsbeskrivelse, tema/undertema når tilgjengelig, genererte hovedråd og eventuelle videre spørsmål/svar fra oppfølgingsdialogen. Sammenfoldet innhold skal presenteres lesbart i utskriftsversjonen. Navigasjon, personvernvarsler, rapporteringsknapper, samtaleøvelse og øvrige UI-elementer skal ikke inngå.
 
+### Akseptansekriterier
+
+1. Utskrift kan omfatte situasjon, tema, hovedråd og videre spørsmål/svar.
+2. Sammenfoldet innhold som tilhører samtalemalen er lesbart på utskriften.
+3. Navigasjon, rapporteringsknapper, simulator og personvernvarsler skrives ikke ut.
+
 ## FR-21 – Rolig standardnavigasjon
-Status: IMPLEMENTERT I MAIN / KREVER PRODUKSJONSVERIFISERING
+
+**Omfang:** Kjerne eller nødvendig kvalitet.
 
 På desktop skal sidebaren være minimert som standard for nye brukere. Brukerens eksplisitte valg om å åpne/lukke menyen skal lagres lokalt. Minimert modus skal ha forståelige tooltips.
 
+### Akseptansekriterier
+
+1. Sidebar er minimert som standard på desktop og husker brukerens eksplisitte valg.
+2. Minimert meny har forståelige etiketter/tooltips.
+3. Mobilnavigasjon lar brukeren nå hele hovedflyten uten blokkert innhold.
+
 ## FR-22 – Yrke/bransje som valgfri kontekst
-Status: IMPLEMENTERT I PRODUKSJONSKODEN / DRIFTSSTYRT MED FEATURE FLAGG
+
+**Omfang:** Utvidelse / pilot / drift.
 
 Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Produksjonskoden har felt, lokal ruting, serverkontekst, kildebank og regresjonstester. `OCCUPATION_CONTEXT_ENABLED` beholdes som driftskontroll.
 
@@ -1164,9 +547,16 @@ Krav:
 
 Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 86 startkilder etter gjennomgang av alle yrkene i sektorlisten.
 
+### Akseptansekriterier
+
+1. Yrkesvalg er valgfritt og kan deaktiveres via OCCUPATION_CONTEXT_ENABLED uten at kjerneflyten stanser.
+2. Yrkes-/sektorkilder velges bare når yrket er relevant for situasjonen.
+3. Kilder for én profesjon skal ikke lekke til andre yrker i samme sektor.
+4. Arbeidsgivertype og tariffområde gjettes ikke fra bare yrkestittel.
 
 ## FR-23 – Direkte samtale som alternativ inngang
-Status: VIDERE ARBEID / HYPOTESE – IKKE FERDIG FUNKSJON
+
+**Omfang:** Hypotese (ikke levert).
 
 Prosjektet kan teste en mer direkte samtaleinngang der brukeren beskriver en krevende arbeidssituasjon og starter KI-dialog uten først å gå gjennom hele den strukturerte tema-/undertemaflyten.
 
@@ -1179,82 +569,69 @@ En eventuell prototype skal vurderes mot:
 - om arbeidslivskontekst og kildebruk beholdes
 - om direkte samtale bør være alternativ inngang eller supplement til eksisterende flyt
 
+### Akseptansekriterier
 
-# Tillegg – vedlikeholdbarhet og kildepresisjon 08.11.2026
+1. Dette er en hypotese og skal ikke merkes levert i v1.
+2. En eventuell pilot må måle om direkte inngang gir bedre flyt uten lavere personvern-/kildekvalitet.
+3. Personverngateway og kontekst må være testet separat før funksjonen kan merkes implementert.
 
-## NFR – modulær frontend-styling
-Den tidligere ca. 9 389 linjer lange CSS-filen er delt i `styles-core.css`, `styles-responsive.css` og `styles-overrides.css`, med `styles.css` som stabilt inngangspunkt. Delingen skal bevare cascade-rekkefølgen og redusere regresjonsrisiko.
+## 7. KI- og kildekrav
 
-## Kildekrav – profesjonsavgrensning
-Yrkes-/sektorkilder skal kunne avgrenses på både sektor og konkret yrke. Antall kilder er ikke et kvalitetsmål i seg selv; feil eller for brede kilder er verre enn ingen særkilde.
+**AI-01 – Faktagrunnlag:** Skill brukeropplysninger fra tolkning og manglende fakta. *Aksept:* Et ubekreftet varsel omtales ikke som bevist skyld.
 
+**AI-02 – Ingen diagnose:** Verken veiledning eller simulator skal dikte opp medisinske/psykologiske diagnoser. *Aksept:* Scenario uten diagnose gir ikke diagnosetilskrivning.
 
-## Tillegg 08.11.2026 – krav til kildeautoritet
+**AI-03 – Ingen oppdiktet motiv:** Modellen skal ikke fastslå skyld, motiv eller personlighet uten grunnlag. *Aksept:* Uavklarte konflikter møtes med undersøkende, ikke konkluderende spørsmål.
 
-**Status: IMPLEMENTERT I MAIN / PRODUKSJONSDEPLOY MÅ VERIFISERES**
+**AI-04 – Usikkerhet og bistand:** Ved rettslige og HR-relaterte spørsmål skal usikkerhet angis, med henvisning til HR/jurist når nødvendig. *Aksept:* Mulig oppsigelse gir ikke ubetinget lovlighetskonklusjon.
 
-Samtalestøtte skal ikke behandle alle kilder som likeverdige.
+**AI-05 – Relevant kontekst:** Gjeldende samtale beholdes; tidligere avsluttet samtale utelates. *Aksept:* Ny samtale arver ikke irrelevant historikk.
 
-Produktkrav:
-- bindende rettslige påstander skal forankres i gjeldende lov/forskrift når tilgjengelig
-- tariff-/hovedavtale skal bare brukes konkret når riktig avtaleområde er avklart
-- myndighetsveiledning skal ikke fremstilles som selvstendig lovhjemmel
-- Akan og IA skal ikke fremstilles som lov
-- forskning og faglige rammeverk skal ikke brukes til å fastslå juridiske plikter
-- brede myndighetsoversikter skal kunne brukes som retrieval-start, men ikke som direkte hjemmel
-- arbeidsgivertype skal aldri defaultes eller gjettes
-- tariffkontekst skal kunne være relevant uten valgt yrke
-- yrkes-/sektorkilder skal kunne registreres og vises som kuraterte `source_ids`
-- samme URL skal ikke ligge flere ganger i bankene for å skape kunstig kildevolum
+**AI-06 – Provideruavhengighet:** Prototypen skal kunne konfigurere støttede modeller uten klientnøkler. *Aksept:* Ugyldig provider/modell kan ikke omgå serverregler.
 
-Regresjonsvern: `tests/test-source-policy.cjs`.
+**AI-07 – Kildeautoritet:** Rettslige plikter skal bygge på lov/forskrift; tariff krever avtaleavklaring. Myndighetsveiledning, IA/Akan og forskning skal ikke fremstilles som lov. Arbeidsgivertype gjettes aldri. *Aksept:* Negative kildecaser avviser feil profesjons-/tariffkilde.
 
+**AI-08 – Faglig etterprøvbarhet:** Brukeren kan se relevante kilder uten at hovedrådet overlesses. Svar skal skille dokumenterte kildefakta fra KI-ens syntese. *Aksept:* Ingen oppdiktet kilde eller falskt direkte sitat.
 
-## FR-15A – Kildepresisjon og negativ fasit
+## 8. Ikke-funksjonelle krav
 
-**Status: IMPLEMENTERT 08.11.2026**
+**NFR-01 – Sikkerhet:** Server håndhever rolle og autentisering, database bruker RLS, sesjoner/cookies håndteres sikkert og API-nøkler holdes utenfor klienten. Rate-limit-konfigurasjon i gjeldende kode: login 12/15 minutter, registrering 8/time, reset 6/15 minutter, KI 80/10 minutter per rate-limit-nøkkel. *Aksept:* Overskridelse gir HTTP 429 og Retry-After; dette er ikke en påstand om distribuert rate limiting.
 
-Automatisert testing skal ikke bare kontrollere at et KI-svar har faglig grunnlag. For yrke, tariff og rettslige/formelle saker skal testgrunnlaget kunne uttrykke:
+**NFR-02 – Personvern:** Minst mulig persondata i historikk og tekniske logger, frivillig vedlegg av samtaletekst ved rapportering. *Aksept:* Normal bruksstatistikk skal ikke inneholde full samtale.
 
-- obligatorisk source_id
-- minst én av flere akseptable source_ids
-- eksplisitt forbudte source_ids
-- at ingen kuratert kilde normalt er nødvendig
-- forventet yrkesrelevans
-- forventet behov for arbeidsgivertype
+**NFR-03 – Brukbarhet:** Samtaleflyt tilgjengelig i PC-/mobilnettleser, med lys, mørk og hybrid modus. *Aksept:* UJ-01 og UJ-02 kan gjennomføres på definerte skjermbredder uten blokkerte knapper. Full WCAG-revisjon er ikke en levert garanti.
 
-**Akseptansekriterier**
-1. Alle 14 sektorer har minst én positiv og én negativ yrkesrelevans-case.
-2. Positiv yrkescase kan ikke eksistere uten eksplisitt forventet kildefasit.
-3. Negativ yrkescase må ha negativ kildefasit.
-4. Kildelekkasjecase må ha minst én eksplisitt forbudt source_id.
-5. Forbudt source_id vurderes som kritisk avvik i golden-runneren.
-6. Privat/ukjent arbeidsgiver skal ikke få tariffområde gjettet.
-7. Generelt sykefravær skal ikke bli profesjonsjuss bare på grunn av yrkestittel.
+**NFR-04 – Feilhåndtering:** API- og tjenestefeil gir forståelig brukerbeskjed uten stacktrace eller hemmeligheter. *Aksept:* Simulert 401/429/500 håndteres kontrollert.
 
-## NFR-QA-01 – Automatisert quality gate
+**NFR-05 – Vedlikeholdbarhet:** Kode, ressurser, tester og dokumentasjon har tydelige ansvarsområder. *Aksept:* Kritiske endringer skal ledsages av en relevant regresjonstest og sporbar beslutning; lange hovedfiler og CSS-overstyringer er fortsatt teknisk gjeld.
 
-**Status: IMPLEMENTERT**
+**NFR-06 – Frontend-kaskade:** Stylesheet-rekkefølgen er core, responsive, overrides via styles.css. *Aksept:* Større refaktorering verifiseres visuelt i pilot på mobil og desktop; oppdeling alene er ikke full kvalitetssikring.
 
-Push til `main` skal automatisk kjøre:
-- `npm ci`
-- full deterministic `npm test`
-- `npm audit --omit=dev --audit-level=high`
-- strict golden coverage summary
+**NFR-07 – CI:** Endringer som skal merges, kontrolleres med npm ci, npm test, npm audit --omit=dev --audit-level=high og oppsummering av golden-bank. *Aksept:* Hele gate grønn på siste commit; grønne deterministiske tester er ikke uavhengig faglig godkjenning.
 
-High dependency audit skal være grønn før runden kan omtales som fullført.
+**NFR-08 – Demo og kostnad:** npm run demo og npm test kjører uten ekstern modellnøkkel og database. Live modellbruk og kostnads-/benchmarktall er tilleggsfunksjoner. *Aksept:* Demo starter fra ren installasjon, og feil/budsjettstopp gir forståelig beskjed.
 
-Siste dokumenterte grønne quality gate etter live-funn og kildeprioriteringsretting:
-- GitHub Actions **42646984725**
-- commit `a8756d36c492be39e70611c0946c026234beb965`
+## 9. Antakelser og risiko
 
-Etterpå ble dokumentasjonen for 40/40-sluttresultatet slått inn på `main`, og ny full quality gate **42665279811** var også **SUCCESS**.
+- **A-01:** Ekstern KI er stokastisk; selv 40/40 interne live-caser er ingen juridisk/faglig garanti.
+- **A-02:** Personverngateway kan gi falske positive og negative funn.
+- **A-03:** Lov, tariff, provider og eksterne tjenester kan endre seg.
+- **A-04:** Én student og bredt scope tilsier prioritering av kjerne framfor nye pilotfunksjoner.
+- **A-05:** Yrkeslaget er valgfritt og kan feature-flagg-styres uten å stanse kjernen.
+- **R-01:** Plausibelt feil KI-råd møtes med negative golden-caser og manuell kildekritikk.
+- **R-02:** Identifiserbare opplysninger møtes med klient- og server-personvernkontroll.
+- **R-03:** Intern fasit kan ha testblindsoner; dokumenter begrensninger og inviter ekstern vurdering.
+- **R-04:** Eksterne tjenester kan feile eller bli dyrere; demo, budsjett og feilhåndtering må kunne testes.
+- **R-05:** KI-genererte endringer kan gi regresjoner; små PR-er, test og praktisk UI-kontroll prioriteres.
 
-## Testbevis og begrensning
+## 10. Sporbarhet og endringskontroll
 
-Den automatiske quality-gaten dokumenterer deterministic kode-, data-, routing-, kilde-, personvern- og regresjonskvalitet. Den skal ikke brukes som bevis for at en ekstern stokastisk språkmodell alltid gir optimalt formulert svar.
+- **Gjeldende krav:** Dette dokumentet.
+- **Leveransestatus og testbevis:** [PRD-STATUS-OG-TESTBEVIS.md](PRD-STATUS-OG-TESTBEVIS.md).
+- **Historisk PRD og opprinnelige tillegg:** [historikk/PRD-2026-11-12.md](historikk/PRD-2026-11-12.md).
+- **UX/arkitektur/stories:** UX-DESIGN-BMAD.md, ARCHITECTURE-BMAD.md, EPICS-AND-STORIES-BMAD.md og IMPLEMENTATION-PLAN-BMAD.md i samme mappe.
+- **Prosess:** AI-LOGG-SAMTALESTOTTE.md, AI-TESTPLAN.md og AI-VERIFICATION-ROUND-2026-11-08.md i docs/ai.
 
-De 40 strenge yrkes-golden-casene er nå faktisk kjørt live mot `gpt-5.6-luna` 09.11.2026 og ga **40/40 OK, 0 BØR SJEKKES, 0 kritiske avvik og 0 tekniske feil** i sluttkjøringen. Resultatet skal omtales som et dokumentert regressjonsresultat for disse casene, ikke som en generell faglig eller juridisk garanti.
+**Prosesspresisering:** En fungerende prototype eksisterte før hele BMAD-dokumentasjonen. Denne PRD-en ble konsolidert i ettertid etter brukerfunn, lærerrespons og kodegjennomgang. Den skal ikke leses som en plan som fantes før all implementasjon.
 
-Full verifikasjonsrapport:
-`docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`.
+**Endringsregel:** Hver ny funksjon skal ha ID, scope, minst ett testbart akseptansekriterium og en egen statuslinje i vedlegget. Historiske testtall og daterte «patcher» føres ikke lenger etter kravkapitlet.
