@@ -159,7 +159,7 @@ Luftfartsloven er lagt til som direkte primærlov. I tillegg finnes Luftfartstil
 
 ## Konkret endring i denne revisjonen
 
-Elleve kildeposter er lagt til etter kontroll av utgiver-/Lovdata-sidene: dyrehelsepersonelloven, dyrevelferdsloven, DMPs veterinærmedisin, Veterinærinstituttets fagstoff og Dyrehelserapporten 2025, Veterinærforeningens profesjonsetiske retningslinjer, helsepersonelloven, opplæringslova (2023), barnehageloven og luftfartsloven.
+Elleve kildeposter er lagt til etter kontroll av utgiver-/Lovdata-sidene: dyrehelsepersonelloven, dyrevelferdsloven, DMPs veterinærmedisin, Veterinærinstituttets fagstoff og Dyrehelserapporten 2025, Veterinærforeningens profesjonsetiske retningslinjer, helsepersonelloven, opplæringslova (2023), barnehageloven, luftfartsloven og STAMIs forskningsbaserte oversikt over psykososialt arbeidsmiljø.
 
 Veterinær: fra **fem** Mattilsynet-kilder til **elleve** kilder med flere ulike autoriteter. Sektortillegget erstatter ikke generelle lov-/arbeidsmiljøkilder.
 
