@@ -1490,3 +1490,13 @@ Jeg ba KI-assistenten gå tilbake til de siste forelesningsnotatene, lærerens s
 - Synkroniser arkitektur/stories og refleksjonsrapport med gjeldende krav, men hold gamle historiske valg synlige og daterte.
 - PRD ble revidert **etter** mye av implementasjonen. En styrke ved KI-assistert arbeid kan være rask iterasjon; en svakhet er at dokumentasjon og kode ellers glir fra hverandre. Det er behov for kontinuerlig krav-til-test-kobling fremfor å skrive status som krav.
 - Ikke slå sammen privat repo-PR eller denne utkast-PR-en ukritisk; visuelt og praktisk pilotbevis gjenstår.
+
+## 20.11.2026 – kontrollert CSS-opprydding i riktig skolerepo
+
+**Behov:** Kodegjennomgangen fant 845 `!important` fordelt på core/responsive/overrides. Å flytte CSS til nye filer hadde ikke fjernet motstridende overstyringer. Jeg ønsket å redusere teknisk gjeld uten at et KI-generert redesign endret fungerende brukergrensesnitt.
+
+**KI-bidrag:** Assistenten analyserte CSS-kaskaden og fant tidligere deklarasjoner som senere ble gjentatt med samme selektor, egenskap, eksakte verdi og `@media`-kontekst i samme fil. Bare disse tidligere identiske kopiene ble slettet. To deltiltak fulgte: sju tomme regelblokker ble fjernet, og en deterministisk analyse-/regresjonstest ble lagt til i `npm test`.
+
+**Kontrollert resultat:** `!important` gikk fra 845 til 792 (83→82 i core, 326→318 i responsive, 436→392 i overrides). GitHub Actions quality gate bestod etter endringen, inkludert `tests/test-css-duplicate-important.cjs` (run 44730967652). Metode og resterende teknisk gjeld er dokumentert i `docs/CSS-KVALITETSREVISJON-2026-11-20.md`.
+
+**Min kritiske vurdering:** Når to identiske `!important`-deklarasjoner for nøyaktig samme selektor og mediekontekst ligger etter hverandre i den endelige kaskaden, er den eldre unødvendig. Det betyr derimot ikke at de resterende 792 kan fjernes automatisk. Brukergrensesnittet er ikke visuelt testet i denne runden, og spesielt mobil, mørk/hybrid visning og simulering må kontrolleres praktisk før merge. Dette er en liten og verifiserbar forbedring, ikke en full CSS-refaktorering.
