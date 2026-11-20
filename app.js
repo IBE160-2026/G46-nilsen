@@ -1452,7 +1452,7 @@ function printCurrentGuidance() {
           <article class="followup-item">
             <h3>${index + 1}. ${escapeHtml(pair.question)}</h3>
             <div>${formatContinuationReply(pair.answer)}</div>
-            ${pair.sources.length ? `<p><strong>Kilder:</strong> ${normalizeContinuationSources(pair.sources).map(src => `<a href="${escapeHtml(src.url)}">${escapeHtml(src.title)}</a>`).join(' · ')}</p>` : ''}
+            ${pair.sources.length ? `<p><strong>Kilder til kontroll (ikke faktasjekket):</strong> ${normalizeContinuationSources(pair.sources).map(src => `<a href="${escapeHtml(src.url)}">${escapeHtml(src.title)}</a> <small>(${escapeHtml(evidenceRoleLabel(src))})</small>`).join(' · ')}</p>` : ''}
           </article>`).join('')}
       </section>`
     : '';
