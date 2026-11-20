@@ -77,7 +77,8 @@
     "test-benchmark-budget": "node tests/test-benchmark-budget.cjs",
     "test-benchmark-live-http": "node tests/test-benchmark-live-http.cjs",
     "test-benchmark-budget-rpc": "node tests/test-benchmark-budget-rpc.cjs",
-    "test-benchmark-rpc-http": "node tests/test-benchmark-rpc-http.cjs"
+    "test-benchmark-rpc-http": "node tests/test-benchmark-rpc-http.cjs",
+    "audit:submission": "node scripts/audit-submission.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
