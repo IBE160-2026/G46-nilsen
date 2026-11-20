@@ -130,6 +130,7 @@ async function request(route,who,method="GET",body,headers={}){
       ["PUT","/api/admin/ai-settings",{model:"gpt-5.6-luna"}],
       ["GET","/api/admin/ai-usage",undefined],
       ["GET","/api/admin/benchmark/cases",undefined],
+      ["POST","/api/admin/benchmark/mock",{}],
       ["GET","/api/admin/survey",undefined],
       ["PUT","/api/admin/survey/settings",{enabled:false}],
       ["POST","/api/admin/invites",{role:"admin"}],
@@ -190,6 +191,15 @@ async function request(route,who,method="GET",body,headers={}){
       assert.equal(r.status,who===null?401:403,"Cannot modify editable content: "+who);
       assert.equal(r.body.error,who===null?"AUTH_REQUIRED":"EDITOR_REQUIRED");
     }
+    // Den gratis fulltesten er et eget, adminbeskyttet og deterministisk endepunkt.
+    // Verifiser at dette ikke kaller Auth Admin, PostgREST eller KI-tjenester.
+    const callsBeforeMock=calls.length;
+    const freeBenchmark=await request("/api/admin/benchmark/mock","admin","POST",{});
+    assert.equal(freeBenchmark.status,200,"Gratis benchmark mock bør fungere uten KI-nøkkel: "+JSON.stringify(freeBenchmark.body));
+    assert.equal(freeBenchmark.body.mode,"mock");
+    assert.equal(freeBenchmark.body.ok,true,"Testbanken skal være gyldig");
+    assert.ok(freeBenchmark.body.checks.cases>=100,"Mock skal bruke faktisk testbank");
+    assert.equal(calls.length,callsBeforeMock,"Gratis fulltest må ikke bruke Auth Admin eller PostgREST");
     assert.equal((await request("/api/auth/diagnostic","admin")).status,200);
     assert.equal((await request("/api/auth/me","forged")).body.user.role,"user");
     assert.equal((await request("/api/auth/me","invalid")).body.user.role,"user");
