@@ -142,6 +142,7 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 - `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md` – gjennomgang av alle yrker/sektorer og særkilder
 - `docs/DOKUMENTASJON-SYNK-2026-11-08.md` – synk av implementasjon og dokumentasjon etter arbeidsrunden 08.11
 - `docs/KODESTRUKTUR-OPPRYDDING-2026-11-08.md` – vedlikeholdbarhet og filopprydding
+- `docs/CSS-KVALITETSREVISJON-2026-11-20.md` – begrunnet fjerning av 53 eksakte `!important`-duplikater, ny regresjonstest og gjenværende CSS-risiko
 - `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` – sikkerhet og personvern
 
 ### Refleksjon og utviklingshistorikk
