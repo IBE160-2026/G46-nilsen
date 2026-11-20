@@ -33,7 +33,10 @@ function containsNonNegatedInClause(rawClause, needle) {
       /\bikke\s+(?:noen|noe|et|en)?\s*$/u.test(prefix) ||
       (!unperformedSafetyAction && /\bikke\b(?:\s+[a-z0-9æøå]+){0,10}$/u.test(prefix)) ||
       (/\buten(?:\s+at)?\b[^.!?;:]{0,140}$/u.test(prefix) &&
-       /^(?:er|var|blir)\s+(?:et\s+|en\s+)?(?:tema|problem|sak|aktuelt|relevant)\b/u.test(suffix)) ||
+       (/^(?:er|var|blir)\s+(?:et\s+|en\s+)?(?:tema|problem|sak|aktuelt|relevant)\b/u.test(suffix) ||
+        // "uten sikkerhets- eller personvernproblem": det er fravær av et
+        // problem, IKKE fravær av verneutstyr / lovpålagt sikkerhetstiltak.
+        /(?:problem|hendelse|brudd)\b/u.test(suffix.slice(0,65)))) ||
       /^(?:er|var|blir)\s+ikke\s+(?:et\s+|en\s+)?(?:tema|problem|sak|aktuelt|relevant)\b/u.test(suffix);
     if(!absentTopic || missingProtection || unperformedSafetyAction)return true;
     offset=index+Math.max(1,needle.length);
