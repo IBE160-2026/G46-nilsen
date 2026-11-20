@@ -209,9 +209,9 @@
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-20",
-      "sourceType": "official_authority",
-      "sourceRole": "authority_guidance",
-      "bindingStatus": "official_legal_guidance",
+      "sourceType": "regulation",
+      "sourceRole": "primary_regulation",
+      "bindingStatus": "binding_regulation",
       "contextualOnly": true
     },
     {
