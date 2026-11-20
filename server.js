@@ -764,7 +764,8 @@ app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
   for(const item of benchmarkCases){
     const key=`${item.topicId}|${item.subtopic}`; groups.set(key,(groups.get(key)||0)+1);
     if(!item.id||!item.situation||!item.topicId||!item.subtopic) problems.push(`${item.id||'ukjent'} mangler obligatorisk felt`);
-    if(serverPrivacyFindings(item.situation).length) problems.push(`${item.id} utløser personvernsjekk`);
+    const privacyFindings=serverPrivacyFindings(item.situation);
+    if(privacyFindings.length) problems.push(`${item.id} utløser personvernsjekk (${[...new Set(privacyFindings.map(f=>f.type))].join(', ')})`);
   }
   for(const [key,count] of groups) if(count<2) problems.push(`${key} har bare ${count} testsak(er)`);
   const topicCounts={}; for(const item of benchmarkCases) topicCounts[item.topic]=(topicCounts[item.topic]||0)+1;
