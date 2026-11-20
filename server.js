@@ -12,6 +12,7 @@ import { normalizeSourceUrl, webSources, markdownWebSources, stripInlineSourceLi
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
+import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
 import { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
@@ -97,6 +98,13 @@ const registerLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 8, keyPr
 const resetLimiter = createRateLimiter({ windowMs: 15 * 60_000, max: 6, keyPrefix: "reset" });
 const aiLimiter = createRateLimiter({ windowMs: 10 * 60_000, max: 80, keyPrefix: "ai" });
 const benchmarkLimiter = createRateLimiter({ windowMs: 60 * 60_000, max: 120, keyPrefix: "benchmark" });
+const benchmarkBudgetLedger = createBenchmarkBudgetLedger();
+// Den betalte ruten forblir AV i produksjon til budsjettet kan sikres i delt/varig lagring.
+// Denne snevre bryteren er utelukkende for en isolert lokal provider-simulator i testprosessen.
+const benchmarkLiveMockOnly = process.env.NODE_ENV === "test" &&
+  process.env.TEST_BENCHMARK_LIVE === "1" &&
+  /^\d{4,5}$/.test(String(process.env.TEST_FAKE_OPENAI_PORT || ""));
+
 app.use("/api", generalApiLimiter);
 
 // Server kun eksplisitt offentlige frontend-filer. SQL, .env, tester og dokumentasjon er ikke web-tilgjengelige.
@@ -690,7 +698,7 @@ app.get('/api/admin/benchmark/cases', requireAdmin, async (_req,res)=>{
   let storageReady=true;
   const probe=await supabaseAdmin.from('benchmark_results').select('id,source_pages').limit(1);
   if(probe.error) storageReady=false;
-  res.json({version:appVersion,totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady});
+  res.json({version:appVersion,totalCases:benchmarkCases.length,totalSubtopics:new Set(benchmarkCases.map(x=>`${x.topicId}|${x.subtopic}`)).size,topics,cases:benchmarkCases,representativeCaseIds:representative,models:Object.entries(AI_MODELS).map(([id,meta])=>({id,...meta})),defaultBudgetUsd:2,maxBudgetUsd:5,storageReady,liveEnabled:benchmarkLiveMockOnly});
 });
 
 app.get('/api/admin/pilot-regression/cases', requireAdmin, async (req,res)=>{
@@ -773,16 +781,24 @@ app.post('/api/admin/benchmark/mock', requireAdmin, async (_req,res)=>{
 });
 
 app.post('/api/admin/benchmark/live', benchmarkLimiter, requireAdmin, async (req,res)=>{
+  if(!benchmarkLiveMockOnly) return res.status(503).json({error:'BENCHMARK_PAID_DISABLED',message:'Ekte benchmark er deaktivert til delt og varig kostnadskontroll er på plass.'});
   if(!hasAnyAiClient()) return res.status(503).json({error:'AI_NOT_CONFIGURED',message:'Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren.'});
   const caseId=String(req.body?.caseId||''); const model=String(req.body?.model||'');
-  const runId=String(req.body?.runId||'').slice(0,80) || crypto.randomUUID();
-  const spentSoFar=Math.max(0,Number(req.body?.spentSoFar||0));
-  const budget=Math.min(5,Math.max(0.10,Number(req.body?.budgetUsd||2)));
+  const runId=String(req.body?.runId||'').slice(0,80);
+  const budget=req.body?.budgetUsd;
+  // spentSoFar fra klienten blir aldri brukt til kostnadsbeslutninger.
+  // Regnskapet er servereid, og reservasjonsfunksjonen er synkron før første await.
   const item=benchmarkCaseById.get(caseId);
   if(!item) return res.status(400).json({error:'INVALID_CASE',message:'Ukjent testsak.'});
   if(!AI_MODELS[model]) return res.status(400).json({error:'INVALID_MODEL',message:'Ugyldig KI-modell.'});
-  // Reserve 5 cent before each call so the run stops before the requested budget is exhausted.
-  if(spentSoFar + 0.05 > budget) return res.status(409).json({error:'BUDGET_LIMIT',message:`Budsjettgrensen på $${budget.toFixed(2)} er nådd.`,spentSoFar,budget});
+  const admission=benchmarkBudgetLedger.reserve({
+    userId:req.user.id, runId, caseId, model, budgetUsd:budget
+  });
+  if(!admission.ok) return res.status(admission.status).json({
+    error:admission.error,message:admission.message
+  });
+  let estimatedCost=null;
+
   const benchmarkPrompt=`Du deltar i en kontrollert benchmark av Samtalestøtte. Gi et kort, konkret og profesjonelt råd til en leder.
 Forventet hovedtema: ${item.topic}
 Forventet undertema: ${item.subtopic}
@@ -803,6 +819,7 @@ Krav:
     if(benchmarkTools) benchmarkParams.tools=benchmarkTools;
     const response=await createTrackedResponse(benchmarkParams);
     const latencyMs=Date.now()-started; const usage=response.__samtalestotteUsage||{}; const web=usage.web||extractWebSearchMeta(response);
+    estimatedCost=usage.estimatedCostUsd;
     const row={run_id:runId,case_id:caseId,topic_id:item.topicId,topic:item.topic,subtopic:item.subtopic,variant:item.variant,model,response_text:String(response.output_text||''),input_tokens:Number(usage.inputTokens||0),output_tokens:Number(usage.outputTokens||0),estimated_cost_usd:Number(usage.estimatedCostUsd||0),web_search_count:Number(web.count||0),web_search_queries:web.queries||[],source_domains:web.domains||[],source_pages:web.sources||[],latency_ms:latencyMs,created_by:req.user.id};
     const save=await supabaseAdmin.from('benchmark_results').insert(row).select('id').single();
     if(save.error) return res.status(503).json({error:'BENCHMARK_STORAGE_MISSING',message:'Testen ble kjørt, men resultatet kunne ikke lagres. Kjør database/migrations/V20-3-SUPABASE-MIGRATION.sql før flere betalte tester.',result:row});
@@ -829,6 +846,14 @@ Krav:
     caseId,
     status:error?.status || null,
     code:error?.code || null
+  });
+} finally {
+  // Oppgjør også ved providerfeil og DB-lagringsfeil. Reservasjonen blir aldri
+  // tilbakebetalt på grunnlag av manglende svar eller klientrapporterte tall.
+  const ledger=benchmarkBudgetLedger.settle(admission.ticket,estimatedCost);
+  if(ledger.overBudget) console.warn('[benchmark-budget] Kostnadsestimat overskred reservasjonen; videre kall sperres.',{
+    runId,userId:req.user.id,chargedUsd:ledger.chargedUsd,
+    runReservedUsd:ledger.runReservedUsd,userDayReservedUsd:ledger.userDayReservedUsd
   });
 }
 });
