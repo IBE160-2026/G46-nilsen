@@ -1,8 +1,20 @@
 # Testbevis og kravdekning – kontrollregister 18.11.2026
 
 **Grunnlag:** `main` commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026.  
-**Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
+**Status:** Historisk kontrollregister opprettet 18.11, videreutviklet med Chrome-UI og **faktisk lokal Supabase GoTrue/PostgREST/RLS 20.11** på isolert revisjonsgren. Hosted Auth-akseptanse, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
+
+## Tillegg 20.11.2026: faktisk lokal Supabase Auth + PostgREST + RLS med to brukere
+
+**NYTT verifisert bevis, ikke en simulert Auth/PostgREST-gateway:** Egen CI-jobb `supabase-auth-local` starter den **virkelige lokale Supabase GoTrue/PostgREST/PostgreSQL-stacken** med Supabase CLI v2.122.1 og lokale nøkler. `tests/sql/local-supabase-auth-fixture.sql` oppretter fiktive tabeller uten å overskrive Supabase sine autentiseringsfunksjoner, og **den faktiske** `database/migrations/V20-8-SUPABASE-MIGRATION.sql` påføres. `tests/test-supabase-local-auth-e2e.cjs` oppretter *tre ekte lokale* GoTrue-kontoer (Alice, Bob og admin) og bruker faktisk Express-login, sesjonskapsler, GoTrue `getUser`/refresh, Supabase JS og PostgREST med autentiserte access-JWT-er.
+
+**Testet og bestått (I-local-Auth):** Alice og Bob kan bare liste/opprette/endre/slette **egne** samtaler via Express; historikk og eksport lekker ikke på tvers. Direkte PostgREST `SELECT/DELETE` av andres id gir null rader, `INSERT` med falsk `user_id` og `UPDATE` som flytter eierskap nektes av **ekte RLS**, anonym lesing nektes, ugyldig innlogging gir 401, gyldig refresh-token med ugyldig access-token får fornyet sesjon, `user_metadata.role=admin` gir **ikke** admin, `app_metadata.role=admin` gir tilgang til admin-endepunkt. Testbrukerne og hele den lokale Supabase-stacken slettes etterpå; **ingen hosted Supabase-kall**.
+
+**CI-bevis:** [Quality Gate #44788004299](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44788004299) på commit `102b3d4160e6d4162c51d1d9c30e9b6c89598327` – **SUCCESS i tre jobber**, inkludert de 52 ordinære npm-stegene, admin-Chrome og 99 CSS-scenarier. Loggen bekrefter `Real LOCAL Supabase acceptance ... PASS` og `hosted project calls = 0`. Under første røde test var forskjellen kun BIGINT-ID representert som tekst i Express kontra tall i PostgREST; dette er rettet i testen. Admin-Chrome-race er også rettet ved å vente på ferdig rollegrensesnitt.
+
+**Begrensninger:** Det er **ekte lokal Auth/PostgREST**, ikke et skyhostet staging-/produksjonsmiljø. Vi har ikke verifisert nåværende hosted grants/databasemigrasjoner, utløpt/brukt invitasjon, editor-arbeidsflyt med ekte konto, logout/tokenrevokering, fysisk mobil/utskrift eller live KI. Se [full egen integrasjonsrapport](SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md) og [oppdatert kravmatrise](SENSOR-KJERNEFLYT-E2E-2026-11-20.md). Produksjon, `main` og LIVE-pilot er fortsatt urørt.
+
+---
 
 ## Tillegg 20.11.2026: full sensorbrukerreise i faktisk Chrome
 
@@ -215,11 +227,11 @@
 | FR-04 | Oppfølging | **I-demo** oppfølgingsfritekst og persistens; reell AI-kontekst åpen | `app.js`, `server.js` | Kontekst i samme sak og reset mellom saker |
 | FR-05 | Simulator | **I-demo** faktisk simulator + feedback; reell AI-kvalitet åpen | `tests/test-simulation.js`, `tests/test-simulation-ai.js` | Rolle, kontekst, ubegrunnet diagnose/motiv |
 | FR-06 | Personvern | **I-demo** fiktivt fullt navn avvist før POST; D/I-mock øvrige personvernflater | `tests/test-privacy.js`, `tests/test-server-privacy.cjs` | Blokkering på server ved direkte API-anrop |
-| FR-07 | Innlogging | Uinnlogget HTTP-grense bestått; innlogget I mangler | `server.js`, `database/` | Inn/utlogging og ugyldig sesjon |
+| FR-07 | Innlogging | **I-local-Auth** ekte GoTrue-passordlogin, JWT-sesjon/refresh; 401 ugyldig; hosted åpent | `server.js`, `database/` | Inn/utlogging og ugyldig sesjon |
 | FR-08 | Invitasjon | Kode; I mangler | `scripts/create-invite.js`, `server.js` | Utløpt/gjenbrukt token |
-| FR-09 | Historikk | **I-demo** lagre/reload/åpne/slett/eksport; I-mock/I-SQL kryssbruker; ekte konto-I åpent | `tests/test-history-hotfix.cjs`, `database/` | Kryssbruker-ID, RLS, slett/refresh |
+| FR-09 | Historikk | **I-local-Auth** reelt RLS-beskyttet CRUD for Alice/Bob og kontoeksport; I-demo browser-reload | `tests/test-history-hotfix.cjs`, `database/` | Kryssbruker-ID, RLS, slett/refresh |
 | FR-10 | Rapportering | Kode; I mangler | `app.js`, `server.js` | Lagring/brukerbeskjed/tilgang |
-| FR-11 | Roller | Uinnlogget admin avvist; rollebytte med reelle konti mangler | `server.js`, `database/` | User/editor/admin over API og RLS |
+| FR-11 | Roller | **I-local-Auth** admin via app_metadata, user_metadata-forfalskning avvist; editor-staging åpent | `server.js`, `database/` | User/editor/admin over API og RLS |
 | FR-12 | Admin | Kode; I mangler | `app.js`, `server.js` | Uautorisert endring, persistens |
 | FR-13 | Modellvalg | **TDD-HTTP statuskontrakt bestått**, reell provider I gjenstår | `server.js` | Tillatte provider/modeller og feilhåndtering |
 | FR-14 | Benchmark | D / fler-modell L mangler | `tests/test-benchmark-taxonomy.cjs`, `tests/test-model-compare.js` | Reell sammenligningsrapport for minst to modeller |
@@ -237,10 +249,10 @@
 | AI-02 | Diagnoser | D/S + historisk L | `tests/test-simulation.js`, `tests/AI-GOLDEN-CASES.json` | Medisinsk/psykologisk påstand uten grunnlag |
 | AI-03 | Skyld/motiv | D/S + historisk L | `tests/test-guidance-quality.cjs`, `tests/AI-GOLDEN-CASES.json` | Skyld, motiv og tolkning |
 | AI-04 | Juridisk/HR-usikkerhet | D + historisk L/M | `tests/test-source-policy.cjs`, `tests/AI-GOLDEN-CASES.json` | Kildeautoritet, tariff og avgrensning |
-| AI-05 | Kontekstisolasjon | **I-demo** samme sak + reload; I-mock/I-SQL eierskap; ekte Auth åpent | `app.js`, `server.js` | Reset og flerbrukertilgang |
+| AI-05 | Kontekstisolasjon | **I-local-Auth** ekte JWT/PostgREST for A/B med kryssbruker-404; I-demo kontekst | `app.js`, `server.js` | Reset og flerbrukertilgang |
 | AI-06 | Provideruavhengighet | **OpenRouter-only statusverifikasjon bestått**, full provider-I gjenstår | `server.js`, `tests/test-model-compare.js` | Responskontrakt ved providerskifte |
-| NFR-01 | Sikkerhet | HTTP-grense og live RLS-metadata verifisert; konto-I mangler | `tests/test-server-privacy.cjs`, `server.js`, `database/` | RLS/IDOR, rate limit, cookies, headere |
-| NFR-02 | Personvern | D + I utvides | `tests/test-privacy-surfaces.cjs`, `tests/test-server-privacy.cjs` | Oppfølging, sletting, retensjon |
+| NFR-01 | Sikkerhet | **I-local-Auth** direkte PostgREST-IdOR/forfalskning nektet, refresh/testlogin; hosted åpent | `tests/test-server-privacy.cjs`, `server.js`, `database/` | RLS/IDOR, rate limit, cookies, headere |
+| NFR-02 | Personvern | **I-local-Auth** eierbundet sletting og eksport; **I-demo** navn-blokkering | `tests/test-privacy-surfaces.cjs`, `tests/test-server-privacy.cjs` | Oppfølging, sletting, retensjon |
 | NFR-03 | Brukervennlighet | **I-demo** full Chrome-brukerreise; fysisk mobil/skjermleser M åpent | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
 | NFR-04 | Feilhåndtering | Kode; negativ I mangler | `server.js`, `app.js` | Timeout, JSON-feil, nettutfall, DB feil |
 | NFR-05 | Vedlikeholdbarhet | Revisjonsgren CI **bestått**; siste `main`-CI feilet | `tests/test-repo-structure.cjs`, `package.json` | Main-run 43205812288 feilet ved .docs |
