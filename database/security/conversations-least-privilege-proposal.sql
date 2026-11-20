@@ -4,12 +4,14 @@
 -- The browser does not need TRUNCATE, TRIGGER, REFERENCES or MAINTAIN.
 -- Row ownership is still handled by the existing V20-8 RLS policies.
 -- Deliberately preserve SELECT/INSERT/UPDATE/DELETE to authenticated.
--- Deliberately do NOT change service_role, table owner or any other table.
+-- Deliberately do NOT change service_role, table owner, PUBLIC or any other table.
+-- If a broader PUBLIC/inherited grant is discovered, verification fails and rolls back;
+-- review that unexpected grant separately rather than revoking privileges for all roles.
 begin;
 
 revoke truncate, trigger, references, maintain
   on table public.conversations
-  from public, anon, authenticated;
+  from anon, authenticated;
 
 -- Fail and roll back the whole transaction if excess privileges remain
 -- (including privileges inherited via PUBLIC or another role membership).
@@ -25,6 +27,14 @@ begin
           privilege,role_name;
       end if;
     end loop;
+  end loop;
+
+  -- Service permissions should be preserved exactly for these operations;
+  -- fail the transaction if a proposed change would affect their availability.
+  foreach privilege in array array['TRUNCATE','TRIGGER','REFERENCES','MAINTAIN'] loop
+    if not has_table_privilege('service_role','public.conversations',privilege) then
+      raise exception 'Existing service_role privilege unexpectedly unavailable: %',privilege;
+    end if;
   end loop;
 
   foreach privilege in array array['SELECT','INSERT','UPDATE','DELETE'] loop
