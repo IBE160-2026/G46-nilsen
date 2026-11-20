@@ -89,5 +89,8 @@ function reply(index, names, ok=true){
   await slow;
   assert.equal(renderItems[0].title,'Newest history');
   assert(clearAdminCount>=2,'Identity changes must invalidate admin data too');
+  ctx.currentUser={...ctx.currentUser,role:'editor'};
+  ctx.update();
+  assert.equal(resets,1,'Changing a role for the same account must not discard its conversation');
   console.log('History: logout clears previous account and late requests cannot repopulate: OK');
 })().catch(e=>{console.error(e);process.exitCode=1;});
