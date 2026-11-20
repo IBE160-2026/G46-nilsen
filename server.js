@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { historyPayload, rowToHistory } from "./src/server/history-contracts.js";
-import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, dedupeEvidenceSources } from "./src/server/source-normalization.js";
+import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, dedupeEvidenceSources } from "./src/server/source-normalization.js";
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
@@ -1747,13 +1747,17 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
       ? [...new Set([...requiredPrimaryLawIds, ...selectedSourceIds])].slice(0, 4)
       : [];
     parsed.source_ids = finalSourceIds;
-    const curated = publicSources(finalSourceIds);
+    // Skille mellom referanser KI faktisk valgte, systemets automatiske
+    // lovpåminnelser og nettsøktreff. Ingen av disse er innholdsverifisert.
+    const curated = annotateCuratedEvidence(publicSources(finalSourceIds), selectedSourceIds);
     const verifiedWebSources = webSources(response);
-    const supplementary = retainCuratedSources
+    const supplementary = annotateProviderEvidence(retainCuratedSources
       ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWebSources)
-      : [];
+      : []);
     parsed.supplementary_sources = supplementary;
-    const citedInLegalNote = retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : [];
+    const citedInLegalNote = annotateProviderEvidence(
+      retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : []
+    );
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
     return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, source_provenance: evidenceProvenance(response, finalSourceIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
@@ -1856,14 +1860,17 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
       : [];
     const finalIds = retainContinueSources ? [...new Set([...scopedLaws, ...selectedIds])].slice(0, 4) : [];
     const verifiedWeb = webSources(response);
-    const supplementary = retainContinueSources
+    const supplementary = annotateProviderEvidence(retainContinueSources
       ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWeb)
-      : [];
-    // Bare kilde-ID-er fra vår kildebank og lenker bekreftet av faktisk nettsøk.
-    // Modellens eventuelle lenker i svarteksten kan være uriktige og vises ikke som dokumentasjon.
-    const citedInReply = retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : [];
+      : []);
+    // Kildetype her er PROVENIENS, ikke faglig godkjenning. En lovkilde som
+    // systemet tilføyer automatisk må ikke se ut som en modellvalgt henvisning.
+    const citedInReply = annotateProviderEvidence(
+      retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : []
+    );
     const evidenceSources = dedupeEvidenceSources([
-      ...publicSources(finalIds), ...supplementary, ...citedInReply
+      ...annotateCuratedEvidence(publicSources(finalIds), selectedIds),
+      ...supplementary, ...citedInReply
     ]);
     return res.json({
       reply: stripInlineSourceLinks(parsed.reply),
