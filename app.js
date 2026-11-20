@@ -3314,7 +3314,10 @@ function updateAuthUi() {
     const historyCount = document.querySelector('#history-count');
     if (historyCount) historyCount.textContent = '0 lagrede samtaler';
     loadedHistoryItem = null;
-    if (previousIdentity) resetConversationState();
+    // Role changes alone must not discard an ongoing conversation for the same account.
+    if (previousIdentity && previousIdentity.split('|')[0] !== String(currentUser?.id ?? '')) {
+      resetConversationState();
+    }
   }
   document.querySelectorAll('.admin-only').forEach(el=>{el.hidden=!['editor','admin'].includes(currentUser?.role||'user');});
 }
