@@ -1539,7 +1539,7 @@ function renderAiGuidance(guidance) {
         const meta = [source.author && source.author !== host ? source.author : '', source.year ? String(source.year) : '', source.type || '', host].filter(Boolean).join(' · ');
         return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>Åpne kilde ↗</em></a>`;
       }).join('')}</div>`
-    : '';
+    : '<p class="muted-note guidance-source-empty">Ingen etterprøvbare kildehenvisninger registrert for dette rådet.</p>';
   const compactEvidence = evidenceSources.length
     ? `<div class="inline-source-links"><span>Kilder:</span>${evidenceSources.slice(0,4).map(source => {
         const host = sourceHost(source);
