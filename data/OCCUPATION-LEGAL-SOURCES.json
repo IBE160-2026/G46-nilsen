@@ -1,6 +1,6 @@
 {
-  "version": 23,
-  "verifiedAt": "2026-11-08",
+  "version": 24,
+  "verifiedAt": "2026-11-20",
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
     {
@@ -188,6 +188,30 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "AT_BUILDING_SITE_COORDINATION",
+      "authority": "Arbeidstilsynet",
+      "title": "Byggherreforskriften – sikkerhet, helse og arbeidsmiljø på byggeplass",
+      "url": "https://www.arbeidstilsynet.no/regelverk/forskrifter/byggherreforskriften/",
+      "sectors": [
+        "construction_trades"
+      ],
+      "useFor": [
+        "byggherreforskriften",
+        "SHA-plan",
+        "byggherre",
+        "koordinator",
+        "byggesikkerhet",
+        "sikkerhet på byggeplass",
+        "underentreprenør"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "official_authority",
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "official_legal_guidance",
       "contextualOnly": true
     },
     {
@@ -610,6 +634,33 @@
       "sourceType": "official_authority",
       "sourceRole": "authority_guidance",
       "bindingStatus": "guidance_on_binding_rules",
+      "contextualOnly": true
+    },
+    {
+      "id": "DNV_VETERINARY_COLLEGIALITY",
+      "authority": "Den norske veterinærforening",
+      "title": "Profesjonsetikk – veterinæren og kollegialitet",
+      "url": "https://www.vetnett.no/5-3-veterinaeren-og-kollegialitet/category1568.html",
+      "sectors": [
+        "veterinary_animal_health"
+      ],
+      "occupations": [
+        "veterinær",
+        "dyrlege"
+      ],
+      "useFor": [
+        "kollegakonflikt",
+        "kollegialitet",
+        "faglig uenighet",
+        "veterinærens etikk",
+        "kollegakritikk",
+        "profesjonsetikk"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "professional_framework",
+      "sourceRole": "professional_framework",
+      "bindingStatus": "association_ethics_not_statute",
       "contextualOnly": true
     },
     {
@@ -1903,6 +1954,39 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-01",
       "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "NSM_IKT_GRUNNPRINSIPPER",
+      "authority": "Nasjonal sikkerhetsmyndighet",
+      "title": "NSMs grunnprinsipper for IKT-sikkerhet",
+      "url": "https://nsm.no/regelverk-og-hjelp/rad-og-anbefalinger/introduksjon/hva-er-nsms-grunnprinsipper-for-ikt-sikkerhet/",
+      "sectors": [
+        "office_finance_it",
+        "defence_police_emergency"
+      ],
+      "occupations": [
+        "utvikler",
+        "IT-drift",
+        "cybersikkerhet",
+        "systemutvikler",
+        "IT-konsulent",
+        "sikkerhetsmedarbeider"
+      ],
+      "useFor": [
+        "IKT-sikkerhet",
+        "informasjonssikkerhet",
+        "tilgangsstyring",
+        "sikkerhetsavvik",
+        "passordrutiner",
+        "cybersikkerhet",
+        "datainnbrudd"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "professional_framework",
+      "sourceRole": "professional_framework",
+      "bindingStatus": "non_binding_guidance",
       "contextualOnly": true
     },
     {
