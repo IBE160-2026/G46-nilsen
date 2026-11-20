@@ -63,6 +63,9 @@ const fs = require("node:fs");
   assert(vet.some(s=>s.sourceRole==="primary_law" && s.authority==="Lovdata"));
   assert(vet.some(s=>sourceTier(s)==="professional_framework"));
   assert(vet.some(s=>sourceTier(s)==="research_communication"));
+  const nsm=legal.find(s=>s.id==="NSM_IKT_GRUNNPRINSIPPER");
+  assert.equal(sourceTier(nsm),"authority_guidance",
+    "NSMs ikke-bindende myndighetsanbefalinger må ikke feilklassifiseres som profesjonsetikk");
 
   for (const src of legal) {
     assert(/^https:\/\//.test(src.url||""),src.id+": kilden trenger HTTPS");
