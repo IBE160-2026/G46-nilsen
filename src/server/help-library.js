@@ -77,7 +77,33 @@ export function buildHelpSourceLibrary({ sourceBank, occupationLegalSourceBank, 
     })
     .filter(group => group.sources.length);
 
+  // Et fast, lite oppslagsverk med faktisk kuraterte kilder.
+  // Kildene hentes fra samme bank som fagbankvisningen, aldri som dupliserte URL-er.
+  // Rolle skiller bindende lovverk fra myndighetsveiledning og faglig støtte.
+  const quickReferenceSpecs = [
+    { id:"LOVDATA_AML", label:"Arbeidsmiljøloven (AML)", category:"Lovverk", description:"Rettigheter og plikter i arbeidsforhold" },
+    { id:"AT_EMPLOYER_DUTIES", label:"Arbeidstilsynet", category:"Myndighetsveiledning", description:"HMS, arbeidsmiljø og arbeidsgiveransvar" },
+    { id:"NAV_SYKEFRAVAER_OPPFOLGING", label:"NAV", category:"Myndighetsveiledning", description:"Sykefravær, tilrettelegging og oppfølging" },
+    { id:"AT_PERSONALSAKER", label:"Personalsaker", category:"Myndighetsveiledning", description:"Saksgang, dokumentasjon og kontradiksjon" },
+    { id:"DATATILSYNET_WORKPLACE_PRIVACY", label:"Datatilsynet", category:"Myndighetsveiledning", description:"Personvern og ansattopplysninger" },
+    { id:"AKAN_MODEL", label:"Akan", category:"Faglig veiledning – ikke lov", description:"Rus, spill, bekymringssamtaler og oppfølging" }
+  ];
+  const quickSourceById = new Map(
+    [...all, ...globalEmployer].map(source => [source.id, source])
+  );
+  const leaderQuickReferences = quickReferenceSpecs.flatMap(spec => {
+    const source = quickSourceById.get(spec.id);
+    return source?.url ? [{
+      id: spec.id,
+      label: spec.label,
+      category: spec.category,
+      description: spec.description,
+      url: source.url
+    }] : [];
+  });
+
   return {
+    leaderQuickReferences,
     categories: {
       rules: {
         label: "Lovverk og myndigheter",
