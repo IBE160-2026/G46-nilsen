@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { historyPayload, rowToHistory } from "./src/server/history-contracts.js";
-import { normalizeSourceUrl, webSources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } from "./src/server/source-normalization.js";
+import { normalizeSourceUrl, webSources, verifiedSupplementarySources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } from "./src/server/source-normalization.js";
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
@@ -1750,9 +1750,7 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const curated = publicSources(finalSourceIds);
     const verifiedWebSources = webSources(response);
     const supplementary = retainCuratedSources
-      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
-          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
-          .filter(source => source?.url && verifiedWebSources.has(source.url))
+      ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWebSources)
       : [];
     parsed.supplementary_sources = supplementary;
     const citedInLegalNote = retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : [];
@@ -1859,10 +1857,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     const finalIds = retainContinueSources ? [...new Set([...scopedLaws, ...selectedIds])].slice(0, 4) : [];
     const verifiedWeb = webSources(response);
     const supplementary = retainContinueSources
-      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
-          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
-          .filter(source => source.url && verifiedWeb.has(source.url))
-          .slice(0, 2)
+      ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWeb)
       : [];
     // Bare kilde-ID-er fra vår kildebank og lenker bekreftet av faktisk nettsøk.
     // Modellens eventuelle lenker i svarteksten kan være uriktige og vises ikke som dokumentasjon.
