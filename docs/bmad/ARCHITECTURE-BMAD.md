@@ -9,6 +9,14 @@
 
 ---
 
+## Tillegg 20.11.2026 – datadrevet antall testsaker i adminvisningen
+
+Kilde til antall pilot-/fulltester er nå den faktisk lagrede `tests/AI-GOLDEN-CASES.json` på serveren, ikke hardkodet markup. Adminbeskyttet `GET /api/admin/pilot-regression/cases?summary=1` returnerer bare tellinger og flagget for lokal test-only tilgang. Klientens `loadRegressionCounts` oppdaterer tekst, knapper og anslag (`2` KI-kall per testcase). Benchmarkvalget «alle» er nå `value="all"` og løses via ren `resolveCaseCount` mot hele den innlastede, validerte API-listen. Dette fjerner feilvalg `112` som tidligere kunne hoppe over to av 114 benchmarkcaser.
+
+Feil i data eller manglende servergodkjenning holder betalte knapper deaktivert; admin-UI blir aldri selvstendig autorisasjonsgrense. Reell Express-HTTP-test, isolert hjelpefunksjonstest og full headless Chrome-flyttest med syntetiske banker er lagt til, uten eksterne KI-kall. PWA-cache `20.11.73`. Den fail-closed serverkontrollen og kravet om varig budsjettregnskap fra forrige revisjon gjelder uendret.
+
+---
+
 ## Tillegg 20.11.2026 – kostnadssperre og autoritativ rolle for pilottest
 
 På revisjonsgrenen er `src/server/benchmark-budget.js` et eget, konservativt testregnskap som reserverer før lokale fiktive providerkall; det ignorerer nettleserens påståtte `spentSoFar`. Ledgeren er minnebasert og er derfor **ikke** et produksjonsegnet system for atomisk regnskap på flere instanser, omstart eller faktisk dollar-tak.
