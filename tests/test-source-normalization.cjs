@@ -107,8 +107,20 @@ const provenance = evidenceProvenance({output:[
   {type:"message",content:[{annotations:[{type:"url_citation",url:"https://www.vetinst.no/fagomrader",title:"Fagområder"}]}]}
 ]},["DNV_VETERINARY_COLLEGIALITY"],suggested);
 assert.deepEqual(provenance,{
-  webSearchPerformed:true,providerUrlCount:2,selectedCuratedSourceCount:1,visibleEvidenceCount:2,contentVerified:false
+  webSearchPerformed:true,providerUrlCount:2,selectedCuratedSourceCount:1,scopeReferenceCount:0,visibleEvidenceCount:2,contentVerified:false
 },"Søk og synlige kilder må rapporteres uten å påstå at innholdet er fagkontrollert");
+const separateCounts=evidenceProvenance({output:[]},
+  ["AML_4_6_TILRETTELEGGING"],
+  annotateCuratedEvidence([
+    {id:"AML_4_6_TILRETTELEGGING"},
+    {id:"STATE_EMPLOYEE_ACT"}
+  ],["AML_4_6_TILRETTELEGGING"]));
+assert.equal(separateCounts.selectedCuratedSourceCount,1,
+  "Bare KI-valgte kilde-ID-er skal telles som valgt");
+assert.equal(separateCounts.scopeReferenceCount,1,
+  "Systemtilført lovhenvisning skal telles separat");
+assert.equal(separateCounts.contentVerified,false,
+  "Kildeopptelling skal aldri innebære faglig innholdsverifisering");
 assert.equal(evidenceProvenance({output:[]}).webSearchPerformed,false,
   "Et vanlig KI-svar er ikke bevis for faktisk nettsøk");
 
