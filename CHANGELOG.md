@@ -1,3 +1,15 @@
+# 20.11.2026 – kostnadsfri benchmarkmodul og kontroll av testbank (draft PR #12)
+
+- Skilt ut ren `src/client/benchmark-evaluation.js` for caseutvalg og vurdering av åpningsreplikker, uten nettverk, KI-klient eller database.
+- `app.js` redusert fra 4 284 til 4 256 linjer (229 082 til 227 324 tegn); `index.html`, server-/demoallowlist og PWA-cache `20.11.72` synkronisert.
+- `tests/test-benchmark-evaluation.cjs` tester faktiske hjelpere, og Chrome-testen bruker kun syntetiske KI-svar for kansellering, gratis mock og simulert pilot/benchmark. Ingen providerkall.
+- Reell Express-gratistest med 60 rollebetingede negative API-forsøk. Ny `tests/test-benchmark-privacy-signal.cjs` kontrollerer samtlige 114 fiktive benchmarkcaser og positiv deteksjon av ekte navneform.
+- Gratis testbank fant falsk personnavnindikasjon i B113 («nærmeste»). Et nøyaktig ikke-navn-unntak i den delte navnedetektoren er lagt inn. Denne feilen ble ikke skjult ved å slakke på resten av navnefilteret.
+- Totalt **48** deterministiske teststeg. Den betalte serverens kostnadsgrense hviler fortsatt på brukerleverte `spentSoFar` og er derfor ikke sikkerhetsmessig godkjent. Statisk UI-tekst med gamle caseantall gjenstår.
+- Endringer begrenset til revisjonsgrenen; ingen merge, Render-produksjonsdeploy, faktiske Supabase-mutasjoner eller LIVE-pilot.
+
+---
+
 # 20.11.2026 – modul for innholdsredigering (kun draft PR #12)
 
 - `src/client/admin-content.js` skiller redigerbare tekstfelt, dirty-/ulagret tilstand og `PUT`-lagring fra `app.js` med eksplisitte avhengigheter og dynamisk rolle.
