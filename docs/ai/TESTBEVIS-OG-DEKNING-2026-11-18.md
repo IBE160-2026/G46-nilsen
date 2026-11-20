@@ -4,6 +4,22 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: ren benchmarkmodul, syntetiske KI-kjøringer og kostnadsrisiko
+
+**Metode:** Faktisk `src/client/benchmark-evaluation.js` evalueres isolert med deterministiske fiktive inputs i `tests/test-benchmark-evaluation.cjs`. Round-robin-utvalg, fullbankrekkefølge, ordgrense, mekanisk språk, manglende åpning og myke funn dekkes uten nettverk. Den delte navnedetektoren kjøres i ny `tests/test-benchmark-privacy-signal.cjs` mot alle **114** benchmarkcaser; den har bevart positivt treff på et faktisk navn i en syntetisk testtekst.
+
+**Nettleserintegrasjon:** `tests/test-admin-browser.cjs` har nå både kansellert betalt benchmark-/pilot-dialog (ingen betalte POST-kall), kostnadsfri `POST /api/admin/benchmark/mock`, og en fullstendig **syntetisk** positiv benchmark-/pilotgjennomgang som oppdaterer faktisk DOM og HTML-escaper modellresultater. Alle potensielt kostnadsbærende HTTP-endepunkter er fanget opp med `fetch`-mocker *før* applikasjonen laster. Dette beviser klientadferd under simulerte svar, ikke ekte kostnad, modellkvalitet eller providergrense.
+
+**Ekte Express:** `tests/test-admin-role-http.cjs` prøver `POST /api/admin/benchmark/mock` uten API-nøkkel/DB og om dette krever administratorrolle. Negative rolletester omfatter nå **60** avviste adminforespørsler. Ruten skal gi gyldig bank med `ok:true` og null problemer etter retting.
+
+**B113-funn:** Gratis bankkontroll avdekket `B113 utløser personvernsjekk (name)`. Den delte navnedetektoren identifiserte det vanlige adjektivet «nærmeste» i «til nærmeste leder har ...» som et navn. En minimal grammatisk stoppliste-justering i `src/privacy-detector.js` er utført, og testene krever at et reelt personnavn fortsatt oppdages. Dette er et dokumentert feilfunn → retting → ny test, **ikke** svekket blokkering av reelle opplysninger.
+
+**Fortsatt ikke godkjent:** Ekte benchmarkkostnadstak. Backend stoler på klientens `spentSoFar` og bruker 0,05 USD reserve, som ikke garanterer et hardt tak ved feil/misbruk/samtidige kall. Tekst i Admin viser også foreldede casetall. Betalte rutiner er **ikke** flyttet, aktivert eller kalt mot leverandør. `main`, produksjon og LIVE-pilot er urørt.
+
+**Detaljer og testmatrise:** [Benchmark, kostnad og kvalitet – 20.11](BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md). 48 deterministiske delsteg pluss Chrome og PostgreSQL/RLS; siste CI-head må være grønn før endelig aksept.
+
+---
+
 ## Tillegg 20.11.2026: innholdsredigeringsmodul og egne negative tester
 
 **Endring og avgrensning:** `src/client/admin-content.js` kapsler `renderAdminContentFields`, markering og nullstilling av ulagret tilstand og `saveAdminContent`. `app.js` oppretter modulen via `SamtalestotteAdminContent.create(...)` med injisert DOM, `fetch`, HTML-escaping, feltkatalog, aktive tekstverdier og dynamisk rolle. Redigering er kun tillatt som redaktør eller administrator i klienten. **Express-serveren, ikke denne klientkontrollen, håndhever autorisasjonen.** Innholdskatalog, generelle innholdsoppdateringer og benchmark/AI-forbruk ligger fortsatt i sine etablerte deler.
