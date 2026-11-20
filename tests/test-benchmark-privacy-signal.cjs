@@ -15,6 +15,10 @@ const fs=require("node:fs");
     return names.length?[{id:item.id,names}]:[];
   });
   console.log("Benchmark synthetic-name diagnostic:",JSON.stringify(findings));
+  assert.deepEqual(detector.findLikelyGivenNames("Til nærmeste leder har saken låst seg."),[],
+    "Nærmeste i arbeidsrelasjon er et adjektiv, ikke personnavn");
+  assert.ok(detector.findLikelyGivenNames("Jeg snakket med Knut om saken.").some(n=>n.toLowerCase()==="knut"),
+    "Regresjonen må fortsatt gjenkjenne et faktisk personnavn");
   assert.deepEqual(findings,[],"Benchmarkbanken inneholder falske eller reelle mulige navnetreff; undersøk uten å svekke detektoren");
   console.log("Benchmark-bankens "+bank.cases.length+" caser: ingen mulige navn i delt navnedetektor");
 })().catch(error=>{console.error(error);process.exitCode=1;});
