@@ -706,9 +706,18 @@ app.get('/api/admin/pilot-regression/cases', requireAdmin, async (req,res)=>{
     const goldenPath = path.join(__dirname, 'tests/AI-GOLDEN-CASES.json');
     const bank = JSON.parse(fs.readFileSync(goldenPath, 'utf8'));
     const mode = String(req.query?.mode || 'pilot') === 'full' ? 'full' : 'pilot';
+    const allCases = Array.isArray(bank.cases) ? bank.cases : [];
+    // Count-only response for admin labels: never send full synthetic case text just to display counts.
+    if (req.query?.summary === '1') {
+      return res.json({
+        pilotCount: allCases.filter(item => item.pilot_regression).length,
+        fullCount: allCases.length,
+        paidRegressionEnabled: benchmarkLiveMockOnly
+      });
+    }
     const selected = mode === 'full'
-      ? (bank.cases || [])
-      : (bank.cases || []).filter(item => item.pilot_regression);
+      ? allCases
+      : allCases.filter(item => item.pilot_regression);
     const cases = selected.map(item => ({
       id:item.id,
       theme:item.theme,
