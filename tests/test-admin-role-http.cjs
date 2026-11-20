@@ -204,6 +204,15 @@ async function request(route,who,method="GET",body,headers={}){
     console.log("Gratis benchmark – bankkontroll:",JSON.stringify({ok:freeBenchmark.body.ok,problems:freeBenchmark.body.problems.slice(0,25)}));
     assert.ok(freeBenchmark.body.checks.cases>=100,"Mock skal bruke faktisk testbank");
     assert.equal(calls.length,callsBeforeMock,"Gratis fulltest må ikke bruke Auth Admin eller PostgREST");
+    // Prod må være fail-closed: dette skal IKKE sende et betalt providerkall
+    // selv om klienten later som om den ikke har brukt penger.
+    const disabled=await request("/api/admin/benchmark/live","admin","POST",{
+      caseId:"B001",model:"gpt-5.6-luna",
+      runId:"f6e3eb7e-f630-43ed-941c-c664b6f2a010",
+      budgetUsd:5,spentSoFar:0
+    });
+    assert.equal(disabled.status,503);
+    assert.equal(disabled.body.error,"BENCHMARK_PAID_DISABLED");
     assert.equal((await request("/api/auth/diagnostic","admin")).status,200);
     assert.equal((await request("/api/auth/me","forged")).body.user.role,"user");
     assert.equal((await request("/api/auth/me","invalid")).body.user.role,"user");
