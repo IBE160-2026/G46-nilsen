@@ -9,6 +9,16 @@
 
 ---
 
+## Tillegg 20.11.2026 – varig, atomisk benchmark-regnskap som SQL-forslag
+
+Arkitekturgrensen er nå tydelig dokumentert: Tildeling og oppgjør av budsjett er planlagt som **egen PostgreSQL-transaksjon**, ikke som en klientvariabel eller Node-minnekart. `database/security/benchmark-budget-postgres-proposal.sql` inneholder private `budget_owners/days/runs/attempts` med RLS og backend-only `SECURITY INVOKER`-RPC `benchmark_budget_reserve/settle`. En radlås på bruker serialiserer parallelle forsøk fra forskjellige DB-forbindelser. Uavklarte forsøk forblir sperret over omstarter til eksplisitt avklaring. Ingen prompt eller samtaletekst lagres i regnskapet.
+
+Prosjektets GitHub Actions verifiserer **faktisk PostgreSQL 17** med reelle transaksjoner, tilgangsnekt, konkurrerende separate forbindelser, omstart, oppgjør og dagsgrense. SQL-forslaget er **ikke** en deployet Supabase-migrasjon. Betalt benchmark-/pilottest i Express er fortsatt fail-closed og bruker bare den tidligere in-memory-prototypen i lokal fiktiv providertest. Innføring av en testet Supabase-serviceadapter, driftbar sikkerhetskopi/revisjonslogg, testmiljø og faktisk provider-kostgrense gjenstår før det er forsvarlig å åpne betalte kjøringer.
+
+Se [full teknisk design](../ai/BENCHMARK-POSTGRES-LEDGER-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026 – datadrevet antall testsaker i adminvisningen
 
 Kilde til antall pilot-/fulltester er nå den faktisk lagrede `tests/AI-GOLDEN-CASES.json` på serveren, ikke hardkodet markup. Adminbeskyttet `GET /api/admin/pilot-regression/cases?summary=1` returnerer bare tellinger og flagget for lokal test-only tilgang. Klientens `loadRegressionCounts` oppdaterer tekst, knapper og anslag (`2` KI-kall per testcase). Benchmarkvalget «alle» er nå `value="all"` og løses via ren `resolveCaseCount` mot hele den innlastede, validerte API-listen. Dette fjerner feilvalg `112` som tidligere kunne hoppe over to av 114 benchmarkcaser.
