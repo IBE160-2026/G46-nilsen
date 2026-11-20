@@ -38,7 +38,7 @@ export function markdownWebSources(text = "", verifiedSources = new Map()) {
   // Enkelte modellversjoner lager nestede lenker: [navn]([url](url)).
   // Normaliser formatet før vi slår opp URL mot faktisk dokumenterte webkilder.
   const normalizedText = String(text || "").replace(
-    /\\[([^\\]]+)\\]\\(\\[https?:\\/\\/[^\\]]+\\]\\((https?:\\/\\/[^)]+)\\)\\)/g,
+    /\[([^\]]+)\]\(\[https?:\/\/[^\]]+\]\((https?:\/\/[^)]+)\)\)/g,
     "[$1]($2)"
   );
   while ((match = regex.exec(normalizedText))) {
