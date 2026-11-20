@@ -51,3 +51,31 @@ jobs:
           const counts=strict.reduce((a,x)=>(a[x.golden_group]=(a[x.golden_group]||0)+1,a),{});
           console.log({totalGolden:cases.length, strictOccupationGolden:strict.length, groups:counts});
           NODE
+
+  rls-postgres:
+    name: Real PostgreSQL RLS policy regression (ephemeral database)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_DB: test_rls
+          POSTGRES_PASSWORD: isolated_test_only
+        options: >-
+          --health-cmd "pg_isready -U postgres -d test_rls"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Initialize disposable RLS fixture
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/rls-postgres-fixture.sql
+
+      - name: Apply actual V20-8 RLS policy migration
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < database/migrations/V20-8-SUPABASE-MIGRATION.sql
+
+      - name: Test two synthetic users, cross-user isolation and anonymous access
+        run: docker exec -i "${{ job.services.postgres.id }}" psql -X -v ON_ERROR_STOP=1 -U postgres -d test_rls < tests/sql/rls-two-users.sql
