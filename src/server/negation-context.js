@@ -22,12 +22,16 @@ function containsNonNegatedInClause(rawClause, needle) {
     const explicitlyOutsideScope = /\b(?:ikke\s+(?:snakk|tale)\s+om|gjelder\s+ikke|ingen\s+(?:opplysning(?:er)?|tegn)\s+(?:om|til))\b/u.test(prefix);
     const missingProtection = /^(?:verneutstyr|sikkerhetstiltak|sikring|opplæring|opplaring)\b/u.test(text.slice(index))
       && /\b(?:ingen|ikke|uten)\b/u.test(prefix) && !explicitlyOutsideScope;
+    // "Har ikke brukt verneutstyr" / "ikke fulgt sikkerhetsrutinen"
+    // beskriver mulige BRUDD, ikke at risikoområdet er irrelevant.
+    const unperformedSafetyAction = /\bikke\s+(?:fulgt|brukt|benyttet|kontrollert|oppdatert|utført|utfort|iverksatt|gjennomført|gjennomfort|overholdt|sikret|tilrettelagt|meldt)\b/u.test(prefix);
     const absentTopic =
       /\bingen\b(?:\s+(?:opplysning(?:er)?|tegn|konkret(?:e)?|aktuell(?:e)?))?[^.!?;:]{0,140}$/u.test(prefix) ||
       /\bgjelder\s+ikke\b[^.!?;:]{0,140}$/u.test(prefix) ||
       /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,140}$/u.test(prefix) ||
       /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak|hendelse)\b[^.!?;:]{0,140}$/u.test(prefix) ||
       /\bikke\s+(?:noen|noe|et|en)?\s*$/u.test(prefix) ||
+      (!unperformedSafetyAction && /\bikke\b(?:\s+[a-z0-9æøå]+){0,10}$/u.test(prefix)) ||
       (/\buten(?:\s+at)?\b[^.!?;:]{0,140}$/u.test(prefix) &&
        /^(?:er|var|blir)\s+(?:et\s+|en\s+)?(?:tema|problem|sak|aktuelt|relevant)\b/u.test(suffix)) ||
       /^(?:er|var|blir)\s+ikke\s+(?:et\s+|en\s+)?(?:tema|problem|sak|aktuelt|relevant)\b/u.test(suffix);
