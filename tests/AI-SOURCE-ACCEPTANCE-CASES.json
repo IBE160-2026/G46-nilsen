@@ -21,7 +21,9 @@
       "forbidSourceIds": [
         "STATE_EMPLOYEE_ACT",
         "DNV_VETERINARY_COLLEGIALITY",
-        "AT_BUILDING_SITE_COORDINATION"
+        "AT_BUILDING_SITE_COORDINATION",
+        "AT_VOLD_TRUSLER",
+        "AKAN_MODELLEN"
       ],
       "manualMust": [
         "Lederen må undersøke fakta og høre relevante parter før reaksjon.",
@@ -53,7 +55,8 @@
       "forbidSourceIds": [
         "DNV_VETERINARY_COLLEGIALITY",
         "AT_BUILDING_SITE_COORDINATION",
-        "LUFTFART_FTL"
+        "LUFTFART_FTL",
+        "NAV_PSYKISK_HELSE_ARBEIDSGIVER"
       ],
       "manualMust": [
         "Skille funksjonsevne og relevant tilrettelegging fra diagnose eller medisinsk detaljinnhenting.",
@@ -84,7 +87,9 @@
       "forbidSourceIds": [
         "AT_BUILDING_SITE_COORDINATION",
         "LUFTFART_FTL",
-        "STATE_EMPLOYEE_ACT"
+        "STATE_EMPLOYEE_ACT",
+        "LOVDATA_DYREVELFERDSLOVEN",
+        "MATTILSYNET_DYREVELFERD"
       ],
       "manualMust": [
         "Respektere faglig uenighet og gi begge mulighet til å forklare seg.",
@@ -115,7 +120,12 @@
       "forbidSourceIds": [
         "DNV_VETERINARY_COLLEGIALITY",
         "LUFTFART_FTL",
-        "STATE_EMPLOYEE_ACT"
+        "STATE_EMPLOYEE_ACT",
+        "AT_TRAKASSERING",
+        "AT_VOLD_TRUSLER",
+        "AKAN_MODELLEN",
+        "AT_VARSLING_ROLLER",
+        "FRAZIER_2017_PSYCH_SAFETY_META"
       ],
       "manualMust": [
         "Sikkerhet og umiddelbar risikovurdering må komme før ordinær samtaleteknikk.",
