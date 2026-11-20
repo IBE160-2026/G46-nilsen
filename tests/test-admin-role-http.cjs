@@ -173,7 +173,16 @@ async function request(route,who,method="GET",body,headers={}){
     assert.equal(users.target.app_metadata.role,"editor");
     assert.equal(users.target.app_metadata.protected_test_flag,"keep","Other app_metadata must be retained");
     assert.equal((await request("/api/auth/me","target")).body.user.role,"editor");
-    assert.ok(!calls.some(x=>x.type==="database"&&x.method!=="GET"),"Test unexpectedly wrote to a database route: "+JSON.stringify(calls));
+    const permittedRetentionRequests=new Set([
+      "DELETE /rest/v1/ai_usage_log",
+      "PATCH /rest/v1/ai_response_feedback",
+      "DELETE /rest/v1/ai_response_feedback",
+      "DELETE /rest/v1/benchmark_results",
+      "DELETE /rest/v1/survey_responses",
+      "DELETE /rest/v1/survey_participation"
+    ]);
+    assert.ok(calls.filter(x=>x.type==="database").every(x=>permittedRetentionRequests.has(x.method+" "+x.path)),
+      "Unexpected database request beyond server retention cleanup: "+JSON.stringify(calls));
     console.log("Admin HTTP roles: "+denied+" anonymous/user/editor/forged/invalid-role denials, editor content guard, admin list, self-change, invalid role, unknown target and authorized role update OK");
     console.log("Isolated local Auth only. No production records, live Supabase account, or actual RLS tested.");
   }finally{
