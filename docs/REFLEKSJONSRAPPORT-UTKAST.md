@@ -349,7 +349,9 @@ Golden-testingen oppsummerer denne læringen best. Først var målet å få gode
 
 Dersom jeg startet prosjektet på nytt, ville jeg etablert Git/GitHub fra første dag. Det ville gjort den tidlige utviklingen mer sporbar og redusert behovet for å rekonstruere deler av prosessen senere.
 
-Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært enklere å splitte `app.js`, `server.js` og `styles.css` gradvis enn å gjøre det etter at filene var blitt store. I en kontrollert opprydding 20.11.2026 analyserte jeg CSS-kaskaden i det offisielle innleveringsrepoet og reduserte antallet `!important` fra 845 til 792 ved å fjerne 53 tidligere, identiske overstyringer i samme selektor-/mediekontekst. Dette gjorde jeg med en avgrenset endring og en test for å hindre at nøyaktig de samme duplikatene kommer tilbake. Det ville vært mer risikabelt å fjerne alle `!important` bare for å få tallet ned: resterende regler kan være nødvendige ved spesielle brytpunkter eller temaer. At quality gate er grønn, er heller ikke en visuell nettlesertest.
+Jeg ville også innført en tydeligere modulstruktur tidligere. Det hadde vært enklere å splitte `app.js`, `server.js` og `styles.css` gradvis enn å gjøre det etter at filene var blitt store. I en kontrollert opprydding 20.11.2026 brukte jeg KI-assistenten til å identifisere eldre CSS-deklarasjoner som ble overstyrt av en senere regel med identisk selektor, egenskap og mediekontekst. Første runde fjernet 53 identiske duplikater; neste runde fjernet 55 eldre deklarasjoner med ulike verdier der en senere regel overtok. `!important` gikk samlet fra **845 til 737**, og 31 tomme regelblokker ble fjernet. Vi beholdt de siste sluttverdiene og la inn en automatisk regresjonskontroll. Dette reduserer vedlikeholdsgjeld, men ikke alle 737 gjenstående overstyringer er nødvendigvis overflødige. Eldre nettleserfallback og faktisk mobil-/desktopvisning må vurderes før videre opprydding. En grønn quality gate er ikke det samme som en visuell nettlesertest.
+
+Jeg gjorde også en avgrenset kodegjennomgang av eksterne kildelenker og historikk. Her lærte jeg at HTML-escaping av en URL ikke er tilstrekkelig: en lenke med `javascript:` er fortsatt en utrygg URL selv om anførselstegn er escaped. KI-assistenten la derfor inn protokollvalidering og sikker ID-håndtering, mens regresjonstester prøver utrygge URL-er og anførselstegn i historikk-ID-er. Jeg tolker dette som konkret risikoreduksjon, ikke som bevis på en full sikkerhetsrevisjon av alle dynamiske HTML-visninger.
 
 Videre ville jeg planlagt brukertesting tidligere. Prosjektet har mange automatiserte tester og mye teknisk kvalitetssikring, mens faktisk brukertesting kom sent. Mot slutten ble det derfor satt opp en liten pilot med ett felles, kort skjema for alle testpersoner. Utvalget er målrettet og lite, med rom for både vanlig helhetsvurdering, UX-blikk og innspill fra personer med relevant leder-/samtaleerfaring. Resultatene skal brukes deskriptivt og kvalitativt, ikke som statistisk dokumentasjon eller ekspertgodkjenning. For et produkt som først og fremst skal støtte mennesker i vanskelige samtaler, er faktisk brukeropplevelse minst like viktig som tekniske tester.
 
@@ -395,6 +397,7 @@ Sentrale spor som underbygger refleksjonen:
 - `docs/bmad/PRD.md`
 - `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md` – testbevis, åpne hull og oppfølging av lærerens PRD-tilbakemelding
 - `docs/CSS-KVALITETSREVISJON-2026-11-20.md` – begrunnet stilarkopprydding og begrensninger
+- `docs/FRONTEND-LENKER-HISTORIKK-2026-11-20.md` – URL-sjekk, historikk-ID-escaping og testbegrensninger
 - `docs/bmad/historikk/PRD-2026-11-12.md` – eldre PRD bevart før revisjonen
 - `docs/bmad/ARCHITECTURE-BMAD.md`
 - `docs/bmad/EPICS-AND-STORIES-BMAD.md`
