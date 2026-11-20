@@ -1,3 +1,12 @@
+# 20.11.2026 – streng sensorkontroll av full brukerreise (draft PR #12)
+
+- Ny `tests/test-sensor-journey-browser.cjs` går gjennom **faktisk frontend i headless Chrome** mot lokal Express-sensordemo: tema og undertema, situasjonsbeskrivelse, analyse, hovedråd, oppfølgingsspørsmål, utskrifts-HTML inkl. «Videre råd», simulering, feedback, automatisk lagret historikk, reload/gjenåpning, sletting og tom kontoeksport.
+- Ny negativ integrasjonskontroll krever at et **fiktivt personnavn** blokkeres på personnverngatewayen før analyse/veiledning-POST; anonym tekst må kunne sendes etterpå.
+- Chrome-brukerreisen er et obligatorisk separat GitHub Actions-steg. Sensorregisteret `docs/ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md` graderer **alle 36 krav**, med eksplisitt skille mellom D, isolert I, ekte KI (L) og manuell/fysisk (M).
+- Testkjøring bruker kun syntetiske data og lokal demo; ekte Supabase Auth/PostgREST, reelle KI-råd og mobil-/utskriftstester er **ikke** erklært ferdig. Ingen `main`-merge, produksjonsdeploy, LIVE-endring eller betalte API-kall.
+
+---
+
 # 20.11.2026 – server-only benchmark-RPC og fullkjede-test mot isolert PostgreSQL (draft PR #12)
 
 - Ny `src/server/benchmark-budget-rpc.js` for tjenesteside-Supabase `rpc()` mot private, transaksjonelle `benchmark_budget_reserve/settle`. Inputvalidasjon og konservativ refusjon-/feilhåndtering; aldri brukerens `spentSoFar`.
