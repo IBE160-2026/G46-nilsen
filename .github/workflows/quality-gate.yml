@@ -33,6 +33,27 @@ jobs:
         run: npm run audit:submission
         # Canvas requirements and human sign-off intentionally NOT inferred from a green CI.
 
+      - name: Prove strict submission sign-off rejects missing approval and wrong SHA
+        run: |
+          node - <<'NODE'
+          const assert=require('node:assert/strict');
+          const {spawnSync}=require('node:child_process');
+          const base={...process.env,SUBMISSION_CANVAS_CONFIRMED:'0',
+            SUBMISSION_REFLECTION_APPROVED:'0',SUBMISSION_TARGET_COMMIT:'',
+            SUBMISSION_BRANCH_APPROVED:''};
+          const run=(env)=>spawnSync(process.execPath,
+            ['scripts/audit-submission.cjs','--strict'],{encoding:'utf8',env});
+          const missing=run(base);
+          assert.equal(missing.status,2,'Unsigned submission must fail strict gate');
+          assert.match(missing.stderr,/Strict submission sign-off blocked/);
+          const invalid=run({...base,SUBMISSION_CANVAS_CONFIRMED:'1',
+            SUBMISSION_REFLECTION_APPROVED:'1',
+            SUBMISSION_TARGET_COMMIT:'0000000000000000000000000000000000000000',
+            SUBMISSION_BRANCH_APPROVED:process.env.GITHUB_HEAD_REF||'main'});
+          assert.equal(invalid.status,2,'Wrong submission commit must fail strict gate');
+          console.log('Strict delivery gate: missing approval and wrong commit correctly REJECTED');
+          NODE
+
       - name: Exercise admin interface with fake roles in Chrome
         run: node tests/test-admin-browser.cjs
 
