@@ -52,6 +52,61 @@ async function js(cdp,expression){
   if(r.exceptionDetails)throw Error(JSON.stringify(r.exceptionDetails));
   return r.result?.value;
 }
+async function keyPress(cdp,key,shift=false){
+  const options={key,code:key,windowsVirtualKeyCode:key==='Tab'?9:key==='Escape'?27:13,
+    modifiers:shift?8:0};
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyDown",...options});
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",...options});
+}
+async function verifyKeyboardDialogs(cdp,role){
+  // Real key events, not manually dispatched DOM KeyboardEvents.
+  await js(cdp,"(()=>{const x=document.querySelector('#profile-button');x.focus();x.click();})()");
+  await wait(cdp,"!document.querySelector('#profile-menu').hidden","profile menu opened");
+  await js(cdp,"document.querySelector('[data-profile-action=history]').focus()");
+  await keyPress(cdp,"Escape");
+  await wait(cdp,"document.querySelector('#profile-menu').hidden","profile closed by Escape");
+  assert.equal(await js(cdp,"document.activeElement?.id"),"profile-button",
+    "Profile Escape must restore focus to menu opener");
+
+  await js(cdp,"(()=>{document.querySelector('#profile-button').focus();openAuth('login',false)})()");
+  await wait(cdp,"!document.querySelector('#auth-dialog').hidden&&document.activeElement?.id==='login-email'",
+    "optional auth opens and focuses first input");
+  assert.equal(await js(cdp,"document.querySelector('#auth-dialog')?.getAttribute('aria-modal')"),"true");
+  await js(cdp,"document.querySelector('#show-register').focus()");
+  await keyPress(cdp,"Tab");
+  assert.equal(await js(cdp,"document.activeElement?.id"),"auth-close",
+    "Tab from last control must wrap to close button inside auth dialog");
+  await keyPress(cdp,"Tab",true);
+  assert.equal(await js(cdp,"document.activeElement?.id"),"show-register",
+    "Shift+Tab from first control must wrap to final auth control");
+  await keyPress(cdp,"Escape");
+  await wait(cdp,"document.querySelector('#auth-dialog').hidden","optional auth Escape");
+  assert.equal(await js(cdp,"document.activeElement?.id"),"profile-button",
+    "Closing optional auth must restore its opener");
+
+  // When a user is not signed in, Escape and the close (X) button must not
+  // dismiss mandatory authentication or expose the inert application.
+  await js(cdp,"(()=>{currentUser=null;openAuth('login',true)})()");
+  await wait(cdp,"!document.querySelector('#auth-dialog').hidden&&document.querySelector('#auth-dialog').classList.contains('required-auth')",
+    "required auth shown");
+  await keyPress(cdp,"Escape");
+  await js(cdp,"document.querySelector('#auth-close').click()");
+  assert.equal(await js(cdp,"document.querySelector('#auth-dialog').hidden"),false,
+    "Mandatory auth must resist both Escape and the close button");
+  assert.equal(await js(cdp,"document.querySelector('.app-shell').hasAttribute('inert')"),true,
+    "App must remain locked behind mandatory auth");
+  await js(cdp,"(()=>{currentUser={id:'admin-current',username:"+JSON.stringify(role==="admin"?"Admin Test":role==="editor"?"Editor Test":"User Test")+",email:'synthetic@example.invalid',role:"+JSON.stringify(role)+"};closeAuth(true);setAppLocked(false);})()");
+
+  const trigger='.topbar-brand-button';
+  await js(cdp,"(()=>{const x=document.querySelector("+JSON.stringify(trigger)+");x.focus();x.click()})()");
+  await wait(cdp,"document.querySelector('#image-preview-dialog').open","native image dialog open");
+  assert.equal(await js(cdp,"document.querySelector('#image-preview-dialog')?.getAttribute('aria-label')"),"Forstørret bilde");
+  await keyPress(cdp,"Escape");
+  await wait(cdp,"!document.querySelector('#image-preview-dialog').open","native dialog Escape close");
+  assert.equal(await js(cdp,"document.activeElement?.classList.contains('topbar-brand-button')"),true,
+    "Native dialog Escape should return focus to image opener");
+  console.log("Keyboard dialog accessibility "+role+": profile Escape + focus; auth Tab/Shift+Tab/Escape; required auth locked; native modal Escape: PASS");
+}
 async function wait(cdp,expression,title){
   for(let i=0;i<140;i++){
     if(await js(cdp,"Boolean("+expression+")"))return;
@@ -70,6 +125,12 @@ async function verifyContentEditingInChrome(cdp, role){
   assert.equal(state.enabled,true,"Input must enable save");
   await js(cdp,"document.querySelector('#admin-save-content').click()");
   await wait(cdp,"document.querySelector('#admin-save-dialog').open","save confirmation dialog");
+  await keyPress(cdp,"Escape");
+  await wait(cdp,"!document.querySelector('#admin-save-dialog').open","save confirmation cancelled by Escape");
+  assert.equal(await js(cdp,"document.activeElement?.id"),"admin-save-content",
+    "Native save dialog Escape must restore focus to its save button");
+  await js(cdp,"document.querySelector('#admin-save-content').click()");
+  await wait(cdp,"document.querySelector('#admin-save-dialog').open","save confirmation reopened");
   assert.equal((await js(cdp,"window.__fixture.calls.filter(x=>x.path==='/api/admin/content').length")),0,
     "Confirm dialog must stop automatic write before approval");
   await js(cdp,"document.querySelector('#admin-save-confirm').click()");
@@ -172,6 +233,7 @@ async function scenario(cdp,role){
     await cdp.send("Page.navigate",{url:BASE+"?admin-test="+role});
     const name=role==="admin"?"Admin Test":role==="editor"?"Editor Test":"User Test";
     await wait(cdp,"document.readyState==='complete'&&document.querySelector('#profile-name')?.textContent==="+JSON.stringify(name),"load "+role);
+    await verifyKeyboardDialogs(cdp,role);
     await js(cdp,"document.querySelector('#nav-admin')?.click()");
     if(role==="user"){
       await sleep(200);
