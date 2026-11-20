@@ -3272,9 +3272,13 @@ async function loadRegressionCounts() {
     regressionCounts = { pilotCount, fullCount, paidRegressionEnabled:data.paidRegressionEnabled === true };
     const pilotWord = pilotCount === 1 ? 'pilotcase' : 'pilotcaser';
     const fullWord = fullCount === 1 ? 'sak' : 'saker';
-    if(description) description.textContent =
-      `Produksjonsflyt-test: ${pilotCount} ${pilotWord} bruker ${pilotCount * 2} KI-kall. ` +
-      `Alle ${fullCount} ${fullWord} bruker ${fullCount * 2} KI-kall ` +
+    // In the existing markup this warning has three <strong> elements.
+    // Keep the same hierarchy to preserve CSS/browser parity and readable emphasis.
+    // Counts are validated integers and labels are fixed strings; no user text enters HTML.
+    if(description) description.innerHTML =
+      '<strong>Produksjonsflyt-test:</strong> Disse testene bruker samme analyse og samtalestøtte som vanlige brukere. ' +
+      `<strong>${pilotCount} ${pilotWord}</strong> bruker ${pilotCount * 2} KI-kall. ` +
+      `<strong>Alle ${fullCount} ${fullWord}</strong> bruker ${fullCount * 2} KI-kall ` +
       '(analyse + veiledning), inkludert pilotcasene. ' +
       'Resultatene merkes som testtrafikk og åpningene logges for samlet gjennomgang.';
     const enabled = benchmarkConfig?.liveEnabled === true &&
