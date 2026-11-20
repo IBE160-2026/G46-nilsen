@@ -1262,7 +1262,9 @@
         "taushetsplikt",
         "opplysningsplikt",
         "forsvarlighet",
-        "dokumentasjon"
+        "dokumentasjon",
+        "journalføring",
+        "journalopplysninger"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
