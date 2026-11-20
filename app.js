@@ -1786,6 +1786,21 @@ async function loadCompleteSourceLibrary(){
     const payload=await response.json();
     if(!response.ok) throw new Error(payload.message||'Kunne ikke hente kildegrunnlaget.');
     const c=payload.categories||{};
+    const quickHost=document.querySelector('#leader-quick-references');
+    if(quickHost){
+      const quickRefs=(Array.isArray(payload.leaderQuickReferences) ? payload.leaderQuickReferences : [])
+        .filter(item => {
+          try { return ['https:', 'http:'].includes(new URL(item.url).protocol); }
+          catch (_) { return false; }
+        });
+      quickHost.innerHTML=quickRefs.length
+        ? quickRefs.map(item=>`<a class="leader-quick-reference" href="${escapeHtml(item.url)}" target="_blank" rel="noopener noreferrer">
+            <strong>${escapeHtml(item.label)}</strong>
+            <small>${escapeHtml(item.category)}</small>
+            <span>${escapeHtml(item.description)}</span>
+          </a>`).join('')
+        : '<p class="muted-note">Oppslagsverket er ikke tilgjengelig akkurat nå. Du finner fortsatt fagbankens øvrige kilder nedenfor.</p>';
+    }
 
     const renderCategory=(cat)=>{
       const sources=sortSourcesAlphabetically((cat?.groups||[]).flatMap(group=>group.sources||[]));
@@ -1830,6 +1845,8 @@ async function loadCompleteSourceLibrary(){
     if(status) status.textContent='Kildene er sortert alfabetisk etter navn.';
   }catch(error){
     root.innerHTML=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
+    const quickHost=document.querySelector('#leader-quick-references');
+    if(quickHost) quickHost.innerHTML='<p class="muted-note">Kunne ikke hente oppslagsverket. Prøv igjen senere.</p>';
     if(status) status.textContent='Kildebanken er ikke tilgjengelig akkurat nå.';
   }
 }
