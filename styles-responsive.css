@@ -1699,3 +1699,33 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
   }
 }
 
+
+/* Hjelp: korte, kuraterte lederoppslag øverst i kildeoversikten. */
+.leader-reference-section { min-width:0; }
+.leader-quick-reference-grid {
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));
+  gap:10px;
+  margin:10px 0 20px;
+}
+.leader-quick-reference {
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  min-width:0;
+  padding:15px 16px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+  color:var(--text);
+  text-decoration:none;
+  overflow-wrap:anywhere;
+  transition:border-color .15s ease, transform .15s ease;
+}
+.leader-quick-reference strong { font-size:1rem; }
+.leader-quick-reference small { color:var(--accent); font-size:.78rem; font-weight:600; }
+.leader-quick-reference span { color:var(--text-muted, var(--text)); font-size:.88rem; line-height:1.42; }
+.leader-quick-reference:hover, .leader-quick-reference:focus-visible {
+  border-color:var(--accent);
+  outline-offset:2px;
+}
