@@ -108,16 +108,18 @@ BEGIN
     WHERE user_id=p_user_id FOR UPDATE;
   INSERT INTO benchmark_private.budget_days(user_id,budget_day)
     VALUES(p_user_id,v_day) ON CONFLICT DO NOTHING;
-  INSERT INTO benchmark_private.budget_runs(user_id,run_id,budget_day,limit_cents)
-    VALUES(p_user_id,p_run_id,v_day,p_budget_cents) ON CONFLICT DO NOTHING;
-
+  -- Read the existing run first, but do NOT create a new one until ALL
+  -- rejection checks pass. Otherwise a BUSY denial creates an empty run and
+  -- accidentally binds its ID to a budget despite no provider attempt.
   SELECT budget_day,limit_cents,charged_cents
     INTO v_existing_day,v_existing_limit,v_run_total
     FROM benchmark_private.budget_runs
     WHERE user_id=p_user_id AND run_id=p_run_id FOR UPDATE;
-  IF v_existing_day <> v_day OR v_existing_limit <> p_budget_cents THEN
+  IF v_existing_day IS NOT NULL AND
+     (v_existing_day <> v_day OR v_existing_limit <> p_budget_cents) THEN
     RETURN jsonb_build_object('ok',false,'error','BUDGET_RUN_MISMATCH');
   END IF;
+  IF v_existing_day IS NULL THEN v_run_total := 0; END IF;
 
   IF EXISTS (
     SELECT 1 FROM benchmark_private.budget_attempts
@@ -142,6 +144,11 @@ BEGIN
     RETURN jsonb_build_object('ok',false,'error','BUDGET_LIMIT');
   END IF;
 
+  -- Only successfully admitted calls materialize a run and a ticket.
+  IF v_existing_day IS NULL THEN
+    INSERT INTO benchmark_private.budget_runs(user_id,run_id,budget_day,limit_cents)
+      VALUES(p_user_id,p_run_id,v_day,p_budget_cents);
+  END IF;
   INSERT INTO benchmark_private.budget_attempts(
     user_id,run_id,budget_day,case_id,model
   ) VALUES(p_user_id,p_run_id,v_day,p_case_id,p_model)
