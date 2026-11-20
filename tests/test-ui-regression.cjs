@@ -96,6 +96,11 @@ const topicSearchPos = html.indexOf('src/client/topic-search.js?v=');
 const situationAnalysisPos = html.indexOf('src/client/situation-analysis.js?v=');
 assert(situationAnalysisPos > clientDataPos && situationAnalysisPos < html.indexOf('app.js?v='), 'Situasjonsanalyse må lastes før app.js');
 assert(topicSearchPos > clientDataPos && topicSearchPos < html.indexOf('app.js?v='), 'Temasøkmodul må lastes før app.js');
+const adminContentPos = html.indexOf('src/client/admin-content.js?v=');
+assert(adminContentPos > topicSearchPos && adminContentPos < html.indexOf('app.js?v='),
+  'Innholdsredigeringsmodulen må lastes før app.js');
+assert(app.includes('window.SamtalestotteAdminContent.create('),
+  'app.js må bruke innholdsredigering via egen modul');
 const adminDataPos = html.indexOf('src/client/admin-data.js?v=');
 assert(adminDataPos > topicSearchPos && adminDataPos < html.indexOf('app.js?v='),
   'Administrasjonsmodulen må lastes før app.js');
