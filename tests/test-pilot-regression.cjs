@@ -29,7 +29,7 @@ assert(app.includes("fetch('/api/admin/pilot-regression/result'"),'Klienten send
 assert(app.includes("rateLimitedModels"),'Benchmark stopper ikke videre kall til en modell som allerede er ratebegrenset');
 assert(app.includes("google/gemma-4-26b-a4b-it:free"),'Gemma Free-håndtering mangler');
 assert(server.includes('testMode === "production-regression"'),'Serveren mangler testmerking for full produksjonsflyt');
-assert(server.includes('effectiveRole(req.user) === "admin"'),'Serveren beskytter testmerking med adminrolle');
+assert(server.includes('req.user?.role === "admin"'), 'Serveren må bruke verifisert innlogget rolle for både testmerking og sperre');
 assert(pilot.every(x=>x.opening_checks?.max_words),'Alle pilotcaser skal ha konkret kontroll av åpningen');
 
 console.log(`Produksjonsflyt-regresjon: 5 pilotcaser + ${(bank.cases||[]).length} totalcaser, myk ordvurdering og adminvern OK`);
