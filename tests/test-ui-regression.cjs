@@ -110,6 +110,9 @@ assert(adminDataPos > topicSearchPos && adminDataPos < html.indexOf('app.js?v=')
 assert(app.includes('window.SamtalestotteAdminData.create('),
   'app.js må bruke administrasjonsmodulen via avhengighetsinjeksjon');
 
+const pilotWarning = html.match(/id="pilot-regression-description"[^>]*>([\\s\\S]*?)<\\/div>/)?.[1] || '';
+assert.equal((pilotWarning.match(/<strong>/g) || []).length, 3,
+  'Dynamisk pilot-/fulltestinformasjon må beholde tre eksisterende uthevingselementer for CSS/DOM-paritet');
 assert(html.includes('<option value="all" disabled>Alle testsaker') &&
   !html.includes('value="112"') &&
   !html.includes('Alle 112 saker'),'Benchmark-UI må ha symbolsk «alle»-valg uten foreldet 112');
