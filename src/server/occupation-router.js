@@ -208,10 +208,14 @@ export function selectLegalSources({ sectorId, occupation = "", employerType = "
         if (!occupationMatch) return false;
       }
 
-      if (source.sourceRole === "authority_index") {
+      // I ordinære samarbeids- og utviklingssaker er yrkestittel alene
+      // ikke nok til å legge frem dyrevelferdslov, pasientregler o.l.
+      // Bare kilder med konkret matchende faglig brukssituasjon tilbys.
+      const neutralConversationTopic = generallyOccupationNeutralTopics.has(normalize(topic));
+      if (source.sourceRole === "authority_index" ||
+          source.contextualOnly || neutralConversationTopic) {
         return contextMatchesSource(source, contextText);
       }
-      if (source.contextualOnly) return contextMatchesSource(source, contextText);
       return true;
     })
     .map(source => {
