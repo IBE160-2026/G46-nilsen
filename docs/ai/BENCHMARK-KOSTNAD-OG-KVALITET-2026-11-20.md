@@ -4,6 +4,20 @@
 **Prosjekt:** Samtalestøtte / IBE160, draft PR #12  
 **Miljø:** Bare revisjonsgren, syntetiske testdata, ingen Render-deploy, betalte KI-kall eller Supabase-mutasjoner.
 
+## Tillegg 20.11.2026 – varig PostgreSQL-budsjett: gjennomtestet SQL-forslag, fortsatt ingen produksjonsintegrasjon
+
+Forrige trinn krevde et transaksjonelt, varig regnskap på tvers av instanser. **Forslag og faktiske PostgreSQL-tester finnes nå**, men appens betalte ruter er fortsatt deaktivert i produksjon:
+
+- `database/security/benchmark-budget-postgres-proposal.sql`: fire private tabeller med RLS, per-bruker radlås, atomisk reservasjon/oppgjør, unik ticket/case-modell, bevarte uavklarte forsøk, dagstak og service-role-only `SECURITY INVOKER`-RPC. Dette er **ikke migrert** til ekte Supabase.
+- `tests/sql/benchmark-budget-postgres.sql`: ekte tilgangs- og regnskapstest i isolert PostgreSQL 17.
+- `tests/sql/benchmark-budget-concurrency.sh`: to separate databaseforbindelser prøver samme eier samtidig; bare én kan reservere.
+- GitHub Actions **restarter** den disponibel PostgreSQL-containeren, og `tests/sql/benchmark-budget-postgres-restart.sql` kontrollerer at uavklart reservasjon ikke forsvinner, at avklaring belaster minst 10 cent, og at 500-cent-dagsrammen ikke kan omgås via ny kjøre-ID.
+- SQL-prototypen ligger under `database/security/` og utføres bare eksplisitt i disponibel CI, ikke som automatisk migrasjon. Det gjenstår server-side Supabase RPC-adapter, godkjent sikkerhetsreview/testprosjekt, administrativ avviksavklaring og **faktisk** leverandørkostbegrensning. Node-prosessens tidligere lokale minneledger blir fortsatt brukt bare i isolert HTTP-testmodus.
+
+Se [egen design- og testrapport](BENCHMARK-POSTGRES-LEDGER-2026-11-20.md). **Dette er et steg fra regnskap på én server til et testet, atomisk SQL-design – ikke en godkjenning av betalte produksjonstester.**
+
+---
+
 ## Tillegg 20.11.2026 – dynamisk antall fra faktiske testbanker
 
 **Funn rettet:** Administrasjonsgrensesnittet brukte tidligere de utdaterte verdiene «Alle 26 saker / 52 KI-kall» og `<option value="112">Alle 112 saker</option>`. Dette var mer enn et tekstproblem: valget kunne utelate de to nyeste av bankens 114 benchmarkcaser.
@@ -35,7 +49,7 @@
 
 **Presist risikonivå:** Dette er **ikke et hardt dollar-tak** for ekte KI-leverandør. Den konservative reservasjonen er en antakelse; reelt kall kan koste mer. Ledgeren finnes bare i minnet og overlever ikke omstart, flere Render-instanser eller feil mellom providerkall og lokal bokføring. Den gir derfor kun **verifiserbar, lokal testatferd**, ikke produksjonssikker distribusjon, transaksjoner eller varig audit-logg. Produksjonssperren skal ikke fjernes før atomisk, varig per-bruker/per-kjøring-regnskap og providerkostgrenser er implementert og testet separat. Gratis testbankkjøring forblir tilgjengelig.
 
-**Neste steg:** Lag et transaksjonelt Supabase/PostgreSQL-regnskap med autorisert tjenestetilgang, serverstyrte reservations-ID-er, idempotens, sperre av samtidige kall på tvers av instanser, feilbehandling og mål på leverandørkostnad. Valider dette på isolert database med fiktive brukere og provider før produksjonsutrulling. Statiske «26/52» og «112» i admin-UI er fortsatt utdatert mot 66/114 og skal tas i egen UX-regresjon.
+**Neste steg etter grønt SQL-forslag:** Integrer og test RPC-adapteren mot en isolert Supabase/PostgREST-instans, knytt leverandørens faktiske pris/timeout/retries til regnskapet og dokumenter sikker avviksavklaring og operativ drift. Behold fail-closed i produksjon inntil dette er fullført. Statiske «26/52» og «112» i admin-UI er fortsatt utdatert mot 66/114 og skal tas i egen UX-regresjon.
 
 ---
 
@@ -74,7 +88,7 @@ De gamle funksjonene i `app.js` delegerer nå til modulen. Uttrekket reduserte `
 
 1. Bekreft siste Quality Gate etter den snevre B113/navnefilterrettelsen. Sørg for at `test-benchmark-privacy-signal` og den faktiske gratis Express-mock-kontrollen forblir automatiske regressjonsporter.
 2. Behold de nye dynamiske antalls-/UI-testene som regresjonsport ved utvidelse av benchmark- eller golden-casebanken.
-3. Utvid den **kun lokalt testede** budsjettprototypen til et delt, varig transaksjonelt serverregnskap med kostnadsvurdering, idempotens og audit-spor før noen betalte tester aktiveres i produksjon.
+3. Det **atomiske PostgreSQL-forslaget er laget og testet isolert**. Neste krav er en korrekt service-only RPC-adapter, driftbar avviksavklaring, multi-instans-integrasjon og leverandørens reelle kost-/retrybegrensning før betalte tester kan aktiveres i produksjon.
 4. Først deretter vurder å isolere betalte benchmarkløp i egen modul. Ekte Supabase Auth/PostgREST og menneskelig faglig vurdering kreves fortsatt separat.
 
 **Status:** Gratis benchmarkbank og deterministisk evaluator er verifisert. Servereid budsjettreservering og faktisk HTTP-providerløp er testet **bare lokalt og syntetisk**. Betalt benchmark og administrativ pilot/fulltest er **blokkert i produksjonsmodus** inntil et varig, distribuert regnskap og reell leverandørkost-/Auth-test er godkjent.
