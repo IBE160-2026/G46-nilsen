@@ -9,6 +9,16 @@
 
 ---
 
+## Teknisk revisjonsnotat 20.11.2026 – kun draft-PR #12
+
+Den **pågående revisjonsgrenen**, ikke deployet `main`, har fått et separat klientansvar for administrasjonsdata: `src/client/admin-data.js` registrerer `window.SamtalestotteAdminData.create({ document, fetch, escapeHtml, getCurrentUser })`. `app.js` sender inn avhengighetene og bruker modulens fem funksjoner for brukeroversikt/rolleknapper, rapporterte KI-svar, KI-modellvalg, forbruksstatistikk og kostnadsformattering. `getCurrentUser` leses ved behov slik at endret rolle får virkning i klienten uten ny modulinstans. **Autorisasjonsgrensen ligger fortsatt i Express-serveren**, ikke i disse UI-funksjonene.
+
+Modulen er en klassisk `script`-fil, lastet før `app.js`, med eksplisitt server-/demoasset og PWA-cache. Ingen ny bundle-/byggeprosess er innført. Isolert runtime-test av modulen, headless Chrome-adminflow med fiktive brukere og egen server-HTTP-rollegrensetest dekker regressjoner. Den isolerte PostgreSQL-jobben tester faktisk `V20-8` RLS-policyatferd, men **ikke** reell Supabase Auth/PostgREST, som krever separat testmiljø. Se [Teknisk revisjon](../TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md) og [Testbevis og dekning](../ai/TESTBEVIS-OG-DEKNING-2026-11-18.md).
+
+Dette er et avgrenset skritt mot mindre hovedfil og tydeligere ansvar. Innlogging, benchmark, øvrig admin-UI, serverruter og eventuell offline/RAG-arkitektur er **ikke** endret av dette moduluttrekket. Ingen produksjonsdeploy eller LIVE-endringer.
+
+---
+
 # 1. Formål
 
 Dette dokumentet beskriver den tekniske arkitekturen i den leverte Samtalestøtte-prototypen.
