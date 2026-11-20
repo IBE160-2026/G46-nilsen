@@ -9,6 +9,51 @@ const {spawn}=require("node:child_process");
 const {pathToFileURL}=require("node:url");
 
 const root=path.resolve(__dirname,"..");
+
+const postgresContainer=process.env.BENCHMARK_PG_CONTAINER || "";
+// Optional CI-only bridge: the local fake PostgREST HTTP endpoint invokes the
+// ACTUAL service-role Postgres RPC in the disposable Docker container.
+// It does not talk to hosted Supabase, does not expose the real service key,
+// and does not approximate database transactions with JS logic.
+async function callDisposablePostgres(name, args){
+  if(!postgresContainer || !/^[a-f0-9]{12,64}$/i.test(postgresContainer)){
+    throw Error("A disposable CI postgres container id is required");
+  }
+  const operations={
+    benchmark_budget_reserve:[
+      "(j->>'p_user_id')::uuid","(j->>'p_run_id')::uuid",
+      "j->>'p_case_id'","j->>'p_model'","(j->>'p_budget_cents')::integer"
+    ],
+    benchmark_budget_settle:[
+      "(j->>'p_user_id')::uuid","(j->>'p_ticket')::uuid",
+      "(j->>'p_actual_cents')::bigint","j->>'p_outcome'"
+    ]
+  };
+  if(!Object.hasOwn(operations,name))throw Error("Unknown test RPC "+name);
+  // Base64 is safe to embed as a SQL literal and prevents interpolation of
+  // user-supplied case/model strings into SQL.
+  const encoded=Buffer.from(JSON.stringify(args),"utf8").toString("base64");
+  const sql="SET ROLE service_role;\\n"+
+    "WITH params AS (SELECT convert_from(decode('"+encoded+"','base64'),'UTF8')::jsonb j) "+
+    "SELECT public."+name+"("+operations[name].join(",")+")::text FROM params;\\n";
+  return new Promise((resolve,reject)=>{
+    const p=spawn("docker",[
+      "exec","-i",postgresContainer,"psql","-X","-q","-A","-t",
+      "-v","ON_ERROR_STOP=1","-U","postgres","-d","test_rls"
+    ],{stdio:["pipe","pipe","pipe"]});
+    let stdout="",stderr="";
+    p.stdout.on("data",x=>stdout+=String(x));
+    p.stderr.on("data",x=>stderr+=String(x));
+    p.on("error",reject);
+    p.on("close",code=>{
+      if(code!==0)return reject(Error("Disposable PostgreSQL RPC failed: "+stderr.slice(-300)));
+      const line=stdout.trim().split("\\n").at(-1);
+      try{resolve(JSON.parse(line));}catch{reject(Error("Invalid disposable PostgreSQL RPC JSON: "+stdout.slice(-200)));}
+    });
+    p.stdin.end(sql);
+  });
+}
+
 const appPort=32951,servicePort=32952,providerPort=32953;
 const base="http://127.0.0.1:"+appPort, serviceUrl="http://127.0.0.1:"+servicePort;
 const userId="c07792a1-447b-4caf-a144-565a50159d75";
@@ -40,6 +85,7 @@ let stderr="";
   const {createBenchmarkBudgetLedger}=await import(
     pathToFileURL(path.join(root,"src/server/benchmark-budget.js")).href);
   const mockBudget=createBenchmarkBudgetLedger();
+  const useRealPostgres=Boolean(postgresContainer);
 
   const service=http.createServer(async(req,res)=>{
     const url=new URL(req.url,serviceUrl);
@@ -61,6 +107,10 @@ let stderr="";
       if(reserveUnavailable)return send(res,503,{code:"RPC_UNAVAILABLE",message:"Synthetic RPC outage"});
       assert.deepEqual(Object.keys(body).sort(),["p_budget_cents","p_case_id","p_model","p_run_id","p_user_id"].sort());
       assert.equal(body.p_user_id,userId,"Never permit browser-supplied identity");
+      if(useRealPostgres){
+        try{return send(res,200,await callDisposablePostgres("benchmark_budget_reserve",body));}
+        catch(e){return send(res,503,{code:"DISPOSABLE_PG_ERROR",message:e.message});}
+      }
       const r=mockBudget.reserve({
         userId:body.p_user_id,runId:body.p_run_id,caseId:body.p_case_id,
         model:body.p_model,budgetUsd:body.p_budget_cents/100
@@ -78,6 +128,10 @@ let stderr="";
       settleCalls++;events.push("settle");
       const body=await read(req);
       if(settleUnavailable)return send(res,503,{code:"RPC_SETTLE_FAILED",message:"Synthetic settle outage"});
+      if(useRealPostgres){
+        try{return send(res,200,await callDisposablePostgres("benchmark_budget_settle",body));}
+        catch(e){return send(res,503,{code:"DISPOSABLE_PG_ERROR",message:e.message});}
+      }
       const found=tickets.get(body.p_ticket);
       if(!found||found.userId!==body.p_user_id)return send(res,200,{
         ok:false,error:"UNKNOWN_BENCHMARK_TICKET"
@@ -199,7 +253,7 @@ let stderr="";
     const rate=await call(e,runIds[3],0.1);
     assert.equal(rate.status,429);
     assert.equal(rate.body.error,"BENCHMARK_FAILED");
-    assert.ok(tickets.size>=3);
+    assert.ok(useRealPostgres || tickets.size>=3);
     providerMode="success";
     storageUnavailable=true;
     const storage=await call(f,runIds[4],0.1);
@@ -218,6 +272,7 @@ let stderr="";
     assert.equal(providerCalls,after,"Unsettled RPC ticket must prevent a new provider call");
     assert.ok(settleCalls>=5);
     console.log("Benchmark RPC HTTP: actual Express/Supabase JS/OpenAI SDK with fake RPC and provider, sequencing, concurrency, 429, storage and settlement outages: OK");
+    console.log("RPC persistence: "+(useRealPostgres?"actual disposable PostgreSQL":"synthetic JS ledger"));
     console.log("Real provider calls: 0; fake provider calls: "+providerCalls);
   }finally{
     app.kill("SIGTERM");
