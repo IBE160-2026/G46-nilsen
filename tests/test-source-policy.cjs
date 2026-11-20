@@ -138,12 +138,19 @@ for(const id of ["LOVDATA_DYREHELSEPERSONELLOVEN","LOVDATA_DYREVELFERDSLOVEN","L
 }
 const leaderHelp=fs.readFileSync("index.html","utf8");
 const styled=fs.readFileSync("styles-overrides.css","utf8");
-for(const domain of ["arbeidstilsynet.no","nav.no","lovdata.no","akan.no","datatilsynet.no","arbeidsgiver.dfo.no","stami.no"]) {
-  assert(leaderHelp.includes(domain),"Oppslagsverk for ledere mangler: "+domain);
+const quickIds = [
+  "LOVDATA_AML","AT_EMPLOYER_DUTIES","NAV_SYKEFRAVAER_OPPFOLGING",
+  "AT_PERSONALSAKER","DATATILSYNET_WORKPLACE_PRIVACY","AKAN_MODEL",
+  "DFO_PERSONALSAKER_FORBEREDELSE_2026","STAMI_PSYKOSOSIALT_ARBEIDSMILJO_2026"
+];
+for(const id of quickIds) {
+  assert(helpLibrary.includes('id:"'+id+'"'),"Oppslagsverk mangler kuratert kilde: "+id);
+  assert(all.some(source=>source.id===id),"Hurtigoppslag har kilde-ID utenfor fagbankene: "+id);
 }
-assert(leaderHelp.includes("Oppslagsverk for ledere"),"Hjelp mangler hurtigoppslag");
+assert((leaderHelp.match(/Oppslagsverk for ledere/g)||[]).length===1,"Hjelp må ikke vise to oppslagsverk");
+assert(leaderHelp.includes('id="leader-quick-references"'),"Hjelp mangler kuratert oppslagsverk");
 assert(leaderHelp.includes("help-contact-entry")&&leaderHelp.includes('data-open-info="contact"'),"Hjelp mangler Kontakt-lenke");
-assert(leaderHelp.indexOf("leader-reference")<leaderHelp.indexOf("help-section-heading\""),"Oppslagsverk skal ligge øverst i Hjelp");
+assert(leaderHelp.indexOf("leader-reference-section")<leaderHelp.indexOf("BRUK AV SAMTALESTØTTE"),"Oppslagsverket skal ligge først i Hjelp");
 assert(styled.includes("dialog.image-preview-dialog .brand-logo-dialog-card img"),"Manglende helbildefremvisning");
 assert(app.includes("readableSourceTier")&&app.includes("Hvorfor kilden er relevant"),"Kildebanken må forklare kildevalg og nivå");
 assert(app.includes('class="spoken-example"')&&styled.includes(".spoken-example"),"Muntlige formuleringer må ha egen visuell stil");
