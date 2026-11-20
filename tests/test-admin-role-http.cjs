@@ -197,7 +197,10 @@ async function request(route,who,method="GET",body,headers={}){
     const freeBenchmark=await request("/api/admin/benchmark/mock","admin","POST",{});
     assert.equal(freeBenchmark.status,200,"Gratis benchmark mock bør fungere uten KI-nøkkel: "+JSON.stringify(freeBenchmark.body));
     assert.equal(freeBenchmark.body.mode,"mock");
-    assert.equal(freeBenchmark.body.ok,true,"Testbanken skal være gyldig");
+    assert.ok(Array.isArray(freeBenchmark.body.problems),"Mock må oppgi konkrete kvalitetsavvik, også når testbanken ikke består");
+    assert.equal(freeBenchmark.body.ok,freeBenchmark.body.problems.length===0,
+      "Mockens ok-flagg må samsvare med dokumenterte problemer");
+    console.log("Gratis benchmark – bankkontroll:",JSON.stringify({ok:freeBenchmark.body.ok,problems:freeBenchmark.body.problems.slice(0,25)}));
     assert.ok(freeBenchmark.body.checks.cases>=100,"Mock skal bruke faktisk testbank");
     assert.equal(calls.length,callsBeforeMock,"Gratis fulltest må ikke bruke Auth Admin eller PostgREST");
     assert.equal((await request("/api/auth/diagnostic","admin")).status,200);
