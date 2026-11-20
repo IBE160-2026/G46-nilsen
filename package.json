@@ -7,7 +7,7 @@
     "start": "node server.js",
     "dev": "node --watch server.js",
     "test": "npm run test-local",
-    "test-local": "npm run test-syntax && npm run test-test-suite-syntax && npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-privacy-surfaces && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-guidance-quality && npm run test-pilot-regression && npm run test-golden-schema && npm run test-golden-utils && npm run test-benchmark-taxonomy && npm run test-sourcebank && npm run test-live-ai-runner-controls && npm run test-source-retention && npm run test-source-policy && npm run test-golden-occupation-routing && npm run test-occupation-router && npm run test-occupation-data && npm run test-agreement-router && npm run test-occupation-standard && npm run test-natural-response-standard && npm run test-occupation-context && npm run test-pilot-ux && npm run test-pwa && npm run test-sensor-demo && npm run test-public-assets && npm run test-css-duplicate-important && npm run test-safe-source-urls-history && npm run test-history-row-identity && npm run test-admin-async-session && npm run test-admin-content-generation && npm run test-prd-consistency && npm run test-repo-structure",
+    "test-local": "npm run test-syntax && npm run test-test-suite-syntax && npm run test-privacy && npm run test-simulation && npm run test-server-privacy && npm run test-privacy-surfaces && npm run test-ui-regression && npm run test-history-hotfix && npm run test-bubble-cleanup && npm run test-clipboard && npm run test-guidance-quality && npm run test-pilot-regression && npm run test-golden-schema && npm run test-golden-utils && npm run test-benchmark-taxonomy && npm run test-sourcebank && npm run test-live-ai-runner-controls && npm run test-source-retention && npm run test-source-policy && npm run test-golden-occupation-routing && npm run test-occupation-router && npm run test-occupation-data && npm run test-agreement-router && npm run test-occupation-standard && npm run test-natural-response-standard && npm run test-occupation-context && npm run test-pilot-ux && npm run test-pwa && npm run test-sensor-demo && npm run test-public-assets && npm run test-css-duplicate-important && npm run test-safe-source-urls-history && npm run test-history-row-identity && npm run test-history-session-cleanup && npm run test-admin-async-session && npm run test-admin-content-generation && npm run test-prd-consistency && npm run test-repo-structure",
     "test-ai": "node tests/test-ai.js",
     "test-ai:full": "node tests/test-ai.js --all",
     "test-ai:stress": "node tests/test-ai-stress.js",
@@ -61,7 +61,8 @@
     "test-safe-source-urls-history": "node tests/test-safe-source-urls-history.cjs",
     "test-history-row-identity": "node tests/test-history-row-identity.cjs",
     "test-admin-async-session": "node tests/test-admin-async-session.cjs",
-    "test-admin-content-generation": "node tests/test-admin-content-generation.cjs"
+    "test-admin-content-generation": "node tests/test-admin-content-generation.cjs",
+    "test-history-session-cleanup": "node tests/test-history-session-cleanup.cjs"
   },
   "dependencies": {
     "dotenv": "^16.4.7",
