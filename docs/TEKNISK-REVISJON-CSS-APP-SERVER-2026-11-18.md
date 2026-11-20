@@ -38,6 +38,18 @@ De tidligere funksjonene i `app.js` ble erstattet med små delegatorer, slik at 
 
 **Ny egenkontroll:** `tests/test-fallback-guidance.cjs`, `tests/test-topic-search-module.cjs`, `tests/test-situation-analysis.cjs`. Testene benytter fiktive situasjoner og er ikke en faglig godkjenning av HR-råd.
 
+### Videreføring 20.11.2026 – admin-dataflyt flyttet fra `app.js`
+
+**Kronologi og mål:** Tallene i tabellen over (**4 274 linjer**) er en historisk måling fra den første strukturfasen. Etter senere funksjonstillegg og formatforbedringer hadde `app.js` **4 354 linjer / 237 462 tegn**. Dette nye uttrekket reduserer den til **4 278 linjer / 230 656 tegn** (**−76 linjer / −6 806 tegn** fra umiddelbart før uttrekket). Endringen flytter ansvar, og gjør derfor ikke hele kodebasen tilsvarende mye mindre.
+
+**Ny fil:** `src/client/admin-data.js` (egen klassisk klientmodul med `window.SamtalestotteAdminData.create()`) huser fem eksisterende funksjoner: `loadAdminUsers`, `loadAdminFeedback`, `loadAdminAiSettings`, `loadAdminAiUsage`, `formatUsd`. Innholdet er *DOM-/API-koblet*, ikke en ren domenemodul. Modulens `create({ document, fetch, escapeHtml, getCurrentUser })` synliggjør avhengighetene og lar autentiseringsrollen leses for hvert kall (i stedet for å fryse rollen ved oppstart). `app.js` beholder adminnavigasjon, innholdsredigering, benchmarking og hendelsesregistrering samt rollebeskyttet Express-server uendret.
+
+**Kobling og cache:** `index.html` laster den nye filen før `app.js` (query-versjon `20.11.70`), både `server.js` og sensordemo eksponerer den eksplisitt, og PWA `sw.js` har den i offline-skallet med nytt cachenavn. Ingen annen serverfil blir offentlig tilgjengelig av den grunn.
+
+**Kvalitet:** `tests/test-admin-client-runtime.cjs` kjører *selve modulen* i Node VM med injiserte fiktive svar og tester roller, escaping, rolleendring med HTTP 403, KI-statistikk og endring av aktiv rolle i samme modulinstans. Egen `tests/test-admin-browser.cjs` kjører ekte DOM- og event-interaksjon i headless Chrome med tre syntetiske rolleprofiler. `tests/test-admin-role-http.cjs` prøver den reelle Express-autorisasjonen med lokal Auth-fake; `test-ui-regression`, `test-public-assets` og `test-pwa` verifiserer modulrekkefølge og offentlig tilgjengelighet. [Quality Gate #44752528974](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44752528974) er **SUCCESS** på første komplette modulimplementering; senere dokumentasjons- og dynamisk-rolletestcommiter krever egen grønn CI.
+
+**Begrensning og videre arbeid:** Resterende `app.js` inneholder fortsatt mye auth, innholdsredigering, simulering og benchmark. Om disse delene flyttes, må de ha egne runtime-/Chrome- og HTTP-regresjonstester før uttrekk. Ingen produksjonsmerge eller deploy er gjort, og LIVE-piloten er urørt.
+
 ## Uttrekk fra server.js
 
 | Ny fil | Omtrent linjer | Ansvar | Kontroll |
