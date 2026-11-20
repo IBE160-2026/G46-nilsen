@@ -1,3 +1,14 @@
+# 20.11.2026 – mobile:true/touch, faktisk Chromium-PDF og refleksjonskontroll (draft PR #12)
+
+- Ny obligatorisk `tests/test-mobile-print-browser.cjs` tester ekte prosjektfrontend mot lokal sensordemo med **faktisk Chrome mobilmodus**, viewport **320×700, 390×844 og 768×1024** uten horisontal side-overflyt, og berøringshendelser for tema/undertema. Det komplette brukerreise- og admin-testløpet beholdes.
+- Klikk på faktisk «Skriv ut råd» genererer popup-HTML fra appen; Chromium rendrer dette med utskrifts-CSS til en **2-siders PDF**. `pdfinfo` kontrollerer sideantall, `pdftotext` kontrollerer at hovedråd, situasjon og «Videre råd» finnes som tekst i PDF-en. Kun syntetiske data.
+- Første mobile touch-test stoppet fordi umiddelbar hit-test ble kjørt før scrolling var stabil. Nytt forsøk bruker `behavior:'instant'` med separat hit-test før berøring; **ingen CSS-regler ble endret basert på en misvisende testfeil**.
+- [Quality Gate #44794218055](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44794218055) er grønn i **tre** CI-jobber. Det er **automatisk mobil-/PDF-bevis**, ikke fysisk Android, printer eller uavhengig tilgjengelighetsreview.
+- `docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md` er revidert for å skille historiske mocks fra faktisk lokal Auth/PostgREST, og beskrive egne KI-/testvurderinger mer kritisk. `docs/ai/MOBIL-PRINT-REFLEKSJON-2026-11-20.md` gir sensororientert bevis- og formaliakontroll; studentnummer/ordgrense/frist i Canvas er fortsatt **ikke bekreftet**.
+- `main`, Render-produksjon, ekte Supabase, betalt KI og LIVE/tale-pilot er **urørt**.
+
+---
+
 # 20.11.2026 – faktisk lokal Supabase Auth/PostgREST/RLS med to brukere (draft PR #12)
 
 - Ny **obligatorisk** `supabase-auth-local`-jobb i Quality Gate med fastlåst lokal CLI v2.122.1, ekte GoTrue Auth, PostgREST, PostgreSQL og lokal API-gateway. Ingen hosted prosjekt-token eller produksjonsnøkler.
