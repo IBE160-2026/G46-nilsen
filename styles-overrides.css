@@ -1389,3 +1389,26 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   line-height:1.15 !important;
   font-weight:650 !important;
 }
+
+/* Tastatursnarvei som kun er synlig når den får fokus. */
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 12px;
+  z-index: 10000;
+  display: inline-block;
+  padding: 12px 18px;
+  border-radius: 8px;
+  background: #123e4a;
+  color: #ffffff;
+  font-weight: 700;
+  text-decoration: underline;
+}
+.skip-link:focus {
+  top: 12px;
+  outline: 3px solid #ffdd57;
+  outline-offset: 3px;
+}
+#main-content:focus {
+  outline: none;
+}
