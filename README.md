@@ -6,6 +6,32 @@ Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeiders
 
 Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy. KI-en skal støtte lederens vurdering, ikke erstatte lederens ansvar eller relevant fagkompetanse.
 
+## For sensor: test appen uten tilgangsnøkler
+
+Denne korte oppskriften gjør det mulig å kjøre **den lokale, deterministiske sensordemoen** på en ren maskin uten innlogging, API-nøkler eller tilgang til produksjon. Demoen viser den faktiske frontend-arbeidsflyten med **fiktive svar**; den dokumenterer ikke kvaliteten på live KI-råd eller den eksterne innloggingen.
+
+```bash
+git clone https://github.com/IBE160-2026/G46-nilsen.git
+cd G46-nilsen
+# Kun for å undersøke revisjonskandidaten i draft-PR #12:
+git switch docs/ibe160-helhetlig-revisjon-20261118
+npm ci
+npm run demo
+```
+
+Åpne **http://localhost:3000** i nettleseren. Appen viser en lokal «Sensor demo»-bruker. Prøv tema → undertema → beskriv situasjonen → få råd → spør videre → simulering → historikk → slett, samt «Skriv ut råd». Demoen bruker ingen ekte KI-leverandør eller brukerkontoer.
+
+For å kontrollere den samme kildekoden, stopp demoen med Ctrl+C og kjør:
+
+```bash
+npm test
+npm run audit:submission
+```
+
+Den siste kommandoen er en **lokal sporbarhetskontroll**, ikke bekreftelse fra Canvas. Browser-/Supabase-integrasjonstestene i GitHub Actions har egne CI-forutsetninger; beskrivelsene og eksakte bevisene finnes i [innleveringskontrollen](docs/INNLEVERINGSKONTROLL-2026-11-20.md).
+
+**Viktig for faktisk vurdering:** Sensorveiledningen for del 1 sier at sensor henter gruppens repo og siste commit innen fristen, og følger README. Kommandoen `git switch` ovenfor er **kun for å inspisere revisjonskandidaten**, ikke et tegn på at denne grenen er godkjent som innlevering. `main` og PR #12 er fortsatt ulike; hvilken commit/gren som faktisk skal vurderes må avklares mot Canvas før levering. Koden med full integrasjon og egne nøkler er beskrevet lenger ned.
+
 ## Prosjektstatus, testbevis og innleveringsgrense – 20.11.2026
 
 **Leveransestatus:** [Innleveringskontroll 20.11](docs/INNLEVERINGSKONTROLL-2026-11-20.md) er fasit for hva som kan dokumenteres. **PR #12 (125 endrede filer) er draft, og `main` inneholder ikke disse revisjonsendringene.** Leveransegren, Canvas-krav og studentens godkjenning er ikke avklart; ingen merge eller deploy er foretatt. Kjør `npm run audit:submission` for en lokal, offline sjekk. **Ikke oppgi at PR-CI er CI for `main`.**
