@@ -76,7 +76,9 @@ async function evaluate(cdp,src){
   if(r.exceptionDetails)throw new Error("Browser evaluation: "+JSON.stringify(r.exceptionDetails));
   return r.result?.value;
 }
-const cssProps=[
+// The candidate adds two deliberate keyboard-accessibility elements. Exclude only
+// those new nodes from the historical index-based comparison; the separate real
+// keyboard-journey test verifies their behavior. All pre-existing DOM nodes stay covered.\nconst cssProps=[
   "display","position","visibility","opacity","overflow","overflow-x","overflow-y",
   "width","height","min-width","max-width","min-height","max-height",
   "padding","margin","border","border-radius","box-shadow","background-color","background-image",
@@ -114,7 +116,7 @@ async function capture(cdp,baseUrl,width,theme,state,view,media="screen",openDet
     "document.querySelector('#auth-dialog')?.classList.remove('is-open');"+
     "const style=document.createElement('style');style.textContent='*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}';document.head.appendChild(style);"+
     "const props="+JSON.stringify(cssProps)+";"+
-    "const all=[...document.querySelectorAll('body *')];"+
+    "const all=[...document.querySelectorAll('body *:not(.skip-link):not(.main-skip-target)')];"+
     "const result={};"+
     "all.forEach((e,i)=>{const rect=e.getBoundingClientRect();if(rect.width<0.5||rect.height<0.5)return;"+
     "const st=getComputedStyle(e),x=props.map(p=>st.getPropertyValue(p));"+
