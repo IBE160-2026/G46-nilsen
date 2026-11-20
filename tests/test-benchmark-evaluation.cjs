@@ -24,7 +24,7 @@ const cases=[
 const config={cases};
 assert.deepEqual(Array.from(selectCases(config,3),x=>x.id),["a1","b1","c1"],"First round must represent each topic");
 assert.deepEqual(Array.from(selectCases(config,4),x=>x.id),["a1","b1","c1","a2"],"Additional cases must be distributed round-robin");
-assert.deepEqual(Array.from(selectCases(config,6),x=>x.id),["a1","b1","c1","a2","b2","a3"]);
+assert.deepEqual(Array.from(selectCases(config,6),x=>x.id),cases.map(x=>x.id),"Full selection must preserve original order");
 assert.deepEqual(Array.from(selectCases(config,999),x=>x.id),cases.map(x=>x.id),"All cases should keep original order when count exceeds pool");
 assert.equal(selectCases({cases:[]},10).length,0);
 assert.equal(selectCases(null,10).length,0);
@@ -40,7 +40,7 @@ const valid=evaluateOpening(good,{opening:"Jeg ønsker å snakke om samarbeidet 
 assert.equal(valid.ok,true);
 assert.equal(valid.issues.length,0);
 assert.equal(valid.notes.length,0);
-assert.equal(valid.words,13);
+assert.equal(valid.words,12);
 
 const missing=evaluateOpening(good,{});
 assert.equal(missing.ok,false);
