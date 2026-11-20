@@ -23,7 +23,7 @@ export function createBenchmarkBudgetLedger({
         typeof runId !== "string" || !uuid.test(runId) ||
         typeof caseId !== "string" || !caseId || typeof model !== "string" || !model ||
         typeof budgetUsd !== "number" || !Number.isFinite(selected) ||
-        selected < 0.1 || selected > 5 || Math.round(selected * 100) !== selected * 100) {
+        selected < 0.1 || selected > 5 || Math.abs(Math.round(selected * 100) - selected * 100) > 1e-8) {
       return denied("INVALID_BENCHMARK_BUDGET", "Ugyldig kjørenøkkel eller budsjett.", 400);
     }
     const day = clock().toISOString().slice(0, 10);
