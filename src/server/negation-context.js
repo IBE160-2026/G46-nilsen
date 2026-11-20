@@ -35,7 +35,7 @@ function containsNonNegatedInClause(rawClause, needle) {
       (/\buten(?:\s+at)?\b[^.!?;:]{0,140}$/u.test(prefix) &&
        /^(?:er|var|blir)\s+(?:et\s+|en\s+)?(?:tema|problem|sak|aktuelt|relevant)\b/u.test(suffix)) ||
       /^(?:er|var|blir)\s+ikke\s+(?:et\s+|en\s+)?(?:tema|problem|sak|aktuelt|relevant)\b/u.test(suffix);
-    if(!absentTopic || missingProtection)return true;
+    if(!absentTopic || missingProtection || unperformedSafetyAction)return true;
     offset=index+Math.max(1,needle.length);
   }
   return false;
