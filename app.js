@@ -3168,13 +3168,7 @@ let benchmarkConfig=null;
 let benchmarkStopRequested=false;
 let benchmarkRunning=false;
 function benchmarkSelectedModels(){return [...document.querySelectorAll('[data-benchmark-model]:checked')].map(x=>x.value);}
-function benchmarkSelectCases(count){
-  const all=benchmarkConfig?.cases||[]; if(count>=all.length)return all.slice();
-  const grouped=new Map(); for(const c of all){if(!grouped.has(c.topicId))grouped.set(c.topicId,[]);grouped.get(c.topicId).push(c);}
-  const selected=[]; let round=0; const groups=[...grouped.values()];
-  while(selected.length<count){let added=false;for(const g of groups){if(g[round]&&selected.length<count){selected.push(g[round]);added=true;}}if(!added)break;round++;}
-  return selected;
-}
+function benchmarkSelectCases(count){return window.SamtalestotteBenchmarkEvaluation.selectCases(benchmarkConfig,count);}
 function renderBenchmarkSummary(results){
   const host=document.querySelector('#benchmark-summary');if(!host)return;
   const cost=results.reduce((a,r)=>a+Number(r.estimated_cost_usd||0),0),tokens=results.reduce((a,r)=>a+Number(r.input_tokens||0)+Number(r.output_tokens||0),0),web=results.reduce((a,r)=>a+Number(r.web_search_count||0),0),avg=results.length?results.reduce((a,r)=>a+Number(r.latency_ms||0),0)/results.length:0;
@@ -3186,29 +3180,7 @@ function renderBenchmarkResults(results){
   host.innerHTML=[...groups.values()].map(rows=>{const first=rows[0];return `<article class="benchmark-case-result"><h4>${escapeHtml(first.topic)} → ${escapeHtml(first.subtopic)} · ${escapeHtml(first.variant||'')}</h4><div class="benchmark-model-grid">${rows.map(r=>`<div class="benchmark-model-result"><h5>${escapeHtml((benchmarkConfig?.models||[]).find(m=>m.id===r.model)?.label||r.model)}</h5><div class="benchmark-metrics"><span>${Number(r.input_tokens||0)+Number(r.output_tokens||0)} tokens</span><span>${formatUsd(r.estimated_cost_usd)}</span><span>${Number(r.web_search_count||0)} websøk</span><span>${(Number(r.latency_ms||0)/1000).toFixed(1)} s</span></div><p>${escapeHtml(r.response_text||'')}</p>${(r.web_search_queries||[]).length?`<div class="benchmark-source-detail"><strong>Søk:</strong><ul>${(r.web_search_queries||[]).map(q=>`<li>${escapeHtml(q)}</li>`).join('')}</ul></div>`:''}${(r.source_pages||[]).length?`<div class="benchmark-source-detail"><strong>Konkrete kilder:</strong><ul>${(r.source_pages||[]).map(p=>`<li><a href="${escapeHtml(p.url||'')}" target="_blank" rel="noopener noreferrer">${escapeHtml(p.title||p.url||p.domain||'Kilde')}</a></li>`).join('')}</ul></div>`:(r.source_domains||[]).length?`<small>Domener: ${escapeHtml((r.source_domains||[]).join(', '))}</small>`:''}</div>`).join('')}</div></article>`}).join('')||'<small>Ingen benchmark-resultater ennå.</small>';
 }
 
-function evaluatePilotOpening(testCase, guidance){
-  const opening=String(guidance?.opening||'').trim();
-  const issues=[];
-  const notes=[];
-  const words=opening?opening.split(/\s+/u).filter(Boolean).length:0;
-  const checks=testCase?.opening_checks||{};
-  const maxWords=Number(checks.max_words||65);
-  if(!opening)issues.push('Mangler forslag til åpning');
-  if(words>maxWords)issues.push(`For lang åpning: ${words} ord (maks ${maxWords})`);
-  if(/\b(?:du bør|bør du|kontakt HR|kontakt juridisk|følg (?:virksomhetens|lokal|intern|gjeldende)?\s*prosedyre|varsle (?:ansvarlig|nærmeste)?\s*leder|kvalitetssikre)\b/iu.test(opening))issues.push('Inneholder instruksjoner til lederen i stedet for bare replikk');
-  for(const pattern of checks.forbidden_patterns||[]){
-    try{if(new RegExp(pattern,'iu').test(opening))issues.push('Treffer en formulering vi tidligere har identifisert som mekanisk eller uheldig');}catch(_){}
-  }
-  const required=checks.required_patterns_any||[];
-  if(required.length){
-    const matched=required.some(pattern=>{try{return new RegExp(pattern,'iu').test(opening);}catch(_){return false;}});
-    if(!matched)notes.push('Automatisk ordtreff fant ikke forventet situasjonsspråk – bør vurderes menneskelig, ikke regnes som feil alene');
-  }
-  const sentences=opening.split(/[.!?]+(?:\s|$)/u).map(x=>x.trim()).filter(Boolean).length;
-  if(sentences>4)issues.push(`For mange setninger i åpningen: ${sentences}`);
-  return {ok:issues.length===0,opening,words,issues,notes};
-}
-
+function evaluatePilotOpening(testCase,guidance){return window.SamtalestotteBenchmarkEvaluation.evaluateOpening(testCase,guidance);}
 function renderPilotRegressionResults(results){
   const host=document.querySelector('#pilot-regression-results');if(!host)return;
   host.innerHTML=results.map(result=>{
