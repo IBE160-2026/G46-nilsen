@@ -5,6 +5,7 @@
 **Rammeverk:** BMAD  
 **Status:** Gjeldende kravoversikt revidert 18.11.2026; tidligere status/testbevis beholdt som historiske  
 **Versjon ved dokumentasjon:** `main` v20.11.5 (kontrollgrunnlag `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026); LIVE/tale kun separat pilot  
+**Leveransegrense 20.11.2026:** PRD-kravene har 36 unike ID-er med matchende sensormatrise, men tekniske forbedringer og utvidede testbevis fra PR #12 ligger **kun** på revisjonsgrenen, ikke på `main`. Hva Canvas aksepterer som leveransegren/format er uavklart. Se [gjeldende innleveringskontroll](../INNLEVERINGSKONTROLL-2026-11-20.md); denne setningen er en leveransepresisering, ikke en omskriving av historiske krav.
 **Språk:** Norsk
 
 ---
