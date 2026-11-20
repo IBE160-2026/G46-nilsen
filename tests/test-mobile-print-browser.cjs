@@ -79,10 +79,17 @@ async function setMobile(cdp,width,height) {
   await cdp.send("Emulation.setTouchEmulationEnabled",{enabled:true,maxTouchPoints:1});
 }
 async function touch(cdp,selector) {
+  await js(cdp,"(()=>{const el=document.querySelector("+JSON.stringify(selector)+");"+
+    "if(el)el.scrollIntoView({behavior:'instant',block:'center',inline:'nearest'})})()");
+  // The app enables smooth scrolling in some layouts; hit-test only after
+  // the scrolling and responsive visual viewport have settled.
+  await sleep(220);
   const value=await js(cdp,"(()=>{const el=document.querySelector("+JSON.stringify(selector)+");"+
-    "if(!el)return {error:'missing'};el.scrollIntoView({block:'center'});"+
-    "const r=el.getBoundingClientRect(),x=r.left+r.width/2,y=r.top+r.height/2;"+
-    "const hit=document.elementFromPoint(x,y);return {x,y,found:hit&&(hit===el||el.contains(hit))}})()");
+    "if(!el)return {error:'missing'};const r=el.getBoundingClientRect();"+
+    "const x=r.left+r.width/2,y=r.top+r.height/2;const hit=document.elementFromPoint(x,y);"+
+    "return {x,y,rect:{top:r.top,bottom:r.bottom,width:r.width,height:r.height},"+
+    "blocker:hit?.tagName+'#'+(hit?.id||''),viewport:window.innerHeight,"+
+    "found:!!(hit&&(hit===el||el.contains(hit)))}})()");
   assert.ok(value.found,"Touch target blocked or hidden: "+selector+" "+JSON.stringify(value));
   await cdp.send("Input.dispatchTouchEvent",{type:"touchStart",touchPoints:[{x:value.x,y:value.y}]});
   await cdp.send("Input.dispatchTouchEvent",{type:"touchEnd",touchPoints:[]});
