@@ -104,6 +104,12 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   await wait(cdp,"document.querySelector('#topic-view')?.classList.contains('active-view')","topic navigation");
   await js(cdp,"document.querySelector('#subtopic-grid .subtopic-card').click()");
   await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view')","subtopic navigation");
+  // Strict privacy admission: a fictitious full name is blocked IN THE BROWSER
+  // before analysis/guidance is allowed to leave the page.
+  await js(cdp,"(()=>{const t=document.querySelector('#situation');t.value='Jeg skal snakke med Knut Hansen om fravær.';t.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#situation-form').requestSubmit()})()");
+  await wait(cdp,"document.querySelector('#privacy-check')?.classList.contains('blocking') && document.querySelector('#situation')?.getAttribute('aria-invalid')==='true'","synthetic full name blocked by real privacy gateway");
+  assert.equal(await js(cdp,"window.__sensorCalls.filter(x=>x.path==='/api/analyze-situation'||x.path==='/api/generate-guidance').length"),0,
+    "A blocked name must not trigger any advice-provider request");
   await js(cdp,"(()=>{const t=document.querySelector('#situation');t.value="+JSON.stringify(caseText)+";t.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#situation-form').requestSubmit()})()");
   await wait(cdp,"!document.querySelector('#prototype-result').hidden && document.querySelectorAll('#structured-guidance .guidance-card').length>=5","guidance from actual demo AI API");
   const core=await js(cdp,"({heading:document.querySelector('#guidance-title')?.textContent,opening:document.querySelector('#structured-guidance')?.textContent,ai:window.__sensorCalls.filter(x=>x.path==='/api/analyze-situation'||x.path==='/api/generate-guidance'),fallback:document.querySelector('#result-intro')?.textContent})");
