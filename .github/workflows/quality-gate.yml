@@ -32,6 +32,9 @@ jobs:
       - name: Exercise admin interface with fake roles in Chrome
         run: node tests/test-admin-browser.cjs
 
+      - name: Exercise entire sensor user journey in real Chrome and deterministic demo
+        run: node tests/test-sensor-journey-browser.cjs
+
       - name: Report CSS complexity and prevent new important debt
         run: npm run audit:css -- --enforce-budget
 
