@@ -6,6 +6,8 @@ Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeiders
 
 Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy. KI-en skal støtte lederens vurdering, ikke erstatte lederens ansvar eller relevant fagkompetanse.
 
+**Dokumentrevisjon 20.11.2026 (arbeidsgren, ikke produksjonsdeploy):** PRD-kravene er konsolidert etter faglærers formative tilbakemelding. Selve applikasjonens leveransestatus er dokumentert separat. Endringene går via en draft-PR og får ingen virkning på den publiserte appen før eventuell kontrollert sammenslåing/deploy.
+
 ## Rask tilgang for vurdering
 
 ### Publisert løsning
@@ -123,7 +125,9 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 ### Produkt og krav
 
 - `product-brief.md` – produktproblem, målgruppe, scope og produktretning
-- `docs/bmad/PRD.md` – funksjonelle og ikke-funksjonelle krav
+- `docs/bmad/PRD.md` – **gjeldende** krav: scope, mål, brukerreiser, 24 FR-er med testbare akseptansekriterier, AI- og NFR-krav
+- `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md` – **faktisk** implementasjon, testspor, åpne tester og oppfølging av lærerens PRD-tilbakemelding 12.11.2026
+- `docs/bmad/historikk/PRD-2026-11-12.md` – opprinnelig PRD med historiske tillegg og testtall (ikke gjeldende kravgrunnlag)
 - `docs/bmad/ARCHITECTURE-BMAD.md` – teknisk arkitektur
 - `docs/bmad/UX-DESIGN-BMAD.md` – UX-prinsipper og designvalg
 - `docs/bmad/EPICS-AND-STORIES-BMAD.md` – epics, stories og sporbarhet
