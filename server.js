@@ -717,7 +717,7 @@ app.get('/api/admin/pilot-regression/cases', requireAdmin, async (req,res)=>{
       opening_checks:item.opening_checks || {},
       manual_fasit:item.manual_fasit || null
     }));
-    res.json({ mode, count:cases.length, cases });
+    res.json({ mode, count:cases.length, cases, paidRegressionEnabled:benchmarkLiveMockOnly });
   } catch (error) {
     console.error('Kunne ikke lese produksjonsflyt-caser:', error?.message || error);
     res.status(500).json({ error:'REGRESSION_CASES_FAILED', message:'Kunne ikke hente testcasene.' });
@@ -1469,6 +1469,14 @@ app.get("/api/status", requireUser, async (_req, res) => {
 });
 
 app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
+  // Administrative pilot/full regression mode can trigger many provider calls;
+  // it is restricted to the same isolated mock-only test window as paid benchmark.
+  const paidTestRequested = ["pilot-regression","production-regression"].includes(req.body?.testMode) &&
+    effectiveRole(req.user) === "admin";
+  if (paidTestRequested && !benchmarkLiveMockOnly) return res.status(503).json({
+    error:"PAID_TEST_DISABLED",
+    message:"Betalte produksjonsflyt-tester er sperret inntil varig kostnadskontroll er tilgjengelig."
+  });
   if (!hasAnyAiClient()) {
     return res.status(503).json({
       error: "AI_NOT_CONFIGURED",
@@ -1531,6 +1539,14 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
 
 
 app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
+  // Administrative pilot/full regression mode can trigger many provider calls;
+  // it is restricted to the same isolated mock-only test window as paid benchmark.
+  const paidTestRequested = ["pilot-regression","production-regression"].includes(req.body?.testMode) &&
+    effectiveRole(req.user) === "admin";
+  if (paidTestRequested && !benchmarkLiveMockOnly) return res.status(503).json({
+    error:"PAID_TEST_DISABLED",
+    message:"Betalte produksjonsflyt-tester er sperret inntil varig kostnadskontroll er tilgjengelig."
+  });
   if (!hasAnyAiClient()) {
     return res.status(503).json({ error: "AI_NOT_CONFIGURED", message: "Ingen KI-provider er konfigurert. Sett OPENAI_API_KEY eller OPENROUTER_API_KEY på serveren." });
   }
