@@ -2897,8 +2897,14 @@ async function refreshAuth() {
     setAppLocked(true);
   }
 }
+let authFocusReturn = null;
 function openAuth(mode='login', required = !currentUser) {
   const dlg=document.querySelector('#auth-dialog'); if(!dlg) return;
+  // Changing login/register/forgot panels must not overwrite the original opener.
+  if(dlg.hidden){
+    const opener=document.activeElement;
+    authFocusReturn=(opener instanceof HTMLElement && !dlg.contains(opener)) ? opener : null;
+  }
   const panels={
     login:document.querySelector('#login-panel'),
     register:document.querySelector('#register-panel'),
@@ -2930,7 +2936,34 @@ function closeAuth(force=false){
   dlg.hidden=true;
   document.body.classList.remove('auth-open');
   if(currentUser) setAppLocked(false);
+  const opener=authFocusReturn;
+  authFocusReturn=null;
+  if(opener?.isConnected && !opener.closest('[hidden],[inert]') && opener.getClientRects().length){
+    opener.focus({preventScroll:true});
+  }
 }
+// Unlike a native <dialog>, this auth overlay needs explicit Tab containment.
+// The native dialogs retain their own Escape, focus trap and focus restoration.
+document.querySelector('#auth-dialog')?.addEventListener('keydown', event=>{
+  const dlg=event.currentTarget;
+  if(dlg.hidden || document.querySelector('dialog[open]')) return;
+  if(event.key==='Escape'){
+    event.preventDefault();
+    event.stopPropagation();
+    if(!dlg.classList.contains('required-auth')) closeAuth();
+    return;
+  }
+  if(event.key!=='Tab') return;
+  const focusable=[...dlg.querySelectorAll('a[href],button,input,select,textarea,[tabindex]:not([tabindex="-1"])')]
+    .filter(el=>!el.matches(':disabled') && !el.closest('[hidden],[inert]') && el.getClientRects().length && getComputedStyle(el).visibility!=='hidden');
+  if(!focusable.length){event.preventDefault();dlg.focus();return;}
+  const first=focusable[0], last=focusable[focusable.length-1], active=document.activeElement;
+  if(event.shiftKey && (active===first || !dlg.contains(active))){
+    event.preventDefault();last.focus();
+  }else if(!event.shiftKey && (active===last || !dlg.contains(active))){
+    event.preventDefault();first.focus();
+  }
+});
 function requireLogin() {
   if (currentUser) return true;
   openAuth('login', true);
@@ -3614,7 +3647,15 @@ document.querySelector('#profile-button')?.addEventListener('click',(event)=>{
 });
 document.querySelector('#profile-menu')?.addEventListener('click',event=>event.stopPropagation());
 document.addEventListener('click',()=>closeProfileMenu());
-document.addEventListener('keydown',event=>{if(event.key==='Escape') closeProfileMenu();});
+document.addEventListener('keydown',event=>{
+  if(event.key!=='Escape' || document.querySelector('dialog[open]') ||
+     !document.querySelector('#auth-dialog')?.hidden) return;
+  const menu=document.querySelector('#profile-menu');
+  if(menu && !menu.hidden){
+    closeProfileMenu();
+    document.querySelector('#profile-button')?.focus({preventScroll:true});
+  }
+});
 
 async function ensurePrivacyAcknowledgement(){
   if(!currentUser)return;
@@ -3630,9 +3671,12 @@ document.querySelector('[data-profile-action="contact"]')?.addEventListener('cli
 document.querySelector('[data-profile-action="survey"]')?.addEventListener('click',()=>{closeProfileMenu();openSurvey();});
 document.querySelector('[data-profile-action="admin"]')?.addEventListener('click',()=>{closeProfileMenu();openAdmin();});
 document.querySelector('[data-profile-action="logout"]')?.addEventListener('click',async()=>{await fetch('/api/auth/logout',{method:'POST',credentials:'include'});currentUser=null;currentConversationId=null;updateAuthUi();closeProfileMenu();showView('home');openAuth('login',true);});
-document.querySelector('#auth-close')?.addEventListener('click',closeAuth); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
+document.querySelector('#auth-close')?.addEventListener('click',()=>closeAuth()); document.querySelector('#show-register')?.addEventListener('click',()=>openAuth('register',true)); document.querySelector('#show-login')?.addEventListener('click',()=>openAuth('login',true));
 document.querySelector('#auth-dialog')?.addEventListener('click',event=>{if(event.target===event.currentTarget) closeAuth();});
-document.addEventListener('keydown',event=>{if(event.key==='Escape') closeAuth();});
+document.addEventListener('keydown',event=>{
+  if(event.key==='Escape' && !document.querySelector('dialog[open]') &&
+     !document.querySelector('#auth-dialog')?.hidden) closeAuth();
+});
 document.querySelector('#history-login-button')?.addEventListener('click',()=>openAuth('login')); document.querySelector('#back-from-history')?.addEventListener('click',()=>navigateAppBack(()=>showView('home')));
 document.querySelectorAll('[data-open-legal]').forEach(b=>b.addEventListener('click',()=>openLegal(b.dataset.openLegal))); document.querySelectorAll('.legal-back').forEach(b=>b.addEventListener('click',()=>navigateAppBack(()=>showView(legalReturnView))));
 document.querySelectorAll('[data-open-info]').forEach(b=>b.addEventListener('click',()=>openInfoView(b.dataset.openInfo)));
