@@ -1,4 +1,4 @@
-const CACHE_NAME = 'samtalestotte-shell-v20-11-73';
+const CACHE_NAME = 'samtalestotte-shell-v20-11-74';
 
 const APP_SHELL = [
   '/',
