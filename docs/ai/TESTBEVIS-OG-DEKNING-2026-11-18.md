@@ -4,6 +4,16 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: varig PostgreSQL-budsjett – faktiske transaksjons- og omstartstester
+
+**Implementert på revisjonsgrenen (bare SQL-forslag):** `database/security/benchmark-budget-postgres-proposal.sql` med RLS på fire private tabeller, normal `SECURITY INVOKER`-tilgang, eksplisitt `REVOKE EXECUTE` fra `PUBLIC`/klientroller og `GRANT` kun til `service_role`. Ingen SQL mot Supabase-produksjon, ingen kobling fra faktisk betalt Express-rute.
+
+**Verifikasjon i isolert PostgreSQL 17 (I):** `tests/sql/benchmark-budget-postgres.sql` kontrollerer faktiske funksjonsrettigheter, nektet klient-RPC, reservasjon/oppgjør, idempotens, duplikater, separate brukere, dags- og løpsgrenser og overskytende providerestimat. `tests/sql/benchmark-budget-concurrency.sh` oppretter to uavhengige samtidige databasetilkoblinger og forventer ett `ok:true` og ett `BUDGET_RUN_BUSY`, med nøyaktig 10 cent bokført. GitHub Actions omstarter engangs-PostgreSQL før `tests/sql/benchmark-budget-postgres-restart.sql` krever at uavklart providerforsøk fortsatt er låst, kan gjøres opp som `uncertain` med beholdt reserve og etterlater varige beløp. Femti syntetiske forsøk tester 500-cent dagsgrense og sperre mot ny kjøre-ID. Den faktiske SQL-filen kjøres også to ganger for å kontrollere re-kjørbarhet. Eksisterende RLS-jobb for to brukere og samtalehistorikk kjører uendret.
+
+**Begrensninger:** Fysisk PostgreSQL-oppførsel er verifisert, men ekte Supabase API/Auth/PostgREST, tilkobling fra to faktiske Express-/Render-instanser og leverandørens hardkostgrenser er fortsatt åpne. In-memory-ledgeren brukes fortsatt bare i isolert lokal providertest. **Ingen betalt testmodus er aktivert i produksjon.** Se [teknisk budsjettledger-rapport](BENCHMARK-POSTGRES-LEDGER-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026: dynamisk golden-/benchmarkantall – UI- og HTTP-regresjon
 
 **Problem oppdaget:** `index.html` hevdet at fulltest var 26 saker / 52 KI-kall og at «alle» benchmarksaker var 112. Faktiske kilder inneholder 66 golden- og 114 benchmarkcaser, og benchmarkvalget `value="112"` ekskluderte de to siste.
