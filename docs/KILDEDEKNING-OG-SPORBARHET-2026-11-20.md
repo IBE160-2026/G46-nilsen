@@ -48,6 +48,13 @@ Tre av de målrettede nye kildekoblingene i denne runden er:
 - NSMs `NSM_IKT_GRUNNPRINSIPPER` for konkrete IKT-sikkerhetssaker. Dette er **ikke-bindende anbefalinger**.
 Luftfartstilsynets arbeidstids- og hviletidsoversikt finnes allerede i registeret under `LUFTFART_FTL` og skal ikke dupliseres.
 
+**Avgrenset stikkprøve av de tre nye nettadressene (20.11.2026):**
+- [Arbeidstilsynet – byggherreforskriften](https://www.arbeidstilsynet.no/regelverk/forskrifter/byggherreforskriften/): tilgjengelig forskriftstekst; kapitlene skiller byggherrens, prosjekterendes og arbeidsgiverens plikter. Klassifisert som bindende forskrift.
+- [DNV – veterinæren og kollegialitet](https://www.vetnett.no/5-3-veterinaeren-og-kollegialitet/category1568.html): punkt 5.3.3 gjelder saklig faglig uenighet mellom veterinærer. Klassifisert som yrkesetikk, ikke lov.
+- [NSM – grunnprinsipper for IKT-sikkerhet](https://nsm.no/regelverk-og-hjelp/rad-og-anbefalinger/introduksjon/hva-er-nsms-grunnprinsipper-for-ikt-sikkerhet/): siden forklarer at prinsippene er anbefalinger, ikke i seg selv oppfyllelse av sikkerhetsloven. Klassifisert som ikke-bindende myndighetsveiledning.
+
+Dette bekrefter relevant tekst på **tre åpne nettsider**, ikke juridisk kvalitetssikring av samtlige registeroppføringer og ikke at KI har besøkt sidene i en reell samtale.
+
 ## 3. Hvordan kildevalget prøves
 
 `tests/test-sector-source-coverage.cjs` prøver hver av de 14 navngitte sektorene med:
