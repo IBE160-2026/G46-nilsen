@@ -127,7 +127,7 @@ async function verifyContentEditingInChrome(cdp, role){
   await wait(cdp,"document.querySelector('#admin-save-dialog').open","save confirmation dialog");
   await keyPress(cdp,"Escape");
   await wait(cdp,"!document.querySelector('#admin-save-dialog').open","save confirmation cancelled by Escape");
-  assert.equal(await js(cdp,"document.activeElement?.id"),"admin-save-content",
+  await wait(cdp,"document.activeElement?.id==='admin-save-content'",
     "Native save dialog Escape must restore focus to its save button");
   await js(cdp,"document.querySelector('#admin-save-content').click()");
   await wait(cdp,"document.querySelector('#admin-save-dialog').open","save confirmation reopened");
