@@ -4,6 +4,16 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: reell før-/ettertest av unødvendige SQL-rettigheter
+
+**Risiko identifisert i Supabase (skrivebeskyttet):** Klientrollene `anon` og `authenticated` har `TRUNCATE`, `TRIGGER`, `REFERENCES` og `MAINTAIN` på `public.conversations`. `TRUNCATE` er ikke kontrollert av RLS, og rollen trenger ikke denne tabellomfattende operasjonen for samtalehistorikk.
+
+**Ny testdekning i `rls-postgres` (egen CI-jobb):** `tests/sql/conversations-privileges-before.sql` beviser i engangs PostgreSQL at overflødige rettigheter faktisk finnes og at `TRUNCATE` lykkes *før* innstramming. Deretter kjøres `database/security/conversations-least-privilege-proposal.sql` **kun i den midlertidige testdatabasen**. `tests/sql/conversations-privileges-after.sql` beviser med både privilegiekontroll og faktiske SQL-forsøk at `TRUNCATE` blir avvist, mens vanlig autentisert CRUD og tjenestekontoens rettigheter beholdes. Forslaget kjøres to ganger for idempotens, etterfulgt av tidligere tobruker-RLS-tester. [Quality Gate #44750390782](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44750390782) **SUCCESS** for opprinnelig implementering; etterfølgende innstramming av forslagets rolleomfang og dokumentasjon har ny CI som må bekreftes særskilt.
+
+**Bevisnivå:** Faktisk PostgreSQL-privilegiekontroll + V20-8 RLS i isolert CI; **ikke** ekte Supabase Auth/PostgREST, ingen produksjonsendring, og **ingen automatisk databaseutrulling**. Kilde, testmatrise, funn og kontrollert fremtidig utrullingsprosedyre: [Sikkerhetstest roller og RLS](SIKKERHETSTEST-ROLLER-RLS-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026: PostgreSQL RLS-regresjon med ekte policyer
 
 **Ny automatisk CI-jobb:** `rls-postgres` bruker et engangs `postgres:17`-miljø, minimal lokal testfixture og **repoets faktiske `database/migrations/V20-8-SUPABASE-MIGRATION.sql`**. [Quality Gate #44748685274](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44748685274) – `rls-postgres` **SUCCESS**.
