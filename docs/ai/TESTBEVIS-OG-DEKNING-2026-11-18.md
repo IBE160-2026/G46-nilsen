@@ -4,6 +4,22 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: refaktorert administrasjonsdata i egen klientmodul
+
+**Nytt avgrenset uttrekk:** `src/client/admin-data.js` inneholder nå de opprinnelige funksjonene `loadAdminUsers`, `loadAdminFeedback`, `loadAdminAiSettings`, `loadAdminAiUsage` og kostnadsformattering. `app.js` injiserer `document`, `fetch`, `escapeHtml` og `getCurrentUser` gjennom modulens `create()`. Admininnhold, benchmark, rollebeskyttet Express-API og innloggingsflyten er fortsatt der de var. Brukerrollen hentes **ved hvert kall**, ikke bare ved modulinitialisering.
+
+**Størrelse:** `app.js` **4 354 → 4 278 linjer** og **237 462 → 230 656 tegn** i dette trinnet. Modulen har eget ansvar, men er fortsatt DOM-/API-koblet; dette er en kontrollert *klientmodul*, ikke en påstand om ren domene- eller forretningslogikk.
+
+**Koblingspunkter kontrollert:** `index.html` laster modulen før `app.js`; `server.js` eksponerer bare den eksplisitte frontendfilen, `scripts/sensor-demo.js` gjør det samme, og `sw.js` inkluderer modulen med egen cache-versjon. `tests/test-public-assets.cjs`, `tests/test-ui-regression.cjs` og `tests/test-pwa.cjs` kontrollerer tilgjengelighet, lastrekkefølge og PWA-dekning.
+
+**Kjøretidsbevis:** `tests/test-admin-client-runtime.cjs` kjører nå **selve den nye modulen** i Node VM med injiserte fiktive DOM-/HTTP-objekter, inkludert veksling bruker → redaktør → admin → bruker *i samme instans* uten at rollen fryses. `tests/test-admin-browser.cjs` åpner den faktiske klienten i headless Chrome med syntetiske roller og API-svar og kontrollerer adminnavigasjon, escaping, PATCH-suksess/403 og filtrering. `tests/test-admin-role-http.cjs` kontrollerer servergrensen separat. De 45 deterministiske npm-teststegene og RLS-/CSS-jobbene består uendret.
+
+**Begrensninger:** Klientmodulering beviser ikke Auth-/RLS-sikkerhet i ekte Supabase, menneskelig vurdering av UI eller at ingen ukjente edge-caser finnes. Administrasjonsfunksjonene er fortsatt DOM-baserte, og øvrig admin-/benchmark-/Auth-kode i `app.js` er fortsatt omfattende. `main`, Render og LIVE-piloten er ikke endret.
+
+**Første komplette CI etter moduluttrekket:** [Quality Gate #44752528974](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44752528974): **SUCCESS**, commit `a3ca6c2557ddfdb3c5e08ddf9f508f6e6c3dffdd`. Siste dokumentasjons-/rolletestcommit må også ha grønn Quality Gate.
+
+---
+
 ## Tillegg 20.11.2026: reell før-/ettertest av unødvendige SQL-rettigheter
 
 **Risiko identifisert i Supabase (skrivebeskyttet):** Klientrollene `anon` og `authenticated` har `TRUNCATE`, `TRIGGER`, `REFERENCES` og `MAINTAIN` på `public.conversations`. `TRUNCATE` er ikke kontrollert av RLS, og rollen trenger ikke denne tabellomfattende operasjonen for samtalehistorikk.
@@ -63,7 +79,7 @@
 
 **Hvorfor:** Eldre UI-tester kontrollerte i vesentlig grad HTML-strenger/kildekode. Etter lesbarhetsendringen 20.11 trengte de tre administrasjonsfunksjonene konkrete atferdstester før mer modularisering.
 
-**Hva/hvordan:** `tests/test-admin-client-runtime.cjs` henter den **faktiske funksjonsblokken** for `loadAdminUsers`, `loadAdminFeedback`, `loadAdminAiSettings` og `loadAdminAiUsage` fra `app.js` og kjører den i en isolert Node VM med fiktiv administrator/bruker, DOM-stubber og HTTP-responser som ikke går på nett. Testen verifiserer:
+**Hva/hvordan:** Før moduluttrekket hentet `tests/test-admin-client-runtime.cjs` den faktiske funksjonsblokken fra `app.js`. Fra og med 20.11 kjører testen direkte `src/client/admin-data.js` som en isolert factory i Node VM med injiserte fiktive administrator-/brukerroller, DOM-stubber og HTTP-responser uten nett. Testen verifiserer:
 
 1. Klientens rollebegrensninger (vanlig bruker og redaktør), ingen admin-fetch, skjulte admin-kort.
 2. Henting av brukerliste, HTML-escaping av brukerdata, deaktivert selvredigering av egen rolle, PATCH til riktig URL, credentials og JSON-body; suksess- og 403-feilsti, og at lagreknappen aktiveres igjen.
@@ -71,7 +87,7 @@
 4. Modellsvalg med aktiv modell og serverfeil.
 5. KI-bruk med/uten testsvar, kostnadsformat, kilder, søk, siste kjøringer, escaping og feilrespons.
 
-**Bevisnivå:** **D (isolert deterministisk runtime)**. Testen kontrollerer ekte administrasjonsfunksjoner, men **ikke** en full nettleser-DOM, Supabase Auth, RLS eller serverautorisering. Rollebegrensning i klienten er *aldri* en sikkerhetsgrense alene. Slike funn må fortsatt kontrolleres med serverens tilgangstester og framtidig innlogget nettleser-/RLS-test. VM-testens funksjonsuttrekk forutsetter at blokken fortsatt har samme ankerpunkter; testen stopper hvis dette endres, og må oppdateres bevisst ved refaktorering.
+**Bevisnivå:** **D (isolert deterministisk runtime)**. Testen kontrollerer ekte administrasjonsfunksjoner, men **ikke** en full nettleser-DOM, Supabase Auth, RLS eller serverautorisering. Rollebegrensning i klienten er *aldri* en sikkerhetsgrense alene. Slike funn må fortsatt kontrolleres med serverens tilgangstester og framtidig innlogget nettleser-/RLS-test. VM-testen er nå uavhengig av plasseringen av funksjonene i `app.js`, men krever eksplisitt modulregistrering og injisert bruker-/DOM-/fetch-kontekst. Sammen med egen Chrome-test gir det en bedre, men fremdeles begrenset, test av klienten.
 
 **Videreført i samme revisjon:** Egen ekte headless Chrome-test av den eksisterende admin-DOM-en med fiktive autentiseringssvar er nå lagt inn og bestått; se tillegget ovenfor. Ekte serverautorisering og Supabase RLS med syntetiske kontoer gjenstår fortsatt.
 
