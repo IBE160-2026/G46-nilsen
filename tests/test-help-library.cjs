@@ -43,5 +43,29 @@ const assert = require("node:assert/strict");
     agreementCuratedSources:[],occupationSourceMap:{sectors:[]}
   });
   assert.deepEqual(blank.categories.occupations.groups,[]);
+  const quickRefs=buildHelpSourceLibrary({
+    sourceBank:{sources:[
+      {id:"NAV_SYKEFRAVAER_OPPFOLGING",title:"NAV",url:"https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte"},
+      {id:"AT_PERSONALSAKER",title:"Personalsaker",url:"https://www.arbeidstilsynet.no/arbeidsmiljo/organisatorisk-arbeidsmiljo/personalsaker/"}
+    ]},
+    occupationLegalSourceBank:{sources:[
+      {id:"LOVDATA_AML",url:"https://lovdata.no/NL/lov/2005-06-17-62",sectors:["*"]},
+      {id:"AT_EMPLOYER_DUTIES",url:"https://www.arbeidstilsynet.no/hms/roller-i-hms-arbeidet/arbeidsgiver/",sectors:["*"]},
+      {id:"DATATILSYNET_WORKPLACE_PRIVACY",url:"https://www.datatilsynet.no/personvern-pa-ulike-omrader/personvern-pa-arbeidsplassen/",sectors:["*"]},
+      {id:"AKAN_MODEL",url:"https://www.akan.no/akan-modellen/forebyggende-arbeid-og-tiltak-etter-akan-modellen",sectors:["*"]}
+    ]},
+    agreementCuratedSources:[],occupationSourceMap:{sectors:[]}
+  }).leaderQuickReferences;
+  assert.deepEqual(quickRefs.map(x=>x.id),[
+    "LOVDATA_AML","AT_EMPLOYER_DUTIES","NAV_SYKEFRAVAER_OPPFOLGING",
+    "AT_PERSONALSAKER","DATATILSYNET_WORKPLACE_PRIVACY","AKAN_MODEL"
+  ],"Hurtigoppslag må ha stabile, kuraterte referanser i prioritert rekkefølge");
+  assert.equal(quickRefs.find(x=>x.id==="AKAN_MODEL").category,"Faglig veiledning – ikke lov");
+  assert.equal(quickRefs.find(x=>x.id==="LOVDATA_AML").category,"Lovverk");
+  assert.deepEqual(blank.leaderQuickReferences,[],"Hurtigoppslag må aldri finne på lenker ved manglende kildebank");
+  const html=require("node:fs").readFileSync("index.html","utf8");
+  const ui=require("node:fs").readFileSync("app.js","utf8");
+  assert(html.indexOf('id="leader-reference-title"')<html.indexOf('id="complete-source-library"'),"Lederoppslag må komme øverst");
+  assert(ui.includes("payload.leaderQuickReferences") && ui.includes("escapeHtml(item.description)"),"Hurtigoppslag må komme fra API og escape HTML");
   console.log("Hjelp-kildebank: nivåer, kategorier, felleskilder, dubletter, sektorkilder og DOI OK");
 })().catch(err=>{console.error(err);process.exitCode=1});
