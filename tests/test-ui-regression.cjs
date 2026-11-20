@@ -83,10 +83,10 @@ assertUi(/id=["']direct-simulation-situation["'][^>]*aria-label=["'][^"']+["']/i
 assertUi(/id=["']simulation-input["'][^>]*aria-label=["'][^"']+["']/i.test(html), "UU: simulation-input mangler aria-label");
 if (!process.exitCode) console.log("UU: sentrale fritekstfelt har programmatisk etikett");
 
-assert(/id=["']about-app-version["']>20\.11\.5</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.5");
+assert(/id=["']about-app-version["']>20\.11\.6</.test(html), "Fallback-appversjon i Om-siden er ikke 20.11.5");
 if (!process.exitCode) console.log("Versjonskonsistens i HTML: OK");
 
-assert(/id=["']report-meta["']>Versjon 20\.11\.5</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.5");
+assert(/id=["']report-meta["']>Versjon 20\.11\.6</.test(html), "Fallback-versjon i Kontakt er ikke 20.11.5");
 if (!process.exitCode) console.log("Kontakt-versjon: OK");
 
 const privacyNamePos = html.indexOf('src/privacy-name-data.js?v=');
