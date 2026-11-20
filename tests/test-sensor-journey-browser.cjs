@@ -65,7 +65,7 @@ async function keyboardActivate(cdp,selector){
   // CDP needs an explicit Enter character for the native click activation of
   // focused buttons in some headless Chrome versions; do not fake a DOM click.
   await cdp.send("Input.dispatchKeyEvent",{type:"keyDown",key:"Enter",code:"Enter",
-    windowsVirtualKeyCode:13,nativeVirtualKeyCode:13,text:"\\r",unmodifiedText:"\\r"});
+    windowsVirtualKeyCode:13,nativeVirtualKeyCode:13,text:String.fromCharCode(13),unmodifiedText:String.fromCharCode(13)});
   await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",key:"Enter",code:"Enter",windowsVirtualKeyCode:13,nativeVirtualKeyCode:13});
 }
 async function wait(cdp,expression,meaning){
