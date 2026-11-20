@@ -37,6 +37,23 @@
 | **FR-22 Valgfritt yrke/tariff** | Utvidelse | src/server/occupation-router.js, data/OCCUPATION-LEGAL-SOURCES.json | tests/test-occupation-router.cjs; tests/test-golden-occupation-routing.cjs | Feature flagg og faglig innhold må sjekkes |
 | **FR-23 Direkte åpen samtale** | Framtidig hypotese | docs/VOICE-DESIGN.md | Ingen ferdig funksjon i v1 | Må ikke omtales som implementert |
 
+## Oppfølging av faglærers PRD-tilbakemelding 12.11.2026
+
+Dette er en sporbar respons på `docs/bmad/tilbakemelding-prd.md`, ikke en ny eller endret læreruttalelse.
+
+| Lærerens funn | Tiltak i PRD-revisjonen | Fremdeles å kontrollere |
+|---|---|---|
+| **Høy:** FR-02–14/19–23 mangler testbare akseptansekriterier | Alle 24 FR-er inkludert FR-15A har eksplisitte kriterier; ny `tests/test-prd-consistency.cjs` avdekker manglende seksjoner | At faktiske tester er tilstrekkelige; E2E-hull står i tabellen over |
+| **Høy:** FR-15A/19–23 og senere tillegg er spredt etter oppsummering | Samlet under PRD §6; AI-07/08 og NFR-06–08 har faste ID-er | Gjennomlesing mot faktiske stories og UX |
+| **Medium:** Manglende målbare suksessmål og motmål | SM-01–04 og SM-C1/C2 i §3, med målemetode | SM-03 krever faktisk ny pilot; ikke hevdet oppnådd |
+| **Medium:** Ingen glossar eller brukerreiser | To scenarier UJ-01/UJ-02 og 12 begreper i §4–5 | Ende-til-ende-test i nettleser mot definert reise |
+| **Medium:** Kostnad, nøkkelfri demo, usikre svar og KI-kontroll mangler som målbare NFR | NFR-01 og NFR-07/08, AI-04 og AI-07/08 med testbare kontroller | Last/rate-limit på flere instanser og faktisk kostnadsstopp er ikke verifisert |
+| **Form:** PRD var en blanding av status, CI-run-numre og datede patches | Avgrenset kravdokument, statusvedlegg og datert historisk original | README og øvrige BMAD-dokumenter må holdes synkronisert |
+| **Scope:** v1-kjerne og tillegg blandes | Egen scopingtabell og hver FR merket kjerne, kvalitet, utvidelse eller framtid | Sensor- og brukervalidering av scope gjenstår |
+| **Sporbarhet i tid:** Prototype kom før full BMAD | Eksplisitt i §10; ingen tilbakedatering | Refleksjonsrapport/AI-logg må beskrive revisjonen som den skjedde |
+
+**Merk:** PRD-akseptansekriterier kan være formulert strengere enn det som hittil er dokumentert testet. Statusmatrisen over er derfor ikke en beståttliste, men en ærlig oversikt over bevis og mangler.
+
 ## Funn som må være synlige for sensor
 
 1. **Historisk teststatus:** 73 personvernscenarier og 24 simulator-kontroller, golden-schema 66 caser, 114 benchmarktilfeller på 48 undertemaer, og 40/40 rapportert live KI-yrkestest mot gpt-5.6-luna 09.11.2026. Dette er resultater for avgrensede testsett, ikke garanti for juridisk/faglig kvalitet.
