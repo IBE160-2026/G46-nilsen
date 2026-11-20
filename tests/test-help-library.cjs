@@ -46,7 +46,9 @@ const assert = require("node:assert/strict");
   const quickRefs=buildHelpSourceLibrary({
     sourceBank:{sources:[
       {id:"NAV_SYKEFRAVAER_OPPFOLGING",title:"NAV",url:"https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte"},
-      {id:"AT_PERSONALSAKER",title:"Personalsaker",url:"https://www.arbeidstilsynet.no/arbeidsmiljo/organisatorisk-arbeidsmiljo/personalsaker/"}
+      {id:"AT_PERSONALSAKER",title:"Personalsaker",url:"https://www.arbeidstilsynet.no/arbeidsmiljo/organisatorisk-arbeidsmiljo/personalsaker/"},
+      {id:"DFO_PERSONALSAKER_FORBEREDELSE_2026",title:"Statlig personalsak",url:"https://arbeidsgiver.dfo.no/personaloppfolging/personalsaker/personalsaker-prosess/forberedelse-til-mote"},
+      {id:"STAMI_PSYKOSOSIALT_ARBEIDSMILJO_2026",title:"STAMI",url:"https://stami.no/tema/psykososialt-arbeidsmiljo/"}
     ]},
     occupationLegalSourceBank:{sources:[
       {id:"LOVDATA_AML",url:"https://lovdata.no/NL/lov/2005-06-17-62",sectors:["*"]},
@@ -58,10 +60,12 @@ const assert = require("node:assert/strict");
   }).leaderQuickReferences;
   assert.deepEqual(quickRefs.map(x=>x.id),[
     "LOVDATA_AML","AT_EMPLOYER_DUTIES","NAV_SYKEFRAVAER_OPPFOLGING",
-    "AT_PERSONALSAKER","DATATILSYNET_WORKPLACE_PRIVACY","AKAN_MODEL"
+    "AT_PERSONALSAKER","DATATILSYNET_WORKPLACE_PRIVACY","AKAN_MODEL",
+    "DFO_PERSONALSAKER_FORBEREDELSE_2026","STAMI_PSYKOSOSIALT_ARBEIDSMILJO_2026"
   ],"Hurtigoppslag må ha stabile, kuraterte referanser i prioritert rekkefølge");
   assert.equal(quickRefs.find(x=>x.id==="AKAN_MODEL").category,"Faglig veiledning – ikke lov");
   assert.equal(quickRefs.find(x=>x.id==="LOVDATA_AML").category,"Lovverk");
+  assert.equal(quickRefs.find(x=>x.id==="STAMI_PSYKOSOSIALT_ARBEIDSMILJO_2026").category,"Forskning – ikke lov");
   assert.deepEqual(blank.leaderQuickReferences,[],"Hurtigoppslag må aldri finne på lenker ved manglende kildebank");
   const html=require("node:fs").readFileSync("index.html","utf8");
   const ui=require("node:fs").readFileSync("app.js","utf8");
