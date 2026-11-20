@@ -4,6 +4,22 @@
 **Prosjekt:** Samtalestøtte / IBE160, draft PR #12  
 **Miljø:** Bare revisjonsgren, syntetiske testdata, ingen Render-deploy, betalte KI-kall eller Supabase-mutasjoner.
 
+## Tillegg 20.11.2026 – dynamisk antall fra faktiske testbanker
+
+**Funn rettet:** Administrasjonsgrensesnittet brukte tidligere de utdaterte verdiene «Alle 26 saker / 52 KI-kall» og `<option value="112">Alle 112 saker</option>`. Dette var mer enn et tekstproblem: valget kunne utelate de to nyeste av bankens 114 benchmarkcaser.
+
+**Ny datakilde og visning:**
+- `GET /api/admin/pilot-regression/cases?summary=1` krever administratorrolle og returnerer **bare** `pilotCount`, `fullCount` og `paidRegressionEnabled`, beregnet fra `tests/AI-GOLDEN-CASES.json`. Ingen casetekster må overføres for å vise tellingene.
+- `loadRegressionCounts()` i `app.js` viser riktig antall pilot-/fulltestsaker, KI-kall beregnet som `antall * 2`, og oppdaterer begge knappeetikettene. Ugyldige/manglende tall gir feilmelding og fortsatt deaktiverte betalte knapper.
+- Benchmarksakenes `totalCases` valideres mot lengden av `cases` fra API. `<option value="all">` får dynamisk visning «Alle N saker», og `SamtalestotteBenchmarkEvaluation.resolveCaseCount("all", N)` bruker **alle N**. Slik kan en bank på 114, 115 eller flere caser vises og kjøres uten endring av HTML.
+- Alle tre betalte knapper starter som `disabled` i HTML. Serverens `liveEnabled` og `paidRegressionEnabled` må fortsatt være eksplisitt sanne før de blir aktive. Betalt benchmark/pilot/fulltest er altså **fremdeles sperret i produksjon**, og ingen KI-kall er gjort i denne endringen.
+
+**Konkrete testbevis:** `tests/test-benchmark-evaluation.cjs` validerer symbolsk `all` for flere bankstørrelser, inkludert alle 114 caser. `tests/test-admin-browser.cjs` bruker ekte Chrome med fiktiv 3-casers benchmarkbank og 1/3 pilot-/fulltelleverk: sjekker knappetekst, beregnet 2/6 KI-kall, `all` som sender nøyaktig tre **simulerte** benchmark-kall, bekreftelse før fulltest og deaktivering når serveren slår av betalttester. `tests/test-admin-role-http.cjs` bruker den ekte Express-ruten og sammenligner summary-tallene mot JSON-banken; vanlige brukere får fortsatt ikke lese admin-summary. Statisk UI-test hindrer at tallet 112 gjeninnføres som «alle». PWA-cachen er løftet til `20.11.73`.
+
+**Begrensninger:** Det er ikke kjørt live modellbenchmark, og et garantert varig kostnadstak mangler. RLS-, Chrome-/CSS- og ordinære testløp må være grønne på siste commit før endelig aksept.
+
+---
+
 ## Tillegg 20.11.2026 – serverstyrt lokal budsjettkontroll og fail-closed betalte tester
 
 **Ny servermodul:** `src/server/benchmark-budget.js` har et **synkront, servereid reservasjonsregnskap per Node-prosess**. Den registrerer valgt run-budsjett per administrator-ID/kjøre-ID, avviser parallell kjøring for samme bruker, duplikate case/modell-par, budsjettendring underveis, ugyldig run-ID og ubegrenset forbruk ved nye run-ID-er. Brukerens *dagsramme i én prosess* er USD 5. Før hvert lokalt testsimulerte providerkall reserveres konservativt USD 0,10; faktisk estimat over dette belastes i etterkant, og både mislykkede og uklare provider-/databasetilfeller beholder minst reservasjonen. `spentSoFar` fra nettleseren **brukes ikke lenger** i serverens beslutning.
@@ -52,12 +68,12 @@ De gamle funksjonene i `app.js` delegerer nå til modulen. Uttrekket reduserte `
 
 **Funn B – historisk usikker kostnadsgrense; nå fail-closed i produksjon:** Den tidligere betalte ruten stolte på klientens `spentSoFar` og reserverte USD 0,05. Dette er nå erstattet med testbar, servereid reservering (USD 0,10 per forsøk) **kun i lokal, simulert testmodus**; den betalte ruten er sperret i produksjon. Den minnebaserte løsningen kan fortsatt ikke garantere et hardt kostnadstak på tvers av flere prosesser/omstarter eller når et reelt providerkall blir dyrere enn reservert. Se tillegget over for kontrollgrense og gjenstående arbeid.
 
-**Funn C – foreldet tekst i adminvisningen:** Frontendteksten oppgir «Alle 26 saker» og «52 KI-kall», mens gjeldende `tests/AI-GOLDEN-CASES.json` har **66** golden-caser; serveren returnerer dette antallet ved full pilotgjennomgang og bekreftelsen teller sakene dynamisk. Benchmarkvalg i HTML er også merket «Alle 112 saker», mens testbanken nå har **114**; dette er ikke reelt «alle». Oppdater statiske tekster og dynamisk casevalg i en egen UI-endring med Chrome-paritets-/kopitester. **Ingen reelle kostnadskall ble gjennomført nå.**
+**Funn C – feil historiske caseantall i adminvisning, rettet på revisjonsgrenen:** Tidligere stod «Alle 26 saker / 52 KI-kall» og et faktisk begrensende «Alle 112 saker»-valg mot nå 66 golden- og 114 benchmarkcaser. Knappene og kostnadsanslagene henter nå tellinger fra golden-casebanken, og benchmarkvalg `all` omfatter alle casene som API returnerer. Se tillegg over. **Ingen betalte tester er aktivert i produksjonsmodus.**
 
 ## 4. Beslutning og neste arbeidssteg
 
 1. Bekreft siste Quality Gate etter den snevre B113/navnefilterrettelsen. Sørg for at `test-benchmark-privacy-signal` og den faktiske gratis Express-mock-kontrollen forblir automatiske regressjonsporter.
-2. Oppdater feilaktige historiske antall i admin-UI, og la «alle saker» komme fra verifisert API-antall i stedet for en hardkodet verdi.
+2. Behold de nye dynamiske antalls-/UI-testene som regresjonsport ved utvidelse av benchmark- eller golden-casebanken.
 3. Utvid den **kun lokalt testede** budsjettprototypen til et delt, varig transaksjonelt serverregnskap med kostnadsvurdering, idempotens og audit-spor før noen betalte tester aktiveres i produksjon.
 4. Først deretter vurder å isolere betalte benchmarkløp i egen modul. Ekte Supabase Auth/PostgREST og menneskelig faglig vurdering kreves fortsatt separat.
 
