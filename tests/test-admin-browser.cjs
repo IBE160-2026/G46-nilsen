@@ -123,7 +123,7 @@ async function verifyContentEditingInChrome(cdp, role){
   let state=await js(cdp,"({dirty:!document.querySelector('#admin-unsaved-indicator').hidden,enabled:!document.querySelector('#admin-save-content').disabled})");
   assert.equal(state.dirty,true,"Input must show unsaved warning");
   assert.equal(state.enabled,true,"Input must enable save");
-  await js(cdp,"document.querySelector('#admin-save-content').click()");
+  await js(cdp,"(()=>{const button=document.querySelector('#admin-save-content');button.focus();button.click()})()");
   await wait(cdp,"document.querySelector('#admin-save-dialog').open","save confirmation dialog");
   await keyPress(cdp,"Escape");
   await wait(cdp,"!document.querySelector('#admin-save-dialog').open","save confirmation cancelled by Escape");
