@@ -6,6 +6,8 @@ export function sourceTier(source = {}) {
   if (role === "primary_regulation" || /lovverk|law_database|regulation/.test(type)) return "primary_law";
   if (role === "collective_agreement" || /collective_agreement/.test(type)) return "collective_agreement";
   if (role === "official_employer_reference") return "official_employer_reference";
+  if (role === "research_communication" || type === "research_communication") return "research_communication";
+  if (role === "research_evidence" || type === "research_evidence") return "research_evidence";
   if (role === "authority_index") return "authority_index";
   if (["professional_framework","international_framework"].includes(role)) return "professional_framework";
   if (/myndighet|official_authority|authority_guidance/.test(type)) return "authority_guidance";
