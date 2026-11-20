@@ -110,8 +110,11 @@ assert(adminDataPos > topicSearchPos && adminDataPos < html.indexOf('app.js?v=')
 assert(app.includes('window.SamtalestotteAdminData.create('),
   'app.js må bruke administrasjonsmodulen via avhengighetsinjeksjon');
 
-const pilotWarning = html.match(/id="pilot-regression-description"[^>]*>([\\s\\S]*?)<\\/div>/)?.[1] || '';
-assert.equal((pilotWarning.match(/<strong>/g) || []).length, 3,
+const pilotWarningStart = html.indexOf('id="pilot-regression-description"');
+const pilotWarningEnd = html.indexOf('</div>', pilotWarningStart);
+const pilotWarning = pilotWarningStart >= 0 && pilotWarningEnd > pilotWarningStart
+  ? html.slice(pilotWarningStart, pilotWarningEnd) : '';
+assert.equal(pilotWarning.split('<strong>').length - 1, 3,
   'Dynamisk pilot-/fulltestinformasjon må beholde tre eksisterende uthevingselementer for CSS/DOM-paritet');
 assert(html.includes('<option value="all" disabled>Alle testsaker') &&
   !html.includes('value="112"') &&
