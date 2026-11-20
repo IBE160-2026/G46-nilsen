@@ -131,6 +131,10 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   await js(cdp,"history.forward()");
   await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.activeElement?.id==='guidance-title'","browser forward focuses guidance heading");
   console.log("Keyboard view focus: topic -> guidance -> browser back/forward: PASS");
+  // An intentionally prefilled situation has its own explicit autofocus.
+  // View-heading management must not override that existing product behavior.
+  await js(cdp,"(()=>{showView('topic');const sub=currentTopic.subtopics[0];openGuidance(sub[0],sub[1],'En anonym situasjon om fravær.');})()");
+  await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.activeElement?.id==='situation'","prefilled situation retains textarea focus");
   // Strict privacy admission: a fictitious full name is blocked IN THE BROWSER
   // before analysis/guidance is allowed to leave the page.
   await js(cdp,"(()=>{const t=document.querySelector('#situation');t.value='Jeg skal snakke med Knut Hansen om fravær.';t.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#situation-form').requestSubmit()})()");
