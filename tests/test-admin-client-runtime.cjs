@@ -66,6 +66,20 @@ function harness() {
     t.user.role = "editor";
     await t.api.loadAdminUsers();
     assert.equal(t.calls.length, 0, "Editor attempted admin-only user list");
+    // Rollen skal leses ved hvert kall: factory-modulen må ikke fryse
+    // rollen som var aktiv da den ble initialisert.
+    t.user.role = "admin";
+    t.mock(async url => {
+      assert.equal(url, "/api/admin/users");
+      return reply({ users: [] });
+    });
+    await t.api.loadAdminUsers();
+    assert.equal(t.calls.length, 1, "Admin should regain API access after role change");
+    assert.equal(t.node("#admin-users-card").hidden, false);
+    t.user.role = "user";
+    await t.api.loadAdminUsers();
+    assert.equal(t.calls.length, 1, "Role demotion must immediately stop further admin requests");
+    assert.equal(t.node("#admin-users-card").hidden, true);
   }
 
   // Admin may load users, escape user-controlled fields, and save a role.
