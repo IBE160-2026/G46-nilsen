@@ -144,6 +144,7 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 - `docs/KODESTRUKTUR-OPPRYDDING-2026-11-08.md` – vedlikeholdbarhet og filopprydding
 - `docs/CSS-KVALITETSREVISJON-2026-11-20.md` – totrinns kaskadeopprydding: 108 eldre `!important` fjernet, regressjonstest og gjenværende CSS-risiko
 - `docs/FRONTEND-LENKER-HISTORIKK-2026-11-20.md` – trygge kilde-URL-er, historikk-ID-escaping og testbegrensninger
+- `docs/ADMIN-HISTORIKK-KVALITET-2026-11-20.md` – kontroll av asynkrone adminforespørsler, sessionbytter og serverens historikk-ID
 - `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` – sikkerhet og personvern
 
 ### Refleksjon og utviklingshistorikk
