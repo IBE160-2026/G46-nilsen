@@ -1508,3 +1508,15 @@ Jeg ba KI-assistenten gå tilbake til de siste forelesningsnotatene, lærerens s
 **Tiltak:** KI-assistenten innførte en felles URL-validator som kun godtar absolutte HTTP(S)-adresser, oppdaterte kildevisning og administratorens kildelogg, og sikret tre historikkattributter og slettesti. Ny `tests/test-safe-source-urls-history.cjs` tester ugyldige protokoller, HTML-injeksjon i ID og riktig URL-enkoding. Testen er tatt inn i `npm test` og CI bestod i run **44735621973**.
 
 **Egen vurdering og begrensning:** Et pass i simulert DOM og en URL-allowlist viser at noen konkrete usikre kodestrenger er fjernet. Det er **ikke** det samme som komplett XSS-audit av hele `app.js`, testing av to autentiserte kontoer eller bevis for sikker produksjon. Dokumentasjon: `docs/FRONTEND-LENKER-HISTORIKK-2026-11-20.md`.
+
+## 20.11.2026 – asynkron administrasjon, historikk og database-ID
+
+**Oppdrag:** Fortsette den kvalitetssikrende gjennomgangen av `G46-nilsen` uten å endre produksjon. Etter CSS-rundene ble store funksjoner i klient og server undersøkt for feil som kan ha betydning for personvern og korrekthet.
+
+**Funn:** Administrasjonsskjermen startet flere asynkrone hentinger uten å kontrollere om brukeren fremdeles var autorisert når svaret kom. Historikk kunne også bli liggende i skjult klient-DOM etter kontobytte, og lagret JSON kunne i serverens `rowToHistory` overskrive database-ID-en.
+
+**KI-bidrag:** Assistenten foreslo og implementerte `adminViewEpoch`, forespørselssekvenser, rydding ved kontobytte og validering av etterfølgende API-svar. `openAdmin` og `loadContentOverrides` ble delt opp i mer lesbare trinn. `openHistory` sammenligner både forespørselsgenerasjon, konto og aktiv visning. Serverens `rowToHistory` prioriterer databasens ID og tidsstempler over innholdet i lagret samtale-JSON.
+
+**Kvalitetssikring:** Fire nye deterministiske tester ble koblet til `npm test`: `test-admin-async-session.cjs`, `test-admin-content-generation.cjs`, `test-history-session-cleanup.cjs`, `test-history-row-identity.cjs`. Testene fremprovoserer forsinkede svar, logout/kontobytte, svar i feil rekkefølge og forsøkt ID-overstyring. GitHub Actions bestod etter at testene ble lagt inn, og ny sluttkontroll følger siste commit.
+
+**Begrensninger:** Dette er simulerte DOM-/HTTP-svar, ikke faktisk innlogging med flere Supabase-kontoer. Spesielt betalte benchmark- og pilotkjøringer må få egen test av hva som skjer når brukeren navigerer bort under kjøringen. Endringene er dokumentert i `docs/ADMIN-HISTORIKK-KVALITET-2026-11-20.md`. Ingen merge eller deploy.
