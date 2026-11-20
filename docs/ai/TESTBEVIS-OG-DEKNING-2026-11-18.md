@@ -4,6 +4,25 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: ekte Chrome-regresjon for administrasjonsvisningen
+
+**Implementering:** `tests/test-admin-browser.cjs` (commit `69a184bfda798a2539e78bb7ff26541d919d7e96`), utløst av den ordinære `.github/workflows/quality-gate.yml` (commit `6bc6209c3045525fc1cd935634da964c4b6575a1`). [Quality Gate #44744143602](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44744143602). **Nytt headless Chrome-adminsteg bekreftet bestått**. Status for hele CI-løpet må kontrolleres separat før merge.
+
+**Hvorfor:** VM-testen ovenfor verifiserer utvalgte funksjoner isolert, men ikke ekte HTML, sidevisning, DOM-events eller programstart. En uavhengig Chrome-test reduserer risikoen før videre modularisering av `app.js`.
+
+**Hva som kjøres:** GitHub Actions starter lokal `scripts/sensor-demo.js`, åpner appens eksisterende `index.html` / `app.js` i **faktisk headless Chrome**, og erstatter bare relevante `fetch`-svar med fiktive roller og syntetiske administrator-API-data før appens JavaScript lastes. Browseren klikker den reelle Admin-navigasjonen og rolleknappene gjennom DOM, endrer et felt og utløser `change` for KI-bruksstatistikk. Ingen ekte brukerkontoer, API-nøkler, persondata, Render eller eksterne KI-kall inngår.
+
+**Verifiserte scenarier:**
+- **Bruker:** Admin-navigasjon skjules, visningen åpnes ikke og ingen administrator-API-kall startes.
+- **Redaktør:** Kan åpne felles admin-/innholdsvisning, men admin-spesifikke bruker-, KI- og feedbackpaneler forblir skjult og ingen admin-API-kall startes.
+- **Administrator:** Paneler og brukerdata rendres; egen rolle kan ikke velges for endring; farlig HTML i navn/rapportert svar blir vist som ufarlig tekst; faktisk knappeklikk utfører `PATCH /api/admin/users/:id/role`; både suksess og HTTP 403 gir riktig status og lagreknappen blir aktiv igjen; avkryssing for testtrafikk sender nytt `includeTests=1`-kall.
+
+**Bevisnivå:** **Isolert Chrome-klientintegrasjon med ekte DOM og event-handlere**, ikke innlogget ende-til-ende eller reell serverautorisering. `/api/auth/me` og `/api/admin/*` er mock-et i nettleserens `fetch`, så testen kan **ikke** brukes som bevis for sikker rollerestriksjon i API-et, faktisk Supabase RLS, databasepersistens eller fysiske touch-interaksjoner. Disse må fortsatt testes selvstendig. Chrome-testen kjøres som egen **CI-jobbstepp**, ikke `npm test`, fordi lokal kjøring ellers ville kreve installert Chromium. De tidligere **44 deterministiske npm-testdelsteg** er uendret.
+
+**Neste risiko før mer refaktorering:** autentisert API-kontroll med bruker/redaktør/admin, separat ekte Supabase RLS med fiktive kontoer og negative tilgangstester; deretter uttrekk av adminmodul i små, kontrollerte endringer.
+
+---
+
 ## Tillegg 20.11.2026: administrasjonsklientens kjøretidstester
 
 **Verifisert gren:** `docs/ibe160-helhetlig-revisjon-20261118` (draft-PR #12), commit `76e4e6dc65461a57aa3bf558376f45eca62c7358`. [Quality Gate #44741974062](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44741974062): **SUCCESS**, nå **44 deterministiske npm-testdelsteg**, CSS-audit, 99 Chrome-CSS-sammenligninger og produksjonsavhengighetskontroll. `main`, Render og LIVE-pilot ble ikke endret.
@@ -20,7 +39,7 @@
 
 **Bevisnivå:** **D (isolert deterministisk runtime)**. Testen kontrollerer ekte administrasjonsfunksjoner, men **ikke** en full nettleser-DOM, Supabase Auth, RLS eller serverautorisering. Rollebegrensning i klienten er *aldri* en sikkerhetsgrense alene. Slike funn må fortsatt kontrolleres med serverens tilgangstester og framtidig innlogget nettleser-/RLS-test. VM-testens funksjonsuttrekk forutsetter at blokken fortsatt har samme ankerpunkter; testen stopper hvis dette endres, og må oppdateres bevisst ved refaktorering.
 
-**Neste steg:** Utvide admin-regresjon med reell headless-browser-interaksjon og simulerte autentiserte svar før større uttrekk av admin-UI. Fortsatt separat risikotest for ekte Supabase RLS med syntetiske kontoer.
+**Videreført i samme revisjon:** Egen ekte headless Chrome-test av den eksisterende admin-DOM-en med fiktive autentiseringssvar er nå lagt inn og bestått; se tillegget ovenfor. Ekte serverautorisering og Supabase RLS med syntetiske kontoer gjenstår fortsatt.
 
 ---
 
