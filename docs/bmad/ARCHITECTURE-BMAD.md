@@ -9,6 +9,16 @@
 
 ---
 
+## Tillegg 20.11.2026 – avgrenset benchmarkevaluering og kostnadsrisiko
+
+I draft-PR #12 er de rene funksjonene for representativt testutvalg og evalueringsregler for samtaleåpninger flyttet til `src/client/benchmark-evaluation.js` (klassisk, frontendlastet modul). Dette laget bruker ikke DOM, nettverk, nøkkel eller KI-provider. `app.js` beholder betalt benchmark- og pilotorkestrering, kontrollknapper, visning av resultater og serverkontakt. `src/client/benchmark-evaluation.js` lastes før `app.js` fra eksplisitt asset-allowlist og PWA-cache.
+
+Lagdelte kontroller: Node-VM tester pure funksjoner, ekte Chrome med injiserte fiktive responser tester bekreftelse/kansellering og visning, og Express med lokal Auth-fake tester gratis fulltest og administratorgrense. Den faktiske navnedetektoren kontrolleres mot hele syntetisk benchmarkbank. Innholdsfeil i B113 (adjektivet «nærmeste» feilidentifisert som navn) er snevert utbedret uten svekket gjenkjenning av reelle navn.
+
+**Arkitektonisk gjeld:** Kostnadsgrensen for `/api/admin/benchmark/live` baseres fremdeles på klientrapportert `spentSoFar`, ikke et atomisk serveradministrert budsjett. Dette er **ikke** en verifisert kostnadsgaranti og må rettes og testes uten ekte API-kostnader før betalt benchmarkkjøring kan godkjennes. Se [benchmarkrapport](../ai/BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md). Ingen produksjonsmerge eller LIVE-endringer.
+
+---
+
 ## Tillegg 20.11.2026 – innholdsredigering på revisjonsgrenen
 
 `src/client/admin-content.js` kapsler nå visningen av redigerbare tekster, tilstanden «ulagret» og `PUT`-lagring. Modulen bruker eksplisitt dependency injection for DOM, nettverk, HTML-escaping, feltliste, oppdatering av globale innholdstekster og dynamisk brukerrolle. `app.js` er fortsatt integrasjonspunktet; de eksisterende dialog-eventene, feltkatalogen, `GET /api/content` og generelle innholdsoppdateringer er ikke flyttet.
