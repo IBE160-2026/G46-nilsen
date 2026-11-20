@@ -1619,14 +1619,16 @@ function renderAiGuidance(guidance) {
         const host = sourceHost(source);
         const title = source.title || source.author || host || 'Kilde';
         const meta = [source.author && source.author !== host ? source.author : '', source.year ? String(source.year) : '', source.type || '', host].filter(Boolean).join(' · ');
-        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>Åpne kilde ↗</em></a>`;
+        const href = safeExternalUrl(source.url);
+        if (!href) return `<span class="muted-note"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span></span>`;
+        return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>Åpne kilde ↗</em></a>`;
       }).join('')}</div>`
     : '';
   const compactEvidence = evidenceSources.length
     ? `<div class="inline-source-links"><span>Kilder:</span>${evidenceSources.slice(0,4).map(source => {
         const host = sourceHost(source);
         const label = source.author || host || source.title || 'Kilde';
-        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>`;
+        return renderSafeSourceLink(source.url, `${label} ↗`);
       }).join('')}</div>`
     : '';
 
@@ -1778,6 +1780,27 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 
+// Source URLs originate in curated content, model output and usage logs.
+// HTML escaping alone does not make javascript:, data: or file: links safe.
+function safeExternalUrl(rawUrl) {
+  if (typeof rawUrl !== 'string') return '';
+  try {
+    const url = new URL(rawUrl.trim());
+    if (!['http:', 'https:'].includes(url.protocol) || !url.hostname ||
+        url.username || url.password) return '';
+    return url.href;
+  } catch (_) {
+    return '';
+  }
+}
+
+function renderSafeSourceLink(rawUrl, label, suffix = '') {
+  const title = escapeHtml(label);
+  const href = safeExternalUrl(rawUrl);
+  if (!href) return `<span class="muted-note">${title}</span>`;
+  return `<a href="${escapeHtml(href)}" target="_blank" rel="noopener noreferrer">${title}${suffix}</a>`;
+}
+
 async function loadHelpSectorSummary(){
   const host=document.querySelector('#help-sector-source-summary');
   if(!host) return;
@@ -1788,7 +1811,7 @@ async function loadHelpSectorSummary(){
     const groups=payload.categories?.occupations?.groups||[];
     host.innerHTML=groups.map(group=>`<details class="help-mini-source-group">
       <summary>${escapeHtml(group.label||group.id)} <small>${(group.sources||[]).length} kilder</small></summary>
-      <ul class="resource-links">${(group.sources||[]).slice(0,5).map(source=>`<li><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.author||source.title||'Kilde')}</a></li>`).join('')}</ul>
+      <ul class="resource-links">${(group.sources||[]).slice(0,5).map(source=>`<li>${renderSafeSourceLink(source.url, source.author||source.title||'Kilde')}</li>`).join('')}</ul>
     </details>`).join('') || '<p class="muted-note">Ingen sektorkilder registrert.</p>';
   }catch(error){
     host.innerHTML=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
@@ -1826,7 +1849,7 @@ function compactSourceRow(source){
       <p><strong>Brukes ved:</strong> ${usage}.</p>
       ${occupations.length ? `<p><strong>Gjelder særlig:</strong> ${escapeHtml(occupations.join(', '))}.</p>` : ''}
       ${author ? `<p class="muted-note">${author}</p>` : ''}
-      <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Åpne kilde ↗</a>
+      ${renderSafeSourceLink(source.url, 'Åpne kilde ↗')}
     </div>
   </details>`;
 }
@@ -1912,7 +1935,7 @@ function renderHelpSourceItem(source){
   const use=(source.useFor||[]).slice(0,6).join(', ');
   const title=escapeHtml(source.title||source.id||'Kilde');
   return `<div class="source-item">
-    <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${title}<em>↗</em></a>
+    ${renderSafeSourceLink(source.url, source.title||source.id||'Kilde', '<em>↗</em>')}
     <div class="source-item-meta"><span class="source-kind-badge">${escapeHtml(helpSourceTypeLabel(source.type))}</span>${meta}</div>
     ${use ? `<p class="source-item-use">Brukes blant annet ved: ${escapeHtml(use)}</p>` : ''}
   </div>`;
@@ -3324,9 +3347,9 @@ async function openHistory(){
 function renderHistory(items){
   const list=document.querySelector('#history-list'); document.querySelector('#history-count').textContent=`${items.length} lagrede samtaler`;
   if(!items.length){ list.innerHTML='<div class="history-empty">Du har ingen lagrede samtaler ennå.</div>'; return; }
-  list.innerHTML=items.map(item=>`<article class="history-item" data-history-id="${item.id}"><div class="history-item-top"><div><h3>${escapeHtml(item.title||'Samtale')}</h3><div class="history-meta">${escapeHtml([item.topic,item.subtopic].filter(Boolean).join(' · '))} · ${new Date(item.updatedAt).toLocaleDateString('nb-NO')}</div></div></div><div class="history-actions"><button class="primary-button" data-open-history="${item.id}" type="button">Åpne</button><button class="secondary-button" data-delete-history="${item.id}" type="button">Slett</button></div></article>`).join('');
+  list.innerHTML=items.map(item=>`<article class="history-item" data-history-id="${escapeHtml(item.id)}"><div class="history-item-top"><div><h3>${escapeHtml(item.title||'Samtale')}</h3><div class="history-meta">${escapeHtml([item.topic,item.subtopic].filter(Boolean).join(' · '))} · ${new Date(item.updatedAt).toLocaleDateString('nb-NO')}</div></div></div><div class="history-actions"><button class="primary-button" data-open-history="${escapeHtml(item.id)}" type="button">Åpne</button><button class="secondary-button" data-delete-history="${escapeHtml(item.id)}" type="button">Slett</button></div></article>`).join('');
   list.querySelectorAll('[data-open-history]').forEach(b=>b.addEventListener('click',()=>loadHistoryItem(items.find(x=>x.id===b.dataset.openHistory))));
-  list.querySelectorAll('[data-delete-history]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Slette denne samtalen?'))return;await fetch(`/api/history/${b.dataset.deleteHistory}`,{method:'DELETE'});openHistory();}));
+  list.querySelectorAll('[data-delete-history]').forEach(b=>b.addEventListener('click',async()=>{if(!confirm('Slette denne samtalen?'))return;await fetch(`/api/history/${encodeURIComponent(b.dataset.deleteHistory)}`,{method:'DELETE',credentials:'include'});openHistory();}));
 }
 
 function scanHistoryPrivacy(item) {
@@ -3510,7 +3533,7 @@ async function loadAdminUsers(){const card=document.querySelector('#admin-users-
 async function loadAdminFeedback(){const card=document.querySelector('#admin-feedback-card'),list=document.querySelector('#admin-feedback-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter rapporterte svar …</div>';try{const r=await fetch('/api/admin/ai-feedback',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente rapporterte svar.');list.innerHTML=(p.items||[]).map(item=>`<article class="admin-feedback-item"><div><strong>${escapeHtml(item.category||'Tilbakemelding')}</strong><small>${new Date(item.created_at).toLocaleString('nb-NO')} · ${escapeHtml(item.surface||'')}</small></div><p>${escapeHtml(item.comment||'')}</p>${item.include_conversation?`<details><summary>Vedlagt samtale</summary><pre class="admin-feedback-snapshot">${escapeHtml(JSON.stringify(item.conversation_snapshot||{},null,2))}</pre></details>`:'<small>Ingen samtale vedlagt.</small>'}</article>`).join('')||'<div class="history-empty">Ingen rapporterte KI-svar ennå.</div>';}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
 async function loadAdminAiSettings(){const card=document.querySelector('#admin-ai-card');if(!card)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;try{const r=await fetch('/api/admin/ai-settings',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente modellvalg.');const select=document.querySelector('#admin-ai-model');select.innerHTML=(p.models||[]).map(m=>`<option value="${escapeHtml(m.id)}" ${m.id===p.activeModel?'selected':''}>${escapeHtml(m.label)} · ${escapeHtml(m.tier)} · $${m.inputPerMillion}/$${m.outputPerMillion} per 1M tokens</option>`).join('');}catch(error){const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message error';msg.textContent=error.message;}}
 function formatUsd(value){return `$${Number(value||0).toFixed(3)}`;}
-async function loadAdminAiUsage(){if(currentUser?.role!=='admin')return;try{const includeTests=Boolean(document.querySelector('#admin-usage-include-tests')?.checked);const r=await fetch(`/api/admin/ai-usage?includeTests=${includeTests?'1':'0'}`,{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente KI-bruk.');document.querySelector('#admin-cost-24h').textContent=formatUsd(p.summary?.cost24h);document.querySelector('#admin-cost-7d').textContent=formatUsd(p.summary?.cost7d);document.querySelector('#admin-cost-30d').textContent=formatUsd(p.summary?.cost30d);document.querySelector('#admin-calls-30d').textContent=String(p.summary?.calls30d||0);const domains=document.querySelector('#admin-source-domains');domains.innerHTML=(p.topDomains||[]).map(x=>`<div><span>${escapeHtml(x.name)}</span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen webkilder registrert ennå.</small>';const queries=document.querySelector('#admin-source-queries');queries.innerHTML=(p.topQueries||[]).map(x=>`<div><span>${escapeHtml(x.name)}</span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen søk registrert ennå.</small>';const pages=document.querySelector('#admin-source-pages');if(pages)pages.innerHTML=(p.topPages||[]).map(x=>`<div><span><a href="${escapeHtml(x.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(x.title||x.url)}</a><small>${escapeHtml(x.domain||'')}</small></span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen konkrete kildesider registrert ennå.</small>';const recent=document.querySelector('#admin-ai-recent');recent.innerHTML=(p.recent||[]).slice(0,40).map(x=>`<div class="admin-usage-row"><div><strong>${escapeHtml(x.function_name||'KI-kall')}</strong><small>${new Date(x.created_at).toLocaleString('nb-NO')} · ${escapeHtml(x.model||'')}${x.is_test?' · TEST':''}${x.subtopic?` · ${escapeHtml(x.subtopic)}`:''}</small>${(x.web_search_queries||[]).length?`<small>Søk: ${escapeHtml((x.web_search_queries||[]).join(' | '))}</small>`:''}</div><div><span>${Number(x.total_tokens||0).toLocaleString('nb-NO')} tokens</span><strong>${formatUsd(x.estimated_cost_usd)}</strong>${x.web_search_used?`<small>${Number(x.web_search_call_count||1)} websøk</small>`:''}</div></div>`).join('')||'<small>Ingen KI-kall registrert ennå.</small>';}catch(error){const domains=document.querySelector('#admin-source-domains');if(domains)domains.innerHTML=`<small>${escapeHtml(error.message)}</small>`;}}
+async function loadAdminAiUsage(){if(currentUser?.role!=='admin')return;try{const includeTests=Boolean(document.querySelector('#admin-usage-include-tests')?.checked);const r=await fetch(`/api/admin/ai-usage?includeTests=${includeTests?'1':'0'}`,{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente KI-bruk.');document.querySelector('#admin-cost-24h').textContent=formatUsd(p.summary?.cost24h);document.querySelector('#admin-cost-7d').textContent=formatUsd(p.summary?.cost7d);document.querySelector('#admin-cost-30d').textContent=formatUsd(p.summary?.cost30d);document.querySelector('#admin-calls-30d').textContent=String(p.summary?.calls30d||0);const domains=document.querySelector('#admin-source-domains');domains.innerHTML=(p.topDomains||[]).map(x=>`<div><span>${escapeHtml(x.name)}</span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen webkilder registrert ennå.</small>';const queries=document.querySelector('#admin-source-queries');queries.innerHTML=(p.topQueries||[]).map(x=>`<div><span>${escapeHtml(x.name)}</span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen søk registrert ennå.</small>';const pages=document.querySelector('#admin-source-pages');if(pages)pages.innerHTML=(p.topPages||[]).map(x=>`<div><span>${renderSafeSourceLink(x.url, x.title||x.url)}<small>${escapeHtml(x.domain||'')}</small></span><strong>${x.count}</strong></div>`).join('')||'<small>Ingen konkrete kildesider registrert ennå.</small>';const recent=document.querySelector('#admin-ai-recent');recent.innerHTML=(p.recent||[]).slice(0,40).map(x=>`<div class="admin-usage-row"><div><strong>${escapeHtml(x.function_name||'KI-kall')}</strong><small>${new Date(x.created_at).toLocaleString('nb-NO')} · ${escapeHtml(x.model||'')}${x.is_test?' · TEST':''}${x.subtopic?` · ${escapeHtml(x.subtopic)}`:''}</small>${(x.web_search_queries||[]).length?`<small>Søk: ${escapeHtml((x.web_search_queries||[]).join(' | '))}</small>`:''}</div><div><span>${Number(x.total_tokens||0).toLocaleString('nb-NO')} tokens</span><strong>${formatUsd(x.estimated_cost_usd)}</strong>${x.web_search_used?`<small>${Number(x.web_search_call_count||1)} websøk</small>`:''}</div></div>`).join('')||'<small>Ingen KI-kall registrert ennå.</small>';}catch(error){const domains=document.querySelector('#admin-source-domains');if(domains)domains.innerHTML=`<small>${escapeHtml(error.message)}</small>`;}}
 
 let benchmarkConfig=null;
 let benchmarkStopRequested=false;
