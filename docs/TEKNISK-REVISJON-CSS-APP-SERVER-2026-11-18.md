@@ -84,6 +84,16 @@ De tidligere funksjonene i `app.js` ble erstattet med små delegatorer, slik at 
 
 **Åpent:** Redis/PostgreSQL-basert transaksjonelt budsjett for flere instanser og omstarter, leverandørkost-/timeout-sporing og real-world providergrense. Siden dette ikke finnes, **skal betalt benchmark ikke aktiveres i produksjon**. Ingen prod-merge, Render-deploy, Supabase-dataendring eller LIVE-endring.
 
+### Videreføring 20.11.2026 – dynamiske adminantall og komplett caseutvalg
+
+**Rettet konkret brukerfeil:** `index.html` hadde hardkodet «Alle 26 saker / 52 KI-kall» i pilot-/fulltesten og `value="112"` for «Alle 112 saker». Antallene i backendbankene er nå **66** golden- og **114** benchmarkcaser. Det gamle benchmarkvalget kjørte derfor ikke samtlige caser.
+
+**Nå:** `GET /api/admin/pilot-regression/cases?summary=1` (administratorrettigheter via eksisterende `requireAdmin`) leser hele den faktiske golden-casebanken, men returnerer bare `pilotCount`, `fullCount` og `paidRegressionEnabled`; ingen syntetiske scenarietekster trengs i tellekallet. `loadRegressionCounts()` oppdaterer knappeetiketter, forklaring og forventet antall KI-kall (`antall × 2`). `loadBenchmarkConfig()` krever at `totalCases === cases.length`, oppdaterer `<option value="all">` fra aktuell liste og avviser motstridende data. `resolveCaseCount` ligger som en ren hjelper i `src/client/benchmark-evaluation.js`. Knappene starter som `disabled` og åpnes bare ved eksplisitt serverbekreftet test-only tillatelse.
+
+**Bevis:** Unit-test av `all` på en **114-casers** syntetisk bank; ekte headless Chrome-UI med en fiktiv **3-casers** bank og **1 pilot/3 fulltester** sjekker nøyaktig tre simulerte modellkall, etiketter og 2/6 beregnede KI-kall, fulltestbekreftelse og fail-closed ved deaktivert testmodus. Express-HTTP-test sammenligner summary med faktisk JSON-bank, avviser andre roller, og frontendstrukturtest stopper reintroduksjon av `value="112"`. PWA-cache **20.11.73**. Ingen ekte KI-kall.
+
+**Arkitekturbetraktning:** `app.js` ble noe lengre fordi innlasting og feilbehandling er formatert lesbart; det er tilsiktet og ikke framstilt som en ren linjereduksjon. Et eget adminpresentasjonsmodul kan vurderes senere hvis det gjør ansvarsgrensene tydeligere, men ikke som en kosmetisk linjetallsøvelse. Betalte tester er fortsatt blokkert i produksjonsmodus.
+
 ## Uttrekk fra server.js
 
 | Ny fil | Omtrent linjer | Ansvar | Kontroll |
