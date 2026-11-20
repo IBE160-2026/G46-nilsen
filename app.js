@@ -279,6 +279,19 @@ function showView(name, options = {}) {
     } else if (changingView) {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
+    // A SPA view change must not leave keyboard/screen-reader focus behind on
+    // a hidden card or navigation control. Preserve a deliberate field focus
+    // (e.g. a prefilled situation textarea) and never steal modal focus.
+    if (!changingView || activeViewName() !== name ||
+        document.querySelector('dialog[open]') ||
+        !document.querySelector('#auth-dialog')?.hidden) return;
+    const focused=document.activeElement;
+    if (views[name].contains(focused)) return;
+    const heading=views[name].querySelector('h1');
+    if (heading && heading.getClientRects().length && !heading.closest('[hidden],[inert]')) {
+      heading.setAttribute('tabindex','-1');
+      heading.focus({preventScroll:true});
+    }
   });
 }
 
@@ -3040,6 +3053,11 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
   clearDocumentSelection(); loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   const storedSituation = cleanStoredSituationText(item.situation||'');
+  // A newly loaded history entry can be opened directly after a page reload:
+  // the guidance heading must have meaningful text before focus moves there.
+  const historyHeading=document.querySelector('#guidance-title');
+  if(historyHeading) historyHeading.textContent =
+    [item.topic,item.subtopic].filter(Boolean).join(': ') || String(item.title||'Lagret samtale');
   document.querySelector('#situation').value=storedSituation; autoGrowTextarea(document.querySelector('#situation'),220); updatePrivacyCheck();
   if(lastAiAnalysis) renderAiSituationUnderstanding(lastAiAnalysis); if(lastAiGuidance){renderAiGuidance(lastAiGuidance);document.querySelector('#prototype-result').hidden=false;}
   const thread=document.querySelector('#conversation-thread');
