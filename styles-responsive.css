@@ -393,18 +393,15 @@
   }
 
   .simulation-hub-hero .simulation-logo-crop {
-    display: flex !important;
     width: 150px !important;
     max-width: 52% !important;
     height: auto !important;
-    margin: 2px 0 0 !important;
     justify-self: start !important;
     transform: none !important;
   }
 
   .simulation-hub-hero .simulation-logo-crop img {
     width: 150px !important;
-    height: auto !important;
     max-width: 100% !important;
     object-fit: contain;
   }
@@ -595,9 +592,7 @@
   /* Samtaleøvelse: behold desktop-prinsippet med logo til høyre for overskriften. */
   .simulation-hub-hero {
     grid-template-columns: minmax(0,1fr) 108px !important;
-    align-items: start !important;
     gap: 10px !important;
-    padding: 15px !important;
   }
 
   .simulation-hub-hero > div:first-child {
@@ -1261,8 +1256,6 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
   .simulation-hub-hero > .simulation-logo-crop {
     display: grid !important;
     place-items: center !important;
-    width: 88px !important;
-    max-width: 88px !important;
     height: 76px !important;
     overflow: visible !important;
     justify-self: end !important;
@@ -1273,7 +1266,6 @@ html[data-theme="dark"] .brand-logo-dialog-card img {
     height: 70px !important;
     max-width: 82px !important;
     object-fit: contain !important;
-    object-position: center !important;
   }
 
   html[data-theme="dark"] .simulation-hub-hero > .simulation-logo-crop img,
