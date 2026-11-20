@@ -213,6 +213,23 @@ async function request(route,who,method="GET",body,headers={}){
     });
     assert.equal(disabled.status,503);
     assert.equal(disabled.body.error,"BENCHMARK_PAID_DISABLED");
+    // Samme sperre for pilot/full regresjon. Vanlige KI-samtaler skal ikke
+    // blokkeres av denne modusbetingelsen; her mangler kun KI-nøkkel i testmiljø.
+    const preview=await request("/api/admin/pilot-regression/cases?mode=pilot","admin");
+    assert.equal(preview.status,200);
+    assert.equal(preview.body.paidRegressionEnabled,false);
+    for(const route of ["/api/analyze-situation","/api/generate-guidance"]){
+      for(const mode of ["pilot-regression","production-regression"]){
+        const stopped=await request(route,"admin","POST",{situation:"Fiktiv og anonymisert arbeidsutfordring.",testMode:mode});
+        assert.equal(stopped.status,503,"Paid pilot must fail closed before any provider use: "+route+" "+mode);
+        assert.equal(stopped.body.error,"PAID_TEST_DISABLED");
+      }
+    }
+    const ordinary=await request("/api/analyze-situation","ordinary","POST",{
+      situation:"Fiktiv og anonymisert arbeidsutfordring.",testMode:"pilot-regression"
+    });
+    assert.equal(ordinary.body.error,"AI_NOT_CONFIGURED","User must not be promoted to admin test mode");
+
     assert.equal((await request("/api/auth/diagnostic","admin")).status,200);
     assert.equal((await request("/api/auth/me","forged")).body.user.role,"user");
     assert.equal((await request("/api/auth/me","invalid")).body.user.role,"user");
