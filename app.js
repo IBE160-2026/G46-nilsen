@@ -1441,7 +1441,7 @@ function printCurrentGuidance() {
     if (turns[i]?.role !== 'user') continue;
     const answer = turns.slice(i + 1).find(turn => turn.role === 'assistant');
     if (!answer) continue;
-    followupPairs.push({ question: turns[i].text, answer: answer.text });
+    followupPairs.push({ question: turns[i].text, answer: answer.text, sources: answer.sources || [] });
     i = turns.indexOf(answer);
   }
 
@@ -1452,6 +1452,7 @@ function printCurrentGuidance() {
           <article class="followup-item">
             <h3>${index + 1}. ${escapeHtml(pair.question)}</h3>
             <div>${formatContinuationReply(pair.answer)}</div>
+            ${pair.sources.length ? `<p><strong>Kilder:</strong> ${normalizeContinuationSources(pair.sources).map(src => `<a href="${escapeHtml(src.url)}">${escapeHtml(src.title)}</a>`).join(' · ')}</p>` : ''}
           </article>`).join('')}
       </section>`
     : '';
@@ -2126,6 +2127,37 @@ function cleanStoredConversationText(text, role='assistant') {
   return value;
 }
 
+function normalizeContinuationSources(sources = []) {
+  return (Array.isArray(sources) ? sources : [])
+    .filter(source => source && typeof source === 'object')
+    .filter(source => {
+      try { return ['https:', 'http:'].includes(new URL(source.url).protocol); }
+      catch (_) { return false; }
+    })
+    .slice(0, 6)
+    .map(source => ({
+      title: String(source.title || source.author || 'Kilde').slice(0, 250),
+      author: String(source.author || '').slice(0, 150),
+      url: String(source.url)
+    }));
+}
+
+function renderContinuationEvidence(sources = []) {
+  const verified = normalizeContinuationSources(sources);
+  if (!verified.length) {
+    return '<small class="continuation-source-note">Ingen etterprøvbare kildehenvisninger registrert for dette svaret.</small>';
+  }
+  return `<details class="continuation-evidence">
+    <summary>Kildegrunnlag (${verified.length})</summary>
+    <div class="evidence-list">${verified.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong>${source.author ? `<span>${escapeHtml(source.author)}</span>` : ''}<em>Åpne kilde ↗</em></a>`).join('')}</div>
+  </details>`;
+}
+
+function setConversationTurnSources(element, sources) {
+  if (!element) return;
+  element.dataset.messageSources = JSON.stringify(normalizeContinuationSources(sources));
+}
+
 function setConversationTurnText(element, role, text) {
   if (!element) return;
   element.dataset.messageText = cleanStoredConversationText(text, role);
@@ -2191,8 +2223,10 @@ async function appendConversationTurn(question) {
     if (!response.ok) throw new Error('KI-oppfølgingen kunne ikke gjennomføres.');
     const payload = await response.json();
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
-    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div><button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
+    const verifiedSources = normalizeContinuationSources(payload.evidence_sources);
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>${renderContinuationEvidence(verifiedSources)}<button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
+    setConversationTurnSources(assistant, verifiedSources);
     renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
     conversationDirty = true;
@@ -2986,7 +3020,12 @@ function getConversationTurns(){
   return [...document.querySelectorAll('#conversation-thread .conversation-turn')]
     .map(el => {
       const role = el.classList.contains('conversation-user') ? 'user' : 'assistant';
-      return { role, text: getConversationTurnText(el) };
+      const turn = { role, text: getConversationTurnText(el) };
+      if (role === 'assistant' && el.dataset.messageSources !== undefined) {
+        try { turn.sources = normalizeContinuationSources(JSON.parse(el.dataset.messageSources)); }
+        catch (_) { turn.sources = []; }
+      }
+      return turn;
     })
     .filter(turn => turn.text);
 }
@@ -3070,8 +3109,9 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
     el.className=`conversation-turn ${role==='user'?'conversation-user':'conversation-assistant'}`;
     el.innerHTML=role==='user'
       ? `${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(cleanText)}</p>`
-      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>`;
+      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>${Array.isArray(turn.sources) ? renderContinuationEvidence(turn.sources) : ''}`;
     setConversationTurnText(el, role, cleanText);
+    if (role === 'assistant' && Array.isArray(turn.sources)) setConversationTurnSources(el, turn.sources);
     thread.appendChild(el);
     queueSpeechBubbleRefresh();
   });
