@@ -4,6 +4,30 @@
   "description": "Kuraterte overordnede arbeidsgiver-, yrkes- og sektorkilder. Kilder kan avgrenses på sektor, yrke og situasjon. sourceRole/bindingStatus skiller bindende rettskilder, myndighetsveiledning, oppslagsinnganger og ikke-bindende arbeidslivsrammeverk. Konkrete tidskritiske påstander skal kontrolleres mot gjeldende originalkilde.",
   "sources": [
     {
+      "id": "ACCOUNTANT_RULES",
+      "authority": "Finanstilsynet",
+      "title": "Regelverk for regnskapsførere",
+      "url": "https://www.finanstilsynet.no/regelverk/regnskapsforer/",
+      "sectors": [
+        "office_finance_it"
+      ],
+      "occupations": [
+        "regnskapsfører"
+      ],
+      "useFor": [
+        "regnskapsfører",
+        "taushetsplikt",
+        "hvitvasking",
+        "risikostyring",
+        "god regnskapsføringsskikk",
+        "egnethet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
       "id": "ADVOKATTILSYNET_PROFESSION",
       "authority": "Advokattilsynet",
       "title": "Advokatvirksomhet",
@@ -27,6 +51,29 @@
       "occupations": [
         "advokat"
       ]
+    },
+    {
+      "id": "AKAN_HELP_EMPLOYEE",
+      "authority": "Akan kompetansesenter",
+      "title": "Hvordan hjelpe en medarbeider med et rus- eller spilleproblem?",
+      "url": "https://www.akan.no/hjelpe-en-medarbeider",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "rusproblem",
+        "spilleproblem",
+        "individuell Akan-avtale",
+        "rusoppfølging",
+        "spilleavhengighet",
+        "hjelpetiltak ved rus eller spill"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "specialist_worklife_guidance",
+      "contextualOnly": true,
+      "sourceRole": "specialist_guidance",
+      "bindingStatus": "non_binding_guidance"
     },
     {
       "id": "AKAN_MODEL",
@@ -55,27 +102,230 @@
       "bindingStatus": "non_binding_guidance"
     },
     {
-      "id": "FISKERIDIR_AQUACULTURE",
-      "authority": "Fiskeridirektoratet",
-      "title": "Akvakultur",
-      "url": "https://www.fiskeridir.no/akvakultur",
+      "id": "AML_CH9_CONTROL_MEASURES",
+      "authority": "Lovdata",
+      "title": "Arbeidsmiljøloven kapittel 9 – kontrolltiltak i virksomheten",
+      "url": "https://lovdata.no/lov/2005-06-17-62/KAPITTEL_10",
       "sectors": [
-        "aquaculture_fisheries_maritime"
+        "*"
       ],
       "useFor": [
-        "akvakulturloven",
-        "forskrifter",
-        "rømming",
-        "NYTEK23",
-        "tillatelser",
-        "havbruk"
+        "kontrolltiltak",
+        "overvåking",
+        "GPS",
+        "kamera",
+        "e-post",
+        "helseopplysninger",
+        "medisinske undersøkelser",
+        "rustesting",
+        "drøfting med tillitsvalgte"
       ],
       "timeSensitive": true,
-      "lastVerified": "2026-10-29",
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
+    },
+    {
+      "id": "ARKIVVERKET_JOURNALING",
+      "authority": "Nasjonalarkivet",
+      "title": "Veileder for journalføring",
+      "url": "https://www.nasjonalarkivet.no/veiledere/veileder-for-journalforing/",
+      "sectors": [
+        "public_admin_legal"
+      ],
+      "occupations": [
+        "saksbehandler",
+        "rådgiver",
+        "forvaltningsmedarbeider",
+        "NAV-medarbeider",
+        "kommunal rådgiver",
+        "statlig rådgiver",
+        "konsulent",
+        "førstekonsulent",
+        "seniorkonsulent",
+        "arkivar"
+      ],
+      "useFor": [
+        "journalføring",
+        "arkivering",
+        "dokumentasjon",
+        "saksbehandling",
+        "saksdokument"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
-      "contextualOnly": false,
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
+      "contextualOnly": true
+    },
+    {
+      "id": "AT_ASBEST_BUILDING",
+      "authority": "Arbeidstilsynet",
+      "title": "Asbestfare i bygge- og anleggsyrker",
+      "url": "https://www.arbeidstilsynet.no/risikofylt-arbeid/kjemikalier/asbest/asbesteksponering-for-yrker-i-bygge-og-anleggsnaringen/",
+      "sectors": [
+        "construction_trades"
+      ],
+      "occupations": [
+        "tømrer",
+        "snekker",
+        "elektriker",
+        "rørlegger",
+        "anleggsarbeider",
+        "driftstekniker",
+        "taktekker",
+        "ventilasjonstekniker"
+      ],
+      "useFor": [
+        "asbest",
+        "støv",
+        "eksponering",
+        "stans av arbeid",
+        "kartlegging",
+        "verneutstyr"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "AT_CERTIFIED_EQUIPMENT_TRAINING",
+      "authority": "Arbeidstilsynet",
+      "title": "Dokumentert og sertifisert sikkerhetsopplæring for arbeidsutstyr",
+      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/opplaring/",
+      "sectors": [
+        "construction_trades",
+        "transport_logistics",
+        "industry_production"
+      ],
+      "occupations": [
+        "anleggsmaskinfører",
+        "truckfører",
+        "maskinoperatør"
+      ],
+      "useFor": [
+        "truck",
+        "masseforflytningsmaskin",
+        "anleggsmaskin",
+        "arbeidsutstyr",
+        "kompetansebevis",
+        "sikkerhetsopplæring",
+        "maskin"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "AT_CONTROL_MONITORING",
+      "authority": "Arbeidstilsynet",
+      "title": "Kontroll og overvåking i arbeidslivet",
+      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/kontroll-og-overvakning/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "kontrolltiltak",
+        "overvåking",
+        "kamera",
+        "GPS",
+        "e-post",
+        "internettrafikk",
+        "rustesting",
+        "helseundersøkelse",
+        "produksjonskontroll"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_rules"
+    },
+    {
+      "id": "AT_EMPLOYER_DUTIES",
+      "authority": "Arbeidstilsynet",
+      "title": "Arbeidsgivers plikter i HMS-arbeidet",
+      "url": "https://www.arbeidstilsynet.no/hms/roller-i-hms-arbeidet/arbeidsgiver/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "arbeidsgivers ansvar",
+        "HMS",
+        "medvirkning",
+        "verneombud",
+        "opplæring",
+        "arbeidsmiljø",
+        "risikovurdering",
+        "systematisk HMS"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_rules"
+    },
+    {
+      "id": "AT_HOT_WORK",
+      "authority": "Arbeidstilsynet",
+      "title": "Varmt arbeid – sveising, sliping og metallarbeid",
+      "url": "https://www.arbeidstilsynet.no/risikofylt-arbeid/kjemikalier/varmt-arbeid/",
+      "sectors": [
+        "industry_production",
+        "construction_trades"
+      ],
+      "occupations": [
+        "sveiser",
+        "industrimekaniker",
+        "mekaniker",
+        "montør",
+        "bilmekaniker"
+      ],
+      "useFor": [
+        "sveising",
+        "sliping",
+        "varmt arbeid",
+        "verneutstyr",
+        "røyk",
+        "stråling",
+        "brannfare"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "AT_INTERNKONTROLL",
+      "authority": "Arbeidstilsynet",
+      "title": "Internkontrollforskriften – systematisk HMS-arbeid",
+      "url": "https://www.arbeidstilsynet.no/regelverk/forskrifter/internkontrollforskriften/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "internkontroll",
+        "HMS",
+        "systematisk HMS",
+        "risikovurdering",
+        "avvik",
+        "rutiner",
+        "opplæring",
+        "ansvar",
+        "myndighet",
+        "sikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "regulation",
+      "contextualOnly": true,
+      "sourceRole": "primary_regulation",
+      "bindingStatus": "binding_when_applicable"
     },
     {
       "id": "AT_MINIMUM_WAGE_OVERVIEW",
@@ -135,219 +385,6 @@
       "note": "Allmenngjort minstelønn gjelder bare bestemte bransjer/vilkår. Taxi omfattes ikke generelt; persontransportkilden gjelder turbil/turvogn/buss under forskriftens vilkår, og godstransport har egne vekt-/virkeområdekrav."
     },
     {
-      "id": "POLITI_INSTRUCTION",
-      "authority": "Lovdata",
-      "title": "Alminnelig tjenesteinstruks for politiet (politiinstruksen)",
-      "url": "https://lovdata.no/dokument/INS/forskrift/1990-06-22-3963",
-      "sectors": [
-        "defence_police_emergency"
-      ],
-      "occupations": [
-        "politi"
-      ],
-      "useFor": [
-        "tjenesteplikt",
-        "ordre",
-        "opptreden",
-        "politimyndighet",
-        "tjenesteutførelse",
-        "rapportering",
-        "habilitet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "regulation",
-      "contextualOnly": true
-    },
-    {
-      "id": "PHARMACY_PERSONNEL_ACT",
-      "authority": "Lovdata",
-      "title": "Apotekloven – krav til apotekets personale",
-      "url": "https://lovdata.no/nav/lov/2000-06-02-39/kap4",
-      "sectors": [
-        "health_care"
-      ],
-      "occupations": [
-        "apotektekniker"
-      ],
-      "useFor": [
-        "apotektekniker",
-        "kompetanse",
-        "personalkrav",
-        "legemidler",
-        "faglig personale",
-        "opplæring"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "law_database",
-      "contextualOnly": true
-    },
-    {
-      "id": "MARITIME_REST_TIME",
-      "authority": "Sjøfartsdirektoratet",
-      "title": "Arbeids- og hviletid for sjøfolk",
-      "url": "https://www.sdir.no/sjofolk/arbeids--og-levevilkar-for-sjofolk/arbeids-og-hviletid-for-sjofolk/",
-      "sectors": [
-        "aquaculture_fisheries_maritime"
-      ],
-      "occupations": [
-        "fisker",
-        "matros",
-        "skipsfører",
-        "maskinist",
-        "dekksarbeider",
-        "styrmann"
-      ],
-      "useFor": [
-        "hviletid",
-        "arbeidstid",
-        "fatigue",
-        "bemanning",
-        "sjøfolk",
-        "vaktordning"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "VEGVESEN_EMPLOYER_DRIVING_REST",
-      "authority": "Statens vegvesen",
-      "title": "Arbeidsgivers ansvar – kjøre- og hviletid",
-      "url": "https://www.vegvesen.no/kjoretoy/yrkestransport/kjore-og-hviletid/arbeidsgivers-ansvar/",
-      "sectors": [
-        "transport_logistics"
-      ],
-      "useFor": [
-        "kjøre- og hviletid",
-        "arbeidsgiveransvar",
-        "fartsskriver",
-        "trafikksikkerhet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-01",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "occupations": [
-        "bussjåfør",
-        "lastebilsjåfør",
-        "varebilsjåfør",
-        "taxisjåfør",
-        "sjåfør",
-        "budbilsjåfør"
-      ]
-    },
-    {
-      "id": "AT_EMPLOYER_DUTIES",
-      "authority": "Arbeidstilsynet",
-      "title": "Arbeidsgivers plikter i HMS-arbeidet",
-      "url": "https://www.arbeidstilsynet.no/hms/roller-i-hms-arbeidet/arbeidsgiver/",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "arbeidsgivers ansvar",
-        "HMS",
-        "medvirkning",
-        "verneombud",
-        "opplæring",
-        "arbeidsmiljø",
-        "risikovurdering",
-        "systematisk HMS"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true,
-      "sourceRole": "authority_guidance",
-      "bindingStatus": "guidance_on_binding_rules"
-    },
-    {
-      "id": "LOVDATA_AML",
-      "authority": "Lovdata",
-      "title": "Arbeidsmiljøloven",
-      "url": "https://lovdata.no/NL/lov/2005-06-17-62",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "arbeidsmiljø",
-        "arbeidstid",
-        "varsling",
-        "tilrettelegging",
-        "stillingsvern",
-        "oppsigelse",
-        "kontrolltiltak",
-        "HMS"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "law_database",
-      "contextualOnly": true,
-      "sourceRole": "primary_law",
-      "bindingStatus": "binding_law"
-    },
-    {
-      "id": "AML_CH9_CONTROL_MEASURES",
-      "authority": "Lovdata",
-      "title": "Arbeidsmiljøloven kapittel 9 – kontrolltiltak i virksomheten",
-      "url": "https://lovdata.no/lov/2005-06-17-62/KAPITTEL_10",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "kontrolltiltak",
-        "overvåking",
-        "GPS",
-        "kamera",
-        "e-post",
-        "helseopplysninger",
-        "medisinske undersøkelser",
-        "rustesting",
-        "drøfting med tillitsvalgte"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "law_database",
-      "contextualOnly": true,
-      "sourceRole": "primary_law",
-      "bindingStatus": "binding_law"
-    },
-    {
-      "id": "HAVTIL_WORK_TIME_PLANS",
-      "authority": "Havindustritilsynet",
-      "title": "Arbeidstidsordninger og oppholdsperioder offshore",
-      "url": "https://www.havtil.no/regelverk/alle-forskrifter/rammeforskriften/VI/38/",
-      "sectors": [
-        "offshore_energy"
-      ],
-      "occupations": [
-        "offshorearbeider",
-        "prosessoperatør offshore",
-        "plattformarbeider",
-        "kraftverksoperatør",
-        "petroleumsingeniør",
-        "prosessingeniør",
-        "energimontør",
-        "elektroingeniør",
-        "energitekniker"
-      ],
-      "useFor": [
-        "arbeidstid",
-        "oppholdsperiode",
-        "turnus",
-        "overtid",
-        "hvile",
-        "arbeidsplan"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "regulation",
-      "contextualOnly": true
-    },
-    {
       "id": "AT_RULES",
       "authority": "Arbeidstilsynet",
       "title": "Arbeidstilsynets regelverk",
@@ -371,359 +408,27 @@
       "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
     },
     {
-      "id": "AT_ASBEST_BUILDING",
+      "id": "AT_WHISTLEBLOWING_ROUTINES",
       "authority": "Arbeidstilsynet",
-      "title": "Asbestfare i bygge- og anleggsyrker",
-      "url": "https://www.arbeidstilsynet.no/risikofylt-arbeid/kjemikalier/asbest/asbesteksponering-for-yrker-i-bygge-og-anleggsnaringen/",
-      "sectors": [
-        "construction_trades"
-      ],
-      "occupations": [
-        "tømrer",
-        "snekker",
-        "elektriker",
-        "rørlegger",
-        "anleggsarbeider",
-        "driftstekniker",
-        "taktekker",
-        "ventilasjonstekniker"
-      ],
-      "useFor": [
-        "asbest",
-        "støv",
-        "eksponering",
-        "stans av arbeid",
-        "kartlegging",
-        "verneutstyr"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "HEALTH_AUTHORIZATION",
-      "authority": "Helsedirektoratet",
-      "title": "Autorisasjon og lisens for helsepersonell",
-      "url": "https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens",
-      "sectors": [
-        "health_care"
-      ],
-      "occupations": [
-        "sykepleier",
-        "lege",
-        "helsefagarbeider",
-        "vernepleier",
-        "psykolog",
-        "tannlege",
-        "tannpleier",
-        "fysioterapeut",
-        "ergoterapeut",
-        "ambulansearbeider",
-        "helsesekretær",
-        "apotektekniker",
-        "radiograf",
-        "bioingeniør",
-        "jordmor",
-        "omsorgsarbeider",
-        "fotterapeut"
-      ],
-      "useFor": [
-        "autorisasjon",
-        "lisens",
-        "skikkethet",
-        "yrkestittel",
-        "helsepersonell"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "PLANT_PROTECTION_AUTH",
-      "authority": "Mattilsynet",
-      "title": "Autorisasjonsbevis for plantevernmidler",
-      "url": "https://www.mattilsynet.no/planter-og-dyrking/plantevernmidler/autorisasjonsbevis-for-plantevernmidler",
-      "sectors": [
-        "agriculture_nature"
-      ],
-      "occupations": [
-        "bonde",
-        "gårdbruker",
-        "landbruksarbeider",
-        "gartner",
-        "skogbruker",
-        "skogsarbeider",
-        "anleggsgartner",
-        "skogsmaskinfører"
-      ],
-      "useFor": [
-        "plantevernmidler",
-        "autorisasjon",
-        "sprøyting",
-        "kjemikalier",
-        "plantevern"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "LUFTFART_BACKGROUND_CHECK",
-      "authority": "Luftfartstilsynet",
-      "title": "Bakgrunnssjekk for ansatte i luftfarten",
-      "url": "https://www.luftfartstilsynet.no/aktorer/bakgrunnssjekk/bakgrunnssjekk-i-luftfarten/",
-      "sectors": [
-        "aviation"
-      ],
-      "occupations": [
-        "pilot",
-        "kabinansatt",
-        "flyvert",
-        "flyvertinne",
-        "flytekniker",
-        "flymekaniker",
-        "flygeleder",
-        "bakkeoperatør",
-        "bagasjemedarbeider",
-        "luftfartsmedarbeider",
-        "ground handling-medarbeider",
-        "check-in-medarbeider"
-      ],
-      "useFor": [
-        "bakgrunnssjekk",
-        "vandel",
-        "sikkerhetsområde",
-        "ID-kort",
-        "ansettelse",
-        "luftfartssikkerhet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "AT_CERTIFIED_EQUIPMENT_TRAINING",
-      "authority": "Arbeidstilsynet",
-      "title": "Dokumentert og sertifisert sikkerhetsopplæring for arbeidsutstyr",
-      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/opplaring/",
-      "sectors": [
-        "construction_trades",
-        "transport_logistics",
-        "industry_production"
-      ],
-      "occupations": [
-        "anleggsmaskinfører",
-        "truckfører",
-        "maskinoperatør"
-      ],
-      "useFor": [
-        "truck",
-        "masseforflytningsmaskin",
-        "anleggsmaskin",
-        "arbeidsutstyr",
-        "kompetansebevis",
-        "sikkerhetsopplæring",
-        "maskin"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
-      "authority": "Mattilsynet",
-      "title": "Dyrehelsepersonell",
-      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell",
-      "sectors": [
-        "veterinary_animal_health",
-        "aquaculture_fisheries_maritime"
-      ],
-      "useFor": [
-        "dyrehelsepersonell",
-        "journalføring",
-        "autorisasjon",
-        "legemidler til dyr",
-        "fiskehelse"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "occupations": [
-        "veterinær",
-        "dyrlege",
-        "dyrepleier",
-        "fiskehelsebiolog",
-        "fiskehelsepersonell"
-      ]
-    },
-    {
-      "id": "MATTILSYNET_DYREVELFERD",
-      "authority": "Mattilsynet",
-      "title": "Dyrevelferd",
-      "url": "https://www.mattilsynet.no/dyr/dyrevelferd",
-      "sectors": [
-        "agriculture_nature",
-        "veterinary_animal_health"
-      ],
-      "useFor": [
-        "dyrevelferd",
-        "dyrehold",
-        "tilsyn og stell",
-        "kompetansekrav",
-        "smitte"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
-    },
-    {
-      "id": "DSB_ELECTRICAL_SAFETY",
-      "authority": "DSB",
-      "title": "Elsikkerhet",
-      "url": "https://www.dsb.no/elsikkerhet/",
-      "sectors": [
-        "construction_trades",
-        "industry_production",
-        "offshore_energy",
-        "defence_police_emergency"
-      ],
-      "useFor": [
-        "elsikkerhet",
-        "elektrofag",
-        "FSE",
-        "internkontroll",
-        "elulykker"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "occupations": [
-        "elektriker",
-        "automatiker",
-        "energimontør",
-        "elektroingeniør",
-        "energitekniker"
-      ],
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
-    },
-    {
-      "id": "POLITI_ETHICAL_GUIDELINES",
-      "authority": "Politidirektoratet",
-      "title": "Etiske retningslinjer for politiet",
-      "url": "https://www.politiet.no/globalassets/om-politiet/jobb-i-politiet/jobb-hos-oss/etiske-retningslinjer-for-politiet.pdf",
-      "sectors": [
-        "defence_police_emergency"
-      ],
-      "occupations": [
-        "politi"
-      ],
-      "useFor": [
-        "etikk",
-        "rolleforståelse",
-        "integritet",
-        "bierverv",
-        "sosiale medier",
-        "tillit",
-        "profesjonell opptreden",
-        "habilitet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_guideline",
-      "contextualOnly": true
-    },
-    {
-      "id": "STATE_ETHICS",
-      "authority": "Digitaliserings- og forvaltningsdepartementet",
-      "title": "Etiske retningslinjer for statstjenesten",
-      "url": "https://www.regjeringen.no/no/dokumenter/etiske-retningslinjer-for-statstjenesten/id88164/",
+      "title": "Rutiner for intern varsling",
+      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/varsling/virksomheten-skal-ha-rutiner-for-intern-varsling/",
       "sectors": [
         "*"
       ],
       "useFor": [
-        "etikk",
-        "lojalitet",
-        "ytringsfrihet",
-        "habilitet",
-        "gaver",
-        "interessekonflikt",
-        "varsling"
+        "varsling",
+        "varslingsrutine",
+        "kritikkverdige forhold",
+        "gjengjeldelse",
+        "mottak av varsel",
+        "undersøkelse"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
-      "sourceType": "official_guideline",
-      "contextualOnly": true,
-      "employerTypes": [
-        "state"
-      ],
-      "sourceRole": "official_employer_reference",
-      "bindingStatus": "official_guideline_not_law"
-    },
-    {
-      "id": "FINANSTILSYNET_RULES",
-      "authority": "Finanstilsynet",
-      "title": "Finanstilsynets regelverk",
-      "url": "https://www.finanstilsynet.no/regelverk/",
-      "sectors": [
-        "office_finance_it"
-      ],
-      "useFor": [
-        "bank",
-        "forsikring",
-        "verdipapir",
-        "regnskap",
-        "revisjon",
-        "finansforetak"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
-      "contextualOnly": false,
-      "occupations": [
-        "regnskapsfører",
-        "revisor",
-        "bankrådgiver",
-        "forsikringsrådgiver"
-      ],
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
-    },
-    {
-      "id": "HAIRDRESSER_HYGIENE",
-      "authority": "Lovdata",
-      "title": "Forskrift om hygienekrav for frisør- og hudpleievirksomhet",
-      "url": "https://lovdata.no/nav/forskrift/1998-05-06-581",
-      "sectors": [
-        "retail_hospitality_service"
-      ],
-      "occupations": [
-        "frisør",
-        "hudpleier"
-      ],
-      "useFor": [
-        "hygiene",
-        "smittevern",
-        "utstyr",
-        "lokaler",
-        "internkontroll",
-        "frisør",
-        "hudpleie"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "regulation",
-      "contextualOnly": true
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_rules"
     },
     {
       "id": "AT_WORK_EQUIPMENT_REGULATION",
@@ -770,6 +475,485 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "regulation",
+      "contextualOnly": true
+    },
+    {
+      "id": "AUDITOR_RULES",
+      "authority": "Finanstilsynet",
+      "title": "Regelverk for revisorer",
+      "url": "https://www.finanstilsynet.no/regelverk/revisor/",
+      "sectors": [
+        "office_finance_it"
+      ],
+      "occupations": [
+        "revisor"
+      ],
+      "useFor": [
+        "revisor",
+        "uavhengighet",
+        "objektivitet",
+        "taushetsplikt",
+        "hvitvasking",
+        "etterutdanning"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "AVIATION_CERTIFICATES",
+      "authority": "Luftfartstilsynet",
+      "title": "Utdanning og sertifikater i luftfarten",
+      "url": "https://www.luftfartstilsynet.no/aktorer/utdanning/",
+      "sectors": [
+        "aviation"
+      ],
+      "occupations": [
+        "pilot",
+        "kabinansatt",
+        "flyvert",
+        "flyvertinne",
+        "flytekniker",
+        "flymekaniker",
+        "flygeleder"
+      ],
+      "useFor": [
+        "sertifikat",
+        "rettigheter",
+        "kompetanse",
+        "utdanning",
+        "skikkethet",
+        "flyger",
+        "kabin",
+        "flygeleder",
+        "flytekniker"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "CLEANING_APPROVAL",
+      "authority": "Arbeidstilsynet",
+      "title": "Godkjenningsordning for renholdsvirksomheter",
+      "url": "https://www.arbeidstilsynet.no/godkjenninger/renholdsregisteret/godkjenningsordning-for-renholdsvirksomheter/",
+      "sectors": [
+        "retail_hospitality_service"
+      ],
+      "occupations": [
+        "renholder",
+        "renholdsoperatør"
+      ],
+      "useFor": [
+        "renhold",
+        "HMS-kort",
+        "godkjenning",
+        "minstelønn",
+        "bedriftshelsetjeneste",
+        "arbeidsavtale"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "DATATILSYNET_WORKPLACE_PRIVACY",
+      "authority": "Datatilsynet",
+      "title": "Personvern i arbeidslivet",
+      "url": "https://www.datatilsynet.no/personvern-pa-ulike-omrader/personvern-pa-arbeidsplassen/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "kontrolltiltak",
+        "personopplysninger om ansatte",
+        "overvåking",
+        "innsyn",
+        "arbeidslivspersonvern"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": true,
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_privacy_rules"
+    },
+    {
+      "id": "DMP_VETERINARY_MEDICINES",
+      "authority": "Direktoratet for medisinske produkter",
+      "title": "Veterinærmedisin – legemidler til dyr",
+      "url": "https://www.dmp.no/veterinermedisin",
+      "sectors": [
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime"
+      ],
+      "occupations": [
+        "veterinær",
+        "dyrlege",
+        "dyrepleier",
+        "fiskehelsebiolog",
+        "fiskehelsepersonell"
+      ],
+      "useFor": [
+        "veterinærmedisin",
+        "legemidler til dyr",
+        "antibiotikabruk",
+        "rekvirering",
+        "legemiddelsikkerhet",
+        "legemiddelhåndtering"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "official_authority",
+      "sourceRole": "authority_guidance",
+      "bindingStatus": "guidance_on_binding_rules",
+      "contextualOnly": true
+    },
+    {
+      "id": "DNV_VETERINARY_ETHICS",
+      "authority": "Den norske veterinærforening",
+      "title": "Profesjonsetiske retningslinjer for veterinærer",
+      "url": "https://www.vetnett.no/etiske-retningslinjer/",
+      "sectors": [
+        "veterinary_animal_health"
+      ],
+      "occupations": [
+        "veterinær",
+        "dyrlege"
+      ],
+      "useFor": [
+        "yrkesetikk",
+        "kollegialitet",
+        "kollegakonflikt",
+        "profesjonsetikk",
+        "veterinæransvar",
+        "klientforhold",
+        "faglig uenighet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "professional_framework",
+      "sourceRole": "professional_framework",
+      "bindingStatus": "non_binding_professional_guidance",
+      "contextualOnly": true
+    },
+    {
+      "id": "DRIVER_PERMIT",
+      "authority": "Politiet",
+      "title": "Kjøreseddel for yrkessjåfører",
+      "url": "https://www.politiet.no/tjenester/kjoreseddel-for-yrkessjaforer",
+      "sectors": [
+        "transport_logistics"
+      ],
+      "occupations": [
+        "taxisjåfør",
+        "bussjåfør"
+      ],
+      "useFor": [
+        "kjøreseddel",
+        "vandel",
+        "helsekrav",
+        "skikkethet",
+        "drosje",
+        "buss"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "DRIVER_PROFESSIONAL_QUALIFICATION",
+      "authority": "Lovdata",
+      "title": "Yrkessjåførforskriften",
+      "url": "https://lovdata.no/nav/forskrift/2008-04-16-362",
+      "sectors": [
+        "transport_logistics"
+      ],
+      "occupations": [
+        "bussjåfør",
+        "lastebilsjåfør"
+      ],
+      "useFor": [
+        "yrkessjåførkompetanse",
+        "kompetansebevis",
+        "etterutdanning",
+        "buss",
+        "lastebil"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "regulation",
+      "contextualOnly": true
+    },
+    {
+      "id": "DSB_ELECTRICAL_QUALIFICATIONS",
+      "authority": "DSB",
+      "title": "Kvalifikasjonskrav for arbeid på elektriske anlegg og elektrisk utstyr",
+      "url": "https://www.dsb.no/elsikkerhet/kvalifikasjoner-foretak-og-virksomhet/veiledning-til-forskrift-om-elektroforetak-mv/",
+      "sectors": [
+        "construction_trades",
+        "offshore_energy"
+      ],
+      "occupations": [
+        "elektriker",
+        "automatiker",
+        "energimontør",
+        "elektroingeniør",
+        "energitekniker"
+      ],
+      "useFor": [
+        "kvalifikasjoner",
+        "kompetanse",
+        "faglig ansvar",
+        "elektrisk anlegg",
+        "elsikkerhet",
+        "opplæring"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "DSB_ELECTRICAL_SAFETY",
+      "authority": "DSB",
+      "title": "Elsikkerhet",
+      "url": "https://www.dsb.no/elsikkerhet/",
+      "sectors": [
+        "construction_trades",
+        "industry_production",
+        "offshore_energy",
+        "defence_police_emergency"
+      ],
+      "useFor": [
+        "elsikkerhet",
+        "elektrofag",
+        "FSE",
+        "internkontroll",
+        "elulykker"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "occupations": [
+        "elektriker",
+        "automatiker",
+        "energimontør",
+        "elektroingeniør",
+        "energitekniker"
+      ],
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
+    },
+    {
+      "id": "DSB_FIRE_RESCUE",
+      "authority": "DSB",
+      "title": "Veiledning til brann- og redningsvesenforskriften",
+      "url": "https://www.dsb.no/brannsikkerhet/brannberedskap/regelverk-prosedyrer-og-veiledning/veiledning-til-brann--og-redningsvesenforskriften/",
+      "sectors": [
+        "defence_police_emergency"
+      ],
+      "useFor": [
+        "brann og redning",
+        "beredskap",
+        "ledelse",
+        "kompetanse",
+        "øvelse",
+        "evaluering",
+        "læring"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "occupations": [
+        "brann og redning",
+        "brannkonstabel"
+      ]
+    },
+    {
+      "id": "FINANSTILSYNET_AML",
+      "authority": "Finanstilsynet",
+      "title": "Veileder til hvitvaskingsloven",
+      "url": "https://www.finanstilsynet.no/nyhetsarkiv/rundskriv/2022/veileder-til-hvitvaskingsloven/",
+      "sectors": [
+        "office_finance_it",
+        "public_admin_legal"
+      ],
+      "occupations": [
+        "regnskapsfører",
+        "revisor",
+        "bankrådgiver",
+        "forsikringsrådgiver",
+        "advokat"
+      ],
+      "useFor": [
+        "hvitvasking",
+        "terrorfinansiering",
+        "kundetiltak",
+        "rapportering",
+        "mistanke",
+        "etterlevelse"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_guideline",
+      "contextualOnly": true
+    },
+    {
+      "id": "FINANSTILSYNET_INSURANCE_CONFLICTS",
+      "authority": "Finanstilsynet",
+      "title": "Interessekonflikter og avlønningskrav i forsikringsformidling",
+      "url": "https://www.finanstilsynet.no/tema/forsikringsformidling-og--distribusjon/forsikrings--og-gjenforsikringsmeglingsforetak/",
+      "sectors": [
+        "office_finance_it"
+      ],
+      "occupations": [
+        "forsikringsrådgiver"
+      ],
+      "useFor": [
+        "interessekonflikt",
+        "salgsmål",
+        "avlønning",
+        "kundens interesser",
+        "prestasjon",
+        "rådgivning"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "FINANSTILSYNET_INSURANCE_QUALIFICATIONS",
+      "authority": "Finanstilsynet",
+      "title": "Kvalifikasjons- og egnethetskrav i forsikringsformidling",
+      "url": "https://www.finanstilsynet.no/tillatelser/forsikringsformidlingsforetak/vilkar-for-tillatelse-og-registrering/",
+      "sectors": [
+        "office_finance_it"
+      ],
+      "occupations": [
+        "forsikringsrådgiver"
+      ],
+      "useFor": [
+        "kompetanse",
+        "egnethet",
+        "vandel",
+        "etterutdanning",
+        "forsikringsformidling"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "FINANSTILSYNET_RULES",
+      "authority": "Finanstilsynet",
+      "title": "Finanstilsynets regelverk",
+      "url": "https://www.finanstilsynet.no/regelverk/",
+      "sectors": [
+        "office_finance_it"
+      ],
+      "useFor": [
+        "bank",
+        "forsikring",
+        "verdipapir",
+        "regnskap",
+        "revisjon",
+        "finansforetak"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "occupations": [
+        "regnskapsfører",
+        "revisor",
+        "bankrådgiver",
+        "forsikringsrådgiver"
+      ],
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
+    },
+    {
+      "id": "FISKERIDIR_AQUACULTURE",
+      "authority": "Fiskeridirektoratet",
+      "title": "Akvakultur",
+      "url": "https://www.fiskeridir.no/akvakultur",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "akvakulturloven",
+        "forskrifter",
+        "rømming",
+        "NYTEK23",
+        "tillatelser",
+        "havbruk"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
+    },
+    {
+      "id": "FISKERIDIR_IK_AQUACULTURE",
+      "authority": "Fiskeridirektoratet",
+      "title": "Veileder i internkontroll - IK Akvakultur",
+      "url": "https://www.fiskeridir.no/akvakultur/veiledere/veileder-i-internkontroll-ik-akvakultur",
+      "sectors": [
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "internkontroll",
+        "risikokartlegging",
+        "kompetanse",
+        "avvik",
+        "forbedring",
+        "havbruk"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "FOOD_SERVICE_RULES",
+      "authority": "Mattilsynet",
+      "title": "Regelverk for serveringssteder og matvirksomhet",
+      "url": "https://www.mattilsynet.no/mat-og-drikke/startpakke-for-nye-matbedrifter/regelverk",
+      "sectors": [
+        "retail_hospitality_service",
+        "industry_production"
+      ],
+      "occupations": [
+        "kokk",
+        "servitør",
+        "barista",
+        "baker",
+        "konditor",
+        "kantinemedarbeider",
+        "næringsmiddelarbeider"
+      ],
+      "useFor": [
+        "mathygiene",
+        "mattrygghet",
+        "internkontroll",
+        "næringsmiddelhygiene",
+        "smitte",
+        "renhold"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
       "contextualOnly": true
     },
     {
@@ -862,583 +1046,29 @@
       "contextualOnly": true
     },
     {
-      "id": "CLEANING_APPROVAL",
-      "authority": "Arbeidstilsynet",
-      "title": "Godkjenningsordning for renholdsvirksomheter",
-      "url": "https://www.arbeidstilsynet.no/godkjenninger/renholdsregisteret/godkjenningsordning-for-renholdsvirksomheter/",
+      "id": "HAIRDRESSER_HYGIENE",
+      "authority": "Lovdata",
+      "title": "Forskrift om hygienekrav for frisør- og hudpleievirksomhet",
+      "url": "https://lovdata.no/nav/forskrift/1998-05-06-581",
       "sectors": [
         "retail_hospitality_service"
       ],
       "occupations": [
-        "renholder",
-        "renholdsoperatør"
+        "frisør",
+        "hudpleier"
       ],
       "useFor": [
-        "renhold",
-        "HMS-kort",
-        "godkjenning",
-        "minstelønn",
-        "bedriftshelsetjeneste",
-        "arbeidsavtale"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "HAVTIL_RULES_PDF",
-      "authority": "Havindustritilsynet",
-      "title": "Havindustritilsynets gjeldende regelverk",
-      "url": "https://www.havtil.no/regelverk/pdf-av-regelverket/",
-      "sectors": [
-        "offshore_energy"
-      ],
-      "useFor": [
-        "rammeforskriften",
-        "styringsforskriften",
-        "innretningsforskriften",
-        "aktivitetsforskriften",
-        "teknisk og operasjonell forskrift"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
-    },
-    {
-      "id": "HDIR_HEALTH_PERSONNEL",
-      "authority": "Helsedirektoratet",
-      "title": "Helsepersonelloven",
-      "url": "https://www.helsedirektoratet.no/lov-og-forskrift/helsepersonelloven",
-      "sectors": [
-        "health_care"
-      ],
-      "useFor": [
-        "helsepersonell",
-        "taushetsplikt",
-        "opplysningsplikt",
-        "forsvarlighet",
-        "dokumentasjon"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false
-    },
-    {
-      "id": "HELSETILSYNET_RULES",
-      "authority": "Helsetilsynet",
-      "title": "Helsetilsynets regelverk",
-      "url": "https://www.helsetilsynet.no/regelverk/",
-      "sectors": [
-        "health_care"
-      ],
-      "useFor": [
-        "tilsyn",
-        "helsepersonell",
-        "helse- og omsorgstjenester",
-        "autorisasjon",
-        "administrative reaksjoner",
-        "forsvarlighet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
-    },
-    {
-      "id": "OFFSHORE_HSE_RULES",
-      "authority": "Havindustritilsynet",
-      "title": "HMS-regelverket for petroleumsvirksomheten",
-      "url": "https://www.havtil.no/regelverk/alle-forskrifter/",
-      "sectors": [
-        "offshore_energy"
-      ],
-      "useFor": [
-        "rammeforskriften",
-        "styringsforskriften",
-        "aktivitetsforskriften",
-        "arbeidsmiljø",
-        "sikkerhet",
-        "beredskap",
-        "offshore"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
-    },
-    {
-      "id": "AKAN_HELP_EMPLOYEE",
-      "authority": "Akan kompetansesenter",
-      "title": "Hvordan hjelpe en medarbeider med et rus- eller spilleproblem?",
-      "url": "https://www.akan.no/hjelpe-en-medarbeider",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "rusproblem",
-        "spilleproblem",
-        "individuell Akan-avtale",
-        "rusoppfølging",
-        "spilleavhengighet",
-        "hjelpetiltak ved rus eller spill"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-01",
-      "sourceType": "specialist_worklife_guidance",
-      "contextualOnly": true,
-      "sourceRole": "specialist_guidance",
-      "bindingStatus": "non_binding_guidance"
-    },
-    {
-      "id": "IA_AGREEMENT_2025_2028",
-      "authority": "Regjeringen / partene i arbeidslivet",
-      "title": "IA-avtalen 2025–2028",
-      "url": "https://www.regjeringen.no/no/tema/arbeidsliv/arbeidsmiljo-og-sikkerhet/inkluderende_arbeidsliv/innsikt/ia-avtalen-2025-2028/id3151146/",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "sykefravær",
-        "inkluderende arbeidsliv",
-        "forebygging",
-        "frafall",
-        "arbeidsmiljø",
-        "partssamarbeid",
-        "tilrettelegging"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "tripartite_agreement",
-      "contextualOnly": true,
-      "sourceRole": "worklife_framework",
-      "bindingStatus": "non_binding_framework"
-    },
-    {
-      "id": "FINANSTILSYNET_INSURANCE_CONFLICTS",
-      "authority": "Finanstilsynet",
-      "title": "Interessekonflikter og avlønningskrav i forsikringsformidling",
-      "url": "https://www.finanstilsynet.no/tema/forsikringsformidling-og--distribusjon/forsikrings--og-gjenforsikringsmeglingsforetak/",
-      "sectors": [
-        "office_finance_it"
-      ],
-      "occupations": [
-        "forsikringsrådgiver"
-      ],
-      "useFor": [
-        "interessekonflikt",
-        "salgsmål",
-        "avlønning",
-        "kundens interesser",
-        "prestasjon",
-        "rådgivning"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "AT_INTERNKONTROLL",
-      "authority": "Arbeidstilsynet",
-      "title": "Internkontrollforskriften – systematisk HMS-arbeid",
-      "url": "https://www.arbeidstilsynet.no/regelverk/forskrifter/internkontrollforskriften/",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
+        "hygiene",
+        "smittevern",
+        "utstyr",
+        "lokaler",
         "internkontroll",
-        "HMS",
-        "systematisk HMS",
-        "risikovurdering",
-        "avvik",
-        "rutiner",
-        "opplæring",
-        "ansvar",
-        "myndighet",
-        "sikkerhet"
+        "frisør",
+        "hudpleie"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "regulation",
-      "contextualOnly": true,
-      "sourceRole": "primary_regulation",
-      "bindingStatus": "binding_when_applicable"
-    },
-    {
-      "id": "MATTILSYNET_ANIMAL_JOURNAL",
-      "authority": "Mattilsynet",
-      "title": "Journalføring for dyrehelsepersonell",
-      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell/veileder-om-dyrehelsepersonell-og-bruk-av-ikke-medikamentelle-avlusingsmetoder-imm/journalforing",
-      "sectors": [
-        "veterinary_animal_health",
-        "aquaculture_fisheries_maritime"
-      ],
-      "useFor": [
-        "journalføring",
-        "dyrehelsepersonell",
-        "forsvarlighet",
-        "fiskehelse",
-        "dokumentasjon"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-01",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "occupations": [
-        "veterinær",
-        "dyrlege",
-        "dyrepleier",
-        "fiskehelsebiolog",
-        "fiskehelsepersonell"
-      ]
-    },
-    {
-      "id": "ARKIVVERKET_JOURNALING",
-      "authority": "Nasjonalarkivet",
-      "title": "Veileder for journalføring",
-      "url": "https://www.nasjonalarkivet.no/veiledere/veileder-for-journalforing/",
-      "sectors": [
-        "public_admin_legal"
-      ],
-      "occupations": [
-        "saksbehandler",
-        "rådgiver",
-        "forvaltningsmedarbeider",
-        "NAV-medarbeider",
-        "kommunal rådgiver",
-        "statlig rådgiver",
-        "konsulent",
-        "førstekonsulent",
-        "seniorkonsulent",
-        "arkivar"
-      ],
-      "useFor": [
-        "journalføring",
-        "arkivering",
-        "dokumentasjon",
-        "saksbehandling",
-        "saksdokument"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "DRIVER_PERMIT",
-      "authority": "Politiet",
-      "title": "Kjøreseddel for yrkessjåfører",
-      "url": "https://www.politiet.no/tjenester/kjoreseddel-for-yrkessjaforer",
-      "sectors": [
-        "transport_logistics"
-      ],
-      "occupations": [
-        "taxisjåfør",
-        "bussjåfør"
-      ],
-      "useFor": [
-        "kjøreseddel",
-        "vandel",
-        "helsekrav",
-        "skikkethet",
-        "drosje",
-        "buss"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "UDIR_KINDERGARTEN_STAFFING",
-      "authority": "Utdanningsdirektoratet",
-      "title": "Kompetanse og bemanning i barnehagen",
-      "url": "https://www.udir.no/regelverk-og-tilsyn/barnehage/tilstrekkelig-bemanning-barnehagen/4.-tilstrekkelig-bemanning/",
-      "sectors": [
-        "education_childcare"
-      ],
-      "occupations": [
-        "barnehagelærer",
-        "barnehagestyrer",
-        "barnehageassistent",
-        "pedagogisk leder",
-        "barne- og ungdomsarbeider"
-      ],
-      "useFor": [
-        "bemanning",
-        "kompetanse",
-        "pedagogisk leder",
-        "forsvarlig drift",
-        "arbeidsbelastning"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "MATTILSYNET_ANIMAL_COMPETENCE",
-      "authority": "Mattilsynet",
-      "title": "Kompetansekrav for personer som håndterer dyr",
-      "url": "https://www.mattilsynet.no/dyr/dyrevelferd/kompetanse-og-personell",
-      "sectors": [
-        "veterinary_animal_health",
-        "agriculture_nature"
-      ],
-      "occupations": [
-        "dyreklinikkmedarbeider",
-        "dyreholder",
-        "hundefrisør",
-        "dyrepasser",
-        "kennelmedarbeider",
-        "bonde",
-        "gårdbruker",
-        "landbruksarbeider",
-        "avløser"
-      ],
-      "useFor": [
-        "dyrevelferd",
-        "kompetanse",
-        "opplæring",
-        "dyrehold",
-        "personell",
-        "forsvarlig stell"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "SJT_RAIL_COMPETENCE",
-      "authority": "Statens jernbanetilsyn",
-      "title": "Kompetansestyring for sikkerhetskritiske jernbaneoppgaver",
-      "url": "https://sjt.no/jernbane/sikkerhet-og-sikring/regelverk-horinger-og-veiledning/veiledning-om-jernbane/sikkerhetsstyringssystem-for-mindre-jernbanevirksomheter/",
-      "sectors": [
-        "transport_logistics"
-      ],
-      "occupations": [
-        "togpersonell",
-        "lokfører",
-        "konduktør"
-      ],
-      "useFor": [
-        "kompetanse",
-        "opplæring",
-        "trafikksikkerhet",
-        "sikkerhetskritiske oppgaver",
-        "ansvar",
-        "myndighet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "AT_CONTROL_MONITORING",
-      "authority": "Arbeidstilsynet",
-      "title": "Kontroll og overvåking i arbeidslivet",
-      "url": "https://www.arbeidstilsynet.no/arbeidstid-og-organisering/kontroll-og-overvakning/",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "kontrolltiltak",
-        "overvåking",
-        "kamera",
-        "GPS",
-        "e-post",
-        "internettrafikk",
-        "rustesting",
-        "helseundersøkelse",
-        "produksjonskontroll"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true,
-      "sourceRole": "authority_guidance",
-      "bindingStatus": "guidance_on_binding_rules"
-    },
-    {
-      "id": "UDIR_TEACHER_COMPETENCE",
-      "authority": "Utdanningsdirektoratet",
-      "title": "Krav til kompetanse for lærere – ansettelse og undervisning",
-      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring/krav-til-kompetanse-for-larere-ansettelse-og-undervisning/",
-      "sectors": [
-        "education_childcare"
-      ],
-      "occupations": [
-        "lærer",
-        "spesialpedagog",
-        "skoleleder"
-      ],
-      "useFor": [
-        "kompetansekrav",
-        "ansettelse",
-        "undervisningskompetanse",
-        "politiattest",
-        "yrkesforbud"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "FINANSTILSYNET_INSURANCE_QUALIFICATIONS",
-      "authority": "Finanstilsynet",
-      "title": "Kvalifikasjons- og egnethetskrav i forsikringsformidling",
-      "url": "https://www.finanstilsynet.no/tillatelser/forsikringsformidlingsforetak/vilkar-for-tillatelse-og-registrering/",
-      "sectors": [
-        "office_finance_it"
-      ],
-      "occupations": [
-        "forsikringsrådgiver"
-      ],
-      "useFor": [
-        "kompetanse",
-        "egnethet",
-        "vandel",
-        "etterutdanning",
-        "forsikringsformidling"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "DSB_ELECTRICAL_QUALIFICATIONS",
-      "authority": "DSB",
-      "title": "Kvalifikasjonskrav for arbeid på elektriske anlegg og elektrisk utstyr",
-      "url": "https://www.dsb.no/elsikkerhet/kvalifikasjoner-foretak-og-virksomhet/veiledning-til-forskrift-om-elektroforetak-mv/",
-      "sectors": [
-        "construction_trades",
-        "offshore_energy"
-      ],
-      "occupations": [
-        "elektriker",
-        "automatiker",
-        "energimontør",
-        "elektroingeniør",
-        "energitekniker"
-      ],
-      "useFor": [
-        "kvalifikasjoner",
-        "kompetanse",
-        "faglig ansvar",
-        "elektrisk anlegg",
-        "elsikkerhet",
-        "opplæring"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "HDIR_QUALITY_LEADERSHIP",
-      "authority": "Helsedirektoratet",
-      "title": "Ledelse og kvalitetsforbedring i helse- og omsorgstjenesten",
-      "url": "https://www.helsedirektoratet.no/veiledere/ledelse-og-kvalitetsforbedring-i-helse-og-omsorgstjenesten/",
-      "sectors": [
-        "health_care"
-      ],
-      "useFor": [
-        "ledelse",
-        "styringssystem",
-        "kompetanse",
-        "risiko",
-        "avvik",
-        "kvalitetsforbedring",
-        "pasientsikkerhet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-01",
-      "sourceType": "official_authority",
-      "contextualOnly": false
-    },
-    {
-      "id": "LUFTFART_RULES",
-      "authority": "Luftfartstilsynet",
-      "title": "Lover og regler",
-      "url": "https://www.luftfartstilsynet.no/lover-og-regler/",
-      "sectors": [
-        "aviation"
-      ],
-      "useFor": [
-        "luftfartssikkerhet",
-        "sertifikater",
-        "operativt regelverk",
-        "informasjonssikkerhet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
-    },
-    {
-      "id": "KRIMINALOMSORG_RULES",
-      "authority": "Kriminalomsorgen",
-      "title": "Lovverk og retningslinjer for kriminalomsorgen",
-      "url": "https://www.kriminalomsorgen.no/ressurser?tab=lovverk-for-kriminalomsorgen-lover-",
-      "sectors": [
-        "defence_police_emergency"
-      ],
-      "occupations": [
-        "kriminalomsorg",
-        "fengselsbetjent"
-      ],
-      "useFor": [
-        "straffegjennomføring",
-        "tjenesteutøvelse",
-        "rapportering",
-        "taushetsplikt",
-        "sikkerhet",
-        "maktbruk",
-        "yrkesetikk"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "POLITI_EMPLOYEE_PLATFORM",
-      "authority": "Politiet",
-      "title": "Medarbeiderplattformen i politiet",
-      "url": "https://www.politiet.no/om-politiet/jobb-i-politiet/medarbeiderplattform",
-      "sectors": [
-        "defence_police_emergency"
-      ],
-      "occupations": [
-        "politi"
-      ],
-      "useFor": [
-        "lederforventninger",
-        "tilbakemelding",
-        "profesjonalitet",
-        "respekt",
-        "ansvar",
-        "risiko",
-        "samhandling"
-      ],
-      "timeSensitive": false,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_guideline",
       "contextualOnly": true
     },
     {
@@ -1474,116 +1104,57 @@
       "contextualOnly": true
     },
     {
-      "id": "OFFENTLEGLOVA",
-      "authority": "Lovdata",
-      "title": "Offentleglova",
-      "url": "https://lovdata.no/nav/lov/2006-05-19-16",
+      "id": "HAVTIL_RULES_PDF",
+      "authority": "Havindustritilsynet",
+      "title": "Havindustritilsynets gjeldende regelverk",
+      "url": "https://www.havtil.no/regelverk/pdf-av-regelverket/",
       "sectors": [
-        "public_admin_legal"
-      ],
-      "occupations": [
-        "saksbehandler",
-        "rådgiver",
-        "jurist",
-        "HR-rådgiver",
-        "forvaltningsmedarbeider",
-        "NAV-medarbeider",
-        "kommunal rådgiver",
-        "statlig rådgiver",
-        "konsulent",
-        "førstekonsulent",
-        "seniorkonsulent",
-        "arkivar"
+        "offshore_energy"
       ],
       "useFor": [
-        "innsyn",
-        "taushetsplikt",
-        "offentlighet",
-        "saksdokument",
-        "journalføring",
-        "åpenhet"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "law_database",
-      "contextualOnly": true,
-      "sourceRole": "primary_law",
-      "bindingStatus": "binding_law"
-    },
-    {
-      "id": "PERSONOPPLYSNINGSLOVEN",
-      "authority": "Lovdata",
-      "title": "Personopplysningsloven og personvernforordningen (GDPR)",
-      "url": "https://lovdata.no/lov/2018-06-15-38",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "personopplysninger",
-        "personvern",
-        "ansattopplysninger",
-        "personalmappe",
-        "kontrolltiltak",
-        "overvåking",
-        "helseopplysninger",
-        "dataminimering",
-        "lagring",
-        "GDPR"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "law_database",
-      "contextualOnly": true,
-      "sourceRole": "primary_law",
-      "bindingStatus": "binding_law"
-    },
-    {
-      "id": "DATATILSYNET_WORKPLACE_PRIVACY",
-      "authority": "Datatilsynet",
-      "title": "Personvern i arbeidslivet",
-      "url": "https://www.datatilsynet.no/personvern-pa-ulike-omrader/personvern-pa-arbeidsplassen/",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "kontrolltiltak",
-        "personopplysninger om ansatte",
-        "overvåking",
-        "innsyn",
-        "arbeidslivspersonvern"
+        "rammeforskriften",
+        "styringsforskriften",
+        "innretningsforskriften",
+        "aktivitetsforskriften",
+        "teknisk og operasjonell forskrift"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
-      "contextualOnly": true,
-      "sourceRole": "authority_guidance",
-      "bindingStatus": "guidance_on_binding_privacy_rules"
+      "contextualOnly": false,
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
     },
     {
-      "id": "UDIR_KINDERGARTEN_POLICE_CERT",
-      "authority": "Utdanningsdirektoratet",
-      "title": "Politiattest i barnehagen",
-      "url": "https://www.udir.no/regelverkstolkninger/barnehage/lov-om-barnehager-barnehageloven/kapittel-vi-personalet/-30.-politiattest",
+      "id": "HAVTIL_WORK_TIME_PLANS",
+      "authority": "Havindustritilsynet",
+      "title": "Arbeidstidsordninger og oppholdsperioder offshore",
+      "url": "https://www.havtil.no/regelverk/alle-forskrifter/rammeforskriften/VI/38/",
       "sectors": [
-        "education_childcare"
+        "offshore_energy"
       ],
       "occupations": [
-        "barnehagelærer",
-        "barne- og ungdomsarbeider",
-        "barnehagestyrer",
-        "barnehageassistent",
-        "pedagogisk leder"
+        "offshorearbeider",
+        "prosessoperatør offshore",
+        "plattformarbeider",
+        "kraftverksoperatør",
+        "petroleumsingeniør",
+        "prosessingeniør",
+        "energimontør",
+        "elektroingeniør",
+        "energitekniker"
       ],
       "useFor": [
-        "politiattest",
-        "ansettelse",
-        "vandel",
-        "yrkesforbud",
-        "barnesikkerhet"
+        "arbeidstid",
+        "oppholdsperiode",
+        "turnus",
+        "overtid",
+        "hvile",
+        "arbeidsplan"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
+      "sourceType": "regulation",
       "contextualOnly": true
     },
     {
@@ -1628,19 +1199,19 @@
       "contextualOnly": true
     },
     {
-      "id": "LUFTFART_FTL",
-      "authority": "Luftfartstilsynet",
-      "title": "Regelverk arbeidstidsbestemmelser for flygende",
-      "url": "https://www.luftfartstilsynet.no/aktorer/flyselskap/arbeidstidsbestemmelser/regelverk-arbeidstidsbestemmelser-for-flygende/",
+      "id": "HDIR_HEALTH_PERSONNEL",
+      "authority": "Helsedirektoratet",
+      "title": "Helsepersonelloven",
+      "url": "https://www.helsedirektoratet.no/lov-og-forskrift/helsepersonelloven",
       "sectors": [
-        "aviation"
+        "health_care"
       ],
       "useFor": [
-        "flygetid",
-        "arbeidstid",
-        "hviletid",
-        "fatigue",
-        "besetningsmedlemmer"
+        "helsepersonell",
+        "taushetsplikt",
+        "opplysningsplikt",
+        "forsvarlighet",
+        "dokumentasjon"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
@@ -1648,172 +1219,138 @@
       "contextualOnly": false
     },
     {
-      "id": "UDIR_KINDERGARTEN_RULES",
-      "authority": "Utdanningsdirektoratet",
-      "title": "Regelverk for barnehage",
-      "url": "https://www.udir.no/regelverk-og-tilsyn/barnehage/",
+      "id": "HDIR_QUALITY_LEADERSHIP",
+      "authority": "Helsedirektoratet",
+      "title": "Ledelse og kvalitetsforbedring i helse- og omsorgstjenesten",
+      "url": "https://www.helsedirektoratet.no/veiledere/ledelse-og-kvalitetsforbedring-i-helse-og-omsorgstjenesten/",
       "sectors": [
-        "education_childcare"
+        "health_care"
       ],
       "useFor": [
-        "barnehageloven",
-        "rammeplan",
-        "internkontroll",
-        "bemanning",
-        "barnemiljø"
+        "ledelse",
+        "styringssystem",
+        "kompetanse",
+        "risiko",
+        "avvik",
+        "kvalitetsforbedring",
+        "pasientsikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "HEALTH_AUTHORIZATION",
+      "authority": "Helsedirektoratet",
+      "title": "Autorisasjon og lisens for helsepersonell",
+      "url": "https://www.helsedirektoratet.no/autorisasjon-og-spesialistutdanning/autorisasjon-og-lisens",
+      "sectors": [
+        "health_care"
+      ],
+      "occupations": [
+        "sykepleier",
+        "lege",
+        "helsefagarbeider",
+        "vernepleier",
+        "psykolog",
+        "tannlege",
+        "tannpleier",
+        "fysioterapeut",
+        "ergoterapeut",
+        "ambulansearbeider",
+        "helsesekretær",
+        "apotektekniker",
+        "radiograf",
+        "bioingeniør",
+        "jordmor",
+        "omsorgsarbeider",
+        "fotterapeut"
+      ],
+      "useFor": [
+        "autorisasjon",
+        "lisens",
+        "skikkethet",
+        "yrkestittel",
+        "helsepersonell"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "HELSETILSYNET_RULES",
+      "authority": "Helsetilsynet",
+      "title": "Helsetilsynets regelverk",
+      "url": "https://www.helsetilsynet.no/regelverk/",
+      "sectors": [
+        "health_care"
+      ],
+      "useFor": [
+        "tilsyn",
+        "helsepersonell",
+        "helse- og omsorgstjenester",
+        "autorisasjon",
+        "administrative reaksjoner",
+        "forsvarlighet"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
       "contextualOnly": false,
       "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis",
-      "occupations": [
-        "barnehagelærer",
-        "barnehagestyrer",
-        "barnehageassistent",
-        "pedagogisk leder",
-        "barne- og ungdomsarbeider"
-      ]
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
     },
     {
-      "id": "VEGVESEN_DRIVING_REST",
-      "authority": "Statens vegvesen",
-      "title": "Regelverk for kjøre- og hviletid",
-      "url": "https://www.vegvesen.no/kjoretoy/yrkestransport/kjore-og-hviletid/regelverk/",
+      "id": "IA_AGREEMENT_2025_2028",
+      "authority": "Regjeringen / partene i arbeidslivet",
+      "title": "IA-avtalen 2025–2028",
+      "url": "https://www.regjeringen.no/no/tema/arbeidsliv/arbeidsmiljo-og-sikkerhet/inkluderende_arbeidsliv/innsikt/ia-avtalen-2025-2028/id3151146/",
       "sectors": [
-        "transport_logistics"
+        "*"
       ],
       "useFor": [
-        "kjøre- og hviletid",
-        "arbeidstid for sjåfører",
-        "fartsskriver",
-        "arbeidsgivers organisering"
+        "sykefravær",
+        "inkluderende arbeidsliv",
+        "forebygging",
+        "frafall",
+        "arbeidsmiljø",
+        "partssamarbeid",
+        "tilrettelegging"
       ],
       "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "occupations": [
-        "bussjåfør",
-        "lastebilsjåfør",
-        "varebilsjåfør",
-        "taxisjåfør",
-        "sjåfør",
-        "budbilsjåfør"
-      ]
+      "lastVerified": "2026-11-08",
+      "sourceType": "tripartite_agreement",
+      "contextualOnly": true,
+      "sourceRole": "worklife_framework",
+      "bindingStatus": "non_binding_framework"
     },
     {
-      "id": "ACCOUNTANT_RULES",
-      "authority": "Finanstilsynet",
-      "title": "Regelverk for regnskapsførere",
-      "url": "https://www.finanstilsynet.no/regelverk/regnskapsforer/",
+      "id": "KRIMINALOMSORG_RULES",
+      "authority": "Kriminalomsorgen",
+      "title": "Lovverk og retningslinjer for kriminalomsorgen",
+      "url": "https://www.kriminalomsorgen.no/ressurser?tab=lovverk-for-kriminalomsorgen-lover-",
       "sectors": [
-        "office_finance_it"
+        "defence_police_emergency"
       ],
       "occupations": [
-        "regnskapsfører"
+        "kriminalomsorg",
+        "fengselsbetjent"
       ],
       "useFor": [
-        "regnskapsfører",
+        "straffegjennomføring",
+        "tjenesteutøvelse",
+        "rapportering",
         "taushetsplikt",
-        "hvitvasking",
-        "risikostyring",
-        "god regnskapsføringsskikk",
-        "egnethet"
+        "sikkerhet",
+        "maktbruk",
+        "yrkesetikk"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
       "contextualOnly": true
-    },
-    {
-      "id": "AUDITOR_RULES",
-      "authority": "Finanstilsynet",
-      "title": "Regelverk for revisorer",
-      "url": "https://www.finanstilsynet.no/regelverk/revisor/",
-      "sectors": [
-        "office_finance_it"
-      ],
-      "occupations": [
-        "revisor"
-      ],
-      "useFor": [
-        "revisor",
-        "uavhengighet",
-        "objektivitet",
-        "taushetsplikt",
-        "hvitvasking",
-        "etterutdanning"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "FOOD_SERVICE_RULES",
-      "authority": "Mattilsynet",
-      "title": "Regelverk for serveringssteder og matvirksomhet",
-      "url": "https://www.mattilsynet.no/mat-og-drikke/startpakke-for-nye-matbedrifter/regelverk",
-      "sectors": [
-        "retail_hospitality_service",
-        "industry_production"
-      ],
-      "occupations": [
-        "kokk",
-        "servitør",
-        "barista",
-        "baker",
-        "konditor",
-        "kantinemedarbeider",
-        "næringsmiddelarbeider"
-      ],
-      "useFor": [
-        "mathygiene",
-        "mattrygghet",
-        "internkontroll",
-        "næringsmiddelhygiene",
-        "smitte",
-        "renhold"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "UDIR_SCHOOL_RULES",
-      "authority": "Utdanningsdirektoratet",
-      "title": "Regelverk for skole og opplæring",
-      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring",
-      "sectors": [
-        "education_childcare"
-      ],
-      "useFor": [
-        "opplæringsloven",
-        "skolemiljø",
-        "ansattes plikter",
-        "elevrelaterte rettigheter",
-        "kompetansekrav"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-10-29",
-      "sourceType": "official_authority",
-      "contextualOnly": false,
-      "sourceRole": "authority_index",
-      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis",
-      "occupations": [
-        "lærer",
-        "spesialpedagog",
-        "SFO/AKS-medarbeider",
-        "skoleleder",
-        "miljøarbeider",
-        "lærerassistent",
-        "skoleassistent",
-        "miljøterapeut",
-        "barne- og ungdomsarbeider"
-      ]
     },
     {
       "id": "LANDBRUK_REGELVERK",
@@ -1838,10 +1375,59 @@
       "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
     },
     {
-      "id": "MATTILSYNET_ANIMAL_MEDICINES",
-      "authority": "Mattilsynet",
-      "title": "Regler for bruk av legemidler til dyr",
-      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell/legemidler-til-dyr/veileder-om-nye-regler-for-bruk-av-legemidler-til-dyr",
+      "id": "LOKFORER_RULES",
+      "authority": "Statens jernbanetilsyn",
+      "title": "Veileder om førerforskriften for lokførere",
+      "url": "https://sjt.no/jernbane/sikkerhet-og-sikring/regelverk-horinger-og-veiledning/veiledning-om-jernbane/veileder-om-forerforskriften-for-lokforere/",
+      "sectors": [
+        "transport_logistics"
+      ],
+      "occupations": [
+        "lokfører"
+      ],
+      "useFor": [
+        "førerbevis",
+        "sertifikat",
+        "helsekrav",
+        "skikkethet",
+        "opplysningsplikt",
+        "lokfører"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "LOVDATA_AML",
+      "authority": "Lovdata",
+      "title": "Arbeidsmiljøloven",
+      "url": "https://lovdata.no/NL/lov/2005-06-17-62",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "arbeidsmiljø",
+        "arbeidstid",
+        "varsling",
+        "tilrettelegging",
+        "stillingsvern",
+        "oppsigelse",
+        "kontrolltiltak",
+        "HMS"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "law_database",
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
+    },
+    {
+      "id": "LOVDATA_DYREHELSEPERSONELLOVEN",
+      "authority": "Lovdata",
+      "title": "Dyrehelsepersonelloven – lov om veterinærer og annet dyrehelsepersonell",
+      "url": "https://lovdata.no/dokument/NL/lov/2001-06-15-75",
       "sectors": [
         "veterinary_animal_health",
         "aquaculture_fisheries_maritime"
@@ -1854,65 +1440,123 @@
         "fiskehelsepersonell"
       ],
       "useFor": [
-        "legemidler",
-        "rekvirering",
-        "forsvarlighet",
-        "antibiotika",
+        "autorisasjon",
+        "dyrehelsepersonell",
+        "veterinærplikt",
+        "forsvarlig yrkesutøvelse",
+        "taushetsplikt",
         "journalføring",
-        "veterinærmedisin"
+        "rekvirering",
+        "dyreklinikk"
       ],
       "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
+      "lastVerified": "2026-11-20",
+      "sourceType": "law_database",
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law",
       "contextualOnly": true
     },
     {
-      "id": "REINDEER_ACT",
+      "id": "LOVDATA_DYREVELFERDSLOVEN",
       "authority": "Lovdata",
-      "title": "Reindriftsloven",
-      "url": "https://lovdata.no/nav/lov/2007-06-15-40",
+      "title": "Dyrevelferdsloven – lov om dyrevelferd",
+      "url": "https://lovdata.no/dokument/NL/lov/2009-06-19-97",
       "sectors": [
-        "agriculture_nature"
+        "veterinary_animal_health",
+        "agriculture_nature",
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "dyrevelferd",
+        "dyrehold",
+        "dyrevelferdsbrudd",
+        "vanskjøtsel",
+        "forsvarlig stell",
+        "dyrebeskyttelse",
+        "dyrevelferdstilsyn"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "law_database",
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law",
+      "contextualOnly": true
+    },
+    {
+      "id": "LUFTFART_BACKGROUND_CHECK",
+      "authority": "Luftfartstilsynet",
+      "title": "Bakgrunnssjekk for ansatte i luftfarten",
+      "url": "https://www.luftfartstilsynet.no/aktorer/bakgrunnssjekk/bakgrunnssjekk-i-luftfarten/",
+      "sectors": [
+        "aviation"
       ],
       "occupations": [
-        "reindriftsutøver"
+        "pilot",
+        "kabinansatt",
+        "flyvert",
+        "flyvertinne",
+        "flytekniker",
+        "flymekaniker",
+        "flygeleder",
+        "bakkeoperatør",
+        "bagasjemedarbeider",
+        "luftfartsmedarbeider",
+        "ground handling-medarbeider",
+        "check-in-medarbeider"
       ],
       "useFor": [
-        "reindrift",
-        "siida",
-        "reinbeite",
-        "bruksregler",
-        "reintall",
-        "organisering",
-        "taushetsplikt"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "law_database",
-      "contextualOnly": true
-    },
-    {
-      "id": "AT_WHISTLEBLOWING_ROUTINES",
-      "authority": "Arbeidstilsynet",
-      "title": "Rutiner for intern varsling",
-      "url": "https://www.arbeidstilsynet.no/arbeidsmiljo/varsling/virksomheten-skal-ha-rutiner-for-intern-varsling/",
-      "sectors": [
-        "*"
-      ],
-      "useFor": [
-        "varsling",
-        "varslingsrutine",
-        "kritikkverdige forhold",
-        "gjengjeldelse",
-        "mottak av varsel",
-        "undersøkelse"
+        "bakgrunnssjekk",
+        "vandel",
+        "sikkerhetsområde",
+        "ID-kort",
+        "ansettelse",
+        "luftfartssikkerhet"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
       "sourceType": "official_authority",
-      "contextualOnly": true,
-      "sourceRole": "authority_guidance",
-      "bindingStatus": "guidance_on_binding_rules"
+      "contextualOnly": true
+    },
+    {
+      "id": "LUFTFART_FTL",
+      "authority": "Luftfartstilsynet",
+      "title": "Regelverk arbeidstidsbestemmelser for flygende",
+      "url": "https://www.luftfartstilsynet.no/aktorer/flyselskap/arbeidstidsbestemmelser/regelverk-arbeidstidsbestemmelser-for-flygende/",
+      "sectors": [
+        "aviation"
+      ],
+      "useFor": [
+        "flygetid",
+        "arbeidstid",
+        "hviletid",
+        "fatigue",
+        "besetningsmedlemmer"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false
+    },
+    {
+      "id": "LUFTFART_RULES",
+      "authority": "Luftfartstilsynet",
+      "title": "Lover og regler",
+      "url": "https://www.luftfartstilsynet.no/lover-og-regler/",
+      "sectors": [
+        "aviation"
+      ],
+      "useFor": [
+        "luftfartssikkerhet",
+        "sertifikater",
+        "operativt regelverk",
+        "informasjonssikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
     },
     {
       "id": "MARITIME_CERTIFICATES",
@@ -1945,32 +1589,174 @@
       "contextualOnly": true
     },
     {
-      "id": "SERVERING_ACT",
-      "authority": "Lovdata",
-      "title": "Serveringsloven",
-      "url": "https://lovdata.no/nav/lov/1997-06-13-55",
+      "id": "MARITIME_REST_TIME",
+      "authority": "Sjøfartsdirektoratet",
+      "title": "Arbeids- og hviletid for sjøfolk",
+      "url": "https://www.sdir.no/sjofolk/arbeids--og-levevilkar-for-sjofolk/arbeids-og-hviletid-for-sjofolk/",
       "sectors": [
-        "retail_hospitality_service"
+        "aquaculture_fisheries_maritime"
       ],
       "occupations": [
-        "servitør",
-        "kokk",
-        "barista",
-        "hotellmedarbeider",
-        "resepsjonist"
+        "fisker",
+        "matros",
+        "skipsfører",
+        "maskinist",
+        "dekksarbeider",
+        "styrmann"
       ],
       "useFor": [
-        "serveringssted",
-        "styrer",
-        "drift",
-        "bevilling",
-        "vandel",
-        "serveringsvirksomhet"
+        "hviletid",
+        "arbeidstid",
+        "fatigue",
+        "bemanning",
+        "sjøfolk",
+        "vaktordning"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
-      "sourceType": "law_database",
+      "sourceType": "official_authority",
       "contextualOnly": true
+    },
+    {
+      "id": "MATTILSYNET_ANIMAL_COMPETENCE",
+      "authority": "Mattilsynet",
+      "title": "Kompetansekrav for personer som håndterer dyr",
+      "url": "https://www.mattilsynet.no/dyr/dyrevelferd/kompetanse-og-personell",
+      "sectors": [
+        "veterinary_animal_health",
+        "agriculture_nature"
+      ],
+      "occupations": [
+        "dyreklinikkmedarbeider",
+        "dyreholder",
+        "hundefrisør",
+        "dyrepasser",
+        "kennelmedarbeider",
+        "bonde",
+        "gårdbruker",
+        "landbruksarbeider",
+        "avløser"
+      ],
+      "useFor": [
+        "dyrevelferd",
+        "kompetanse",
+        "opplæring",
+        "dyrehold",
+        "personell",
+        "forsvarlig stell"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "MATTILSYNET_ANIMAL_HEALTH_PERSONNEL",
+      "authority": "Mattilsynet",
+      "title": "Dyrehelsepersonell",
+      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell",
+      "sectors": [
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "dyrehelsepersonell",
+        "journalføring",
+        "autorisasjon",
+        "legemidler til dyr",
+        "fiskehelse"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "occupations": [
+        "veterinær",
+        "dyrlege",
+        "dyrepleier",
+        "fiskehelsebiolog",
+        "fiskehelsepersonell"
+      ]
+    },
+    {
+      "id": "MATTILSYNET_ANIMAL_JOURNAL",
+      "authority": "Mattilsynet",
+      "title": "Journalføring for dyrehelsepersonell",
+      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell/veileder-om-dyrehelsepersonell-og-bruk-av-ikke-medikamentelle-avlusingsmetoder-imm/journalforing",
+      "sectors": [
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime"
+      ],
+      "useFor": [
+        "journalføring",
+        "dyrehelsepersonell",
+        "forsvarlighet",
+        "fiskehelse",
+        "dokumentasjon"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-01",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "occupations": [
+        "veterinær",
+        "dyrlege",
+        "dyrepleier",
+        "fiskehelsebiolog",
+        "fiskehelsepersonell"
+      ]
+    },
+    {
+      "id": "MATTILSYNET_ANIMAL_MEDICINES",
+      "authority": "Mattilsynet",
+      "title": "Regler for bruk av legemidler til dyr",
+      "url": "https://mattilsynet.no/dyr/dyrehelsepersonell/legemidler-til-dyr/veileder-om-nye-regler-for-bruk-av-legemidler-til-dyr",
+      "sectors": [
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime"
+      ],
+      "occupations": [
+        "veterinær",
+        "dyrlege",
+        "dyrepleier",
+        "fiskehelsebiolog",
+        "fiskehelsepersonell"
+      ],
+      "useFor": [
+        "legemidler",
+        "rekvirering",
+        "forsvarlighet",
+        "antibiotika",
+        "journalføring",
+        "veterinærmedisin"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "MATTILSYNET_DYREVELFERD",
+      "authority": "Mattilsynet",
+      "title": "Dyrevelferd",
+      "url": "https://www.mattilsynet.no/dyr/dyrevelferd",
+      "sectors": [
+        "agriculture_nature",
+        "veterinary_animal_health"
+      ],
+      "useFor": [
+        "dyrevelferd",
+        "dyrehold",
+        "tilsyn og stell",
+        "kompetansekrav",
+        "smitte"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
     },
     {
       "id": "NSM_EMPLOYMENT_SECURITY",
@@ -1991,6 +1777,249 @@
       "timeSensitive": true,
       "lastVerified": "2026-11-01",
       "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "OFFENTLEGLOVA",
+      "authority": "Lovdata",
+      "title": "Offentleglova",
+      "url": "https://lovdata.no/nav/lov/2006-05-19-16",
+      "sectors": [
+        "public_admin_legal"
+      ],
+      "occupations": [
+        "saksbehandler",
+        "rådgiver",
+        "jurist",
+        "HR-rådgiver",
+        "forvaltningsmedarbeider",
+        "NAV-medarbeider",
+        "kommunal rådgiver",
+        "statlig rådgiver",
+        "konsulent",
+        "førstekonsulent",
+        "seniorkonsulent",
+        "arkivar"
+      ],
+      "useFor": [
+        "innsyn",
+        "taushetsplikt",
+        "offentlighet",
+        "saksdokument",
+        "journalføring",
+        "åpenhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
+    },
+    {
+      "id": "OFFSHORE_HSE_RULES",
+      "authority": "Havindustritilsynet",
+      "title": "HMS-regelverket for petroleumsvirksomheten",
+      "url": "https://www.havtil.no/regelverk/alle-forskrifter/",
+      "sectors": [
+        "offshore_energy"
+      ],
+      "useFor": [
+        "rammeforskriften",
+        "styringsforskriften",
+        "aktivitetsforskriften",
+        "arbeidsmiljø",
+        "sikkerhet",
+        "beredskap",
+        "offshore"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
+    },
+    {
+      "id": "PERSONOPPLYSNINGSLOVEN",
+      "authority": "Lovdata",
+      "title": "Personopplysningsloven og personvernforordningen (GDPR)",
+      "url": "https://lovdata.no/lov/2018-06-15-38",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "personopplysninger",
+        "personvern",
+        "ansattopplysninger",
+        "personalmappe",
+        "kontrolltiltak",
+        "overvåking",
+        "helseopplysninger",
+        "dataminimering",
+        "lagring",
+        "GDPR"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true,
+      "sourceRole": "primary_law",
+      "bindingStatus": "binding_law"
+    },
+    {
+      "id": "PHARMACY_PERSONNEL_ACT",
+      "authority": "Lovdata",
+      "title": "Apotekloven – krav til apotekets personale",
+      "url": "https://lovdata.no/nav/lov/2000-06-02-39/kap4",
+      "sectors": [
+        "health_care"
+      ],
+      "occupations": [
+        "apotektekniker"
+      ],
+      "useFor": [
+        "apotektekniker",
+        "kompetanse",
+        "personalkrav",
+        "legemidler",
+        "faglig personale",
+        "opplæring"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true
+    },
+    {
+      "id": "PLANT_PROTECTION_AUTH",
+      "authority": "Mattilsynet",
+      "title": "Autorisasjonsbevis for plantevernmidler",
+      "url": "https://www.mattilsynet.no/planter-og-dyrking/plantevernmidler/autorisasjonsbevis-for-plantevernmidler",
+      "sectors": [
+        "agriculture_nature"
+      ],
+      "occupations": [
+        "bonde",
+        "gårdbruker",
+        "landbruksarbeider",
+        "gartner",
+        "skogbruker",
+        "skogsarbeider",
+        "anleggsgartner",
+        "skogsmaskinfører"
+      ],
+      "useFor": [
+        "plantevernmidler",
+        "autorisasjon",
+        "sprøyting",
+        "kjemikalier",
+        "plantevern"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "POLITI_EMPLOYEE_PLATFORM",
+      "authority": "Politiet",
+      "title": "Medarbeiderplattformen i politiet",
+      "url": "https://www.politiet.no/om-politiet/jobb-i-politiet/medarbeiderplattform",
+      "sectors": [
+        "defence_police_emergency"
+      ],
+      "occupations": [
+        "politi"
+      ],
+      "useFor": [
+        "lederforventninger",
+        "tilbakemelding",
+        "profesjonalitet",
+        "respekt",
+        "ansvar",
+        "risiko",
+        "samhandling"
+      ],
+      "timeSensitive": false,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_guideline",
+      "contextualOnly": true
+    },
+    {
+      "id": "POLITI_ETHICAL_GUIDELINES",
+      "authority": "Politidirektoratet",
+      "title": "Etiske retningslinjer for politiet",
+      "url": "https://www.politiet.no/globalassets/om-politiet/jobb-i-politiet/jobb-hos-oss/etiske-retningslinjer-for-politiet.pdf",
+      "sectors": [
+        "defence_police_emergency"
+      ],
+      "occupations": [
+        "politi"
+      ],
+      "useFor": [
+        "etikk",
+        "rolleforståelse",
+        "integritet",
+        "bierverv",
+        "sosiale medier",
+        "tillit",
+        "profesjonell opptreden",
+        "habilitet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_guideline",
+      "contextualOnly": true
+    },
+    {
+      "id": "POLITI_INSTRUCTION",
+      "authority": "Lovdata",
+      "title": "Alminnelig tjenesteinstruks for politiet (politiinstruksen)",
+      "url": "https://lovdata.no/dokument/INS/forskrift/1990-06-22-3963",
+      "sectors": [
+        "defence_police_emergency"
+      ],
+      "occupations": [
+        "politi"
+      ],
+      "useFor": [
+        "tjenesteplikt",
+        "ordre",
+        "opptreden",
+        "politimyndighet",
+        "tjenesteutførelse",
+        "rapportering",
+        "habilitet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "regulation",
+      "contextualOnly": true
+    },
+    {
+      "id": "REINDEER_ACT",
+      "authority": "Lovdata",
+      "title": "Reindriftsloven",
+      "url": "https://lovdata.no/nav/lov/2007-06-15-40",
+      "sectors": [
+        "agriculture_nature"
+      ],
+      "occupations": [
+        "reindriftsutøver"
+      ],
+      "useFor": [
+        "reindrift",
+        "siida",
+        "reinbeite",
+        "bruksregler",
+        "reintall",
+        "organisering",
+        "taushetsplikt"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
       "contextualOnly": true
     },
     {
@@ -2036,32 +2065,53 @@
       "bindingStatus": "retrieval_startpoint_not_direct_legal_basis"
     },
     {
-      "id": "UDIR_SCHOOL_ACTIVITY_DUTY",
-      "authority": "Utdanningsdirektoratet",
-      "title": "Skolens aktivitetsplikt for et trygt og godt skolemiljø",
-      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring/rundskriv-om-skolemiljo/6.-skolen-har-en-aktivitetsplikt",
+      "id": "SERVERING_ACT",
+      "authority": "Lovdata",
+      "title": "Serveringsloven",
+      "url": "https://lovdata.no/nav/lov/1997-06-13-55",
       "sectors": [
-        "education_childcare"
+        "retail_hospitality_service"
       ],
       "occupations": [
-        "lærer",
-        "spesialpedagog",
-        "SFO/AKS-medarbeider",
-        "skoleleder",
-        "miljøarbeider",
-        "lærerassistent",
-        "skoleassistent",
-        "miljøterapeut"
+        "servitør",
+        "kokk",
+        "barista",
+        "hotellmedarbeider",
+        "resepsjonist"
       ],
       "useFor": [
-        "skolemiljø",
-        "mobbing",
-        "trakassering",
-        "vold",
-        "krenkelser",
-        "meldeplikt",
-        "aktivitetsplikt",
-        "elevsikkerhet"
+        "serveringssted",
+        "styrer",
+        "drift",
+        "bevilling",
+        "vandel",
+        "serveringsvirksomhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "law_database",
+      "contextualOnly": true
+    },
+    {
+      "id": "SJT_RAIL_COMPETENCE",
+      "authority": "Statens jernbanetilsyn",
+      "title": "Kompetansestyring for sikkerhetskritiske jernbaneoppgaver",
+      "url": "https://sjt.no/jernbane/sikkerhet-og-sikring/regelverk-horinger-og-veiledning/veiledning-om-jernbane/sikkerhetsstyringssystem-for-mindre-jernbanevirksomheter/",
+      "sectors": [
+        "transport_logistics"
+      ],
+      "occupations": [
+        "togpersonell",
+        "lokfører",
+        "konduktør"
+      ],
+      "useFor": [
+        "kompetanse",
+        "opplæring",
+        "trafikksikkerhet",
+        "sikkerhetskritiske oppgaver",
+        "ansvar",
+        "myndighet"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
@@ -2094,6 +2144,33 @@
       ],
       "sourceRole": "primary_law",
       "bindingStatus": "binding_law_for_state_employment_scope"
+    },
+    {
+      "id": "STATE_ETHICS",
+      "authority": "Digitaliserings- og forvaltningsdepartementet",
+      "title": "Etiske retningslinjer for statstjenesten",
+      "url": "https://www.regjeringen.no/no/dokumenter/etiske-retningslinjer-for-statstjenesten/id88164/",
+      "sectors": [
+        "*"
+      ],
+      "useFor": [
+        "etikk",
+        "lojalitet",
+        "ytringsfrihet",
+        "habilitet",
+        "gaver",
+        "interessekonflikt",
+        "varsling"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_guideline",
+      "contextualOnly": true,
+      "employerTypes": [
+        "state"
+      ],
+      "sourceRole": "official_employer_reference",
+      "bindingStatus": "official_guideline_not_law"
     },
     {
       "id": "STCW_HARASSMENT_TRAINING_2026",
@@ -2144,32 +2221,173 @@
       "contextualOnly": false
     },
     {
-      "id": "AVIATION_CERTIFICATES",
-      "authority": "Luftfartstilsynet",
-      "title": "Utdanning og sertifikater i luftfarten",
-      "url": "https://www.luftfartstilsynet.no/aktorer/utdanning/",
+      "id": "UDIR_KINDERGARTEN_POLICE_CERT",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Politiattest i barnehagen",
+      "url": "https://www.udir.no/regelverkstolkninger/barnehage/lov-om-barnehager-barnehageloven/kapittel-vi-personalet/-30.-politiattest",
       "sectors": [
-        "aviation"
+        "education_childcare"
       ],
       "occupations": [
-        "pilot",
-        "kabinansatt",
-        "flyvert",
-        "flyvertinne",
-        "flytekniker",
-        "flymekaniker",
-        "flygeleder"
+        "barnehagelærer",
+        "barne- og ungdomsarbeider",
+        "barnehagestyrer",
+        "barnehageassistent",
+        "pedagogisk leder"
       ],
       "useFor": [
-        "sertifikat",
-        "rettigheter",
+        "politiattest",
+        "ansettelse",
+        "vandel",
+        "yrkesforbud",
+        "barnesikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "UDIR_KINDERGARTEN_RULES",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Regelverk for barnehage",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/barnehage/",
+      "sectors": [
+        "education_childcare"
+      ],
+      "useFor": [
+        "barnehageloven",
+        "rammeplan",
+        "internkontroll",
+        "bemanning",
+        "barnemiljø"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis",
+      "occupations": [
+        "barnehagelærer",
+        "barnehagestyrer",
+        "barnehageassistent",
+        "pedagogisk leder",
+        "barne- og ungdomsarbeider"
+      ]
+    },
+    {
+      "id": "UDIR_KINDERGARTEN_STAFFING",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Kompetanse og bemanning i barnehagen",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/barnehage/tilstrekkelig-bemanning-barnehagen/4.-tilstrekkelig-bemanning/",
+      "sectors": [
+        "education_childcare"
+      ],
+      "occupations": [
+        "barnehagelærer",
+        "barnehagestyrer",
+        "barnehageassistent",
+        "pedagogisk leder",
+        "barne- og ungdomsarbeider"
+      ],
+      "useFor": [
+        "bemanning",
         "kompetanse",
-        "utdanning",
-        "skikkethet",
-        "flyger",
-        "kabin",
-        "flygeleder",
-        "flytekniker"
+        "pedagogisk leder",
+        "forsvarlig drift",
+        "arbeidsbelastning"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "UDIR_SCHOOL_ACTIVITY_DUTY",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Skolens aktivitetsplikt for et trygt og godt skolemiljø",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring/rundskriv-om-skolemiljo/6.-skolen-har-en-aktivitetsplikt",
+      "sectors": [
+        "education_childcare"
+      ],
+      "occupations": [
+        "lærer",
+        "spesialpedagog",
+        "SFO/AKS-medarbeider",
+        "skoleleder",
+        "miljøarbeider",
+        "lærerassistent",
+        "skoleassistent",
+        "miljøterapeut"
+      ],
+      "useFor": [
+        "skolemiljø",
+        "mobbing",
+        "trakassering",
+        "vold",
+        "krenkelser",
+        "meldeplikt",
+        "aktivitetsplikt",
+        "elevsikkerhet"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-08",
+      "sourceType": "official_authority",
+      "contextualOnly": true
+    },
+    {
+      "id": "UDIR_SCHOOL_RULES",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Regelverk for skole og opplæring",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring",
+      "sectors": [
+        "education_childcare"
+      ],
+      "useFor": [
+        "opplæringsloven",
+        "skolemiljø",
+        "ansattes plikter",
+        "elevrelaterte rettigheter",
+        "kompetansekrav"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-10-29",
+      "sourceType": "official_authority",
+      "contextualOnly": false,
+      "sourceRole": "authority_index",
+      "bindingStatus": "retrieval_startpoint_not_direct_legal_basis",
+      "occupations": [
+        "lærer",
+        "spesialpedagog",
+        "SFO/AKS-medarbeider",
+        "skoleleder",
+        "miljøarbeider",
+        "lærerassistent",
+        "skoleassistent",
+        "miljøterapeut",
+        "barne- og ungdomsarbeider"
+      ]
+    },
+    {
+      "id": "UDIR_TEACHER_COMPETENCE",
+      "authority": "Utdanningsdirektoratet",
+      "title": "Krav til kompetanse for lærere – ansettelse og undervisning",
+      "url": "https://www.udir.no/regelverk-og-tilsyn/skole-og-opplaring/krav-til-kompetanse-for-larere-ansettelse-og-undervisning/",
+      "sectors": [
+        "education_childcare"
+      ],
+      "occupations": [
+        "lærer",
+        "spesialpedagog",
+        "skoleleder"
+      ],
+      "useFor": [
+        "kompetansekrav",
+        "ansettelse",
+        "undervisningskompetanse",
+        "politiattest",
+        "yrkesforbud"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-08",
@@ -2202,157 +2420,108 @@
       "contextualOnly": true
     },
     {
-      "id": "AT_HOT_WORK",
-      "authority": "Arbeidstilsynet",
-      "title": "Varmt arbeid – sveising, sliping og metallarbeid",
-      "url": "https://www.arbeidstilsynet.no/risikofylt-arbeid/kjemikalier/varmt-arbeid/",
-      "sectors": [
-        "industry_production",
-        "construction_trades"
-      ],
-      "occupations": [
-        "sveiser",
-        "industrimekaniker",
-        "mekaniker",
-        "montør",
-        "bilmekaniker"
-      ],
-      "useFor": [
-        "sveising",
-        "sliping",
-        "varmt arbeid",
-        "verneutstyr",
-        "røyk",
-        "stråling",
-        "brannfare"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "FISKERIDIR_IK_AQUACULTURE",
-      "authority": "Fiskeridirektoratet",
-      "title": "Veileder i internkontroll - IK Akvakultur",
-      "url": "https://www.fiskeridir.no/akvakultur/veiledere/veileder-i-internkontroll-ik-akvakultur",
-      "sectors": [
-        "aquaculture_fisheries_maritime"
-      ],
-      "useFor": [
-        "internkontroll",
-        "risikokartlegging",
-        "kompetanse",
-        "avvik",
-        "forbedring",
-        "havbruk"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-01",
-      "sourceType": "official_authority",
-      "contextualOnly": false
-    },
-    {
-      "id": "LOKFORER_RULES",
-      "authority": "Statens jernbanetilsyn",
-      "title": "Veileder om førerforskriften for lokførere",
-      "url": "https://sjt.no/jernbane/sikkerhet-og-sikring/regelverk-horinger-og-veiledning/veiledning-om-jernbane/veileder-om-forerforskriften-for-lokforere/",
+      "id": "VEGVESEN_DRIVING_REST",
+      "authority": "Statens vegvesen",
+      "title": "Regelverk for kjøre- og hviletid",
+      "url": "https://www.vegvesen.no/kjoretoy/yrkestransport/kjore-og-hviletid/regelverk/",
       "sectors": [
         "transport_logistics"
       ],
-      "occupations": [
-        "lokfører"
-      ],
       "useFor": [
-        "førerbevis",
-        "sertifikat",
-        "helsekrav",
-        "skikkethet",
-        "opplysningsplikt",
-        "lokfører"
+        "kjøre- og hviletid",
+        "arbeidstid for sjåfører",
+        "fartsskriver",
+        "arbeidsgivers organisering"
       ],
       "timeSensitive": true,
-      "lastVerified": "2026-11-08",
+      "lastVerified": "2026-10-29",
       "sourceType": "official_authority",
-      "contextualOnly": true
-    },
-    {
-      "id": "FINANSTILSYNET_AML",
-      "authority": "Finanstilsynet",
-      "title": "Veileder til hvitvaskingsloven",
-      "url": "https://www.finanstilsynet.no/nyhetsarkiv/rundskriv/2022/veileder-til-hvitvaskingsloven/",
-      "sectors": [
-        "office_finance_it",
-        "public_admin_legal"
-      ],
+      "contextualOnly": false,
       "occupations": [
-        "regnskapsfører",
-        "revisor",
-        "bankrådgiver",
-        "forsikringsrådgiver",
-        "advokat"
-      ],
-      "useFor": [
-        "hvitvasking",
-        "terrorfinansiering",
-        "kundetiltak",
-        "rapportering",
-        "mistanke",
-        "etterlevelse"
-      ],
-      "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "official_guideline",
-      "contextualOnly": true
+        "bussjåfør",
+        "lastebilsjåfør",
+        "varebilsjåfør",
+        "taxisjåfør",
+        "sjåfør",
+        "budbilsjåfør"
+      ]
     },
     {
-      "id": "DSB_FIRE_RESCUE",
-      "authority": "DSB",
-      "title": "Veiledning til brann- og redningsvesenforskriften",
-      "url": "https://www.dsb.no/brannsikkerhet/brannberedskap/regelverk-prosedyrer-og-veiledning/veiledning-til-brann--og-redningsvesenforskriften/",
+      "id": "VEGVESEN_EMPLOYER_DRIVING_REST",
+      "authority": "Statens vegvesen",
+      "title": "Arbeidsgivers ansvar – kjøre- og hviletid",
+      "url": "https://www.vegvesen.no/kjoretoy/yrkestransport/kjore-og-hviletid/arbeidsgivers-ansvar/",
       "sectors": [
-        "defence_police_emergency"
+        "transport_logistics"
       ],
       "useFor": [
-        "brann og redning",
-        "beredskap",
-        "ledelse",
-        "kompetanse",
-        "øvelse",
-        "evaluering",
-        "læring"
+        "kjøre- og hviletid",
+        "arbeidsgiveransvar",
+        "fartsskriver",
+        "trafikksikkerhet"
       ],
       "timeSensitive": true,
       "lastVerified": "2026-11-01",
       "sourceType": "official_authority",
       "contextualOnly": false,
       "occupations": [
-        "brann og redning",
-        "brannkonstabel"
+        "bussjåfør",
+        "lastebilsjåfør",
+        "varebilsjåfør",
+        "taxisjåfør",
+        "sjåfør",
+        "budbilsjåfør"
       ]
     },
     {
-      "id": "DRIVER_PROFESSIONAL_QUALIFICATION",
-      "authority": "Lovdata",
-      "title": "Yrkessjåførforskriften",
-      "url": "https://lovdata.no/nav/forskrift/2008-04-16-362",
+      "id": "VETINST_DYREHELSE_FAG",
+      "authority": "Veterinærinstituttet",
+      "title": "Veterinærinstituttet – fagområder og sykdomskunnskap",
+      "url": "https://www.vetinst.no/fagomrader",
       "sectors": [
-        "transport_logistics"
-      ],
-      "occupations": [
-        "bussjåfør",
-        "lastebilsjåfør"
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime",
+        "agriculture_nature"
       ],
       "useFor": [
-        "yrkessjåførkompetanse",
-        "kompetansebevis",
-        "etterutdanning",
-        "buss",
-        "lastebil"
+        "dyresykdom",
+        "dyrehelse",
+        "smitte",
+        "beredskap",
+        "diagnostikk",
+        "dyrevelferd",
+        "fiskehelse"
       ],
       "timeSensitive": true,
-      "lastVerified": "2026-11-08",
-      "sourceType": "regulation",
+      "lastVerified": "2026-11-20",
+      "sourceType": "forskningsbasert fagressurs",
+      "sourceRole": "research_communication",
+      "bindingStatus": "non_binding_research",
+      "contextualOnly": true
+    },
+    {
+      "id": "VETINST_DYREHELSERAPPORT_2025",
+      "authority": "Veterinærinstituttet",
+      "title": "Dyrehelserapporten 2025 – nasjonal kunnskapsstatus",
+      "url": "https://www.vetinst.no/rapporter-og-publikasjoner/rapporter/2026/dyrehelserapporten-2025",
+      "sectors": [
+        "veterinary_animal_health",
+        "aquaculture_fisheries_maritime",
+        "agriculture_nature"
+      ],
+      "useFor": [
+        "dyrehelseovervåking",
+        "dyresykdom",
+        "sykdomstrender",
+        "nasjonal dyrehelse",
+        "beredskap",
+        "smittepress"
+      ],
+      "timeSensitive": true,
+      "lastVerified": "2026-11-20",
+      "sourceType": "forskningsbasert fagressurs",
+      "sourceRole": "research_communication",
+      "bindingStatus": "non_binding_research",
       "contextualOnly": true
     }
   ],
