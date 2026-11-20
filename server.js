@@ -312,6 +312,17 @@ async function createTrackedResponse(params) {
   try {
     const selectedClient = modelClient(modelUsed);
     if (!selectedClient) { const error=new Error(`API-nøkkel mangler for ${AI_MODELS[modelUsed]?.provider||'valgt provider'}.`); error.code='AI_PROVIDER_NOT_CONFIGURED'; throw error; }
+    // Standard Responses API utelater ellers søkets kildeobjekter i mange svar.
+    // Be eksplisitt om dem for web_search på OpenAI; ikke send provider-spesifikke
+    // include-felt til OpenRouter, der støtte ikke er garantert.
+    if (AI_MODELS[modelUsed]?.provider === "openai" &&
+        Array.isArray(cleanParams.tools) &&
+        cleanParams.tools.some(tool => tool?.type === "web_search")) {
+      cleanParams.include = [...new Set([
+        ...(Array.isArray(cleanParams.include) ? cleanParams.include : []),
+        "web_search_call.action.sources"
+      ])];
+    }
     const response = await selectedClient.responses.create({ ...cleanParams, model: modelUsed });
     const routedModel = AI_MODELS[modelUsed]?.provider === 'openrouter' ? String(response?.model || modelUsed) : modelUsed;
     const usageSummary = await logAiUsage({ functionName, modelUsed:routedModel, response, isTest, benchmarkRunId, benchmarkCaseId, topicId, subtopic });
