@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 (async () => {
-const { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
+const { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
 assert.equal(normalizeSourceUrl("https://example.org/a?utm_source=x&b=2&utm_campaign=y#section"),"https://example.org/a?b=2");
 assert.equal(normalizeSourceUrl("not a web address"),"not a web address");
 const response = { output: [
@@ -24,6 +24,28 @@ const message="Se [myndighetskilde](https://example.org/item?utm_medium=mail) og
 const sources=markdownWebSources(message,verified);
 assert.equal(sources.length,1,"Kun verifisert URL skal følge med");
 assert.equal(sources[0].url,"https://example.org/item");
+assert.equal(stripInlineSourceLinks("Les https://falsk.example/lov og gå videre."),
+  "Les og gå videre.","Rå URL-er må aldri slippe gjennom kilderensingen");
+assert.equal(stripInlineSourceLinks("Se (https://falsk.example/lov) og <https://falsk.example/anna>."),
+  "Se og .","Rå URL-er i parentes eller autolenker skal fjernes");
+assert.equal(stripInlineSourceLinks("Ikke stol på www.falsk.example/guide."),
+  "Ikke stol på","www-lenker er også uverifiserte kildehenvisninger");
+const sourceText = "Se https://falsk.example/lov for flere råd.";
+const cleanGuidance=stripGuidanceInlineLinks({
+  opening:sourceText,
+  questions:["Hva tenker du?",sourceText],
+  reactions:[{reaction:sourceText,why_plausible:sourceText,leader_response:sourceText}],
+  attention:[sourceText],check_before_meeting:[sourceText],next_steps:[sourceText],
+  legal_hr_note:sourceText,
+  source_ids:["VALID_ID"],
+  supplementary_sources:[{url:"https://valid.example/law"}]
+});
+for(const key of ["opening","questions","reactions","attention","check_before_meeting","next_steps","legal_hr_note"]){
+  assert(!JSON.stringify(cleanGuidance[key]).includes("falsk.example"),key+": modellen fikk bevare URL i visningsfeltet");
+}
+assert.deepEqual(cleanGuidance.source_ids,["VALID_ID"],"Kilde-ID-er skal ikke renses vekk");
+assert.equal(cleanGuidance.supplementary_sources[0].url,"https://valid.example/law",
+  "Strukturerte kilder skal fortsatt vises separat");
 const stripped=stripInlineSourceLinks(message);
 assert.ok(!stripped.includes("](http"),"Lenker er ikke fjernet fra visningsteksten");
 assert.ok(stripped.includes("myndighetskilde"));
