@@ -11,7 +11,7 @@ const OTHER="ac2d24e1-899e-4516-a518-9dd9119bc013";
   let date="2026-11-20T12:00:00Z";
   const ledger=createBenchmarkBudgetLedger({clock:()=>new Date(date)});
   for(const b of [-1,0,0.009,5.01,NaN,Infinity,0.333,undefined,"1",null]){
-    const r=ledger.reserve(input(ID,"bad-"+String(b),b));
+    const r=ledger.reserve({...input(ID,"bad-"+String(b)),budgetUsd:b});
     assert.equal(r.ok,false,"invalid budget accepted: "+String(b));
     assert.equal(r.status,400);
   }
@@ -65,6 +65,6 @@ const OTHER="ac2d24e1-899e-4516-a518-9dd9119bc013";
   assert.equal(failed.reserve(input(ID,"B002",0.1)).error,"BUDGET_LIMIT");
   date="2026-11-21T12:00:00Z";
   assert.equal(ledger.reserve(input(ID,"B001")).error,"BUDGET_RUN_MISMATCH","Do not replay an old run across days");
-  assert.equal(ledger.reserve(input(OTHER,"new-day")).ok,true,"New day may accept new run");
+  assert.equal(ledger.reserve(input("0d5c6ab3-9c2e-4027-964d-8a953912ec50","new-day")).ok,true,"New day may accept new run");
   console.log("Benchmark budget ledger: validation, atomic reservations, two users, spoofing, overlap, daily limit, provider cost overrun, no refund, duplicate and day rollover: OK");
 })().catch(e=>{console.error(e);process.exitCode=1;});
