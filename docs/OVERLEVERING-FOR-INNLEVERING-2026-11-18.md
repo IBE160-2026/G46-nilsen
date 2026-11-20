@@ -1,6 +1,8 @@
 # Overleveringskontroll før innlevering og eventuell sammenslåing
 
 **Samtalestøtte – IBE160**  
+**NYERE LEVERANSESTATUS 20.11:** Denne 18.11-overleveringen er et historisk øyeblikksbilde. Se [innleveringskontroll 20.11](INNLEVERINGSKONTROLL-2026-11-20.md), [faktisk lokal Supabase Auth/PostgREST](ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md) og [mobil-/print-/refleksjonskontroll](ai/MOBIL-PRINT-REFLEKSJON-2026-11-20.md). Senere PR-Quality Gate [#44795391699](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44795391699) besto alle tre jobber på revidert kode. **Dette er ikke bevis for en grønn `main`-CI eller godkjent Canvas-leveranse.**
+
 **Kontrollert:** 18.11.2026  
 **Arbeidsgren:** `docs/ibe160-helhetlig-revisjon-20261118`  
 **Produksjon:** `main`, uendret ved denne kontrollen. **Ingen Render-deploy.**  
