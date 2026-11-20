@@ -73,6 +73,15 @@ const assert = require("node:assert/strict");
   const specificIds=(topic,situation)=>safetySelector({relevant_topics:[topic]},situation,{topic}).map(s=>s.id);
   assert.deepEqual(specificIds("Sikkerhet og ansvar","SHA-plan må kontrolleres før arbeid i høyden."),
     ["SHA_SPECIFIC"],"Generelt risikotema må ikke trekke inn vold/rus");
+  assert.deepEqual(
+    specificIds("Sikkerhet og ansvar","Ingen vold eller rus i denne saken, men SHA-plan må kontrolleres."),
+    ["SHA_SPECIFIC"],
+    "Negert vold/rus må ikke aktivere irrelevante kilder selv i bred sikkerhetskategori"
+  );
+  assert(specificIds("Sikkerhet og ansvar",
+    "Ingen vold i går. I dag er en ansatt utsatt for vold."
+  ).includes("VIOLENCE_CONTEXT"),
+    "En faktisk ny hendelse må ikke undertrykkes av avkreftelse i forrige setning");
   assert(specificIds("Sikkerhet og ansvar","En medarbeider blir truet med vold.").includes("VIOLENCE_CONTEXT"),
     "Reell voldshendelse må fortsatt gi aktuell voldskilde");
   assert(specificIds("Sikkerhet og ansvar","En person er påvirket av alkohol.").includes("RUS_CONTEXT"),
