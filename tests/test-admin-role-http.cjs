@@ -2,6 +2,7 @@
 // Ingen ekte brukere, database, nøkler eller eksterne nettverkskall.
 // Tester serverens rollegrenser – IKKE ekte Supabase RLS eller ekte Auth.
 const assert = require("node:assert/strict");
+const fs = require("node:fs");
 const http = require("node:http");
 const { spawn } = require("node:child_process");
 const path = require("node:path");
@@ -130,6 +131,7 @@ async function request(route,who,method="GET",body,headers={}){
       ["PUT","/api/admin/ai-settings",{model:"gpt-5.6-luna"}],
       ["GET","/api/admin/ai-usage",undefined],
       ["GET","/api/admin/benchmark/cases",undefined],
+      ["GET","/api/admin/pilot-regression/cases?summary=1",undefined],
       ["POST","/api/admin/benchmark/mock",{}],
       ["GET","/api/admin/survey",undefined],
       ["PUT","/api/admin/survey/settings",{enabled:false}],
@@ -218,6 +220,14 @@ async function request(route,who,method="GET",body,headers={}){
     const preview=await request("/api/admin/pilot-regression/cases?mode=pilot","admin");
     assert.equal(preview.status,200);
     assert.equal(preview.body.paidRegressionEnabled,false);
+    const summary=await request("/api/admin/pilot-regression/cases?summary=1","admin");
+    assert.equal(summary.status,200);
+    assert.equal(summary.body.paidRegressionEnabled,false);
+    const goldenBank=JSON.parse(fs.readFileSync(path.join(root,"tests/AI-GOLDEN-CASES.json"),"utf8")).cases;
+    assert.equal(summary.body.fullCount,goldenBank.length);
+    assert.equal(summary.body.pilotCount,goldenBank.filter(x=>x.pilot_regression).length);
+    assert.ok(!("cases" in summary.body),"Summary must not leak full synthetic case descriptions");
+    assert.equal(preview.body.count,summary.body.pilotCount);
     for(const route of ["/api/analyze-situation","/api/generate-guidance"]){
       for(const mode of ["pilot-regression","production-regression"]){
         const stopped=await request(route,"admin","POST",{situation:"Fiktiv og anonymisert arbeidsutfordring.",testMode:mode});
