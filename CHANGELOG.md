@@ -1,3 +1,14 @@
+# 20.11.2026 – server-only benchmark-RPC og fullkjede-test mot isolert PostgreSQL (draft PR #12)
+
+- Ny `src/server/benchmark-budget-rpc.js` for tjenesteside-Supabase `rpc()` mot private, transaksjonelle `benchmark_budget_reserve/settle`. Inputvalidasjon og konservativ refusjon-/feilhåndtering; aldri brukerens `spentSoFar`.
+- `server.js` velger adapteren **kun** i isolert testmodus (`NODE_ENV=test`, `TEST_BENCHMARK_LIVE=1`, `TEST_BENCHMARK_LEDGER=rpc`, lokal `SUPABASE_URL`, fake-provider-port). Både OpenAI-/OpenRouter-klienter tvinges da til loopback. Produksjon forblir fail-closed.
+- Serveren svarer først 200 etter et bekreftet oppgjør. Ukjent/feilet reserve hindrer KI-kall; uavklart oppgjør gir 503 og varig sperret ticket. Providerfeil og feil i resultatlagring bokføres som `failed`/`uncertain`.
+- Nye tester `tests/test-benchmark-budget-rpc.cjs` og `tests/test-benchmark-rpc-http.cjs` gir totalt **52** ordinære npm-teststeg. Sistnevnte kjører faktisk Express og Supabase/OpenAI SDK med fiktiv Auth, PostgREST og AI. PostgreSQL-jobben kjører nå **samme fullkjede-HTTP-test** med lokal RPC-bro mot **ekte disponibel PostgreSQL 17**.
+- Fullkjede-testen avslørte at SQL kunne opprette tom `budget_runs` for et `BUDGET_RUN_BUSY`-avvist forsøk. Dette er rettet; egen SQL-regresjon krever ingen «spøkelseskjøring».
+- **Ingen** ekte KI-leverandørkall, Supabase-produksjonsmutasjoner, Render-deploy, `main`-merge eller LIVE-pilotendring. Ekte Supabase PostgREST/Auth, hard leverandørkostgrense og produksjonsdrift gjenstår.
+
+---
+
 # 20.11.2026 – transaksjonelt PostgreSQL-forslag for benchmarkbudsjett (kun draft PR #12)
 
 - `database/security/benchmark-budget-postgres-proposal.sql` gir en **ikke-deployet** modell med fire private RLS-tabeller, unike forsøks-/kjøre-ID-er, atomisk radlås per bruker, konservativt oppgjør, permanent historikk og service-role-only `SECURITY INVOKER`-RPC.
