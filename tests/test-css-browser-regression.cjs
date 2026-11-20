@@ -118,7 +118,7 @@ async function capture(cdp,baseUrl,width,theme,state,view,media="screen",openDet
     "const style=document.createElement('style');style.textContent='*,*::before,*::after{animation:none!important;transition:none!important;caret-color:transparent!important}';document.head.appendChild(style);"+
     "const props="+JSON.stringify(cssProps)+";"+
     // Nye Help-seksjoner finnes bare i etterversjonen. Sammenlign fortsatt alle eksisterende noder.
-    "const all=[...document.querySelectorAll('body *:not(.skip-link):not(.main-skip-target)')].filter(e=>!e.closest('.leader-reference,.help-contact-entry'));"+
+    "const all=[...document.querySelectorAll('body *:not(.skip-link):not(.main-skip-target)')].filter(e=>!e.closest('.leader-reference,.leader-reference-section,.help-contact-entry'));"+
     "const result={};"+
     "all.forEach((e,i)=>{const rect=e.getBoundingClientRect();if(rect.width<0.5||rect.height<0.5)return;"+
     "const st=getComputedStyle(e),x=props.map(p=>st.getPropertyValue(p));"+
