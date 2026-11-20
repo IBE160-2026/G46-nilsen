@@ -86,7 +86,9 @@ export function buildHelpSourceLibrary({ sourceBank, occupationLegalSourceBank, 
     { id:"NAV_SYKEFRAVAER_OPPFOLGING", label:"NAV", category:"Myndighetsveiledning", description:"Sykefravær, tilrettelegging og oppfølging" },
     { id:"AT_PERSONALSAKER", label:"Personalsaker", category:"Myndighetsveiledning", description:"Saksgang, dokumentasjon og kontradiksjon" },
     { id:"DATATILSYNET_WORKPLACE_PRIVACY", label:"Datatilsynet", category:"Myndighetsveiledning", description:"Personvern og ansattopplysninger" },
-    { id:"AKAN_MODEL", label:"Akan", category:"Faglig veiledning – ikke lov", description:"Rus, spill, bekymringssamtaler og oppfølging" }
+    { id:"AKAN_MODEL", label:"Akan", category:"Faglig veiledning – ikke lov", description:"Rus, spill, bekymringssamtaler og oppfølging" },
+    { id:"DFO_PERSONALSAKER_FORBEREDELSE_2026", label:"Statens arbeidsgiverportal", category:"Offisiell veiledning · statlig sektor", description:"Forberedelse og gjennomføring av statlige personalsaker" },
+    { id:"STAMI_PSYKOSOSIALT_ARBEIDSMILJO_2026", label:"STAMI", category:"Forskning – ikke lov", description:"Psykososialt og organisatorisk arbeidsmiljø" }
   ];
   const quickSourceById = new Map(
     [...all, ...globalEmployer].map(source => [source.id, source])
