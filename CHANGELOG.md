@@ -1,3 +1,12 @@
+# 20.11.2026 – transaksjonelt PostgreSQL-forslag for benchmarkbudsjett (kun draft PR #12)
+
+- `database/security/benchmark-budget-postgres-proposal.sql` gir en **ikke-deployet** modell med fire private RLS-tabeller, unike forsøks-/kjøre-ID-er, atomisk radlås per bruker, konservativt oppgjør, permanent historikk og service-role-only `SECURITY INVOKER`-RPC.
+- Fire nye testartefakter: SQL-integrasjon, SQL-omstart/recovery og Bash-konkurransetest, kjørt direkte mot PostgreSQL 17 i GitHub Actions. SQL-forslaget anvendes to ganger i en disponibel database, og en faktisk Docker/PostgreSQL-omstart kontrollerer uavklart reservasjon, ikke-refusjon og videre budsjett.
+- De to parallelle SQL-forbindelsene må gi ett godkjent forsøk og ett `BUDGET_RUN_BUSY`; ingen dobbeltbetaling. Klientrollene `anon`/`authenticated` nektes både private tabeller og RPC. Dagstak testes med 50 syntetiske forsøk.
+- `main`, Render, ekte Supabase og LIVE-pilot er **ikke endret**. Den nye SQL-prototypen er ikke koblet til betalingsendepunktene; KI-kostnadsgrense hos provider og ekte Supabase/Express-integrasjon må fortsatt gjennomgås. Betalte testmoduser er fortsatt sperret i produksjon.
+
+---
+
 # 20.11.2026 – dynamiske pilot- og benchmarkantall (draft PR #12)
 
 - Fjernet feil historisk tekst «Alle 26 saker / 52 KI-kall» fra administrasjon og `value="112"`/«Alle 112 saker» fra benchmark. Det gamle «alle»-valget tok dermed ikke med de to nyeste casene i en bank på 114.
