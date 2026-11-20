@@ -71,6 +71,18 @@ Dette er en sporbar respons på `docs/bmad/tilbakemelding-prd.md`, ikke en ny el
 
 Full `npm test` og dependency audit på endringene bestod i GitHub Actions **run 44735621973**. Dette er et avgrenset testbevis, ikke en erklæring om at alle punktene over er manuelt godkjent.
 
+## Historikk og administratorøkt – regresjonskontroll 20.11.2026
+
+Selve koden og testene ligger i PR #13. **Dette er maskinell verifisering, ikke en utført to-konto-test mot Supabase.**
+
+| Krav | Tiltak | Testbevis / fortsatt risiko |
+|---|---|---|
+| **FR-07/09, NFR-02** Historikk | Historikkinnlasting avviser forsinkede svar etter kontobytte/utlogging og ved overlappende forespørsler; gammel historikk fjernes fra klienten. Serverens `rowToHistory` lar ikke lagret JSON overstyre database-ID og tidsstempler. | `tests/test-history-session-cleanup.cjs`, `tests/test-history-row-identity.cjs`. Ekte bruker A/B med database/RLS gjenstår. |
+| **FR-11/12** Administrasjon | Utdatert admin-API-svar forkastes etter konto- og sidebytte; følsomme DOM-verdier ryddes. | `tests/test-admin-async-session.cjs`. Rolleoppsett og UI må også verifiseres med ekte innlogging. |
+| **FR-12/13/14** Innhold, modellvalg og benchmark | Innholdsforespørsler har sekvens, og editoren gjenoppbygges ikke av gammel visning. Statistikk og benchmark respekterer økt og siste forespørsel. | `tests/test-admin-content-generation.cjs` og `test-admin-async-session.cjs`. Aktive betalte benchmark-kall stoppes **ikke** nødvendigvis ved navigering; det må vurderes separat. |
+
+Metode, konkrete begrensninger og videre oppgaver står i `docs/ADMIN-HISTORIKK-KVALITET-2026-11-20.md`.
+
 ## Prioritert verifisering før merge og innlevering
 
 - [ ] Quality Gate grønn på siste commit i PR #13, inkludert `npm ci`, `npm test`, høy-alvorlig `npm audit` og golden-oppsummering.
