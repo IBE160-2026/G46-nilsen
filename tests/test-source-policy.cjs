@@ -93,7 +93,7 @@ for(const source of agreementSources){
 
 assert(server.includes("allCuratedSourceById"),"Serveren samler ikke kilde-ID-er på tvers av bankene");
 assert(app.includes('<option value="">Ikke valgt</option>'),"Arbeidsgivertype skal ikke defaultes til privat");
-assert(server.includes("createRelevantSourceSelector") && sourceRanking.includes("if (!matched) continue;"),"Kilder skal ikke få automatisk plass uten konkret treff");
+assert(server.includes("createRelevantSourceSelector") && sourceRanking.includes("if (!matchedTopics.length && !matchedHints.length) continue;") && sourceRanking.includes("if (onlyBroadTopics && hints.length && !hasSpecificMatch) continue;") && sourceRanking.includes("containsNonNegatedContextTerm"),"Kilder skal kreve relevant, ikke-negert konteksttreff og ikke få automatisk plass fra et bredt tema");
 assert(sourceRanking.includes("authority_index") && helpLibrary.includes("authority_index"),"Kilderangering og kildebank må skille oppslagsinngang fra konkret myndighetskilde");
 assert(server.includes("Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant"),"Tariffavgrensning mangler i KI-reglene");
 assert(server.includes("mergeGuidanceSourceCandidates"),"Veiledningen prioriterer ikke yrkes-/tariffkilder sammen med generell fagbank");
