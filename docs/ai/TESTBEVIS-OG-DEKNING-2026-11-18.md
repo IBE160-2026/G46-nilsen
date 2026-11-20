@@ -4,6 +4,18 @@
 **Status:** Historisk kontrollregister opprettet 18.11, videreutviklet med Chrome-UI og **faktisk lokal Supabase GoTrue/PostgREST/RLS 20.11** på isolert revisjonsgren. Hosted Auth-akseptanse, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: faktisk Chrome mobile:true/touch + utskrifts-PDF
+
+**Nytt separat faktisk UI-/PDF-bevis:** `tests/test-mobile-print-browser.cjs` starter den **ekte prosjektfrontenden** i Chromium med lokal deterministisk sensordemo. I motsetning til CSS-paritetskontrollen, som bruker `mobile:false`, setter den ekte `mobile:true`/touch emulering, viewport 320×700, 390×844 og 768×1024, bekrefter at det ikke oppstår horisontal side-overflyt, og at profilkontrollen forblir synlig. Den sender faktiske touchStart/touchEnd på tema- og undertemakort ved 390 px, kontrollerer gjennomført veiledning og oppfølgingsdialog og at resultatet får plass på skjermen.
+
+**Utskriftsbevis:** Testen henter nøyaktig HTML-en som `printCurrentGuidance()` skriver etter klikk på «Skriv ut råd». HTML-en lastes inn i Chromium med `print`-media, og `Page.printToPDF` lager en **2-siders PDF**. `pdfinfo` og `pdftotext` bekrefter antall sider og at situasjon, hovedråd, «Forslag til åpning» og **«Videre råd»** faktisk finnes som lesbar tekst. Dette er betydelig mer enn en test som bare søker i print-HTML, men **ikke** en visuell inspeksjon av hvert ark, fysisk Android eller papirskriver.
+
+**Første røde funn og rettelse:** Mobile layout ved 320/390/768 px var grønn, men fingerkoordinaten ble undersøkt før mobil scrolling var ferdig. Testen ble gjort mer realistisk ved å vente til scrollen var stabil og verifisere `elementFromPoint` rett før touch. Det ble **ikke** gjort en udokumentert CSS-endring eller ignorert en faktisk blokkert kontroll.
+
+**CI:** [Quality Gate #44794218055](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44794218055) – **SUCCESS i alle tre jobber** på kodecommiten med den nye testen. `52` npm-steg, faktisk admin-/brukerreise-Chrome, mobil-/PDF-test, `99` CSS-paritet, ekte lokal GoTrue/PostgREST/RLS, disponibel PostgreSQL/RPC, `npm audit` (0 sårbarheter) bestått. Se [mobil, utskrift og refleksjonsvurdering](MOBIL-PRINT-REFLEKSJON-2026-11-20.md). Reell fysisk/menneskelig brukertest og fullstendig hosted-akseptanse gjenstår.
+
+---
+
 ## Tillegg 20.11.2026: faktisk lokal Supabase Auth + PostgREST + RLS med to brukere
 
 **NYTT verifisert bevis, ikke en simulert Auth/PostgREST-gateway:** Egen CI-jobb `supabase-auth-local` starter den **virkelige lokale Supabase GoTrue/PostgREST/PostgreSQL-stacken** med Supabase CLI v2.122.1 og lokale nøkler. `tests/sql/local-supabase-auth-fixture.sql` oppretter fiktive tabeller uten å overskrive Supabase sine autentiseringsfunksjoner, og **den faktiske** `database/migrations/V20-8-SUPABASE-MIGRATION.sql` påføres. `tests/test-supabase-local-auth-e2e.cjs` oppretter *tre ekte lokale* GoTrue-kontoer (Alice, Bob og admin) og bruker faktisk Express-login, sesjonskapsler, GoTrue `getUser`/refresh, Supabase JS og PostgREST med autentiserte access-JWT-er.
@@ -241,8 +253,8 @@
 | FR-17 | Brukertesting | M kvalitativ historisk | `docs/BRUKERTEST-PLAN.md`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Lite utvalg; ikke representativt |
 | FR-18 | Web-/kildeanalyse | D struktur / I mangler | `tests/test-source-retention.cjs`, `server.js` | Faktisk hentegrunnlag, feil og lagringsminimering |
 | FR-19 | Neste spørsmål | **I-demo** faktisk oppfølgingsfelt, svar og lagring; KI-svar utestående | `tests/test-pilot-regression.cjs`, `app.js` | 2–4 forslag som ikke overtar fritekst |
-| FR-20 | Utskrift | **I-demo** generert utskrifts-HTML med videre råd; fysisk print-preview M åpent | `app.js`, `styles-core.css` | Print-preview hovedråd + videre råd, skjult navigasjon |
-| FR-21 | Navigasjon | S/D + M kreves | `tests/test-pilot-ux.cjs`, `styles-responsive.css` | Sidebar preference, tooltips, mobil |
+| FR-20 | Utskrift | **I-print** 2-siders Chromium-PDF med lesbar råd/videre-råd-tekst; fysisk preview M åpent | `app.js`, `styles-core.css` | Print-preview hovedråd + videre råd, skjult navigasjon |
+| FR-21 | Navigasjon | **I-mobile** touch/navigasjon 390 px, 320/390/768 responsive uten overflyt; fysisk mobil M åpent | `tests/test-pilot-ux.cjs`, `styles-responsive.css` | Sidebar preference, tooltips, mobil |
 | FR-22 | Yrkes-/sektorkontekst | D + historisk L | `tests/test-occupation-router.cjs`, `tests/test-source-policy.cjs` | Negativ kilde, flagg og faktisk miljø |
 | FR-23 | Direkte alternativ tekstinngang | **VIDERE ARBEID** | `docs/bmad/PRD.md` | Ikke godkjent produksjonsfunksjon; skilt fra tale-LIVE |
 | AI-01 | Fakta/antakelser | Historisk L + M kreves | `tests/AI-GOLDEN-CASES.json`, `tests/test-ai-golden.js` | Usikkert faktagrunnlag |
@@ -253,7 +265,7 @@
 | AI-06 | Provideruavhengighet | **OpenRouter-only statusverifikasjon bestått**, full provider-I gjenstår | `server.js`, `tests/test-model-compare.js` | Responskontrakt ved providerskifte |
 | NFR-01 | Sikkerhet | **I-local-Auth** direkte PostgREST-IdOR/forfalskning nektet, refresh/testlogin; hosted åpent | `tests/test-server-privacy.cjs`, `server.js`, `database/` | RLS/IDOR, rate limit, cookies, headere |
 | NFR-02 | Personvern | **I-local-Auth** eierbundet sletting og eksport; **I-demo** navn-blokkering | `tests/test-privacy-surfaces.cjs`, `tests/test-server-privacy.cjs` | Oppfølging, sletting, retensjon |
-| NFR-03 | Brukervennlighet | **I-demo** full Chrome-brukerreise; fysisk mobil/skjermleser M åpent | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
+| NFR-03 | Brukervennlighet | **I-mobile/I-print** reell Chrome touch og PDF, I-demo kjernereise; fysisk UX M åpent | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
 | NFR-04 | Feilhåndtering | Kode; negativ I mangler | `server.js`, `app.js` | Timeout, JSON-feil, nettutfall, DB feil |
 | NFR-05 | Vedlikeholdbarhet | Revisjonsgren CI **bestått**; siste `main`-CI feilet | `tests/test-repo-structure.cjs`, `package.json` | Main-run 43205812288 feilet ved .docs |
 | NFR-QA-01 | Quality Gate | Revisjonsgren run `44336281200` **bestått**; `main`-run feilet | `.github/workflows/quality-gate.yml` | Kjør faktisk full pakke inkl audit på endelig commit |
