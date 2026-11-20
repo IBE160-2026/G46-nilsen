@@ -24,6 +24,13 @@ create table public.conversations (
 );
 alter table public.conversations enable row level security;
 grant select,insert,update,delete on public.conversations to authenticated;
+-- Reproduce the live read-only Supabase ACL audit on the DISPOSABLE table:
+-- both client roles have TRUNCATE, TRIGGER, REFERENCES and MAINTAIN,
+-- although none is needed by the user-facing conversation API.
+-- Preserve service_role privileges so the proposal can prove it does not alter them.
+grant truncate,trigger,references,maintain on public.conversations
+  to anon,authenticated,service_role;
+
 grant usage,select on sequence public.conversations_id_seq to authenticated;
 
 -- Minimal column-compatible shells for indexes in the REAL V20-8 migration.
