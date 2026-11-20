@@ -4,6 +4,22 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: ende-til-ende benchmark-RPC med disponibel PostgreSQL
+
+**Bevisnivå 1 – ren adapter (D):** `tests/test-benchmark-budget-rpc.cjs` tester faktisk `src/server/benchmark-budget-rpc.js` med injiserte RPC-responser: sikre UUID-er, heltallscent, ingen `spentSoFar` i RPC-argumenter, avvisningskoder, idempotent oppgjør og feilet/ukjent PostgREST-respons som stopper hele flyten.
+
+**Bevisnivå 2 – full HTTP med simulerte tjenester (I):** `tests/test-benchmark-rpc-http.cjs` bruker ekte Express, autentisert testadmin, Supabase JS `supabaseAdmin.rpc` og OpenAI SDK. Lokale HTTP-fakes erstatter provider og PostgREST. Kontrollerer at rekkefølgen er **reserver → provider → lagre → oppgjør → klient**; at avvist/ukjent reserve aldri kaller provider; at 429, resultatlagringsfeil og oppgjørsfeil håndteres tapskonservativt; og at uavklart ticket sperrer neste kall.
+
+**Bevisnivå 3 – samme HTTP-flyt, ekte disponibel SQL (I):** I `rls-postgres`-jobben videreformidler samme lokale PostgREST-protokollbro RPC til **faktisk PostgreSQL 17** i Docker (`SET ROLE service_role`). Dette bruker de egentlige `benchmark_budget_reserve/settle`-funksjonene, ikke JS-kopier. Uavhengige SQL-transaksjonstester, databaseomstart og låsekonkurranse er beholdt. **Viktig:** det er en lokal PostgREST-formatbro, **ikke ekte Supabase PostgREST**; Auth er også en fiktiv API-respons.
+
+**Funnet og rettet av denne testen:** Et nytt run-ID som ble avvist mens et annet kall pågikk, fikk likevel en `budget_runs`-rad. `database/security/benchmark-budget-postgres-proposal.sql` utsetter opprettelsen til etter duplikat-/BUSY-/budsjettkontrollene, og `tests/sql/benchmark-budget-postgres.sql` krever null «spøkelseskjøringer».
+
+**Fail-closed:** Et testløp må ha `NODE_ENV=test`, eksplisitt mock-flag, loopback-Supabase og fake-provider-port. Begge AI SDK-klientene rettes mot loopback. Vanlig produksjonsserver har fortsatt HTTP 503 for betalt benchmark/pilot. Resultatstatus kan ikke bli vellykket uten bekreftet oppgjør.
+
+**Teststeg:** Suite utvidet fra 50 til **52** npm-delsteg, i tillegg til headless Chrome (99 CSS-paritetscaser) og disponibel PostgreSQL/HTTP-integrasjon. Dette er *ikke* bevis for ekte Supabase Auth, PostgREST, faktisk KI-pristak eller produksjonsutrulling. Se [RPC-bevisrapport](BENCHMARK-RPC-INTEGRASJON-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026: varig PostgreSQL-budsjett – faktiske transaksjons- og omstartstester
 
 **Implementert på revisjonsgrenen (bare SQL-forslag):** `database/security/benchmark-budget-postgres-proposal.sql` med RLS på fire private tabeller, normal `SECURITY INVOKER`-tilgang, eksplisitt `REVOKE EXECUTE` fra `PUBLIC`/klientroller og `GRANT` kun til `service_role`. Ingen SQL mot Supabase-produksjon, ingen kobling fra faktisk betalt Express-rute.
