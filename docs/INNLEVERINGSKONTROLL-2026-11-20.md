@@ -14,6 +14,12 @@
 
 **Viktig skille:** Render-produksjon er ikke oppdatert. En vurderer som åpner produksjonslenken får derfor ikke nødvendigvis samme funksjoner/testgrunnlag som dokumentasjonen fra PR-grenen.
 
+### Verifisert fra utdelt sensorveiledning del 1 – sensors første 15–20 minutter
+
+Den opprinnelige utdelte sensorveiledningen for **del 1** beskriver en konkret rekkefølge: Sensor skal (a) lese proposal/product brief, (b) hente **gruppens repo og siste commit før fristen**, (c) installere og starte ut fra **README på ren maskin**, (d) teste kjerneflyt, feilinput og ulike skjermstørrelser, og deretter (e) inspisere historikk, KI-/prosessdokumentasjon, tester og sentral kode. Veiledningen angir **inntil 15–20 minutter veiledende** for å få appen til å kjøre. README-feil vil derfor kunne trekke ned selv om CI er grønn.
+
+**Konsekvens:** [README](../README.md) har nå en kort nøkkelfri sensordemo helt øverst med `npm ci`, `npm run demo`, `npm test` og `npm run audit:submission`. Den dokumenterer også hvordan den umergede revisjonsgrenen kan inspiseres, uten å framstille den som innlevert. **Ingen kjent formulering i del 1 bekrefter at en umerget draft-PR automatisk erstatter siste vurderbare commit i det avtalte repoet.** Endelig gren/commit må derfor avklares før innlevering. Dette er en bekreftelse av *del 1-sensorprosessen*, ikke av Canvas-formkrav eller del 2-rubrikk.
+
 ## 1. Kjent sensorgrunnlag og hva som faktisk er verifisert
 
 Tilgjengelig utdelt **Sensorveiledning – Del 1** gjelder *applikasjon og prosess* (**70 %** av totalen). Den oppgir disse **veiledende** kriterievektene innen del 1:
