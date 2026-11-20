@@ -1,3 +1,13 @@
+# 20.11.2026 – dynamiske pilot- og benchmarkantall (draft PR #12)
+
+- Fjernet feil historisk tekst «Alle 26 saker / 52 KI-kall» fra administrasjon og `value="112"`/«Alle 112 saker» fra benchmark. Det gamle «alle»-valget tok dermed ikke med de to nyeste casene i en bank på 114.
+- Serverens eksisterende adminbeskyttede `/api/admin/pilot-regression/cases` har fått `?summary=1`, som returnerer golden- og pilotantall uten å overføre scenarioteks­ten.
+- Klienten henter og validerer faktiske tall; både knapper og KI-kall-anslag (`antall × 2`) endres ved oppdatering av banken. Symbolsk `value="all"` omfatter alle elementer fra API-listen. Uoverensstemmelse mellom `totalCases` og `cases.length` vises som feil.
+- Betalte knapper er deaktivert fra HTML-innlasting og forblir deaktivert uten eksplisitt mock-only serverstatus. Eksisterende kostnads- og test-only-sperrer beholdt. PWA-cache flyttet til **20.11.73**.
+- Regresjonstester i ekte Chrome, server-HTTP, frontend og ren benchmarkhjelper. Ingen betalte providerkall, merge til `main`, Render-deploy, Supabase-mutasjon eller LIVE-pilotendring.
+
+---
+
 # 20.11.2026 – servereid lokal benchmarkreserve og stengt betalt testtrafikk (draft PR #12)
 
 - Ny `src/server/benchmark-budget.js`: synkron per-bruker/run/beløp-reservasjon i minnet, USD 0,10 per kall, maksimal USD 5 per bruker/dag per prosess, låser parallelle kall, blokkerer duplikatcaser/budsjettendringer og ignorerer klientens `spentSoFar`. Ingen refusjon ved tvetydige provider-/lagringsfeil.
