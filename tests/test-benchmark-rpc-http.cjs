@@ -33,9 +33,9 @@ async function callDisposablePostgres(name, args){
   // Base64 is safe to embed as a SQL literal and prevents interpolation of
   // user-supplied case/model strings into SQL.
   const encoded=Buffer.from(JSON.stringify(args),"utf8").toString("base64");
-  const sql="SET ROLE service_role;\\n"+
+  const sql="SET ROLE service_role;\n"+
     "WITH params AS (SELECT convert_from(decode('"+encoded+"','base64'),'UTF8')::jsonb j) "+
-    "SELECT public."+name+"("+operations[name].join(",")+")::text FROM params;\\n";
+    "SELECT public."+name+"("+operations[name].join(",")+")::text FROM params;\n";
   return new Promise((resolve,reject)=>{
     const p=spawn("docker",[
       "exec","-i",postgresContainer,"psql","-X","-q","-A","-t",
@@ -47,7 +47,7 @@ async function callDisposablePostgres(name, args){
     p.on("error",reject);
     p.on("close",code=>{
       if(code!==0)return reject(Error("Disposable PostgreSQL RPC failed: "+stderr.slice(-300)));
-      const line=stdout.trim().split("\\n").at(-1);
+      const line=stdout.trim().split("\n").at(-1);
       try{resolve(JSON.parse(line));}catch{reject(Error("Invalid disposable PostgreSQL RPC JSON: "+stdout.slice(-200)));}
     });
     p.stdin.end(sql);
