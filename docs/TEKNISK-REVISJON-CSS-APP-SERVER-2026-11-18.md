@@ -102,6 +102,16 @@ De tidligere funksjonene i `app.js` ble erstattet med små delegatorer, slik at 
 
 **Avgrensning:** Node/Express bruker fremdeles in-memory-konto **kun i isolert testmodus**. SQL-funksjonene er **ikke** aktivert som Supabase-RPC på virkelig prosjekt, og integrasjon hos flere faktiske Render-instanser eller hard leverandørkostgrense er ikke verifisert. Betalte tester forblir deaktivert. Se [utvidet design og kontroll](ai/BENCHMARK-POSTGRES-LEDGER-2026-11-20.md).
 
+### Videreføring 20.11.2026 – test-only Supabase RPC til ekte disponibel PostgreSQL
+
+**Eget adapteransvar:** `src/server/benchmark-budget-rpc.js` bruker injisert Supabase RPC, validerer innlogget UUID, kjøre-ID, modell, case og budsjett (heltallscent), kjenner bare eksplisitte SQL-avvisningskoder og feiler lukket ved ukjent svar/nettverksfeil. `server.js` bruker `supabaseAdmin.rpc` bare med serverens verifiserte `req.user.id`; browserens `spentSoFar` ignoreres. Bare `NODE_ENV=test` med `TEST_BENCHMARK_LIVE=1`, lokal `SUPABASE_URL`, `TEST_FAKE_OPENAI_PORT` og `TEST_BENCHMARK_LEDGER=rpc` kan aktivere denne banen. OpenAI- og OpenRouter-klienten tvinges da til loopback. **Produksjon fortsatt fail-closed.**
+
+**Ny svarrekkefølge:** Ingen betalt testprovider kan kalles ved feilet/ukjent reservasjon. Serveren venter også på oppgjøret før suksess/feil sendes til klienten. Ukjent oppgjør gir `503 BENCHMARK_SETTLEMENT_UNCONFIRMED`; mulig påløpt kostnad holdes i uavklart ticket. Resultatlagringsfeil gjøres opp som `uncertain`, providerfeil som `failed`, full suksess som `success`. Dette er fortsatt bare simulert providerflyt.
+
+**Ekte fullkjede-test:** `tests/test-benchmark-rpc-http.cjs` kjører faktisk Express + Supabase JS RPC + OpenAI SDK. I npm-test brukes lokal fake PostgREST og lokal fake AI; i CI-PostgreSQL-jobben brukes **samme** lokale PostgREST-formatbro, men RPC utføres av den faktiske, midlertidige PostgreSQL-databasen gjennom `docker exec psql` som `service_role`. Tester reserver/AI/lagre/gjør opp-sekvens, parallelle forespørsler, duplikat, RPC-feil før provider, provider-429, resultatlagringsfeil og manglende oppgjørsbekreftelse. `tests/test-benchmark-budget-rpc.cjs` dekker isolert RPC-kontrakt og feil. **52 deterministiske npm-delsteg**, pluss Chrome/CSS, og ytterligere faktiske PostgreSQL-integrasjonstester.
+
+**Reell feil funnet og rettet:** SQL-funksjonen opprettet `budget_runs` før `BUDGET_RUN_BUSY`, slik at avvisning etterlot en «spøkelseskjøring». Den oppretter nå ny `budget_runs` først *etter* alle avvisningskontroller. Ny SQL-regresjon krever at avvist kall mot ny kjøre-ID ikke etterlater en rad. Selve SQL-forslaget er **ikke** anvendt mot ekte Supabase. Se [presis status](ai/BENCHMARK-RPC-INTEGRASJON-2026-11-20.md).
+
 ## Uttrekk fra server.js
 
 | Ny fil | Omtrent linjer | Ansvar | Kontroll |
