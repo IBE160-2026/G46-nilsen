@@ -110,4 +110,44 @@ for(const source of occupationBank.sources||[]){
   }
 }
 
+// Sektorrevisjon 20.11: autoritative kilder må ha tydelig rolle og gyldig sektor.
+const occupationMap=JSON.parse(fs.readFileSync("data/OCCUPATION-SOURCE-MAP.json","utf8"));
+const sectorIds=new Set((occupationMap.sectors||[]).map(sector=>sector.id));
+assert.equal((occupationMap.sectors||[]).filter(sector=>sector.id!=="other").length,14,"Alle 14 faktiske sektorgrupper må kunne revideres");
+for(const sector of (occupationMap.sectors||[]).filter(sector=>sector.id!=="other")){
+  const sectorSources=(occupationBank.sources||[]).filter(source=>(source.sectors||[]).includes(sector.id));
+  assert(sectorSources.length>=4,sector.label+": urimelig tynt sektortillegg");
+}
+for(const source of occupationBank.sources||[]){
+  for(const sector of source.sectors||[]) assert(sector==="*"||sectorIds.has(sector),source.id+": ukjent sektor");
+}
+for(const id of [
+  "LOVDATA_DYREHELSEPERSONELLOVEN","LOVDATA_DYREVELFERDSLOVEN",
+  "DMP_VETERINARY_MEDICINES","VETINST_DYREHELSE_FAG",
+  "VETINST_DYREHELSERAPPORT_2025","DNV_VETERINARY_ETHICS",
+  "LOVDATA_HELSEPERSONELLOVEN","LOVDATA_OPPLAERINGSLOVA_2023",
+  "LOVDATA_BARNEHAGELOVEN","LOVDATA_LUFTFARTSLOVEN"
+]) assert(occById.has(id),"Sektorspesifikk fag-/lovkilde mangler: "+id);
+const veterinary=(occupationBank.sources||[]).filter(x=>(x.sectors||[]).includes("veterinary_animal_health"));
+assert(veterinary.length>=11,"Veterinærsektoren må ha bredere forankring enn Mattilsynet alene");
+assert(new Set(veterinary.map(x=>x.authority)).size>=5,"Veterinærkilder må representere ulike faglige autoriteter");
+assert.equal(occById.get("DNV_VETERINARY_ETHICS")?.bindingStatus,"non_binding_professional_guidance","Yrkesetikk må ikke fremstilles som lov");
+assert.equal(occById.get("VETINST_DYREHELSE_FAG")?.bindingStatus,"non_binding_research","Forskningskilde må ikke fremstilles som rettslig hjemmel");
+for(const id of ["LOVDATA_DYREHELSEPERSONELLOVEN","LOVDATA_DYREVELFERDSLOVEN","LOVDATA_HELSEPERSONELLOVEN","LOVDATA_OPPLAERINGSLOVA_2023","LOVDATA_BARNEHAGELOVEN","LOVDATA_LUFTFARTSLOVEN"]) {
+  assert.equal(occById.get(id)?.sourceRole,"primary_law",id+" må klassifiseres som primær rettskilde");
+}
+const leaderHelp=fs.readFileSync("index.html","utf8");
+const styled=fs.readFileSync("styles-overrides.css","utf8");
+for(const domain of ["arbeidstilsynet.no","nav.no","lovdata.no","akan.no","datatilsynet.no","arbeidsgiver.dfo.no","stami.no"]) {
+  assert(leaderHelp.includes(domain),"Oppslagsverk for ledere mangler: "+domain);
+}
+assert(leaderHelp.includes("Oppslagsverk for ledere"),"Hjelp mangler hurtigoppslag");
+assert(leaderHelp.includes("help-contact-entry")&&leaderHelp.includes('data-open-info="contact"'),"Hjelp mangler Kontakt-lenke");
+assert(leaderHelp.indexOf("leader-reference")<leaderHelp.indexOf("help-section-heading\""),"Oppslagsverk skal ligge øverst i Hjelp");
+assert(styled.includes("dialog.image-preview-dialog .brand-logo-dialog-card img"),"Manglende helbildefremvisning");
+assert(app.includes("readableSourceTier")&&app.includes("Hvorfor kilden er relevant"),"Kildebanken må forklare kildevalg og nivå");
+assert(app.includes('class="spoken-example"')&&styled.includes(".spoken-example"),"Muntlige formuleringer må ha egen visuell stil");
+assert(server.includes("evidence_sources: evidenceSources")&&server.includes("source_ids', 'supplementary_sources'"),"Oppfølging skal returnere strukturerte kilder");
+assert(app.includes("renderContinuationEvidence(verifiedSources)")&&app.includes("setConversationTurnSources"),"Oppfølgingskilder må vises og følge historikk");
+
 console.log(`Kildepolicy OK: ${sourceBank.sources.length} generelle · ${occupationBank.sources.length} arbeidsgiver/yrke · ${agreementSources.length} tariffkilder · ingen URL-duplikater`);
