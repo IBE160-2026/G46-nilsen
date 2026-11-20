@@ -4,6 +4,16 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: PostgreSQL RLS-regresjon med ekte policyer
+
+**Ny automatisk CI-jobb:** `rls-postgres` bruker et engangs `postgres:17`-miljø, minimal lokal testfixture og **repoets faktiske `database/migrations/V20-8-SUPABASE-MIGRATION.sql`**. [Quality Gate #44748685274](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44748685274) – `rls-postgres` **SUCCESS**.
+
+**Verifisert mot PostgreSQL (ikke bare mock):** To syntetiske JWT-sub-identiteter med `SET ROLE authenticated` og `auth.uid()` prøver selvstendig `SELECT`, `INSERT`, `UPDATE`, `DELETE`, kryssbrukerlesing/-skriving, forfalsket `user_id`, anonym tilgang og ni interne tabeller. RLS-oppføringene i V20-8 er faktisk opprettet og brukt under kjøring. Det eksisterende npm-løpet er fortsatt **45 delsteg**; den nye PostgreSQL-jobben kommer **i tillegg** og erstatter ikke den ekte Supabase Auth/PostgREST-akseptansetesten.
+
+**Viktig sensoravgrensning:** Lokal `auth.uid()`-funksjon og tabellskall er laget for test; ingen reell JWT-signaturvalidering, PostgREST, produksjonsdatabase eller ekte brukerkontoer inngår. Det eneste tilknyttede Supabase-prosjektet ble ikke mutert. Dokumentasjon, konkrete kontroller og gjenstående sikkerhetsfunn: [Sikkerhetstest roller og RLS](SIKKERHETSTEST-ROLLER-RLS-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026: serverroller og skrivebeskyttet Supabase-sjekk
 
 **Ny verifisert test:** `tests/test-admin-role-http.cjs` er lagt til `npm test`: **45 deterministiske teststeg**. [Quality Gate #44746493058](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44746493058) er **SUCCESS** på server-/test-commit `929056f72a608d4d101fd4b1ccb3d2e23dd900ca`.
