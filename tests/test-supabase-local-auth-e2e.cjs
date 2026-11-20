@@ -160,8 +160,8 @@ async function waitForExpress(child, stderr) {
     const directB=await dbB.from("conversations").select("id,user_id,title");
     assert.equal(directA.error,null,"Real PostgREST SELECT should work for A");
     assert.equal(directB.error,null,"Real PostgREST SELECT should work for B");
-    assert.deepEqual(directA.data.map(x=>x.id),[idA]);
-    assert.deepEqual(directB.data.map(x=>x.id),[idB]);
+    assert.deepEqual(directA.data.map(x=>String(x.id)),[String(idA)]);
+    assert.deepEqual(directB.data.map(x=>String(x.id)),[String(idB)]);
     assert.equal(directA.data[0].user_id,alice.id);
     assert.equal(directB.data[0].user_id,bob.id);
 
