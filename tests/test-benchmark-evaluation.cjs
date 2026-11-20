@@ -12,7 +12,22 @@ const context={
   setTimeout(){throw Error("Benchmark helper must not schedule provider calls");}
 };
 vm.runInNewContext(source,context,{filename:"src/client/benchmark-evaluation.js",timeout:1000});
-const {selectCases,evaluateOpening}=context.SamtalestotteBenchmarkEvaluation;
+const {selectCases,evaluateOpening,resolveCaseCount}=context.SamtalestotteBenchmarkEvaluation;
+assert.equal(typeof resolveCaseCount,"function");
+for(const n of [1,3,26,66,112,114,137]){
+  assert.equal(resolveCaseCount("all",n),n,"Symbolic all must resolve actual live bank size");
+}
+assert.equal(resolveCaseCount("24",114),24);
+assert.equal(resolveCaseCount("112",114),112,"Historical numeric subset may remain valid but must not mean all");
+assert.equal(resolveCaseCount("all",0),0);
+assert.equal(resolveCaseCount("all",NaN),0);
+assert.equal(resolveCaseCount("all",undefined),0);
+assert.equal(resolveCaseCount("invalid",114),8);
+assert.equal(resolveCaseCount("-100",114),8);
+assert.equal(resolveCaseCount("16",3),3);
+const large=Array.from({length:114},(_,i)=>({id:"B"+(i+1),topicId:"t"}));
+assert.equal(selectCases({cases:large},resolveCaseCount("all",large.length)).length,114,
+  "All 114 synthetic bank entries must be selected, not just the historical 112");
 assert.equal(typeof selectCases,"function");
 assert.equal(typeof evaluateOpening,"function");
 
