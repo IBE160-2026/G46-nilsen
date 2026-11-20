@@ -1,3 +1,14 @@
+# 20.11.2026 – faktisk lokal Supabase Auth/PostgREST/RLS med to brukere (draft PR #12)
+
+- Ny **obligatorisk** `supabase-auth-local`-jobb i Quality Gate med fastlåst lokal CLI v2.122.1, ekte GoTrue Auth, PostgREST, PostgreSQL og lokal API-gateway. Ingen hosted prosjekt-token eller produksjonsnøkler.
+- `tests/sql/local-supabase-auth-fixture.sql` oppretter isolert testskjema, mens prosjektets **faktiske** V20-8 RLS-migrasjon brukes uendret. Systemrollen `auth.uid()` og Supabase Auth/JWT er **ikke** simulert i denne jobben.
+- `tests/test-supabase-local-auth-e2e.cjs` oppretter tre reelle lokale testbrukere (Alice/Bob/admin), logger inn gjennom `server.js`, tester access/refresh, rolle fra `app_metadata` (ikke brukerredigerbare `user_metadata`), egne/andres historikk-CRUD, direkte PostgREST-IDOR/forfalskningsforsøk, 401/403/404, anonym adgang, kontoeksport og sletting.
+- Testkjøringen avdekket en streng testassert som sammenlignet `bigint`-ID fra Express (tekst) med PostgREST (tall), uten at dette var et appavvik. Samtidig ble asynkron rollegating i tidligere admin-Chrome-test gjort stabil ved eksplisitt observasjon av ferdig UI.
+- [Quality Gate #44788004299](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44788004299) **SUCCESS alle tre jobber**; ingen ekte KI-kall, live Supabase-mutasjon, produksjonsdeploy, merge eller endring av LIVE/tale-pilot.
+- Gjenstår: hosted konfigurasjonsparitet, passordreset/invitasjon, logout/revokering, editorkonto, fysisk mobil/print, faglig KI-vurdering. Dokumentert i `docs/ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md`.
+
+---
+
 # 20.11.2026 – streng sensorkontroll av full brukerreise (draft PR #12)
 
 - Ny `tests/test-sensor-journey-browser.cjs` går gjennom **faktisk frontend i headless Chrome** mot lokal Express-sensordemo: tema og undertema, situasjonsbeskrivelse, analyse, hovedråd, oppfølgingsspørsmål, utskrifts-HTML inkl. «Videre råd», simulering, feedback, automatisk lagret historikk, reload/gjenåpning, sletting og tom kontoeksport.
