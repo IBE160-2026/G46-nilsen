@@ -3570,7 +3570,21 @@ function applyContentOverrides(){
   renderTopics();
   if(currentTopic && views.topic?.classList.contains('active-view')) openTopic(currentTopic,pendingSituationText);
 }
-async function loadContentOverrides(){try{const response=await fetch('/api/content',{cache:'no-store'});if(response.ok){const payload=await response.json();contentOverrides=payload.values||{};applyContentOverrides();return payload;}}catch(_){}return{values:{},setupRequired:false};}
+async function loadContentOverrides() {
+  const requestId = ++contentOverridesRequestSequence;
+  try {
+    const response = await fetch('/api/content', {cache:'no-store'});
+    const payload = await response.json();
+    if (requestId !== contentOverridesRequestSequence) return { loaded:false, superseded:true };
+    if (!response.ok) throw new Error(payload.message || 'Kunne ikke hente innhold.');
+    contentOverrides = payload.values || {};
+    applyContentOverrides();
+    return { ...payload, loaded:true };
+  } catch (_) {
+    if (requestId !== contentOverridesRequestSequence) return { loaded:false, superseded:true };
+    return {values:{},setupRequired:false,loaded:false};
+  }
+}
 function renderAdminContentFields(){
   const host=document.querySelector('#admin-content-fields');if(!host)return;
   host.className='admin-content-fields admin-content-sections';
@@ -3580,7 +3594,7 @@ function renderAdminContentFields(){
 let adminContentDirty=false;
 function markAdminDirty(){adminContentDirty=true;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=false;const save=document.querySelector('#admin-save-content');if(save)save.disabled=false;}
 function clearAdminDirty(){adminContentDirty=false;const badge=document.querySelector('#admin-unsaved-indicator');if(badge)badge.hidden=true;const save=document.querySelector('#admin-save-content');if(save)save.disabled=true;}
-async function saveAdminContent(){const msg=document.querySelector('#admin-content-message'),values={};document.querySelectorAll('[data-admin-content-key]').forEach(input=>{values[input.dataset.adminContentKey]=input.value.trim();});try{const response=await fetch('/api/admin/content',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({values})});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke lagre innholdet.');contentOverrides={...contentOverrides,...values};applyContentOverrides();clearAdminDirty();if(msg){msg.className='auth-message success';msg.textContent='Endringene er lagret og vises med en gang.';}}catch(error){if(msg){msg.className='auth-message error';msg.textContent=error.message;}}}
+async function saveAdminContent(){const msg=document.querySelector('#admin-content-message'),values={};document.querySelectorAll('[data-admin-content-key]').forEach(input=>{values[input.dataset.adminContentKey]=input.value.trim();});try{const response=await fetch('/api/admin/content',{method:'PUT',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({values})});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke lagre innholdet.');contentOverridesRequestSequence += 1;contentOverrides={...contentOverrides,...values};applyContentOverrides();clearAdminDirty();if(msg){msg.className='auth-message success';msg.textContent='Endringene er lagret og vises med en gang.';}}catch(error){if(msg){msg.className='auth-message error';msg.textContent=error.message;}}}
 async function loadAdminUsers(){const card=document.querySelector('#admin-users-card'),list=document.querySelector('#admin-users-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter brukere …</div>';try{const response=await fetch('/api/admin/users',{credentials:'include',cache:'no-store'});const payload=await response.json();if(!response.ok)throw new Error(payload.message||'Kunne ikke hente brukere.');list.innerHTML=(payload.users||[]).map(user=>`<div class="admin-user-row" data-admin-user="${escapeHtml(user.id)}"><div class="admin-user-copy"><strong>${escapeHtml(user.username||'Bruker')}</strong><small>${escapeHtml(user.email||'')}</small></div><select data-admin-role ${user.id===currentUser.id?'disabled':''}><option value="user" ${user.role==='user'?'selected':''}>Bruker</option><option value="editor" ${user.role==='editor'?'selected':''}>Redaktør</option><option value="admin" ${user.role==='admin'?'selected':''}>Admin</option></select><button class="secondary-button" type="button" data-save-admin-role ${user.id===currentUser.id?'disabled':''}>Lagre rolle</button></div>`).join('')||'<div class="history-empty">Ingen brukere funnet.</div>';list.querySelectorAll('[data-save-admin-role]').forEach(button=>button.addEventListener('click',async()=>{const row=button.closest('[data-admin-user]'),role=row.querySelector('[data-admin-role]').value;button.disabled=true;try{const r=await fetch(`/api/admin/users/${encodeURIComponent(row.dataset.adminUser)}/role`,{method:'PATCH',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({role})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke endre rollen.');const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message success';msg.textContent=`Rollen er endret til ${role}.`;}}catch(error){const msg=document.querySelector('#admin-users-message');if(msg){msg.className='auth-message error';msg.textContent=error.message;}}finally{button.disabled=false;}}));}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
 async function loadAdminFeedback(){const card=document.querySelector('#admin-feedback-card'),list=document.querySelector('#admin-feedback-list');if(!card||!list)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;list.innerHTML='<div class="history-empty">Henter rapporterte svar …</div>';try{const r=await fetch('/api/admin/ai-feedback',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente rapporterte svar.');list.innerHTML=(p.items||[]).map(item=>`<article class="admin-feedback-item"><div><strong>${escapeHtml(item.category||'Tilbakemelding')}</strong><small>${new Date(item.created_at).toLocaleString('nb-NO')} · ${escapeHtml(item.surface||'')}</small></div><p>${escapeHtml(item.comment||'')}</p>${item.include_conversation?`<details><summary>Vedlagt samtale</summary><pre class="admin-feedback-snapshot">${escapeHtml(JSON.stringify(item.conversation_snapshot||{},null,2))}</pre></details>`:'<small>Ingen samtale vedlagt.</small>'}</article>`).join('')||'<div class="history-empty">Ingen rapporterte KI-svar ennå.</div>';}catch(error){list.innerHTML=`<div class="history-empty">${escapeHtml(error.message)}</div>`;}}
 async function loadAdminAiSettings(){const card=document.querySelector('#admin-ai-card');if(!card)return;const isAdmin=currentUser?.role==='admin';card.hidden=!isAdmin;if(!isAdmin)return;try{const r=await fetch('/api/admin/ai-settings',{credentials:'include',cache:'no-store'});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke hente modellvalg.');const select=document.querySelector('#admin-ai-model');select.innerHTML=(p.models||[]).map(m=>`<option value="${escapeHtml(m.id)}" ${m.id===p.activeModel?'selected':''}>${escapeHtml(m.label)} · ${escapeHtml(m.tier)} · $${m.inputPerMillion}/$${m.outputPerMillion} per 1M tokens</option>`).join('');}catch(error){const msg=document.querySelector('#admin-ai-model-message');msg.className='auth-message error';msg.textContent=error.message;}}
@@ -3777,7 +3791,36 @@ async function openSurvey(){
   }catch(_){if(form){form.hidden=false;updateSurveyPrivacy();}}
 }
 
-async function openAdmin(){if(!requireLogin())return;if(!['editor','admin'].includes(currentUser?.role||'user'))return;setBreadcrumb('Admin');showView('admin');document.querySelector('#admin-current-role').textContent=currentUser.role==='admin'?'Admin':'Redaktør';const payload=await loadContentOverrides();renderAdminContentFields();clearAdminDirty();const msg=document.querySelector('#admin-content-message');if(msg&&payload.setupRequired){msg.className='auth-message error';msg.textContent='Innholdsdatabasen er ikke opprettet ennå. Kjør database/migrations/V20-SUPABASE-MIGRATION.sql i Supabase.';}await loadAdminUsers();await loadAdminInvites();await loadAdminFeedback();await loadAdminSurvey();await loadAdminAiSettings();await loadAdminAiUsage();await loadBenchmarkConfig();}
+async function openAdmin() {
+  if (!requireLogin() || !['editor', 'admin'].includes(currentUser?.role || 'user')) return;
+  // Opening the active editor again must not silently discard unsaved edits.
+  if (views.admin?.classList.contains('active-view')) return;
+  showView('admin');
+  const epoch = ++adminViewEpoch;
+  const userId = String(currentUser?.id ?? '');
+  setBreadcrumb('Admin');
+  const role = document.querySelector('#admin-current-role');
+  if (role) role.textContent = currentUser.role === 'admin' ? 'Admin' : 'Redaktør';
+  const payload = await loadContentOverrides();
+  if (!isActiveAdminView(epoch, userId, true) || payload.superseded) return;
+  renderAdminContentFields();
+  clearAdminDirty();
+  const msg = document.querySelector('#admin-content-message');
+  if (msg && !payload.loaded) {
+    msg.className = 'auth-message error';
+    msg.textContent = 'Kunne ikke hente innhold. Prøv «Last inn på nytt».';
+  }
+  if (msg && payload.setupRequired) {
+    msg.className = 'auth-message error';
+    msg.textContent = 'Innholdsdatabasen er ikke opprettet ennå. Kjør database/migrations/V20-SUPABASE-MIGRATION.sql i Supabase.';
+  }
+  const loaders = [loadAdminUsers, loadAdminInvites, loadAdminFeedback, loadAdminSurvey,
+    loadAdminAiSettings, loadAdminAiUsage, loadBenchmarkConfig];
+  for (const load of loaders) {
+    if (!isActiveAdminView(epoch, userId, true)) return;
+    await load();
+  }
+}
 
 
 function isStandaloneApp(){
@@ -4016,7 +4059,7 @@ document.querySelector('#ai-feedback-comment')?.addEventListener('input',()=>{
 document.querySelector('#ai-feedback-form')?.addEventListener('submit',async event=>{event.preventDefault();const category=document.querySelector('#ai-feedback-category')?.value||'Annet';const comment=document.querySelector('#ai-feedback-comment')?.value.trim()||'';const message=document.querySelector('#ai-feedback-message');const findings=detectSensitiveInfo(comment);if(splitPrivacyFindings(findings).hard.length){message.className='auth-message error';message.textContent='Fjern navn eller andre tydelige personopplysninger før tilbakemeldingen sendes.';return;}if(comment.length<3){message.className='auth-message error';message.textContent='Skriv kort hva som var problemet.';return;}const includeConversation=Boolean(document.querySelector('#ai-feedback-include-conversation')?.checked);let conversationSnapshot=null;if(includeConversation){const attachmentFindings=updateFeedbackAttachmentPrivacy();if(splitPrivacyFindings(attachmentFindings).hard.length){message.className='auth-message error';message.textContent='Samtalen må anonymiseres før den kan legges ved.';return;}conversationSnapshot=buildFeedbackConversationSnapshot(pendingAiFeedback.surface,pendingAiFeedback.turnIndex);}try{const r=await fetch('/api/ai-feedback',{method:'POST',credentials:'include',headers:{'Content-Type':'application/json'},body:JSON.stringify({category,comment,surface:pendingAiFeedback.surface,turnIndex:pendingAiFeedback.turnIndex,conversationId:currentConversationId||null,topicId:currentTopic?.id||null,subtopic:currentSubtopic||null,includeConversation,conversationSnapshot})});const p=await r.json();if(!r.ok)throw new Error(p.message||'Kunne ikke sende tilbakemeldingen.');message.className='auth-message success';message.textContent=includeConversation?'Takk. Tilbakemeldingen og samtalen er lagret.':'Takk. Tilbakemeldingen er lagret uten samtaleteksten.';setTimeout(closeAiFeedback,800);}catch(error){message.className='auth-message error';message.textContent=error.message;}});
 
 document.querySelector('#back-from-admin')?.addEventListener('click',()=>showView('home'));
-document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(adminContentDirty&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;await loadContentOverrides();renderAdminContentFields();clearAdminDirty();});
+document.querySelector('#admin-reload-content')?.addEventListener('click',async()=>{if(adminContentDirty&&!confirm('Du har ulagrede endringer. Vil du forkaste dem og laste inn på nytt?'))return;const epoch=adminViewEpoch,userId=String(currentUser?.id??'');const result=await loadContentOverrides();if(!isActiveAdminView(epoch,userId,true)||result.superseded)return;renderAdminContentFields();clearAdminDirty();});
 document.querySelector('#admin-content-form')?.addEventListener('submit',event=>{event.preventDefault();if(!adminContentDirty)return;document.querySelector('#admin-save-dialog')?.showModal();});
 document.querySelector('#admin-save-cancel')?.addEventListener('click',()=>document.querySelector('#admin-save-dialog')?.close());
 document.querySelector('#admin-save-confirm')?.addEventListener('click',async()=>{document.querySelector('#admin-save-dialog')?.close();await saveAdminContent();});
