@@ -1463,3 +1463,30 @@ Jeg beskriver ikke dette som «KI-en er bevist korrekt». Live modelltesting er 
 
 Full sporbar rapport:
 `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md`
+
+## 20.11.2026 – revisjon av innleveringsrepo og PRD etter faglærers tilbakemelding
+
+### Oppgave og plan
+
+Jeg ba KI-assistenten gå tilbake til de siste forelesningsnotatene, lærerens skriftlige tilbakemelding på PRD og hele repoet, og deretter starte en kontrollert sluttføring. Prioriteten var riktig innleveringsrepo, reproduserbar GitHub-test, testbare krav og dokumentasjon av hva som faktisk er verifisert.
+
+### Funn og vurderinger
+
+- Jeg har to forskjellige repoer: det offisielle `IBE160-2026/G46-nilsen` med `main` og et separat privat utviklingsrepo. Bare førstnevnte er oppgitt som korrekt innleveringsrepo i lærerens tilbakemelding. Tidligere feilrettinger i det private repoet kan ikke regnes som levert i innleveringsrepoet.
+- Siste quality gate på `G46-nilsen/main` var rød fordi `.docs/planning-artifacts/architecture/technology.md` handlet om Pytagoras Forlag og ikke var tillatt i repo-strukturtesten. Assistenten fjernet denne irrelevante filen kun i ny arbeidsgren, ikke fra `main`.
+- Faglærerens PRD-tilbakemelding fra 12.11 dokumenterte særlig manglende akseptansekriterier og en PRD med fragmenterte krav og testtall.
+- CSS i riktig repo hadde 845 `!important`-deklarasjoner fordelt på tre stiler; dette er teknisk gjeld som ikke ble forsøkt masseredusert i denne dokumentasjonsrunden.
+
+### KI-bidrag og kontroll
+
+- KI foreslo en avgrenset arbeidsgren og PR #13 i riktig repo, kvalitetskjøring på pull requests og en ny kravstruktur. Jeg har ikke bedt om produksjonsdeploy eller merge.
+- Opprinnelig PRD er bevart i `docs/bmad/historikk/PRD-2026-11-12.md`. Gjeldende PRD samler 24 funksjonelle krav med akseptansekriterier, to brukerreiser, ordliste, målbare mål/motmål og AI-/NFR-krav. Tilhørende test-/statusbevis er lagt separat i `docs/bmad/PRD-STATUS-OG-TESTBEVIS.md`.
+- En ny deterministisk test (`tests/test-prd-consistency.cjs`) kontrollerer ID-er, akseptansekriterier, scope og kobling til testbevis. Dette verifiserer dokumentstruktur, **ikke** at hver funksjon er kvalitativt god eller testet E2E.
+- GitHub Actions ble grønn på PR-grenen etter fjerning av det feilplasserte dokumentet og etter PRD-revisjonen. Sluttstatus må fortsatt bekreftes på siste commit.
+
+### Åpne punkter og læring
+
+- Test statusmatrisen mot ekte brukerflyter (to kontoer, mobil/desktop, utskrift, simulering) og faglig kildekritikk; ikke merk umålte mål som oppnådd.
+- Synkroniser arkitektur/stories og refleksjonsrapport med gjeldende krav, men hold gamle historiske valg synlige og daterte.
+- PRD ble revidert **etter** mye av implementasjonen. En styrke ved KI-assistert arbeid kan være rask iterasjon; en svakhet er at dokumentasjon og kode ellers glir fra hverandre. Det er behov for kontinuerlig krav-til-test-kobling fremfor å skrive status som krav.
+- Ikke slå sammen privat repo-PR eller denne utkast-PR-en ukritisk; visuelt og praktisk pilotbevis gjenstår.
