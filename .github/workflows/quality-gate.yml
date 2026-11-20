@@ -29,6 +29,9 @@ jobs:
       - name: Run deterministic test suite
         run: npm test
 
+      - name: Exercise admin interface with fake roles in Chrome
+        run: node tests/test-admin-browser.cjs
+
       - name: Report CSS complexity and prevent new important debt
         run: npm run audit:css -- --enforce-budget
 
