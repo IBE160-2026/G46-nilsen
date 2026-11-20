@@ -13,6 +13,12 @@ assert((bank.cases||[]).length>=66,'Goldenbanken skal inneholde minst 66 saker e
 assert(html.includes('id="pilot-regression-run"'),'Admin mangler knapp for pilotkjøring');
 assert(html.includes('id="production-regression-run"'),'Admin mangler knapp for full produksjonsflyt-test');
 assert(html.includes('id="pilot-regression-results"'),'Admin mangler område for pilotresultater');
+assert(html.includes('id="pilot-regression-description"'),'Admin mangler dynamisk forklaring av antall testsaker');
+assert(!html.includes('Alle 26 saker')&&!html.includes('52 KI-kall')&&!html.includes('Kjør alle 26'),'Pilot/full-UI skal ikke bruke utdaterte 26/52');
+assert(app.includes("'/api/admin/pilot-regression/cases?summary=1'"),'Klienten må hente antall fra den faktiske golden-casebanken');
+assert(app.includes('pilotCount * 2')&&app.includes('fullCount * 2'),'Antall KI-kall skal utledes av antall testsaker');
+assert(app.includes('await loadRegressionCounts()'),'Adminvisningen må synkronisere dynamisk caseantall');
+assert(server.includes("req.query?.summary === '1'"),'Serveren må kunne returnere anonymisert antall uten casebeskrivelser');
 assert(app.includes("async function runPilotRegression(mode='pilot')"),'Klienten mangler automatisk pilot/full produksjonsflyt-kjøring');
 assert(app.includes("runPilotRegression('full')"),'Full produksjonsflyt-test er ikke koblet til klienten');
 assert(app.includes("mode==='full'?'production-regression':'pilot-regression'"),'Fulltesten merkes ikke som egen testmodus');
