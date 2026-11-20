@@ -109,6 +109,18 @@ assert(adminDataPos > topicSearchPos && adminDataPos < html.indexOf('app.js?v=')
   'Administrasjonsmodulen må lastes før app.js');
 assert(app.includes('window.SamtalestotteAdminData.create('),
   'app.js må bruke administrasjonsmodulen via avhengighetsinjeksjon');
+
+assert(html.includes('<option value="all" disabled>Alle testsaker') &&
+  !html.includes('value="112"') &&
+  !html.includes('Alle 112 saker'),'Benchmark-UI må ha symbolsk «alle»-valg uten foreldet 112');
+assert(app.includes('SamtalestotteBenchmarkEvaluation.resolveCaseCount('),
+  'Benchmark skal omsette «alle» til gjeldende lengde på testsaklisten');
+assert(app.includes('data.cases.length !== data.totalCases'),
+  'Klienten skal avvise API-svar med motstridende antall caser');
+assert(html.includes('id="pilot-regression-run" type="button" disabled') &&
+  html.includes('id="production-regression-run" type="button" disabled') &&
+  html.includes('id="benchmark-run-live" type="button" disabled'),
+  'Kostnadsbærende knapper må være avstengt før serveren har verifisert tilgangen');
 const appScriptPos = html.indexOf('app.js?v=');
 assert(
   privacyNamePos >= 0 &&
