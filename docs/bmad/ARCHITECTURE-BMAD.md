@@ -9,13 +9,23 @@
 
 ---
 
+## Tillegg 20.11.2026 – kostnadssperre og autoritativ rolle for pilottest
+
+På revisjonsgrenen er `src/server/benchmark-budget.js` et eget, konservativt testregnskap som reserverer før lokale fiktive providerkall; det ignorerer nettleserens påståtte `spentSoFar`. Ledgeren er minnebasert og er derfor **ikke** et produksjonsegnet system for atomisk regnskap på flere instanser, omstart eller faktisk dollar-tak.
+
+Serverruten for betalt benchmark er **fail-closed utenfor eksplisitt testmodus**. Administrasjonens pilot-/full-produksjonsflyt-tester må ha samme test-only tillatelse og er ellers sperret før de kan kalle KI. Normale brukerforespørsler forblir tilgjengelige. Testmerkingen benytter nå rollen som autentiseringslaget allerede har kontrollert (`req.user.role`), ikke et forsøk på å rekalkulere rollen fra feil format. Klienten respekterer `liveEnabled` og viser stengte knapper.
+
+Verifisering: `tests/test-benchmark-budget.cjs` og `tests/test-benchmark-live-http.cjs` (lokal, syntetisk HTTP OpenAI SDK-provider og Auth/PostgREST); ekstra negative Express HTTP-tester for sperret benchmark/pilot, samt Chrome og PostgreSQL/RLS. Total nå **50** npm-delsteg. Dette er et testet sikkerhetsmellomsteg, ikke grunnlag for produksjonsutrulling uten videre design og testing. Se [benchmarkrapport](../ai/BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026 – avgrenset benchmarkevaluering og kostnadsrisiko
 
 I draft-PR #12 er de rene funksjonene for representativt testutvalg og evalueringsregler for samtaleåpninger flyttet til `src/client/benchmark-evaluation.js` (klassisk, frontendlastet modul). Dette laget bruker ikke DOM, nettverk, nøkkel eller KI-provider. `app.js` beholder betalt benchmark- og pilotorkestrering, kontrollknapper, visning av resultater og serverkontakt. `src/client/benchmark-evaluation.js` lastes før `app.js` fra eksplisitt asset-allowlist og PWA-cache.
 
 Lagdelte kontroller: Node-VM tester pure funksjoner, ekte Chrome med injiserte fiktive responser tester bekreftelse/kansellering og visning, og Express med lokal Auth-fake tester gratis fulltest og administratorgrense. Den faktiske navnedetektoren kontrolleres mot hele syntetisk benchmarkbank. Innholdsfeil i B113 (adjektivet «nærmeste» feilidentifisert som navn) er snevert utbedret uten svekket gjenkjenning av reelle navn.
 
-**Arkitektonisk gjeld:** Kostnadsgrensen for `/api/admin/benchmark/live` baseres fremdeles på klientrapportert `spentSoFar`, ikke et atomisk serveradministrert budsjett. Dette er **ikke** en verifisert kostnadsgaranti og må rettes og testes uten ekte API-kostnader før betalt benchmarkkjøring kan godkjennes. Se [benchmarkrapport](../ai/BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md). Ingen produksjonsmerge eller LIVE-endringer.
+**Arkitektonisk gjeld:** Den tidligere `spentSoFar`-baserte kostnadskontrollen er erstattet av servereid lokal reservasjon **kun i isolert testmodus**, og betalte testmoduser avvises i produksjon. En sikker, varig atomisk budsjettgrense er fortsatt ikke implementert. Dette er **ikke** en verifisert kostnadsgaranti og må rettes og testes uten ekte API-kostnader før betalt benchmarkkjøring kan godkjennes. Se [benchmarkrapport](../ai/BENCHMARK-KOSTNAD-OG-KVALITET-2026-11-20.md). Ingen produksjonsmerge eller LIVE-endringer.
 
 ---
 
