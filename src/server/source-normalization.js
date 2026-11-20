@@ -97,7 +97,11 @@ export function evidenceProvenance(response, curatedSourceIds = [], evidenceSour
   return {
     webSearchPerformed: output.some(item => item?.type === "web_search_call"),
     providerUrlCount: providerUrls.size,
+    // Telles bare når modellen selv valgte ID-en. Andre lovkilder blir
+    // liggende som kontrollreferanser og telles separat.
     selectedCuratedSourceCount: Array.isArray(curatedSourceIds) ? curatedSourceIds.length : 0,
+    scopeReferenceCount: Array.isArray(evidenceSources)
+      ? evidenceSources.filter(source => source?.evidenceRole === "scope_reference").length : 0,
     visibleEvidenceCount: Array.isArray(evidenceSources) ? evidenceSources.length : 0,
     contentVerified: false
   };
