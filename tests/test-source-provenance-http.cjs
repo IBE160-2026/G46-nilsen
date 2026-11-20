@@ -80,6 +80,8 @@ function checkResult(result,label) {
     label+": model must not claim binding legal status");
   assert.equal(source.year,"",
     label+": model must not invent publication date");
+  assert.equal(source.evidenceRole,"provider_url",
+    label+": web-search result must not be presented as KI-selected or checked legal source");
   assert(!evidence.some(x=>x.url===forgedUrl),
     label+": hallucinated source URL leaked into visible evidence");
   assert(result.source_provenance,label+": no provenance summary");
