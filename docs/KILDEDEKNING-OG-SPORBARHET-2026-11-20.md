@@ -1,6 +1,6 @@
 # Kildedekning, sporbarhet og kildevalg – revisjon 20.11.2026
 
-**Status:** Arbeidsrapport for PR #14. Ikke en attest på at en språkmodell har lest og kontrollert hver lenket side.  
+**Status:** Arbeidsrapport for PR #15 (oppfølging til den sammenslåtte PR #14). Ikke en attest på at en språkmodell har lest og kontrollert hver lenket side.  
 **Avgrensning:** 14 navngitte fagsektorer og «Annet», overordnede arbeidsgiverkilder, praksis for utvalgte svar og sporbare webkilder.  
 **Kildebanker:** `data/SOURCEBANK.json` (59 generelle kilder), `data/OCCUPATION-LEGAL-SOURCES.json` (99 registeroppføringer, hvorav noen brukes i flere sektorer) og `data/AGREEMENT-SOURCE-MAP.json`. Antall er et øyeblikksbilde av arbeidsgrenen.
 
@@ -75,4 +75,4 @@ Bruk anonymiserte caser: (A) privat butikk/utestenging + oppfølging «Kan jeg g
 
 For hver case må vi lagre forventet sektor, valgte kilde-ID-er, visningslenker, om faktisk nettsøk ble brukt, og en **manuell** vurdering av at lenket tekst støtter påstanden. A–D skal ikke gi tomt kildegrunnlag ved konkrete rettslige/faglige påstander. E skal ikke overfylles med irrelevante kilder.
 
-**Publiseringsregel:** Ikke slå sammen PR #14 i `main` på bakgrunn av en pen kildeoversikt alene. Først grønn CI, deretter dokumentert ekte KI-prøve av kildepresisjon (og kontroll av riktig Render-innstilling). Visuell test på egen Render-adresse er bare en mock-demonstrasjon.
+**Publiseringsregel:** Ikke slå sammen PR #15 i `main` på bakgrunn av en pen kildeoversikt alene. Først grønn CI, deretter dokumentert ekte KI-prøve av kildepresisjon (og kontroll av riktig Render-innstilling). Visuell test på egen Render-adresse er bare en mock-demonstrasjon.
