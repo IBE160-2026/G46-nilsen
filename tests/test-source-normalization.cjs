@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 (async () => {
-const { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
+const { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
 assert.equal(normalizeSourceUrl("https://example.org/a?utm_source=x&b=2&utm_campaign=y#section"),"https://example.org/a?b=2");
 assert.equal(normalizeSourceUrl("not a web address"),"not a web address");
 const response = { output: [
@@ -49,6 +49,18 @@ assert.equal(cleanGuidance.supplementary_sources[0].url,"https://valid.example/l
 const stripped=stripInlineSourceLinks(message);
 assert.ok(!stripped.includes("](http"),"Lenker er ikke fjernet fra visningsteksten");
 assert.ok(stripped.includes("myndighetskilde"));
+const modelAndScope=annotateCuratedEvidence([
+ {id:"STATE_EMPLOYEE_ACT",url:"https://lovdata.no/statsansatte"},
+ {id:"AML_4_6_TILRETTELEGGING",url:"https://lovdata.no/aml"}
+],["AML_4_6_TILRETTELEGGING"]);
+assert.deepEqual(modelAndScope.map(x=>x.evidenceRole),["scope_reference","model_selected"],
+  "Automatisk lagt til lov skal merkes til kontroll, ikke som KI-valgt kilde");
+assert.deepEqual(annotateCuratedEvidence([{id:"STATE_EMPLOYEE_ACT"}],["STATE_EMPLOYEE_ACT"]).map(x=>x.evidenceRole),
+  ["model_selected"],"KI-valgt lov skal ikke feilmerkes som systemkilde");
+assert.deepEqual(annotateProviderEvidence([{url:"https://example.org/search"}]).map(x=>x.evidenceRole),
+  ["provider_url"],"Dokumentert URL fra provider er nettsøktreff, ikke innholdsverifisert kilde");
+assert.equal(annotateCuratedEvidence(modelAndScope,["AML_4_6_TILRETTELEGGING"])[0].evidenceRole,
+  "scope_reference","Gjennomgang av kildeproveniens må være deterministisk");
 assert.equal(dedupeEvidenceSources([
  {url:"https://example.org/item?utm_source=test"},{url:"https://example.org/item#fragment"},{id:"NOE",title:"Uten URL"},
  {id:"NOE",title:"Uten URL"}
