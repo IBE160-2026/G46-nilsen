@@ -244,4 +244,4 @@ Jeg er særlig opptatt av at teknologien skal gjøre vanskelige menneskelige sam
 
 **Før innlevering:** Kontroller at studentopplysninger, eget språk, kildehenvisninger, personlig vurdering og alle faktiske forhold stemmer. Valg av endelig Git-commit og Canvas-frist må bekreftes. Arbeidet i PR #12 er ennå ikke en endring i main eller produksjon.
 
-**Ordantall:** [settes inn ved siste revisjon]. Malen oppgir forventet 3000–5000 ord, avhengig av gruppestørrelse og kompleksitet. For soloprosjektet bør alle faglig relevante deler dekkes, uten å dikte opp gruppesamarbeid.
+**Omtrentlig ordantall for dette utkastet:** 4816 ord inkludert overskrifter, vedlegg, URL-tekst og metadata (automatisk opptelling, ikke Canvas-telling). Malen oppgir forventet 3000–5000 ord, avhengig av gruppestørrelse og kompleksitet. For soloprosjektet bør alle faglig relevante deler dekkes, uten å dikte opp gruppesamarbeid.
