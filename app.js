@@ -1525,6 +1525,17 @@ function formatSpeechExamples(text) {
   return safe.replace(/«([^»\n]{2,500})»/g, '<em class="spoken-example">«$1»</em>');
 }
 
+// Kilde-ID/URL bekrefter ikke at et generert utsagn er faglig kontrollert.
+// La aldri systemforeslått lovtekst se ut som en KI-valgt henvisning.
+function evidenceRoleLabel(source) {
+  switch (source?.evidenceRole) {
+    case 'model_selected': return 'Valgt fra kildebanken av KI – ikke faktasjekket';
+    case 'scope_reference': return 'Til kontroll – lagt til av systemet, ikke valgt av KI';
+    case 'provider_url': return 'Nettsøktreff – innhold ikke faktasjekket';
+    default: return 'Kildereferanse – innhold ikke faktasjekket';
+  }
+}
+
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
   const reactionHtml = (guidance.reactions || []).map((item, index) => `
@@ -1542,15 +1553,15 @@ function renderAiGuidance(guidance) {
     catch (_) { return ''; }
   };
   const evidence = evidenceSources.length
-    ? `<div class="evidence-list">${evidenceSources.map(source => {
+    ? `<p class="muted-note source-verification-note">Dette er kilder til videre kontroll. Kildehenvisning betyr ikke at påstandene i KI-rådet er faktasjekket.</p><div class="evidence-list">${evidenceSources.map(source => {
         const host = sourceHost(source);
         const title = source.title || source.author || host || 'Kilde';
         const meta = [source.author && source.author !== host ? source.author : '', source.year ? String(source.year) : '', source.type || '', host].filter(Boolean).join(' · ');
-        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>Åpne kilde ↗</em></a>`;
+        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><span class="evidence-role">${escapeHtml(evidenceRoleLabel(source))}</span><em>Åpne kilde ↗</em></a>`;
       }).join('')}</div>`
     : '<p class="muted-note guidance-source-empty">Ingen etterprøvbare kildehenvisninger registrert for dette rådet.</p>';
   const compactEvidence = evidenceSources.length
-    ? `<div class="inline-source-links"><span>Kilder:</span>${evidenceSources.slice(0,4).map(source => {
+    ? `<div class="inline-source-links"><span>Kilder å kontrollere:</span>${evidenceSources.slice(0,4).map(source => {
         const host = sourceHost(source);
         const label = source.author || host || source.title || 'Kilde';
         return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>`;
@@ -2182,7 +2193,9 @@ function normalizeContinuationSources(sources = []) {
     .map(source => ({
       title: String(source.title || source.author || 'Kilde').slice(0, 250),
       author: String(source.author || '').slice(0, 150),
-      url: String(source.url)
+      url: String(source.url),
+      evidenceRole: ['model_selected','scope_reference','provider_url'].includes(source.evidenceRole)
+        ? source.evidenceRole : ''
     }));
 }
 
@@ -2193,7 +2206,8 @@ function renderContinuationEvidence(sources = []) {
   }
   return `<details class="continuation-evidence">
     <summary>Kildegrunnlag (${verified.length})</summary>
-    <div class="evidence-list">${verified.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong>${source.author ? `<span>${escapeHtml(source.author)}</span>` : ''}<em>Åpne kilde ↗</em></a>`).join('')}</div>
+    <p class="muted-note source-verification-note">Kildene er forslag til kontroll, ikke bekreftelse på at alle påstander er riktig dokumentert.</p>
+    <div class="evidence-list">${verified.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong>${source.author ? `<span>${escapeHtml(source.author)}</span>` : ''}<span class="evidence-role">${escapeHtml(evidenceRoleLabel(source))}</span><em>Åpne kilde ↗</em></a>`).join('')}</div>
   </details>`;
 }
 
