@@ -59,7 +59,49 @@ async function wait(cdp,expression,title){
   }
   throw Error("Timeout: "+title+"; state="+JSON.stringify(await js(cdp,"({profile:document.querySelector('#profile-name')?.textContent,view:document.querySelector('#admin-view')?.className,calls:window.__fixture?.calls,errors:window.__jsErrors})")));
 }
-function fixture(role){return "(()=>{\nconst role=ROLE_LITERAL,realFetch=window.fetch.bind(window);\nwindow.__jsErrors=[];\nwindow.addEventListener('error',e=>window.__jsErrors.push(String(e.message)));\nwindow.addEventListener('unhandledrejection',e=>window.__jsErrors.push(String(e.reason)));\nconst state={role,calls:[],status:200};window.__fixture=state;\nconst fake=(data,status=200)=>Promise.resolve(new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}}));\nwindow.fetch=(input,opt={})=>{\n const url=new URL(typeof input==='string'?input:input.url,location.href),p=url.pathname,method=String(opt.method||'GET').toUpperCase();\n if(p==='/api/auth/me')return fake({user:{id:'admin-current',username:role==='admin'?'Admin Test':role==='editor'?'Editor Test':'User Test',email:'synthetic@example.invalid',role}});\n if(p.startsWith('/api/admin/')){\n  state.calls.push({path:p,search:url.search,method,body:opt.body||null});\n  if(role!=='admin')return fake({message:'Forbidden'},403);\n  if(p==='/api/admin/users'&&method==='GET')return fake({users:[{id:'admin-current',username:'Admin Test',email:'admin@example.invalid',role:'admin'},{id:'user-2',username:'<script>unsafe</script>',email:'user&test@example.invalid',role:'user'}]});\n  if(p==='/api/admin/users/user-2/role'&&method==='PATCH')return state.status===200?fake({ok:true}):fake({message:'Rolleendring avvist'},state.status);\n  if(p==='/api/admin/ai-feedback')return fake({items:[{category:'<label>',surface:'main-guidance',created_at:'2026-11-20T09:00:00Z',comment:'<img src=x onerror=alert(1)>',include_conversation:false}]});\n  if(p==='/api/admin/ai-settings')return fake({models:[{id:'model-a',label:'Test Model',tier:'standard',inputPerMillion:1,outputPerMillion:2}],activeModel:'model-a'});\n  if(p==='/api/admin/ai-usage')return fake({summary:{cost24h:0.25,cost7d:1.5,cost30d:2,calls30d:17},topDomains:[],topQueries:[],topPages:[],recent:[]});\n  if(p==='/api/admin/survey')return fake({count:0,averages:{},responses:[]});\n  if(p==='/api/admin/survey/settings')return fake({enabled:true});\n  if(p==='/api/admin/benchmark/cases')return fake({totalCases:0,totalSubtopics:0,cases:[],models:[],storageReady:false});\n  return fake({message:'Unmocked test endpoint '+p},404);\n }\n return realFetch(input,opt);\n};\n})();".replace("ROLE_LITERAL",JSON.stringify(role));}
+function fixture(role){return "(()=>{\nconst role=ROLE_LITERAL,realFetch=window.fetch.bind(window);\nwindow.__jsErrors=[];\nwindow.addEventListener('error',e=>window.__jsErrors.push(String(e.message)));\nwindow.addEventListener('unhandledrejection',e=>window.__jsErrors.push(String(e.reason)));\nconst state={role,calls:[],status:200,contentStatus:200};window.__fixture=state;\nconst fake=(data,status=200)=>Promise.resolve(new Response(JSON.stringify(data),{status,headers:{'Content-Type':'application/json'}}));\nwindow.fetch=(input,opt={})=>{\n const url=new URL(typeof input==='string'?input:input.url,location.href),p=url.pathname,method=String(opt.method||'GET').toUpperCase();\n if(p==='/api/auth/me')return fake({user:{id:'admin-current',username:role==='admin'?'Admin Test':role==='editor'?'Editor Test':'User Test',email:'synthetic@example.invalid',role}});\n if(p.startsWith('/api/admin/')){\n  state.calls.push({path:p,search:url.search,method,body:opt.body||null});\n  if(p==='/api/admin/content'&&method==='PUT')return ['editor','admin'].includes(role)?(state.contentStatus===200?fake({ok:true,saved:2}):fake({message:'Lagring avvist'},state.contentStatus)):fake({message:'Forbidden'},403);\n  if(role!=='admin')return fake({message:'Forbidden'},403);\n  if(p==='/api/admin/users'&&method==='GET')return fake({users:[{id:'admin-current',username:'Admin Test',email:'admin@example.invalid',role:'admin'},{id:'user-2',username:'<script>unsafe</script>',email:'user&test@example.invalid',role:'user'}]});\n  if(p==='/api/admin/users/user-2/role'&&method==='PATCH')return state.status===200?fake({ok:true}):fake({message:'Rolleendring avvist'},state.status);\n  if(p==='/api/admin/ai-feedback')return fake({items:[{category:'<label>',surface:'main-guidance',created_at:'2026-11-20T09:00:00Z',comment:'<img src=x onerror=alert(1)>',include_conversation:false}]});\n  if(p==='/api/admin/ai-settings')return fake({models:[{id:'model-a',label:'Test Model',tier:'standard',inputPerMillion:1,outputPerMillion:2}],activeModel:'model-a'});\n  if(p==='/api/admin/ai-usage')return fake({summary:{cost24h:0.25,cost7d:1.5,cost30d:2,calls30d:17},topDomains:[],topQueries:[],topPages:[],recent:[]});\n  if(p==='/api/admin/survey')return fake({count:0,averages:{},responses:[]});\n  if(p==='/api/admin/survey/settings')return fake({enabled:true});\n  if(p==='/api/admin/benchmark/cases')return fake({totalCases:0,totalSubtopics:0,cases:[],models:[],storageReady:false});\n  return fake({message:'Unmocked test endpoint '+p},404);\n }\n return realFetch(input,opt);\n};\n})();".replace("ROLE_LITERAL",JSON.stringify(role));}
+async function verifyContentEditingInChrome(cdp, role){
+  await wait(cdp,
+    "document.querySelector('#admin-content-fields textarea[data-admin-content-key=\"home.hero.title\"]')",
+    role+" editable fields");
+  await js(cdp,"(()=>{document.querySelector('#admin-content-editor').open=true;const x=document.querySelector('[data-admin-content-key=\"home.hero.title\"]');x.value='  Tittel fra '+window.__fixture.role+'  ';x.dispatchEvent(new Event('input',{bubbles:true}));})()");
+  let state=await js(cdp,"({dirty:!document.querySelector('#admin-unsaved-indicator').hidden,enabled:!document.querySelector('#admin-save-content').disabled})");
+  assert.equal(state.dirty,true,"Input must show unsaved warning");
+  assert.equal(state.enabled,true,"Input must enable save");
+  await js(cdp,"document.querySelector('#admin-save-content').click()");
+  await wait(cdp,"document.querySelector('#admin-save-dialog').open","save confirmation dialog");
+  assert.equal((await js(cdp,"window.__fixture.calls.filter(x=>x.path==='/api/admin/content').length")),0,
+    "Confirm dialog must stop automatic write before approval");
+  await js(cdp,"document.querySelector('#admin-save-confirm').click()");
+  await wait(cdp,"document.querySelector('#admin-content-message').className.includes('success')","content save success");
+  state=await js(cdp,"({dirty:!document.querySelector('#admin-unsaved-indicator').hidden,enabled:!document.querySelector('#admin-save-content').disabled,heading:document.querySelector('#home-view .hero-copy h1').textContent,calls:window.__fixture.calls.filter(x=>x.path==='/api/admin/content')})");
+  assert.equal(state.dirty,false);
+  assert.equal(state.enabled,false);
+  assert.equal(state.heading,"Tittel fra "+role);
+  assert.equal(state.calls.length,1);
+  assert.equal(state.calls[0].method,"PUT");
+  assert.equal(JSON.parse(state.calls[0].body).values["home.hero.title"],"Tittel fra "+role);
+
+  // A rejected save must preserve both the unsaved editor and the last persisted page text.
+  await js(cdp,"(()=>{window.__fixture.contentStatus=403;const x=document.querySelector('[data-admin-content-key=\"home.hero.title\"]');x.value='Må beholdes lokalt';x.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#admin-save-content').click()})()");
+  await wait(cdp,"document.querySelector('#admin-save-dialog').open","rejected save confirmation");
+  await js(cdp,"document.querySelector('#admin-save-confirm').click()");
+  await wait(cdp,"document.querySelector('#admin-content-message').className.includes('error')","server 403 message");
+  state=await js(cdp,"({message:document.querySelector('#admin-content-message').textContent,dirty:!document.querySelector('#admin-unsaved-indicator').hidden,enabled:!document.querySelector('#admin-save-content').disabled,heading:document.querySelector('#home-view .hero-copy h1').textContent,calls:window.__fixture.calls.filter(x=>x.path==='/api/admin/content')})");
+  assert.equal(state.message,"Lagring avvist");
+  assert.equal(state.dirty,true);
+  assert.equal(state.enabled,true);
+  assert.equal(state.heading,"Tittel fra "+role);
+  assert.equal(state.calls.length,2);
+
+  // "Last inn på nytt" must ask before discarding, then reset dirty state on approval.
+  await js(cdp,"(()=>{window.confirm=()=>false;document.querySelector('#admin-reload-content').click()})()");
+  await sleep(100);
+  assert.equal(await js(cdp,"!document.querySelector('#admin-unsaved-indicator').hidden"),true,
+    "Declined reload must keep unsaved work");
+  await js(cdp,"(()=>{window.confirm=()=>true;document.querySelector('#admin-reload-content').click()})()");
+  await wait(cdp,"document.querySelector('#admin-unsaved-indicator').hidden&&document.querySelector('#admin-save-content').disabled","accepted reload");
+}
 async function scenario(cdp,role){
   const script=await cdp.send("Page.addScriptToEvaluateOnNewDocument",{source:fixture(role)});
   try{
@@ -75,7 +117,8 @@ async function scenario(cdp,role){
     await wait(cdp,"document.querySelector('#admin-view')?.classList.contains('active-view')","nav "+role);
     if(role==="editor"){
       const v=await js(cdp,"({role:document.querySelector('#admin-current-role').textContent,users:document.querySelector('#admin-users-card').hidden,ai:document.querySelector('#admin-ai-card').hidden,feedback:document.querySelector('#admin-feedback-card').hidden,calls:window.__fixture.calls})");
-      assert.equal(v.role,"Redaktør");assert.equal(v.users,true);assert.equal(v.ai,true);assert.equal(v.feedback,true);assert.equal(v.calls.length,0);return;
+      assert.equal(v.role,"Redaktør");assert.equal(v.users,true);assert.equal(v.ai,true);assert.equal(v.feedback,true);assert.equal(v.calls.length,0);
+      await verifyContentEditingInChrome(cdp,role);return;
     }
     await wait(cdp,"document.querySelector('[data-admin-user=\"user-2\"] [data-save-admin-role]')&&document.querySelector('#admin-calls-30d')?.textContent==='17'","admin loaded");
     const v=await js(cdp,"({role:document.querySelector('#admin-current-role').textContent,disabled:document.querySelector('[data-admin-user=\"admin-current\"] [data-admin-role]').disabled,users:document.querySelector('#admin-users-card').hidden,ai:document.querySelector('#admin-ai-card').hidden,html:document.querySelector('#admin-users-list').innerHTML,feedback:document.querySelector('#admin-feedback-list').textContent,unsafe:document.querySelector('#admin-feedback-list img')!==null})");
@@ -93,6 +136,7 @@ async function scenario(cdp,role){
     assert.equal(err.message,"Rolleendring avvist");assert.equal(err.disabled,false);
     await js(cdp,"(()=>{const input=document.querySelector('#admin-usage-include-tests');input.checked=true;input.dispatchEvent(new Event('change',{bubbles:true}))})()");
     await wait(cdp,"window.__fixture.calls.some(x=>x.path==='/api/admin/ai-usage'&&x.search==='?includeTests=1')","usage filter");
+    await verifyContentEditingInChrome(cdp,role);
     assert.deepEqual(await js(cdp,"window.__jsErrors"),[]);
   }finally{
     await cdp.send("Page.removeScriptToEvaluateOnNewDocument",{identifier:script.identifier});
