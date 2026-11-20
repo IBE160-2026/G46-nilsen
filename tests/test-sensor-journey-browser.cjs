@@ -57,9 +57,16 @@ async function js(cdp,expression){
   return x.result?.value;
 }
 async function keyboardActivate(cdp,selector){
-  await js(cdp,"document.querySelector("+JSON.stringify(selector)+")?.focus()");
-  await cdp.send("Input.dispatchKeyEvent",{type:"keyDown",key:"Enter",code:"Enter",windowsVirtualKeyCode:13});
-  await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",key:"Enter",code:"Enter",windowsVirtualKeyCode:13});
+  const target=await js(cdp,"(()=>{const el=document.querySelector("+JSON.stringify(selector)+");"+
+    "if(!el)return {missing:true};el.focus({preventScroll:true});return {focused:document.activeElement===el,"+
+    "tag:el.tagName,disabled:!!el.disabled,inert:!!el.closest('[inert]')}})()");
+  assert.ok(target.focused && !target.disabled && !target.inert,
+    "Keyboard activation target must be focusable and enabled: "+selector+" "+JSON.stringify(target));
+  // CDP needs an explicit Enter character for the native click activation of
+  // focused buttons in some headless Chrome versions; do not fake a DOM click.
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyDown",key:"Enter",code:"Enter",
+    windowsVirtualKeyCode:13,nativeVirtualKeyCode:13,text:"\\r",unmodifiedText:"\\r"});
+  await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",key:"Enter",code:"Enter",windowsVirtualKeyCode:13,nativeVirtualKeyCode:13});
 }
 async function wait(cdp,expression,meaning){
   for(let i=0;i<160;i++){
