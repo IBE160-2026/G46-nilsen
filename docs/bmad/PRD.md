@@ -368,9 +368,7 @@ Aktuelle vurderingsområder:
 - tokenbruk
 - kostnad
 
-Systemet inneholder også støtte for blind modell-sammenligning.
-
-Selve benchmarkverktøyet og testgrunnlaget er implementert i prototype/testform. En full fler-modell-benchmark er ikke dokumentert som gjennomført og skal derfor ikke fremstilles som et ferdig evalueringsresultat.
+Et eventuelt oppsett for blind modell-sammenligning må presentere resultater uten å avsløre valgt modell før vurdering, og må skille simulert fra reell evaluering.
 
 ### Akseptansekriterier
 
@@ -435,11 +433,7 @@ Kunnskapsstrategien skal følge prinsippet **riktig kildetype til riktig type r�
 - kilden skal faktisk støtte den konkrete påstanden eller anbefalingen som gis
 - faggrunnlaget skal organiseres slik at det senere kan inngå i lokal kunnskapsbank/RAG ved lukket eller offline drift
 
-Dette finnes som:
-
-- felles SOURCEBANK
-- temaspecifikke faggrunnlag
-- KI-regler for faglig usikkerhet
+Faggrunnlaget skal organiseres i felles SOURCEBANK, temaorienterte faggrunnlag og eksplisitte KI-regler for faglig usikkerhet.
 
 Faggrunnlag skal være tilgjengelig i brukerflaten uten å overlesse hovedsvaret.
 
@@ -464,9 +458,7 @@ Brukertesting skal undersøke blant annet:
 - om simulatoren oppleves realistisk
 - om personverninformasjonen forstås
 
-Pilot-/brukertesting er gjennomført med et begrenset kvalitativt utvalg. Funnene brukes som produktinnsikt, men skal ikke fremstilles som statistisk representativ brukerforskning eller ekstern faglig validering.
-
-Resultater fra brukertesting har allerede ført til konkrete revisjoner av krav, UX og taksonomi, blant annet reduksjonen fra 56 til 48 undertemaer, tydeligere språk, mobil/PWA-arbeid, utskrift og videre oppfølgingsflyt.
+Brukerfunn skal føres med dato, situasjon, vurdert alvorlighet og sporbar beslutning. Et lite kvalitativt utvalg skal ikke behandles som statistisk representativ forskning.
 
 ---
 
@@ -480,13 +472,7 @@ Resultater fra brukertesting har allerede ført til konkrete revisjoner av krav,
 
 **Omfang:** Utvidelse / pilot / drift.
 
-Systemet har funksjoner og arkitektur knyttet til kilde- og webbruk.
-
-Målet er å kunne analysere hvilke kilder som brukes uten å bygge brukerprofiler eller lagre unødvendig samtaleinnhold.
-
-Videre utvikling av dette området er mulig.
-
----
+Ved web- eller kildeoppslag skal systemet bare registrere nødvendige kilde- og tekniske bruksdata. Løsningen skal ikke bygge brukerprofiler eller lagre samtaletekst i kildeanalysen. Området regnes som en prototype inntil det har bestått separat ende-til-ende-verifisering.
 
 ### Akseptansekriterier
 
@@ -534,7 +520,7 @@ På desktop skal sidebaren være minimert som standard for nye brukere. Brukeren
 
 **Omfang:** Utvidelse / pilot / drift.
 
-Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Produksjonskoden har felt, lokal ruting, serverkontekst, kildebank og regresjonstester. `OCCUPATION_CONTEXT_ENABLED` beholdes som driftskontroll.
+Yrke eller bransje kan brukes som valgfri kontekst når dette faktisk påvirker praktiske råd, risiko, regelverk eller avtaleverk. Yrke og bransje skal kunne være valgfri kontekst. OCCUPATION_CONTEXT_ENABLED skal kunne deaktivere utvidelsen uten å stoppe grunnflyten.
 
 Krav:
 - yrkesvalg skal være valgfritt
@@ -544,8 +530,6 @@ Krav:
 - systemet skal ikke anta tariffområde bare ut fra yrkestittel
 - tidskritiske rettslige påstander skal kontrolleres mot gjeldende autoritativ kilde
 - ordinære mellommenneskelige samtaler skal ikke overjuridifiseres
-
-Det autoritative yrkes-/sektorregisteret ble 08.11.2026 utvidet fra 31 til 86 startkilder etter gjennomgang av alle yrkene i sektorlisten.
 
 ### Akseptansekriterier
 
