@@ -152,7 +152,6 @@
   }
 
   .topbar-right {
-    justify-content: flex-start !important;
   }
 
   .profile-chip {
@@ -1213,7 +1212,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 /* v20.11.62 KILDEHIERARKI - GAMMEL PIL PÅ HOVEDKATEGORI, LITEN PIL KUN PÅ KILDER */
 /* De fire hovedkategoriene bruker den gamle venstrepilen. */
 #help-view #complete-source-library .source-bank-top-category>summary{
-  gap:8px !important;
 }
 #help-view #complete-source-library .source-bank-top-category>summary::before{
   content:"›" !important;
@@ -1233,13 +1231,10 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   transform:rotate(90deg) !important;
 }
 #help-view #complete-source-library .source-bank-top-title::after{
-  content:none !important;
-  display:none !important;
 }
 
 /* Den lille inline-pilen beholdes kun på konkrete kilder. */
 #help-view #complete-source-library .compact-source-title::after{
-  font-size:.92em !important;
 }
 
 /* Konkrete kilder skal være små og IKKE bold. Gjelder alle kategorier. */
@@ -1256,8 +1251,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 }
 #help-view #complete-source-library .compact-source-detail p,
 #help-view #complete-source-library .compact-source-detail a{
-  font-size:.76rem !important;
-  line-height:1.35 !important;
 }
 #help-view #complete-source-library .compact-source-detail a{
   font-weight:500 !important;
@@ -1268,11 +1261,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 @media (min-width:641px){
   /* Lukkede kort trenger ikke fylle hele 980px-resultatkolonnen. */
   #structured-guidance .guidance-card:has(.evidence-details:not([open])){
-    width:min(100%,600px) !important;
-    max-width:600px !important;
-    padding:10px 12px !important;
-    grid-template-columns:26px minmax(0,1fr) !important;
-    gap:8px !important;
   }
 
   /* Når kortet åpnes får innholdet full tilgjengelig bredde igjen. */
@@ -1287,7 +1275,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
 
   #structured-guidance .guidance-card:has(.evidence-details:not([open])) .guidance-number{
     font-size:.88rem !important;
-    line-height:1.2 !important;
   }
 }
 
@@ -1342,7 +1329,6 @@ html[data-theme="dark"] .sidebar .nav-logo-glyph img {
   line-height:1.32 !important;
 }
 #help-view #complete-source-library .compact-source-row>summary::before{
-  font-size:.90rem !important;
   transform:none !important;
 }
 #help-view #complete-source-library .compact-source-title{
