@@ -5,7 +5,7 @@
 **Gruppestørrelse:** Én student  
 **Student:** Cecilie C. Nilsen  
 **Studentnummer:** [fyll inn før innlevering]  
-**Dokumentstatus:** Konsentrert redigeringsutkast per 18.11.2026. Ikke innlevert eller kvalitetssikret mot endelige formkrav i Canvas.  
+**Dokumentstatus:** Konsentrert refleksjonsutkast revidert 20.11.2026 med de siste verifiserte testbevisene. **Ikke innlevert**; ordkrav, mal, frist og endelige vurderingskriterier må fortsatt kontrolleres mot Canvas.  
 **Produksjonsgrunnlag:** main, Samtalestøtte v20.11.5. Nyeste tekniske og dokumentære forbedringer ligger på egen revisjonsgren. LIVE/tale er kun separat pilot.
 
 > Denne teksten bygger på det opprinnelige, daterte refleksjonsutkastet, Git-historikk, kilde- og testdokumentasjon og revisjonen 18. november. Den erstatter ikke de historiske notatene. Den er laget for å framheve beslutninger, begrunnelser, egen rolle, feil og læring – ikke gjenta hele funksjonslisten.
@@ -48,7 +48,7 @@ Dette var vanskeligere enn jeg først trodde. Ordet «Dag» kan være et fornavn
 
 Jeg ser dette som et etisk og funksjonelt avveiningsproblem, ikke bare en regex-feil. For strenge filtre kan hindre brukeren i å få hjelp; for svake filtre kan sende informasjon videre som aldri burde forlatt systemet. En god testpakke må derfor kontrollere både falske positive og falske negative. Automatiske regler kan redusere risikoen, men kan ikke garantere anonymitet.
 
-Tilgangsstyring krever en tilsvarende forsiktighet. Den faktiske Supabase-databasens metadata ble undersøkt skrivebeskyttet: Alle ti tabeller i public hadde RLS aktivert, samtalehistorikken hadde fire eierskapsbaserte policyer, og de andre serverstyrte tabellene hadde ikke direkte tabellrettigheter for vanlige innloggede brukere. En isolert HTTP-test med to fiktive brukere kontrollerte i tillegg at serverens historikkflyt ikke blandet brukernes data. Det siste foregikk imidlertid mot en lokal Auth/PostgREST-etterligning, ikke to faktiske Supabase-kontoer. Jeg ville ikke presentert dette som en fullstendig ekstern sikkerhetsgodkjenning. Supabase varslet også om at beskyttelsen mot kjente kompromitterte passord var deaktivert; dette står som et åpent punkt.
+Tilgangsstyring krever tilsvarende forsiktighet. Den faktiske Supabase-databasens metadata ble først undersøkt skrivebeskyttet: Alle ti tabeller i public hadde RLS aktivert, og samtalehistorikken hadde fire eierskapsbaserte policyer. Den første HTTP-testen med to fiktive brukere brukte derimot en håndskrevet Auth/PostgREST-etterligning. Selv om den ble grønn, kunne jeg ikke hevde at den beviste ekte autentisering. Derfor utvidet vi kvalitetssjekken 20. november med en **disponibel, ekte lokal Supabase-instans**: GoTrue opprettet Alice, Bob og en administrator, og den faktiske serveren brukte innlogging, tokenfornyelse og PostgREST med prosjektets RLS-policyer. Forsøk på å lese, endre eller slette andres historikk, forfalske eierskap eller oppnå adminrolle gjennom brukerredigerbare metadata ble avvist. Dette ga et vesentlig sterkere bevis, men ingen automatisk garanti for at produksjonsprosjektet er konfigurert identisk. Jeg lot derfor produksjonsdatabasen være urørt. Supabases tidligere varsel om deaktivert kontroll av kompromitterte passord er også fortsatt et åpent driftsfunn.
 
 ## 5. KI-svar, kilder og kritisk testing
 
@@ -72,7 +72,7 @@ To-brukertesten avdekket en annen feil: En bruker som forsøkte å oppdatere en 
 
 Vi simulerte deretter 503-feil, rate limiting (429), ugyldig KI-output og brudd i forbindelsen til en lokal OpenAI-etterligning. Appens API skal da gi kontrollerte, generiske feilkoder uten å videreformidle leverandørens interne detaljer. Det var i denne testserien vi også fant den feilaktige blokkeringen av «Hvordan». Etter rettelsene besto Quality Gate 18. november med **35 automatiske deltester og 0 funn i npm audit** på revisjonsgrenen. Jeg skiller dette fra den tidligere feilende kjøringen på main og fra de historiske live KI-testene.
 
-For meg er det avgjørende å forstå **hva en bestått test er bevis for**. En strukturtest er ikke en nettlesertest, en lokal Auth-mock er ikke Supabases ekte RLS, og en mock-provider er ikke en modellkvalitetsmåling. Denne presisjonen ble også et direkte svar på faglærerens formative tilbakemelding om at krav måtte knyttes til observerbare akseptanser og verifiserbare konsekvenser.
+For meg er det avgjørende å forstå **hva en bestått test er bevis for**. En strukturtest er ikke en nettlesertest, en lokal Auth-mock er ikke Supabases ekte RLS, og en mock-provider er ikke en modellkvalitetsmåling. Derfor la jeg til en faktisk Chrome-reise fra tematisk valg og situasjonsbeskrivelse, via råd, videre spørsmål, utskrifts-HTML og simulering, til lagring, gjenåpning og sletting. Den måtte også blokkere et fiktivt fullt navn **før** analyseforespørselen ble sendt. Første kjøring stoppet fordi testen leste historikken før den asynkrone lagringen var ferdig. Jeg endret testen til å vente på **lagret serverdata** framfor bare en synlig tilbakemelding. Slik oppdaget jeg at selv en test kan være feilkonstruert. Den senere testen med virkelig lokal Supabase Auth/PostgREST lukket et annet bevisgap, uten at vi samtidig kalte applikasjonen produksjonsgodkjent. Denne presisjonen var også et svar på faglærerens formative tilbakemelding om observerbare akseptanser.
 
 ## 7. Kritisk vurdering av KI som utviklingsverktøy
 
@@ -98,7 +98,7 @@ Det største læringsutbyttet mitt er forskjellen mellom at KI kan skrive kode o
 
 Samtalestøtte viser at KI kan gjøre et omfattende studentprosjekt mulig, men også at menneskelig vurdering blir viktigere når utviklingen går raskt. De mest verdifulle erfaringene kom ikke fra funksjoner som virket på første forsøk, men fra feil som tvang meg til å undersøke både produktet, testmetoden og mine egne antakelser.
 
-Før ordinær bruk ville jeg prioritert en isolert ekte Supabase-test med to innloggede brukere, bredere brukertesting og fysisk test av utskrift/mobil, ytterligere faglig review av KI-råd og kildegrunnlag, og vurdering av sikkerhetsinnstillinger og intern KI for miljøer med strengere krav. Jeg ville ikke utvidet med flere funksjoner før disse kontrollene var gjennomført.
+Den isolerte testen med ekte lokal Supabase Auth/PostgREST og to innloggede brukere er nå gjennomført. **Før ordinær bruk** ville jeg likevel prioritert kontroll av den faktiske skybaserte konfigurasjonen, bredere og uavhengig brukertesting, fysisk mobil- og utskriftstest, ytterligere faglig gjennomgang av KI-råd og kildegrunnlag og vurdering av intern KI for miljøer med strenge sikkerhetskrav. Jeg ville ikke utvidet med flere funksjoner før disse kontrollene var gjennomført.
 
 ## Kildespor i prosjektet
 
@@ -107,6 +107,6 @@ Dokumentasjonen nedenfor er **etterprøvbare prosjektspor**, ikke en påstand om
 - [Product Brief](../product-brief.md), [PRD](bmad/PRD.md), [Architecture](bmad/ARCHITECTURE-BMAD.md) og [Epics/Stories](bmad/EPICS-AND-STORIES-BMAD.md).
 - [Testbevis per krav](ai/TESTBEVIS-OG-DEKNING-2026-11-18.md), [KI-testplan](ai/AI-TESTPLAN.md) og [KI-logg](ai/AI-LOGG-SAMTALESTOTTE.md).
 - [Rød/grønn providerstatus](ai/REGRESJON-OPENROUTER-2026-11-18.md), [historikk med to syntetiske brukere](ai/REGRESJON-HISTORIKK-TO-BRUKERE-2026-11-18.md) og [KI-feil/personvernsjekk](ai/REGRESJON-KI-FEIL-OG-SPORREORD-2026-11-18.md).
-- [Supabase-metadata og åpne sikkerhetsfunn](ai/SUPABASE-SIKKERHET-2026-11-18.md), [full revisjonsrapport](REVISJON-IBE160-2026-11-18.md) og GitHub Actions [verifisert grønn revisjonsgren-CI](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44343038247).
+- [Supabase-metadata og åpne sikkerhetsfunn](ai/SUPABASE-SIKKERHET-2026-11-18.md), [faktisk lokal Auth/PostgREST-test med tre fiktive kontoer](ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md), [full Chrome-brukerreise og 36-kravsoversikt](ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md) og [full teknisk revisjon](REVISJON-IBE160-2026-11-18.md). [Quality Gate #44789040071](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44789040071) besto i tre jobber på revisjonsgrenen før den senere mobil-/utskriftstesten.
 
 **Ikke ferdig innlevering:** Ordkrav, formalia og eventuell vedleggsbegrensning må kontrolleres mot den faktiske oppgaveteksten i Canvas. Originalt langt refleksjonsutkast med daterte tillegg beholdes som historisk arbeidsmateriale.
