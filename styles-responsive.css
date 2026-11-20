@@ -1729,3 +1729,44 @@ html[data-theme="hybrid"] .representation-chip[aria-pressed="true"]:hover {
   border-color:var(--accent);
   outline-offset:2px;
 }
+
+/* Fullstendig logo-/bildevisning uten uønsket scrollbar eller avkuttet tekst. */
+.image-preview-dialog {
+  width:min(94vw,850px);
+  max-width:94vw;
+  max-height:calc(100dvh - 28px);
+  overflow:hidden;
+}
+.image-preview-dialog .brand-logo-dialog-card {
+  box-sizing:border-box;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  width:100%;
+  min-height:0;
+  max-height:calc(100dvh - 28px);
+  padding:46px 22px 26px;
+  overflow:hidden;
+}
+.image-preview-dialog .brand-logo-dialog-card img {
+  display:block;
+  width:auto;
+  height:auto;
+  max-width:100%;
+  max-height:calc(100dvh - 116px);
+  object-fit:contain;
+  border-radius:0;
+}
+.help-contact-shortcut {
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin:4px 0 20px;
+  padding:14px 16px;
+  border:1px solid var(--border);
+  border-radius:12px;
+  background:var(--surface);
+}
+.help-contact-shortcut p { margin:4px 0 0; line-height:1.4; }
