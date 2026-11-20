@@ -65,7 +65,7 @@ Dette bekrefter relevant tekst på **tre åpne nettsider**, ikke juridisk kvalit
 
 Eksisterende 28 yrkes-/sektorgolden-caser og kilderangeringstester supplerer disse. Disse testene måler **deterministisk utvalg**, ikke juridisk korrekthet i et generert KI-svar.
 
-`tests/test-source-normalization.cjs` kontrollerer at KI-genererte lenker i svartekst ikke blir løftet til «verifiserte kilder» uten søkemetadata eller leverandørens URL-annotasjoner. OpenAI Responses API må eksplisitt be om `web_search_call.action.sources` for å få søkekilden som felt. Dette er kildeproveniens, **ikke automatisk innholdsvalidering**.
+`tests/test-source-normalization.cjs` kontrollerer at KI-genererte lenker i svartekst ikke blir løftet til «verifiserte kilder» uten søkemetadata eller leverandørens URL-annotasjoner. OpenAI Responses API må eksplisitt be om `web_search_call.action.sources` for å få søkekilden som felt. Supplerende kilder får tittel fra søkemetadata, nettstedets domene som avsender og type «nettkilde»; modellen kan ikke tildele bindende lovstatus, offentlig forfatter eller utgivelsesår bare ved å skrive det i svaret. En kilde kan bare tas med når normalisert URL gjenfinnes i leverandørens søkebevis. Dette er kildeproveniens, **ikke automatisk innholdsvalidering**.
 
 ## 4. Kritiske begrensninger før endelig godkjenning
 
