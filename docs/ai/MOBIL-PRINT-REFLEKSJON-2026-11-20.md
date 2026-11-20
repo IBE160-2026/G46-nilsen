@@ -3,6 +3,7 @@
 **Dato:** 20. november 2026  
 **Avgrensning:** Kun draft PR #12, revisjonsgren `docs/ibe160-helhetlig-revisjon-20261118`. Ingen fysiske brukerenheter, live KI, ekte brukere eller produksjonsendringer.  
 **Teknisk test:** `tests/test-mobile-print-browser.cjs`, obligatorisk i `.github/workflows/quality-gate.yml`.
+**Verifisert testkjøring:** [Quality Gate #44794218055](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44794218055) – **SUCCESS alle tre jobber**. Loggen bekrefter tre mobile bredder, touch-navigasjon, og en **2-siders PDF** med verifisert uttrekk av både hovedråd og «Videre råd», pluss 52 ordinære teststeg, 99/99 CSS-paritet, Auth/PostgREST og PostgreSQL/RLS.
 
 ## 1. Hva tidligere grønne tester ikke beviste
 
