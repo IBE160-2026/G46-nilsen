@@ -178,6 +178,30 @@ export function stripGuidanceInlineLinks(guidance = {}) {
   };
 }
 
+
+/**
+ * Rollen beskriver HVORDAN URL-en kom på listen, ikke om innholdet er
+ * lest eller underbygger en bestemt påstand. En kilde kan være juridisk
+ * bindende uten å være brukt av modellen i dette rådet.
+ *
+ * Scope-kilder legges inn av appens egen regel for arbeidsgivertype,
+ * og må derfor skilles fra source_ids modellen selv valgte.
+ */
+export function annotateCuratedEvidence(sources = [], modelSelectedIds = []) {
+  const selected = new Set(Array.isArray(modelSelectedIds) ? modelSelectedIds : []);
+  return (Array.isArray(sources) ? sources : []).map(source => ({
+    ...source,
+    evidenceRole: selected.has(source?.id) ? "model_selected" : "scope_reference"
+  }));
+}
+
+export function annotateProviderEvidence(sources = []) {
+  return (Array.isArray(sources) ? sources : []).map(source => ({
+    ...source,
+    evidenceRole: "provider_url"
+  }));
+}
+
 export function dedupeEvidenceSources(items = []) {
   const seen = new Set();
   return items.filter(source => {
