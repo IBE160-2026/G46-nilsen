@@ -159,12 +159,8 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   const exportResponse=await fetch(BASE+"api/account/export");
   assert.equal(exportResponse.status,200);
   assert.equal((await exportResponse.json()).conversations.length,0,"Deleted conversation must not survive in account export");
-  const paths=await js(cdp,"window.__sensorCalls.filter(x=>x.path==='/api/analyze-situation'||x.path==='/api/generate-guidance'||x.path==='/api/continue-conversation'||x.path==='/api/simulation-turn'||x.path==='/api/simulation-feedback'||x.path==='/api/history')");
-  const operations=paths.map(x=>x.path+":"+x.method);
-  for(const op of ["/api/analyze-situation:POST","/api/generate-guidance:POST","/api/continue-conversation:POST","/api/simulation-turn:POST","/api/simulation-feedback:POST","/api/history:DELETE"]){
-    // The first page's call trace resets on reload; existence before reload was checked via real saved data.
-    if(op==="/api/history:DELETE") assert.ok(operations.includes(op)); 
-  }
+  // The server history and account export are the authoritative deletion evidence.
+  // Browser fetch-call traces reset on reload and are not a persistence assertion.
   assert.deepEqual(await js(cdp,"window.__sensorErrors"),[],"No uncaught browser errors in saved/reopened history");
   console.log("Sensor browser journey: topic -> situation -> advice -> follow-up -> printed advice -> simulation -> reflection -> saved/reloaded history -> delete -> export empty: OK");
   console.log("Proof: real Chrome DOM + real local Express sensor demo; no real AI/auth/Supabase/provider.");
