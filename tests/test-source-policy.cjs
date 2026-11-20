@@ -149,7 +149,8 @@ for(const id of quickIds) {
 }
 assert((leaderHelp.match(/Oppslagsverk for ledere/g)||[]).length===1,"Hjelp må ikke vise to oppslagsverk");
 assert(leaderHelp.includes('id="leader-quick-references"'),"Hjelp mangler kuratert oppslagsverk");
-assert(leaderHelp.includes("help-contact-entry")&&leaderHelp.includes('data-open-info="contact"'),"Hjelp mangler Kontakt-lenke");
+assert((leaderHelp.match(/data-open-info="contact"/g)||[]).length >= 2,"Om og Hjelp må begge ha Kontakt-inngang");
+assert((leaderHelp.match(/class="help-contact-entry/g)||[]).length === 1,"Hjelp må bare ha én Kontakt-seksjon");
 assert(leaderHelp.indexOf("leader-reference-section")<leaderHelp.indexOf("BRUK AV SAMTALESTØTTE"),"Oppslagsverket skal ligge først i Hjelp");
 assert(styled.includes("dialog.image-preview-dialog .brand-logo-dialog-card img"),"Manglende helbildefremvisning");
 assert(app.includes("readableSourceTier")&&app.includes("Hvorfor kilden er relevant"),"Kildebanken må forklare kildevalg og nivå");
