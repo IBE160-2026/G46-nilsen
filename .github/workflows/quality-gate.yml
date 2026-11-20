@@ -134,3 +134,74 @@ jobs:
         run: node tests/test-benchmark-rpc-http.cjs
 
 
+
+  supabase-auth-local:
+    name: Real LOCAL Supabase Auth + PostgREST + RLS + Express (synthetic users)
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    # No hosted Supabase tokens, environments, secrets or databases are used.
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node 26
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Install app dependencies
+        run: npm ci
+
+      - name: Install pinned Supabase CLI v2 for isolated GoTrue/PostgREST stack
+        uses: supabase/setup-cli@v3
+        with:
+          version: 2.122.1
+
+      - name: Initialize and start disposable local Supabase Auth + PostgREST
+        env:
+          SUPABASE_YES: "true"
+          SUPABASE_TELEMETRY_ENABLED: "false"
+        run: |
+          mkdir -p .local-supabase-ci
+          cd .local-supabase-ci
+          supabase init --yes
+          # Keep only Postgres, GoTrue, PostgREST and API gateway. Not a cloud project.
+          supabase start --exclude realtime,storage-api,imgproxy,postgres-meta,studio,edge-runtime,logflare,vector,supavisor,mailpit
+
+      - name: Apply actual conversation RLS migration to LOCAL database only
+        run: |
+          set -euo pipefail
+          (cd .local-supabase-ci && supabase status -o env) > /tmp/samtalestotte-local-supabase.env
+          set -a
+          source /tmp/samtalestotte-local-supabase.env
+          set +a
+          # Hard guard: refuse any host, scheme or port except local Supabase CLI.
+          [[ "${API_URL}" =~ ^http://127\.0\.0\.1:[0-9]{2,5}/?$ ]] || exit 1
+          [[ "${DB_URL}" =~ ^postgresql://postgres:.*@127\.0\.0\.1:[0-9]{2,5}/postgres$ ]] || exit 1
+          if ! command -v psql >/dev/null 2>&1; then
+            sudo apt-get update -qq
+            sudo apt-get install -y -qq postgresql-client
+          fi
+          psql "${DB_URL}" -X -v ON_ERROR_STOP=1 -f tests/sql/local-supabase-auth-fixture.sql
+          psql "${DB_URL}" -X -v ON_ERROR_STOP=1 -f database/migrations/V20-8-SUPABASE-MIGRATION.sql
+          psql "${DB_URL}" -X -v ON_ERROR_STOP=1 -c "NOTIFY pgrst, 'reload schema';"
+          echo "::add-mask::${ANON_KEY}"
+          echo "::add-mask::${SERVICE_ROLE_KEY}"
+          {
+            echo "SUPABASE_URL=${API_URL}"
+            echo "SUPABASE_PUBLISHABLE_KEY=${ANON_KEY}"
+            echo "SUPABASE_SECRET_KEY=${SERVICE_ROLE_KEY}"
+          } >> "${GITHUB_ENV}"
+
+      - name: Two REAL local GoTrue users, JWT refresh and PostgREST RLS via Express
+        env:
+          SUPABASE_AUTH_LOCAL_CI: "1"
+        run: node tests/test-supabase-local-auth-e2e.cjs
+
+      - name: Stop and discard local Supabase containers
+        if: always()
+        run: |
+          if [ -d .local-supabase-ci/supabase ]; then
+            (cd .local-supabase-ci && supabase stop --no-backup) || true
+          fi
