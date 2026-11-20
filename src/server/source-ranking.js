@@ -1,3 +1,5 @@
+import { containsNonNegatedContextTerm } from "./negation-context.js";
+
 // Samtalestøtte – deterministisk prioritering av kuraterte kilder.
 // Alle data og regelhjelpere injiseres for å kunne teste kildevalg isolert.
 // Selve sorterings- og poengreglene er flyttet uten algoritmeendringer.
@@ -23,8 +25,11 @@ export function createRelevantSourceSelector({
     const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
     if (topic) topics.add(topic);
     const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || []), subtopic]
-      .filter(Boolean).join(" ");
-    const q = `${situation || ""} ${analysisText}`.toLocaleLowerCase("nb-NO");
+      .filter(Boolean).join(". ");
+    // Behold setningsskiller til negasjonssjekken. Ellers vil "ingen vold"
+    // tolkes som en positiv årsak til å foreslå en voldskilde.
+    const matchText = [situation, analysisText].filter(Boolean).join(". ");
+    const q = matchText.toLocaleLowerCase("nb-NO");
     const agreementRelevant = shouldUseAgreementContext({ topic:[...topics].join(" "), subtopic, situation:q });
     const legalContext = isLegalSourceContext(q);
 
@@ -66,7 +71,7 @@ export function createRelevantSourceSelector({
       const hints = source.use_when || source.useFor || [];
       const matchedHints = hints
         .map(term => String(term).toLocaleLowerCase("nb-NO"))
-        .filter(term => term && q.includes(term));
+        .filter(term => term && containsNonNegatedContextTerm(matchText, term));
       score += 4 * matchedHints.length;
 
       // Et generelt tema kan brukes til å rangere, men ikke som eneste
