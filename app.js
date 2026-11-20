@@ -22,6 +22,7 @@ let contentOverrides = {};
 let contentOverridesRequestSequence = 0;
 let adminViewEpoch = 0;
 let adminIdentityKey = '';
+let historyRequestSequence = 0;
 let loadedHistoryItem = null;
 let surveySubmitting = false;
 const clientErrorLog = [];
@@ -3302,9 +3303,18 @@ function updateAuthUi() {
   else { name.textContent='Logg på'; note.textContent='for historikk'; avatar.textContent='○'; if(histNote) histNote.textContent='logg inn'; if(temp) temp.hidden=true; if(status) status.textContent='Du er ikke logget inn. Samtaler lagres ikke permanent.'; if(del) del.hidden=true; if(exp) exp.hidden=true; }
   const identityKey = currentUser ? String(currentUser.id) + '|' + String(currentUser.role) : '';
   if (identityKey !== adminIdentityKey) {
+    const previousIdentity = adminIdentityKey;
     adminIdentityKey = identityKey;
     adminViewEpoch += 1;
+    historyRequestSequence += 1;
     clearAdminPrivateData();
+    // An earlier account's history must not remain in hidden nodes or app state.
+    const historyList = document.querySelector('#history-list');
+    if (historyList) historyList.replaceChildren();
+    const historyCount = document.querySelector('#history-count');
+    if (historyCount) historyCount.textContent = '0 lagrede samtaler';
+    loadedHistoryItem = null;
+    if (previousIdentity) resetConversationState();
   }
   document.querySelectorAll('.admin-only').forEach(el=>{el.hidden=!['editor','admin'].includes(currentUser?.role||'user');});
 }
@@ -3388,13 +3398,33 @@ async function saveCurrentConversation(){
     if(r.ok){ const p=await r.json(); currentConversationId=p.item?.id||currentConversationId; conversationDirty=false; }
   }catch(_){}
 }
-async function openHistory(){
-  setBreadcrumb('Historikk'); showView('history');
+async function openHistory() {
+  setBreadcrumb('Historikk');
+  showView('history');
   const loggedOut=document.querySelector('#history-logged-out'), loggedIn=document.querySelector('#history-logged-in');
-  if(!currentUser){ loggedOut.hidden=false; loggedIn.hidden=true; return; }
-  loggedOut.hidden=true; loggedIn.hidden=false;
-  const list=document.querySelector('#history-list'); list.innerHTML='<div class="history-empty">Henter historikk …</div>';
-  try{ const r=await fetch('/api/history',{credentials:'include',cache:'no-store'}); const p=await r.json(); renderHistory(p.items||[]); }catch(_){ list.innerHTML='<div class="history-empty">Kunne ikke hente historikken.</div>'; }
+  if (!currentUser) {
+    if (loggedOut) loggedOut.hidden=false;
+    if (loggedIn) loggedIn.hidden=true;
+    return;
+  }
+  if (loggedOut) loggedOut.hidden=true;
+  if (loggedIn) loggedIn.hidden=false;
+  const list=document.querySelector('#history-list');
+  if (!list) return;
+  const requestId=++historyRequestSequence;
+  const userId=String(currentUser.id);
+  list.innerHTML='<div class="history-empty">Henter historikk …</div>';
+  const currentRequest=() => requestId===historyRequestSequence &&
+    String(currentUser?.id??'')===userId && activeViewName()==='history';
+  try {
+    const r=await fetch('/api/history',{credentials:'include',cache:'no-store'});
+    const p=await r.json();
+    if (!currentRequest()) return;
+    if (!r.ok) throw new Error('Historikken kunne ikke hentes.');
+    renderHistory(Array.isArray(p.items)?p.items:[]);
+  } catch (_) {
+    if (currentRequest()) list.innerHTML='<div class="history-empty">Kunne ikke hente historikken.</div>';
+  }
 }
 function renderHistory(items){
   const list=document.querySelector('#history-list'); document.querySelector('#history-count').textContent=`${items.length} lagrede samtaler`;
@@ -3436,7 +3466,7 @@ function renderHistoryPrivacyReview(item, target='guidance') {
 }
 
 function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
-  if(!item)return;
+  if(!item || !currentUser)return;
   clearDocumentSelection(); loadedHistoryItem=item; hideHistoryPrivacyReview(); clearGuidanceSession(); currentConversationId=item.id; lastAiAnalysis=item.analysis; lastAiGuidance=item.guidance; conversationDirty=false;
   currentTopic=topics.find(t=>t.title===item.topic)||currentTopic; currentSubtopic=item.subtopic||null;
   const storedSituation = cleanStoredSituationText(item.situation||'');
