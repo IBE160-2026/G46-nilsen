@@ -89,4 +89,23 @@ Dokumenter statuskoder, databaseeffekt, testdato og opprydding av **kun syntetis
 - **Ikke dokumentert:** Ekte tobruker-RLS, reell Supabase Auth mot server, fullt rollebytte med ekte sesjonsfornyelse, fysisk brukerreise.
 - **Beslutning:** Fortsett på revisjonsgrenen, men ingen prod-merge, databaseendring eller påstand om komplett sikkerhet uten eget testmiljø og faglig/teknisk akseptanse.
 
+## 6. Least-privilege-herding av `conversations` – isolert før-/ettertest (20.11.2026)
+
+**Utgangspunkt – bekreftet skrivebeskyttet i tilkoblet Supabase:** `public.conversations` har `TRUNCATE`, `TRIGGER`, `REFERENCES` og `MAINTAIN` gitt direkte til både `anon` og `authenticated`. `authenticated` trenger derimot normalt bare `SELECT`, `INSERT`, `UPDATE` og `DELETE` for samtalefunksjonene, fortsatt underlagt RLS. `service_role` har sine egne rettigheter. `TRUNCATE` omgår RLS og er unødvendig for vanlige appbrukere. Dette er **et minsteprivilegium-funn**, ikke dokumentasjon på at en uautorisert klient faktisk kan utføre `TRUNCATE` via PostgREST.
+
+**Forslag, ikke produksjonsendring:** `database/security/conversations-least-privilege-proposal.sql` inneholder et **transaksjonelt og gjentakbart SQL-forslag**, eksplisitt merket *ikke en Supabase-migrasjon / ikke deployet*. Det opphever **kun** `TRUNCATE`, `TRIGGER`, `REFERENCES` og `MAINTAIN` fra `anon` og `authenticated` på `public.conversations`. Det endrer **ikke** `PUBLIC`, `service_role`, `postgres`, øvrige tabeller, brukerdata eller RLS-policyene. Hvis privilegier fortsatt gis via `PUBLIC`/rollearv, vil sluttkontrollen **avbryte og rulle tilbake** fremfor å oppheve rettigheter globalt. Sluttkontrollen nekter også at påkrevd bruker-CRUD forsvinner eller at eksisterende tjenestekontoprivilegier ikke lenger er tilgjengelige.
+
+**Bevis på engangs PostgreSQL 17 i GitHub Actions:** Den eksisterende `rls-postgres`-jobben er utvidet med:
+1. `tests/sql/rls-postgres-fixture.sql` gjenskaper de fire unødvendige direkte-tilgangene på den **fiktive** samtaletabellen.
+2. `tests/sql/conversations-privileges-before.sql` verifiserer først at de finnes, og utfører et *faktisk vellykket* `TRUNCATE` som `anon` og `authenticated` mot en tom dummy-tabell (transaksjoner rulles tilbake).
+3. Forslaget kjøres **bare i containeren**. `tests/sql/conversations-privileges-after.sql` kontrollerer både at privilegiene er borte, at faktisk `TRUNCATE` feiler for begge roller, og at tjenestekontoens fire rettigheter og vanlig bruker-CRUD er beholdt.
+4. SQL-forslaget kjøres en gang til for å bevise at det er gjentakbart.
+5. Hele `tests/sql/rls-two-users.sql` kjøres på nytt med to fiktive eiere, kryssbrukerforsøk, opprettelse/endring/sletting og anonym negativtest. RLS-migrasjonen `V20-8` fra repoet er aktiv hele tiden.
+
+**Første verifiserte CI:** [Quality Gate #44750390782](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44750390782), **SUCCESS** på implementeringscommit `2b151a324811d74def7a48a82e8e62b7d1f6fdc8`. Senere justering av SQL-forslaget begrenset `REVOKE` uttrykkelig til brukerrollene, uten å endre `PUBLIC`; verifiser ny head-CI separat.
+
+**Gjenstående kontroll før eventuell produksjonsutrulling:** Kjør sikkerhets- og avhengighetsvurdering med eget Supabase-testprosjekt/testgren og reelle Auth/PostgREST-sesjoner. Kontroller effektiv `GRANT`/rollearv, backup/tilbakerullingsplan og at API-et fungerer med reelle testkontoer. Opprett deretter en ordinær fremoverrettet versjonert migrasjon med prosjektets valgte migrasjonsverktøy. SQL-forslaget må **ikke** oppfattes som påført produksjon eller være grunnlag for automatisk deploy. Passordbeskyttelsen og Supabase-akseptansetesten gjenstår som separate punkter.
+
+---
+
 Relatert: `tests/test-admin-client-runtime.cjs`, `tests/test-admin-browser.cjs`, `tests/test-auth-history-two-users-http.cjs`, `docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md`.
