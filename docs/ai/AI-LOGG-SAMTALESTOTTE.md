@@ -1579,3 +1579,23 @@ Brukeren ba om at CSS-arbeidet skulle videreføres direkte til appens øvrige st
 **CSS og brukervisjon:** Utvidet `tests/test-css-browser-regression.cjs` fra 90 til **99 faktiske Chrome-scenarioer**, med 6 ekstra for `@media print` og 3 for åpne `details`-elementer i Hjelp. Det er computed-style-/geometriparitet i en deterministisk demo, ikke fysisk utskrift eller full brukeropplevelsestest. Den opprinnelige budsjettgrensen på **694 `!important`** er uendret.
 
 **Faktisk bevis:** [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) på commit `70118fbc23fca83a84fb2c96523fabd55228cce8` **SUCCESS**: 43 deterministiske testdelsteg, Chrome parity 99 scenarier, audit uten funn på valgt nivå. Samlet aktuell linjestørrelse: `app.js` **4 274** og `server.js` **1 844**, fra opprinnelig 4 632/2 100 ved denne refaktorrunden. Hovedfilene er fortsatt store, særlig lange admin-/benchmark-rutiner. Ingen endringer på `main`, LIVE-pilot, database eller Render.
+
+---
+
+## 20.11.2026 – Innleveringskontroll: avgrenset sensorkrav, riktig Git-versjon og menneskelig godkjenning
+
+**Oppdrag/kontekst:** Etter grønn Chrome-brukerreise, mobil-/PDF-kontroll og ekte lokal GoTrue/PostgREST/RLS ba prosjektansvarlig om «neste» trinn. Tidligere eksplisitt grense gjelder fortsatt: **ingen merge til `main`, endring i Render, live Supabase eller LIVE/tale-pilot** uten eget vedtak. KI fikk i oppgave å kontrollere det faktisk innleverbare prosjektet mot tilgjengelig sensorkunnskap, ikke å foreslå enda mer funksjonalitet.
+
+**Undersøkelse:** PR #12 var fremdeles et **draft** med rundt 125 filendringer og base `main` commit `2ae505ad...`. De nyeste kvalitetsbevisene gjaldt **revisjonsgrenen**, ikke publisert `main`. Det var også sprik mellom README og nyere dokumentasjon: README oppga ca. **2650 ord** for refleksjonsrapporten, mens opptellingen av det reviderte utkastet var rundt **3164 ord** inkludert overskrifter/metadata; ett eldre avsnitt hevdet at reell tobruker-Supabase Auth/PostgREST-test fremdeles manglet selv om isolert lokal fullkjedetest nå var bestått.
+
+**Kritisk begrensning:** Den tilgjengelige utdelte sensorveiledningen for **del 1** oppgir veiledende 30/20/15/10/10/10/5-prosentvekting for prosess, funksjon, testing, UX, kode, README og repo. Undervisningen omtaler samlet **70 % app/prosess og 30 % refleksjon**. KI fant derimot **ikke** endelig Canvas-innleveringstekst/ordgrense/frist eller fullstendig del 2-rubrikk. Disse kravene ble derfor eksplisitt merket **ikke verifisert** – ikke gjettet eller omskrevet til en ubegrunnet ferdigattest.
+
+**KI-forslag/valg og gjennomføring:**
+- I stedet for merge eller publisering ble det laget en [dateret innleveringskontroll](../INNLEVERINGSKONTROLL-2026-11-20.md) med kandidatversjon, separate testbevis og stoppunkter for reell avlevering.
+- I stedet for kun å stole på dokumenttekst ble `scripts/audit-submission.cjs` lagt til som et **offline** preflight-verktøy. Det verifiserer at **36 unike PRD-krav er identisk representert i de 36 oppføringene i sensormatrisen**, og sjekker dokumentasjon og leveransegrense. `--strict` skal *feile lukket* ved manglende erklært Canvas-kontroll, studentens godkjenning eller feil valgt Git SHA/gren. Dette er en manuell sign-off-mekanisme, **ikke** en automatisk Canvas-integrasjon.
+- README, PRD-headeren og eldre overleverings-/dokumentasjonssjekklister ble presisert slik at daterte historiske tall ikke fremstår som nyeste status. Refleksjonsrapporten er fremdeles studentens **arbeidsutkast**.
+- Den strenge kontrollen kjøres ikke som et krav om ferdig innlevering i vanlig CI; Quality Gate kjører rapportmodusen og en **negativ test** som skal bevise at `--strict` avviser manglende godkjenning og feil commit. Dermed unngås at «grønn CI» feilaktig blir synonymt med «klar til å levere».
+
+**Læring:** En god KI-assistert prosess krever også å si **stopp** når videre automatisering kan skape falsk trygghet. Det viktigste neste spørsmålet er ikke antall tester, men *hvilken konkret commit sensor får tilgang til*, *hvilket formelt regelsett som gjelder* og *hvem som eier de personlige refleksjonene*. Ingen personlig student-ID ble lagt inn i det offentlige repoet.
+
+**Avgrensning:** Ingen CI-status på senere commits gis som «grønn» uten en faktisk bestått Actions-run på akkurat den commiten. Ingen beslutning om innlevering eller merge er tatt av KI på vegne av studenten.
