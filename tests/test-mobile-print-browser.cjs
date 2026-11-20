@@ -79,6 +79,10 @@ async function setMobile(cdp,width,height) {
   await cdp.send("Emulation.setTouchEmulationEnabled",{enabled:true,maxTouchPoints:1});
 }
 async function touch(cdp,selector) {
+  // showView schedules its scroll in requestAnimationFrame. Wait until that
+  // frame has run before selecting a touch coordinate for the new view.
+  // This does not replace the physical hit-test or real CDP touch events.
+  await js(cdp,"new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve(true))))");
   let value={error:"not hit-tested"};
   // Real taps do not need the geometric center of a card to be visible.
   // On a phone, the last card may be only partially visible near the bottom.
