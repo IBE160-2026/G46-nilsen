@@ -4,6 +4,26 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: administrasjonsklientens kjøretidstester
+
+**Verifisert gren:** `docs/ibe160-helhetlig-revisjon-20261118` (draft-PR #12), commit `76e4e6dc65461a57aa3bf558376f45eca62c7358`. [Quality Gate #44741974062](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44741974062): **SUCCESS**, nå **44 deterministiske npm-testdelsteg**, CSS-audit, 99 Chrome-CSS-sammenligninger og produksjonsavhengighetskontroll. `main`, Render og LIVE-pilot ble ikke endret.
+
+**Hvorfor:** Eldre UI-tester kontrollerte i vesentlig grad HTML-strenger/kildekode. Etter lesbarhetsendringen 20.11 trengte de tre administrasjonsfunksjonene konkrete atferdstester før mer modularisering.
+
+**Hva/hvordan:** `tests/test-admin-client-runtime.cjs` henter den **faktiske funksjonsblokken** for `loadAdminUsers`, `loadAdminFeedback`, `loadAdminAiSettings` og `loadAdminAiUsage` fra `app.js` og kjører den i en isolert Node VM med fiktiv administrator/bruker, DOM-stubber og HTTP-responser som ikke går på nett. Testen verifiserer:
+
+1. Klientens rollebegrensninger (vanlig bruker og redaktør), ingen admin-fetch, skjulte admin-kort.
+2. Henting av brukerliste, HTML-escaping av brukerdata, deaktivert selvredigering av egen rolle, PATCH til riktig URL, credentials og JSON-body; suksess- og 403-feilsti, og at lagreknappen aktiveres igjen.
+3. Rapporteringsdata med/uten vedlagt samtale, HTML-escaping, og synlig feilmelding.
+4. Modellsvalg med aktiv modell og serverfeil.
+5. KI-bruk med/uten testsvar, kostnadsformat, kilder, søk, siste kjøringer, escaping og feilrespons.
+
+**Bevisnivå:** **D (isolert deterministisk runtime)**. Testen kontrollerer ekte administrasjonsfunksjoner, men **ikke** en full nettleser-DOM, Supabase Auth, RLS eller serverautorisering. Rollebegrensning i klienten er *aldri* en sikkerhetsgrense alene. Slike funn må fortsatt kontrolleres med serverens tilgangstester og framtidig innlogget nettleser-/RLS-test. VM-testens funksjonsuttrekk forutsetter at blokken fortsatt har samme ankerpunkter; testen stopper hvis dette endres, og må oppdateres bevisst ved refaktorering.
+
+**Neste steg:** Utvide admin-regresjon med reell headless-browser-interaksjon og simulerte autentiserte svar før større uttrekk av admin-UI. Fortsatt separat risikotest for ekte Supabase RLS med syntetiske kontoer.
+
+---
+
 ## Ny verifisert kvalitetssikring – 18.11.2026
 
 **Siste komplette CI-kjøring:** [44343038247](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44343038247) på revisjonsgrenen, commit `4d78bcbc02d665c3cfa0ae68289b81370621dfc3`, **SUCCESS**: 35 automatiske deltester, dependency audit med 0 sårbarheter og 66/40 golden-opptelling (ikke en ny live modellkjøring).
