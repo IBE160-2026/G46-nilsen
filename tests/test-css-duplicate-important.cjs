@@ -2,9 +2,9 @@ const fs = require("node:fs");
 const assert = require("node:assert/strict");
 
 const files = [
-  ["styles-core.css", 82],
-  ["styles-responsive.css", 318],
-  ["styles-overrides.css", 392]
+  ["styles-core.css", 80],
+  ["styles-responsive.css", 279],
+  ["styles-overrides.css", 378]
 ];
 
 function findDuplicateImportant(css) {
@@ -57,8 +57,7 @@ function findDuplicateImportant(css) {
       const key = [
         rule.scope,
         rule.selector,
-        match[1].toLowerCase(),
-        match[2].trim().replace(/\s+/g, " ")
+        match[1].toLowerCase()
       ].join("\0");
       if (seen.has(key)) {
         duplicates.push({
@@ -87,8 +86,10 @@ for (const [filename, limit] of files) {
     filename + ": økt !important-antall fra kontrollert baseline " + limit);
   const duplicate = findDuplicateImportant(css);
   assert.deepEqual(duplicate, [],
-    filename + ": tidligere overstyrt identisk !important i samme mediekontekst");
+    filename + ": eldre !important overstyrt av samme selektor/egenskap/mediekontekst");
+  assert(!/(?:^|\n)[^{}]*\{[\t\r\n ]*\}/m.test(css),
+    filename + ": tom CSS-regel etter opprydding");
   total += important;
 }
-assert(total <= 792, "CSS-overskridelser skal begrunnes og audit-baseline oppdateres");
-console.log("CSS: " + total + " !important (før 845), ingen eksakt duplikater innen samme selektor/mediekontekst: OK");
+assert(total <= 737, "CSS-overskridelser skal begrunnes og audit-baseline oppdateres");
+console.log("CSS: " + total + " !important (før 845), ingen overstyrte identiske selektor-/egenskapspar i samme mediekontekst: OK");
