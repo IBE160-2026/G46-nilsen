@@ -4,6 +4,18 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: dynamisk golden-/benchmarkantall – UI- og HTTP-regresjon
+
+**Problem oppdaget:** `index.html` hevdet at fulltest var 26 saker / 52 KI-kall og at «alle» benchmarksaker var 112. Faktiske kilder inneholder 66 golden- og 114 benchmarkcaser, og benchmarkvalget `value="112"` ekskluderte de to siste.
+
+**Endring:** Serverens eksisterende beskyttede `GET /api/admin/pilot-regression/cases` svarer nå også på `?summary=1` med bare `pilotCount`, `fullCount` og `paidRegressionEnabled`. Appen henter tallene, viser korrekt antall caser og `× 2` KI-kall, validerer at benchmark-API-tall samsvarer med faktisk `cases`-liste og bruker symbolsk `value="all"`. Knappene er disabled før metadata/eksplisitt mock-only-tillatelse er kontrollert. Ny PWA-shell-cache `20.11.73`.
+
+**D (funksjon):** `tests/test-benchmark-evaluation.cjs` prøver `resolveCaseCount("all", N)` ved flere bankstørrelser og sikrer at hele en 114-casers bank velges. **I (HTTP):** `tests/test-admin-role-http.cjs` prøver faktisk Express-admin-summary, sammenligner mot JSON-bank og avviser øvrige roller; casetekster sendes ikke. **I (Chrome):** `tests/test-admin-browser.cjs` laster faktisk UI med fiktiv 3-casers benchmarkbank + 1/3 golden-caser, bekrefter 2/6 KI-kall, tre simulerte benchmarkkall ved «alle», korrekt avbryt av fulltest og deaktivert testmodus. `tests/test-ui-regression.cjs` og `tests/test-pilot-regression.cjs` sjekker at gamle tall ikke kommer tilbake.
+
+**Bevisnivå:** Syntetiske data og simulerte providerresultater; ingen ekte betalte kall, ingen faktisk produksjonsdatabase eller Supabase Auth-test. Fortsatt **50 ordinære npm-delsteg** i tillegg til headless Chrome/CSS og isolert PostgreSQL/RLS. Endelig CI-head må være grønn før aksept.
+
+---
+
 ## Tillegg 20.11.2026: fail-closed betalte tester og lokal serverbudsjettsperre
 
 **Implementert:** `src/server/benchmark-budget.js` gir et synkront, servereid in-memory budsjettregnskap på USD 0,10 forhåndsreserve per forsøk, fast run-budsjett og maks USD 5 per bruker/dag per Node-prosess. Parallelle kall for samme bruker, gjenbruk av case/modell, ugyldige kjøre-ID-er, budsjettøkning under kjøring og nullstilling via nytt run-ID/klientens `spentSoFar` avvises. Kostnadsestimat over reserveringen trekkes, og provider-/lagringsfeil beholder minst reserveringen. **Dette er ikke delt/varig over flere instanser eller restart og er ikke garanti mot overskytende faktisk leverandørkostnad.**
