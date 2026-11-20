@@ -96,6 +96,9 @@ const topicSearchPos = html.indexOf('src/client/topic-search.js?v=');
 const situationAnalysisPos = html.indexOf('src/client/situation-analysis.js?v=');
 assert(situationAnalysisPos > clientDataPos && situationAnalysisPos < html.indexOf('app.js?v='), 'Situasjonsanalyse må lastes før app.js');
 assert(topicSearchPos > clientDataPos && topicSearchPos < html.indexOf('app.js?v='), 'Temasøkmodul må lastes før app.js');
+const benchmarkEvaluationPos = html.indexOf('src/client/benchmark-evaluation.js?v=');
+assert(benchmarkEvaluationPos > 0 && benchmarkEvaluationPos < html.indexOf('app.js?v='), 'Benchmark-evaluering må lastes før app.js');
+assert(app.includes('window.SamtalestotteBenchmarkEvaluation.selectCases(') && app.includes('window.SamtalestotteBenchmarkEvaluation.evaluateOpening('), 'app.js må delegere benchmarkvurdering til egen modul');
 const adminContentPos = html.indexOf('src/client/admin-content.js?v=');
 assert(adminContentPos > topicSearchPos && adminContentPos < html.indexOf('app.js?v='),
   'Innholdsredigeringsmodulen må lastes før app.js');
