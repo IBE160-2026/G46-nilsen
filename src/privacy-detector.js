@@ -35,6 +35,8 @@
     "operatør","operatøren","operatører","operatørene",
     "tekniker","teknikeren","teknikere","teknikerne",
     "leder","lederen","ledere","lederne",
+    // «til nærmeste leder har ...» inneholder et adjektiv, ikke et personnavn.
+    "nærmeste",
     "medarbeider","medarbeideren","medarbeidere","medarbeiderne",
     "kollega","kollegaen","kollegaer","kollegaene",
     "ansatt","ansatte","ansatten","personen","personer"
