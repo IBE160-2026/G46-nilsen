@@ -1478,6 +1478,9 @@ function printCurrentGuidance() {
   .advice-body summary{font-weight:700;margin:7px 0 4px}
   .advice-body details>summary{list-style:none}
   .advice-body details>summary::-webkit-details-marker{display:none}
+  .spoken-example { color:#1d7184; font-style:italic; font-weight:600; }
+  .guidance-spoken-example { display:inline-block; padding:6px 8px; border-left:3px solid #1d7184; background:#eef7f8; }
+  @media print { .spoken-example { color:#124956; } }
   .reaction-card{border:1px solid #d7e0e2;border-radius:9px;padding:9px 11px;margin:7px 0}
   .reaction-card-title{margin:0 0 5px}
   .reaction-card-body{display:block}
@@ -1532,7 +1535,7 @@ function renderAiGuidance(guidance) {
         <div><small>Slik kan du møte det</small><p>${formatSpeechExamples(item.leader_response)}</p></div>
       </div>
     </details>`).join('');
-  const list = items => (items || []).map(item => `• ${escapeHtml(item)}`).join('<br>');
+  const list = items => (items || []).map(item => `• ${formatSpeechExamples(item)}`).join('<br>');
   const evidenceSources = guidance.evidence_sources || [];
   const sourceHost = source => {
     try { return new URL(source.url).hostname.replace(/^www\./,''); }
