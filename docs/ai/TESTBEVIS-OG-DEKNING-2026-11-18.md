@@ -4,6 +4,16 @@
 **Status:** Utvidet til faktisk CI-kjøring 18.11.2026 på isolert revisjonsgren, inklusive produksjonsserverens uinnloggede HTTP-grense og deterministisk sensordemo. Full innlogget E2E, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
 
+## Tillegg 20.11.2026: full sensorbrukerreise i faktisk Chrome
+
+**Nytt, obligatorisk E2E-bevis:** `tests/test-sensor-journey-browser.cjs` starter den eksisterende lokale `scripts/sensor-demo.js` og navigerer i den **ekte** `index.html`/`app.js` med headless Chrome. Scenariet går gjennom tema → undertema → situasjon → analyse og veiledning → oppfølgingsdialog → utskriftsdokument med videre råd → samtalesimulering med leder- og medarbeiderreplikk → refleksjon → historie lagres → hel sidenavigasjon/reload → gjenåpning → sletting og tom kontoeksport. Det prøver også at et **fiktivt fullt personnavn blir blokkert i nettleseren før et eneste analyse-/veilednings-POST-kall**. Alle eksempler er syntetiske, og demoen bruker ingen virkelig KI, innlogging eller Supabase.
+
+**Gradering:** Dette er et virkelig DOM- og HTTP-integrasjonsløp med *simulert provider og demoidentitet*, ikke godkjent produksjons-Autentisering, ekte RLS, KI-faglighet, fysisk mobil, faktisk utskriftsdialog eller reelle sluttbrukere. Egen `tests/test-auth-history-two-users-http.cjs` og isolert PostgreSQL/RLS supplerer med to fiktive identiteter, men ekte Supabase Auth/PostgREST er fortsatt åpent. Chrome-kjøringen ligger som eget obligatorisk steg i `.github/workflows/quality-gate.yml`; de **52 npm-delstegene** er uendret.
+
+**Revisjonsmatrise:** Følgende historiske 18.11-rader presiseres for dagens revisjonsgren: FR-01/02/03/04/05/06/09/19/20, AI-05 og NFR-03. Status som *I-demo* betyr **bare** faktisk nettleser mot lokal demo. Sjekk [det detaljerte sensorregisteret med alle 36 krav](SENSOR-KJERNEFLYT-E2E-2026-11-20.md).
+
+---
+
 ## Tillegg 20.11.2026: ende-til-ende benchmark-RPC med disponibel PostgreSQL
 
 **Bevisnivå 1 – ren adapter (D):** `tests/test-benchmark-budget-rpc.cjs` tester faktisk `src/server/benchmark-budget-rpc.js` med injiserte RPC-responser: sikre UUID-er, heltallscent, ingen `spentSoFar` i RPC-argumenter, avvisningskoder, idempotent oppgjør og feilet/ukjent PostgREST-respons som stopper hele flyten.
@@ -199,15 +209,15 @@
 
 | Krav | Område | Bevisnivå/status i kontrollen | Aktuelle spor (ikke nødvendigvis tilstrekkelige) | Må fortsatt kontrolleres |
 |---|---|---|---|---|
-| FR-01 | Demo/klientstruktur | S + E2E ikke verifisert | `app.js`; `scripts/sensor-demo.js` | Anonymisert situasjon, reset og videreføring |
-| FR-02 | Tema-/benchmark-kontrakt | D + E2E ikke verifisert | `tests/test-benchmark-taxonomy.cjs`, `src/server/topic-contracts.js` | Valg av 9/48 og avvisning av utdatert tema |
-| FR-03 | Råd/schema | S + historisk L | `tests/test-guidance-quality.cjs`, `tests/test-ai-golden.js` | Faktisk muntlig åpning og ugyldig API-respons |
-| FR-04 | Oppfølging | S + E2E mangler | `app.js`, `server.js` | Kontekst i samme sak og reset mellom saker |
-| FR-05 | Simulator | S/D + historisk L | `tests/test-simulation.js`, `tests/test-simulation-ai.js` | Rolle, kontekst, ubegrunnet diagnose/motiv |
-| FR-06 | Personvern | D + API-integrasjon gjenstår | `tests/test-privacy.js`, `tests/test-server-privacy.cjs` | Blokkering på server ved direkte API-anrop |
+| FR-01 | Demo/klientstruktur | **I-demo** anonym beskrivelse → reelt skjema/analysesvar; ekte AI åpent | `app.js`; `scripts/sensor-demo.js` | Anonymisert situasjon, reset og videreføring |
+| FR-02 | Tema-/benchmark-kontrakt | **I-demo** tema/undertema; D taksonomi; ekte klassifisering åpen | `tests/test-benchmark-taxonomy.cjs`, `src/server/topic-contracts.js` | Valg av 9/48 og avvisning av utdatert tema |
+| FR-03 | Råd/schema | **I-demo** analyse + råd fra demo; faglig L/M åpent | `tests/test-guidance-quality.cjs`, `tests/test-ai-golden.js` | Faktisk muntlig åpning og ugyldig API-respons |
+| FR-04 | Oppfølging | **I-demo** oppfølgingsfritekst og persistens; reell AI-kontekst åpen | `app.js`, `server.js` | Kontekst i samme sak og reset mellom saker |
+| FR-05 | Simulator | **I-demo** faktisk simulator + feedback; reell AI-kvalitet åpen | `tests/test-simulation.js`, `tests/test-simulation-ai.js` | Rolle, kontekst, ubegrunnet diagnose/motiv |
+| FR-06 | Personvern | **I-demo** fiktivt fullt navn avvist før POST; D/I-mock øvrige personvernflater | `tests/test-privacy.js`, `tests/test-server-privacy.cjs` | Blokkering på server ved direkte API-anrop |
 | FR-07 | Innlogging | Uinnlogget HTTP-grense bestått; innlogget I mangler | `server.js`, `database/` | Inn/utlogging og ugyldig sesjon |
 | FR-08 | Invitasjon | Kode; I mangler | `scripts/create-invite.js`, `server.js` | Utløpt/gjenbrukt token |
-| FR-09 | Historikk | Uinnlogget HTTP-grense bestått, demo lagre/slett bestått; innlogget I mangler | `tests/test-history-hotfix.cjs`, `database/` | Kryssbruker-ID, RLS, slett/refresh |
+| FR-09 | Historikk | **I-demo** lagre/reload/åpne/slett/eksport; I-mock/I-SQL kryssbruker; ekte konto-I åpent | `tests/test-history-hotfix.cjs`, `database/` | Kryssbruker-ID, RLS, slett/refresh |
 | FR-10 | Rapportering | Kode; I mangler | `app.js`, `server.js` | Lagring/brukerbeskjed/tilgang |
 | FR-11 | Roller | Uinnlogget admin avvist; rollebytte med reelle konti mangler | `server.js`, `database/` | User/editor/admin over API og RLS |
 | FR-12 | Admin | Kode; I mangler | `app.js`, `server.js` | Uautorisert endring, persistens |
@@ -218,8 +228,8 @@
 | FR-16 | SOURCEBANK | D + faglig review utestående | `tests/test-sourcebank.cjs`, `tests/test-source-policy.cjs` | Korrekt kilde for konkret påstand |
 | FR-17 | Brukertesting | M kvalitativ historisk | `docs/BRUKERTEST-PLAN.md`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Lite utvalg; ikke representativt |
 | FR-18 | Web-/kildeanalyse | D struktur / I mangler | `tests/test-source-retention.cjs`, `server.js` | Faktisk hentegrunnlag, feil og lagringsminimering |
-| FR-19 | Neste spørsmål | S + E2E mangler | `tests/test-pilot-regression.cjs`, `app.js` | 2–4 forslag som ikke overtar fritekst |
-| FR-20 | Utskrift | Kode/CSS, M mangler | `app.js`, `styles-core.css` | Print-preview hovedråd + videre råd, skjult navigasjon |
+| FR-19 | Neste spørsmål | **I-demo** faktisk oppfølgingsfelt, svar og lagring; KI-svar utestående | `tests/test-pilot-regression.cjs`, `app.js` | 2–4 forslag som ikke overtar fritekst |
+| FR-20 | Utskrift | **I-demo** generert utskrifts-HTML med videre råd; fysisk print-preview M åpent | `app.js`, `styles-core.css` | Print-preview hovedråd + videre råd, skjult navigasjon |
 | FR-21 | Navigasjon | S/D + M kreves | `tests/test-pilot-ux.cjs`, `styles-responsive.css` | Sidebar preference, tooltips, mobil |
 | FR-22 | Yrkes-/sektorkontekst | D + historisk L | `tests/test-occupation-router.cjs`, `tests/test-source-policy.cjs` | Negativ kilde, flagg og faktisk miljø |
 | FR-23 | Direkte alternativ tekstinngang | **VIDERE ARBEID** | `docs/bmad/PRD.md` | Ikke godkjent produksjonsfunksjon; skilt fra tale-LIVE |
@@ -227,11 +237,11 @@
 | AI-02 | Diagnoser | D/S + historisk L | `tests/test-simulation.js`, `tests/AI-GOLDEN-CASES.json` | Medisinsk/psykologisk påstand uten grunnlag |
 | AI-03 | Skyld/motiv | D/S + historisk L | `tests/test-guidance-quality.cjs`, `tests/AI-GOLDEN-CASES.json` | Skyld, motiv og tolkning |
 | AI-04 | Juridisk/HR-usikkerhet | D + historisk L/M | `tests/test-source-policy.cjs`, `tests/AI-GOLDEN-CASES.json` | Kildeautoritet, tariff og avgrensning |
-| AI-05 | Kontekstisolasjon | Kode; E2E mangler | `app.js`, `server.js` | Reset og flerbrukertilgang |
+| AI-05 | Kontekstisolasjon | **I-demo** samme sak + reload; I-mock/I-SQL eierskap; ekte Auth åpent | `app.js`, `server.js` | Reset og flerbrukertilgang |
 | AI-06 | Provideruavhengighet | **OpenRouter-only statusverifikasjon bestått**, full provider-I gjenstår | `server.js`, `tests/test-model-compare.js` | Responskontrakt ved providerskifte |
 | NFR-01 | Sikkerhet | HTTP-grense og live RLS-metadata verifisert; konto-I mangler | `tests/test-server-privacy.cjs`, `server.js`, `database/` | RLS/IDOR, rate limit, cookies, headere |
 | NFR-02 | Personvern | D + I utvides | `tests/test-privacy-surfaces.cjs`, `tests/test-server-privacy.cjs` | Oppfølging, sletting, retensjon |
-| NFR-03 | Brukervennlighet | S + historisk M | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
+| NFR-03 | Brukervennlighet | **I-demo** full Chrome-brukerreise; fysisk mobil/skjermleser M åpent | `tests/test-ui-regression.cjs`, `docs/BRUKERTEST-FUNN-OG-BACKLOG.md` | Fysisk mobil, skjermleser, print |
 | NFR-04 | Feilhåndtering | Kode; negativ I mangler | `server.js`, `app.js` | Timeout, JSON-feil, nettutfall, DB feil |
 | NFR-05 | Vedlikeholdbarhet | Revisjonsgren CI **bestått**; siste `main`-CI feilet | `tests/test-repo-structure.cjs`, `package.json` | Main-run 43205812288 feilet ved .docs |
 | NFR-QA-01 | Quality Gate | Revisjonsgren run `44336281200` **bestått**; `main`-run feilet | `.github/workflows/quality-gate.yml` | Kjør faktisk full pakke inkl audit på endelig commit |
