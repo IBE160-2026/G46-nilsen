@@ -2,7 +2,7 @@
 // periode. Dette er en FORSIKTIGHETSSPERRE, ikke juridisk rekonstruksjon.
 // Ikke bruk et vilkårlig årstall (f.eks. ansettelsesår) som rettslig dato.
 
-const relevantRights = /\b(?:tariff\w*|hovedavtale\w*|overenskomst\w*|lønn\w*|lonn\w*|overtid\w*|tillegg\w*|godtgjør\w*|godtgjor\w*|rettighet\w*|lov\w*|regel\w*|arbeidstid\w*|oppsig\w*|medbestemmelse\w*)\b/iu;
+const relevantRights = /\b(?:tariff\w*|hovedtariff\w*|hovedavtale\w*|overenskomst\w*|lønn\w*|lonn\w*|overtid\w*|tillegg\w*|godtgjør\w*|godtgjor\w*|rettighet\w*|lov\w*|regel\w*|arbeidstid\w*|oppsig\w*|medbestemmelse\w*)\b/iu;
 const pastEntitlement = /\b(?:gjaldt|historisk\w*|den\s+gangen|på\s+den\s+tiden|etterbetal\w*|etteroppgjør\w*|tilbakevirk\w*|hadde\s+(?:\w+\s+){0,5}?(?:krav|rett)|hvilke\s+(?:regler|rettigheter)\s+var|hvilken\s+(?:tariffavtale|hovedavtale|lov)\s+var)\b/iu;
 const dateValid = value => {
   if (typeof value !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
@@ -36,7 +36,7 @@ export function detectHistoricalSourceQuestion(textValue, asOf = new Date()) {
   // «Krav fra 2024» er en sak om tidligere opptjening, mens
   // «ansatt siden 2024» bare er bakgrunnsinformasjon.
   const oldClaim = years.some(year => new RegExp(
-    "\\b(?:krav|lønn|overtid|tillegg|godtgjørelse)\\s+fra\\s+"+year+"\\b","u"
+    "\\b(?:krav|lønnskrav|lønn|overtid|tillegg|godtgjørelse)\\s+fra\\s+"+year+"\\b","u"
   ).test(text));
   if (!pastEntitlement.test(text) && !periodAsked && !oldClaim) return null;
   return { year: years.length === 1 ? years[0] : null, years };
