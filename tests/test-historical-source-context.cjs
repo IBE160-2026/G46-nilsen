@@ -87,7 +87,7 @@ const assert=require("node:assert/strict");
 
   const archivedArgs={
     occupation:"rådgiver",employerType:"state",topic:"Lønn og utvikling",
-    subtopic:"Medbestemmelse",situation:"Hvilken hovedavtale gjaldt for medbestemmelse i 2024?",
+    subtopic:"Lønnsutvikling",situation:"Hvilken hovedavtale gjaldt for lønn og medbestemmelse i 2024?",
     asOf:"2027-01-01",historicalReview:rev
   };
   const historicalContext=buildOccupationGuidanceContext(archivedArgs);
