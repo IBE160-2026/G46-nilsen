@@ -23,7 +23,8 @@ export function buildOccupationGuidanceContext({
   employerContext = "",
   topic = "",
   subtopic = "",
-  situation = ""
+  situation = "",
+  asOf = new Date()
 } = {}) {
   const occupationResult = resolveOccupationContext({
     occupation,
@@ -31,7 +32,8 @@ export function buildOccupationGuidanceContext({
     employerType,
     topic,
     subtopic,
-    situation
+    situation,
+    asOf
   });
 
   const agreementResult = suggestAgreementAreas({
@@ -40,7 +42,8 @@ export function buildOccupationGuidanceContext({
     employerContext,
     topic,
     subtopic,
-    situation
+    situation,
+    asOf
   });
 
   if (!occupationResult.selected) {
