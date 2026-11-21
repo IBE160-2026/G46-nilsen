@@ -1774,7 +1774,7 @@ function sourceDateNote(source={}, asOf=new Date()){
   const from=source?.validFrom || '';
   const to=source?.validTo || '';
   if(!from && !to)return '';
-  const valid=value=>/^\\d{4}-\\d{2}-\\d{2}$/.test(value);
+  const valid=value=>/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value);
   if((from && !valid(from)) || (to && !valid(to)) ||
      (from && to && from>to))return 'Registrert avtaleperiode må kontrolleres.';
   const parts=new Intl.DateTimeFormat('en-GB',{
