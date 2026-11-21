@@ -173,8 +173,30 @@ function checkResult(result,label) {
       "Feilet provider-søk må ikke slippe kilde-URL inn i API-responsen");
     assert.equal(failed.source_provenance.contentVerified,false,
       "Feilet nettsøk må aldri løfte innholdsstatus til verifisert");
-    assert.equal(providerRequests.length,4,
-      "Initial, follow-up, scope and failed-search cases must use local fake provider only");
+    // Full serverrute: tidligere er en trussel uttrykkelig avkreftet.
+    // Første svar bør derfor ikke aktivere trusselkilder. En ny ytring
+    // uten tegnsetting i den gamle teksten introduserer en faktisk trussel.
+    const previouslyNoThreat="Det har ikke vært noen trussel";
+    const newThreat="Nå har medarbeideren uttalt en konkret trussel mot en kollega";
+    const neutralData={
+      situation:previouslyNoThreat,
+      analysis:{primary_topic:"Samarbeid og kommunikasjon"},
+      followups:{},topicId:"Samarbeid og kommunikasjon",
+      subtopic:"Arbeidsdeling",employerType:"private"
+    };
+    const neutralGuidance=await call("/api/generate-guidance",neutralData);
+    assert.equal(neutralGuidance.evidence_sources.length,0,
+      "Avkreftet trussel i opprinnelig sak skal ikke skape kildestøy");
+    assert(!providerRequests.at(-1).instructions.includes('"id":"AT_VOLD_TRUSLER"'),
+      "KI skal ikke se voldskilder før en faktisk risiko er opplyst");
+    await call("/api/continue-conversation",{
+      ...neutralData,guidance:neutralGuidance,question:newThreat
+    });
+    const followUpPrompt=providerRequests.at(-1).instructions;
+    assert(followUpPrompt.includes('"id":"AT_VOLD_TRUSLER"'),
+      "Ny oppfølgingsytring med faktisk trussel må tilby relevant myndighetskilde");
+    assert.equal(providerRequests.length,6,
+      "Alle seks API-kall må rutes til kun lokal falsk provider");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
