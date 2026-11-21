@@ -1,4 +1,5 @@
 import { containsNonNegatedContextTerm } from "./negation-context.js";
+import { isSourceValidOn } from "./source-validity.js";
 
 // Samtalestøtte – deterministisk prioritering av kuraterte kilder.
 // Alle data og regelhjelpere injiseres for å kunne teste kildevalg isolert.
@@ -21,7 +22,7 @@ export function createRelevantSourceSelector({
   // Generiske stikkord alene legitimerer ikke en snever spesialistkilde.
   const genericSourceHints = new Set(["sikkerhet","hendelse","støtte","oppfølging"]);
 
-  function selectRelevantSources(analysis = {}, situation = "", { employerType = "", sectorId = "", occupation = "", topic = "", subtopic = "" } = {}) {
+  function selectRelevantSources(analysis = {}, situation = "", { employerType = "", sectorId = "", occupation = "", topic = "", subtopic = "", asOf = new Date() } = {}) {
     const topics = new Set(Array.isArray(analysis?.relevant_topics) ? analysis.relevant_topics : []);
     if (topic) topics.add(topic);
     const analysisText = [analysis?.summary, ...(analysis?.dilemma || []), ...(analysis?.cautions || []), ...(analysis?.uncertainties || []), subtopic]
@@ -47,6 +48,9 @@ export function createRelevantSourceSelector({
     const normalizedOccupation = String(occupation || "").toLocaleLowerCase("nb-NO");
     for (const source of candidates) {
       if (!source?.id || seen.has(source.id)) continue;
+      // Dato er en selvstendig sperre: relevansscore kan aldri reaktivere
+      // en utløpt eller ikke-ikrafttrådt kilde.
+      if (!isSourceValidOn(source, asOf)) continue;
 
       const scopedEmployerTypes = Array.isArray(source.employerTypes) ? source.employerTypes : (Array.isArray(source.employer_types) ? source.employer_types : []);
       if (scopedEmployerTypes.length && (!employerType || !scopedEmployerTypes.includes(employerType))) continue;
