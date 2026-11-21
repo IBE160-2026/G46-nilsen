@@ -1,7 +1,10 @@
 const assert=require("node:assert/strict");
 (async()=>{
   const { detectHistoricalSourceQuestion, isHistoricalAgreementCandidate,
-    historicalSourceCaution }=await import("../src/server/historical-source-context.js");
+    isSourceValidForQuestion, historicalSourceCaution }=await import("../src/server/historical-source-context.js");
+  const { createRelevantSourceSelector }=await import("../src/server/source-ranking.js");
+  const { mergeGuidanceSourceCandidates }=await import("../src/server/source-merge.js");
+  const { sourceTier }=await import("../src/server/help-library.js");
   const { buildOccupationGuidanceContext }=await import("../src/server/occupation-context.js");
   const { getAgreementMap }=await import("../src/server/agreement-router.js");
   const asOf="2026-11-21";
@@ -54,8 +57,68 @@ const assert=require("node:assert/strict");
     "Historisk spørsmål skal ikke vilkårlig fjerne alle lovkilder");
   assert.equal(isHistoricalAgreementCandidate(laterHTA,null),true,
     "Nåtidsspørsmål må fremdeles kunne bruke nåværende avtale");
-  assert.equal(isHistoricalAgreementCandidate(laterHTA,multi),true,
-    "Ved flertydige år må appen be om eksakt periode, ikke gjette én");
+  assert.equal(isHistoricalAgreementCandidate(laterHTA,multi),false,
+    "Flere år må ikke gi en vilkårlig enkelt-avtale som historisk dokumentasjon");
+
+  const undated=detectHistoricalSourceQuestion(
+    "Hvilken tariffavtale gjaldt da?",asOf);
+  assert.deepEqual(undated,{year:null,years:[]},
+    "Historiske tariffspørsmål UTEN årstall må fortsatt utløse forbehold");
+  assert.match(historicalSourceCaution(undated),/ikke er datofestet/,
+    "Manglende periode skal omtales som uavklart, ikke 'nevnte tidligere år'");
+  assert.equal(isHistoricalAgreementCandidate(oldHA,undated),false,
+    "Udatert historisk sak må ikke tildeles vilkårlig eldre avtale");
+  assert.equal(isHistoricalAgreementCandidate(oldHA,multi),false,
+    "Flere år må kreve presisering av avtaleperiode");
+  assert.equal(isHistoricalAgreementCandidate({sourceRole:"collective_agreement"},rev),false,
+    "Udatert tariffkilde kan aldri dokumentere historiske vilkår");
+  assert.equal(isHistoricalAgreementCandidate({sourceRole:"collective_agreement",validFrom:"2023-01-01"},rev),false,
+    "Manglende sluttdato gir ikke nok periodedokumentasjon");
+  assert.equal(isSourceValidForQuestion(oldHA,"2027-01-01",rev),true,
+    "Historisk 2024-avtale må kunne gjenfinnes i 2027 til kildekontroll");
+  assert.equal(isSourceValidForQuestion(oldHA,"2027-01-01",null),false,
+    "Samme utløpte dokument må ALDRI være en gjeldende kandidat i 2027");
+  assert.equal(isSourceValidForQuestion(laterHTA,"2027-01-01",rev),false,
+    "Gjeldende 2027-avtale må ikke brukes som bevis for 2024");
+  assert.equal(isSourceValidForQuestion(oldHA,"2027-01-01",undated),false,
+    "Et udatert historisk spørsmål må ikke gjette arkivperiode");
+  assert.equal(isSourceValidForQuestion(oldHA,"2027-01-01",multi),false,
+    "Historiske saker om flere år må ikke velge én avtale");
+
+  const archivedArgs={
+    occupation:"rådgiver",employerType:"state",topic:"Lønn og utvikling",
+    subtopic:"Medbestemmelse",situation:"Hvilken hovedavtale gjaldt for medbestemmelse i 2024?",
+    asOf:"2027-01-01",historicalReview:rev
+  };
+  const historicalContext=buildOccupationGuidanceContext(archivedArgs);
+  assert(historicalContext.prompt.includes("STATE_HA_2023_2026"),
+    "Historisk 2024-hovedavtale må nå fram til modellens kandidatprompt også etter utløp");
+  assert(!historicalContext.prompt.includes("STATE_HTA_2026_2028"),
+    "Gjeldende HTA fra 2026 må ikke fremstå som kilde til rettigheter i 2024");
+  const relevanceSelector=createRelevantSourceSelector({
+    sourceBank:{sources:[]},occupationLegalSourceBank:{sources:[]},
+    agreementCuratedSources:state.curatedSources.map(source=>({...source,employerTypes:["state"]})),
+    shouldUseAgreementContext:()=>true,isLegalSourceContext:()=>false,
+    sourceTier,employerScopedPrimaryLawBonus:()=>0
+  });
+  const ranked=relevanceSelector({},archivedArgs.situation,archivedArgs).map(source=>source.id);
+  assert(ranked.includes("STATE_HA_2023_2026"),
+    "Kilderangering må beholde arkivert avtale som matcher historisk år");
+  assert(!ranked.includes("STATE_HTA_2026_2028"),
+    "Kilderangering må fjerne avtaler som ikke gjelder historisk år");
+  const merged=mergeGuidanceSourceCandidates(
+    state.curatedSources,historicalContext,"state","2027-01-01",rev
+  ).map(source=>source.id);
+  assert(merged.includes("STATE_HA_2023_2026"),
+    "Sluttfilteret skal ikke fjerne registrert historisk relevant arkivavtale");
+  assert(!merged.includes("STATE_HTA_2026_2028"),
+    "Sluttfilteret skal fortsatt avvise historisk feil avtale");
+  const undecidedContext=buildOccupationGuidanceContext({
+    ...archivedArgs,historicalReview:undated
+  });
+  assert(!undecidedContext.prompt.includes("STATE_HA_2023_2026") &&
+         !undecidedContext.prompt.includes("STATE_HTA_2026_2028"),
+    "Ukjent historisk år må ikke legge noen tariffavtale inn i prompten");
 
   const promptContext=buildOccupationGuidanceContext({
     occupation:"rådgiver",sectorId:"public_admin_legal",employerType:"state",
