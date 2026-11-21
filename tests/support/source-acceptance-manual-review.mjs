@@ -2,9 +2,10 @@
 // Verken skjemaet eller valideringsfunksjonen besøker kilde-URL-er.
 // «Godkjent» er en formell vurderingskontrakt, IKKE automatisk juridisk fasit.
 
-const sourceUrls = (record, answerPart) =>
-  (answerPart === "first" ? record?.guidance : record?.followup)
-    ?.evidence_sources?.map(source => source?.url).filter(Boolean) || [];
+const sourceUrls = (record, answerPart) => {
+  const sources=(answerPart==="first" ? record?.guidance : record?.followup)?.evidence_sources;
+  return Array.isArray(sources) ? sources.map(source=>source?.url).filter(Boolean) : [];
+};
 const validHttpUrl = value => {
   try {
     const url=new URL(value);
