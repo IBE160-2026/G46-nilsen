@@ -93,9 +93,10 @@ export function evaluateSourceAcceptanceCase(tc, guidance, followup) {
   if (!String(followup?.reply || "").trim()) {
     issues.push("Oppfølgingssvaret er tomt");
   }
+  const firstVisibleIds=new Set(initial.map(source=>source?.id).filter(Boolean));
   for (const id of responseIds) {
-    if (!displayedIds.has(id)) {
-      issues.push("Første råd returnerer kuratert kilde-ID som ikke vises: "+id);
+    if (!firstVisibleIds.has(id)) {
+      issues.push("Første råd returnerer kuratert kilde-ID som ikke vises i første råd: "+id);
     }
   }
   if (tc.expectEvidence && (!initial.length || !continued.length)) {
