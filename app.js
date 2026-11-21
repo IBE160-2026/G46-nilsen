@@ -1768,18 +1768,40 @@ function readableSourceTier(source = {}) {
   return tiers[source.sourceTier] || 'Faglig kildemateriale – vurder gyldighet og relevans';
 }
 
+// Hjelp viser også historiske referanser. Datoperioden kommer fra bankens
+// metadata; den må ikke forveksles med verifisering av faktisk tariffdekning.
+function sourceDateNote(source={}, asOf=new Date()){
+  const from=source?.validFrom || '';
+  const to=source?.validTo || '';
+  if(!from && !to)return '';
+  const valid=value=>/^\\d{4}-\\d{2}-\\d{2}$/.test(value);
+  if((from && !valid(from)) || (to && !valid(to)) ||
+     (from && to && from>to))return 'Registrert avtaleperiode må kontrolleres.';
+  const parts=new Intl.DateTimeFormat('en-GB',{
+    timeZone:'Europe/Oslo',year:'numeric',month:'2-digit',day:'2-digit'
+  }).formatToParts(asOf);
+  const dateParts=Object.fromEntries(parts.map(item=>[item.type,item.value]));
+  const today=`${dateParts.year}-${dateParts.month}-${dateParts.day}`;
+  if(to && today>to)return `Registrert avtaleperiode utløp ${to} – kontroller nyere avtale før bruk.`;
+  if(from && today<from)return `Avtaleperioden starter ${from} – ikke gjeldende ennå.`;
+  return `Registrert avtaleperiode ${from || 'ukjent start'} til ${to || 'ukjent slutt'} – bekreft avtaledekning.`;
+}
+
 function compactSourceRow(source){
   const title=escapeHtml(source.title||source.id||'Kilde');
   const usage=escapeHtml(compactSourceUsage(source));
   const author=escapeHtml(source.author||'');
   const sourceType=escapeHtml(readableSourceTier(source));
   const lastChecked=source.lastVerified ? escapeHtml(source.lastVerified) : '';
+  const dateNote=sourceDateNote(source);
+  const historicalPeriod=/(utløp|ikke gjeldende ennå|må kontrolleres)/.test(dateNote);
   const occupations=Array.isArray(source.occupations) ? source.occupations.filter(Boolean) : [];
   return `<details class="compact-source-row">
-    <summary><span class="compact-source-title">${title}</span><span class="compact-source-chevron" aria-hidden="true">›</span></summary>
+    <summary><span class="compact-source-title">${title}${historicalPeriod ? ` · ${escapeHtml(dateNote)}` : ''}</span><span class="compact-source-chevron" aria-hidden="true">›</span></summary>
     <div class="compact-source-detail">
       <p><strong>Hvorfor kilden er relevant:</strong> ${usage}.</p>
       <p><strong>Kildetype:</strong> ${sourceType}.</p>
+      ${dateNote ? `<p class="muted-note">${escapeHtml(dateNote)}</p>` : ''}
       ${occupations.length ? `<p><strong>Gjelder særlig:</strong> ${escapeHtml(occupations.join(', '))}.</p>` : ''}
       ${author ? `<p class="muted-note">${author}${lastChecked ? ' · Kontrollert '+lastChecked : ''}</p>` : ''}
       <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Åpne kilde ↗</a>
@@ -1881,7 +1903,8 @@ function helpSourceTypeLabel(type=''){
 function renderHelpSourceItem(source){
   const verified=source.lastVerified ? `Sist kontrollert ${escapeHtml(source.lastVerified)}` : '';
   const freshness=source.timeSensitive ? 'Tidskritisk kilde' : '';
-  const meta=[source.author,verified,freshness].filter(Boolean).map(item=>`<span>${escapeHtml(item)}</span>`).join('');
+  const period=sourceDateNote(source);
+  const meta=[source.author,verified,freshness,period].filter(Boolean).map(item=>`<span>${escapeHtml(item)}</span>`).join('');
   const use=(source.useFor||[]).slice(0,6).join(', ');
   const title=escapeHtml(source.title||source.id||'Kilde');
   return `<div class="source-item">
