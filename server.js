@@ -1734,7 +1734,14 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
       retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : []
     );
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
-    const legalClaimReview = reviewLegalClaimSignals([parsed.legal_hr_note], evidenceSources);
+    const legalClaimReview = reviewLegalClaimSignals([
+      parsed.opening, parsed.legal_hr_note,
+      ...(parsed.questions || []), ...(parsed.attention || []),
+      ...(parsed.check_before_meeting || []), ...(parsed.next_steps || []),
+      ...(parsed.reactions || []).flatMap(item =>
+        [item.reaction, item.why_plausible, item.leader_response]
+      )
+    ], evidenceSources);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
     return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, legal_claim_review: legalClaimReview, source_provenance: evidenceProvenance(response, selection.visibleModelSelectedIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
