@@ -5,6 +5,8 @@ const fs=require("node:fs");
   const { isSourceValidOn }=await import("../src/server/source-validity.js");
   const { suggestAgreementAreas, getAgreementMap }=await import("../src/server/agreement-router.js");
   const { createRelevantSourceSelector }=await import("../src/server/source-ranking.js");
+  const { mergeGuidanceSourceCandidates }=await import("../src/server/source-merge.js");
+  const { buildOccupationGuidanceContext }=await import("../src/server/occupation-context.js");
   const { sourceTier }=await import("../src/server/help-library.js");
 
   const state=getAgreementMap().agreementAreas.find(x=>x.id==="state");
@@ -78,5 +80,47 @@ const fs=require("node:fs");
     "Statlige tariffavtaler skal aldri blandes inn i kommunalt område");
   assert(municipal.suggestions[0].curatedSources.some(x=>x.id==="KS_HTA_2026_2028"),
     "KS-avtale som er i kraft skal ikke fjernes");
+  // Siste gate: hver enkelt ruting kan virke korrekt, men sammenføyning
+  // må fortsatt filtrere en utløpt kilde fra HVILKEN SOM HELST input.
+  const expired={id:"EXPIRED",title:"Historisk tariff",sourceRole:"collective_agreement",
+    validFrom:"2023-01-01",validTo:"2026-12-31"};
+  const valid={id:"VALID",title:"Gjeldende lov",sourceRole:"primary_regulation",
+    validFrom:"2026-05-01",validTo:"2028-04-30"};
+  const undated={id:"GUIDANCE",title:"Oppslagsveiledning",sourceRole:"authority_index"};
+  const syntheticContext={
+    occupation:{occupationRelevant:true,legalSources:[expired,valid]},
+    agreement:{relevant:true,needsEmployerType:false,suggestions:[
+      {curatedSources:[expired,valid]}
+    ]}
+  };
+  const merge=(date)=>mergeGuidanceSourceCandidates(
+    [expired,undated,valid],syntheticContext,"state",date
+  );
+  assert.deepEqual(merge("2026-12-31").map(x=>x.id),
+    ["EXPIRED","VALID","GUIDANCE"],
+    "Utløpsdagen er inkludert; dubletter mellom rutene må fjernes");
+  assert.deepEqual(merge("2027-01-01").map(x=>x.id),
+    ["VALID","GUIDANCE"],
+    "En utløpt kilde fra yrke, avtale OG generelt kildevalg må falle ut av sluttlisten");
+  assert(!merge("2027-01-01").some(x=>x.id==="EXPIRED"),
+    "Ingen utløpt kilde får nå KI etter den endelige sammenslåingsgrensen");
+  assert(merge("2027-01-01").every(x=>typeof x.sourceTier==="string"),
+    "Den endelige listen må beholde kildehierarkiets metadata");
+  assert.deepEqual(mergeGuidanceSourceCandidates(
+    [valid,undated],{occupation:{occupationRelevant:false,legalSources:[expired]},
+    agreement:{relevant:false,suggestions:[]}},"private","2027-01-01"
+  ).map(x=>x.id),["VALID","GUIDANCE"],
+    "Yrke alene må ikke legge til irrelevante kilder");
+
+  const freshContext=buildOccupationGuidanceContext({
+    occupation:"rådgiver",sectorId:"public_admin_legal",employerType:"state",
+    topic:"Lønn og utvikling",subtopic:"Lønnsutvikling",
+    situation:"Jeg ønsker å drøfte lønn og medbestemmelse.",asOf:"2027-01-01"
+  });
+  assert(!freshContext.prompt.includes("STATE_HA_2023_2026"),
+    "Utgått hovedavtale må ikke ligge skjult i yrkes-/avtaleprompten");
+  assert(freshContext.prompt.includes("STATE_HTA_2026_2028"),
+    "Fortsatt gyldig hovedtariffavtale må ikke forsvinne fra konteksten");
+
   console.log("KILDEGYLDIGHET OK: norske datogrenser, 2026→2027, avtaleforslag, rangering og sektor; 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
