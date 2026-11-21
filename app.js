@@ -1536,6 +1536,24 @@ function evidenceRoleLabel(source) {
   }
 }
 
+// Dette er en ren oppmerksomhetsmarkør. KI-svar eller kilde-URL har
+// ikke gjennomgått påstandsvis kildekontroll.
+function normalizeLegalClaimReview(review) {
+  return {
+    needsManualReview: review?.needsManualReview === true,
+    possibleLegalClaimCount: Number.isInteger(review?.possibleLegalClaimCount)
+      ? Math.max(0, Math.min(20, review.possibleLegalClaimCount)) : 0,
+    claimToSourceChecked: false
+  };
+}
+
+function legalClaimReviewNote(review) {
+  const result = normalizeLegalClaimReview(review);
+  return result.needsManualReview
+    ? '<p class="muted-note legal-claim-review-note"><strong>Kontroller rettslige påstander:</strong> KI-svaret kan inneholde konkrete utsagn om rettigheter, plikter eller frister. Ingen av disse er kontrollert mot tilhørende originalkilde. Undersøk ordlyd, riktig periode og eventuell tariffdekning før du bruker utsagnet som beslutningsgrunnlag.</p>'
+    : '';
+}
+
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
   const reactionHtml = (guidance.reactions || []).map((item, index) => `
@@ -1548,6 +1566,7 @@ function renderAiGuidance(guidance) {
     </details>`).join('');
   const list = items => (items || []).map(item => `• ${formatSpeechExamples(item)}`).join('<br>');
   const evidenceSources = guidance.evidence_sources || [];
+  const legalReviewNote = legalClaimReviewNote(guidance.legal_claim_review);
   const sourceHost = source => {
     try { return new URL(source.url).hostname.replace(/^www\./,''); }
     catch (_) { return ''; }
@@ -1573,7 +1592,7 @@ function renderAiGuidance(guidance) {
     ['Spørsmål som passer denne saken', list(guidance.questions)],
     ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
-    ['Faglig / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>') + compactEvidence],
+    ['Faglig / regelverk', legalReviewNote + String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>') + compactEvidence],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
     ['Videre oppfølging', list(guidance.next_steps)],
     ['Kildegrunnlag', evidence]
@@ -2222,16 +2241,21 @@ function normalizeContinuationSources(sources = []) {
     }));
 }
 
-function renderContinuationEvidence(sources = []) {
+function renderContinuationEvidence(sources = [], claimReview = null) {
   const verified = normalizeContinuationSources(sources);
   if (!verified.length) {
-    return '<small class="continuation-source-note">Ingen etterprøvbare kildehenvisninger registrert for dette svaret.</small>';
+    return legalClaimReviewNote(claimReview) + '<small class="continuation-source-note">Ingen etterprøvbare kildehenvisninger registrert for dette svaret.</small>';
   }
-  return `<details class="continuation-evidence">
+  return legalClaimReviewNote(claimReview) + `<details class="continuation-evidence">
     <summary>Kildegrunnlag (${verified.length})</summary>
     <p class="muted-note source-verification-note">Kildene er forslag til kontroll, ikke bekreftelse på at alle påstander er riktig dokumentert.</p>
     <div class="evidence-list">${verified.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong>${source.author ? `<span>${escapeHtml(source.author)}</span>` : ''}<span class="evidence-role">${escapeHtml(evidenceRoleLabel(source))}</span><em>Åpne kilde ↗</em></a>`).join('')}</div>
   </details>`;
+}
+
+function setConversationTurnClaimReview(element, review) {
+  if (!element) return;
+  element.dataset.messageClaimReview = JSON.stringify(normalizeLegalClaimReview(review));
 }
 
 function setConversationTurnSources(element, sources) {
@@ -2305,9 +2329,10 @@ async function appendConversationTurn(question) {
     const payload = await response.json();
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
     const verifiedSources = normalizeContinuationSources(payload.evidence_sources);
-    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>${renderContinuationEvidence(verifiedSources)}<button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>${renderContinuationEvidence(verifiedSources, payload.legal_claim_review)}<button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
     setConversationTurnSources(assistant, verifiedSources);
+    setConversationTurnClaimReview(assistant, payload.legal_claim_review);
     renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
     conversationDirty = true;
@@ -3107,6 +3132,10 @@ function getConversationTurns(){
         try { turn.sources = normalizeContinuationSources(JSON.parse(el.dataset.messageSources)); }
         catch (_) { turn.sources = []; }
       }
+      if (role === 'assistant' && el.dataset.messageClaimReview !== undefined) {
+        try { turn.claimReview = normalizeLegalClaimReview(JSON.parse(el.dataset.messageClaimReview)); }
+        catch (_) { turn.claimReview = normalizeLegalClaimReview(null); }
+      }
       return turn;
     })
     .filter(turn => turn.text);
@@ -3191,9 +3220,10 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
     el.className=`conversation-turn ${role==='user'?'conversation-user':'conversation-assistant'}`;
     el.innerHTML=role==='user'
       ? `${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(cleanText)}</p>`
-      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>${Array.isArray(turn.sources) ? renderContinuationEvidence(turn.sources) : ''}`;
+      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>${Array.isArray(turn.sources) ? renderContinuationEvidence(turn.sources, turn.claimReview) : ''}`;
     setConversationTurnText(el, role, cleanText);
     if (role === 'assistant' && Array.isArray(turn.sources)) setConversationTurnSources(el, turn.sources);
+    if (role === 'assistant' && turn.claimReview) setConversationTurnClaimReview(el, turn.claimReview);
     thread.appendChild(el);
     queueSpeechBubbleRefresh();
   });
