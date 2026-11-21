@@ -12,7 +12,7 @@ const read = rel => JSON.parse(fs.readFileSync(path.join(root,rel),"utf8"));
   const { createRelevantSourceSelector } = await import("../src/server/source-ranking.js");
   const { buildOccupationGuidanceContext } = await import("../src/server/occupation-context.js");
   const { getAgreementMap, shouldUseAgreementContext } = await import("../src/server/agreement-router.js");
-  const { shouldRetainCuratedSources, isLegalSourceContext, employerScopedPrimaryLawBonus } = await import("../src/server/source-retention.js");
+  const { shouldRetainCuratedSources, isLegalSourceContext, joinSourceContext, employerScopedPrimaryLawBonus } = await import("../src/server/source-retention.js");
 
   const cases = read("tests/AI-SOURCE-ACCEPTANCE-CASES.json").cases;
   const sourceBank = read("data/SOURCEBANK.json");
@@ -53,7 +53,7 @@ const read = rel => JSON.parse(fs.readFileSync(path.join(root,rel),"utf8"));
   };
 
   for(const tc of cases){
-    for(const [stage,text] of [["første råd",tc.situation],["oppfølging",tc.situation+" "+tc.question]]){
+    for(const [stage,text] of [["første råd",tc.situation],["oppfølging",joinSourceContext(tc.situation,tc.question)]]){
       const result=run(tc,text);
       const ids=new Set(result.candidates.map(s=>s.id));
       if(tc.expectEvidence){
