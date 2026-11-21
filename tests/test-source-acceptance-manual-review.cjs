@@ -125,5 +125,61 @@ const assert=require("node:assert/strict");
 
   assert.deepEqual(template,createManualSourceReview(tc,record),
     "Evalueringen får aldri mutere eller forhåndsgodkjenne en blank rapport");
+  // Prøv også kommandolinje-kontrollen på fem falske, syntetiske saker.
+  // Ingen faktisk kontrollør eller originalkilde er benyttet i testen.
+  const fs=require("node:fs");
+  const path=require("node:path");
+  const os=require("node:os");
+  const {spawnSync}=require("node:child_process");
+  const root=path.resolve(__dirname,"..");
+  const allCases=JSON.parse(fs.readFileSync(
+    path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8"
+  )).cases;
+  const temp=fs.mkdtempSync(path.join(os.tmpdir(),"source-review-"));
+  try {
+    const createdAt="2026-11-21T01:01:01.000Z";
+    const run={createdAt,cases:allCases.map(tc=>({...clone(record),id:tc.id,issues:[]}))};
+    const reviewSet={
+      schemaVersion:1,sourceRunCreatedAt:createdAt,caseCount:allCases.length,
+      cases:allCases.map(tc=>createManualSourceReview(tc,run.cases.find(c=>c.id===tc.id)))
+    };
+    const runFile=path.join(temp,"run.json");
+    const reviewFile=path.join(temp,"review.json");
+    const script=path.join(root,"tests/check-source-acceptance-review.mjs");
+    const write=()=>{fs.writeFileSync(runFile,JSON.stringify(run));fs.writeFileSync(reviewFile,JSON.stringify(reviewSet));};
+    const invoke=()=>spawnSync(process.execPath,[script,runFile,reviewFile],{encoding:"utf8"});
+    write();
+    let proc=invoke();
+    assert.equal(proc.status,1,
+      "Ikke utfylt rapport må returnere exit 1 selv når automatiske kildetester var grønne");
+    assert.match(proc.stdout,/PENDING_REVIEW/);
+
+    for(const form of reviewSet.cases) {
+      form.reviewer="syntetisk-kontrollør";
+      form.reviewedAt="2026-11-21";
+      form.claimInventoryComplete=true;
+      form.noMaterialClaims=true;
+      form.falsePositiveExplanation="Dette er en syntetisk CLI-test; faglig kontroll er ikke utført og data er fiktive.";
+      form.finalNotes="Dette er en syntetisk enhetstest av fullstendighetskontrakten, ikke virkelig kvalitetssikring.";
+      for(const item of form.must) {
+        item.status="met";item.reason="Syntetisk bekreftelse brukt kun for å teste formelle krav";
+      }
+      for(const item of form.critical) {
+        item.status="absent";item.reason="Syntetisk bekreftelse brukt kun for å teste formelle krav";
+      }
+    }
+    write();proc=invoke();
+    assert.equal(proc.status,0,
+      "Komplett syntetisk skjema må bestå formell vurdering: "+proc.stderr+" "+proc.stdout);
+    assert.match(proc.stdout,/5\/5 faglig dokumenterte/);
+
+    reviewSet.sourceRunCreatedAt="2026-11-22T01:01:01.000Z";
+    write();proc=invoke();
+    assert.equal(proc.status,2,"Et skjema fra feil testkjøring kan ikke godkjennes");
+    assert.match(proc.stderr,/samme testkjøring/);
+  } finally {
+    fs.rmSync(temp,{recursive:true,force:true});
+  }
+
   console.log("MANUELL KILDEAKSEPTANSE OK: krav, belegg, periode, kilde per svar, kritiske feil, uavklart og falsk positiv – 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
