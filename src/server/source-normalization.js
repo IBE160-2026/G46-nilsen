@@ -13,6 +13,13 @@ export function normalizeSourceUrl(value) {
   }
 }
 
+// Responses API kan inneholde delvise/feilede tool calls. Bare fullførte
+// tool-/meldingsobjekter kan gi dokumentert provider-proveniens.
+// Manglende status godtas for eldre provider-formater og lokale fixtures.
+function isCompletedProviderOutput(item) {
+  return item?.status == null || item.status === "completed";
+}
+
 export function webSources(response) {
   const sources = new Map();
   const remember = (rawUrl, title = "") => {
@@ -34,7 +41,7 @@ export function webSources(response) {
     // include: ["web_search_call.action.sources"].
     // Bare søkekall kan bekrefte action.sources. Andre tool-calls kan ha
     // samme feltnavn uten å være et dokumentert nettsøk.
-    if (item?.type === "web_search_call" && Array.isArray(item?.action?.sources)) {
+    if (item?.type === "web_search_call" && isCompletedProviderOutput(item) && Array.isArray(item?.action?.sources)) {
       for (const source of item.action.sources) {
         if (source?.type !== "url") continue;
         remember(source.url, source.title || source.name);
@@ -42,7 +49,7 @@ export function webSources(response) {
     }
     // Alternativ provider-proveniens: annotasjoner på selve modellmeldingen.
     // Ikke godta løse lenker skrevet av språkmodellen som dokumentert nettsøk.
-    if (item?.type !== "message") continue;
+    if (item?.type !== "message" || !isCompletedProviderOutput(item)) continue;
     for (const part of item.content || []) {
       for (const annotation of part.annotations || []) {
         // Aksepter Responses-annotasjoner og eldre nestet url_citation-form,
@@ -95,7 +102,7 @@ export function evidenceProvenance(response, curatedSourceIds = [], evidenceSour
   const output = Array.isArray(response?.output) ? response.output : [];
   const providerUrls = webSources(response);
   return {
-    webSearchPerformed: output.some(item => item?.type === "web_search_call"),
+    webSearchPerformed: output.some(item => item?.type === "web_search_call" && isCompletedProviderOutput(item)),
     providerUrlCount: providerUrls.size,
     // Telles bare når modellen selv valgte ID-en. Andre lovkilder blir
     // liggende som kontrollreferanser og telles separat.
