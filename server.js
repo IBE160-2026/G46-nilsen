@@ -12,6 +12,7 @@ import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceP
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { mergeGuidanceSourceCandidates } from "./src/server/source-merge.js";
+import { detectHistoricalSourceQuestion, isHistoricalAgreementCandidate, historicalSourceCaution } from "./src/server/historical-source-context.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
 import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
@@ -1624,6 +1625,7 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
   // kilde ikke kan være gjeldende i én ruting, men utløpt i en annen
   // dersom et forespørselsløp treffer norsk midnatt.
   const sourceAsOf = new Date();
+  const historicalReview = detectHistoricalSourceQuestion(situation, sourceAsOf);
   const occupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({
         occupation,
@@ -1633,7 +1635,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
         topic: resolvedTopic,
         subtopic: resolvedSubtopic,
         situation,
-        asOf: sourceAsOf
+        asOf: sourceAsOf,
+        historicalReview
       })
     : { enabled:false, prompt:"", occupation:null, agreement:null };
   const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic, asOf:sourceAsOf });
@@ -1646,7 +1649,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
     employerType,
     occupationContext
   });
-  const relevantSources = retainCuratedSources ? mergedRelevantSources : [];
+  const relevantSources = retainCuratedSources
+    ? mergedRelevantSources.filter(source => isHistoricalAgreementCandidate(source, historicalReview)) : [];
   const occupationPrompt = occupationContext?.prompt ? "\n\n" + occupationContext.prompt + "\n" : "";
   const sourceSelectionHint = retainCuratedSources
     ? "Denne saken har et konkret faglig, rettslig, tariffmessig eller sikkerhetsmessig kildebehov. Prioriter den mest spesifikke relevante lov-, myndighets-, yrkes- eller avtale-kilden foran brede forsknings-/HR-kilder."
@@ -1695,7 +1699,7 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const response = await createTrackedResponse({
       _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)], _privacyNameOverrides:privacyNameOverrides, _isTest:adminPilotTest,
       tools: [{ type: "web_search", search_context_size: "low" }],
-      instructions: systemPrompt + guidanceTask,
+      instructions: systemPrompt + guidanceTask + (historicalReview ? "\n\n" + historicalSourceCaution(historicalReview) : ""),
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
       text: {
         format: {
@@ -1783,8 +1787,9 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   const continueSubtopic = analysis?.primary_subtopic || subtopic || "";
   const continueSituation = joinSourceContext(situation, question);
   const continueSourceAsOf = new Date();
+  const continueHistoricalReview = detectHistoricalSourceQuestion(question, continueSourceAsOf);
   const continueOccupationContext = occupationContextEnabled
-    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf })
+    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview })
     : { prompt:"", occupation:null, agreement:null };
   const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic, asOf:continueSourceAsOf });
   const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType, continueSourceAsOf);
@@ -1796,7 +1801,8 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     employerType,
     occupationContext: continueOccupationContext
   });
-  const relevantSources = retainContinueSources ? mergedContinueSources : [];
+  const relevantSources = retainContinueSources
+    ? mergedContinueSources.filter(source => isHistoricalAgreementCandidate(source, continueHistoricalReview)) : [];
   const continueOccupationPrompt = continueOccupationContext?.prompt ? "\n\n" + continueOccupationContext.prompt + "\n" : "";
   const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.\n- Hvis fagbanken er tilstrekkelig, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridiske, arbeidsrettslige eller andre etterprøvbare faglige påstander: velg 1–4 presise kilde-ID-er fra "Relevante kilder i fagbanken" og legg dem i source_ids. Ikke finn på kilder eller kilde-ID-er.\n- supplementary_sources skal bare inneholde inntil 2 kilder du faktisk har funnet gjennom nettsøk. Ikke konstruer URL-er, forfattere eller kildetitler.\n- Hvis saken ikke krever konkret kilde, returner tomme lister i source_ids og supplementary_sources.\n- Ikke legg rå URL-er eller Markdown-lenker i reply. Kilder skal ligge i source_ids/supplementary_sources og presenteres separat i grensesnittet.\n- Hold svaret kort, direkte og situasjonsnært.
 - Svar på akkurat spørsmålet som ble stilt; ikke skriv hovedveiledningen på nytt.
@@ -1812,7 +1818,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     const response = await createTrackedResponse({
       _functionName:'oppfolging', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, question, ...flattenTextValues(followups)],
       tools: [{ type: "web_search", search_context_size: "low" }],
-      instructions: systemPrompt + continueTask,
+      instructions: systemPrompt + continueTask + (continueHistoricalReview ? "\n\n" + historicalSourceCaution(continueHistoricalReview) : ""),
       input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }],
       text: {
         format: {
