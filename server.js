@@ -11,6 +11,7 @@ import { historyPayload, rowToHistory } from "./src/server/history-contracts.js"
 import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, selectVisibleCuratedSourceIds, dedupeEvidenceSources } from "./src/server/source-normalization.js";
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
+import { mergeGuidanceSourceCandidates } from "./src/server/source-merge.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
 import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
@@ -1361,44 +1362,6 @@ const selectRelevantSources = createRelevantSourceSelector({
   sourceTier,
   employerScopedPrimaryLawBonus
 });
-
-function normalizeGuidanceCandidate(source = {}) {
-  if (!source?.id) return null;
-  return {
-    ...source,
-    sourceTier: source.sourceTier || sourceTier(source)
-  };
-}
-
-function mergeGuidanceSourceCandidates(generalSources = [], occupationContext = null, employerType = "") {
-  const prioritized = [];
-
-  if (occupationContext?.occupation?.occupationRelevant) {
-    prioritized.push(...(occupationContext.occupation.legalSources || []));
-  }
-
-  // For stat/kommune/helseforetak er arbeidsgivertypen tilstrekkelig konkret til
-  // å vise gjeldende avtaleområde som kandidat. Privat tariffdekning må fortsatt
-  // bekreftes og skal derfor ikke gjettes.
-  if (
-    occupationContext?.agreement?.relevant &&
-    !occupationContext?.agreement?.needsEmployerType &&
-    ["state","municipal","health_enterprise"].includes(employerType)
-  ) {
-    for (const area of occupationContext.agreement.suggestions || []) {
-      prioritized.push(...(area.curatedSources || []));
-    }
-  }
-
-  prioritized.push(...generalSources);
-
-  const seen = new Set();
-  return prioritized
-    .map(normalizeGuidanceCandidate)
-    .filter(Boolean)
-    .filter(source => source.id && !seen.has(source.id) && seen.add(source.id))
-    .slice(0, 10);
-}
 
 function publicSources(ids = []) {
   const wanted = new Set(ids);
