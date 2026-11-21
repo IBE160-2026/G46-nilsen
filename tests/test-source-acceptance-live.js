@@ -123,7 +123,7 @@ md+="Dato: "+new Date().toISOString()+"\n\n";
 md+="Testmetode: lokal Node-server, ekte OpenAI, fiktiv Supabase-URL og yrkeskontekst PÅ bare i testprosessen.\n\n";
 md+="Ingen prod-/Render-innstillinger er lest eller endret. Dette må ikke omtales som en produksjonsverifisering.\n\n";
 md+="**Viktig:** Et web_search_call eller URL-annotasjon er ikke bevis for at kilden støtter hver enkelt påstand. Kildetekst må manuelt leses opp mot påstanden.\n\n";
-md+="**Maskinell akseptanse:** Kildetall, kildeopphav, synlige ID-er, forbudte sektorkilder, URL-sikkerhet og varsler om mulige rettspåstander kontrolleres av en separat, enhetstestet evaluator. Ingen av disse kontrollene beviser at en konkret kilde støtter et konkret råd.\\n\\n";
+md+="**Maskinell akseptanse:** Kildetall, kildeopphav, synlige ID-er, forbudte sektorkilder, URL-sikkerhet og varsler om mulige rettspåstander kontrolleres av en separat, enhetstestet evaluator. Ingen av disse kontrollene beviser at en konkret kilde støtter et konkret råd.\n\n";
 
 for(const r of results){
   const tc=cases.find(x=>x.id===r.id);
