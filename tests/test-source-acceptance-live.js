@@ -7,6 +7,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
 import { evaluateSourceAcceptanceCase } from "./support/source-acceptance-evaluator.mjs";
+import { createManualSourceReview } from "./support/source-acceptance-manual-review.mjs";
 
 dotenv.config();
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
@@ -115,7 +116,17 @@ fs.mkdirSync(outDir,{recursive:true});
 const stamp=new Date().toISOString().replace(/[:.]/g,"-");
 const jsonPath=path.join(outDir,"source-acceptance-"+stamp+".json");
 const mdPath=path.join(outDir,"source-acceptance-"+stamp+".md");
-fs.writeFileSync(jsonPath,JSON.stringify({createdAt:new Date().toISOString(),
+const reviewPath=path.join(outDir,"source-acceptance-manual-review-"+stamp+".json");
+const reportTimestamp=new Date().toISOString();
+fs.writeFileSync(reviewPath,JSON.stringify({
+  schemaVersion:1,
+  sourceRunCreatedAt:reportTimestamp,
+  caseCount:results.length,
+  cases:results.map(result=>createManualSourceReview(
+    cases.find(tc=>tc.id===result.id),result
+  ))
+},null,2),"utf8");
+fs.writeFileSync(jsonPath,JSON.stringify({createdAt:reportTimestamp,
   model:"gpt-5.6-luna",environment:"isolated-local-test",
   occupationContext:true,provider:"openai",cases:results},null,2),"utf8");
 let md="# Kildepresisjon – ekte KI, fem anonymiserte saker\n\n";
@@ -123,6 +134,8 @@ md+="Dato: "+new Date().toISOString()+"\n\n";
 md+="Testmetode: lokal Node-server, ekte OpenAI, fiktiv Supabase-URL og yrkeskontekst PÅ bare i testprosessen.\n\n";
 md+="Ingen prod-/Render-innstillinger er lest eller endret. Dette må ikke omtales som en produksjonsverifisering.\n\n";
 md+="**Viktig:** Et web_search_call eller URL-annotasjon er ikke bevis for at kilden støtter hver enkelt påstand. Kildetekst må manuelt leses opp mot påstanden.\n\n";
+md+="**Manuell vurdering er PÅKREVD og står alltid som ventende:** Fyll ut det genererte JSON-skjemaet i \`"+reviewPath+"\` og dokumenter hver konkret rettspåstand, originalkildens eksakte utdrag, kontroll-dato, lov-/tariffperiode og arbeidsgiverområde. En kilde fra et annet svar kan ikke underbygge en tidligere påstand. Kjør deretter \`node tests/check-source-acceptance-review.mjs <run.json> <manual-review.json>\`. Skjemaet er aldri forhåndsgodkjent.\\n\\n";
+
 md+="**Maskinell akseptanse:** Kildetall, kildeopphav, synlige ID-er, forbudte sektorkilder, URL-sikkerhet og varsler om mulige rettspåstander kontrolleres av en separat, enhetstestet evaluator. Ingen av disse kontrollene beviser at en konkret kilde støtter et konkret råd.\n\n";
 
 for(const r of results){
@@ -157,4 +170,5 @@ const critical=results.filter(x=>x.technicalError||(x.issues||[]).length).length
 console.log("Ferdig med provider-test. Faglig kildekontroll er IKKE utført automatisk.");
 console.log("Maskinelle avvik eller teknisk feil: "+critical+"/"+cases.length);
 console.log("Rapporter: "+mdPath+" og "+jsonPath);
+console.log("Manuell vurdering (IKKE GODKJENT): "+reviewPath);
 if(critical)process.exitCode=1;
