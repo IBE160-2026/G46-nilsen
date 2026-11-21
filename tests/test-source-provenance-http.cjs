@@ -24,6 +24,7 @@ const fakeProvider = http.createServer(async(req,res)=>{
   providerRequests.push(request);
   const simulateFailedSearch = raw.includes("simulert-feilet-nettsok");
   const simulateSourceCap = raw.includes("simulert-kildetak");
+  const simulateLegalClaim = raw.includes("simulert-juridisk-krav");
   const continuation = request?.text?.format?.name === "samtalestotte_oppfolging";
   const modelContent = continuation
     ? {
@@ -46,6 +47,11 @@ const fakeProvider = http.createServer(async(req,res)=>{
           {title:"Oppdiktet lov",author:"Lovdata",year:"2026",type:"bindende lov",url:forgedUrl}
         ]
       };
+  if(simulateLegalClaim){
+    if(continuation)modelContent.reply="Etter arbeidsmiljøloven har arbeidstaker rett til overtidstillegg.";
+    else modelContent.legal_hr_note="Etter arbeidsmiljøloven har arbeidstaker rett til overtidstillegg.";
+    modelContent.source_ids=[];
+  }
   if(simulateSourceCap){
     const candidateIds=[...new Set(
       [...String(request.instructions || "").matchAll(/"id":"([^"]+)"/g)]
@@ -274,8 +280,27 @@ function checkResult(result,label) {
     assert(!manyYearsInstructions.includes('"id":"STATE_HTA_2026_2028"') &&
            !manyYearsInstructions.includes('"id":"STATE_HA_2023_2026"'),
       "Flere uavklarte år må kreve avklaring før avtalevalg");
-    assert.equal(providerRequests.length,12,
-      "Tolv Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
+    const claimData={
+      situation:"Vi skal diskutere overtid, kompensasjon og arbeidstid. simulert-juridisk-krav",
+      analysis:{primary_topic:"Lønn og utvikling"},followups:{},
+      topicId:"Lønn og utvikling",subtopic:"Arbeidstid",employerType:"private"
+    };
+    const claimFirst=await call("/api/generate-guidance",claimData);
+    assert.equal(claimFirst.legal_claim_review.needsManualReview,true,
+      "Kategorisk juridisk påstand må få eksplisitt krav om menneskelig kontroll");
+    assert.equal(claimFirst.legal_claim_review.possibleLegalClaimCount,1);
+    assert.equal(claimFirst.legal_claim_review.claimToSourceChecked,false,
+      "Nettsøktreff eller kilde-ID skal aldri utgjøre påstandsverifisering");
+    assert.equal(claimFirst.legal_claim_review.hasModelSelectedReferences,false,
+      "Syntetisk KI ga ikke source_ids, og skal ikke tilordnes systemets referanser");
+    const claimFollow=await call("/api/continue-conversation",{
+      ...claimData,guidance:claimFirst,question:"Har vedkommende krav på overtidstillegg?"
+    });
+    assert.equal(claimFollow.legal_claim_review.needsManualReview,true,
+      "Oppfølgingssvar med lovrettigheter må synliggjøre manuelt kildebehov");
+    assert.equal(claimFollow.legal_claim_review.claimToSourceChecked,false);
+    assert.equal(providerRequests.length,14,
+      "Fjorten Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
