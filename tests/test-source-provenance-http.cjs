@@ -254,8 +254,28 @@ function checkResult(result,label) {
       "Nytt historisk spørsmål i oppfølging må få riktig kildeforbehold");
     assert(!followHistoricalInstructions.includes('"id":"STATE_HTA_2026_2028"'),
       "Historisk oppfølging må ikke få etterfølgende tariffavtale som kildekandidat");
-    assert.equal(providerRequests.length,10,
-      "Ti Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
+    await call("/api/continue-conversation",{
+      ...presentDayData,guidance:presentGuidance,
+      question:"Hvilken tariffavtale gjaldt da?"
+    });
+    const noYearInstructions=providerRequests.at(-1).instructions;
+    assert(noYearInstructions.includes("en tidligere periode som ikke er datofestet"),
+      "Udatert historisk spørsmål må kreve periodeavklaring, ikke bruke dagens tariff");
+    assert(!noYearInstructions.includes('"id":"STATE_HTA_2026_2028"') &&
+           !noYearInstructions.includes('"id":"STATE_HA_2023_2026"'),
+      "Ukjent historisk periode må ikke få automatisk avtalevalg");
+    await call("/api/continue-conversation",{
+      ...presentDayData,guidance:presentGuidance,
+      question:"Hvilken tariffavtale gjaldt i 2023 og 2024?"
+    });
+    const manyYearsInstructions=providerRequests.at(-1).instructions;
+    assert(manyYearsInstructions.includes("de nevnte tidligere årene"),
+      "Flere historiske år skal ikke reduseres til én vilkårlig periode");
+    assert(!manyYearsInstructions.includes('"id":"STATE_HTA_2026_2028"') &&
+           !manyYearsInstructions.includes('"id":"STATE_HA_2023_2026"'),
+      "Flere uavklarte år må kreve avklaring før avtalevalg");
+    assert.equal(providerRequests.length,12,
+      "Tolv Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
