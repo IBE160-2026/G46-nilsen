@@ -22,6 +22,7 @@ const fakeProvider = http.createServer(async(req,res)=>{
   let request;
   try { request = JSON.parse(raw); } catch { return reply(res,400,{error:{message:"Bad synthetic JSON"}}); }
   providerRequests.push(request);
+  const simulateFailedSearch = raw.includes("simulert-feilet-nettsok");
   const continuation = request?.text?.format?.name === "samtalestotte_oppfolging";
   const modelContent = continuation
     ? {
@@ -49,7 +50,7 @@ const fakeProvider = http.createServer(async(req,res)=>{
     id:"resp_source_fake",object:"response",model:"gpt-5.6-luna",status:"completed",
     output_text:text,
     output:[
-      {id:"search_fake",type:"web_search_call",status:"completed",action:{
+      {id:"search_fake",type:"web_search_call",status:simulateFailedSearch ? "failed" : "completed",action:{
         type:"search",sources:[{type:"url",url:expectedUrl,title:"Dokumentert nettsøktreff"}]
       }},
       {id:"message_fake",type:"message",role:"assistant",status:"completed",
@@ -157,7 +158,23 @@ function checkResult(result,label) {
     assert(stateGuidance.source_provenance.scopeReferenceCount>=1,
       "Systemets egne lovhenvisninger må telles separat");
     assert.equal(stateGuidance.source_provenance.contentVerified,false);
-    assert.equal(providerRequests.length,3,"Both endpoints and scope case must use only local fake provider");
+    // Ekte HTTP-grense: et mislykket web_search_call kan fremdeles ha
+    // action.sources i syntetiske provider-data. Disse må aldri bli
+    // synlige kilder eller telles som et fullført søk.
+    const failed=await call("/api/generate-guidance",{
+      ...data,
+      situation:situation+" simulert-feilet-nettsok"
+    });
+    assert.equal(failed.source_provenance.webSearchPerformed,false,
+      "Feilet nettsøk må ikke rapporteres som fullført");
+    assert.equal(failed.source_provenance.providerUrlCount,0,
+      "URL-er fra feilet nettsøk må aldri telles som dokumenterte treff");
+    assert(!failed.evidence_sources.some(source=>source.url===expectedUrl),
+      "Feilet provider-søk må ikke slippe kilde-URL inn i API-responsen");
+    assert.equal(failed.source_provenance.contentVerified,false,
+      "Feilet nettsøk må aldri løfte innholdsstatus til verifisert");
+    assert.equal(providerRequests.length,4,
+      "Initial, follow-up, scope and failed-search cases must use local fake provider only");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
