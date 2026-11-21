@@ -45,7 +45,8 @@ export function buildOccupationGuidanceContext({
     topic,
     subtopic,
     situation,
-    asOf
+    asOf,
+    historicalReview
   });
 
   // En avtale som startet etter spørsmålets historiske år kan ikke brukes
