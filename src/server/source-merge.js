@@ -1,5 +1,5 @@
 import { sourceTier } from "./help-library.js";
-import { isSourceValidOn } from "./source-validity.js";
+import { isSourceValidForQuestion } from "./historical-source-context.js";
 
 /**
  * Siste kontrollpunkt før kuraterte kildekandidater sendes til KI.
@@ -10,7 +10,7 @@ import { isSourceValidOn } from "./source-validity.js";
  * innhold.
  */
 export function mergeGuidanceSourceCandidates(
-  generalSources = [], occupationContext = null, employerType = "", asOf = new Date()
+  generalSources = [], occupationContext = null, employerType = "", asOf = new Date(), historicalReview = null
 ) {
   const prioritized = [];
 
@@ -34,7 +34,7 @@ export function mergeGuidanceSourceCandidates(
 
   const seen = new Set();
   return prioritized
-    .filter(source => source?.id && isSourceValidOn(source, asOf))
+    .filter(source => source?.id && isSourceValidForQuestion(source, asOf, historicalReview))
     .map(source => ({
       ...source,
       sourceTier: source.sourceTier || sourceTier(source)
