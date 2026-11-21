@@ -6,6 +6,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import dotenv from "dotenv";
+import { evaluateSourceAcceptanceCase } from "./support/source-acceptance-evaluator.mjs";
 
 dotenv.config();
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
@@ -72,48 +73,6 @@ async function post(route,body){
   }
   return data;
 }
-function checkOne(tc,guidance,followup){
-  const issues=[];
-  const initial=Array.isArray(guidance.evidence_sources)?guidance.evidence_sources:[];
-  const continued=Array.isArray(followup.evidence_sources)?followup.evidence_sources:[];
-  const all=[...initial,...continued];
-  const shownIds=new Set([
-    ...(Array.isArray(guidance.source_ids)?guidance.source_ids:[]),
-    ...all.map(x=>x.id).filter(Boolean)
-  ]);
-  if(!guidance.opening || !Array.isArray(guidance.questions) || guidance.questions.length<2){
-    issues.push("Første råd mangler muntlig åpning eller to situasjonsnære spørsmål");
-  }
-  if(!String(followup.reply||"").trim())issues.push("Oppfølgingssvaret er tomt");
-  if(tc.expectEvidence && (!initial.length || !continued.length)){
-    issues.push("Kildekrevende situasjon mangler synlig kildegrunnlag i ett av svarløpene");
-  }
-  if(!tc.expectEvidence && all.length)issues.push("Ordinær samtale overlesses med kilder");
-  if(tc.preferredSourceIds.length &&
-     !tc.preferredSourceIds.some(id=>shownIds.has(id))){
-    issues.push("Ingen av de forhåndsdefinerte relevante kildekandidatene ble valgt; vurder konkret relevans manuelt");
-  }
-  for(const id of tc.forbidSourceIds){
-    if(shownIds.has(id))issues.push("Utenfor-sektor kilde i svargrunnlaget: "+id);
-  }
-  for(const [label,result,sources] of [
-    ["råd",guidance,initial],["oppfølging",followup,continued]
-  ]){
-    const p=result.source_provenance;
-    if(!p || typeof p.webSearchPerformed!=="boolean" ||
-      typeof p.providerUrlCount!=="number" ||
-      p.visibleEvidenceCount!==sources.length || p.contentVerified!==false){
-      issues.push(label+": kildenes proveniens er mangelfull eller feil");
-    }
-    for(const source of sources){
-      try{
-        const url=new URL(source.url);
-        if(url.protocol!=="https:" && url.protocol!=="http:")throw Error("ugyldig protokoll");
-      }catch{issues.push(label+": kilde med ugyldig URL");}
-    }
-  }
-  return issues;
-}
 const results=[];
 try{
   await waitForServer();
@@ -134,7 +93,7 @@ try{
       const followup=await post("/api/continue-conversation",{
         ...input,guidance,question:tc.question
       });
-      const issues=checkOne(tc,guidance,followup);
+      const issues=evaluateSourceAcceptanceCase(tc,guidance,followup);
       results.push({
         id:tc.id,title:tc.title,sectorId:tc.sectorId,
         model:guidance.model||null,issues,
@@ -164,6 +123,8 @@ md+="Dato: "+new Date().toISOString()+"\n\n";
 md+="Testmetode: lokal Node-server, ekte OpenAI, fiktiv Supabase-URL og yrkeskontekst PÅ bare i testprosessen.\n\n";
 md+="Ingen prod-/Render-innstillinger er lest eller endret. Dette må ikke omtales som en produksjonsverifisering.\n\n";
 md+="**Viktig:** Et web_search_call eller URL-annotasjon er ikke bevis for at kilden støtter hver enkelt påstand. Kildetekst må manuelt leses opp mot påstanden.\n\n";
+md+="**Maskinell akseptanse:** Kildetall, kildeopphav, synlige ID-er, forbudte sektorkilder, URL-sikkerhet og varsler om mulige rettspåstander kontrolleres av en separat, enhetstestet evaluator. Ingen av disse kontrollene beviser at en konkret kilde støtter et konkret råd.\\n\\n";
+
 for(const r of results){
   const tc=cases.find(x=>x.id===r.id);
   md+="## "+r.id+" – "+r.title+"\n\n";
@@ -175,11 +136,13 @@ for(const r of results){
     md+="**Fag-/rettsmerknad:** "+(r.guidance.legal_hr_note||"")+"\n\n";
     md+="**Første kilder:** "+JSON.stringify(r.guidance.evidence_sources||[])+"\n\n";
     md+="**Første proveniens:** "+JSON.stringify(r.guidance.source_provenance||null)+"\n\n";
+    md+="**Varsel om rettspåstander i første råd:** "+JSON.stringify(r.guidance.legal_claim_review||null)+"\n\n";
   }
   if(r.followup){
     md+="**Oppfølgingssvar:** "+(r.followup.reply||"")+"\n\n";
     md+="**Oppfølgingskilder:** "+JSON.stringify(r.followup.evidence_sources||[])+"\n\n";
     md+="**Oppfølgingsproveniens:** "+JSON.stringify(r.followup.source_provenance||null)+"\n\n";
+    md+="**Varsel om rettspåstander i oppfølging:** "+JSON.stringify(r.followup.legal_claim_review||null)+"\n\n";
   }
   md+="**Faglig fasit – manuelt:**\n";
   md+=tc.manualMust.map(x=>"- [ ] "+x).join("\n")+"\n\n";
