@@ -321,6 +321,14 @@ Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` for metode, funn, feilklassifis
 **Live-status 09.11.2026:** Den strenge 40-case occupation-golden-suiten er nå også kjørt lokalt mot `gpt-5.6-luna`: **40/40 OK, 0 Bør sjekkes, 0 kritiske avvik og 0 tekniske feil**. Resultatet er et dokumentert regressjonsresultat for disse casene, ikke en garanti for all framtidig modelloutput.
 
 
+### Påstandsvis kildekontroll etter ekte KI-test (PR #15)
+
+Den automatiske Quality Gate kontrollerer funksjon, kildekandidater, opphav og regresjoner, **ikke** om KI-rådenes konkrete juridiske utsagn er korrekte. En ekte akseptansetest skal produsere et **uutfylt** vurderingsskjema for fem anonymiserte saker i lokal `test-results/`. Kontrollør skal lese hele rådet og oppfølgingen, prøve alle kritiske fagkriterier og knytte hver konkret rettslig påstand til utdrag fra en originalkilde som faktisk ble vist i samme svar.
+
+Kjør formell kontroll av den ferdig utfylte vurderingen med `npm run check-source-acceptance-review -- <run.json> <manual-review.json>`. Et skjema som ikke er gjennomgått av en person får aldri godkjent resultat. Utfylling er heller ingen automatisk juridisk attest; en ansvarlig fagperson må vurdere om kontrollen er troverdig.
+
+Se [protokollen for manuell kildeakseptanse](docs/KILDEAKSEPTANSE-MANUELL-KONTROLL-2026-11-21.md). **Ekte fem-case KI-test og faglig gjennomgang er fremdeles ikke utført som del av PR #15.**
+
 ### Live KI-validering
 
 Live modelltesting er skilt fra vanlig CI og skal i dette prosjektet kjøres **lokalt** med API-nøkkel i en lokal `.env`-fil.
