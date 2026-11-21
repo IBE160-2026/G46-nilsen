@@ -42,6 +42,11 @@ export function shouldUseAgreementContext({ topic, subtopic, situation } = {}) {
   const fallbackText = topic || "";
   const allTerms = [...agreementTerms, ...agreementVaktTerms];
   if (concreteText.trim()) {
+    // "Har ikke fått utbetalt lønn" er en mulig avtalekonflikt,
+    // ikke en avkreftelse av at lønn er relevant. Falske positive må
+    // fortsatt fanges i regresjonene for "ikke snakk om lønn".
+    const payDispute = /\b(?:ikke|aldri)\s+(?:fått|fikk|mottatt|utbetalt)\b(?:\s+[a-z0-9æøå]+){0,5}\s+(?:lønn\w*|lonn\w*|overtid\w*|tillegg\w*|godtgjørelse\w*|godtgjorelse\w*)\b/iu;
+    if (payDispute.test(concreteText)) return true;
     return allTerms.some(term => containsNonNegatedContextTerm(concreteText, term));
   }
   return allTerms.some(term => containsNonNegatedContextTerm(fallbackText, term));
