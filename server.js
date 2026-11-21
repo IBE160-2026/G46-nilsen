@@ -8,7 +8,7 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { historyPayload, rowToHistory } from "./src/server/history-contracts.js";
-import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, dedupeEvidenceSources } from "./src/server/source-normalization.js";
+import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, selectVisibleCuratedSourceIds, dedupeEvidenceSources } from "./src/server/source-normalization.js";
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
@@ -1743,13 +1743,15 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const selectedSourceIds = (Array.isArray(parsed.source_ids) ? parsed.source_ids : [])
       .filter(id => allowedCandidateIds.has(id));
     const requiredPrimaryLawIds = requiredEmployerScopedPrimaryLawIds(relevantSources, employerType);
-    const finalSourceIds = retainCuratedSources
-      ? [...new Set([...requiredPrimaryLawIds, ...selectedSourceIds])].slice(0, 4)
-      : [];
+    const selection = selectVisibleCuratedSourceIds({
+      automaticIds: retainCuratedSources ? requiredPrimaryLawIds : [],
+      modelSelectedIds: retainCuratedSources ? selectedSourceIds : []
+    });
+    const finalSourceIds = selection.visibleIds;
     parsed.source_ids = finalSourceIds;
     // Skille mellom referanser KI faktisk valgte, systemets automatiske
     // lovpåminnelser og nettsøktreff. Ingen av disse er innholdsverifisert.
-    const curated = annotateCuratedEvidence(publicSources(finalSourceIds), selectedSourceIds);
+    const curated = annotateCuratedEvidence(publicSources(finalSourceIds), selection.visibleModelSelectedIds);
     const verifiedWebSources = webSources(response);
     const supplementary = annotateProviderEvidence(retainCuratedSources
       ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWebSources)
@@ -1760,7 +1762,7 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     );
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
-    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, source_provenance: evidenceProvenance(response, selectedSourceIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
+    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, source_provenance: evidenceProvenance(response, selection.visibleModelSelectedIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -1858,7 +1860,11 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     const scopedLaws = isLegalSourceContext(question)
       ? requiredEmployerScopedPrimaryLawIds(relevantSources, employerType)
       : [];
-    const finalIds = retainContinueSources ? [...new Set([...scopedLaws, ...selectedIds])].slice(0, 4) : [];
+    const continueSelection = selectVisibleCuratedSourceIds({
+      automaticIds: retainContinueSources ? scopedLaws : [],
+      modelSelectedIds: retainContinueSources ? selectedIds : []
+    });
+    const finalIds = continueSelection.visibleIds;
     const verifiedWeb = webSources(response);
     const supplementary = annotateProviderEvidence(retainContinueSources
       ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWeb)
@@ -1869,14 +1875,14 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
       retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : []
     );
     const evidenceSources = dedupeEvidenceSources([
-      ...annotateCuratedEvidence(publicSources(finalIds), selectedIds),
+      ...annotateCuratedEvidence(publicSources(finalIds), continueSelection.visibleModelSelectedIds),
       ...supplementary, ...citedInReply
     ]);
     return res.json({
       reply: stripInlineSourceLinks(parsed.reply),
       suggestions: parsed.suggestions.map(stripInlineSourceLinks),
       evidence_sources: evidenceSources,
-      source_provenance: evidenceProvenance(response, selectedIds, evidenceSources),
+      source_provenance: evidenceProvenance(response, continueSelection.visibleModelSelectedIds, evidenceSources),
       ai: true,
       model: responseModel(response)
     });
