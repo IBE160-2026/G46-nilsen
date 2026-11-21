@@ -1620,6 +1620,10 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
 
   const resolvedTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const resolvedSubtopic = analysis?.primary_subtopic || subtopic || "";
+  // Felles vurderingstidspunkt gjennom hele dette KI-kallet. Gjør at en
+  // kilde ikke kan være gjeldende i én ruting, men utløpt i en annen
+  // dersom et forespørselsløp treffer norsk midnatt.
+  const sourceAsOf = new Date();
   const occupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({
         occupation,
@@ -1628,11 +1632,12 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
         employerContext,
         topic: resolvedTopic,
         subtopic: resolvedSubtopic,
-        situation
+        situation,
+        asOf: sourceAsOf
       })
     : { enabled:false, prompt:"", occupation:null, agreement:null };
-  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic });
-  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType);
+  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic, asOf:sourceAsOf });
+  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType, sourceAsOf);
   const retainCuratedSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic,
@@ -1777,11 +1782,12 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   const continueTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const continueSubtopic = analysis?.primary_subtopic || subtopic || "";
   const continueSituation = joinSourceContext(situation, question);
+  const continueSourceAsOf = new Date();
   const continueOccupationContext = occupationContextEnabled
-    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation })
+    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf })
     : { prompt:"", occupation:null, agreement:null };
-  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic });
-  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType);
+  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic, asOf:continueSourceAsOf });
+  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType, continueSourceAsOf);
   const retainContinueSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic: continueTopic,
