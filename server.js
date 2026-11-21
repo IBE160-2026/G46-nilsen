@@ -16,7 +16,7 @@ import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
 import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
-import { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
+import { employerScopedPrimaryLawBonus, isLegalSourceContext, joinSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
@@ -1811,7 +1811,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   if (blockUnsafeAiText(res, [situation, question, ...flattenTextValues(followups)])) return;
   const continueTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const continueSubtopic = analysis?.primary_subtopic || subtopic || "";
-  const continueSituation = `${situation || ""} ${question || ""}`;
+  const continueSituation = joinSourceContext(situation, question);
   const continueOccupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation })
     : { prompt:"", occupation:null, agreement:null };
