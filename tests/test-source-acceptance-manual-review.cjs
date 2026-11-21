@@ -50,6 +50,8 @@ const assert=require("node:assert/strict");
     sourceUrl,
     sourceExcerpt:"Dette er en fiktiv kildepassasje på mer enn tjue tegn for å prøve kontrollen.",
     sourceCheckedAt:"2026-11-21",periodVerified:true,employerScopeVerified:true,
+    periodEvidence:"Kilden er manuelt kontrollert mot den aktuelle lovperioden for hendelsen.",
+    scopeEvidence:"Virksomhetens juridiske virkeområde er kontrollert opp mot den navngitte bestemmelsen.",
     verdict:"supported",reason:"Det siterte avsnittet er manuelt vurdert opp mot akkurat denne påstanden."
   }];
   assert.equal(judge(ready).state,"REVIEWED_OK",
@@ -74,6 +76,13 @@ const assert=require("node:assert/strict");
   const unverifiedPeriod=change(x=>{x.claims[0].periodVerified=false;});
   assert.equal(unverifiedPeriod.state,"PENDING_REVIEW");
   has(unverifiedPeriod,"kontroller dokumentperiode");
+
+  const noPeriodDetails=change(x=>{x.claims[0].periodEvidence="";});
+  assert.equal(noPeriodDetails.state,"PENDING_REVIEW");
+  has(noPeriodDetails,"dokumenter konkret avtale-/lovperiode");
+  const noScopeDetails=change(x=>{x.claims[0].scopeEvidence="";});
+  assert.equal(noScopeDetails.state,"PENDING_REVIEW");
+  has(noScopeDetails,"dokumenter konkret arbeidsgiver-/tariffdekning");
 
   const unclear=change(x=>{x.claims[0].verdict="unclear";});
   assert.equal(unclear.state,"REJECTED");
