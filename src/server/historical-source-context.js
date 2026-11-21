@@ -31,9 +31,14 @@ export function detectHistoricalSourceQuestion(textValue, asOf = new Date()) {
   // «For 2024» må kobles til et lønns-/rettighetsspørsmål. Opplysninger
   // som «ansatt siden 2024» eller «hendelsen var i 2024» alene er ikke nok.
   const periodAsked = years.some(year => new RegExp(
-    "\\b(?:for|i|fra)\\s+(?:året\\s+)?"+year+"\\b","u"
+    "\\bfor\\s+(?:året\\s+)?"+year+"\\b","u"
   ).test(text) && /\b(?:avtale|tariff|oppgjør|krav|utbetaling|etterbetaling|lønn)\b/iu.test(text));
-  if (!pastEntitlement.test(text) && !periodAsked) return null;
+  // «Krav fra 2024» er en sak om tidligere opptjening, mens
+  // «ansatt siden 2024» bare er bakgrunnsinformasjon.
+  const oldClaim = years.some(year => new RegExp(
+    "\\b(?:krav|lønn|overtid|tillegg|godtgjørelse)\\s+fra\\s+"+year+"\\b","u"
+  ).test(text));
+  if (!pastEntitlement.test(text) && !periodAsked && !oldClaim) return null;
   return { year: years.length === 1 ? years[0] : null, years };
 }
 
