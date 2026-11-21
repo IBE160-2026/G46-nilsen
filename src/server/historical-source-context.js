@@ -29,6 +29,10 @@ export function detectHistoricalSourceQuestion(textValue, asOf = new Date()) {
       .map(match => Number(match[0]))
       .filter(year => year < currentYear)
   )].sort((a,b)=>a-b);
+  // Et eksplisitt årstall for inneværende kalenderår er ikke det samme
+  // som et udatert historisk spørsmål. Vi kan ikke velge historiske
+  // tariffperioder ut fra et år som fortsatt løper.
+  if (!years.length && new RegExp("\\b"+currentYear+"\\b","u").test(text)) return null;
   // Et eksplisitt spørsmål om fortidige rettigheter uten årstall skal
   // fortsatt flagges; dato må avklares fremfor å velge dagens avtale.
   // «For 2024» må kobles til et lønns-/rettighetsspørsmål. Opplysninger
