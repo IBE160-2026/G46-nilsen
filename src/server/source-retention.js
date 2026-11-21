@@ -23,6 +23,22 @@ const concreteSourceTerms = [
 
 export const containsNonNegatedSourceTerm = containsNonNegatedContextTerm;
 
+/**
+ * Den nye bruker-ytringen må være en egen setningsdel. Bruk aldri kun
+ * mellomrom ved sammenføying: et tidligere "ingen trussel" må ikke
+ * negere en konkret trussel i et senere oppfølgingsspørsmål.
+ *
+ * Brukes kun til kontekstruting; den opprinnelige brukerbeskrivelsen
+ * og spørsmålet beholdes separat i prompten og i lagret historikk.
+ */
+export function joinSourceContext(situation = "", question = "") {
+  return [situation, question]
+    .map(value => typeof value === "string" ? value.trim() : "")
+    .filter(Boolean)
+    .join("\n");
+}
+
+
 export function shouldRetainCuratedSources({
   requestedTopic = "",
   resolvedTopic = "",
