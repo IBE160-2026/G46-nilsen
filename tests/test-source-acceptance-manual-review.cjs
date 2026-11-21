@@ -75,7 +75,7 @@ const assert=require("node:assert/strict");
 
   const unverifiedPeriod=change(x=>{x.claims[0].periodVerified=false;});
   assert.equal(unverifiedPeriod.state,"PENDING_REVIEW");
-  has(unverifiedPeriod,"kontroller dokumentperiode");
+  has(unverifiedPeriod,"dokumenter konkret avtale-/lovperiode");
 
   const noPeriodDetails=change(x=>{x.claims[0].periodEvidence="";});
   assert.equal(noPeriodDetails.state,"PENDING_REVIEW");
