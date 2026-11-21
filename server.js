@@ -12,6 +12,7 @@ import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceP
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { mergeGuidanceSourceCandidates } from "./src/server/source-merge.js";
+import { reviewLegalClaimSignals } from "./src/server/legal-claim-review.js";
 import { detectHistoricalSourceQuestion, isHistoricalAgreementCandidate, historicalSourceCaution } from "./src/server/historical-source-context.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
@@ -1733,8 +1734,9 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
       retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : []
     );
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
+    const legalClaimReview = reviewLegalClaimSignals([parsed.legal_hr_note], evidenceSources);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
-    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, source_provenance: evidenceProvenance(response, selection.visibleModelSelectedIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
+    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, legal_claim_review: legalClaimReview, source_provenance: evidenceProvenance(response, selection.visibleModelSelectedIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -1853,10 +1855,12 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
       ...annotateCuratedEvidence(publicSources(finalIds), continueSelection.visibleModelSelectedIds),
       ...supplementary, ...citedInReply
     ]);
+    const continueClaimReview = reviewLegalClaimSignals([parsed.reply], evidenceSources);
     return res.json({
       reply: stripInlineSourceLinks(parsed.reply),
       suggestions: parsed.suggestions.map(stripInlineSourceLinks),
       evidence_sources: evidenceSources,
+      legal_claim_review: continueClaimReview,
       source_provenance: evidenceProvenance(response, continueSelection.visibleModelSelectedIds, evidenceSources),
       ai: true,
       model: responseModel(response)
