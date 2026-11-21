@@ -10,6 +10,7 @@ const read = rel => JSON.parse(fs.readFileSync(path.join(root,rel),"utf8"));
 (async () => {
   const { sourceTier } = await import("../src/server/help-library.js");
   const { createRelevantSourceSelector } = await import("../src/server/source-ranking.js");
+  const { mergeGuidanceSourceCandidates } = await import("../src/server/source-merge.js");
   const { buildOccupationGuidanceContext } = await import("../src/server/occupation-context.js");
   const { getAgreementMap, shouldUseAgreementContext } = await import("../src/server/agreement-router.js");
   const { shouldRetainCuratedSources, isLegalSourceContext, joinSourceContext, employerScopedPrimaryLawBonus } = await import("../src/server/source-retention.js");
@@ -36,15 +37,9 @@ const read = rel => JSON.parse(fs.readFileSync(path.join(root,rel),"utf8"));
     const args = {occupation:tc.occupation,sectorId:tc.sectorId,employerType:tc.employerType,topic,subtopic,situation};
     const ctx = buildOccupationGuidanceContext(args);
     const general = selectRelevantSources({relevant_topics:[topic]},situation,args);
-    const prioritized = [];
-    if(ctx.occupation?.occupationRelevant)prioritized.push(...(ctx.occupation.legalSources||[]));
-    if(ctx.agreement?.relevant && !ctx.agreement?.needsEmployerType &&
-       ["state","municipal","health_enterprise"].includes(tc.employerType)){
-      for(const area of ctx.agreement.suggestions || [])prioritized.push(...(area.curatedSources||[]));
-    }
-    prioritized.push(...general);
-    const seen = new Set();
-    const merged = prioritized.filter(s=>s?.id && !seen.has(s.id) && seen.add(s.id)).slice(0,10);
+    // Del exakt samme funksjon som brukes i første- og oppfølgings-API.
+    // Ikke gjenskap sammenslåingen manuelt i denne akseptansetesten.
+    const merged = mergeGuidanceSourceCandidates(general,ctx,tc.employerType);
     const retained = shouldRetainCuratedSources({
       requestedTopic:tc.topicId,resolvedTopic:topic,subtopic,situation,
       employerType:tc.employerType,occupationContext:ctx
