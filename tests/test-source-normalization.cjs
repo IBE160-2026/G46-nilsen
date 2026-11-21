@@ -14,6 +14,34 @@ const verified=webSources(response);
 assert.equal(verified.size,1);
 assert.equal(verified.get("https://example.org/item").title,"Samme dokument");
 assert.equal(webSources({output:[]}).size,0);
+
+const failedSearchOutput = {output:[
+  {type:"web_search_call",status:"failed",action:{sources:[
+    {type:"url",url:"https://notchecked.example/claim",title:"Ufullført søk"}
+  ]}},
+  {type:"web_search_call",status:"in_progress",action:{sources:[
+    {type:"url",url:"https://notchecked.example/progress",title:"Pågående søk"}
+  ]}},
+  {type:"message",status:"in_progress",content:[{annotations:[
+    {type:"url_citation",url:"https://notchecked.example/citation",title:"Ikke ferdig"}
+  ]}]}
+]};
+assert.equal(webSources(failedSearchOutput).size,0,
+  "Feilede/pågående søk og ufullførte annotasjoner må aldri gi dokumenterte lenker");
+assert.deepEqual(evidenceProvenance(failedSearchOutput,[],[]),{
+  webSearchPerformed:false,providerUrlCount:0,selectedCuratedSourceCount:0,
+  scopeReferenceCount:0,visibleEvidenceCount:0,contentVerified:false
+},"Feilet/pågående søk må ikke merkes som utført og dokumentert");
+assert.equal(webSources({output:[
+  {type:"web_search_call",status:"completed",action:{sources:[{
+    type:"url",url:"https://verified.example/done",title:"Fullført"
+  }]}}
+]}).size,1,"Fullført søk må fortsatt kunne gi nettsøk-kilder");
+assert.equal(evidenceProvenance({output:[{
+  type:"web_search_call",status:"completed",action:{sources:[]}
+}]},[],[]).webSearchPerformed,true,
+  "Fullført, men resultatløst nettsøk må ikke feilrapporteres som feilet");
+
 assert.equal(webSources({output:[{type:"function_call",action:{sources:[
   {type:"url",url:"https://fabricated.example/authority",title:"Ikke nettsøk"}
 ]}}]}).size,0,
