@@ -16,6 +16,8 @@ const getFn=name=>{
 };
 const functions=[
   getFn("evidenceRoleLabel"),
+  getFn("normalizeLegalClaimReview"),
+  getFn("legalClaimReviewNote"),
   getFn("normalizeContinuationSources"),
   getFn("renderContinuationEvidence")
 ].join("\n");
@@ -23,7 +25,7 @@ const htmlEscape=s=>String(s).replace(/&/g,"&amp;").replace(/</g,"&lt;")
   .replace(/>/g,"&gt;").replace(/"/g,"&quot;").replace(/'/g,"&#39;");
 const ctx=vm.createContext({ URL,escapeHtml:htmlEscape });
 vm.runInContext(functions,ctx);
-const {evidenceRoleLabel,normalizeContinuationSources,renderContinuationEvidence}=ctx;
+const {evidenceRoleLabel,normalizeLegalClaimReview,legalClaimReviewNote,normalizeContinuationSources,renderContinuationEvidence}=ctx;
 const src=[
   {title:"Statsansatteloven",author:"Lovdata",url:"https://lovdata.no/lov/2017-06-16-67",evidenceRole:"scope_reference"},
   {title:"Arbeidsmiljøloven",author:"Lovdata",url:"https://lovdata.no/lov/2005-06-17-62",evidenceRole:"model_selected"},
@@ -55,4 +57,25 @@ assert(code.includes("Kilder til kontroll (ikke faktasjekket)"),
 assert(code.includes("source-verification-note") &&
   code.includes("Kilder å kontrollere:"),
   "Hovedrådet må vise tydelig forklaring av kildegrunnlagets begrensning");
+const unreviewed={
+  needsManualReview:true,possibleLegalClaimCount:1,claimToSourceChecked:false
+};
+assert.match(legalClaimReviewNote(unreviewed),/Kontroller rettslige påstander/);
+assert.match(renderContinuationEvidence([],unreviewed),/Kontroller rettslige påstander/,
+  "Også et oppfølgingssvar uten kilder må vise klar kildekontrolladvarsel");
+assert.match(renderContinuationEvidence(src,unreviewed),/Kontroller rettslige påstander/,
+  "Også et oppfølgingssvar MED kilder må vise samme forbehold");
+assert.equal(legalClaimReviewNote({needsManualReview:false}),"",
+  "Vanlig samtalestøtte skal ikke få ekstra alarmtekst");
+assert.equal(normalizeLegalClaimReview({needsManualReview:true,possibleLegalClaimCount:99,
+  claimToSourceChecked:true}).claimToSourceChecked,false,
+  "Ingen klientdata kan gjøre uverifisert kilde til faktasjekket");
+assert.equal(normalizeLegalClaimReview({needsManualReview:true,possibleLegalClaimCount:99})
+  .possibleLegalClaimCount,20,"Klienten skal beholde avgrensede metadatastørrelser");
+assert(code.includes("legalReviewNote + String(guidance.legal_hr_note"),
+  "Første råd må vise en eksplisitt varseltekst rett over faglig regelverk");
+assert(code.includes("setConversationTurnClaimReview(assistant, payload.legal_claim_review)") &&
+  code.includes("turn.claimReview = normalizeLegalClaimReview(") &&
+  code.includes("renderContinuationEvidence(turn.sources, turn.claimReview)"),
+  "Oppfølgingsvarsel skal lagres og vises igjen etter historikkinnlasting");
 console.log("KILDEPROVENIENS UI OK: modellvalgt, regeltilføyd, nettsøk, lagret historikk, utskrift og XSS; 0 KI-kall");
