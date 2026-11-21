@@ -1,6 +1,6 @@
 const assert = require("node:assert/strict");
 (async () => {
-const { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
+const { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, selectVisibleCuratedSourceIds, dedupeEvidenceSources } = await import("../src/server/source-normalization.js");
 assert.equal(normalizeSourceUrl("https://example.org/a?utm_source=x&b=2&utm_campaign=y#section"),"https://example.org/a?b=2");
 assert.equal(normalizeSourceUrl("not a web address"),"not a web address");
 const response = { output: [
@@ -77,6 +77,37 @@ assert.equal(cleanGuidance.supplementary_sources[0].url,"https://valid.example/l
 const stripped=stripInlineSourceLinks(message);
 assert.ok(!stripped.includes("](http"),"Lenker er ikke fjernet fra visningsteksten");
 assert.ok(stripped.includes("myndighetskilde"));
+const sourceCap = selectVisibleCuratedSourceIds({
+  automaticIds:["STATE_EMPLOYEE_ACT"],
+  modelSelectedIds:["AML_4_3_PSYKOSOSIALT","AT_MOBBING","AT_TRAKASSERING","NAV_SYKEFRAVAER_OPPFOLGING"]
+});
+assert.deepEqual(sourceCap.visibleIds,[
+  "STATE_EMPLOYEE_ACT","AML_4_3_PSYKOSOSIALT","AT_MOBBING","AT_TRAKASSERING"
+],"Auto-primærlov tar første kildeplass, med totalt fire synlige referanser");
+assert.deepEqual(sourceCap.visibleModelSelectedIds,[
+  "AML_4_3_PSYKOSOSIALT","AT_MOBBING","AT_TRAKASSERING"
+],"Modellvalgte kilde-ID-er som havner utenfor firegrensen må ikke telles");
+assert.deepEqual(sourceCap.omittedModelSelectedIds,["NAV_SYKEFRAVAER_OPPFOLGING"],
+  "Kilden som faktisk ble kuttet skal kunne påvises");
+assert.equal(evidenceProvenance({output:[]},sourceCap.visibleModelSelectedIds,
+  annotateCuratedEvidence(sourceCap.visibleIds,sourceCap.visibleModelSelectedIds)
+).selectedCuratedSourceCount,3,
+  "Proveniens skal telle TRE synlig modellvalgte kilder, ikke fire");
+const duplicateSelection=selectVisibleCuratedSourceIds({
+  automaticIds:["STATE_EMPLOYEE_ACT","STATE_EMPLOYEE_ACT"],
+  modelSelectedIds:["STATE_EMPLOYEE_ACT","AT_MOBBING","AT_MOBBING"],limit:4
+});
+assert.deepEqual(duplicateSelection.visibleIds,["STATE_EMPLOYEE_ACT","AT_MOBBING"],
+  "Doble lov-/modellreferanser må slås sammen uten å forbruke plasser");
+assert.deepEqual(duplicateSelection.visibleModelSelectedIds,
+  ["STATE_EMPLOYEE_ACT","AT_MOBBING"],
+  "KI-valgt lov skal regnes som KI-valgt når begge rutene valgte den");
+assert.deepEqual(selectVisibleCuratedSourceIds({automaticIds:["STATE_EMPLOYEE_ACT"],
+  modelSelectedIds:["AT_MOBBING"],limit:0}).visibleIds,[],
+  "Ingen kildeplass betyr ingen synlige kilder");
+assert.deepEqual(selectVisibleCuratedSourceIds({automaticIds:[],
+  modelSelectedIds:["AML_4_6_TILRETTELEGGING","AT_MOBBING"]}).omittedModelSelectedIds,[],
+  "Uten kildetak skal ingen KI-valgte referanser mangle");
 const modelAndScope=annotateCuratedEvidence([
  {id:"STATE_EMPLOYEE_ACT",url:"https://lovdata.no/statsansatte"},
  {id:"AML_4_6_TILRETTELEGGING",url:"https://lovdata.no/aml"}
