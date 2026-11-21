@@ -1639,8 +1639,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
         historicalReview
       })
     : { enabled:false, prompt:"", occupation:null, agreement:null };
-  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic, asOf:sourceAsOf });
-  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType, sourceAsOf);
+  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic, asOf:sourceAsOf, historicalReview });
+  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType, sourceAsOf, historicalReview);
   const retainCuratedSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic,
@@ -1791,8 +1791,8 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   const continueOccupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview })
     : { prompt:"", occupation:null, agreement:null };
-  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic, asOf:continueSourceAsOf });
-  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType, continueSourceAsOf);
+  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview });
+  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType, continueSourceAsOf, continueHistoricalReview);
   const retainContinueSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic: continueTopic,
