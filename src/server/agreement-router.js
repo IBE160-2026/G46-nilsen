@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import { containsNonNegatedContextTerm } from "./negation-context.js";
+import { isSourceValidOn } from "./source-validity.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -73,7 +74,8 @@ export function suggestAgreementAreas({
   employerContext,
   topic,
   subtopic,
-  situation
+  situation,
+  asOf = new Date()
 } = {}) {
   const relevant = shouldUseAgreementContext({ topic, subtopic, situation });
 
@@ -129,7 +131,14 @@ export function suggestAgreementAreas({
       if (employerText && (employerText.includes(n) || n.includes(employerText))) score += 4;
     }
 
-    suggestions.push({ ...area, score });
+    // Avtaleområdet kan være relevant selv når den sist registrerte
+    // avtalen er utløpt. Vis da området, men aldri den utløpte avtalen
+    // som om den fremdeles var en gjeldende kildekandidat.
+    suggestions.push({
+      ...area,
+      curatedSources: (area.curatedSources || []).filter(source => isSourceValidOn(source, asOf)),
+      score
+    });
   }
 
   suggestions.sort((a,b)=>b.score-a.score || a.label.localeCompare(b.label,"nb"));
