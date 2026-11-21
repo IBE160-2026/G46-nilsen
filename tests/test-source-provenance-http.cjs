@@ -23,6 +23,7 @@ const fakeProvider = http.createServer(async(req,res)=>{
   try { request = JSON.parse(raw); } catch { return reply(res,400,{error:{message:"Bad synthetic JSON"}}); }
   providerRequests.push(request);
   const simulateFailedSearch = raw.includes("simulert-feilet-nettsok");
+  const simulateSourceCap = raw.includes("simulert-kildetak");
   const continuation = request?.text?.format?.name === "samtalestotte_oppfolging";
   const modelContent = continuation
     ? {
@@ -45,6 +46,15 @@ const fakeProvider = http.createServer(async(req,res)=>{
           {title:"Oppdiktet lov",author:"Lovdata",year:"2026",type:"bindende lov",url:forgedUrl}
         ]
       };
+  if(simulateSourceCap){
+    const candidateIds=[...new Set(
+      [...String(request.instructions || "").matchAll(/"id":"([^"]+)"/g)]
+        .map(match=>match[1])
+    )].filter(id=>id!=="STATE_EMPLOYEE_ACT");
+    assert(candidateIds.length>=4,
+      "Syntetisk kombinasjon av statlig oppsigelse/fravær/advarsel må gi fire mulige KI-valgte kilde-ID-er");
+    modelContent.source_ids=candidateIds.slice(0,4);
+  }
   const text = JSON.stringify(modelContent);
   reply(res,200,{
     id:"resp_source_fake",object:"response",model:"gpt-5.6-luna",status:"completed",
@@ -195,8 +205,24 @@ function checkResult(result,label) {
     const followUpPrompt=providerRequests.at(-1).instructions;
     assert(followUpPrompt.includes('"id":"AT_VOLD_TRUSLER"'),
       "Ny oppfølgingsytring med faktisk trussel må tilby relevant myndighetskilde");
-    assert.equal(providerRequests.length,6,
-      "Alle seks API-kall må rutes til kun lokal falsk provider");
+    const capped=await call("/api/generate-guidance",{
+      situation:"Statlig oppsigelse med spørsmål om advarsel, mobbing, trakassering, sykefravær og tilrettelegging. simulert-kildetak",
+      analysis:{primary_topic:"Oppsigelse og avslutning av arbeidsforhold"},
+      followups:{},topicId:"Oppsigelse og avslutning av arbeidsforhold",
+      subtopic:"Oppsigelse",employerType:"state"
+    });
+    assert.equal(capped.source_ids.length,4,"API-kildegrensen skal være fire");
+    assert(capped.evidence_sources.some(x=>x.id==="STATE_EMPLOYEE_ACT" && x.evidenceRole==="scope_reference"),
+      "Automatisk statsansattelov skal merkes som kontrollreferanse");
+    const displayedSelected=capped.evidence_sources.filter(x=>x.evidenceRole==="model_selected");
+    assert.equal(displayedSelected.length,3,
+      "Med én automatisk lov skal bare tre av fire KI-valgte kilde-ID-er være synlige");
+    assert.equal(capped.source_provenance.selectedCuratedSourceCount,displayedSelected.length,
+      "API-et skal telle bare KI-valgte kilder som faktisk vises");
+    assert.equal(capped.source_provenance.scopeReferenceCount,1,
+      "Auto-lov skal telles separat fra KI-valgte kilder");
+    assert.equal(providerRequests.length,7,
+      "Alle sju API-kall må rutes til kun lokal falsk provider");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
