@@ -1,3 +1,5 @@
+import { isSourceValidOn } from "./source-validity.js";
+
 // Historiske arbeidsretts-/tariffspørsmål trenger dokumentasjon fra riktig
 // periode. Dette er en FORSIKTIGHETSSPERRE, ikke juridisk rekonstruksjon.
 // Ikke bruk et vilkårlig årstall (f.eks. ansettelsesår) som rettslig dato.
@@ -27,7 +29,8 @@ export function detectHistoricalSourceQuestion(textValue, asOf = new Date()) {
       .map(match => Number(match[0]))
       .filter(year => year < currentYear)
   )].sort((a,b)=>a-b);
-  if (!years.length) return null;
+  // Et eksplisitt spørsmål om fortidige rettigheter uten årstall skal
+  // fortsatt flagges; dato må avklares fremfor å velge dagens avtale.
   // «For 2024» må kobles til et lønns-/rettighetsspørsmål. Opplysninger
   // som «ansatt siden 2024» eller «hendelsen var i 2024» alene er ikke nok.
   const periodAsked = years.some(year => new RegExp(
@@ -44,20 +47,41 @@ export function detectHistoricalSourceQuestion(textValue, asOf = new Date()) {
 
 /** Ingen KI-kilde kan bevitne avtalevilkår før dens første gyldighetsår. */
 export function isHistoricalAgreementCandidate(source, review) {
-  if (!review || !Number.isInteger(review.year)) return true;
+  if (!review) return true;
   const role = source?.sourceTier || source?.sourceRole || source?.source_role;
   if (role !== "collective_agreement") return true;
+  // Ukjent/flere år eller udaterte avtaledokumenter gir ingen trygg
+  // periodekobling. Ikke foreslå en vilkårlig historisk tariffkilde.
+  if (!Number.isInteger(review.year)) return false;
   const from = source.validFrom || source.valid_from || null;
   const to = source.validTo || source.valid_to || null;
+  if (!dateValid(from) || !dateValid(to) || from > to) return false;
   const yearStart = review.year+"-01-01";
   const yearEnd = review.year+"-12-31";
-  return (!from || (dateValid(from) && from <= yearEnd)) &&
-    (!to || (dateValid(to) && to >= yearStart));
+  return from <= yearEnd && to >= yearStart;
+}
+
+/**
+ * For et EKSPLISITT historisk avtalespørsmål skal bare periodens
+ * dokumenterte, daterte tariffkilder vurderes. En arkivert avtale som
+ * var registrert gyldig i 2024 kan da vurderes som historisk kandidat
+ * selv om den ikke lenger er gjeldende i 2027.
+ *
+ * Ikke-kollektive kilder bruker fortsatt dagens gyldighet og må selv
+ * kildekontrolleres historisk før rettslige påstander fremsettes.
+ */
+export function isSourceValidForQuestion(source, asOf = new Date(), review = null) {
+  const role = source?.sourceTier || source?.sourceRole || source?.source_role;
+  if (review && role === "collective_agreement") {
+    return isHistoricalAgreementCandidate(source, review);
+  }
+  return isSourceValidOn(source, asOf);
 }
 
 export function historicalSourceCaution(review) {
   if (!review) return "";
-  const period = review.year === null ? "de nevnte tidligere årene" : String(review.year);
+  const period = review.year !== null ? String(review.year)
+    : (review.years?.length ? "de nevnte tidligere årene" : "en tidligere periode som ikke er datofestet");
   return [
     "## Historisk regelverk eller tariffperiode – særskilt kildeforbehold",
     "Brukeren spør om hva som gjaldt i "+period+".",
