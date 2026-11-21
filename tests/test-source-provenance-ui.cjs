@@ -72,6 +72,8 @@ assert.equal(normalizeLegalClaimReview({needsManualReview:true,possibleLegalClai
   "Ingen klientdata kan gjøre uverifisert kilde til faktasjekket");
 assert.equal(normalizeLegalClaimReview({needsManualReview:true,possibleLegalClaimCount:99})
   .possibleLegalClaimCount,20,"Klienten skal beholde avgrensede metadatastørrelser");
+assert(code.includes("intro.textContent = guidance.legal_claim_review?.needsManualReview"),
+  "Rettslig kontrollvarsel må også vises over alle sammenfoldede rådseksjoner");
 assert(code.includes("legalReviewNote + String(guidance.legal_hr_note"),
   "Første råd må vise en eksplisitt varseltekst rett over faglig regelverk");
 assert(code.includes("setConversationTurnClaimReview(assistant, payload.legal_claim_review)") &&
