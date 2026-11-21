@@ -1,6 +1,6 @@
 import fs from "node:fs";
 import { containsNonNegatedContextTerm } from "./negation-context.js";
-import { isSourceValidOn } from "./source-validity.js";
+import { isSourceValidForQuestion } from "./historical-source-context.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -75,7 +75,8 @@ export function suggestAgreementAreas({
   topic,
   subtopic,
   situation,
-  asOf = new Date()
+  asOf = new Date(),
+  historicalReview = null
 } = {}) {
   const relevant = shouldUseAgreementContext({ topic, subtopic, situation });
 
@@ -136,7 +137,7 @@ export function suggestAgreementAreas({
     // som om den fremdeles var en gjeldende kildekandidat.
     suggestions.push({
       ...area,
-      curatedSources: (area.curatedSources || []).filter(source => isSourceValidOn(source, asOf)),
+      curatedSources: (area.curatedSources || []).filter(source => isSourceValidForQuestion(source, asOf, historicalReview)),
       score
     });
   }
