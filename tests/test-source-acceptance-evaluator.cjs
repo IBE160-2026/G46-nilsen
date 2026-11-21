@@ -63,6 +63,12 @@ const assert=require("node:assert/strict");
   // usynlig model source_ids-liste.
   needs(judge(removed),"Ingen forhåndsvurdert relevant kilde","check displayed IDs only");
 
+  const onlyLater=clone(guidance);
+  onlyLater.evidence_sources=[];
+  onlyLater.source_provenance={...provenance,visibleEvidenceCount:0,selectedCuratedSourceCount:0};
+  needs(judge(onlyLater),"ikke vises i første råd",
+    "a later follow-up reference cannot retroactively prove first reply source ID");
+ 
   const duplicate=clone(guidance);
   duplicate.evidence_sources.push({...source,url:source.url+"?utm_source=test"});
   duplicate.source_provenance={...provenance,selectedCuratedSourceCount:2,visibleEvidenceCount:2};
