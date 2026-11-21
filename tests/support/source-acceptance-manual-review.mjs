@@ -131,8 +131,13 @@ export function evaluateManualSourceReview(tc, record, review) {
         if(!validDay(claim?.sourceCheckedAt)) {
           problems.push(c+": oppgi dato for faktisk kildekontroll");
         }
-        if(claim?.periodVerified!==true || claim?.employerScopeVerified!==true) {
-          problems.push(c+": kontroller dokumentperiode og arbeidsgiver-/tariffområde");
+        if(claim?.periodVerified!==true ||
+           shortText(claim?.periodEvidence).length<20) {
+          problems.push(c+": dokumenter konkret avtale-/lovperiode og gyldighetsgrunnlag");
+        }
+        if(claim?.employerScopeVerified!==true ||
+           shortText(claim?.scopeEvidence).length<20) {
+          problems.push(c+": dokumenter konkret arbeidsgiver-/tariffdekning");
         }
         if(shortText(claim?.reason).length<25) {
           problems.push(c+": dokumenter hvordan utdraget støtter eller avviser utsagnet");
