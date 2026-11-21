@@ -221,8 +221,41 @@ function checkResult(result,label) {
       "API-et skal telle bare KI-valgte kilder som faktisk vises");
     assert.equal(capped.source_provenance.scopeReferenceCount,1,
       "Auto-lov skal telles separat fra KI-valgte kilder");
-    assert.equal(providerRequests.length,7,
-      "Alle sju API-kall må rutes til kun lokal falsk provider");
+    // Historiske rettsspørsmål må ikke få 2026-tariff presentert som om
+    // dokumentet alene beviser hva som gjaldt for opptjening i 2024.
+    const historicalData={
+      situation:"Hvilken tariffavtale gjaldt for overtid i staten i 2024?",
+      analysis:{primary_topic:"Lønn og utvikling"},followups:{},
+      topicId:"Lønn og utvikling",subtopic:"Lønnsutvikling",employerType:"state"
+    };
+    await call("/api/generate-guidance",historicalData);
+    const historicalInstructions=providerRequests.at(-1).instructions;
+    assert(historicalInstructions.includes("Historisk regelverk eller tariffperiode"),
+      "Første råd om tidligere tariffperiode må kreve dokumentkontroll");
+    assert(historicalInstructions.includes("2024"),
+      "Historisk kildemodell må få riktig år å kontrollere");
+    assert(!historicalInstructions.includes('"id":"STATE_HTA_2026_2028"'),
+      "Hovedtariffavtale fra 2026 kan ikke tilbys som rettskilde for 2024");
+
+    const presentDayData={
+      ...historicalData,
+      situation:"En medarbeider ble ansatt i 2024 og ønsker lønnssamtale nå. Hvordan forbereder jeg den?"
+    };
+    const presentGuidance=await call("/api/generate-guidance",presentDayData);
+    const presentInstructions=providerRequests.at(-1).instructions;
+    assert(!presentInstructions.includes("Historisk regelverk eller tariffperiode"),
+      "Ansettelsesår i 2024 alene skal ikke gjøre dagens lønnssamtale til historisk tvist");
+    await call("/api/continue-conversation",{
+      ...presentDayData,guidance:presentGuidance,
+      question:"Hvilken tariffavtale gjaldt for overtid i 2024?"
+    });
+    const followHistoricalInstructions=providerRequests.at(-1).instructions;
+    assert(followHistoricalInstructions.includes("Historisk regelverk eller tariffperiode"),
+      "Nytt historisk spørsmål i oppfølging må få riktig kildeforbehold");
+    assert(!followHistoricalInstructions.includes('"id":"STATE_HTA_2026_2028"'),
+      "Historisk oppfølging må ikke få etterfølgende tariffavtale som kildekandidat");
+    assert.equal(providerRequests.length,10,
+      "Ti Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
