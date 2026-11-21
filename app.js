@@ -1614,7 +1614,9 @@ function renderAiGuidance(guidance) {
 
   applyGuidanceDisclosure();
   const intro = document.querySelector('#result-intro');
-  if (intro) intro.textContent = 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Sensitive eller formelle punkter bør kvalitetssikres mot relevante kilder, virksomhetens rutiner og riktig fagkompetanse før en endelig beslutning tas.';
+  if (intro) intro.textContent = guidance.legal_claim_review?.needsManualReview
+    ? 'KI-rådet kan inneholde konkrete rettslige påstander som IKKE er kontrollert mot originalkildene. Kontroller rettigheter, plikter, frister, riktig periode og tariffdekning før en beslutning tas.'
+    : 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Sensitive eller formelle punkter bør kvalitetssikres mot relevante kilder, virksomhetens rutiner og riktig fagkompetanse før en endelig beslutning tas.';
 }
 
 function renderAiSituationUnderstanding(analysis) {
