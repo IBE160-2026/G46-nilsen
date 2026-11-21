@@ -60,8 +60,12 @@ const assert=require("node:assert/strict");
   removed.source_provenance={...provenance,visibleEvidenceCount:0,selectedCuratedSourceCount:0};
   needs(judge(removed),"Kildekrevende situasjon","critical case cannot pass with empty evidence");
   // Ingen foretrukket kilde skal telle som brukt bare fordi den lå i en
-  // usynlig model source_ids-liste.
-  needs(judge(removed),"Ingen forhåndsvurdert relevant kilde","check displayed IDs only");
+  // usynlig model source_ids-liste; heller ikke i neste svar.
+  const removedFollowup=clone(followup);
+  removedFollowup.evidence_sources=[];
+  removedFollowup.source_provenance={...provenance,visibleEvidenceCount:0,selectedCuratedSourceCount:0};
+  needs(judge(removed,removedFollowup),"Ingen forhåndsvurdert relevant kilde",
+    "check displayed IDs in both responses only");
 
   const onlyLater=clone(guidance);
   onlyLater.evidence_sources=[];
