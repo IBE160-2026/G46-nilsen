@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import { containsNonNegatedContextTerm as containsNonNegatedTerm } from "./negation-context.js";
+import { isSourceValidOn } from "./source-validity.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -182,13 +183,14 @@ function contextMatchesSource(source, contextText) {
   });
 }
 
-export function selectLegalSources({ sectorId, occupation = "", employerType = "", topic, subtopic, situation, maxSources = 6 } = {}) {
+export function selectLegalSources({ sectorId, occupation = "", employerType = "", topic, subtopic, situation, maxSources = 6, asOf = new Date() } = {}) {
   if (!sectorId) return [];
   const contextText = [topic, subtopic, situation].filter(Boolean).join(" ");
   const occupationNeedle = normalize(occupation);
 
   return legalRegistry.sources
     .filter(source => {
+      if (!isSourceValidOn(source, asOf)) return false;
       const sectors = source.sectors || [];
       const appliesToSector = sectors.includes("*") || sectors.includes(sectorId);
       if (!appliesToSector) return false;
@@ -231,7 +233,7 @@ export function selectLegalSources({ sectorId, occupation = "", employerType = "
     .slice(0, Math.max(1, maxSources));
 }
 
-export function resolveOccupationContext({ occupation, sectorId, employerType = "", topic, subtopic, situation } = {}) {
+export function resolveOccupationContext({ occupation, sectorId, employerType = "", topic, subtopic, situation, asOf = new Date() } = {}) {
   let resolvedSectorId = sectorId || null;
   let classification = null;
 
@@ -259,7 +261,8 @@ export function resolveOccupationContext({ occupation, sectorId, employerType = 
         employerType,
         topic,
         subtopic,
-        situation
+        situation,
+        asOf
       })
     : [];
 
