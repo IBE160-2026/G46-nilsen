@@ -156,6 +156,10 @@ assert(styled.includes("dialog.image-preview-dialog .brand-logo-dialog-card img"
 assert(app.includes("readableSourceTier")&&app.includes("Hvorfor kilden er relevant"),"Kildebanken må forklare kildevalg og nivå");
 assert(app.includes('class="spoken-example"')&&styled.includes(".spoken-example"),"Muntlige formuleringer må ha egen visuell stil");
 assert(server.includes("evidence_sources: evidenceSources")&&server.includes("source_ids', 'supplementary_sources'"),"Oppfølging skal returnere strukturerte kilder");
-assert(app.includes("renderContinuationEvidence(verifiedSources)")&&app.includes("setConversationTurnSources"),"Oppfølgingskilder må vises og følge historikk");
+assert(app.includes("renderContinuationEvidence(verifiedSources, payload.legal_claim_review)") &&
+  app.includes("setConversationTurnSources") &&
+  app.includes("setConversationTurnClaimReview") &&
+  app.includes("renderContinuationEvidence(turn.sources, turn.claimReview)"),
+  "Oppfølgingskilder og manuelt rettspåstandsvarsel må vises og følge historikk");
 
 console.log(`Kildepolicy OK: ${sourceBank.sources.length} generelle · ${occupationBank.sources.length} arbeidsgiver/yrke · ${agreementSources.length} tariffkilder · ingen URL-duplikater`);
