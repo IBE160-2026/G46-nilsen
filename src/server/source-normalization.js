@@ -198,6 +198,30 @@ export function stripGuidanceInlineLinks(guidance = {}) {
  * Scope-kilder legges inn av appens egen regel for arbeidsgivertype,
  * og må derfor skilles fra source_ids modellen selv valgte.
  */
+/**
+ * Primærlov kan reserveres en av fire synlige kildeplasser.
+ * Returner derfor OGSÅ hvilke av modellens valgte ID-er som faktisk
+ * kom gjennom taket, slik at kildemerking og statistikk ikke overdriver.
+ * Ingen mutasjon og ingen validering av juridisk innhold.
+ */
+export function selectVisibleCuratedSourceIds({
+  automaticIds = [], modelSelectedIds = [], limit = 4
+} = {}) {
+  const unique = list => [...new Set(
+    (Array.isArray(list) ? list : []).filter(id => typeof id === "string" && id.trim())
+  )];
+  const prioritized = unique(automaticIds);
+  const model = unique(modelSelectedIds);
+  const max = Number.isInteger(limit) ? Math.max(0, limit) : 4;
+  const visibleIds = unique([...prioritized, ...model]).slice(0, max);
+  const visibleSet = new Set(visibleIds);
+  return {
+    visibleIds,
+    visibleModelSelectedIds: model.filter(id => visibleSet.has(id)),
+    omittedModelSelectedIds: model.filter(id => !visibleSet.has(id))
+  };
+}
+
 export function annotateCuratedEvidence(sources = [], modelSelectedIds = []) {
   const selected = new Set(Array.isArray(modelSelectedIds) ? modelSelectedIds : []);
   return (Array.isArray(sources) ? sources : []).map(source => ({
