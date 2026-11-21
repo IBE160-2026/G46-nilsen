@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import { containsNonNegatedContextTerm as containsNonNegatedTerm } from "./negation-context.js";
+import { isSourceValidOn } from "./source-validity.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -109,41 +111,22 @@ export function classifyOccupationLocally(value) {
   };
 }
 
-function containsNonNegatedTerm(textValue, termValue) {
-  const text = normalize(textValue);
-  const needle = normalize(termValue);
-  if (!text || !needle) return false;
-
-  let fromIndex = 0;
-  while (fromIndex < text.length) {
-    const index = text.indexOf(needle, fromIndex);
-    if (index < 0) return false;
-
-    const prefix = text.slice(Math.max(0, index - 150), index).trim();
-    const explicitlyAbsent =
-      /\buten(?:\s+at)?\b[^.!?;:]{0,120}$/u.test(prefix) ||
-      /\bingen(?:\s+(?:opplysning(?:er)?|tegn|konkret(?:e)?|aktuell(?:e)?))?\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bgjelder\s+ikke\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bgjelder\b[^.!?;:]{0,120}\bikke\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak)\b[^.!?;:]{0,120}$/u.test(prefix);
-
-    if (!explicitlyAbsent) return true;
-    fromIndex = index + needle.length;
-  }
-  return false;
-}
 
 export function shouldUseOccupationContext({ occupation, sectorId, topic, subtopic, situation } = {}) {
   if (!normalize(occupation) && !normalize(sectorId)) return false;
 
   const occupationNeedle = normalize(occupation);
   const situationText = normalize(situation);
-  const sanitizedSituation = occupationNeedle
-    ? situationText.replaceAll(occupationNeedle, " ").replace(/\s+/g, " ").trim()
-    : situationText;
+  // Behold setningsgrenser; ellers kan "ingen hendelse i går" avkrefte
+  // en ny sikkerhetshendelse i neste setning.
+  const sanitizedSituation = String(situation || "")
+    .split(/([.!?;:\n]+)/u)
+    .map(part => /^[.!?;:\n]+$/u.test(part)
+      ? part
+      : (occupationNeedle ? normalize(part).replaceAll(occupationNeedle, " ").trim() : normalize(part)))
+    .join("");
   const text = normalize([topic, subtopic, sanitizedSituation].filter(Boolean).join(" "));
-  const concreteText = normalize([subtopic, sanitizedSituation].filter(Boolean).join(" "));
+  const concreteText = [subtopic, sanitizedSituation].filter(Boolean).join(". ");
   if (!text) return false;
 
   // Hovedtemaet er en bred UI-kategori og skal ikke alene gjøre yrket relevant.
@@ -200,13 +183,14 @@ function contextMatchesSource(source, contextText) {
   });
 }
 
-export function selectLegalSources({ sectorId, occupation = "", employerType = "", topic, subtopic, situation, maxSources = 6 } = {}) {
+export function selectLegalSources({ sectorId, occupation = "", employerType = "", topic, subtopic, situation, maxSources = 6, asOf = new Date() } = {}) {
   if (!sectorId) return [];
   const contextText = [topic, subtopic, situation].filter(Boolean).join(" ");
   const occupationNeedle = normalize(occupation);
 
   return legalRegistry.sources
     .filter(source => {
+      if (!isSourceValidOn(source, asOf)) return false;
       const sectors = source.sectors || [];
       const appliesToSector = sectors.includes("*") || sectors.includes(sectorId);
       if (!appliesToSector) return false;
@@ -226,10 +210,14 @@ export function selectLegalSources({ sectorId, occupation = "", employerType = "
         if (!occupationMatch) return false;
       }
 
-      if (source.sourceRole === "authority_index") {
+      // I ordinære samarbeids- og utviklingssaker er yrkestittel alene
+      // ikke nok til å legge frem dyrevelferdslov, pasientregler o.l.
+      // Bare kilder med konkret matchende faglig brukssituasjon tilbys.
+      const neutralConversationTopic = generallyOccupationNeutralTopics.has(normalize(topic));
+      if (source.sourceRole === "authority_index" ||
+          source.contextualOnly || neutralConversationTopic) {
         return contextMatchesSource(source, contextText);
       }
-      if (source.contextualOnly) return contextMatchesSource(source, contextText);
       return true;
     })
     .map(source => {
@@ -245,7 +233,7 @@ export function selectLegalSources({ sectorId, occupation = "", employerType = "
     .slice(0, Math.max(1, maxSources));
 }
 
-export function resolveOccupationContext({ occupation, sectorId, employerType = "", topic, subtopic, situation } = {}) {
+export function resolveOccupationContext({ occupation, sectorId, employerType = "", topic, subtopic, situation, asOf = new Date() } = {}) {
   let resolvedSectorId = sectorId || null;
   let classification = null;
 
@@ -273,7 +261,8 @@ export function resolveOccupationContext({ occupation, sectorId, employerType = 
         employerType,
         topic,
         subtopic,
-        situation
+        situation,
+        asOf
       })
     : [];
 

@@ -3,6 +3,7 @@ import path from "node:path";
 import { fileURLToPath } from "node:url";
 import { resolveOccupationContext } from "./occupation-router.js";
 import { suggestAgreementAreas } from "./agreement-router.js";
+import { isHistoricalAgreementCandidate } from "./historical-source-context.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const knowledgeRoot = path.resolve(__dirname, "../../knowledge/sectors");
@@ -23,7 +24,9 @@ export function buildOccupationGuidanceContext({
   employerContext = "",
   topic = "",
   subtopic = "",
-  situation = ""
+  situation = "",
+  asOf = new Date(),
+  historicalReview = null
 } = {}) {
   const occupationResult = resolveOccupationContext({
     occupation,
@@ -31,17 +34,35 @@ export function buildOccupationGuidanceContext({
     employerType,
     topic,
     subtopic,
-    situation
+    situation,
+    asOf
   });
 
-  const agreementResult = suggestAgreementAreas({
+  let agreementResult = suggestAgreementAreas({
     occupation,
     employerType,
     employerContext,
     topic,
     subtopic,
-    situation
+    situation,
+    asOf,
+    historicalReview
   });
+
+  // En avtale som startet etter spørsmålets historiske år kan ikke brukes
+  // som kildekandidat i yrke-/avtaleprompten. Gjeldende kilde betyr
+  // ikke automatisk at historiske vilkår er verifisert.
+  if (historicalReview && agreementResult.suggestions?.length) {
+    agreementResult = {
+      ...agreementResult,
+      suggestions: agreementResult.suggestions.map(area => ({
+        ...area,
+        curatedSources: (area.curatedSources || []).filter(source =>
+          isHistoricalAgreementCandidate(source, historicalReview)
+        )
+      }))
+    };
+  }
 
   if (!occupationResult.selected) {
     if (!agreementResult.relevant) {

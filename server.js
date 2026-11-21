@@ -8,15 +8,18 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { historyPayload, rowToHistory } from "./src/server/history-contracts.js";
-import { normalizeSourceUrl, webSources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } from "./src/server/source-normalization.js";
+import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, selectVisibleCuratedSourceIds, dedupeEvidenceSources } from "./src/server/source-normalization.js";
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
+import { mergeGuidanceSourceCandidates } from "./src/server/source-merge.js";
+import { reviewLegalClaimSignals } from "./src/server/legal-claim-review.js";
+import { detectHistoricalSourceQuestion, isHistoricalAgreementCandidate, historicalSourceCaution } from "./src/server/historical-source-context.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
 import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
-import { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
+import { employerScopedPrimaryLawBonus, isLegalSourceContext, joinSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
@@ -312,6 +315,17 @@ async function createTrackedResponse(params) {
   try {
     const selectedClient = modelClient(modelUsed);
     if (!selectedClient) { const error=new Error(`API-nøkkel mangler for ${AI_MODELS[modelUsed]?.provider||'valgt provider'}.`); error.code='AI_PROVIDER_NOT_CONFIGURED'; throw error; }
+    // Standard Responses API utelater ellers søkets kildeobjekter i mange svar.
+    // Be eksplisitt om dem for web_search på OpenAI; ikke send provider-spesifikke
+    // include-felt til OpenRouter, der støtte ikke er garantert.
+    if (AI_MODELS[modelUsed]?.provider === "openai" &&
+        Array.isArray(cleanParams.tools) &&
+        cleanParams.tools.some(tool => tool?.type === "web_search")) {
+      cleanParams.include = [...new Set([
+        ...(Array.isArray(cleanParams.include) ? cleanParams.include : []),
+        "web_search_call.action.sources"
+      ])];
+    }
     const response = await selectedClient.responses.create({ ...cleanParams, model: modelUsed });
     const routedModel = AI_MODELS[modelUsed]?.provider === 'openrouter' ? String(response?.model || modelUsed) : modelUsed;
     const usageSummary = await logAiUsage({ functionName, modelUsed:routedModel, response, isTest, benchmarkRunId, benchmarkCaseId, topicId, subtopic });
@@ -1351,44 +1365,6 @@ const selectRelevantSources = createRelevantSourceSelector({
   employerScopedPrimaryLawBonus
 });
 
-function normalizeGuidanceCandidate(source = {}) {
-  if (!source?.id) return null;
-  return {
-    ...source,
-    sourceTier: source.sourceTier || sourceTier(source)
-  };
-}
-
-function mergeGuidanceSourceCandidates(generalSources = [], occupationContext = null, employerType = "") {
-  const prioritized = [];
-
-  if (occupationContext?.occupation?.occupationRelevant) {
-    prioritized.push(...(occupationContext.occupation.legalSources || []));
-  }
-
-  // For stat/kommune/helseforetak er arbeidsgivertypen tilstrekkelig konkret til
-  // å vise gjeldende avtaleområde som kandidat. Privat tariffdekning må fortsatt
-  // bekreftes og skal derfor ikke gjettes.
-  if (
-    occupationContext?.agreement?.relevant &&
-    !occupationContext?.agreement?.needsEmployerType &&
-    ["state","municipal","health_enterprise"].includes(employerType)
-  ) {
-    for (const area of occupationContext.agreement.suggestions || []) {
-      prioritized.push(...(area.curatedSources || []));
-    }
-  }
-
-  prioritized.push(...generalSources);
-
-  const seen = new Set();
-  return prioritized
-    .map(normalizeGuidanceCandidate)
-    .filter(Boolean)
-    .filter(source => source.id && !seen.has(source.id) && seen.add(source.id))
-    .slice(0, 10);
-}
-
 function publicSources(ids = []) {
   const wanted = new Set(ids);
   return [...wanted].map(id => allCuratedSourceById.get(id)).filter(Boolean).map(source => ({
@@ -1646,6 +1622,11 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
 
   const resolvedTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const resolvedSubtopic = analysis?.primary_subtopic || subtopic || "";
+  // Felles vurderingstidspunkt gjennom hele dette KI-kallet. Gjør at en
+  // kilde ikke kan være gjeldende i én ruting, men utløpt i en annen
+  // dersom et forespørselsløp treffer norsk midnatt.
+  const sourceAsOf = new Date();
+  const historicalReview = detectHistoricalSourceQuestion(situation, sourceAsOf);
   const occupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({
         occupation,
@@ -1654,11 +1635,13 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
         employerContext,
         topic: resolvedTopic,
         subtopic: resolvedSubtopic,
-        situation
+        situation,
+        asOf: sourceAsOf,
+        historicalReview
       })
     : { enabled:false, prompt:"", occupation:null, agreement:null };
-  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic });
-  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType);
+  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic, asOf:sourceAsOf, historicalReview });
+  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType, sourceAsOf, historicalReview);
   const retainCuratedSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic,
@@ -1667,7 +1650,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
     employerType,
     occupationContext
   });
-  const relevantSources = retainCuratedSources ? mergedRelevantSources : [];
+  const relevantSources = retainCuratedSources
+    ? mergedRelevantSources.filter(source => isHistoricalAgreementCandidate(source, historicalReview)) : [];
   const occupationPrompt = occupationContext?.prompt ? "\n\n" + occupationContext.prompt + "\n" : "";
   const sourceSelectionHint = retainCuratedSources
     ? "Denne saken har et konkret faglig, rettslig, tariffmessig eller sikkerhetsmessig kildebehov. Prioriter den mest spesifikke relevante lov-, myndighets-, yrkes- eller avtale-kilden foran brede forsknings-/HR-kilder."
@@ -1716,7 +1700,7 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const response = await createTrackedResponse({
       _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)], _privacyNameOverrides:privacyNameOverrides, _isTest:adminPilotTest,
       tools: [{ type: "web_search", search_context_size: "low" }],
-      instructions: systemPrompt + guidanceTask,
+      instructions: systemPrompt + guidanceTask + (historicalReview ? "\n\n" + historicalSourceCaution(historicalReview) : ""),
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
       text: {
         format: {
@@ -1732,22 +1716,34 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const selectedSourceIds = (Array.isArray(parsed.source_ids) ? parsed.source_ids : [])
       .filter(id => allowedCandidateIds.has(id));
     const requiredPrimaryLawIds = requiredEmployerScopedPrimaryLawIds(relevantSources, employerType);
-    const finalSourceIds = retainCuratedSources
-      ? [...new Set([...requiredPrimaryLawIds, ...selectedSourceIds])].slice(0, 4)
-      : [];
+    const selection = selectVisibleCuratedSourceIds({
+      automaticIds: retainCuratedSources ? requiredPrimaryLawIds : [],
+      modelSelectedIds: retainCuratedSources ? selectedSourceIds : []
+    });
+    const finalSourceIds = selection.visibleIds;
     parsed.source_ids = finalSourceIds;
-    const curated = publicSources(finalSourceIds);
+    // Skille mellom referanser KI faktisk valgte, systemets automatiske
+    // lovpåminnelser og nettsøktreff. Ingen av disse er innholdsverifisert.
+    const curated = annotateCuratedEvidence(publicSources(finalSourceIds), selection.visibleModelSelectedIds);
     const verifiedWebSources = webSources(response);
-    const supplementary = retainCuratedSources
-      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
-          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
-          .filter(source => source?.url && verifiedWebSources.has(source.url))
-      : [];
+    const supplementary = annotateProviderEvidence(retainCuratedSources
+      ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWebSources)
+      : []);
     parsed.supplementary_sources = supplementary;
-    const citedInLegalNote = retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : [];
+    const citedInLegalNote = annotateProviderEvidence(
+      retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : []
+    );
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
+    const legalClaimReview = reviewLegalClaimSignals([
+      parsed.opening, parsed.legal_hr_note,
+      ...(parsed.questions || []), ...(parsed.attention || []),
+      ...(parsed.check_before_meeting || []), ...(parsed.next_steps || []),
+      ...(parsed.reactions || []).flatMap(item =>
+        [item.reaction, item.why_plausible, item.leader_response]
+      )
+    ], evidenceSources);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
-    return res.json({ ...parsed, legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
+    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, legal_claim_review: legalClaimReview, source_provenance: evidenceProvenance(response, selection.visibleModelSelectedIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -1798,12 +1794,14 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   if (blockUnsafeAiText(res, [situation, question, ...flattenTextValues(followups)])) return;
   const continueTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const continueSubtopic = analysis?.primary_subtopic || subtopic || "";
-  const continueSituation = `${situation || ""} ${question || ""}`;
+  const continueSituation = joinSourceContext(situation, question);
+  const continueSourceAsOf = new Date();
+  const continueHistoricalReview = detectHistoricalSourceQuestion(question, continueSourceAsOf);
   const continueOccupationContext = occupationContextEnabled
-    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation })
+    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview })
     : { prompt:"", occupation:null, agreement:null };
-  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic });
-  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType);
+  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview });
+  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType, continueSourceAsOf, continueHistoricalReview);
   const retainContinueSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic: continueTopic,
@@ -1812,7 +1810,8 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     employerType,
     occupationContext: continueOccupationContext
   });
-  const relevantSources = retainContinueSources ? mergedContinueSources : [];
+  const relevantSources = retainContinueSources
+    ? mergedContinueSources.filter(source => isHistoricalAgreementCandidate(source, continueHistoricalReview)) : [];
   const continueOccupationPrompt = continueOccupationContext?.prompt ? "\n\n" + continueOccupationContext.prompt + "\n" : "";
   const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.\n- Hvis fagbanken er tilstrekkelig, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridiske, arbeidsrettslige eller andre etterprøvbare faglige påstander: velg 1–4 presise kilde-ID-er fra "Relevante kilder i fagbanken" og legg dem i source_ids. Ikke finn på kilder eller kilde-ID-er.\n- supplementary_sources skal bare inneholde inntil 2 kilder du faktisk har funnet gjennom nettsøk. Ikke konstruer URL-er, forfattere eller kildetitler.\n- Hvis saken ikke krever konkret kilde, returner tomme lister i source_ids og supplementary_sources.\n- Ikke legg rå URL-er eller Markdown-lenker i reply. Kilder skal ligge i source_ids/supplementary_sources og presenteres separat i grensesnittet.\n- Hold svaret kort, direkte og situasjonsnært.
 - Svar på akkurat spørsmålet som ble stilt; ikke skriv hovedveiledningen på nytt.
@@ -1828,7 +1827,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     const response = await createTrackedResponse({
       _functionName:'oppfolging', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, question, ...flattenTextValues(followups)],
       tools: [{ type: "web_search", search_context_size: "low" }],
-      instructions: systemPrompt + continueTask,
+      instructions: systemPrompt + continueTask + (continueHistoricalReview ? "\n\n" + historicalSourceCaution(continueHistoricalReview) : ""),
       input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }],
       text: {
         format: {
@@ -1845,24 +1844,31 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     const scopedLaws = isLegalSourceContext(question)
       ? requiredEmployerScopedPrimaryLawIds(relevantSources, employerType)
       : [];
-    const finalIds = retainContinueSources ? [...new Set([...scopedLaws, ...selectedIds])].slice(0, 4) : [];
+    const continueSelection = selectVisibleCuratedSourceIds({
+      automaticIds: retainContinueSources ? scopedLaws : [],
+      modelSelectedIds: retainContinueSources ? selectedIds : []
+    });
+    const finalIds = continueSelection.visibleIds;
     const verifiedWeb = webSources(response);
-    const supplementary = retainContinueSources
-      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
-          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
-          .filter(source => source.url && verifiedWeb.has(source.url))
-          .slice(0, 2)
-      : [];
-    // Bare kilde-ID-er fra vår kildebank og lenker bekreftet av faktisk nettsøk.
-    // Modellens eventuelle lenker i svarteksten kan være uriktige og vises ikke som dokumentasjon.
-    const citedInReply = retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : [];
+    const supplementary = annotateProviderEvidence(retainContinueSources
+      ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWeb)
+      : []);
+    // Kildetype her er PROVENIENS, ikke faglig godkjenning. En lovkilde som
+    // systemet tilføyer automatisk må ikke se ut som en modellvalgt henvisning.
+    const citedInReply = annotateProviderEvidence(
+      retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : []
+    );
     const evidenceSources = dedupeEvidenceSources([
-      ...publicSources(finalIds), ...supplementary, ...citedInReply
+      ...annotateCuratedEvidence(publicSources(finalIds), continueSelection.visibleModelSelectedIds),
+      ...supplementary, ...citedInReply
     ]);
+    const continueClaimReview = reviewLegalClaimSignals([parsed.reply], evidenceSources);
     return res.json({
       reply: stripInlineSourceLinks(parsed.reply),
-      suggestions: parsed.suggestions,
+      suggestions: parsed.suggestions.map(stripInlineSourceLinks),
       evidence_sources: evidenceSources,
+      legal_claim_review: continueClaimReview,
+      source_provenance: evidenceProvenance(response, continueSelection.visibleModelSelectedIds, evidenceSources),
       ai: true,
       model: responseModel(response)
     });

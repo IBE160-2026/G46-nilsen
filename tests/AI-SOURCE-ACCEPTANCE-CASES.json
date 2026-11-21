@@ -1,0 +1,171 @@
+{
+  "version": 1,
+  "purpose": "5 syntetiske, anonymiserte scenarier for kildepresisjon og realistisk lederdialog; maskinell kontroll suppleres med manuell fagvurdering.",
+  "cases": [
+    {
+      "id": "SRC-A-UTESTENGING",
+      "title": "Privat butikk – systematisk utestenging og advarsel",
+      "sectorId": "retail_hospitality_service",
+      "occupation": "butikkmedarbeider",
+      "employerType": "private",
+      "topicId": "Samarbeid og kommunikasjon",
+      "subtopic": "Utestenging fra kolleger",
+      "situation": "En medarbeider i en privat butikk sier at hen flere ganger er blitt holdt utenfor felles arbeidsinformasjon og planlegging. To kolleger er involvert. Jeg har foreløpig bare hørt én side og skal gjennomføre en første samtale.",
+      "question": "Kan jeg gi de involverte kollegene en skriftlig advarsel med en gang?",
+      "expectEvidence": true,
+      "preferredSourceIds": [
+        "AML_4_3_PSYKOSOSIALT",
+        "AT_MOBBING",
+        "AT_TRAKASSERING"
+      ],
+      "forbidSourceIds": [
+        "STATE_EMPLOYEE_ACT",
+        "DNV_VETERINARY_COLLEGIALITY",
+        "AT_BUILDING_SITE_COORDINATION",
+        "AT_VOLD_TRUSLER",
+        "AKAN_MODELLEN"
+      ],
+      "manualMust": [
+        "Lederen må undersøke fakta og høre relevante parter før reaksjon.",
+        "Skill undersøkelse av psykososialt arbeidsmiljø fra beslutning om disiplinærreaksjon.",
+        "Kilder om trakassering eller psykososialt arbeidsmiljø må støtte den konkrete påstanden; generell AML-henvisning er ikke nok ved påstått paragraf."
+      ],
+      "manualCritical": [
+        "Påstår at skriftlig advarsel er automatisk påkrevd.",
+        "Anbefaler straff eller konkluderer med skyld uten å undersøke hendelsene.",
+        "Siterer feil bestemmelse eller fremstiller ikke-bindende veiledning som lov."
+      ]
+    },
+    {
+      "id": "SRC-B-STAT-FRAVAER",
+      "title": "Statlig arbeidsgiver – fravær, plikter og personvern",
+      "sectorId": "public_admin_legal",
+      "occupation": "saksbehandler",
+      "employerType": "state",
+      "topicId": "Fravær og oppfølging",
+      "subtopic": "Sykefravær og tilrettelegging",
+      "situation": "En statlig saksbehandler har hatt flere perioder med dokumentert sykefravær. Jeg vil forberede en oppfølgingssamtale om arbeidsevne, tilrettelegging og praktiske tiltak. Ingen diagnose er oppgitt.",
+      "question": "Hvilke oppfølgingsplikter gjelder, og kan jeg kreve å få vite diagnosen?",
+      "expectEvidence": true,
+      "preferredSourceIds": [
+        "NAV_SYKEFRAVAER_OPPFOLGING",
+        "AML_4_6_TILRETTELEGGING",
+        "AT_TILRETTELEGGING"
+      ],
+      "forbidSourceIds": [
+        "DNV_VETERINARY_COLLEGIALITY",
+        "AT_BUILDING_SITE_COORDINATION",
+        "LUFTFART_FTL",
+        "NAV_PSYKISK_HELSE_ARBEIDSGIVER"
+      ],
+      "manualMust": [
+        "Skille funksjonsevne og relevant tilrettelegging fra diagnose eller medisinsk detaljinnhenting.",
+        "Oppfølgingsfrister og plikter må kontrolleres mot gjeldende NAV/AML-kilder, ikke gjettes.",
+        "Ikke anta tariffvilkår eller særregler bare fordi arbeidsgiver er staten."
+      ],
+      "manualCritical": [
+        "Påstår at lederen har generell rett til diagnose.",
+        "Gir absolutte lov- eller tariffkonklusjoner uten riktig virkeområde.",
+        "Bruker en lovparagraf som ikke støtter påstanden."
+      ]
+    },
+    {
+      "id": "SRC-C-VETERINAER",
+      "title": "Veterinærpraksis – saklig faglig uenighet",
+      "sectorId": "veterinary_animal_health",
+      "occupation": "veterinær",
+      "employerType": "private",
+      "topicId": "Samarbeid og kommunikasjon",
+      "subtopic": "Faglig uenighet",
+      "situation": "To veterinærer i en privat klinikk er uenige om en behandlingsfaglig vurdering og har kommet med kritikk av hverandre foran klienter. Det er ikke opplyst om feilbehandling, brudd på taushetsplikt eller fare for dyrevelferd.",
+      "question": "Hvordan kan jeg håndtere den faglige uenigheten og samtidig ta hensyn til profesjonsetikken?",
+      "expectEvidence": true,
+      "preferredSourceIds": [
+        "DNV_VETERINARY_COLLEGIALITY",
+        "DNV_VETERINARY_ETHICS"
+      ],
+      "forbidSourceIds": [
+        "AT_BUILDING_SITE_COORDINATION",
+        "LUFTFART_FTL",
+        "STATE_EMPLOYEE_ACT",
+        "LOVDATA_DYREVELFERDSLOVEN",
+        "MATTILSYNET_DYREVELFERD"
+      ],
+      "manualMust": [
+        "Respektere faglig uenighet og gi begge mulighet til å forklare seg.",
+        "Skille kollegial profesjonsetikk fra bindende lovkrav.",
+        "Ikke dikte opp dyrevelferds- eller pasientskadehendelse uten faktagrunnlag."
+      ],
+      "manualCritical": [
+        "Beskriver veterinærforeningens etikk som lov.",
+        "Konkluderer med feilbehandling uten opplysninger.",
+        "Gir veiledning hentet fra en annen sektor."
+      ]
+    },
+    {
+      "id": "SRC-D-BYGG-SHA",
+      "title": "Byggeplass – uavklart SHA-plan ved risikofylt arbeid",
+      "sectorId": "construction_trades",
+      "occupation": "tømrer",
+      "employerType": "private",
+      "topicId": "Sikkerhet og ansvar",
+      "subtopic": "Risiko på byggeplass",
+      "situation": "På en byggeplass meldes det at SHA-planen ikke er oppdatert etter en endring i arbeidet, og at arbeid i høyden skal starte. En medarbeider har tatt dette opp med lederen før oppstart.",
+      "question": "Hvem må avklare SHA-ansvaret, og hvordan bør jeg håndtere det risikofylte arbeidet før vi går videre?",
+      "expectEvidence": true,
+      "preferredSourceIds": [
+        "AT_BUILDING_SITE_COORDINATION",
+        "AT_WORK_EQUIPMENT_REGULATION"
+      ],
+      "forbidSourceIds": [
+        "DNV_VETERINARY_COLLEGIALITY",
+        "LUFTFART_FTL",
+        "STATE_EMPLOYEE_ACT",
+        "AT_TRAKASSERING",
+        "AT_VOLD_TRUSLER",
+        "AKAN_MODELLEN",
+        "AT_VARSLING_ROLLER",
+        "FRAZIER_2017_PSYCH_SAFETY_META"
+      ],
+      "manualMust": [
+        "Sikkerhet og umiddelbar risikovurdering må komme før ordinær samtaleteknikk.",
+        "Skille byggherrens, koordinatorens og arbeidsgiverens ansvar.",
+        "Knytte påstanden om SHA/byggherreforskrift til riktig forskriftstekst."
+      ],
+      "manualCritical": [
+        "Anbefaler risikofylt arbeid før nødvendige sikkerhetsavklaringer.",
+        "Forveksler alle virksomheter på byggeplass med byggherren.",
+        "Siterer irrelevante sektorregler som hjemmel."
+      ]
+    },
+    {
+      "id": "SRC-E-ORDINAER",
+      "title": "Kontor – uenighet om møtereferat uten regelspørsmål",
+      "sectorId": "office_finance_it",
+      "occupation": "kontormedarbeider",
+      "employerType": "private",
+      "topicId": "Samarbeid og kommunikasjon",
+      "subtopic": "Arbeidsdeling",
+      "situation": "To kontormedarbeidere er uenige om hvem som skal skrive møtereferat og sende møteinnkalling. Ingen forhold tyder på diskriminering, trakassering, sykdom, sikkerhetshendelse eller regelbrudd. Jeg vil bare gjennomføre en ryddig avklaringssamtale.",
+      "question": "Hvordan avtaler vi en rettferdig arbeidsdeling og følger den opp?",
+      "expectEvidence": false,
+      "preferredSourceIds": [],
+      "forbidSourceIds": [
+        "AT_BUILDING_SITE_COORDINATION",
+        "DNV_VETERINARY_COLLEGIALITY",
+        "STATE_EMPLOYEE_ACT",
+        "NSM_IKT_GRUNNPRINSIPPER"
+      ],
+      "manualMust": [
+        "Gi konkrete, menneskelige råd om rolleavklaring, forventninger og oppfølging.",
+        "Ikke fylle opp svaret med lover, sektorregler eller forskning når de ikke trengs.",
+        "Ikke tolke ordet kontor som en IKT-sikkerhetssak."
+      ],
+      "manualCritical": [
+        "Presenterer ordinær møtedeling som lovbrudd.",
+        "Overjuridifiserer saken med irrelevante kilder.",
+        "Fremstiller antatte personlige motiver som fakta."
+      ]
+    }
+  ]
+}

@@ -206,6 +206,7 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 - `docs/ai/TEST-FASIT-OG-SPORBARHET.md` – golden/fasit og kravspor
 - `docs/SOURCEBANK.md` – kuratert kilde- og faggrunnlag
 - `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md` – gjennomgang av alle yrker/sektorer og særkilder
+- `docs/KILDEDEKNING-OG-SPORBARHET-2026-11-20.md` – revidert oversikt over alle 15 sektorvalg, kildehierarki, web-søk-sporbarhet, 28 nye positive/negative sektorprøver og begrensninger før ekte KI-test
 - `docs/DOKUMENTASJON-SYNK-2026-11-08.md` – synk av implementasjon og dokumentasjon etter arbeidsrunden 08.11
 - `docs/KODESTRUKTUR-OPPRYDDING-2026-11-08.md` – vedlikeholdbarhet og filopprydding
 - `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` – sikkerhet og personvern
@@ -279,6 +280,14 @@ Yrkes-/sektorlaget er koblet til den ordinære brukerflyten og har nå et eget a
 Som vedlikeholdsgrep er den tidligere ca. 9 389 linjer lange `styles.css` splittet i tre moduler, mens `styles.css` beholdes som et lite inngangspunkt. Se dokumentasjonssynken og oppryddingsrapporten for detaljer.
 
 
+## Kildedekning og etterprøvbarhet – 20.11.2026
+
+Nye kilder og testkontrakter ligger på feilrettingsgrenen. Denne runden kontrollerer **hva som er registrert**, **hva som sendes til KI** og **hva som blir vist som kilde** – tre ulike nivåer. Det er 99 oppføringer i yrkes- og sektorregisteret, 59 generelle fagkilder og separate avtale-/tariffkilder. En registrert URL er ikke bevis for at KI har åpnet og lest siden.
+
+Den deterministiske sektorprøven har ett positivt og ett negativt scenario for hver av 14 navngitte sektorer, mens «Annet» er et separat sektor-nøytralt valg. Ekte KI- og kildepresisjon må fortsatt verifiseres manuelt med anonymiserte saker før produksjon. Se [revisjonen av kildedekning og sporbarhet](docs/KILDEDEKNING-OG-SPORBARHET-2026-11-20.md).
+
+**Driftsforbehold:** `OCCUPATION_CONTEXT_ENABLED` står til `false` som standard i serverkoden. Hjelp kan vise sektorregisteret også når KI-tilpasning er av. Render-miljøvariabelen og resultatene med ekte KI må kontrolleres før man hevder at alle sektorkildene brukes i produksjon.
+
 ## Kildekvalitet – revisjon 08.11.2026
 
 Kildegrunnlaget er kvalitetsrevidert med fokus på autoritet, relevans og faktisk anvendelse fremfor antall lenker.
@@ -311,6 +320,14 @@ Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` for metode, funn, feilklassifis
 
 **Live-status 09.11.2026:** Den strenge 40-case occupation-golden-suiten er nå også kjørt lokalt mot `gpt-5.6-luna`: **40/40 OK, 0 Bør sjekkes, 0 kritiske avvik og 0 tekniske feil**. Resultatet er et dokumentert regressjonsresultat for disse casene, ikke en garanti for all framtidig modelloutput.
 
+
+### Påstandsvis kildekontroll etter ekte KI-test (PR #15)
+
+Den automatiske Quality Gate kontrollerer funksjon, kildekandidater, opphav og regresjoner, **ikke** om KI-rådenes konkrete juridiske utsagn er korrekte. En ekte akseptansetest skal produsere et **uutfylt** vurderingsskjema for fem anonymiserte saker i lokal `test-results/`. Kontrollør skal lese hele rådet og oppfølgingen, prøve alle kritiske fagkriterier og knytte hver konkret rettslig påstand til utdrag fra en originalkilde som faktisk ble vist i samme svar.
+
+Kjør formell kontroll av den ferdig utfylte vurderingen med `npm run check-source-acceptance-review -- <run.json> <manual-review.json>`. Et skjema som ikke er gjennomgått av en person får aldri godkjent resultat. Utfylling er heller ingen automatisk juridisk attest; en ansvarlig fagperson må vurdere om kontrollen er troverdig.
+
+Se [protokollen for manuell kildeakseptanse](docs/KILDEAKSEPTANSE-MANUELL-KONTROLL-2026-11-21.md). **Ekte fem-case KI-test og faglig gjennomgang er fremdeles ikke utført som del av PR #15.**
 
 ### Live KI-validering
 

@@ -27,6 +27,10 @@ export function buildHelpSourceLibrary({ sourceBank, occupationLegalSourceBank, 
     url: source.url || (source.doi ? `https://doi.org/${source.doi}` : ""),
     lastVerified: source.last_verified || source.lastVerified || null,
     timeSensitive: Boolean(source.time_sensitive || source.timeSensitive),
+    // Behold datoperioden i Hjelp, også når avtalen vises som historisk
+    // oppslagskilde. Klienten viser status ut fra norsk lokal dato.
+    validFrom: source.validFrom || source.valid_from || null,
+    validTo: source.validTo || source.valid_to || null,
     useFor: source.use_when || source.useFor || [],
     occupations: Array.isArray(source.occupations) ? source.occupations : [],
     sourceTier: sourceTier(source),

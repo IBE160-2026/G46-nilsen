@@ -1,3 +1,5 @@
+import { containsNonNegatedContextTerm } from "./negation-context.js";
+
 const normalize = value => String(value || "")
   .toLocaleLowerCase("nb-NO")
   .normalize("NFD")
@@ -19,29 +21,23 @@ const concreteSourceTerms = [
   "arbeidsmiljøloven", "juridisk", "utesteng", "utfrys", "holdt utenfor", "holdes utenfor"
 ];
 
-export function containsNonNegatedSourceTerm(textValue, termValue) {
-  const text = normalize(textValue);
-  const needle = normalize(termValue);
-  if (!text || !needle) return false;
+export const containsNonNegatedSourceTerm = containsNonNegatedContextTerm;
 
-  let fromIndex = 0;
-  while (fromIndex < text.length) {
-    const index = text.indexOf(needle, fromIndex);
-    if (index < 0) return false;
-
-    const prefix = text.slice(Math.max(0, index - 150), index).trim();
-    const explicitlyAbsent =
-      /\bingen\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bgjelder\s+ikke\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak|hendelse)\b[^.!?;:]{0,140}$/u.test(prefix) ||
-      /\bikke\b(?:\s+[a-z0-9æøå]+){0,10}$/u.test(prefix);
-
-    if (!explicitlyAbsent) return true;
-    fromIndex = index + needle.length;
-  }
-  return false;
+/**
+ * Den nye bruker-ytringen må være en egen setningsdel. Bruk aldri kun
+ * mellomrom ved sammenføying: et tidligere "ingen trussel" må ikke
+ * negere en konkret trussel i et senere oppfølgingsspørsmål.
+ *
+ * Brukes kun til kontekstruting; den opprinnelige brukerbeskrivelsen
+ * og spørsmålet beholdes separat i prompten og i lagret historikk.
+ */
+export function joinSourceContext(situation = "", question = "") {
+  return [situation, question]
+    .map(value => typeof value === "string" ? value.trim() : "")
+    .filter(Boolean)
+    .join("\n");
 }
+
 
 export function shouldRetainCuratedSources({
   requestedTopic = "",
@@ -68,7 +64,7 @@ export function shouldRetainCuratedSources({
 
   // Konkrete risikosignaler teller bare når de ikke uttrykkelig er avkreftet
   // ("ingen sikkerhetshendelse", "ikke personvernproblem" osv.).
-  const concrete = `${subtopic || ""} ${situation || ""}`;
+  const concrete = `${subtopic || ""}. ${situation || ""}`;
   return concreteSourceTerms.some(term => containsNonNegatedSourceTerm(concrete, term));
 }
 
