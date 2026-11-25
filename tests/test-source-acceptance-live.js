@@ -11,7 +11,20 @@ import { createManualSourceReview } from "./support/source-acceptance-manual-rev
 
 dotenv.config();
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),"..");
-const cases=JSON.parse(fs.readFileSync(path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8")).cases;
+const allCases=JSON.parse(fs.readFileSync(path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8")).cases;
+const selectors=process.argv.slice(2).filter(arg=>arg.startsWith("--only="));
+if(selectors.length>1 || (selectors.length===1 && !selectors[0].slice(7))){
+  console.error("Bruk maksimalt én --only=SRC-C-VETERINAER,SRC-E-ORDINAER.");
+  process.exit(2);
+}
+const selectedIds=selectors.length ? selectors[0].slice(7).split(",") : [];
+const knownIds=new Set(allCases.map(tc=>tc.id));
+if(selectedIds.some(id=>!knownIds.has(id)) || new Set(selectedIds).size!==selectedIds.length){
+  console.error("Ukjent eller gjentatt case-ID. Tillatt: "+[...knownIds].join(", "));
+  process.exit(2);
+}
+const cases=selectedIds.length ? allCases.filter(tc=>selectedIds.includes(tc.id)) : allCases;
+const targeted=selectedIds.length>0;
 const enabled=process.argv.includes("--run-live") &&
   process.env.SOURCE_ACCEPTANCE_LIVE === "I_ACCEPT_API_COSTS";
 if(!enabled || !process.env.OPENAI_API_KEY){
@@ -114,11 +127,12 @@ try{
 const outDir=path.join(root,"test-results");
 fs.mkdirSync(outDir,{recursive:true});
 const stamp=new Date().toISOString().replace(/[:.]/g,"-");
-const jsonPath=path.join(outDir,"source-acceptance-"+stamp+".json");
-const mdPath=path.join(outDir,"source-acceptance-"+stamp+".md");
-const reviewPath=path.join(outDir,"source-acceptance-manual-review-"+stamp+".json");
+const prefix=targeted ? "source-recheck-" : "source-acceptance-";
+const jsonPath=path.join(outDir,prefix+stamp+".json");
+const mdPath=path.join(outDir,prefix+stamp+".md");
+const reviewPath=targeted ? null : path.join(outDir,"source-acceptance-manual-review-"+stamp+".json");
 const reportTimestamp=new Date().toISOString();
-fs.writeFileSync(reviewPath,JSON.stringify({
+if(!targeted) fs.writeFileSync(reviewPath,JSON.stringify({
   schemaVersion:1,
   sourceRunCreatedAt:reportTimestamp,
   caseCount:results.length,
@@ -128,13 +142,13 @@ fs.writeFileSync(reviewPath,JSON.stringify({
 },null,2),"utf8");
 fs.writeFileSync(jsonPath,JSON.stringify({createdAt:reportTimestamp,
   model:"gpt-5.6-luna",environment:"isolated-local-test",
-  occupationContext:true,provider:"openai",cases:results},null,2),"utf8");
-let md="# Kildepresisjon – ekte KI, fem anonymiserte saker\n\n";
+  occupationContext:true,provider:"openai",targeted,selectedCaseIds:cases.map(tc=>tc.id),cases:results},null,2),"utf8");
+let md="# Kildepresisjon – ekte KI, "+cases.length+" anonymiserte saker"+(targeted?" (MÅLRETTET OMTEST, ikke formell fem-case-godkjenning)":"")+"\n\n";
 md+="Dato: "+new Date().toISOString()+"\n\n";
 md+="Testmetode: lokal Node-server, ekte OpenAI, fiktiv Supabase-URL og yrkeskontekst PÅ bare i testprosessen.\n\n";
 md+="Ingen prod-/Render-innstillinger er lest eller endret. Dette må ikke omtales som en produksjonsverifisering.\n\n";
 md+="**Viktig:** Et web_search_call eller URL-annotasjon er ikke bevis for at kilden støtter hver enkelt påstand. Kildetekst må manuelt leses opp mot påstanden.\n\n";
-md+="**Manuell vurdering er PÅKREVD og står alltid som ventende:** Fyll ut det genererte JSON-skjemaet i \`"+reviewPath+"\` og dokumenter hver konkret rettspåstand, originalkildens eksakte utdrag, kontroll-dato, lov-/tariffperiode og arbeidsgiverområde. En kilde fra et annet svar kan ikke underbygge en tidligere påstand. Kjør deretter \`node tests/check-source-acceptance-review.mjs <run.json> <manual-review.json>\`. Skjemaet er aldri forhåndsgodkjent.\n\n";
+md+=targeted ? "**Målrettet omtest:** Dette er KUN kontroll av valgte, tidligere avvikende modellscenarioer. Ingen formell manuell fem-case-vurdering opprettes. Les alle felt og sammenlign spesielt M4 i veterinær-/kontorsaken. Ingen resultater her opphever feil i den gamle kjøringen.\n\n" : "**Manuell vurdering er PÅKREVD og står alltid som ventende:** Fyll ut det genererte JSON-skjemaet i \`"+reviewPath+"\` og dokumenter hver konkret rettspåstand, originalkildens eksakte utdrag, kontroll-dato, lov-/tariffperiode og arbeidsgiverområde. En kilde fra et annet svar kan ikke underbygge en tidligere påstand. Kjør deretter \`node tests/check-source-acceptance-review.mjs <run.json> <manual-review.json>\`. Skjemaet er aldri forhåndsgodkjent.\n\n";
 
 md+="**Maskinell akseptanse:** Kildetall, kildeopphav, synlige ID-er, forbudte sektorkilder, URL-sikkerhet og varsler om mulige rettspåstander kontrolleres av en separat, enhetstestet evaluator. Ingen av disse kontrollene beviser at en konkret kilde støtter et konkret råd.\n\n";
 
@@ -146,6 +160,7 @@ for(const r of results){
   if(r.issues?.length)md+="**Maskinelle kontrollpunkter:**\n"+r.issues.map(x=>"- "+x).join("\n")+"\n\n";
   if(r.guidance){
     md+="**Første åpning:** "+(r.guidance.opening||"")+"\n\n";
+    if(targeted) md+="**Alle reaksjoner/ledersvar:** "+JSON.stringify(r.guidance.reactions||[])+"\n\n**Forberedelser:** "+JSON.stringify(r.guidance.check_before_meeting||[])+"\n\n**Videre steg:** "+JSON.stringify(r.guidance.next_steps||[])+"\n\n";
     md+="**Fag-/rettsmerknad:** "+(r.guidance.legal_hr_note||"")+"\n\n";
     md+="**Første kilder:** "+JSON.stringify(r.guidance.evidence_sources||[])+"\n\n";
     md+="**Første proveniens:** "+JSON.stringify(r.guidance.source_provenance||null)+"\n\n";
@@ -170,7 +185,8 @@ const critical=results.filter(x=>x.technicalError||(x.issues||[]).length).length
 console.log("Ferdig med provider-test. Faglig kildekontroll er IKKE utført automatisk.");
 console.log("Maskinelle avvik eller teknisk feil: "+critical+"/"+cases.length);
 console.log("Rapporter: "+mdPath+" og "+jsonPath);
-console.log("Manuell vurdering (IKKE GODKJENT): "+reviewPath);
+if(!targeted) console.log("Manuell vurdering (IKKE GODKJENT): "+reviewPath);
+else console.log("MÅLRETTET omtest: kun "+cases.map(tc=>tc.id).join(", ")+" – ikke full akseptanse.");
 // Windows: legg hele den lesbare, syntetiske fagrapporten på utklippstavlen automatisk.
 // Dette er IKKE en faglig godkjenning og endrer ikke testens exit-kode.
 if (process.platform === "win32") {
