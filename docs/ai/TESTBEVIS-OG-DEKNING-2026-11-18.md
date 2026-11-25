@@ -1,5 +1,8 @@
 # Testbevis og kravdekning – kontrollregister 18.11.2026
 
+> **Statuskontroll 25.11.2026:** Detaljmatrisen er historisk per 18.–20.11.2026. Tidligere utsagn om feilet `main` er ikke gjeldende. Oppdatert full CI på `main` 25.11.2026 finnes i Quality Gate #45662862335. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Grunnlag:** `main` commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026.  
 **Status:** Historisk kontrollregister opprettet 18.11, videreutviklet med Chrome-UI og **faktisk lokal Supabase GoTrue/PostgREST/RLS 20.11** på isolert revisjonsgren. Hosted Auth-akseptanse, live KI og fysisk UX er fortsatt ikke utført.  
 **Formål:** Skille testfilens eksistens fra testens faktiske beviskraft, slik faglærer etterspør.
