@@ -125,7 +125,7 @@ const summary=[
   "Originalrapporter er UENDRET. Ekte KI-kall: 0. Produksjon: UENDRET."
 ].join("\n");
 console.log(summary);
-if(process.platform==="win32"){
+if(process.platform==="win32" && process.env.SOURCE_CLAIM_DRAFT_SKIP_CLIPBOARD!=="1"){
   const result=spawnSync("powershell.exe",[
     "-NoProfile","-NonInteractive","-Command",
     "$ErrorActionPreference='Stop'; Set-Clipboard -Value $env:CLAIM_DRAFT_SUMMARY"
