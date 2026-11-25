@@ -258,3 +258,14 @@ Denne oversikten er en **faktisk filkartlegging**, ikke en påstand om at `app.j
 **Avveining for sensor:** `app.js` og `server.js` inneholder fremdeles mye orkestrering og noen store ruteseksjoner. Flere moduler ble skilt ut, men å splitte alt kort tid før levering ville øke faren for brudd på DOM-/API-kontrakter. Prosjektet valgte derfor avgrensede forbedringer med regresjonskontroll. Dette er en **begrunnet utestående svakhet**, ikke et argument for at mange linjer automatisk gir høy kodekvalitet. Ved en uavhengig vurdering bør sensor undersøke lesbarhet, grensesnitt og ansvarfordeling i tillegg til linjetall.
 
 **Praktisk rekkefølge:** Les [README](../README.md), [sensorbrukerreisen](ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md), dette filkartet og deretter 2–3 konkrete funksjonsstier (f.eks. analyse → kildeutvalg → kildeproveniens; historikk → RLS; benchmark → budsjettoppgjør) før en samlet kodekvalitetsvurdering.
+
+
+## Oppfølging 25.11.2026 – testbar simuleringsmodul
+
+**Problem:** `server.js` inneholdt både Express-/KI-orkestrering og detaljerte, uavhengige kontrakter for hvordan samtalesimulatoren håndterer faktabasert kontra fri trening, medarbeiderstil, begrensning av turns og oppbygning av kontekstprompt. Denne sammenblandingen svekker lesbarheten og gjør rene kontraktstester vanskeligere.
+
+**Avgrenset refaktorering:** `src/server/simulation-contracts.js` inneholder nå de fire tidligere lokale definisjonene `simulationStyleInstructions`, `simulationFidelityInstructions`, `sanitizeSimulationTurns` og `simulationContextText`. De er eksportert og brukes av de **samme eksisterende Express-rutene** via import i `server.js`. Prompttekst, fallbacks, API-kontrakter, eksterne leverandørkall og brukergrensesnitt er bevisst ikke omskrevet. Opprinnelig moduluttrekk og serverimport: `8bb6862a` / `fd6792bb`.
+
+**Tester:** Den eksisterende statiske `tests/test-simulation.js` peker nå til riktig fil for stil-/personvernbegrensninger (commit `9b01e57c`). Ny `tests/test-simulation-contracts.cjs` tester direkte eksportert kode med ikke-array, maks 24 turns, maks 4000 tegn per turn, ukjente roller, tomme ytringer, faktabasert/fri modus, fallbacks og kontekstbegrensning (commit `79e391c3`). `npm run test-simulation` kjører begge testene, og inngår dermed i normal `npm test` og Quality Gate (commit `948537e3`).
+
+**Begrensning:** Dette er et konkret arkitekturskille og ny meningsfull testdekning, men store deler av `server.js` og `app.js` er fortsatt udelte. Testen verifiserer kontrakter og promptbygning, ikke kvaliteten på ikke-deterministiske, faktiske KI-rollespillsvar. Verifiser siste relevante Quality Gate før dette beskrives som bestått.
