@@ -55,5 +55,40 @@ const assert=require("node:assert/strict");
   assert.equal(JSON.stringify(privacy).includes("person omtalt"),false,
     "API-metadata må aldri kopiere rå rettighetsutsagn eller personopplysninger");
 
+  // Regresjon fra faktisk anonymisert KI-akseptanse 25.11.2026:
+  // Tidligere manglet alle disse juridiske signalene, selv med riktige kilder.
+  const sickLeaveFollowup=reviewLegalClaimSignals([
+    "Dersom medarbeideren er sykmeldt, skal du normalt ta initiativ til oppfølgingsplan sammen med medarbeideren innen fire uker, med mindre det er åpenbart unødvendig. Ved helt sykefravær skal du normalt innkalle til dialogmøte 1 innen sju uker; ved delvis sykmelding vurderes behovet.",
+    "Du kan ikke kreve å få vite diagnosen. Medarbeideren har en medvirkningsplikt og må bidra med arbeidsrelatert informasjon, men trenger ikke oppgi medisinske detaljer. Diagnosen skal ikke være tema i dialogmøtet."
+  ],[{id:"NAV_SYKEFRAVAER_OPPFOLGING",evidenceRole:"model_selected"}]);
+  assert.equal(sickLeaveFollowup.needsManualReview,true,
+    "Frister skrevet med bokstaver og diagnosebegrensning skal varsles");
+  assert(sickLeaveFollowup.possibleLegalClaimCount>=3,
+    "Frist, diagnose og møteplikt må fanges selv om en kilde er valgt");
+  assert.equal(sickLeaveFollowup.claimToSourceChecked,false);
+
+  const shaGuidance=reviewLegalClaimSignals([
+    "SHA-planen skal oppdateres fortløpende når det skjer endringer som har betydning for sikkerhet, helse og arbeidsmiljø.",
+    "Arbeidsgiver skal også sørge for at arbeidstakerne medvirker i risikovurderingen."
+  ],[{id:"AT_BUILDING_SITE_COORDINATION",evidenceRole:"model_selected"}]);
+  assert.equal(shaGuidance.needsManualReview,true,
+    "Oppdateringsplikt og medvirkningsplikt i SHA-sak krever kildesjekk");
+  const shaFollowup=reviewLegalClaimSignals([
+    "Byggherren har det overordnede ansvaret for at SHA-arbeidet og planen er ivaretatt, mens koordinatoren følger opp koordineringen i prosjektet."
+  ],[]);
+  assert.equal(shaFollowup.needsManualReview,true,
+    "Bindende rolle- og ansvarsfordeling må få kontrollvarsel");
+
+  assert.equal(reviewLegalClaimSignals([
+    "En skriftlig advarsel er en disiplinærreaksjon."
+  ],[]).needsManualReview,true,
+    "Kategorisk karakterisering av advarsel bør etterprøves");
+  assert.equal(reviewLegalClaimSignals([
+    "Skriv kort ned hvem som gjør hva, og følg opp om to–fire uker.",
+    "Faglig uenighet kan være nødvendig; avklar hvordan den kommuniseres."
+  ],[]).needsManualReview,false,
+    "Ordinær arbeidsdeling og kollegial samtale skal ikke overjuridifiseres");
+  assert.equal(reviewLegalClaimSignals(["Du skal oppdatere møtereferatet."],[]).needsManualReview,false,
+    "Vanlige pålegg uten lov- eller fagkontekst skal ikke automatisk merkes");
   console.log("RETTSPÅSTAND-REVISJON OK: kategoriske krav, bare lenker, KI-valgt, negert, vanlige råd og personvern; 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
