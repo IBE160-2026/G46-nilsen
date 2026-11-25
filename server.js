@@ -13,7 +13,7 @@ import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
 import { mergeGuidanceSourceCandidates } from "./src/server/source-merge.js";
 import { reviewLegalClaimSignals } from "./src/server/legal-claim-review.js";
-import { detectHistoricalSourceQuestion, isHistoricalAgreementCandidate, historicalSourceCaution } from "./src/server/historical-source-context.js";
+import { detectHistoricalSourceQuestion, resolveHistoricalSourceReview, isHistoricalAgreementCandidate, historicalSourceCaution } from "./src/server/historical-source-context.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
 import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
@@ -1796,7 +1796,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   const continueSubtopic = analysis?.primary_subtopic || subtopic || "";
   const continueSituation = joinSourceContext(situation, question);
   const continueSourceAsOf = new Date();
-  const continueHistoricalReview = detectHistoricalSourceQuestion(question, continueSourceAsOf);
+  const continueHistoricalReview = resolveHistoricalSourceReview({ situation, question, asOf:continueSourceAsOf });
   const continueOccupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview })
     : { prompt:"", occupation:null, agreement:null };
