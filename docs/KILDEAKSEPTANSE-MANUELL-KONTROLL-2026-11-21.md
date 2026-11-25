@@ -124,5 +124,6 @@ For å fylle dette gapet er den eksisterende lokale sensortesten nå utvidet:
 - Det lokale Express-endepunktet avviser manglende svar når testmodusen er aktiv, slik at en test ikke kan rapportere fullført veiledning ved tomme `followups`.
 - `tests/test-sensor-journey-browser.cjs` bruker **faktisk Chrome med tastaturaktivering**, verifiserer at ingen veiledningsrequest skjer før valg, velger ett enkeltvalg og to flervalg, og kontrollerer at nøyaktig de valgte verdiene sendes i `/api/generate-guidance`.
 - Den samme reisen fortsetter gjennom oppfølgingsdialog, utskrift, simulering, refleksjon, historikk og sletting.
+- Den isolerte Express/OpenAI-SDK-testen `tests/test-source-provenance-http.cjs` sender også syntetiske avklaringssvar (møteform og fravær av personalfullmakt) og inspiserer **de faktiske instruksjonene som sendes til lokal fake-provider**, både i første råd og oppfølgingsspørsmålet. Dermed testes ikke bare klientens JSON, men at serveren faktisk videreformidler konteksten til modellkallet.
 
 Dette er en **lokal nettleserintegrasjonstest med syntetisk analyse og råd**. Den beviser overføring av avklaringssvar i klient-/HTTP-flyten, men **ikke** at en ekte modell faktisk anvender dem klokt. Ingen betalte modellkall, ingen produksjonsdeploy. Se nyeste Quality Gate for faktisk bestått/feilet status; ikke anta suksess ut fra at koden er lagt inn.
