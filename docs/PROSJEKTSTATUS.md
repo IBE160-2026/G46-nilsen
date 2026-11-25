@@ -1,6 +1,20 @@
 # Samtalestøtte – gjeldende prosjektstatus
 
-**Oppdatert 25.11.2026. Dette er prosjektets korte, kanoniske status for arbeid på tvers av ChatGPT-samtaler. Den erstatter ikke detaljerte tester eller sensorens krav.**
+**Oppdatert 25.11.2026 etter PR #16 og #17. Kanonisk orientering for nye ChatGPT-samtaler og sensor.**
+
+## Oppdatert teknisk fasit
+
+- **Repo og eksamensgren:** [IBE160-2026/G46-nilsen](https://github.com/IBE160-2026/G46-nilsen), `main`.
+- **Siste testede applikasjonscommit før dokumentasjonsrevisjonen:** `61d282dcf041883b3b77bff4df483f67266bbac9` (PR #17). [Quality Gate #45662862335](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) fullført med `success`.
+- **Produksjon:** [g46-nilsen-samtalestotte.onrender.com](https://g46-nilsen-samtalestotte.onrender.com), Render-tjeneste `srv-dbfagf0473hc73ceh060`; deploy `dep-dc3hfi40916s738qaph0` for `61d282dc` bekreftet `live` 25.11.2026 kl. 17:16:42 UTC. Render kan trenge manuell deploy selv med autoDeploy aktivert. Ingen full innlogget browser-akseptanse er dokumentert for denne publiseringen.
+- **Siste feilrettinger:** PR #16 hindrer falske personnavn «Begge» og «Ingen», PR #17 krever tydeligere arbeidskontekst for automatisk yrkes-/sektorforslag. Nye regresjonstester følger ordinær testpakke.
+- **Arbeidsgrener:** Tidligere opprydding etterlot bare `main` per arkivtidspunktet, men nye arbeidsgrener, blant annet `pilot-ux-v20.11` og denne dokumentasjonsgrenen, kan eksistere senere. Ingen tidligere «én aktiv gren»-påstand skal tolkes som permanent repo-status.
+- **Innlevering:** Applikasjonen er en studentprototype. Rapporten [tilpasset skolens mal](REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md) eksisterer, men studentens sluttgodkjenning, Canvas-frist og formkrav er fortsatt uverifisert. Teknisk grønn CI er ikke formell fag-/juridisk kvalitetssikring.
+- **Dokumentasjon:** [Revisjonsrapport](DOKUMENTASJONSREVISJON-2026-11-25.md) skiller gjeldende status fra historiske logger. Ikke omskriv datert bevismateriale for å få det til å se nyere ut.
+
+## Historisk prosjektstatus fra tidligere 25.11.-kontroll
+
+> Avsnittene nedenfor er beholdt som historiske registreringer. Der de oppgir `f591ad7` som siste versjon eller «én aktiv gren», er de nå erstattet av fasiten ovenfor.
 
 ## Én leveransegren
 
