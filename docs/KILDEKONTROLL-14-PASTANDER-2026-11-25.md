@@ -58,3 +58,14 @@ Jeg undersøkte aktuelle offentlige myndighetssider 25.11.2026. Tabellen vurdere
 8. [Arbeidstilsynet – Arbeidstakers plikter](https://www.arbeidstilsynet.no/hms/roller-i-hms-arbeidet/arbeidstakers-plikter/)
 
 **Ingen automatisk attest av rettsversjon:** Nettsider har dagens ordlyd og enkelte endringshistorikker. Denne stikkprøven dokumenterer ikke full historisk rettskildeversjon, sektor-/tariffavtale for faktisk virksomhet eller ansvarlig kontrollørs godkjenning.
+
+
+## Forebyggende utbedringer etter kildegjennomgangen
+
+Etter kontroll av de 14 kandidatene er disse konkrete endringene lagt til i **utviklingsgrenen**:
+
+- `data/SOURCEBANK.json`: **NAV_SYKMELDT_DIAGNOSE** (NAVs direkte arbeidstakerveiledning med eksplisitt diagnosegrense) og **AT_ARBEID_I_HOYDEN** (Arbeidstilsynets spesifikke veiledning for risikofylt høydearbeid). Begge er målrettet mot relevante tema og fritekstsignaler.
+- `server.js`, første råd **og** oppfølging: for absolutte diagnosebegrensninger må kilde som eksplisitt støtter den eksakte formuleringen velges. For arbeid i høyden må spesifikk myndighetskilde brukes. SHA-plikter skal skilles på byggherre, koordinator og arbeidsgiver. Forsiktighetsråd om å stanse/avvente arbeid må ikke automatisk omtales som en ubetinget lovplikt når farevilkårene er uavklart.
+- `tests/test-sourcebank.cjs` og `tests/test-guidance-quality.cjs`: regresjoner sikrer at de to kildene finnes med riktige metadata, og at begge KI-prompter fortsatt inneholder de spesifikke kvalitetskravene.
+
+**Hva er ikke bevist:** At den ekte KI-modellen faktisk *velger* de nye kildene i en fremtidig sak, eller at enhver ny påstand blir juridisk riktig, kan ikke fastslås med disse deterministiske testene. Ingen nye betalte modellkall er kjørt. Gammel `source-acceptance` med fem saker, `-claim-draft` og registrerte M4-avvik står uendret, og PR #15 er fortsatt utkast. Full faglig kildeakseptanse må vurderes uavhengig av koderettelsene.
