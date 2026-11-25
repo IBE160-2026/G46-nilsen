@@ -930,10 +930,7 @@ app.post('/api/admin/benchmark/live', benchmarkLimiter, requireAdmin, async (req
       outcome='success';
     }
   } catch(error) {
-    console.error('Benchmark-feil:',{
-      model,caseId,status:error?.status,message:error?.message,
-      code:error?.code,error:error?.error
-    });
+    logSafeOperationalError('benchmark-provider', error);
     const status=Number(error?.status)||500;
     const providerRateLimited=status===429 && model==='google/gemma-4-26b-a4b-it:free';
     responseStatus=status>=400&&status<600?status:500;
@@ -941,8 +938,9 @@ app.post('/api/admin/benchmark/live', benchmarkLimiter, requireAdmin, async (req
       error:'BENCHMARK_FAILED',
       message:providerRateLimited
         ? 'Gemma Free er midlertidig ratebegrenset hos OpenRouter (429). Prøv senere eller velg en annen modell.'
-        : (error?.message || 'Benchmark-kallet feilet.'),
-      model,caseId,status:error?.status||null,code:error?.code||null
+        : 'Benchmark-kallet feilet. Kontroller status og test-ID i resultatet.',
+      model,caseId,status:error?.status||null,
+      code:typeof error?.code==='string' && /^[a-z0-9_]{1,64}$/i.test(error.code) ? error.code : null
     };
     outcome='failed';
   }
