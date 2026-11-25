@@ -1277,8 +1277,16 @@ function inferOccupationSuggestion(situation){
   let best=null;
   for(const sector of occupationOptionsCache){
     for(const occupation of (sector.occupations||[])){
-      const needle=String(occupation||'').toLocaleLowerCase('nb-NO');
-      if(needle && text.includes(needle)){
+      const needle=String(occupation||'').toLocaleLowerCase('nb-NO').trim();
+      if(!needle) continue;
+      // Whole occupation words only: "kolleger" must not match "lege".
+      // Common Norwegian inflections such as "legen", "leger", "sykepleieren" are allowed.
+      const pattern=needle.replace(/[|\\{}()[\]^$+*?.]/g,'\\      const needle=String(occupation||'').toLocaleLowerCase('nb-NO');
+      if(needle && text.includes(needle)){').replace(/\s+/g,'\\s+');
+      const present=new RegExp(
+        '(?<![\\p{L}\\p{N}])'+pattern+'(?:en|ene|er|et|a|s|n|ne|r)?(?![\\p{L}\\p{N}])','u'
+      ).test(text);
+      if(present){
         const score=needle.length;
         if(!best || score>best.score) best={sectorId:sector.id,sectorLabel:sector.label,occupation,score};
       }

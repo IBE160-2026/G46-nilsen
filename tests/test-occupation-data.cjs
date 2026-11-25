@@ -96,6 +96,25 @@ assert(
   "Benchmarkbanken må ha sikkerhets-/regelverkssaker"
 );
 
+// Regression: in the actual state-employer scenario, "kolleger" contains
+// the letters "lege" but must never trigger a health-care/doctor suggestion.
+const client=fs.readFileSync("app.js","utf8");
+const actualFunction=client.match(/function inferOccupationSuggestion\(situation\)\{[\s\S]*?\n\}/)?.[0];
+assert(actualFunction,"Could not find the real client occupation suggestion function");
+const guess=new Function("occupationOptionsCache",actualFunction+";return inferOccupationSuggestion;")(
+  map.sectors.filter(sector=>sector.id!=="other")
+);
+const stateLeadershipCase="Jeg er arbeidsleder i en statlig virksomhet, men har ikke personalansvar. En medarbeider kommer for sent til kveldsvakt, slik at kolleger må jobbe overtid.";
+assert.strictEqual(guess(stateLeadershipCase),null,"Kolleger og statlig arbeidsgiver betyr ikke at yrket er lege");
+for(const input of ["Kollegaene samarbeider.","Kolleger må jobbe overtid.","De har kollegiale utfordringer.","Regelverket følges."]){
+  assert.strictEqual(guess(input),null,"False occupation inferred from: "+input);
+}
+for(const input of ["En lege kommer for sent.","Legen kommer for sent.","To leger diskuterer.","Legene ønsker oppfølging."]){
+  assert.strictEqual(guess(input)?.occupation,"lege","Should detect a real doctor mention: "+input);
+}
+assert.strictEqual(guess("Sykepleieren er på vakt.")?.occupation,"sykepleier");
+assert.strictEqual(guess("Elektrikeren mangler verneutstyr.")?.occupation,"elektriker");
+
 console.log(
   `Yrkesdata OK: ${sectorIds.size} sektorer · ${registry.sources.length} kilder · ${benchmark.cases.length} benchmark-saker`
 );
