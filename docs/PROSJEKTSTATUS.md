@@ -5,11 +5,11 @@
 ## GitHub og siste verifiserte app
 
 - **Repository:** [IBE160-2026/G46-nilsen](https://github.com/IBE160-2026/G46-nilsen).
-- **Hovedgren:** `main`. Dokumentasjonsrevisjonen PR #18 er flettet i commit `f17deb80f914374f935803d11dcffe1a2761fab6`.
+- **Hovedgren:** `main`. PR #18 (dokumentasjonsrevisjon), #19 (README-arkivering og kontrollretting) og #20 (Git-grenopprydding) er flettet. Den midlertidige oppryddings-workflowen ble deretter fjernet på `main` i commit `7b924c4c150d8ddbdcd39430f22781c2ddb0c035`.
 - **Siste appkodeendring:** PR #17, commit `61d282dcf041883b3b77bff4df483f67266bbac9`. [Quality Gate #45662862335](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) bestod. PR #16 rettet falske personnavn «Begge»/«Ingen», PR #17 rettet ufunderte yrkesforslag.
-- **Andre innlemmede PR-er:** #12, #14 og #15; #13 ble lukket uten merge. PR #18 ryddet dokumentasjon og bevarte tidligere loggstatus som historiske kilder.
-- **Status ved siste grensjekk:** `main` pluss `docs/final-documentation-audit-20261125`, `fix/occupation-suggestion-context-20261125`, `fix/privacy-begge-false-positive-20261125` og `pilot-ux-v20.11`. Tre ferdigflettede arbeidsgrener er oppryddingskandidater. `pilot-ux-v20.11` er eksperimentgren og **skal ikke slettes uten eksplisitt arkivbeslutning**. Ny oppryddingsgren kan komme i tillegg.
-- **Git-historikk:** Arkivtaggen `archive/branches-before-single-main-2026-11-25` bevarer tidligere oppryddingshistorikk. Antallet aktive grener kan endres og må verifiseres på nytt før det omtales som nåværende.
+- **Andre innlemmede PR-er:** #12, #14, #15, #18, #19 og #20; #13 ble lukket uten merge. Historiske notater er bevart i `docs/archive/` og Git-historikken.
+- **Git-grenopprydding fullført 25.11.2026:** Verifisert kun to grener: `main` og `pilot-ux-v20.11`. PR #16–#20 er flettet og de fem overflødige arbeidsgrenene er slettet etter verifisert arkivering av hver PR-head. Ingen åpne PR-er ved denne kontrollen. `pilot-ux-v20.11` er eksperimentgren og er **beholdt**.
+- **Git-historikk:** Arkivtaggen `archive/branches-before-single-main-2026-11-25` bevarer tidligere opprydding. Fem nye, verifiserte arkivtagger `archive/merged-pr-{16,17,18,19,20}-head-20261125` bevarer de fem slettede grenespissene. Engangs-workflowen er fjernet etter vellykket kjøring. Antall grener må kontrolleres igjen ved ny utvikling.
 
 ## Produksjon, pilot og sikkerhet
 
