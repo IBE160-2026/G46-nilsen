@@ -114,3 +114,31 @@ og de gamle `-aligned-findings.json`-avvikene forblir uendret.
 verken denne prøven, fravær av maskinelle signaler eller en ny evaluering
 utgjør en endelig, kildevis og juridisk godkjenning av hele prosjektet.
 PR #15 forblir utkast til gjenværende faglig vurdering er dokumentert.
+
+## Kladd med eksakte rettspåstander fra fem-case-rapporten
+
+Etter at målrettet omtest av C/E ga 2/2 maskinelt OK ved korrigert
+evaluator, fortsetter det uavhengige kildearbeidet med den FØRSTE
+fem-case-kjøringen. Kommandoen nedenfor bruker ikke ekte KI:
+
+    node scripts/prepare-source-claim-draft.mjs test-results/source-acceptance-2026-11-25T13-47-13-669Z.json test-results/source-acceptance-manual-review-2026-11-25T13-47-13-669Z-aligned-findings.json
+
+Verktøyet leser original ordlyd og synlige kilder fra det **samme**
+svarløpet og legger inn 14 identifiserte rettspåstandskandidater:
+2 fra A, 5 fra B, 7 fra D. C og E hadde ingen registrerte
+rettspåstandskandidater, men krever fortsatt full gjennomgang og
+faglig begrunnelse. Verktøyet kontrollerer at hvert utdrag faktisk
+forekommer i det opprinnelige svaret og at kildekandidaten var synlig
+i akkurat det svaret.
+
+**Det er kun en arbeidskladd, ikke kildeverifisering.**
+Kildeutdrag, gyldighetsdato, lov-/tariffperiode, anvendelig virkeområde,
+verdict, begrunnelser og kontrollør forblir tomme/ikke verifisert.
+`claimInventoryComplete` forblir `false`, og C/E sine historiske
+`M4=not_met` bevares. Det må foretas manuell kontroll også av
+om andre materielle rettspåstander mangler i kandidatlisten.
+
+Verktøyet lager to nye filer med `-claim-draft.json`/`.md`,
+lar alle originalfiler urørte og kopierer kort status via
+Windows `Set-Clipboard`. Det nekter å overskrive eksisterende kladder.
+Ikke bruk en uutfylt kladd til å erklære `REVIEWED_OK`.
