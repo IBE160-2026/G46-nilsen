@@ -4,7 +4,27 @@ const assert = require("node:assert/strict");
 const http = require("node:http");
 const { spawn } = require("node:child_process");
 const path = require("node:path");
+const fs = require("node:fs");
+const vm = require("node:vm");
 const root = path.resolve(__dirname, "..");
+// Exercise the real server logging helper with a synthetic provider error carrying
+// sensitive request data. Never include SDK error objects or raw messages in logs.
+const source = fs.readFileSync(path.join(root, "server.js"), "utf8");
+const logStart = source.indexOf("function logAiRouteError(");
+const logEnd = source.indexOf("\nasync function createTrackedResponse(", logStart);
+assert.ok(logStart >= 0 && logEnd > logStart, "Sanitized AI error logger missing");
+const captured = [];
+const sandbox = { console: { error: (...items) => captured.push(JSON.stringify(items)) } };
+vm.runInNewContext(source.slice(logStart, logEnd) + "\nthis.safeLog = logAiRouteError;", sandbox);
+sandbox.safeLog("analyze-situation", {
+  status: 429, code: "rate_limit_error", message: "Knut Hansen kari@example.no",
+  request: { body: "Knut Hansen kari@example.no" },
+  error: { message: "PRIVATE PROVIDER DETAIL" }
+});
+assert.ok(captured.join("\n").includes("429") && captured.join("\n").includes("rate_limit_error"),
+  "Sanitized AI error log must retain bounded technical metadata");
+assert.ok(!/Knut Hansen|kari@example.no|PRIVATE PROVIDER DETAIL/.test(captured.join("\n")),
+  "Provider error logger must not leak user data or provider message");
 const appPort = 32621, fakePort = 32620;
 const origin = `http://127.0.0.1:${appPort}`;
 let fault = "503", providerCalls = 0;
@@ -114,6 +134,8 @@ async function api(route, data) {
       assert.equal(blocked.body?.error, "PRIVACY_REVIEW_REQUIRED", entry.route);
       assert.equal(providerCalls, beforePrivacy, entry.route + ": personal data must be blocked before provider call");
     }
+
+    assert.ok(!logs.includes("SECRET INTERNAL MOCK ERROR"), "Raw provider message must not leak to server stderr");
 
     console.log("Isolert OpenAI-providerfeiltest: 503, 429, ugyldig JSON, nettverksfeil og 8 PII-blokkeringer på 7 KI-endepunkter OK");
     console.log("Kun lokal fake provider og dummy-nøkler, ingen eksterne KI-anrop.");
