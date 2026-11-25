@@ -186,7 +186,7 @@ Brukes når faglig kvalitet, språk, realisme eller nyanser ikke kan avgjøres s
 
 ## Nivå 6 – Brukertesting
 
-Begrenset kvalitativ pilot-/brukertesting er gjennomført og dokumentert i `docs/BRUKERTEST-FUNN-OG-BACKLOG.md`. Et større og representativt utvalg samt fullstendig faglig validering gjenstår. Pilotinntrykk og surveyresultater er ikke statistiske bevis eller juridisk ekspertgodkjenning.
+Begrenset kvalitativ pilot-/brukertesting er gjennomført og dokumentert i `docs/BRUKERTEST-FUNN-OG-BACKLOG.md`. Et større og representativt utvalg og ekstern faglig godkjenning inngår ikke i studentprosjektets leveranseomfang. Pilotinntrykk og surveyresultater er ikke statistiske bevis eller juridisk ekspertgodkjenning.
 
 ---
 
