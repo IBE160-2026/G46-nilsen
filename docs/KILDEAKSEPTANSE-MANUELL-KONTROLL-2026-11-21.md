@@ -15,7 +15,7 @@ En reell akseptansesak skal derfor gjennom fire uavhengige vurderinger:
 
 ## Gjennomføring
 
-Den opt-in kjøringen med ekte KI bruker fem syntetiske saker i `tests/AI-SOURCE-ACCEPTANCE-CASES.json`; den krever en lokal API-nøkkel, flagget `--run-live` og en eksplisitt kostnadsbekreftelse. **Dette er ennå ikke utført som del av PR #15.** Ikke legg API-nøkler i Git, CI eller dokumentasjon.
+Den opt-in kjøringen med ekte KI bruker fem syntetiske saker i `tests/AI-SOURCE-ACCEPTANCE-CASES.json`; den krever en lokal API-nøkkel, flagget `--run-live` og en eksplisitt kostnadsbekreftelse. **Den lokale prøven ble rapportert gjennomført 25.11.2026 (5/5 uten maskinelle avvik); formell manuell godkjenning er fortsatt ikke utført.** Ikke legg API-nøkler i Git, CI eller dokumentasjon.
 
 En faktisk kjøring av `npm run test-ai:source-acceptance -- --run-live`, med `SOURCE_ACCEPTANCE_LIVE=I_ACCEPT_API_COSTS` satt lokalt, produserer tre filer i Git-ignorert `test-results/`:
 
@@ -72,3 +72,27 @@ Hele akseptansepakken får exit-kode 0 bare når alle fem saker er `REVIEWED_OK`
 ## Testgrunnlag og ærlig avgrensning
 
 `tests/test-source-acceptance-manual-review.cjs` kontrollerer kontrakten med **oppdiktede** data. Den må avvise manglende kildeutdrag, feil svarløp, andre kilde-URL-er, uklar historisk gyldighet, ikke bekreftet virkeområde, kritiske funn, manglende obligatoriske punkter, kildeavvik og vurderingsfiler fra feil testkjøring. At en syntetisk test får `REVIEWED_OK` betyr bare at kontrollreglene fungerer når feltene er utfylt, **ikke** at en menneskelig fagvurdering er utført.
+
+## Foreløpig kontroll av faktisk lokal KI-prøve – 25.11.2026
+
+Brukeren gjennomførte fem ekte modellscenarioer i lokal testprosess og delte den genererte, lesbare Markdown-rapporten (rapporttid 2026-11-25T13:47:13Z). Alle fem fikk «MASKINELT OK», null tekniske feil. Test-JSON med samtlige felter og det uutfylte manuelle vurderingsskjemaet ble **ikke** gjennomgått her. Ingen av sakene settes til `REVIEWED_OK` ved denne stikkprøven.
+
+| Sak | Foreløpig vurdering av synlig rapportutdrag | Kontrollpunkt |
+|---|---|---|
+| A: utestenging i butikk | Ingen åpenbar alvorlig feil: undersøkelse/kontradiksjon før advarsel; relevant Arbeidstilsynet-kilde | Varsel for kategorisering av advarsel som disiplinærreaksjon manglet |
+| B: sykefravær i staten | NAVs 4- og 7-ukersfrister, skille mellom funksjonsevne og diagnose, og forbehold om aktuell sykmeldingsperiode ble funnet i NAVs veiledning | Juridiske plikter i oppfølging fikk feilaktig `needsManualReview:false` |
+| C: veterinærers uenighet | DNVs profesjonsetiske retningslinjer om kollegialitet brukes som veiledning, ikke lov; ingen påstand om feilbehandling | Sjekk faglige unntak hvis senere opplysninger gir pasientsikkerhetsrisiko |
+| D: SHA-arbeid | Arbeidstilsynets regelverk støtter kontinuerlig oppdatering av SHA-planen, risikovurdering og særskilte roller for byggherre og arbeidsgiver | Forpliktende SHA-/rolleutsagn i både første råd og oppfølging fikk feilaktig `needsManualReview:false` |
+| E: ordinær arbeidsdeling | Råd om forventninger, oppgavefordeling og oppfølging uten irrelevante kilder | Ingen kilde eller juridisk varsel nødvendig i synlig utdrag |
+
+Stikkprøvede originalkilder 25.11.2026:
+- https://www.arbeidstilsynet.no/arbeidsmiljo/organisatorisk-arbeidsmiljo/personalsaker/
+- https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte
+- https://www.nav.no/arbeidsgiver/samtalestotte-arbeidsgiver
+- https://www.vetnett.no/5-3-veterinaeren-og-kollegialitet/category1568.html
+- https://www.arbeidstilsynet.no/hms/hms-i-bygg-og-anlegg/byggherreforskriften/
+- https://www.arbeidstilsynet.no/risikofylt-arbeid/arbeid-i-hoyden/
+
+**Teknisk funn:** `src/server/legal-claim-review.js` gjenkjente ikke flere kategoriske plikter, frister skrevet med bokstaver, diagnosebegrensning og SHA-ansvarsformuleringer, selv om `claimToSourceChecked` korrekt sto som `false`. Varselmønstrene er utvidet, og `tests/test-legal-claim-review.cjs` har fått regresjoner med de anonymiserte formuleringene fra testen. Dette forbedrer signaldeteksjonen; det dokumenterer **ikke** automatisk juridisk korrekthet. Ingen betalt KI-omtest er foretatt etter endringen.
+
+**Fortsatt åpent:** Hele KI-resultatet (inkl. alle førstegangsfeltene), påstandsvis kildeutdrag, korrekt historisk rettsversjon og arbeidsgiver-/tariffvirkeområde må kontrollføres i den lokale manuelle JSON-filen. Ikke merge PR #15 eller deploy til produksjon på grunnlag av denne delvise vurderingen.
