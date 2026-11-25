@@ -66,4 +66,7 @@ assert(liveRunner.includes('const prefix=targeted ? "source-recheck-" : "source-
 assert(liveRunner.includes('process.env.SOURCE_ACCEPTANCE_LIVE === "I_ACCEPT_API_COSTS"') &&
   liveRunner.includes('process.argv.includes("--run-live")'),
   "Også selektiv betalt kjøring må kreve eksplisitt kostnadssamtykke");
+assert(liveRunner.includes("vurder hvert av de valgte scenariene mot DERES egne manuelle fagkriterier") &&
+  !liveRunner.includes("Les alle felt og sammenlign spesielt M4 i veterinær-/kontorsaken."),
+  "Målrettet recheck-rapport må bruke case-spesifikke fagkriterier, ikke C/E-mal i B/D-test");
 console.log("KILDE-AKSEPTANSE KONTRAKT OK: 5 syntetiske cases, kilderegister og manuell fasit; 0 ekte KI-kall");
