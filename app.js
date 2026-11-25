@@ -1292,7 +1292,11 @@ function inferOccupationSuggestion(situation){
       const occupationAtWork=new RegExp(
         '(?<![\\p{L}\\p{N}])'+inflected+'\\s+(?:på|i|ved)\\s+(?:arbeidsplassen|avdelingen|teamet|virksomheten|jobben)(?![\\p{L}\\p{N}])','u'
       );
-      if(workRole.test(text) || explicitTitle.test(text) || occupationAtWork.test(text)){
+      const jobSubject=new RegExp(
+        '(?:^|[.!?]\\s+)(?:(?:en|ei|et|to|tre|flere)\\s+)?'+inflected+
+        '\\s+(?:kommer\\s+for\\s+sent|ønsker\\s+oppfølging|diskuterer|er\\s+på\\s+vakt|mangler\\s+verneutstyr|har\\s+brutt|jobber|arbeider)(?=\\s|[.!?,;:]|$)','u'
+      );
+      if(workRole.test(text) || explicitTitle.test(text) || occupationAtWork.test(text) || jobSubject.test(text)){
         const score=needle.length;
         if(!best || score>best.score) best={sectorId:sector.id,sectorLabel:sector.label,occupation,score};
       }
