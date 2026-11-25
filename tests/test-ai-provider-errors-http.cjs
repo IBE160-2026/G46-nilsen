@@ -89,14 +89,33 @@ async function api(route, data) {
       assert.ok(providerCalls > before, `Missing actual provider call for ${entry.route} ${entry.mode}`);
     }
 
+    // End-to-end server privacy boundary: all seven user-facing AI endpoints
+    // must reject a fictitious full name before any fake provider call.
+    // The mocked SDK lets us prove that no outgoing call was attempted.
     fault = "503";
-    const beforePrivacy = providerCalls;
-    const blocked = await api("/api/analyze-situation", { situation: "Knut Hansen kommer for sent flere ganger." });
-    assert.equal(blocked.status, 400);
-    assert.equal(blocked.body?.error, "PRIVACY_REVIEW_REQUIRED");
-    assert.equal(providerCalls, beforePrivacy, "Hard personvernsjekk må stoppe før KI-kallet");
+    const name = "Knut Hansen";
+    const privateSituation = `${name} kommer for sent flere ganger.`;
+    const validLeaderTurns = [{ role: "leader", text: "Kan vi snakke om det som skjedde?" }];
+    const privacyRequests = [
+      { route: "/api/classify-topic", input: { situation: privateSituation } },
+      { route: "/api/analyze-situation", input: { situation: privateSituation } },
+      { route: "/api/generate-guidance", input: { situation: privateSituation } },
+      { route: "/api/continue-conversation", input: { situation: privateSituation, question: "Hvordan spør jeg?" } },
+      { route: "/api/simulation-turn", input: { situation: privateSituation, turns: validLeaderTurns } },
+      { route: "/api/simulation-help", input: { situation: privateSituation, turns: validLeaderTurns, kind: "formulation" } },
+      { route: "/api/simulation-feedback", input: { situation: privateSituation, turns: validLeaderTurns } },
+      // Even a clean situation must not allow identifying information in a leader turn.
+      { route: "/api/simulation-turn", input: { ...data, turns: [{ role: "leader", text: "Jeg snakker om Knut Hansen." }] } }
+    ];
+    for (const entry of privacyRequests) {
+      const beforePrivacy = providerCalls;
+      const blocked = await api(entry.route, entry.input);
+      assert.equal(blocked.status, 400, entry.route + ": " + JSON.stringify(blocked));
+      assert.equal(blocked.body?.error, "PRIVACY_REVIEW_REQUIRED", entry.route);
+      assert.equal(providerCalls, beforePrivacy, entry.route + ": personal data must be blocked before provider call");
+    }
 
-    console.log("Isolert OpenAI-providerfeiltest: 503, 429, ugyldig JSON, nettverksfeil og PII-blokkering OK");
+    console.log("Isolert OpenAI-providerfeiltest: 503, 429, ugyldig JSON, nettverksfeil og 8 PII-blokkeringer på 7 KI-endepunkter OK");
     console.log("Kun lokal fake provider og dummy-nøkler, ingen eksterne KI-anrop.");
   } finally {
     child.kill("SIGTERM");
