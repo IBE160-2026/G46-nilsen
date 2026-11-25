@@ -4,6 +4,7 @@
 const assert = require("node:assert/strict");
 const http = require("node:http");
 const path = require("node:path");
+const {pathToFileURL} = require("node:url");
 const { spawn } = require("node:child_process");
 const root = path.resolve(__dirname, "..");
 const appPort = 33741, mockPort = 33742;
@@ -112,7 +113,7 @@ function checkResult(result,label) {
 (async()=>{
   await new Promise(resolve=>fakeProvider.listen(mockPort,"127.0.0.1",resolve));
   app=spawn(process.execPath,[
-    "--import",path.join(root,"tests/support/offline-openai-fetch.mjs"),
+    "--import",pathToFileURL(path.join(root,"tests/support/offline-openai-fetch.mjs")).href,
     path.join(root,"server.js")
   ],{
     cwd:root,stdio:["ignore","pipe","pipe"],
