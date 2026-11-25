@@ -229,7 +229,7 @@ const assert = require("node:assert/strict");
     "Historical/validity filter must still apply after shared merge");
   assert(sourceCalls.every(call=>call.asOf===asOf && call.topic===params.resolvedTopic),
     "Both routes must pass the request's fixed source timestamp and topic");
-  assert.equal((serverSource.match(/= scopedGuidanceSources\\(\\{/g)||[]).length, 2,
+  assert.equal(serverSource.split("= scopedGuidanceSources({").length - 1, 2,
     "Both guidance and continuation routes must use shared source selection");
   console.log("SOURCE RETENTION OK: live-avvik + juridisk kilderangering + positive kontroller");
 })().catch(error => {
