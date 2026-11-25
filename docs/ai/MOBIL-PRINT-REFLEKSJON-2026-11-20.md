@@ -5,6 +5,14 @@
 **Teknisk test:** `tests/test-mobile-print-browser.cjs`, obligatorisk i `.github/workflows/quality-gate.yml`.
 **Verifisert testkjøring:** [Quality Gate #44794218055](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44794218055) – **SUCCESS alle tre jobber**. Loggen bekrefter tre mobile bredder, touch-navigasjon, og en **2-siders PDF** med verifisert uttrekk av både hovedråd og «Videre råd», pluss 52 ordinære teststeg, 99/99 CSS-paritet, Auth/PostgREST og PostgreSQL/RLS.
 
+## Tillegg 25.11.2026 – prosjekteiers manuelle mobilvurdering
+
+Prosjekteier opplyser å ha testet mobilvisningen **svært mye**, og vurderer at den fungerer **optimalt**. Dette er en faktisk brukeropplysning fra prosjekteier, ikke et nytt testresultat jeg har observert selv. Vi har ikke her dokumentert eksakt enhetsmodell, nettleserversjon, testdatoer, skjermbilder eller en punkt-for-punkt manuell testprotokoll, og skal ikke utlede slike detaljer.
+
+Det personlige brukererfaringsgrunnlaget kommer **i tillegg til** de automatiske mobil-/touch-/PDF-testene som er dokumentert nedenfor. Det er ikke grunnlag for å hevde at full WCAG- eller skjermlesersamsvar er bekreftet. Ingen nye mobile stilendringer er gjort som følge av denne opplysningen.
+
+---
+
 ## 1. Hva tidligere grønne tester ikke beviste
 
 - De **99 CSS-paritetscasene** sammenlignet layout mot en eldre referanse med `mobile:false` og kontrollerte skjerm- og print-medie-CSS. De beviste ikke faktisk mobilenhetsmodus, berøringshendelser, eller at den ferdige responsen er brukbar på en mobilskjerm.
