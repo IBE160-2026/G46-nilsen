@@ -1,3 +1,13 @@
+# 25.11.2026 – PR #16 og #17, produksjon og dokumentasjonsstatus
+
+- **PR #16:** Korrigert falske personnavn for norske ordene «Begge» og «Ingen»; ekstra regresjonstester bevarer reell navneoppdagelse. Merge `782e322`.
+- **PR #17:** Yrkes- og sektorforslag krever tydeligere arbeidskontekst. Falske forslag fra «har vært hos legen» reduseres, samtidig som arbeidsrettede utsagn som «Legen kommer for sent» fortsatt gjenkjennes. 15 UI-regresjoner lagt inn i `npm test`. Merge `61d282dc`.
+- **Verifikasjon:** GitHub Actions Quality Gate [#45662862335](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) på `61d282dc`: `success`. Render-produksjon deploy `dep-dc3hfi40916s738qaph0`: `live` 25.11 kl. 17:16 UTC.
+- **Dokumentasjon:** Se [gjeldende prosjektstatus](docs/PROSJEKTSTATUS.md) og [dokumentasjonsrevisjon](docs/DOKUMENTASJONSREVISJON-2026-11-25.md) for status. Eldre datostemplede endringer nedenfor er historikk, ikke gjeldende PR-/grenoversikt.
+- **Begrensning:** Ingen påstand om full faglig vurdering av KI-råd, manuell innlogget ende-til-ende-test eller bekreftet Canvas-innlevering.
+
+---
+
 # 20.11.2026 – mobile:true/touch, faktisk Chromium-PDF og refleksjonskontroll (draft PR #12)
 
 - Ny obligatorisk `tests/test-mobile-print-browser.cjs` tester ekte prosjektfrontend mot lokal sensordemo med **faktisk Chrome mobilmodus**, viewport **320×700, 390×844 og 768×1024** uten horisontal side-overflyt, og berøringshendelser for tema/undertema. Det komplette brukerreise- og admin-testløpet beholdes.
