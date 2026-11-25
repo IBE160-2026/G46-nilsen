@@ -15,7 +15,7 @@
     "test-ai:stress:problems": "node tests/test-ai-stress.js --problems",
     "test-privacy": "node tests/test-privacy.js",
     "invite": "node scripts/create-invite.js",
-    "test-simulation": "node tests/test-simulation.js",
+    "test-simulation": "node tests/test-simulation.js && node tests/test-simulation-contracts.cjs",
     "test-simulation:live": "node tests/test-simulation-ai.js",
     "test-history-hotfix": "node tests/test-history-hotfix.cjs",
     "test-bubble-cleanup": "node tests/test-bubble-cleanup.cjs",
