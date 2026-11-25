@@ -63,7 +63,7 @@ const summary=[
   ...(changes.length?changes:["Ingen kriterier lagt til."]),
   "Original vurderingsfil er UENDRET.",
   "Nytt vurderingsskjema: "+output,
-  "Godkjenning: 0/5 - Faglig kontroll er FORTSATT ikke gjennomfort.",
+  "Godkjenning er IKKE gitt. Faglige funn og kriterier maa fortsatt vurderes.",
   "Ingen ekte KI-kall, ingen API-kostnader, ingen deploy."
 ].join("\n");
 console.log(summary);
@@ -76,7 +76,7 @@ if(process.platform==="win32"){
       "$ErrorActionPreference='Stop'; Set-Clipboard -Value ([IO.File]::ReadAllText($env:REVIEW_CLIPBOARD_FILE,[Text.Encoding]::UTF8))"
     ],{env:{...process.env,REVIEW_CLIPBOARD_FILE:tmp},encoding:"utf8",windowsHide:true,timeout:12000});
     if(p.status===0)console.log("Kort status er kopiert med Set-Clipboard. Bruk Ctrl+V i chatten.");
-    else console.error("Kunne ikke kopiere status; den ligger i "+tmp);
+    else console.error("Kunne ikke kopiere status automatisk; se statusen skrevet ut over.");
   } finally {
     fs.rmSync(tmp,{force:true});
   }
