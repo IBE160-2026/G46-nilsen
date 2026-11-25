@@ -103,3 +103,40 @@ const surveyRowDefinition=surveyBlock.slice(rowStart,rowEnd);
 assert(!/user_id/i.test(surveyRowDefinition),'Brukertestsvar skal ikke lagre user_id');
 assert(/survey_participation'\)\.insert\(\{user_id:req\.user\.id\}\)/.test(surveyBlock),'Separat deltakelsesmarkering mangler');
 console.log('Brukertest uten direkte bruker-ID: OK');
+
+
+// The real operational logger must not serialize Supabase error messages,
+// request payloads, account identifiers or bearer tokens.
+const opStart=source.indexOf("function logSafeOperationalError(");
+const opEnd=source.indexOf("\nasync function createTrackedResponse(",opStart);
+assert(opStart>=0&&opEnd>opStart,'Operational privacy logger missing');
+const operationalLogs=[];
+const opCtx={console:{error:(...args)=>operationalLogs.push(JSON.stringify(args))}};
+vm.runInNewContext(source.slice(opStart,opEnd)+"\nthis.run=logSafeOperationalError;",opCtx);
+opCtx.run("auth-register",{
+  status:401,code:"PGRST301",
+  message:"kari@example.no token=very-secret-token",
+  request:{password:"TEST_PASSWORD_VALUE",authorization:"Bearer very-secret-token"},
+  details:"Knut Hansen private details"
+});
+const logged=operationalLogs.join("\n");
+assert(/auth-register|401|PGRST301/.test(logged),'Operational log missing bounded metadata');
+assert(!/kari@example.no|very-secret-token|TEST_PASSWORD_VALUE|Knut Hansen|private details/i.test(logged),
+  'Operational log leaked untrusted error payload');
+
+// The regression endpoint may receive administrator-entered free text, but
+// the console.info record is limited to known testcase metadata and counts.
+const regressionStart=source.indexOf("app.post('/api/admin/pilot-regression/result'");
+const regressionEnd=source.indexOf("app.post('/api/admin/benchmark/mock'",regressionStart);
+assert(regressionStart>=0&&regressionEnd>regressionStart,'Regression result route missing');
+const regressionRoute=source.slice(regressionStart,regressionEnd);
+const logStart=regressionRoute.indexOf('console.info(marker, JSON.stringify({');
+const logEnd=regressionRoute.indexOf('}));',logStart);
+assert(logStart>=0&&logEnd>logStart,'Regression log statement missing');
+const loggedFields=regressionRoute.slice(logStart,logEnd);
+for(const field of ['opening','notes,','issues,','runId','model']){
+  assert(!loggedFields.includes(field),'Regression logging includes untrusted field: '+field);
+}
+assert(loggedFields.includes('caseId:testCase.id')&&loggedFields.includes('issueCount:issues.length'),
+  'Regression log must preserve testcase identity and summary counts');
+console.log('Auth/admin structured logging: no raw error objects or user-entered regression text: OK');
