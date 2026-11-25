@@ -82,7 +82,7 @@ console.log("SAMTALESTOTTE - KOSTNADSFRI REANALYSE");
 for(const x of decisions)console.log(x.id+": før "+x.previous.length+" varsel, nå "+x.issues.length+" varsel");
 console.log("Rapport: "+out);
 console.log("Originalfil uendret. Ingen API-kall. Ingen formell faglig godkjenning.");
-if(process.platform==="win32"){
+if(process.platform==="win32" && process.env.SOURCE_RECHECK_SKIP_CLIPBOARD!=="1"){
   const clipboard=spawnSync("powershell.exe",[
     "-NoProfile","-NonInteractive","-Command",
     "$ErrorActionPreference='Stop'; Set-Clipboard -Value ([IO.File]::ReadAllText($env:SOURCE_RECHECK_CLIPBOARD_PATH,[Text.Encoding]::UTF8))"
