@@ -120,5 +120,19 @@ const assert=require("node:assert/strict");
   assert.deepEqual(judge(guidance,followup,tc),[],
     "Evaluator må ikke mutere input under negative tester");
 
+  const vet={...tc,id:"SRC-C-VETERINAER"};
+  const joint={...guidance,opening:"Takk for at dere møter. Jeg vil høre begge to."};
+  needs(judge(joint,followup,vet),"SRC-C: Åpningen",
+    "Unconfirmed joint meeting must be manually reviewed");
+  assert.deepEqual(judge({...guidance,opening:"Takk for at du kom. Jeg vil høre din versjon."},followup,vet),[],
+    "Single-person opening must not trigger the joint-meeting alert");
+
+  const office={...neutralTc,id:"SRC-E-ORDINAER"};
+  const unauthorized={...neutralG,reactions:[{leader_response:"Før jeg bestemmer, må vi lytte til dere."}]};
+  needs(judge(unauthorized,neutralF,office),"SRC-E: Lederen",
+    "Manager cannot assume formal decision authority");
+  assert.deepEqual(judge({...neutralG,reactions:[{leader_response:"Jeg avklarer hvem som kan beslutte dette."}]},neutralF,office),[],
+    "Clarifying authority must not count as assuming it");
+
   console.log("KILDEAKSEPTANSE-EVALUATOR OK: 16 positive/negative kontrakter, proveniens, falsk verifikasjon og kildestøy; 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
