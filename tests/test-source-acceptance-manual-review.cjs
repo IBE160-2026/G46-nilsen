@@ -1,0 +1,467 @@
+// Sjekk at manuelt faglig godkjenningsskjema ikke kan «rubber-stampes».
+// Alle data er fiktive. Ingen KI, nettverk eller ekte personopplysninger.
+const assert=require("node:assert/strict");
+(async()=>{
+  const {createManualSourceReview,evaluateManualSourceReview}=await import(
+    "./support/source-acceptance-manual-review.mjs"
+  );
+  const tc={
+    id:"SRC-MANUAL",
+    manualMust:["Hør begge parter og dokumenter hendelsen","Bruk riktig rettskilde"],
+    manualCritical:["Konkluderer med skyld uten faktagrunnlag","Påstår feil tariffdekning"]
+  };
+  const sourceUrl="https://www.arbeidstilsynet.no/tema/arbeidsmiljo/";
+  const record={
+    issues:[],
+    guidance:{
+      opening:"Arbeidstakeren har rett til dialog om dette.",
+      legal_hr_note:"Etter arbeidsmiljøloven kan arbeidstaker kreve drøfting.",
+      evidence_sources:[{id:"AT",url:sourceUrl,evidenceRole:"model_selected"}],
+      legal_claim_review:{needsManualReview:true}
+    },
+    followup:{
+      reply:"Arbeidstakeren har rett til tilrettelegging etter lovverket.",
+      evidence_sources:[{id:"AT",url:sourceUrl,evidenceRole:"provider_url"}],
+      legal_claim_review:{needsManualReview:true}
+    }
+  };
+  const template=createManualSourceReview(tc,record);
+  const judge=(r=template,run=record)=>evaluateManualSourceReview(tc,run,r);
+  const clone=x=>structuredClone(x);
+  const has=(result,part)=>assert(result.problems.some(x=>x.includes(part)),
+    part+": "+JSON.stringify(result));
+  assert.equal(template.caseId,tc.id);
+  assert.equal(template.machineStatus,"MACHINE_CHECKED");
+  assert.equal(template.must.length,tc.manualMust.length);
+  assert.equal(template.critical.length,tc.manualCritical.length);
+  assert.equal(judge().state,"PENDING_REVIEW",
+    "Uutfylt rapport må aldri kunne bli godkjent");
+
+  const ready=clone(template);
+  ready.reviewer="kontrollør A";
+  ready.reviewedAt="2026-11-21";
+  ready.claimInventoryComplete=true;
+  ready.must.forEach(x=>{x.status="met";x.reason="Kontrollert mot situasjonen og svarets faktiske formuleringer";});
+  ready.critical.forEach(x=>{x.status="absent";x.reason="Undersøkt hele svarteksten, ingen kritisk feil funnet";});
+  ready.finalNotes="Begge svar er vurdert mot rubrikken, og det faglige grunnlaget er dokumentert.";
+  ready.claims=[{
+    answerPart:"first",
+    claimText:"Etter arbeidsmiljøloven kan arbeidstaker kreve drøfting.",
+    sourceUrl,
+    sourceExcerpt:"Dette er en fiktiv kildepassasje på mer enn tjue tegn for å prøve kontrollen.",
+    sourceCheckedAt:"2026-11-21",periodVerified:true,employerScopeVerified:true,
+    periodEvidence:"Kilden er manuelt kontrollert mot den aktuelle lovperioden for hendelsen.",
+    scopeEvidence:"Virksomhetens juridiske virkeområde er kontrollert opp mot den navngitte bestemmelsen.",
+    verdict:"supported",reason:"Det siterte avsnittet er manuelt vurdert opp mot akkurat denne påstanden."
+  }];
+  assert.equal(judge(ready).state,"REVIEWED_OK",
+    "Kun fullt dokumentert og kildekontrollert vurdering kan oppnå reviewed-ok");
+  const change=fn=>{const item=clone(ready);fn(item);return judge(item);};
+  const empty=change(x=>{x.claims=[];});
+  assert.equal(empty.state,"PENDING_REVIEW");
+  has(empty,"Registrer hver konkret rettspåstand");
+
+  const noEvidence=change(x=>{x.claims[0].sourceExcerpt="";});
+  assert.equal(noEvidence.state,"PENDING_REVIEW");
+  has(noEvidence,"oppgi konkret utdrag");
+
+  const wrongPart=change(x=>{x.claims[0].answerPart="followup";});
+  assert.equal(wrongPart.state,"PENDING_REVIEW");
+  has(wrongPart,"nøyaktig utsagn");
+
+  const newSource=change(x=>{x.claims[0].sourceUrl="https://example.com/annan";});
+  assert.equal(newSource.state,"PENDING_REVIEW");
+  has(newSource,"eksakt synlig kilde-URL");
+
+  const unverifiedPeriod=change(x=>{x.claims[0].periodVerified=false;});
+  assert.equal(unverifiedPeriod.state,"PENDING_REVIEW");
+  has(unverifiedPeriod,"dokumenter konkret avtale-/lovperiode");
+
+  const noPeriodDetails=change(x=>{x.claims[0].periodEvidence="";});
+  assert.equal(noPeriodDetails.state,"PENDING_REVIEW");
+  has(noPeriodDetails,"dokumenter konkret avtale-/lovperiode");
+  const noScopeDetails=change(x=>{x.claims[0].scopeEvidence="";});
+  assert.equal(noScopeDetails.state,"PENDING_REVIEW");
+  has(noScopeDetails,"dokumenter konkret arbeidsgiver-/tariffdekning");
+
+  const unclear=change(x=>{x.claims[0].verdict="unclear";});
+  assert.equal(unclear.state,"REJECTED");
+  has(unclear,"originalkilden støtter ikke");
+
+  const unsupported=change(x=>{x.claims[0].verdict="unsupported";});
+  assert.equal(unsupported.state,"REJECTED");
+
+  const critical=change(x=>{x.critical[0].status="present";});
+  assert.equal(critical.state,"REJECTED");
+  has(critical,"Kritisk faglig feil");
+
+  const mandatory=change(x=>{x.must[0].status="not_met";});
+  assert.equal(mandatory.state,"REJECTED");
+  has(mandatory,"Obligatorisk fagkriterium");
+
+  const blocked=judge(ready,{...record,issues:["Feil kildeproveniens"]});
+  assert.equal(blocked.state,"REJECTED");
+  has(blocked,"Maskinelle avvik");
+
+  const tamper=change(x=>{x.must[0].criterion="Noe helt annet";});
+  assert.equal(tamper.state,"PENDING_REVIEW");
+  has(tamper,"Fagkriterier kan ikke endres");
+
+  const noClaims=change(x=>{
+    x.claims=[];x.noMaterialClaims=true;
+  });
+  assert.equal(noClaims.state,"PENDING_REVIEW");
+  has(noClaims,"KI-varslet rettspåstander");
+
+  const clearFalseAlarm=change(x=>{
+    x.claims=[];x.noMaterialClaims=true;
+    x.falsePositiveExplanation="Ingen av utsagnene er faktisk kategoriske juridiske påstander; det er formulert som åpne samtalespørsmål.";
+  });
+  assert.equal(clearFalseAlarm.state,"REVIEWED_OK",
+    "Ved dokumentert manuell gjennomgang må falske positive signaler kunne avklares");
+
+  const invalidTime=change(x=>{x.reviewedAt="2026-02-30";});
+  assert.equal(invalidTime.state,"PENDING_REVIEW");
+  has(invalidTime,"gyldig kontroll-dato");
+
+  const incomplete=change(x=>{x.claimInventoryComplete=false;});
+  assert.equal(incomplete.state,"PENDING_REVIEW");
+  has(incomplete,"ALLE konkrete");
+
+  const wrongId=change(x=>{x.caseId="SRC-NOT-OUR-CASE";});
+  assert.equal(wrongId.state,"PENDING_REVIEW");
+  has(wrongId,"Ugyldig skjema");
+
+  assert.deepEqual(template,createManualSourceReview(tc,record),
+    "Evalueringen får aldri mutere eller forhåndsgodkjenne en blank rapport");
+  // Prøv også kommandolinje-kontrollen på fem falske, syntetiske saker.
+  // Ingen faktisk kontrollør eller originalkilde er benyttet i testen.
+  const fs=require("node:fs");
+  const path=require("node:path");
+  const os=require("node:os");
+  const {spawnSync}=require("node:child_process");
+  const root=path.resolve(__dirname,"..");
+  const allCases=JSON.parse(fs.readFileSync(
+    path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8"
+  )).cases;
+  const temp=fs.mkdtempSync(path.join(os.tmpdir(),"source-review-"));
+  try {
+    const createdAt="2026-11-21T01:01:01.000Z";
+    const run={createdAt,cases:allCases.map(tc=>({...clone(record),id:tc.id,issues:[]}))};
+    const reviewSet={
+      schemaVersion:1,sourceRunCreatedAt:createdAt,caseCount:allCases.length,
+      cases:allCases.map(tc=>createManualSourceReview(tc,run.cases.find(c=>c.id===tc.id)))
+    };
+    const runFile=path.join(temp,"run.json");
+    const reviewFile=path.join(temp,"review.json");
+    const script=path.join(root,"tests/check-source-acceptance-review.mjs");
+    const write=()=>{fs.writeFileSync(runFile,JSON.stringify(run));fs.writeFileSync(reviewFile,JSON.stringify(reviewSet));};
+    const invoke=()=>spawnSync(process.execPath,[script,runFile,reviewFile],{encoding:"utf8"});
+    write();
+    let proc=invoke();
+    assert.equal(proc.status,1,
+      "Ikke utfylt rapport må returnere exit 1 selv når automatiske kildetester var grønne");
+    assert.match(proc.stdout,/PENDING_REVIEW/);
+
+    for(const form of reviewSet.cases) {
+      form.reviewer="syntetisk-kontrollør";
+      form.reviewedAt="2026-11-21";
+      form.claimInventoryComplete=true;
+      form.noMaterialClaims=true;
+      form.falsePositiveExplanation="Dette er en syntetisk CLI-test; faglig kontroll er ikke utført og data er fiktive.";
+      form.finalNotes="Dette er en syntetisk enhetstest av fullstendighetskontrakten, ikke virkelig kvalitetssikring.";
+      for(const item of form.must) {
+        item.status="met";item.reason="Syntetisk bekreftelse brukt kun for å teste formelle krav";
+      }
+      for(const item of form.critical) {
+        item.status="absent";item.reason="Syntetisk bekreftelse brukt kun for å teste formelle krav";
+      }
+    }
+    write();proc=invoke();
+    assert.equal(proc.status,0,
+      "Komplett syntetisk skjema må bestå formell vurdering: "+proc.stderr+" "+proc.stdout);
+    assert.match(proc.stdout,/5\/5 faglig dokumenterte/);
+
+    reviewSet.sourceRunCreatedAt="2026-11-22T01:01:01.000Z";
+    write();proc=invoke();
+    assert.equal(proc.status,2,"Et skjema fra feil testkjøring kan ikke godkjennes");
+    assert.match(proc.stderr,/samme testkjøring/);
+  } finally {
+    fs.rmSync(temp,{recursive:true,force:true});
+  }
+
+
+  // Historisk ekte KI-run ble laget FØR nye menneskelige kriterier for
+  // veterinær-/kontorcase. Migrasjon skal bevare gamle vurderinger,
+  // etterspørre nye vurderinger og aldri endre originalfilen.
+  const sourceCases=JSON.parse(fs.readFileSync(
+    path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8"
+  )).cases;
+  const tempSync=fs.mkdtempSync(path.join(os.tmpdir(),"source-review-sync-"));
+  try {
+    const runDate="2026-11-25T13:47:13.670Z";
+    const oldCases=sourceCases.map(tc=>({
+      ...tc,
+      manualMust:["SRC-C-VETERINAER","SRC-E-ORDINAER"].includes(tc.id)
+        ? tc.manualMust.slice(0,-1) : tc.manualMust
+    }));
+    const run={createdAt:runDate,cases:oldCases.map(tc=>({
+      id:tc.id,manualMust:tc.manualMust,manualCritical:tc.manualCritical,issues:[]
+    }))};
+    const originalReview={
+      schemaVersion:1,sourceRunCreatedAt:runDate,caseCount:sourceCases.length,
+      cases:oldCases.map(tc=>createManualSourceReview(tc,run.cases.find(item=>item.id===tc.id)))
+    };
+    originalReview.cases[0].must[0].status="met";
+    originalReview.cases[0].must[0].reason="Eksisterende vurdering skal ikke forsvinne ved synkronisering.";
+    const runFile=path.join(tempSync,"run.json");
+    const reviewFile=path.join(tempSync,"manual-review.json");
+    const preparedFile=path.join(tempSync,"manual-review-aligned.json");
+    fs.writeFileSync(runFile,JSON.stringify(run),"utf8");
+    const originalText=JSON.stringify(originalReview);
+    fs.writeFileSync(reviewFile,originalText,"utf8");
+    const prepare=()=>spawnSync(process.execPath,[
+      path.join(root,"scripts/prepare-source-review.mjs"),runFile,reviewFile
+    ],{encoding:"utf8"});
+    let prep=prepare();
+    assert.equal(prep.status,0,"Forberedelse av gammelt skjema feilet: "+prep.stderr);
+    assert(fs.existsSync(preparedFile),"Forberedt vurderingsskjema mangler");
+    assert.equal(fs.readFileSync(reviewFile,"utf8"),originalText,
+      "Original manuell vurdering maa vaere uendret");
+    const aligned=JSON.parse(fs.readFileSync(preparedFile,"utf8"));
+    for(const caseId of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const item=aligned.cases.find(c=>c.caseId===caseId);
+      assert.equal(item.must.length,4,"Nytt fagkriterium maa legges til "+caseId);
+      assert.equal(item.must[3].status,"pending","Nytt fagkriterium maa ikke forhåndsgodkjennes");
+      assert.equal(item.must[3].reason,"");
+    }
+    assert.equal(aligned.cases[0].must[0].status,"met",
+      "Eksisterende kontrollstatus maa bevares");
+    assert.equal(aligned.cases[0].must[0].reason,originalReview.cases[0].must[0].reason);
+    const pendingCheck=spawnSync(process.execPath,[
+      path.join(root,"tests/check-source-acceptance-review.mjs"),runFile,preparedFile
+    ],{encoding:"utf8"});
+    assert.equal(pendingCheck.status,1,"Synkronisert, uferdig fil maa fremdeles vaere PENDING");
+    assert.match(pendingCheck.stdout,/0\/5 faglig dokumenterte/);
+    prep=prepare();
+    assert.notEqual(prep.status,0,"Forberedelse maa ikke overskrive tidligere generert vurdering");
+    // Det historiske rapportkravet maa aldri kunne fjernes eller omrokkeres.
+    const invalid=structuredClone(run);
+    invalid.cases.find(c=>c.id==="SRC-C-VETERINAER").manualMust[0]="Ukjent nytt krav";
+    fs.writeFileSync(runFile,JSON.stringify(invalid),"utf8");
+    fs.rmSync(preparedFile);
+    prep=prepare();
+    assert.notEqual(prep.status,0,"Historisk rapport med endrede kriterier maa avvises");
+  } finally {
+    fs.rmSync(tempSync,{recursive:true,force:true});
+  }
+
+  // Registrer dokumenterte feil fra 25.11.2026 som NOT_MET, men uten
+  // å røre originalen eller forhåndsgodkjenne kildekrav.
+  const findingsDir=fs.mkdtempSync(path.join(os.tmpdir(),"source-findings-"));
+  try{
+    const cases=JSON.parse(fs.readFileSync(path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8")).cases;
+    const date="2026-11-25T13:47:13.670Z";
+    const syntheticRun={createdAt:date,cases:cases.map(x=>({
+      id:x.id,guidance:{opening:x.id==="SRC-C-VETERINAER"?"Takk for at dere møter.":"",
+        reactions:x.id==="SRC-E-ORDINAER"?[{leader_response:"Før jeg bestemmer vil jeg høre dere."}]:[]},
+      followup:{reply:""},issues:[]
+    }))};
+    const aligned={
+      schemaVersion:1,sourceRunCreatedAt:date,caseCount:5,
+      cases:cases.map(tc=>createManualSourceReview(tc,syntheticRun.cases.find(x=>x.id===tc.id)))
+    };
+    const runFile=path.join(findingsDir,"run.json");
+    const reviewFile=path.join(findingsDir,"manual-review-aligned.json");
+    const outFile=path.join(findingsDir,"manual-review-aligned-findings.json");
+    fs.writeFileSync(runFile,JSON.stringify(syntheticRun));
+    const before=JSON.stringify(aligned,null,2);
+    fs.writeFileSync(reviewFile,before);
+    const tool=path.join(root,"scripts/record-source-review-findings.mjs");
+    const p=spawnSync(process.execPath,[tool,runFile,reviewFile],{encoding:"utf8"});
+    assert.equal(p.status,0,"Fagavvikskladd feilet: "+p.stderr);
+    assert.equal(fs.readFileSync(reviewFile,"utf8"),before,
+      "Opprinnelig aligned-skjema må ikke endres");
+    const after=JSON.parse(fs.readFileSync(outFile,"utf8"));
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const record=after.cases.find(x=>x.caseId===id);
+      assert.equal(record.must[3].status,"not_met","Faktisk observert feil må markeres");
+      assert(record.must[3].reason.length>=15);
+      assert.equal(record.claimInventoryComplete,false,"Kildekontroll må ikke auto-godkjennes");
+      assert.equal(record.reviewer,"","Kontrollør skal ikke forfalskes");
+    }
+    assert.equal(after.cases.find(x=>x.caseId==="SRC-A-UTESTENGING").must[0].status,"pending");
+    assert.equal(spawnSync(process.execPath,[tool,runFile,reviewFile],{encoding:"utf8"}).status===0,false,
+      "Fagavviksverktøy må nekte å overskrive ferdig utfil");
+  }finally{
+    fs.rmSync(findingsDir,{recursive:true,force:true});
+  }
+
+  // Påstandsvis arbeidskladd for den gamle kjøringen skal ha eksakt
+  // ordlyd og kilde fra samme svar, aldri automatisk kildegodkjenning.
+  const claimDir=fs.mkdtempSync(path.join(os.tmpdir(),"samtalestotte-claims-"));
+  try{
+    const scriptPath=path.join(root,"scripts/prepare-source-claim-draft.mjs");
+    const sourceCode=fs.readFileSync(scriptPath,"utf8");
+    const start=sourceCode.indexOf("const candidates=[");
+    const end=sourceCode.indexOf("];\nfor(const record of run.cases)",start);
+    assert(start>=0 && end>start,"Påstandskandidatene må være et statisk, inspiserbart oppsett");
+    const raw=sourceCode.slice(start+"const candidates=[".length,end);
+    const candidates=JSON.parse("["+raw+"]");
+    assert.equal(candidates.length,14,"Alle 14 identifiserte kandidatpåstander skal være med");
+    const all=JSON.parse(fs.readFileSync(
+      path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8"
+    )).cases;
+    const originalRun={createdAt:"2026-11-25T13:47:13.670Z",
+      cases:all.map(tc=>{
+        const first=candidates.filter(x=>x[0]===tc.id && x[1]==="first");
+        const later=candidates.filter(x=>x[0]===tc.id && x[1]==="followup");
+        const mkSources=list=>[...new Set(list.map(x=>x[3]))].map(id=>
+          id.startsWith("https://")
+            ? {url:id,evidenceRole:"provider_url"}
+            : {id,url:"https://example.org/evidence/"+id,evidenceRole:"model_selected"}
+        );
+        return {id:tc.id,issues:[],
+          guidance:{legal_hr_note:first.map(x=>x[2]).join(" "),evidence_sources:mkSources(first)},
+          followup:{reply:later.map(x=>x[2]).join(" "),evidence_sources:mkSources(later)}
+        };
+      })};
+    const originalReview={schemaVersion:1,sourceRunCreatedAt:originalRun.createdAt,
+      caseCount:5,cases:all.map(tc=>createManualSourceReview(
+        tc,originalRun.cases.find(r=>r.id===tc.id)
+      ))};
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const form=originalReview.cases.find(x=>x.caseId===id);
+      form.must[3].status="not_met";
+      form.must[3].reason="Dokumentert gammel KI-feil i møteform eller beslutningsmyndighet.";
+    }
+    const runFile=path.join(claimDir,"run.json");
+    const findingsFile=path.join(claimDir,"aligned-findings.json");
+    fs.writeFileSync(runFile,JSON.stringify(originalRun));
+    const reviewText=JSON.stringify(originalReview);
+    fs.writeFileSync(findingsFile,reviewText);
+    const execute=()=>spawnSync(process.execPath,[scriptPath,runFile,findingsFile],{
+      encoding:"utf8",env:{...process.env,SOURCE_CLAIM_DRAFT_SKIP_CLIPBOARD:"1"}
+    });
+    const processResult=execute();
+    assert.equal(processResult.status,0,
+      "Kildekladd skal bygges uten KI: "+processResult.stderr+" "+processResult.stdout);
+    const draftFile=path.join(claimDir,"aligned-findings-claim-draft.json");
+    const markdownFile=path.join(claimDir,"aligned-findings-claim-draft.md");
+    const draft=JSON.parse(fs.readFileSync(draftFile,"utf8"));
+    assert(fs.existsSync(markdownFile),"Lesbar kontrolliste må være skrevet");
+    assert.equal(fs.readFileSync(findingsFile,"utf8"),reviewText,
+      "Tidligere funnfil må forbli helt uendret");
+    const b4=draft.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER")
+      .claims.find(x=>x.claimText==="Du kan ikke kreve å få vite diagnosen.");
+    assert.equal(b4.sourceUrl,"https://www.nav.no/sykmeldt",
+      "Eksakt NAV-provider-URL var faktisk synlig i opprinnelig B-oppfølging");
+    const d3=draft.cases.find(x=>x.caseId==="SRC-D-BYGG-SHA")
+      .claims.find(x=>x.claimText.startsWith("Ved arbeid i høyden skal risiko"));
+    assert.equal(d3.sourceUrl,
+      "https://example.org/evidence/AT_WORK_EQUIPMENT_REGULATION",
+      "D3-kandidat skal knyttes til spesifikk forskrift vist i første svar");
+    assert.equal(draft.cases.reduce((n,x)=>n+x.claims.length,0),14);
+    for(const form of draft.cases){
+      assert.equal(form.claimInventoryComplete,false,"Ikke attestér full påstandskartlegging");
+      assert.equal(form.reviewer,"","Ingen automatisk faglig kontrollør");
+      for(const claim of form.claims){
+        assert.equal(claim.verdict,"","Kildestøtte må kontrolleres manuelt");
+        assert.equal(claim.sourceExcerpt,"","Ikke finn på utdrag fra kildene");
+        assert.equal(claim.periodVerified,false,"Ikke attestér lovperiode automatisk");
+        assert.equal(claim.employerScopeVerified,false,"Ikke attestér sektor/tariff automatisk");
+      }
+    }
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const form=draft.cases.find(x=>x.caseId===id);
+      assert.equal(form.must[3].status,"not_met","Historiske avvik skal bestå");
+    }
+    assert.notEqual(execute().status,0,
+      "Ikke overskriv eksisterende arbeidskladd");
+    const broken=structuredClone(originalRun);
+    broken.cases.find(x=>x.id==="SRC-D-BYGG-SHA").guidance.evidence_sources=[];
+    fs.writeFileSync(runFile,JSON.stringify(broken));
+    fs.rmSync(draftFile);
+    fs.rmSync(markdownFile);
+    assert.notEqual(execute().status,0,
+      "Kilde som ikke finnes i samme svar må avvises");
+  }finally{
+    fs.rmSync(claimDir,{recursive:true,force:true});
+  }
+
+
+  // Forbedre bare to KILDEKANDIDATER i den historiske lokale kladden,
+  // uten å endre allerede signerte vurderinger eller originalrapporten.
+  const repairDir=fs.mkdtempSync(path.join(os.tmpdir(),"samtalestotte-source-repair-"));
+  try {
+    const date="2026-11-25T13:47:13.670Z";
+    const defs=JSON.parse(fs.readFileSync(path.join(root,
+      "tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8")).cases;
+    const oldRun={createdAt:date,cases:defs.map(tc=>({
+      id:tc.id,
+      guidance:{evidence_sources:tc.id==="SRC-D-BYGG-SHA" ? [{
+        id:"AT_WORK_EQUIPMENT_REGULATION",evidenceRole:"model_selected",
+        url:"https://www.arbeidstilsynet.no/regelverk/forskrifter/forskrift-om-utforelse-av-arbeid"
+      }] : []},
+      followup:{evidence_sources:tc.id==="SRC-B-STAT-FRAVAER" ? [{
+        url:"https://www.nav.no/sykmeldt",evidenceRole:"provider_url"
+      }] : []}
+    }))};
+    const review={schemaVersion:1,sourceRunCreatedAt:date,caseCount:5,
+      cases:defs.map(tc=>createManualSourceReview(tc,
+        oldRun.cases.find(x=>x.id===tc.id)))};
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const item=review.cases.find(x=>x.caseId===id);
+      item.must[3].status="not_met";
+      item.must[3].reason="Gammel faktisk modelrespons var ikke tilstrekkelig.";
+    }
+    const empty={
+      sourceExcerpt:"",sourceCheckedAt:"",verdict:"",
+      periodVerified:false,employerScopeVerified:false,reason:""
+    };
+    review.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER").claims=[{
+      answerPart:"followup",claimText:"Du kan ikke kreve å få vite diagnosen.",
+      sourceUrl:"https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte",...empty
+    }];
+    review.cases.find(x=>x.caseId==="SRC-D-BYGG-SHA").claims=[{
+      answerPart:"first",
+      claimText:"Ved arbeid i høyden skal risiko vurderes før arbeidet starter, og nødvendige tiltak skal iverksettes på bakgrunn av vurderingen.",
+      sourceUrl:"https://www.arbeidstilsynet.no/hms/risikovurdering/",...empty
+    }];
+    const runPath=path.join(repairDir,"original.json"),
+      reviewPath=path.join(repairDir,"claim-draft.json");
+    const originalText=JSON.stringify(review);
+    fs.writeFileSync(runPath,JSON.stringify(oldRun),"utf8");
+    fs.writeFileSync(reviewPath,originalText,"utf8");
+    const command=()=>spawnSync(process.execPath,[
+      path.join(root,"scripts/refine-source-claim-draft.mjs"),runPath,reviewPath
+    ],{encoding:"utf8",env:{...process.env,SOURCE_REVIEW_SKIP_CLIPBOARD:"1"}});
+    let processResult=command();
+    assert.equal(processResult.status,0,
+      "Synkronisering av kildekandidater må virke: "+processResult.stderr);
+    assert.equal(fs.readFileSync(reviewPath,"utf8"),originalText,
+      "Opprinnelig kladd skal forbli uendret");
+    const output=JSON.parse(fs.readFileSync(
+      path.join(repairDir,"claim-draft-sources-refined.json"),"utf8"));
+    assert.equal(output.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER").claims[0].sourceUrl,
+      "https://www.nav.no/sykmeldt");
+    assert.equal(output.cases.find(x=>x.caseId==="SRC-D-BYGG-SHA").claims[0].sourceUrl,
+      "https://www.arbeidstilsynet.no/regelverk/forskrifter/forskrift-om-utforelse-av-arbeid");
+    assert.equal(output.cases.find(x=>x.caseId==="SRC-C-VETERINAER").must[3].status,
+      "not_met","Historisk M4-feil må forbli registrert");
+    assert.equal(output.cases[1].claimInventoryComplete,false,
+      "Kildesynlighet er aldri faglig godkjenning");
+    assert.notEqual(command().status,0,"Utfilen må ikke kunne overskrives");
+    const touched=structuredClone(review);
+    touched.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER").claims[0].sourceExcerpt=
+      "Kontrollør har allerede lagt til dokumentasjon og må bevares.";
+    fs.writeFileSync(reviewPath,JSON.stringify(touched),"utf8");
+    fs.rmSync(path.join(repairDir,"claim-draft-sources-refined.json"));
+    fs.rmSync(path.join(repairDir,"claim-draft-sources-refined.md"));
+    assert.notEqual(command().status,0,"Skal nekte å endre utfylt vurdering");
+  } finally {
+    fs.rmSync(repairDir,{recursive:true,force:true});
+  }
+
+  console.log("MANUELL KILDEAKSEPTANSE OK: krav, belegg, periode, kilde per svar, kritiske feil, uavklart og falsk positiv – 0 KI-kall");
+})().catch(e=>{console.error(e.stack||e);process.exitCode=1;});

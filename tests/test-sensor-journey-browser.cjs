@@ -83,7 +83,7 @@ async function serverHistory(){
 const caseText="En medarbeider har hatt flere korte fraværsperioder. Jeg ønsker å avklare en god oppfølging i arbeidshverdagen.";
 const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
 (async()=>{
-  const demo=start(process.execPath,["scripts/sensor-demo.js"],{PORT:String(PORT),HOST:"127.0.0.1",NODE_ENV:"test"});
+  const demo=start(process.execPath,["scripts/sensor-demo.js"],{PORT:String(PORT),HOST:"127.0.0.1",NODE_ENV:"test",SENSOR_DEMO_CLARIFICATIONS:"1"});
   await ready(BASE+"api/public-config",demo);
   const chrome=start(browser(),[
     "--headless=new","--no-sandbox","--disable-gpu","--disable-dev-shm-usage",
@@ -104,7 +104,13 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
     const previous=window.fetch.bind(window);
     window.fetch=(input,options={})=>{
       const url=new URL(typeof input==='string'?input:input.url,location.href);
-      if(url.pathname.startsWith('/api/'))window.__sensorCalls.push({path:url.pathname,method:String(options.method||'GET').toUpperCase()});
+      if(url.pathname.startsWith('/api/')){
+        let followups=null;
+        if(url.pathname==='/api/generate-guidance' && typeof options.body==='string'){
+          try{followups=JSON.parse(options.body).followups||null;}catch{}
+        }
+        window.__sensorCalls.push({path:url.pathname,method:String(options.method||'GET').toUpperCase(),followups});
+      }
       return previous(input,options);
     };
   })();`});
@@ -149,7 +155,24 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   assert.equal(await js(cdp,"window.__sensorCalls.filter(x=>x.path==='/api/analyze-situation'||x.path==='/api/generate-guidance').length"),0,
     "A blocked name must not trigger any advice-provider request");
   await js(cdp,"(()=>{const t=document.querySelector('#situation');t.value="+JSON.stringify(caseText)+";t.dispatchEvent(new Event('input',{bubbles:true}));document.querySelector('#situation-form').requestSubmit()})()");
-  await wait(cdp,"!document.querySelector('#prototype-result').hidden && document.querySelectorAll('#structured-guidance .guidance-card').length>=5","guidance from actual demo AI API");
+  // Vi må ikke gå direkte til KI-råd når analysen faktisk trenger avklaring.
+  await wait(cdp,"!document.querySelector('#followup-panel').hidden && document.querySelectorAll('#followup-questions [data-followup-question]').length===2","AI clarification questions shown in actual browser");
+  assert.equal(await js(cdp,"window.__sensorCalls.filter(x=>x.path==='/api/generate-guidance').length"),0,
+    "App must wait for clarification answers before generating guidance");
+  await keyboardActivate(cdp,'#followup-questions [data-followup-choice="current_work_status"][data-value="Tilbake i full jobb"]');
+  await keyboardActivate(cdp,'#followup-questions [data-followup-choice="support_need"][data-value="Forberede en samtale"]');
+  await keyboardActivate(cdp,'#followup-questions [data-followup-choice="support_need"][data-value="Avklare arbeidsoppgaver"]');
+  const selected=await js(cdp,"collectFollowupAnswers()");
+  assert.deepEqual(selected,{
+    current_work_status:"Tilbake i full jobb",
+    support_need:["Forberede en samtale","Avklare arbeidsoppgaver"]
+  },"Single-select and multi-select clarification answers must survive client serialization");
+  await keyboardActivate(cdp,"#generate-guidance");
+  await wait(cdp,"!document.querySelector('#prototype-result').hidden && document.querySelectorAll('#structured-guidance .guidance-card').length>=5","guidance from actual demo AI API after clarification");
+  const submitted=await js(cdp,"window.__sensorCalls.find(x=>x.path==='/api/generate-guidance')?.followups");
+  assert.deepEqual(submitted,selected,
+    "The actual browser must send all selected clarification answers to the advice endpoint");
+  console.log("AI clarification journey: dynamic questions -> keyboard single/multi-select -> server guidance with submitted answers: PASS");
   const core=await js(cdp,"({heading:document.querySelector('#guidance-title')?.textContent,opening:document.querySelector('#structured-guidance')?.textContent,ai:window.__sensorCalls.filter(x=>x.path==='/api/analyze-situation'||x.path==='/api/generate-guidance'),fallback:document.querySelector('#result-intro')?.textContent})");
   assert.ok(core.heading.toLowerCase().includes("fravær"));
   assert.ok(core.opening.includes("Forslag til åpning")&&core.opening.includes("Spørsmål som passer denne saken"));
@@ -218,7 +241,7 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   // The server history and account export are the authoritative deletion evidence.
   // Browser fetch-call traces reset on reload and are not a persistence assertion.
   assert.deepEqual(await js(cdp,"window.__sensorErrors"),[],"No uncaught browser errors in saved/reopened history");
-  console.log("Sensor browser journey: topic -> situation -> advice -> follow-up -> printed advice -> simulation -> reflection -> saved/reloaded history -> delete -> export empty: OK");
+  console.log("Sensor browser journey: topic -> situation -> answered clarifications -> advice -> follow-up -> printed advice -> simulation -> reflection -> saved/reloaded history -> delete -> export empty: OK");
   console.log("Proof: real Chrome DOM + real local Express sensor demo; no real AI/auth/Supabase/provider.");
 })().catch(error=>{console.error("Sensor browser journey FAILED:",error.stack||error);process.exitCode=1;}).finally(()=>{
   try{socket?.close();}catch{}

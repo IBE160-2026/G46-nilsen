@@ -1,7 +1,7 @@
 const assert = require("node:assert/strict");
 
 (async () => {
-  const { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } = await import("../src/server/source-retention.js");
+  const { employerScopedPrimaryLawBonus, isLegalSourceContext, joinSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } = await import("../src/server/source-retention.js");
 
   const ordinaryContext = {
     occupation: { occupationRelevant: false },
@@ -171,6 +171,25 @@ const assert = require("node:assert/strict");
   }), false, "Eksplisitt avkreftet advarsel skal ikke blåse opp kildegrunnlaget");
   assert.equal(isLegalSourceContext("Kan jeg gi en advarsel?"),true,"Advarsel er juridisk kontekst");
 
+  // Tidligere opplysninger var avkreftet, men et NYTT spørsmål kan
+  // introdusere et faktisk sikkerhets- eller rettslig kildebehov.
+  const originallyNegated = "Det har ikke vært noen trussel";
+  const newThreat = "Nå har medarbeideren uttalt en konkret trussel mot en kollega";
+  assert.equal(shouldRetainCuratedSources({
+    requestedTopic:"Samarbeid og kommunikasjon",subtopic:"Arbeidsdeling",
+    situation:originallyNegated,occupationContext:ordinaryContext
+  }),false,"Avkreftet trussel i opprinnelig situasjon skal ikke gi kildebelastning");
+  const splitContext = joinSourceContext(originallyNegated,newThreat);
+  assert(splitContext.includes("\n"),"Brukerytringer skal skilles med tydelig setningsgrense");
+  assert.equal(shouldRetainCuratedSources({
+    requestedTopic:"Samarbeid og kommunikasjon",subtopic:"Arbeidsdeling",
+    situation:splitContext,occupationContext:ordinaryContext
+  }),true,"Ny trussel i oppfølging må utløse kilder tross tidligere negasjon");
+  assert.equal(joinSourceContext("  Bare arbeidsdeling. ","  Hva gjelder nå?  "),
+    "Bare arbeidsdeling.\nHva gjelder nå?","Kontekstfunksjonen skal trimme og bevare ytringsgrense");
+  assert.equal(joinSourceContext("",newThreat),newThreat,"Tom opprinnelig situasjon må håndteres");
+  assert.equal(joinSourceContext(originallyNegated,""),originallyNegated,"Tom oppfølging må håndteres");
+  assert.equal(joinSourceContext(null,undefined),"","Mangler begge input skal ikke gi 'undefined'");
   console.log("SOURCE RETENTION OK: live-avvik + juridisk kilderangering + positive kontroller");
 })().catch(error => {
   console.error(error);

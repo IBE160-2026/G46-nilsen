@@ -112,5 +112,56 @@ const assert=require("assert");
   assert.strictEqual(dutyArrangement.relevant,true, "Vaktplan/vakttillegg skal fortsatt være avtale-relevant");
   assert.strictEqual(dutyArrangement.needsEmployerType,true);
 
+
+  // En eldre avkreftelse kan ikke undertrykke en ny reell lønns- eller
+  // arbeidstidssak. Dette skjedde tidligere fordi punktum forsvant
+  // før negasjonskontrollen.
+  const changedSituation=router.suggestAgreementAreas({
+    occupation:"rådgiver",employerType:"state",
+    topic:"Samarbeid og kommunikasjon",subtopic:"Arbeidsdeling",
+    situation:"Det var ingen diskusjon om lønn tidligere. Nå har en ansatt spørsmål om overtid."
+  });
+  assert.strictEqual(changedSituation.relevant,true,
+    "Ny overtidsdiskusjon må overstyre gammel avkreftelse i forrige setning");
+  assert(changedSituation.suggestions.some(x=>x.id==="state"),
+    "Kilden til statlig avtaleområde må bli mulig å undersøke ved ny overtidsdiskusjon");
+  assert(changedSituation.suggestions.every(x=>x.id==="state"),
+    "Statlig ansatt må aldri tilbys avtaleområder fra kommune, Spekter eller privat sektor");
+
+  const noTariff=router.suggestAgreementAreas({
+    occupation:"rådgiver",employerType:"state",
+    topic:"Samarbeid og kommunikasjon",subtopic:"Arbeidsdeling",
+    situation:"Dette handler ikke om lønn, arbeidstid, turnus, tillegg eller tariff. Kun oppgavefordeling."
+  });
+  assert.strictEqual(noTariff.relevant,false,
+    "Eksplisitt avkreftede tariffområder skal ikke føre til kildestøy");
+
+  const unpaidWages=router.suggestAgreementAreas({
+    occupation:"butikksjef",employerType:"private",
+    topic:"Samarbeid og kommunikasjon",subtopic:"Oppfølging",
+    situation:"En medarbeider sier: Jeg har ikke fått utbetalt lønn denne måneden."
+  });
+  assert.strictEqual(unpaidWages.relevant,true,
+    "Ikke fått lønn er en mulig lønns-/avtalesak, ikke et argument for å fjerne tariffkontekst");
+  assert(unpaidWages.suggestions.every(x=>!["state","municipal","health_enterprise"].includes(x.id)),
+    "Private arbeidsforhold må ikke få feil offentlige avtaleområder");
+
+  const deniedPay=router.suggestAgreementAreas({
+    occupation:"rådgiver",employerType:"state",
+    topic:"Samarbeid og kommunikasjon",subtopic:"Arbeidsdeling",
+    situation:"Ingen lønns- eller overtidsproblemer i tidligere perioder. Men nå mangler medarbeideren kveldstillegg."
+  });
+  assert.strictEqual(deniedPay.relevant,true,
+    "Et konkret nytt krav om tillegg må bli avtale-relevant");
+
+  const unknownEmployer=router.suggestAgreementAreas({
+    occupation:"rådgiver",employerType:"unknown",
+    topic:"Samarbeid og kommunikasjon",subtopic:"Arbeidsdeling",
+    situation:"Nå har vi et spørsmål om overtidsbetaling."
+  });
+  assert.strictEqual(unknownEmployer.relevant,true);
+  assert.deepStrictEqual(unknownEmployer.suggestions,[],
+    "Ukjent arbeidsgivertype må aldri gjette et avtaleområde");
+
   console.log("Avtaleruter OK: oppfølgingsspørsmål om arbeidsgivertype brukes bare når relevant");
 })().catch(err=>{console.error(err);process.exit(1);});

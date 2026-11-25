@@ -42,6 +42,20 @@ const assert = require('assert');
     assert(source.url, id + ': mangler URL');
   }
 
+  const preciseSources=[
+    ["NAV_SYKMELDT_DIAGNOSE","https://www.nav.no/sykmeldt","Fravær og oppfølging","diagnose"],
+    ["AT_ARBEID_I_HOYDEN","https://www.arbeidstilsynet.no/risikofylt-arbeid/arbeid-i-hoyden/","Sikkerhet og ansvar","arbeid i høyden"]
+  ];
+  for(const [id,url,topic,trigger] of preciseSources){
+    const source=sourceBank.sources.find(x=>x.id===id);
+    assert(source,id+": presis myndighetskilde mangler");
+    assert.equal(source.url,url,id+": kilde-URL må være autentisk myndighetsside");
+    assert(source.topics.includes(topic),id+": feil temakategorisering");
+    assert(source.use_when.includes(trigger),id+": mangler målrettet signal");
+    assert.equal(source.authority,"high",id+": verifisert myndighetsnivå forventes");
+    assert.equal(source.last_verified,"2026-11-25",id+": kildens kontrolltidspunkt mangler");
+  }
+
   assert(html.includes('complete-source-library'), 'Hjelp-siden mangler dynamisk kildebibliotek');
   assert(app.includes('loadCompleteSourceLibrary'), 'Klienten laster ikke dynamisk kildebibliotek');
   assert(server.includes('/api/help-source-library'), 'Serveren mangler API for kildebibliotek');

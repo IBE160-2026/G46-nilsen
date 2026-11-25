@@ -1,5 +1,7 @@
 # Innleveringskontroll – Samtalestøtte, IBE160
 
+> **Historisk status per 20.11.2026, ikke gjeldende innleveringsbeslutning.** PR #12 og PR #14 ble senere slått sammen med `main` samme dag. PR #15 er fortsatt et utkast. Se [oppdatert innleveringsstatus 25.11](INNLEVERINGSSTATUS-2026-11-25.md). Denne originale rapporten beholdes som sporbar historikk.
+
 **Revisjon:** 20. november 2026  
 **Skolerepo:** `IBE160-2026/G46-nilsen`  
 **Kandidat til vurdering:** `docs/ibe160-helhetlig-revisjon-20261118` (draft [PR #12](https://github.com/IBE160-2026/G46-nilsen/pull/12))  

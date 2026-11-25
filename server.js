@@ -8,15 +8,18 @@ import { fileURLToPath } from "node:url";
 import { createClient } from "@supabase/supabase-js";
 import { topicCatalog, topicClassificationSchema } from "./src/server/topic-contracts.js";
 import { historyPayload, rowToHistory } from "./src/server/history-contracts.js";
-import { normalizeSourceUrl, webSources, markdownWebSources, stripInlineSourceLinks, dedupeEvidenceSources } from "./src/server/source-normalization.js";
+import { normalizeSourceUrl, webSources, verifiedSupplementarySources, evidenceProvenance, markdownWebSources, stripInlineSourceLinks, stripGuidanceInlineLinks, annotateCuratedEvidence, annotateProviderEvidence, selectVisibleCuratedSourceIds, dedupeEvidenceSources } from "./src/server/source-normalization.js";
 import { sourceTier, buildHelpSourceLibrary } from "./src/server/help-library.js";
 import { createRelevantSourceSelector } from "./src/server/source-ranking.js";
+import { mergeGuidanceSourceCandidates } from "./src/server/source-merge.js";
+import { reviewLegalClaimSignals } from "./src/server/legal-claim-review.js";
+import { detectHistoricalSourceQuestion, resolveHistoricalSourceReview, isHistoricalAgreementCandidate, historicalSourceCaution } from "./src/server/historical-source-context.js";
 import { analysisSchema, createGuidanceSchema } from "./src/server/ai-schemas.js";
 import { createBenchmarkBudgetLedger } from "./src/server/benchmark-budget.js";
 import { createBenchmarkRpcBudgetLedger } from "./src/server/benchmark-budget-rpc.js";
 import { buildOccupationGuidanceContext } from "./src/server/occupation-context.js";
 import { getAgreementMap, shouldUseAgreementContext } from "./src/server/agreement-router.js";
-import { employerScopedPrimaryLawBonus, isLegalSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
+import { employerScopedPrimaryLawBonus, isLegalSourceContext, joinSourceContext, requiredEmployerScopedPrimaryLawIds, shouldRetainCuratedSources } from "./src/server/source-retention.js";
 import "./src/privacy-name-data.js";
 import "./src/privacy-detector.js";
 
@@ -312,6 +315,17 @@ async function createTrackedResponse(params) {
   try {
     const selectedClient = modelClient(modelUsed);
     if (!selectedClient) { const error=new Error(`API-nøkkel mangler for ${AI_MODELS[modelUsed]?.provider||'valgt provider'}.`); error.code='AI_PROVIDER_NOT_CONFIGURED'; throw error; }
+    // Standard Responses API utelater ellers søkets kildeobjekter i mange svar.
+    // Be eksplisitt om dem for web_search på OpenAI; ikke send provider-spesifikke
+    // include-felt til OpenRouter, der støtte ikke er garantert.
+    if (AI_MODELS[modelUsed]?.provider === "openai" &&
+        Array.isArray(cleanParams.tools) &&
+        cleanParams.tools.some(tool => tool?.type === "web_search")) {
+      cleanParams.include = [...new Set([
+        ...(Array.isArray(cleanParams.include) ? cleanParams.include : []),
+        "web_search_call.action.sources"
+      ])];
+    }
     const response = await selectedClient.responses.create({ ...cleanParams, model: modelUsed });
     const routedModel = AI_MODELS[modelUsed]?.provider === 'openrouter' ? String(response?.model || modelUsed) : modelUsed;
     const usageSummary = await logAiUsage({ functionName, modelUsed:routedModel, response, isTest, benchmarkRunId, benchmarkCaseId, topicId, subtopic });
@@ -1351,44 +1365,6 @@ const selectRelevantSources = createRelevantSourceSelector({
   employerScopedPrimaryLawBonus
 });
 
-function normalizeGuidanceCandidate(source = {}) {
-  if (!source?.id) return null;
-  return {
-    ...source,
-    sourceTier: source.sourceTier || sourceTier(source)
-  };
-}
-
-function mergeGuidanceSourceCandidates(generalSources = [], occupationContext = null, employerType = "") {
-  const prioritized = [];
-
-  if (occupationContext?.occupation?.occupationRelevant) {
-    prioritized.push(...(occupationContext.occupation.legalSources || []));
-  }
-
-  // For stat/kommune/helseforetak er arbeidsgivertypen tilstrekkelig konkret til
-  // å vise gjeldende avtaleområde som kandidat. Privat tariffdekning må fortsatt
-  // bekreftes og skal derfor ikke gjettes.
-  if (
-    occupationContext?.agreement?.relevant &&
-    !occupationContext?.agreement?.needsEmployerType &&
-    ["state","municipal","health_enterprise"].includes(employerType)
-  ) {
-    for (const area of occupationContext.agreement.suggestions || []) {
-      prioritized.push(...(area.curatedSources || []));
-    }
-  }
-
-  prioritized.push(...generalSources);
-
-  const seen = new Set();
-  return prioritized
-    .map(normalizeGuidanceCandidate)
-    .filter(Boolean)
-    .filter(source => source.id && !seen.has(source.id) && seen.add(source.id))
-    .slice(0, 10);
-}
-
 function publicSources(ids = []) {
   const wanted = new Set(ids);
   return [...wanted].map(id => allCuratedSourceById.get(id)).filter(Boolean).map(source => ({
@@ -1577,7 +1553,9 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   }
   if (blockUnsafeAiText(res, [situation, helpRequest, occupation], privacyNameOverrides)) return;
 
-  const task = `\n\n## Oppgave i denne forespørselen\nAnalyser situasjonen som samtalepartner, ikke som HR-klassifiserer.\n- Gjengi bare fakta som faktisk står i brukerens tekst.\n- Identifiser det menneskelige/praktiske dilemmaet, ikke bare en kategori.\n- Relevante temaer er kun metadata og skal være maks to.\n- Still bare avklaringsspørsmål dersom svarene kan endre rådet vesentlig.\n- Lag korte klikkbare svaralternativer som dekker sannsynlige svar uten å påstå at de er sanne.
+  const task = `\n\n## Oppgave i denne forespørselen\nAnalyser situasjonen som samtalepartner, ikke som HR-klassifiserer.\n- Gjengi bare fakta som faktisk står i brukerens tekst.\n- Identifiser det menneskelige/praktiske dilemmaet, ikke bare en kategori.\n- Relevante temaer er kun metadata og skal være maks to.\n- Still bare avklaringsspørsmål dersom svarene kan endre rådet vesentlig.
+- Ved uenighet mellom flere medarbeidere er møtesammensetning (separate eller felles samtaler) vesentlig hvis den endrer åpningsreplikk, habilitet eller trygghet; kartlegg den som en usikkerhet og spør ved behov.
+- Hvis fullmakt til å fordele arbeid, instruere eller fatte personalbeslutninger er ukjent og kan endre rådet, registrer dette under uncertainties og still et målrettet avklaringsspørsmål. Ikke la cautions omtale en slik vesentlig usikkerhet mens uncertainties er tom og needs_clarification er false.\n- Lag korte klikkbare svaralternativer som dekker sannsynlige svar uten å påstå at de er sanne.
 - Sett multi_select=true når flere svaralternativer realistisk kan være sanne samtidig eller brukeren kan trenge hjelp med flere ting. Bruk false når alternativene faktisk utelukker hverandre.\n- Spør aldri om diagnose eller unødvendige sensitive opplysninger.\n- Hvis valgt tema/undertema ikke passer teksten, skal friteksten veie tyngst.\n\nValgt tema i grensesnittet: ${selectedTopic || "ikke oppgitt"}\nValgt undertema: ${selectedSubtopic || "ikke oppgitt"}\nValgt yrke/stilling: ${occupation || "ikke oppgitt"}\nValgt arbeidsområde: ${sectorId || "ikke oppgitt"}\nArbeidsgivertype: ${employerType || "ikke oppgitt"}\nYrkesopplysninger skal bare påvirke analysen når de faktisk endrer risiko, regelverk eller praktisk råd. Ikke overjuridifiser en ordinær samtale.\nHva brukeren ønsker hjelp til: ${helpRequest || "ikke oppgitt"}\n`;
 
   try {
@@ -1646,6 +1624,11 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
 
   const resolvedTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const resolvedSubtopic = analysis?.primary_subtopic || subtopic || "";
+  // Felles vurderingstidspunkt gjennom hele dette KI-kallet. Gjør at en
+  // kilde ikke kan være gjeldende i én ruting, men utløpt i en annen
+  // dersom et forespørselsløp treffer norsk midnatt.
+  const sourceAsOf = new Date();
+  const historicalReview = detectHistoricalSourceQuestion(situation, sourceAsOf);
   const occupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({
         occupation,
@@ -1654,11 +1637,13 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
         employerContext,
         topic: resolvedTopic,
         subtopic: resolvedSubtopic,
-        situation
+        situation,
+        asOf: sourceAsOf,
+        historicalReview
       })
     : { enabled:false, prompt:"", occupation:null, agreement:null };
-  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic });
-  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType);
+  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic, asOf:sourceAsOf, historicalReview });
+  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType, sourceAsOf, historicalReview);
   const retainCuratedSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic,
@@ -1667,7 +1652,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
     employerType,
     occupationContext
   });
-  const relevantSources = retainCuratedSources ? mergedRelevantSources : [];
+  const relevantSources = retainCuratedSources
+    ? mergedRelevantSources.filter(source => isHistoricalAgreementCandidate(source, historicalReview)) : [];
   const occupationPrompt = occupationContext?.prompt ? "\n\n" + occupationContext.prompt + "\n" : "";
   const sourceSelectionHint = retainCuratedSources
     ? "Denne saken har et konkret faglig, rettslig, tariffmessig eller sikkerhetsmessig kildebehov. Prioriter den mest spesifikke relevante lov-, myndighets-, yrkes- eller avtale-kilden foran brede forsknings-/HR-kilder."
@@ -1687,6 +1673,8 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
 - Ved fravær, livssituasjon, belastning eller lignende: vis omsorg innenfor lederrollen, spør gjerne hvordan arbeidshverdagen fungerer og om relevant tilrettelegging kan hjelpe, uten å be om diagnose eller private detaljer.
 - Ved negativt utfall, for eksempel avslag, lønn, manglende måloppnåelse eller ikke å få en stilling: anerkjenn kort at dette er noe medarbeideren kan ha håpet på eller investert forventning i når saken gir grunnlag for det. Gi deretter utfallet tydelig, forklar vurderingen konkret uten å sammenligne med andre personer, og inviter til spørsmål. Ikke lov framtidig opprykk, lønn eller annet utfall som ikke er kjent.
 - Ved konflikt eller samarbeidsproblemer: unngå anklagende start. Beskriv hva lederen ønsker å forstå eller få til, og gjør det tydelig at medarbeiderens perspektiv skal få plass.
+- Ved uenighet mellom flere personer: Ikke anta at det er innkalt til felles møte. Hvis møtesammensetningen er ukjent, lag opening til én berørt person i en mulig første kartleggingssamtale og be lederen avklare separat eller felles møte i check_before_meeting. Ikke skriv «takk for at dere møter» eller andre replikker som forutsetter felles møte uten opplysninger om dette.
+- Ikke anta lederens fullmakter: Arbeidsleder, fagansvarlig eller møteleder har ikke nødvendigvis personalansvar eller beslutningsmyndighet. Hvis fullmakten ikke er oppgitt, kan lederen legge til rette for avklaring og foreslå en arbeidsdeling, men opening og leader_response skal ikke love at lederen alene vil bestemme, fatte personalsanksjoner eller endre arbeidsvilkår. Legg avklaring av beslutningsmyndighet under check_before_meeting når det er relevant.
 - Ved prestasjon og utvikling: start med formålet og konkrete observasjoner, ikke med en dom over personen. Skill mellom person og arbeid/prestasjon.
 - Ved akutt sikkerhet, mulig påvirkning, vold eller trusler: sikkerhet og tydelig handling kommer først. Omsorg kan komme etter at den akutte situasjonen er sikret.
 - Ved mulig oppsigelse, advarsel eller annen alvorlig formell oppfølging: vær respektfull og menneskelig, men ikke myk bort alvoret eller skap falsk trygghet om utfallet.
@@ -1710,13 +1698,19 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
 - Stilreferansene er eksempler på naturlig tone, ikke fasitsvar. Tilpass til fakta i saken og varier formuleringene.
 - Før du svarer, gjør to interne språksjekker: «Ville en god leder faktisk sagt dette høyt til et menneske uten å føle at hen leser fra et manus?» og «Har jeg ivaretatt personen uten å gjøre budskapet mindre tydelig?» Hvis nei på ett av dem, skriv opening om.
 
-## Resten av veiledningen\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Prioriter konkret fremfor komplett, muntlig fremfor formelt og kort fremfor uttømmende.\n- questions: gi 2–3 målrettede spørsmål. Hvert spørsmål skal ha en tydelig funksjon i akkurat saken.\n- reactions: gi normalt 2–3 plausible, situasjonsspesifikke reaksjoner. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- check_before_meeting: maks 3 konkrete forberedelser.\n- attention: maks 3 ting lederen særlig må passe på.\n- next_steps: maks 3 konkrete neste steg.\n- Ikke gjenta samme råd i flere seksjoner. Legg hvert poeng der det hører best hjemme.\n- Skill tydelig mellom hva lederen bør AVKLARE før møtet, hva lederen faktisk kan SI, og hva som eventuelt må kvalitetssikres faglig/juridisk.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk den kuraterte fagbanken som førstevalg og kvalitetsanker. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør støttes av relevante kilder.\n- KILDEHIERARKI FOR RETTSLIGE/FORMELLE PÅSTANDER: (1) gjeldende lov/forskrift, (2) relevant gjeldende tariff-/hovedavtale når avtaledekning er avklart, (3) myndighetsveiledning/arbeidsgiverveiledning, (4) spesialisert arbeidslivsveiledning. Forskning og faglige rammeverk skal IKKE brukes som bevis for hva arbeidsgiver juridisk må gjøre.\n- AKAN og IA er veiledning/arbeidslivsrammeverk, ikke lov. Ikke formuler deres anbefalinger som rettslige plikter.\n- Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant og tilstrekkelig avklart. Ikke anta KS, statlig HTA, Spekter eller privat overenskomst bare ut fra yrkestittel.\n- Ved konflikt mellom generell veiledning og bindende lov/forskrift skal lov/forskrift ha forrang. Ved konflikt mellom generell lov og sektor-/profesjonssærregel skal du markere at særregelen må kontrolleres og ikke gjette.\n- Kilder merket som authority_index/oppslagsinngang er gode steder å finne riktig regelverk, men skal ikke alene brukes som bevis for en konkret plikt eller rettighet. Finn den konkrete loven, forskriften eller veiledningen når påstanden er presis.\n- source_ids må kun inneholde ID-er fra de oppgitte kuraterte kildene. Velg 1–4 presise kilder når de faktisk passer. ${sourceSelectionHint}\n- Fagbanken er IKKE en lukket liste. Dersom saken trenger en mer presis, nyere eller manglende kilde, kan du bruke nettsøk og supplere med inntil 2 kilder. Prioriter norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning. Unngå blogger, markedsføring og tilfeldige rådssider.\n- supplementary_sources skal bare inneholde kilder du faktisk har funnet og brukt gjennom nettsøk. Ikke konstruer titler, forfattere eller lenker. Bruk tom liste hvis fagbanken er tilstrekkelig.\n- Ikke skriv rå URL-er eller Markdown-lenker inne i legal_hr_note eller de andre rådfeltene. Kilder skal registreres i source_ids/supplementary_sources og vises separat i grensesnittet.\n- Hvis du bruker en konkret webkilde til en påstand i legal_hr_note, SKAL den samme kilden også ligge i supplementary_sources.\n- Kildepresisjon: En kilde må støtte den konkrete påstanden den står ved. Ikke bruk en side bare fordi den nevner et beslektet tema.\n- Organisasjonsattribusjon: Skriv bare «Akan anbefaler», «Arbeidstilsynet sier» eller tilsvarende når kilden faktisk er fra den organisasjonen eller tydelig dokumenterer akkurat den attribusjonen. Ellers formuler rådet uten organisasjonsnavn.\n- Hvis fagbanken allerede dekker påstanden godt, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridisk sensitivitet: prioriter gjeldende norsk lov/myndighetskilde og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring når nødvendig, uten å konkludere definitivt. For andre faglige spørsmål skal kompetansen matches til problemet, for eksempel samtalefag/organisasjonspsykologi, HMS, HR/arbeidsliv eller helse.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n${occupationPrompt}\n`;
+## Resten av veiledningen\n- Bruk brukerens situasjon, situasjonsanalysen og avklaringssvarene som én samlet kontekst.\n- Prioriter konkret fremfor komplett, muntlig fremfor formelt og kort fremfor uttømmende.\n- questions: gi 2–3 målrettede spørsmål. Hvert spørsmål skal ha en tydelig funksjon i akkurat saken.\n- reactions: gi normalt 2–3 plausible, situasjonsspesifikke reaksjoner. Ikke bruk generelle følelseskategorier med mindre konteksten faktisk gjør dem relevante.
+- Dersom kjønn ikke er oppgitt i situasjonen, bruk kjønnsnøytralt «hen» og «hens» om enkeltpersoner i reaction og andre beskrivelser. Ikke skriv «han eller hun» eller gjett kjønn.\n- For hver reaksjon: forklar kort hvorfor den er plausibel og hvordan lederen kan møte den. Ikke påstå at medarbeideren vil reagere slik.\n- check_before_meeting: maks 3 konkrete forberedelser.\n- attention: maks 3 ting lederen særlig må passe på.\n- next_steps: maks 3 konkrete neste steg.\n- Ikke gjenta samme råd i flere seksjoner. Legg hvert poeng der det hører best hjemme.\n- Skill tydelig mellom hva lederen bør AVKLARE før møtet, hva lederen faktisk kan SI, og hva som eventuelt må kvalitetssikres faglig/juridisk.\n- Ikke be om diagnose eller medisinske detaljer.\n- Ikke dikt opp virksomhetens regler, fakta, forskning eller rettsregler.\n- Bruk den kuraterte fagbanken som førstevalg og kvalitetsanker. Vanlige samtaleråd trenger ikke kilde. Kritiske, rettslige eller tydelig faglige råd bør støttes av relevante kilder.\n- KILDEHIERARKI FOR RETTSLIGE/FORMELLE PÅSTANDER: (1) gjeldende lov/forskrift, (2) relevant gjeldende tariff-/hovedavtale når avtaledekning er avklart, (3) myndighetsveiledning/arbeidsgiverveiledning, (4) spesialisert arbeidslivsveiledning. Forskning og faglige rammeverk skal IKKE brukes som bevis for hva arbeidsgiver juridisk må gjøre.\n- AKAN og IA er veiledning/arbeidslivsrammeverk, ikke lov. Ikke formuler deres anbefalinger som rettslige plikter.\n- Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant og tilstrekkelig avklart. Ikke anta KS, statlig HTA, Spekter eller privat overenskomst bare ut fra yrkestittel.\n- Ved konflikt mellom generell veiledning og bindende lov/forskrift skal lov/forskrift ha forrang. Ved konflikt mellom generell lov og sektor-/profesjonssærregel skal du markere at særregelen må kontrolleres og ikke gjette.\n- Kilder merket som authority_index/oppslagsinngang er gode steder å finne riktig regelverk, men skal ikke alene brukes som bevis for en konkret plikt eller rettighet. Finn den konkrete loven, forskriften eller veiledningen når påstanden er presis.\n- source_ids må kun inneholde ID-er fra de oppgitte kuraterte kildene. Velg 1–4 presise kilder når de faktisk passer. ${sourceSelectionHint}\n- Fagbanken er IKKE en lukket liste. Dersom saken trenger en mer presis, nyere eller manglende kilde, kan du bruke nettsøk og supplere med inntil 2 kilder. Prioriter norsk lov/myndighet, anerkjente fagmiljøer, systematiske oversikter/meta-analyser og fagfellevurdert forskning. Unngå blogger, markedsføring og tilfeldige rådssider.\n- supplementary_sources skal bare inneholde kilder du faktisk har funnet og brukt gjennom nettsøk. Ikke konstruer titler, forfattere eller lenker. Bruk tom liste hvis fagbanken er tilstrekkelig.\n- Ikke skriv rå URL-er eller Markdown-lenker inne i legal_hr_note eller de andre rådfeltene. Kilder skal registreres i source_ids/supplementary_sources og vises separat i grensesnittet.\n- Hvis du bruker en konkret webkilde til en påstand i legal_hr_note, SKAL den samme kilden også ligge i supplementary_sources.\n- Kildepresisjon: En kilde må støtte den konkrete påstanden den står ved. Ikke bruk en side bare fordi den nevner et beslektet tema.
+- Ved en kategorisk påstand om at arbeidsgiver IKKE kan kreve diagnose: vis en konkret NAV-/myndighetskilde der akkurat denne retten eller begrensningen uttrykkelig fremgår. En generell veiledning om tema i dialogmøtet er ikke alene samme påstand.
+- Ved arbeidsoperasjoner i høyden: prioriter en konkret kilde om arbeid i høyden eller aktuell forskrift framfor bare generelle sider om risikovurdering, og knytt spesifikke fallsikringskrav til riktig grunnlag.
+- Ved SHA-arbeid: skill uttrykkelig byggherrens ansvar for SHA-plan og oppdateringer, koordinators oppgaver og arbeidsgiverens risikovurdering og informasjon til egne ansatte. Gjør ikke ansvarsskillet uklart i formuleringen.
+- Hvis SHA-planen må oppdateres og brukerens myndighet er ukjent, skriv «få byggherren eller den som har fått oppgaven delegert til å sørge for oppdatering», ikke bare «oppdater SHA-planen» rettet mot lederen. Arbeidsgiver melder fra om endringsbehov og informerer egne ansatte.
+- Ved fare eller uavklart sikkerhet: råd om å avvente eller stanse risikofylt arbeid kan være en forsiktighetsregel, men ikke fremstill enhver ukjent risiko som en ubetinget lovplikt til å stanse. Oppgi vilkår og ansvarlig rolle dersom du viser til et konkret lovkrav.\n- Organisasjonsattribusjon: Skriv bare «Akan anbefaler», «Arbeidstilsynet sier» eller tilsvarende når kilden faktisk er fra den organisasjonen eller tydelig dokumenterer akkurat den attribusjonen. Ellers formuler rådet uten organisasjonsnavn.\n- Hvis fagbanken allerede dekker påstanden godt, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridisk sensitivitet: prioriter gjeldende norsk lov/myndighetskilde og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring når nødvendig, uten å konkludere definitivt. For andre faglige spørsmål skal kompetansen matches til problemet, for eksempel samtalefag/organisasjonspsykologi, HMS, HR/arbeidsliv eller helse.\n\nSituasjonsanalyse fra første KI-steg: ${JSON.stringify(analysis || {})}\nAvklaringssvar: ${JSON.stringify(followups || {})}\n\n## Relevante, kvalitetssikrede kilder i fagbanken\n${JSON.stringify(relevantSources)}\n${occupationPrompt}\n`;
 
   try {
     const response = await createTrackedResponse({
       _functionName:'veiledning', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, ...flattenTextValues(followups)], _privacyNameOverrides:privacyNameOverrides, _isTest:adminPilotTest,
       tools: [{ type: "web_search", search_context_size: "low" }],
-      instructions: systemPrompt + guidanceTask,
+      instructions: systemPrompt + guidanceTask + (historicalReview ? "\n\n" + historicalSourceCaution(historicalReview) : ""),
       input: [{ role: "user", content: [{ type: "input_text", text: situation.trim() }] }],
       text: {
         format: {
@@ -1732,22 +1726,34 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const selectedSourceIds = (Array.isArray(parsed.source_ids) ? parsed.source_ids : [])
       .filter(id => allowedCandidateIds.has(id));
     const requiredPrimaryLawIds = requiredEmployerScopedPrimaryLawIds(relevantSources, employerType);
-    const finalSourceIds = retainCuratedSources
-      ? [...new Set([...requiredPrimaryLawIds, ...selectedSourceIds])].slice(0, 4)
-      : [];
+    const selection = selectVisibleCuratedSourceIds({
+      automaticIds: retainCuratedSources ? requiredPrimaryLawIds : [],
+      modelSelectedIds: retainCuratedSources ? selectedSourceIds : []
+    });
+    const finalSourceIds = selection.visibleIds;
     parsed.source_ids = finalSourceIds;
-    const curated = publicSources(finalSourceIds);
+    // Skille mellom referanser KI faktisk valgte, systemets automatiske
+    // lovpåminnelser og nettsøktreff. Ingen av disse er innholdsverifisert.
+    const curated = annotateCuratedEvidence(publicSources(finalSourceIds), selection.visibleModelSelectedIds);
     const verifiedWebSources = webSources(response);
-    const supplementary = retainCuratedSources
-      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
-          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
-          .filter(source => source?.url && verifiedWebSources.has(source.url))
-      : [];
+    const supplementary = annotateProviderEvidence(retainCuratedSources
+      ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWebSources)
+      : []);
     parsed.supplementary_sources = supplementary;
-    const citedInLegalNote = retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : [];
+    const citedInLegalNote = annotateProviderEvidence(
+      retainCuratedSources ? markdownWebSources(parsed.legal_hr_note, verifiedWebSources) : []
+    );
     const evidenceSources = dedupeEvidenceSources([...curated, ...supplementary, ...citedInLegalNote]);
+    const legalClaimReview = reviewLegalClaimSignals([
+      parsed.opening, parsed.legal_hr_note,
+      ...(parsed.questions || []), ...(parsed.attention || []),
+      ...(parsed.check_before_meeting || []), ...(parsed.next_steps || []),
+      ...(parsed.reactions || []).flatMap(item =>
+        [item.reaction, item.why_plausible, item.leader_response]
+      )
+    ], evidenceSources);
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
-    return res.json({ ...parsed, legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
+    return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, legal_claim_review: legalClaimReview, source_provenance: evidenceProvenance(response, selection.visibleModelSelectedIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
@@ -1798,12 +1804,14 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   if (blockUnsafeAiText(res, [situation, question, ...flattenTextValues(followups)])) return;
   const continueTopic = analysis?.primary_topic || analysis?.topic || topicId || "";
   const continueSubtopic = analysis?.primary_subtopic || subtopic || "";
-  const continueSituation = `${situation || ""} ${question || ""}`;
+  const continueSituation = joinSourceContext(situation, question);
+  const continueSourceAsOf = new Date();
+  const continueHistoricalReview = resolveHistoricalSourceReview({ situation, question, asOf:continueSourceAsOf });
   const continueOccupationContext = occupationContextEnabled
-    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation })
+    ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview })
     : { prompt:"", occupation:null, agreement:null };
-  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic });
-  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType);
+  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview });
+  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType, continueSourceAsOf, continueHistoricalReview);
   const retainContinueSources = shouldRetainCuratedSources({
     requestedTopic: topicId,
     resolvedTopic: continueTopic,
@@ -1812,9 +1820,14 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     employerType,
     occupationContext: continueOccupationContext
   });
-  const relevantSources = retainContinueSources ? mergedContinueSources : [];
+  const relevantSources = retainContinueSources
+    ? mergedContinueSources.filter(source => isHistoricalAgreementCandidate(source, continueHistoricalReview)) : [];
   const continueOccupationPrompt = continueOccupationContext?.prompt ? "\n\n" + continueOccupationContext.prompt + "\n" : "";
-  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.\n- Hvis fagbanken er tilstrekkelig, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridiske, arbeidsrettslige eller andre etterprøvbare faglige påstander: velg 1–4 presise kilde-ID-er fra "Relevante kilder i fagbanken" og legg dem i source_ids. Ikke finn på kilder eller kilde-ID-er.\n- supplementary_sources skal bare inneholde inntil 2 kilder du faktisk har funnet gjennom nettsøk. Ikke konstruer URL-er, forfattere eller kildetitler.\n- Hvis saken ikke krever konkret kilde, returner tomme lister i source_ids og supplementary_sources.\n- Ikke legg rå URL-er eller Markdown-lenker i reply. Kilder skal ligge i source_ids/supplementary_sources og presenteres separat i grensesnittet.\n- Hold svaret kort, direkte og situasjonsnært.
+  const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.
+- Hvis du påstår at arbeidsgiver ikke kan kreve diagnose, velg kilde som uttrykkelig dokumenterer dette (ikke bare kilde om hva dialogmøtet bør handle om).
+- Ved arbeid i høyden må spesifikke sikkerhetspåstander underbygges med spesifikk veiledning eller forskrift for høydearbeid. Skill byggherre/koordinator/arbeidsgiver der SHA-plikt omtales.
+- Skriv tydelig HVEM som må oppdatere SHA-planen når du gir steg-for-steg-råd: byggherren skal sørge for oppdatering, eventuelt via den som er gitt oppgaven; arbeidsgiver informerer byggherren og egne ansatte. Ikke bruk ubestemt «oppdater SHA-planen» til lederen uten avklart rolle.
+- Skill praktisk forsiktighetsråd om å stoppe eller utsette arbeid ved risiko fra en ubetinget juridisk stansplikt. Juridiske plikter må ha korrekt fareterskel og pliktsubjekt.\n- Hvis fagbanken er tilstrekkelig, ikke bruk nettsøk bare for å legge til flere lenker.\n- Ved juridiske, arbeidsrettslige eller andre etterprøvbare faglige påstander: velg 1–4 presise kilde-ID-er fra "Relevante kilder i fagbanken" og legg dem i source_ids. Ikke finn på kilder eller kilde-ID-er.\n- supplementary_sources skal bare inneholde inntil 2 kilder du faktisk har funnet gjennom nettsøk. Ikke konstruer URL-er, forfattere eller kildetitler.\n- Hvis saken ikke krever konkret kilde, returner tomme lister i source_ids og supplementary_sources.\n- Ikke legg rå URL-er eller Markdown-lenker i reply. Kilder skal ligge i source_ids/supplementary_sources og presenteres separat i grensesnittet.\n- Hold svaret kort, direkte og situasjonsnært.
 - Svar på akkurat spørsmålet som ble stilt; ikke skriv hovedveiledningen på nytt.
 - Sikt mot ca. 90–160 ord. Gå bare over dette når det er nødvendig av sikkerhets- eller juridiske grunner.
 - Bruk maksimalt 4 korte avsnitt eller 3 korte punkter.
@@ -1828,7 +1841,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     const response = await createTrackedResponse({
       _functionName:'oppfolging', _userId:req.user.id, _topicId:topicId || null, _subtopic:subtopic || null, _privacyTexts:[situation, question, ...flattenTextValues(followups)],
       tools: [{ type: "web_search", search_context_size: "low" }],
-      instructions: systemPrompt + continueTask,
+      instructions: systemPrompt + continueTask + (continueHistoricalReview ? "\n\n" + historicalSourceCaution(continueHistoricalReview) : ""),
       input: [{ role: "user", content: [{ type: "input_text", text: question.trim() }] }],
       text: {
         format: {
@@ -1845,24 +1858,31 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
     const scopedLaws = isLegalSourceContext(question)
       ? requiredEmployerScopedPrimaryLawIds(relevantSources, employerType)
       : [];
-    const finalIds = retainContinueSources ? [...new Set([...scopedLaws, ...selectedIds])].slice(0, 4) : [];
+    const continueSelection = selectVisibleCuratedSourceIds({
+      automaticIds: retainContinueSources ? scopedLaws : [],
+      modelSelectedIds: retainContinueSources ? selectedIds : []
+    });
+    const finalIds = continueSelection.visibleIds;
     const verifiedWeb = webSources(response);
-    const supplementary = retainContinueSources
-      ? (Array.isArray(parsed.supplementary_sources) ? parsed.supplementary_sources : [])
-          .map(source => ({ ...source, url: normalizeSourceUrl(source?.url) }))
-          .filter(source => source.url && verifiedWeb.has(source.url))
-          .slice(0, 2)
-      : [];
-    // Bare kilde-ID-er fra vår kildebank og lenker bekreftet av faktisk nettsøk.
-    // Modellens eventuelle lenker i svarteksten kan være uriktige og vises ikke som dokumentasjon.
-    const citedInReply = retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : [];
+    const supplementary = annotateProviderEvidence(retainContinueSources
+      ? verifiedSupplementarySources(parsed.supplementary_sources, verifiedWeb)
+      : []);
+    // Kildetype her er PROVENIENS, ikke faglig godkjenning. En lovkilde som
+    // systemet tilføyer automatisk må ikke se ut som en modellvalgt henvisning.
+    const citedInReply = annotateProviderEvidence(
+      retainContinueSources ? markdownWebSources(parsed.reply, verifiedWeb) : []
+    );
     const evidenceSources = dedupeEvidenceSources([
-      ...publicSources(finalIds), ...supplementary, ...citedInReply
+      ...annotateCuratedEvidence(publicSources(finalIds), continueSelection.visibleModelSelectedIds),
+      ...supplementary, ...citedInReply
     ]);
+    const continueClaimReview = reviewLegalClaimSignals([parsed.reply], evidenceSources);
     return res.json({
       reply: stripInlineSourceLinks(parsed.reply),
-      suggestions: parsed.suggestions,
+      suggestions: parsed.suggestions.map(stripInlineSourceLinks),
       evidence_sources: evidenceSources,
+      legal_claim_review: continueClaimReview,
+      source_provenance: evidenceProvenance(response, continueSelection.visibleModelSelectedIds, evidenceSources),
       ai: true,
       model: responseModel(response)
     });

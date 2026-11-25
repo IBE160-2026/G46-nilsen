@@ -13,8 +13,8 @@ Denne korte oppskriften gjør det mulig å kjøre **den lokale, deterministiske 
 ```bash
 git clone https://github.com/IBE160-2026/G46-nilsen.git
 cd G46-nilsen
-# Kun for å undersøke revisjonskandidaten i draft-PR #12:
-git switch docs/ibe160-helhetlig-revisjon-20261118
+# Bruk den publiserte hovedgrenen (main):
+git switch main
 npm ci
 npm run demo
 ```
@@ -30,9 +30,15 @@ npm run audit:submission
 
 Den siste kommandoen er en **lokal sporbarhetskontroll**, ikke bekreftelse fra Canvas. Browser-/Supabase-integrasjonstestene i GitHub Actions har egne CI-forutsetninger; beskrivelsene og eksakte bevisene finnes i [innleveringskontrollen](docs/INNLEVERINGSKONTROLL-2026-11-20.md).
 
-**Viktig for faktisk vurdering:** Sensorveiledningen for del 1 sier at sensor henter gruppens repo og siste commit innen fristen, og følger README. Kommandoen `git switch` ovenfor er **kun for å inspisere revisjonskandidaten**, ikke et tegn på at denne grenen er godkjent som innlevering. `main` og PR #12 er fortsatt ulike; hvilken commit/gren som faktisk skal vurderes må avklares mot Canvas før levering. Koden med full integrasjon og egne nøkler er beskrevet lenger ned.
+**Viktig for faktisk vurdering:** Sensorveiledningen for del 1 beskriver at sensor henter gruppens repo og følger README. Kommandoen ovenfor starter dagens `main`, ikke utkastet i PR #15. Kildeendringene i PR #15 blir ikke med før en uttrykkelig godkjent merge. Endelig innleveringsgren og Canvas-krav må fortsatt verifiseres; kildeendringene er ikke automatisk godkjent for produksjon.
 
-## Prosjektstatus, testbevis og innleveringsgrense – 20.11.2026
+**Oppdatert repo- og innleveringsstatus per 25.11.2026:** PR #12 og PR #14 ble slått sammen til `main` 20.11.2026. PR #15 (kildeproveniens, kildekontroll, yrkeskilder og KI-akseptansetester) er fortsatt `draft` på `fix/evidence-sources-20261120`. Alle tre jobber i siste kontrollerte Quality Gate for PR #15 var bestått, men dette er **ikke** en faglig kilde- eller produksjonsgodkjenning. `main` inneholder ennå ikke PR #15. Se [oppdatert innleveringsstatus 25.11](docs/INNLEVERINGSSTATUS-2026-11-25.md). En merge kan utløse Render auto-deploy; dette er **ikke verifisert** og må avklares før sammenslåing.
+
+## Historisk prosjektstatus og testbevis – 20.11.2026
+
+**Dette er en bevart status fra 20. november, ikke dagens beslutning.** PR #12 ble slått sammen senere samme dag, og PR #14 ble også slått sammen. For gjeldende repo-status, se innleveringsstatus datert 25. november.
+
+### Prosjektstatus, testbevis og innleveringsgrense – 20.11.2026
 
 **Leveransestatus:** [Innleveringskontroll 20.11](docs/INNLEVERINGSKONTROLL-2026-11-20.md) er fasit for hva som kan dokumenteres. **PR #12 (125 endrede filer) er draft, og `main` inneholder ikke disse revisjonsendringene.** Leveransegren, Canvas-krav og studentens godkjenning er ikke avklart; ingen merge eller deploy er foretatt. Kjør `npm run audit:submission` for en lokal, offline sjekk. **Ikke oppgi at PR-CI er CI for `main`.**
 
@@ -206,6 +212,7 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 - `docs/ai/TEST-FASIT-OG-SPORBARHET.md` – golden/fasit og kravspor
 - `docs/SOURCEBANK.md` – kuratert kilde- og faggrunnlag
 - `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md` – gjennomgang av alle yrker/sektorer og særkilder
+- `docs/KILDEDEKNING-OG-SPORBARHET-2026-11-20.md` – revidert oversikt over alle 15 sektorvalg, kildehierarki, web-søk-sporbarhet, 28 nye positive/negative sektorprøver og begrensninger før ekte KI-test
 - `docs/DOKUMENTASJON-SYNK-2026-11-08.md` – synk av implementasjon og dokumentasjon etter arbeidsrunden 08.11
 - `docs/KODESTRUKTUR-OPPRYDDING-2026-11-08.md` – vedlikeholdbarhet og filopprydding
 - `docs/SIKKERHET-OG-PERSONVERN-v20.4.md` – sikkerhet og personvern
@@ -279,6 +286,14 @@ Yrkes-/sektorlaget er koblet til den ordinære brukerflyten og har nå et eget a
 Som vedlikeholdsgrep er den tidligere ca. 9 389 linjer lange `styles.css` splittet i tre moduler, mens `styles.css` beholdes som et lite inngangspunkt. Se dokumentasjonssynken og oppryddingsrapporten for detaljer.
 
 
+## Kildedekning og etterprøvbarhet – 20.11.2026
+
+Nye kilder og testkontrakter ligger på feilrettingsgrenen. Denne runden kontrollerer **hva som er registrert**, **hva som sendes til KI** og **hva som blir vist som kilde** – tre ulike nivåer. Det er 99 oppføringer i yrkes- og sektorregisteret, 59 generelle fagkilder og separate avtale-/tariffkilder. En registrert URL er ikke bevis for at KI har åpnet og lest siden.
+
+Den deterministiske sektorprøven har ett positivt og ett negativt scenario for hver av 14 navngitte sektorer, mens «Annet» er et separat sektor-nøytralt valg. Ekte KI- og kildepresisjon må fortsatt verifiseres manuelt med anonymiserte saker før produksjon. Se [revisjonen av kildedekning og sporbarhet](docs/KILDEDEKNING-OG-SPORBARHET-2026-11-20.md).
+
+**Driftsforbehold:** `OCCUPATION_CONTEXT_ENABLED` står til `false` som standard i serverkoden. Hjelp kan vise sektorregisteret også når KI-tilpasning er av. Render-miljøvariabelen og resultatene med ekte KI må kontrolleres før man hevder at alle sektorkildene brukes i produksjon.
+
 ## Kildekvalitet – revisjon 08.11.2026
 
 Kildegrunnlaget er kvalitetsrevidert med fokus på autoritet, relevans og faktisk anvendelse fremfor antall lenker.
@@ -311,6 +326,54 @@ Se `docs/ai/AI-VERIFICATION-ROUND-2026-11-08.md` for metode, funn, feilklassifis
 
 **Live-status 09.11.2026:** Den strenge 40-case occupation-golden-suiten er nå også kjørt lokalt mot `gpt-5.6-luna`: **40/40 OK, 0 Bør sjekkes, 0 kritiske avvik og 0 tekniske feil**. Resultatet er et dokumentert regressjonsresultat for disse casene, ikke en garanti for all framtidig modelloutput.
 
+
+### Påstandsvis kildekontroll etter ekte KI-test (PR #15)
+
+Den automatiske Quality Gate kontrollerer funksjon, kildekandidater, opphav og regresjoner, **ikke** om KI-rådenes konkrete juridiske utsagn er korrekte. En ekte akseptansetest skal produsere et **uutfylt** vurderingsskjema for fem anonymiserte saker i lokal `test-results/`. Kontrollør skal lese hele rådet og oppfølgingen, prøve alle kritiske fagkriterier og knytte hver konkret rettslig påstand til utdrag fra en originalkilde som faktisk ble vist i samme svar.
+
+Kjør formell kontroll av den ferdig utfylte vurderingen med `npm run check-source-acceptance-review -- <run.json> <manual-review.json>`. Et skjema som ikke er gjennomgått av en person får aldri godkjent resultat. Utfylling er heller ingen automatisk juridisk attest; en ansvarlig fagperson må vurdere om kontrollen er troverdig.
+
+Se [protokollen for manuell kildeakseptanse](docs/KILDEAKSEPTANSE-MANUELL-KONTROLL-2026-11-21.md). **Ekte fem-case KI-test ble gjennomført lokalt 25.11.2026 og rapportert 5/5 maskinelt OK; den formelle faglige vurderingen er fortsatt IKKE godkjent.** En foreløpig manuell stikkprøve av Markdown-utdraget fant manglende kontrollvarsler for sykefraværsfrister, diagnose og SHA-ansvar; varselfilter og regresjonstester er oppdatert på denne utviklingsgrenen uten etterfølgende betalt KI-omtest. Se protokollen. På Windows kopierer den frivillige ekte KI-testen nå den lesbare Markdown-rapporten automatisk til utklippstavlen med `Set-Clipboard` når rapportene er skrevet; bruk Ctrl+V i chatten. Kopiering endrer ikke testresultat eller godkjenningsstatus.
+
+### Test de nye endringene fra Windows PowerShell (uten KI-nøkkel)
+
+Før du tester: hent utviklingsgrenen `fix/evidence-sources-20261120` (den er **ikke** slått sammen med `main`). Kontroller `git status` før du bytter gren, så du ikke overskriver eget arbeid.
+
+```powershell
+git fetch origin
+git switch fix/evidence-sources-20261120
+git pull --ff-only origin fix/evidence-sources-20261120
+npm ci
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1
+```
+
+Skriptet kjører 29 relevante, **kostnadsfrie** kilde-, historikk-, juridisk-varsel- og benchmark-/simulatortester automatisk. Det viser en kort resultatoversikt, lagrer hele utskriften under Git-ignorert `test-results/nye-tester-<tid>.log` og kopierer **kun oppsummeringen** til Windows-utklippstavlen. Deretter kan du lime inn det korte resultatet med Ctrl+V – ikke hundrevis av logglinjer. Dersom utklippstavlen er utilgjengelig vises oppsummeringen likevel på skjermen.
+
+**Ved tre lokale HTTP-testfeil på Windows (Node `ERR_UNSUPPORTED_ESM_URL_SCHEME`):** 25.11.2026 ble de tre simulatortestene rettet til å konvertere Windows-filstier til `file:///`-URL når Node starter `--import`. Hent oppdateringen og kjør **bare de tre feilede testene og én ny Windows-regresjon**:
+
+```powershell
+git pull --ff-only origin fix/evidence-sources-20261120
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1 -FailedOnly
+```
+
+Resultatet kopieres automatisk til utklippstavlen, også med korte feilutdrag dersom noe fortsatt feiler. Hele loggen forblir på PC-en. Ingen ekte KI-kall.
+
+**Målrettet funksjonstest for en historisk tarifsak med oppfølgingsspørsmål:** Kildeperioden fra opprinnelig situasjon skal følge med til korte spørsmål som «Hva med kravfristene?» og «Hvilken tariffavtale gjaldt da?». Hvis brukeren eksplisitt spør «Hva gjelder nå?», skal dagens kilder vurderes i stedet. Kjør alle tre relevante teststeg med én kommando; resultatet kopieres automatisk til utklippstavlen:
+
+```powershell
+git pull --ff-only origin fix/evidence-sources-20261120
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1 -ConversationOnly
+```
+
+Testene kjører med syntetisk KI på lokal Express-server, **uten ekte KI-kall, API-nøkler eller deploy**. De verifiserer samtaleflyt og kildekandidatvalg, ikke at en faktisk lovpåstand støttes av originalteksten.
+
+For hele den eksisterende offline-testpakken:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1 -Full
+```
+
+Dette bruker verken ekte KI eller API-nøkkel i Git. Det er en automatisk teknisk/regresjonskontroll, **ikke en faglig faktasjekk av ekte KI-råd**.
 
 ### Live KI-validering
 

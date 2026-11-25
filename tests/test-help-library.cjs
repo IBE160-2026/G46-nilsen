@@ -21,7 +21,7 @@ const assert = require("node:assert/strict");
       {id:"NOGROUP",title:"Annet",url:"https://example.org/other",sectors:["other"]},
       {id:"DOI",title:"DOI-rapport",doi:"10.1000/a1",type:"forskning",sectors:["health"]}
     ]},
-    agreementCuratedSources: [{id:"AGREE",title:"Avtale",url:"https://example.org/agree",sourceRole:"collective_agreement"}],
+    agreementCuratedSources: [{id:"AGREE",title:"Avtale",url:"https://example.org/agree",sourceRole:"collective_agreement",validFrom:"2023-01-01",validTo:"2026-12-31"}],
     occupationSourceMap: {sectors:[
       {id:"health",label:"Helse",occupations:["sykepleier"]},
       {id:"other",label:"Øvrige",occupations:[]}
@@ -38,6 +38,12 @@ const assert = require("node:assert/strict");
   assert.equal(occupations[0].sources.length,2);
   assert.equal(occupations[0].sources[1].url,"https://doi.org/10.1000/a1");
   assert.deepEqual(data.categories.rules.groups[0].sources.find(x=>x.id==="GLOBAL").occupations,[]);
+  const historicalAgreement=rules.find(x=>x.id==="AGREE");
+  assert.equal(historicalAgreement.validFrom,"2023-01-01",
+    "API for Hjelp må bevare avtaleperiodens startdato");
+  assert.equal(historicalAgreement.validTo,"2026-12-31",
+    "API for Hjelp må bevare avtaleperiodens slutt, ikke skjule den");
+
   const blank=buildHelpSourceLibrary({
     sourceBank:{sources:[]},occupationLegalSourceBank:{sources:[]},
     agreementCuratedSources:[],occupationSourceMap:{sectors:[]}
@@ -71,5 +77,25 @@ const assert = require("node:assert/strict");
   const ui=require("node:fs").readFileSync("app.js","utf8");
   assert(html.indexOf('id="leader-reference-title"')<html.indexOf('id="complete-source-library"'),"Lederoppslag må komme øverst");
   assert(ui.includes("payload.leaderQuickReferences") && ui.includes("escapeHtml(item.description)"),"Hurtigoppslag må komme fra API og escape HTML");
+  // Test den faktiske Hjelp-funksjonen med syntetiske tidspunkter,
+  // uten DOM, lagring, ekte AI eller eksterne HTTP-kall.
+  const vm=require("node:vm");
+  const start=ui.indexOf("function sourceDateNote(");
+  const end=ui.indexOf("function compactSourceRow(",start);
+  assert(start>=0 && end>start,"Datomerking må finnes i kildebankens klientkode");
+  const dateNote=vm.runInNewContext("("+ui.slice(start,end).trim()+")",{Date,Intl,Object});
+  const old={validFrom:"2023-01-01",validTo:"2026-12-31"};
+  assert.match(dateNote(old,new Date("2026-12-31T12:00:00Z")),/bekreft avtaledekning/,
+    "På siste registrerte gyldighetsdag er perioden fortsatt innenfor datoene");
+  assert.match(dateNote(old,new Date("2026-12-31T23:30:00Z")),/utløp 2026-12-31/,
+    "Hjelp må vise historisk avtale rett etter norsk midnatt");
+  assert.match(dateNote({validFrom:"2027-05-01",validTo:"2029-04-30"},
+    new Date("2027-01-01T12:00:00Z")),/ikke gjeldende ennå/,
+    "Fremtidig avtale skal ikke framstilles som gjeldende");
+  assert.equal(dateNote({},new Date("2027-01-01T12:00:00Z")),"",
+    "Udaterte myndighetskilder skal ikke feilmerkes som utløpt avtale");
+  assert(ui.includes("historicalPeriod ?") && ui.includes("escapeHtml(dateNote)"),
+    "Historisk avtaleperiode må vises både før og etter at kildekortet åpnes");
+
   console.log("Hjelp-kildebank: nivåer, kategorier, felleskilder, dubletter, sektorkilder og DOI OK");
 })().catch(err=>{console.error(err);process.exitCode=1});

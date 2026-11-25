@@ -1452,7 +1452,7 @@ function printCurrentGuidance() {
           <article class="followup-item">
             <h3>${index + 1}. ${escapeHtml(pair.question)}</h3>
             <div>${formatContinuationReply(pair.answer)}</div>
-            ${pair.sources.length ? `<p><strong>Kilder:</strong> ${normalizeContinuationSources(pair.sources).map(src => `<a href="${escapeHtml(src.url)}">${escapeHtml(src.title)}</a>`).join(' · ')}</p>` : ''}
+            ${pair.sources.length ? `<p><strong>Kilder til kontroll (ikke faktasjekket):</strong> ${normalizeContinuationSources(pair.sources).map(src => `<a href="${escapeHtml(src.url)}">${escapeHtml(src.title)}</a> <small>(${escapeHtml(evidenceRoleLabel(src))})</small>`).join(' · ')}</p>` : ''}
           </article>`).join('')}
       </section>`
     : '';
@@ -1525,6 +1525,35 @@ function formatSpeechExamples(text) {
   return safe.replace(/«([^»\n]{2,500})»/g, '<em class="spoken-example">«$1»</em>');
 }
 
+// Kilde-ID/URL bekrefter ikke at et generert utsagn er faglig kontrollert.
+// La aldri systemforeslått lovtekst se ut som en KI-valgt henvisning.
+function evidenceRoleLabel(source) {
+  switch (source?.evidenceRole) {
+    case 'model_selected': return 'Valgt fra kildebanken av KI – ikke faktasjekket';
+    case 'scope_reference': return 'Til kontroll – lagt til av systemet, ikke valgt av KI';
+    case 'provider_url': return 'Nettsøktreff – innhold ikke faktasjekket';
+    default: return 'Kildereferanse – innhold ikke faktasjekket';
+  }
+}
+
+// Dette er en ren oppmerksomhetsmarkør. KI-svar eller kilde-URL har
+// ikke gjennomgått påstandsvis kildekontroll.
+function normalizeLegalClaimReview(review) {
+  return {
+    needsManualReview: review?.needsManualReview === true,
+    possibleLegalClaimCount: Number.isInteger(review?.possibleLegalClaimCount)
+      ? Math.max(0, Math.min(20, review.possibleLegalClaimCount)) : 0,
+    claimToSourceChecked: false
+  };
+}
+
+function legalClaimReviewNote(review) {
+  const result = normalizeLegalClaimReview(review);
+  return result.needsManualReview
+    ? '<p class="muted-note legal-claim-review-note"><strong>Kontroller rettslige påstander:</strong> KI-svaret kan inneholde konkrete utsagn om rettigheter, plikter eller frister. Ingen av disse er kontrollert mot tilhørende originalkilde. Undersøk ordlyd, riktig periode og eventuell tariffdekning før du bruker utsagnet som beslutningsgrunnlag.</p>'
+    : '';
+}
+
 function renderAiGuidance(guidance) {
   const grid = document.querySelector('#structured-guidance');
   const reactionHtml = (guidance.reactions || []).map((item, index) => `
@@ -1537,20 +1566,21 @@ function renderAiGuidance(guidance) {
     </details>`).join('');
   const list = items => (items || []).map(item => `• ${formatSpeechExamples(item)}`).join('<br>');
   const evidenceSources = guidance.evidence_sources || [];
+  const legalReviewNote = legalClaimReviewNote(guidance.legal_claim_review);
   const sourceHost = source => {
     try { return new URL(source.url).hostname.replace(/^www\./,''); }
     catch (_) { return ''; }
   };
   const evidence = evidenceSources.length
-    ? `<div class="evidence-list">${evidenceSources.map(source => {
+    ? `<p class="muted-note source-verification-note">Dette er kilder til videre kontroll. Kildehenvisning betyr ikke at påstandene i KI-rådet er faktasjekket.</p><div class="evidence-list">${evidenceSources.map(source => {
         const host = sourceHost(source);
         const title = source.title || source.author || host || 'Kilde';
         const meta = [source.author && source.author !== host ? source.author : '', source.year ? String(source.year) : '', source.type || '', host].filter(Boolean).join(' · ');
-        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><em>Åpne kilde ↗</em></a>`;
+        return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(title)}</strong><span>${escapeHtml(meta)}</span><span class="evidence-role">${escapeHtml(evidenceRoleLabel(source))}</span><em>Åpne kilde ↗</em></a>`;
       }).join('')}</div>`
     : '<p class="muted-note guidance-source-empty">Ingen etterprøvbare kildehenvisninger registrert for dette rådet.</p>';
   const compactEvidence = evidenceSources.length
-    ? `<div class="inline-source-links"><span>Kilder:</span>${evidenceSources.slice(0,4).map(source => {
+    ? `<div class="inline-source-links"><span>Kilder å kontrollere:</span>${evidenceSources.slice(0,4).map(source => {
         const host = sourceHost(source);
         const label = source.author || host || source.title || 'Kilde';
         return `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(label)} ↗</a>`;
@@ -1562,7 +1592,7 @@ function renderAiGuidance(guidance) {
     ['Spørsmål som passer denne saken', list(guidance.questions)],
     ['Mulige reaksjoner – og hvordan du kan møte dem', reactionHtml],
     ['Sjekk før samtalen', list(guidance.check_before_meeting)],
-    ['Faglig / regelverk', String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>') + compactEvidence],
+    ['Faglig / regelverk', legalReviewNote + String(guidance.legal_hr_note || '').split(/\n+/).filter(Boolean).map(line => `• ${escapeHtml(line.replace(/^[-•]\s*/,''))}`).join('<br>') + compactEvidence],
     ['Vær særlig oppmerksom på', list(guidance.attention)],
     ['Videre oppfølging', list(guidance.next_steps)],
     ['Kildegrunnlag', evidence]
@@ -1584,7 +1614,9 @@ function renderAiGuidance(guidance) {
 
   applyGuidanceDisclosure();
   const intro = document.querySelector('#result-intro');
-  if (intro) intro.textContent = 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Sensitive eller formelle punkter bør kvalitetssikres mot relevante kilder, virksomhetens rutiner og riktig fagkompetanse før en endelig beslutning tas.';
+  if (intro) intro.textContent = guidance.legal_claim_review?.needsManualReview
+    ? 'KI-rådet kan inneholde konkrete rettslige påstander som IKKE er kontrollert mot originalkildene. Kontroller rettigheter, plikter, frister, riktig periode og tariffdekning før en beslutning tas.'
+    : 'KI-rådet er generert fra denne konkrete situasjonen og avklaringssvarene dine. Sensitive eller formelle punkter bør kvalitetssikres mot relevante kilder, virksomhetens rutiner og riktig fagkompetanse før en endelig beslutning tas.';
 }
 
 function renderAiSituationUnderstanding(analysis) {
@@ -1757,18 +1789,40 @@ function readableSourceTier(source = {}) {
   return tiers[source.sourceTier] || 'Faglig kildemateriale – vurder gyldighet og relevans';
 }
 
+// Hjelp viser også historiske referanser. Datoperioden kommer fra bankens
+// metadata; den må ikke forveksles med verifisering av faktisk tariffdekning.
+function sourceDateNote(source={}, asOf=new Date()){
+  const from=source?.validFrom || '';
+  const to=source?.validTo || '';
+  if(!from && !to)return '';
+  const valid=value=>/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/.test(value);
+  if((from && !valid(from)) || (to && !valid(to)) ||
+     (from && to && from>to))return 'Registrert avtaleperiode må kontrolleres.';
+  const parts=new Intl.DateTimeFormat('en-GB',{
+    timeZone:'Europe/Oslo',year:'numeric',month:'2-digit',day:'2-digit'
+  }).formatToParts(asOf);
+  const dateParts=Object.fromEntries(parts.map(item=>[item.type,item.value]));
+  const today=`${dateParts.year}-${dateParts.month}-${dateParts.day}`;
+  if(to && today>to)return `Registrert avtaleperiode utløp ${to} – kontroller nyere avtale før bruk.`;
+  if(from && today<from)return `Avtaleperioden starter ${from} – ikke gjeldende ennå.`;
+  return `Registrert avtaleperiode ${from || 'ukjent start'} til ${to || 'ukjent slutt'} – bekreft avtaledekning.`;
+}
+
 function compactSourceRow(source){
   const title=escapeHtml(source.title||source.id||'Kilde');
   const usage=escapeHtml(compactSourceUsage(source));
   const author=escapeHtml(source.author||'');
   const sourceType=escapeHtml(readableSourceTier(source));
   const lastChecked=source.lastVerified ? escapeHtml(source.lastVerified) : '';
+  const dateNote=sourceDateNote(source);
+  const historicalPeriod=/(utløp|ikke gjeldende ennå|må kontrolleres)/.test(dateNote);
   const occupations=Array.isArray(source.occupations) ? source.occupations.filter(Boolean) : [];
   return `<details class="compact-source-row">
-    <summary><span class="compact-source-title">${title}</span><span class="compact-source-chevron" aria-hidden="true">›</span></summary>
+    <summary><span class="compact-source-title">${title}${historicalPeriod ? ` · ${escapeHtml(dateNote)}` : ''}</span><span class="compact-source-chevron" aria-hidden="true">›</span></summary>
     <div class="compact-source-detail">
       <p><strong>Hvorfor kilden er relevant:</strong> ${usage}.</p>
       <p><strong>Kildetype:</strong> ${sourceType}.</p>
+      ${dateNote ? `<p class="muted-note">${escapeHtml(dateNote)}</p>` : ''}
       ${occupations.length ? `<p><strong>Gjelder særlig:</strong> ${escapeHtml(occupations.join(', '))}.</p>` : ''}
       ${author ? `<p class="muted-note">${author}${lastChecked ? ' · Kontrollert '+lastChecked : ''}</p>` : ''}
       <a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">Åpne kilde ↗</a>
@@ -1870,7 +1924,8 @@ function helpSourceTypeLabel(type=''){
 function renderHelpSourceItem(source){
   const verified=source.lastVerified ? `Sist kontrollert ${escapeHtml(source.lastVerified)}` : '';
   const freshness=source.timeSensitive ? 'Tidskritisk kilde' : '';
-  const meta=[source.author,verified,freshness].filter(Boolean).map(item=>`<span>${escapeHtml(item)}</span>`).join('');
+  const period=sourceDateNote(source);
+  const meta=[source.author,verified,freshness,period].filter(Boolean).map(item=>`<span>${escapeHtml(item)}</span>`).join('');
   const use=(source.useFor||[]).slice(0,6).join(', ');
   const title=escapeHtml(source.title||source.id||'Kilde');
   return `<div class="source-item">
@@ -2182,19 +2237,27 @@ function normalizeContinuationSources(sources = []) {
     .map(source => ({
       title: String(source.title || source.author || 'Kilde').slice(0, 250),
       author: String(source.author || '').slice(0, 150),
-      url: String(source.url)
+      url: String(source.url),
+      evidenceRole: ['model_selected','scope_reference','provider_url'].includes(source.evidenceRole)
+        ? source.evidenceRole : ''
     }));
 }
 
-function renderContinuationEvidence(sources = []) {
+function renderContinuationEvidence(sources = [], claimReview = null) {
   const verified = normalizeContinuationSources(sources);
   if (!verified.length) {
-    return '<small class="continuation-source-note">Ingen etterprøvbare kildehenvisninger registrert for dette svaret.</small>';
+    return legalClaimReviewNote(claimReview) + '<small class="continuation-source-note">Ingen etterprøvbare kildehenvisninger registrert for dette svaret.</small>';
   }
-  return `<details class="continuation-evidence">
+  return legalClaimReviewNote(claimReview) + `<details class="continuation-evidence">
     <summary>Kildegrunnlag (${verified.length})</summary>
-    <div class="evidence-list">${verified.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong>${source.author ? `<span>${escapeHtml(source.author)}</span>` : ''}<em>Åpne kilde ↗</em></a>`).join('')}</div>
+    <p class="muted-note source-verification-note">Kildene er forslag til kontroll, ikke bekreftelse på at alle påstander er riktig dokumentert.</p>
+    <div class="evidence-list">${verified.map(source => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer"><strong>${escapeHtml(source.title)}</strong>${source.author ? `<span>${escapeHtml(source.author)}</span>` : ''}<span class="evidence-role">${escapeHtml(evidenceRoleLabel(source))}</span><em>Åpne kilde ↗</em></a>`).join('')}</div>
   </details>`;
+}
+
+function setConversationTurnClaimReview(element, review) {
+  if (!element) return;
+  element.dataset.messageClaimReview = JSON.stringify(normalizeLegalClaimReview(review));
 }
 
 function setConversationTurnSources(element, sources) {
@@ -2268,9 +2331,10 @@ async function appendConversationTurn(question) {
     const payload = await response.json();
     const assistantReply = cleanStoredConversationText(payload.reply || '', 'assistant');
     const verifiedSources = normalizeContinuationSources(payload.evidence_sources);
-    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>${renderContinuationEvidence(verifiedSources)}<button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
+    assistant.innerHTML = `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(assistantReply)}</div>${renderContinuationEvidence(verifiedSources, payload.legal_claim_review)}<button type="button" class="ai-report-link" data-report-ai-response="continuation">Rapporter svar</button>`;
     setConversationTurnText(assistant, 'assistant', assistantReply);
     setConversationTurnSources(assistant, verifiedSources);
+    setConversationTurnClaimReview(assistant, payload.legal_claim_review);
     renderContinueSuggestions(payload.suggestions?.length ? payload.suggestions : localContinuationSuggestions(question, assistantReply));
     queueSpeechBubbleRefresh();
     conversationDirty = true;
@@ -3070,6 +3134,10 @@ function getConversationTurns(){
         try { turn.sources = normalizeContinuationSources(JSON.parse(el.dataset.messageSources)); }
         catch (_) { turn.sources = []; }
       }
+      if (role === 'assistant' && el.dataset.messageClaimReview !== undefined) {
+        try { turn.claimReview = normalizeLegalClaimReview(JSON.parse(el.dataset.messageClaimReview)); }
+        catch (_) { turn.claimReview = normalizeLegalClaimReview(null); }
+      }
       return turn;
     })
     .filter(turn => turn.text);
@@ -3154,9 +3222,10 @@ function loadHistoryItem(item, { skipPrivacyReview = false } = {}){
     el.className=`conversation-turn ${role==='user'?'conversation-user':'conversation-assistant'}`;
     el.innerHTML=role==='user'
       ? `${speechBubbleMarkup('right')}<span>Du</span><p>${escapeHtml(cleanText)}</p>`
-      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>${Array.isArray(turn.sources) ? renderContinuationEvidence(turn.sources) : ''}`;
+      : `${speechBubbleMarkup('left')}<span>Samtalestøtte</span><div class="formatted-reply">${formatContinuationReply(cleanText)}</div>${Array.isArray(turn.sources) ? renderContinuationEvidence(turn.sources, turn.claimReview) : ''}`;
     setConversationTurnText(el, role, cleanText);
     if (role === 'assistant' && Array.isArray(turn.sources)) setConversationTurnSources(el, turn.sources);
+    if (role === 'assistant' && turn.claimReview) setConversationTurnClaimReview(el, turn.claimReview);
     thread.appendChild(el);
     queueSpeechBubbleRefresh();
   });

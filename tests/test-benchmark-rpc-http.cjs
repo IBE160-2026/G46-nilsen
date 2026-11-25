@@ -171,7 +171,7 @@ let stderr="";
     new Promise(done=>provider.listen(providerPort,"127.0.0.1",done))
   ]);
   const app=spawn(process.execPath,[
-    "--import",path.join(root,"tests/support/offline-openai-fetch.mjs"),
+    "--import",pathToFileURL(path.join(root,"tests/support/offline-openai-fetch.mjs")).href,
     path.join(root,"server.js")
   ],{cwd:root,env:{
     ...process.env,NODE_ENV:"test",PORT:String(appPort),APP_BASE_URL:base,

@@ -57,5 +57,36 @@ const assert = require("node:assert/strict");
   assert.deepEqual(alone,[],"Urelevante kilder skal ikke inkluderes bare på grunn av fritekst");
   assert.ok(law.length<=10);
   assert.ok(initial.every(x=>typeof x.sourceTier==="string"));
+  // Et overordnet sikkerhetstema er ikke nok til å foreslå rus- eller voldskilder
+  // ved en SHA-sak. De samme kildene MÅ kunne velges når temaet faktisk treffer.
+  const safetySelector=createRelevantSourceSelector({
+    sourceBank:{sources:[
+      {id:"SHA_SPECIFIC",title:"Byggherreforskriften",topics:["Sikkerhet og ansvar"],use_when:["SHA-plan"],type:"myndighet"},
+      {id:"VIOLENCE_CONTEXT",title:"Vold",topics:["Sikkerhet og ansvar"],use_when:["vold","sikkerhet","hendelse"],type:"myndighet"},
+      {id:"RUS_CONTEXT",title:"Akan",topics:["Sikkerhet og ansvar"],use_when:["alkohol","rus"],type:"faglig veiledning"},
+      {id:"EXCLUSION_CONTEXT",title:"Utestenging",topics:["Samarbeid og kommunikasjon"],use_when:["utesteng"],type:"myndighet"}
+    ]},
+    occupationLegalSourceBank:{sources:[]},agreementCuratedSources:[],
+    shouldUseAgreementContext:()=>false,isLegalSourceContext:()=>false,
+    sourceTier,employerScopedPrimaryLawBonus:()=>0
+  });
+  const specificIds=(topic,situation)=>safetySelector({relevant_topics:[topic]},situation,{topic}).map(s=>s.id);
+  assert.deepEqual(specificIds("Sikkerhet og ansvar","SHA-plan må kontrolleres før arbeid i høyden."),
+    ["SHA_SPECIFIC"],"Generelt risikotema må ikke trekke inn vold/rus");
+  assert.deepEqual(
+    specificIds("Sikkerhet og ansvar","Ingen vold eller rus i denne saken, men SHA-plan må kontrolleres."),
+    ["SHA_SPECIFIC"],
+    "Negert vold/rus må ikke aktivere irrelevante kilder selv i bred sikkerhetskategori"
+  );
+  assert(specificIds("Sikkerhet og ansvar",
+    "Ingen vold i går. I dag er en ansatt utsatt for vold."
+  ).includes("VIOLENCE_CONTEXT"),
+    "En faktisk ny hendelse må ikke undertrykkes av avkreftelse i forrige setning");
+  assert(specificIds("Sikkerhet og ansvar","En medarbeider blir truet med vold.").includes("VIOLENCE_CONTEXT"),
+    "Reell voldshendelse må fortsatt gi aktuell voldskilde");
+  assert(specificIds("Sikkerhet og ansvar","En person er påvirket av alkohol.").includes("RUS_CONTEXT"),
+    "Reell rusrisiko må fortsatt gi Akan-kilde");
+  assert(specificIds("Samarbeid og kommunikasjon","Systematisk utestenging fra arbeidsinformasjon.").includes("EXCLUSION_CONTEXT"),
+    "Utestenging må fortsatt nå til relevant fagkilde");
   console.log("Kilderangering: krav, arbeidsgivertype, sektor, yrke, tariff, juridisk kontekst og deduplisering OK");
 })().catch(err=>{console.error(err);process.exitCode=1});

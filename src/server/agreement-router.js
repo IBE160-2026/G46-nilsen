@@ -1,4 +1,6 @@
 import fs from "node:fs";
+import { containsNonNegatedContextTerm } from "./negation-context.js";
+import { isSourceValidForQuestion } from "./historical-source-context.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 
@@ -31,44 +33,24 @@ export const employerTypeOptions = [
   { id: "unknown", label: "Usikker / vet ikke" }
 ];
 
-function containsNonNegatedTerm(textValue, termValue) {
-  const text = normalize(textValue);
-  const needle = normalize(termValue);
-  if (!text || !needle) return false;
-
-  let fromIndex = 0;
-  while (fromIndex < text.length) {
-    const index = text.indexOf(needle, fromIndex);
-    if (index < 0) return false;
-
-    const prefix = text.slice(Math.max(0, index - 130), index).trim();
-    const explicitlyAbsent =
-      /\bingen\b[^.!?;:]{0,120}$/u.test(prefix) ||
-      /\bgjelder\s+ikke\b[^.!?;:]{0,120}$/u.test(prefix) ||
-      /\bikke\s+(?:snakk|tale)\s+om\b[^.!?;:]{0,120}$/u.test(prefix) ||
-      /\bikke\s+(?:et|en)?\s*(?:tema|problem|utfordring|sak)\b[^.!?;:]{0,120}$/u.test(prefix) ||
-      /\bikke\b(?:\s+[a-z0-9æøå]+){0,8}$/u.test(prefix);
-
-    if (!explicitlyAbsent) return true;
-    fromIndex = index + needle.length;
-  }
-  return false;
-}
-
 export function shouldUseAgreementContext({ topic, subtopic, situation } = {}) {
   // Et bredt hovedtema som «Lønn og utvikling» skal ikke alene gjøre en
   // karriere-/utviklingssak tariffrelevant. Bruk konkret undertema og situasjon.
-  const concreteText = normalize([subtopic, situation].filter(Boolean).join(" "));
-  const fallbackText = normalize(topic);
-
-  if (concreteText) {
-    if (agreementTerms.some(term => containsNonNegatedTerm(concreteText, term))) return true;
-    return agreementVaktTerms.some(term => containsNonNegatedTerm(concreteText, term));
+  // Behold setningsgrensene! Den tidligere lokale tekstnormaliseringen
+  // fjernet punktum/linjeskift før negasjonssjekken, slik at et eldre
+  // "ikke lønn" kunne undertrykke en NY faktisk overtids-/tariffsak.
+  const concreteText = [subtopic, situation].filter(Boolean).join(". ");
+  const fallbackText = topic || "";
+  const allTerms = [...agreementTerms, ...agreementVaktTerms];
+  if (concreteText.trim()) {
+    // "Har ikke fått utbetalt lønn" er en mulig avtalekonflikt,
+    // ikke en avkreftelse av at lønn er relevant. Falske positive må
+    // fortsatt fanges i regresjonene for "ikke snakk om lønn".
+    const payDispute = /\b(?:ikke|aldri)\s+(?:fått|fikk|mottatt|utbetalt)\b(?:\s+[a-z0-9æøå]+){0,5}\s+(?:lønn\w*|lonn\w*|overtid\w*|tillegg\w*|godtgjørelse\w*|godtgjorelse\w*)\b/iu;
+    if (payDispute.test(concreteText)) return true;
+    return allTerms.some(term => containsNonNegatedContextTerm(concreteText, term));
   }
-
-  if (!fallbackText) return false;
-  if (agreementTerms.some(term => containsNonNegatedTerm(fallbackText, term))) return true;
-  return agreementVaktTerms.some(term => containsNonNegatedTerm(fallbackText, term));
+  return allTerms.some(term => containsNonNegatedContextTerm(fallbackText, term));
 }
 
 function agreementAreasForEmployerType(employerType) {
@@ -92,7 +74,9 @@ export function suggestAgreementAreas({
   employerContext,
   topic,
   subtopic,
-  situation
+  situation,
+  asOf = new Date(),
+  historicalReview = null
 } = {}) {
   const relevant = shouldUseAgreementContext({ topic, subtopic, situation });
 
@@ -148,7 +132,14 @@ export function suggestAgreementAreas({
       if (employerText && (employerText.includes(n) || n.includes(employerText))) score += 4;
     }
 
-    suggestions.push({ ...area, score });
+    // Avtaleområdet kan være relevant selv når den sist registrerte
+    // avtalen er utløpt. Vis da området, men aldri den utløpte avtalen
+    // som om den fremdeles var en gjeldende kildekandidat.
+    suggestions.push({
+      ...area,
+      curatedSources: (area.curatedSources || []).filter(source => isSourceValidForQuestion(source, asOf, historicalReview)),
+      score
+    });
   }
 
   suggestions.sort((a,b)=>b.score-a.score || a.label.localeCompare(b.label,"nb"));

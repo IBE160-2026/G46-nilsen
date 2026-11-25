@@ -73,8 +73,23 @@ function analysisFor(situation, selectedTopic = "") {
     relevant_topics: [topic.title],
     uncertainties: ["Demoen kjenner bare opplysningene som er skrevet inn i situasjonsfeltet."],
     cautions: ["Ikke legg til årsaker, motiv, diagnose eller skyld som ikke er dokumentert."],
-    needs_clarification: false,
-    clarifications: [],
+    // Eksplisitt isolert nettlesertest: realistiske KI-avklaringer som må besvares
+    // før rådet genereres. Vanlig sensor-demo beholder direkteflyten.
+    needs_clarification: process.env.SENSOR_DEMO_CLARIFICATIONS === "1",
+    clarifications: process.env.SENSOR_DEMO_CLARIFICATIONS === "1" ? [
+      {
+        id: "current_work_status",
+        question: "Hva er arbeidssituasjonen nå?",
+        options: ["Helt sykmeldt", "Delvis sykmeldt", "Tilbake i full jobb", "Uklart"],
+        allow_custom: false, custom_label: "", multi_select: false
+      },
+      {
+        id: "support_need",
+        question: "Hva trenger du hjelp til?",
+        options: ["Forberede en samtale", "Avklare arbeidsoppgaver", "Følge opp tiltak"],
+        allow_custom: true, custom_label: "Annet", multi_select: true
+      }
+    ] : [],
     ai: false,
     model: "sensor-demo"
   };
@@ -191,6 +206,14 @@ app.post("/api/generate-guidance", (req, res) => {
     return res.status(400).json({ error: "MISSING_SITUATION", message: "Situasjonsbeskrivelse mangler." });
   }
   const analysis = req.body?.analysis || analysisFor(situation);
+  if(process.env.SENSOR_DEMO_CLARIFICATIONS === "1" && analysis.needs_clarification){
+    const answers=req.body?.followups || {};
+    if(typeof answers.current_work_status !== "string" || !answers.current_work_status.trim() ||
+      !Array.isArray(answers.support_need) || !answers.support_need.length){
+      return res.status(400).json({error:"SENSOR_DEMO_CLARIFICATIONS_MISSING",
+        message:"Svar på de to syntetiske avklaringsspørsmålene før råd."});
+    }
+  }
   res.json(guidanceFor(situation, analysis));
 });
 
