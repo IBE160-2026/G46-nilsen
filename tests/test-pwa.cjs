@@ -37,6 +37,7 @@ assert(html.includes('src/client/admin-content.js?v=') && sw.includes('/src/clie
 assert(html.includes('src/client/admin-data.js?v=') && sw.includes('/src/client/admin-data.js'),
   'Admin-modulen må lastes og inngå i offline-skallet');
 assert(sw.includes('/assets/icons/app-icon-192.png') && sw.includes('/assets/icons/app-icon-512.png'),'Service worker cacher ikke PWA-ikoner');
+assert(sw.includes("/src/client/source-presentation.js"),"PWA må inkludere kildevisningsmodulen i cache");
 assert(server.includes('"manifest.webmanifest"') && server.includes('"sw.js"') && server.includes('"assets/icons/app-icon-192.png"'),'Produksjonsserver eksponerer ikke PWA-filene');
 assert(demo.includes('"manifest.webmanifest"') && demo.includes('"sw.js"'),'Demo-server eksponerer ikke PWA-filer');
 
