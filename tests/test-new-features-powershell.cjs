@@ -12,12 +12,17 @@ const tests=[...testList.matchAll(/"([^"]+)"/g)].map(match=>match[1]);
 assert(tests.length>=20,"New-features test runner must cover the expanded QA suite");
 assert.equal(new Set(tests).size,tests.length,"Do not run same test twice");
 for(const name of tests)assert(scripts[name],"Unknown npm test script: "+name);
-assert(script.includes("param([switch]$Full, [switch]$FailedOnly)"),
-  "Must support full suite and targeted rerun of previous Windows failures");
+assert(script.includes("param([switch]$Full, [switch]$FailedOnly, [switch]$ConversationOnly)"),
+  "Must support full, previous Windows failures and functional conversation tests");
 assert.match(script,/test-node-import-windows/u,
   "PowerShell targeted rerun must check ESM loader portability");
-assert(script.includes("if ($Full -and $FailedOnly)"),
-  "Full and targeted test modes are mutually exclusive");
+assert(script.includes("if (([int][bool]$Full + [int][bool]$FailedOnly + [int][bool]$ConversationOnly) -gt 1)"),
+  "All three test modes must be mutually exclusive");
+assert(script.includes('} elseif ($ConversationOnly) {'),
+  "A conversation-only run should not repeat all older regression tests");
+for (const name of ["test-historical-source-context","test-source-acceptance-routing","test-source-provenance-http"]) {
+  assert(script.includes('"'+name+'"'),"Functional test mode missing "+name);
+}
 assert.match(script,/fix\/evidence-sources-20261120/u,"Must guard against testing stale main");
 assert.match(script,/test-results/u,"Must keep full output out of Git");
 assert.match(script,/Set-Clipboard -Value \$summary/u,"Short report must be copied to clipboard");
