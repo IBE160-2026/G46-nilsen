@@ -141,7 +141,7 @@ function setBreadcrumb(text) {
 
 function updateNavState(name) {
   document.querySelectorAll('.nav-item[data-view]').forEach(btn => {
-    btn.classList.toggle('active',
+    const active =
       (name === 'home' && btn.dataset.view === 'home') ||
       ((name === 'topic' || name === 'guidance') && btn.dataset.view === 'prepare') ||
       (name === 'simulation' && btn.dataset.view === 'simulation') ||
@@ -151,8 +151,10 @@ function updateNavState(name) {
       (name === 'contact' && btn.dataset.view === 'contact') ||
       (name === 'help' && btn.dataset.view === 'help') ||
       (name === 'survey' && btn.dataset.view === 'survey') ||
-      (name === 'admin' && btn.dataset.view === 'admin')
-    );
+      (name === 'admin' && btn.dataset.view === 'admin');
+    btn.classList.toggle('active', active);
+    if (active) btn.setAttribute('aria-current', 'page');
+    else btn.removeAttribute('aria-current');
   });
 }
 
