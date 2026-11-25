@@ -1,7 +1,7 @@
 // Opt-in akseptanseprøve med ekte KI gjennom den faktiske lokale appen.
 // Bruker syntetiske saker, dummy-database og egen testserver; aldri Render/produksjon.
 // Krever --run-live + SOURCE_ACCEPTANCE_LIVE=I_ACCEPT_API_COSTS + OPENAI_API_KEY.
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
@@ -171,4 +171,22 @@ console.log("Ferdig med provider-test. Faglig kildekontroll er IKKE utført auto
 console.log("Maskinelle avvik eller teknisk feil: "+critical+"/"+cases.length);
 console.log("Rapporter: "+mdPath+" og "+jsonPath);
 console.log("Manuell vurdering (IKKE GODKJENT): "+reviewPath);
+// Windows: legg hele den lesbare, syntetiske fagrapporten på utklippstavlen automatisk.
+// Dette er IKKE en faglig godkjenning og endrer ikke testens exit-kode.
+if (process.platform === "win32") {
+  const clipboard = spawnSync("powershell.exe", [
+    "-NoProfile", "-NonInteractive", "-Command",
+    "$ErrorActionPreference = 'Stop'; Set-Clipboard -Value ([System.IO.File]::ReadAllText($env:SOURCE_ACCEPTANCE_CLIPBOARD_PATH, [System.Text.Encoding]::UTF8))"
+  ], {
+    env: { ...process.env, SOURCE_ACCEPTANCE_CLIPBOARD_PATH: mdPath },
+    encoding: "utf8",
+    windowsHide: true,
+    timeout: 12000
+  });
+  if (clipboard.status === 0) {
+    console.log("Fagrapport kopiert automatisk til utklippstavlen. Lim inn med Ctrl+V i chatten.");
+  } else {
+    console.warn("Kunne ikke kopiere fagrapporten automatisk. Rapporten ligger i "+mdPath);
+  }
+}
 if(critical)process.exitCode=1;
