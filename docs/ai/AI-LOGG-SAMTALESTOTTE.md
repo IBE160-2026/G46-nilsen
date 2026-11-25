@@ -1599,3 +1599,18 @@ Brukeren ba om at CSS-arbeidet skulle videreføres direkte til appens øvrige st
 **Læring:** En god KI-assistert prosess krever også å si **stopp** når videre automatisering kan skape falsk trygghet. Det viktigste neste spørsmålet er ikke antall tester, men *hvilken konkret commit sensor får tilgang til*, *hvilket formelt regelsett som gjelder* og *hvem som eier de personlige refleksjonene*. Ingen personlig student-ID ble lagt inn i det offentlige repoet.
 
 **Avgrensning:** Ingen CI-status på senere commits gis som «grønn» uten en faktisk bestått Actions-run på akkurat den commiten. Ingen beslutning om innlevering eller merge er tatt av KI på vegne av studenten.
+
+
+## 25.11.2026 – Feilrettinger, streng regresjonskontroll og dokumentasjonsrevisjon
+
+**Utgangspunkt:** Under testing av temaforslag blokkerte personvernfilteret den vanlige kvantoren «Begge» som et mulig personnavn. Senere viste UI-forslag til yrke «lege / helse og omsorg» uten tilstrekkelig grunnlag i arbeidsbeskrivelsen. Brukeren stilte spørsmål ved hvorfor en ordinær feilretting skulle plasseres i pilot, og ba om at unødvendige avklaringsrunder skulle opphøre.
+
+**Faktisk KI-assistert arbeid og sporbarhet:**
+1. KI undersøkte delt personverndetektor og la til «begge» og «ingen» blant ikke-navneord, med både negative og positive navnetester. [PR #16](https://github.com/IBE160-2026/G46-nilsen/pull/16), squash-commit `782e322`. Endringen erstatter ikke sikker anonymisering, men reduserer en dokumentert falsk positiv.
+2. KI undersøkte `inferOccupationSuggestion` i `app.js`. Yrkesord alene kunne foreslå arbeidssektor selv når en person bare skrev «jeg har vært hos legen». Første endring ble stoppet av eksisterende regresjonstester som forventet at arbeidsrettede beskrivelser som «En lege kommer for sent» fortsatt skulle gjenkjennes. Endringen ble forbedret, og 15 nye UI-regresjonstilfeller ble innlemmet i standard `npm test`. [PR #17](https://github.com/IBE160-2026/G46-nilsen/pull/17), squash-commit `61d282dc`.
+3. [Quality Gate på `main`](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) ble `success` etter PR #17. Render-produksjon `g46-nilsen-samtalestotte` viste `live` for `61d282dc` 25.11 kl. 17:16 UTC (deploy `dep-dc3hfi40916s738qaph0`).
+4. Ved kontroll av innleveringsstatus oppdaget KI at tidligere PR-status, publiseringsversjon og grenantall var utdatert i sentrale dokumenter. Det ble opprettet en egen dokumentasjonsrevisjon, og daterte originalrapporter ble bevart fremfor omskrevet i ettertid.
+
+**Menneskelig beslutning / refleksjon:** Brukeren ønsket ikke en ny, omfattende testrunde og ba om fullføring av eksisterende dokumentasjon. Skillet mellom *teknisk regresjonstest*, *manuell brukertest*, *faglig akseptanse av KI-genererte råd* og *formell skoleinnlevering* må fortsatt fremgå ærlig. Studentens egen refleksjonsrapport skal kvalitetssikres av studenten; KI kan synkronisere faktiske referanser, men skal ikke påstå at rapporten er personlig godkjent.
+
+**Åpent ved dokumentasjonsrevisjonen:** Canvas-frist, filformat, eventuelle KI-erklæringskrav og studentens endelige godkjenning av rapport. Ingen ny live KI-kvalitetstest eller uavhengig juridisk originalkildesjekk ble gjennomført i denne runden.

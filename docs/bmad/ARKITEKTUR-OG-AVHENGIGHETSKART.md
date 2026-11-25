@@ -1,5 +1,8 @@
 # Arkitektur- og avhengighetskart – Samtalestøtte
 
+> **Statuskontroll 25.11.2026:** Arkitekturdiagram og avhengigheter er historisk kontrollert på eldre SHA. `main` er nå `61d282dc` før dokumentasjonsrevisjonen; LIVE/tale er fortsatt eksperimentelt. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Oppdatert:** 18.11.2026  
 **Grunnlag:** Produksjonsgrenen `main` @ `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`.  
 **Status:** Pedagogiske Mermaid-diagrammer over dokumenterte hovedkomponenter og viktige **logiske** avhengigheter. Dette er **ikke** et maskinelt generert eksakt kall-/avhengighetstre eller dokumentasjon av full vertikal-slice-isolasjon.

@@ -4,7 +4,7 @@
 **Gruppe/prosjekt:** G46 – Samtalestøtte  
 **Student:** [Fyll inn navn/studentnummer for endelig levering]  
 **Dato:** 20.11.2026  
-**Status:** Arbeidsutkast etter den utdelte reflection-report-template.md. Ikke innlevert eller personlig kvalitetssikret.
+**Status:** Omfattende arbeidsutkast etter skolens `reflection-report-template.md` (20.11.2026). Innholdet er beholdt som studentens refleksjonsgrunnlag; ingen påstand om innlevering eller personlig sluttgodkjenning. Teknisk prosjektstatus kontrollert 25.11.2026 i [prosjektstatus](PROSJEKTSTATUS.md).
 
 **Om soloprosjektet:** Jeg er eneste student i gruppen. Spørsmål som gjelder arbeidsfordeling mellom gruppemedlemmer og samarbeid med andre studenter besvares derfor med reell erfaring fra egen organisering og KI-assistert utvikling. Ingen fiktive gruppemedlemmer, møter eller samarbeidskonflikter beskrives.
 
@@ -236,12 +236,12 @@ Jeg er særlig opptatt av at teknologien skal gjøre vanskelige menneskelige sam
 
 ## 8. Vedlegg (valgfritt)
 
-- [GitHub-repo](https://github.com/IBE160-2026/G46-nilsen) og [separat revisjonsutkast PR #12](https://github.com/IBE160-2026/G46-nilsen/pull/12).
+- [GitHub-repo](https://github.com/IBE160-2026/G46-nilsen) – nåværende `main` inkluderer tidligere PR #12, #14, #15, #16 og #17. Se [gjeldende prosjektstatus](PROSJEKTSTATUS.md) og [dokumentasjonsrevisjon](DOKUMENTASJONSREVISJON-2026-11-25.md).
 - [Product Brief](../product-brief.md), [PRD](bmad/PRD.md), [arkitektur](bmad/ARCHITECTURE-BMAD.md) og [Epics/Stories](bmad/EPICS-AND-STORIES-BMAD.md).
 - [KI-logg](ai/AI-LOGG-SAMTALESTOTTE.md), [testplan](ai/AI-TESTPLAN.md) og [testbevis](ai/TESTBEVIS-OG-DEKNING-2026-11-18.md).
 - [Ekte lokal Auth/PostgREST/RLS](ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md), [Chrome-reise](ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md), [mobil/PDF](ai/MOBIL-PRINT-REFLEKSJON-2026-11-20.md).
 - [Teknisk CSS-/app-/serverrevisjon](TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md).
 
-**Før innlevering:** Kontroller at studentopplysninger, eget språk, kildehenvisninger, personlig vurdering og alle faktiske forhold stemmer. Valg av endelig Git-commit og Canvas-frist må bekreftes. Arbeidet i PR #12 er ennå ikke en endring i main eller produksjon.
+**Før innlevering:** Kontroller at studentopplysninger, eget språk, kildehenvisninger, personlig vurdering og alle faktiske forhold stemmer. Valg av endelig Git-commit og Canvas-frist må bekreftes. PR #12 er allerede slått sammen med `main`; tilsvarende gjelder #14–#17. Ingen ytterligere utviklingsrunde er nødvendig bare for å fullføre rapporten.
 
 **Omtrentlig ordantall for dette utkastet:** 4919 ord inkludert overskrifter, vedlegg, URL-tekst og metadata (automatisk opptelling, ikke Canvas-telling). Malen oppgir forventet 3000–5000 ord, avhengig av gruppestørrelse og kompleksitet. For soloprosjektet bør alle faglig relevante deler dekkes, uten å dikte opp gruppesamarbeid.

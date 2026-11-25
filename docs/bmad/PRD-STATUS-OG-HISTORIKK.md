@@ -1,5 +1,8 @@
 # PRD – historiske tester, status og tillegg
 
+> **Statuskontroll 25.11.2026:** Historiske PRD-beslutninger er bevart. Versjonen `2ae505ad` var kontrollgrunnlag 12.11, ikke nåværende Git-hode. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Arbeidsgrunnlag:** `main` v20.11.5 ved commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf` (12.11.2026).  
 **Arkivert/konsolidert:** 18.11.2026, uten sletting av de opprinnelige opplysningene.  
 **Status:** Dette er et **historisk evidens- og endringsvedlegg** til `docs/bmad/PRD.md`. Gjeldende krav er samlet i PRD §§ 8–10. Tall og «BESTÅTT»-merknader nedenfor gjelder daterte tidligere kjøringer og må ikke forveksles med fersk godkjenning.

@@ -1,5 +1,8 @@
 # Versjonert akseptansegrunnlag – kilde- og samtalekvalitet 25.11.2026
 
+> **Statuskontroll 25.11.2026:** PR #15 er allerede flettet, men faglig originalkildesjekk og signert akseptanse er fortsatt ufullført. Historisk «ikke merge»-instruks nedenfor er ikke en nåværende Git-beslutning. Se [gjeldende prosjektstatus](PROSJEKTSTATUS.md) og [dokumentasjonsrevisjon](DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Beslutning pr. 25.11.2026: Ingen formell faglig akseptanse eller produksjonsklarering. Dette er en sporbar beslutningsprotokoll for PR #15.**
 
 ## Hvorfor én historisk fem-case-test ikke kan få 5/5 godkjent

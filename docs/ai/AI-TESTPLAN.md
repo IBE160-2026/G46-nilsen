@@ -1,5 +1,8 @@
 # Testplan for KI og kvalitetssikring – Samtalestøtte
 
+> **Statuskontroll 25.11.2026:** Denne testplanen viser både historiske kjøringer og testmetode. Nåværende automatiske Quality Gate #45662862335 på `61d282dc` besto. 15 nye UI-yrkesforslagstester er inkludert; full uavhengig fagkontroll av KI-svar er ikke utført. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** AI Test Plan / Quality Assurance  
 **Status:** Aktiv og revidert testplan  

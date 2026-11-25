@@ -1,5 +1,8 @@
 # Kravsporingskontroll – Samtalestøtte
 
+> **Statuskontroll 25.11.2026:** Opprinnelig kravsporingsmatrise er datert 18.11.2026. Ikke bruk en gammel «feilet main»-opplysning som siste teststatus; se aktuell CI og prosjektstatus. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Dato:** 18.11.2026  
 **Referansegren:** `main`, commit `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`  
 **Arbeidsgren:** `docs/ibe160-helhetlig-revisjon-20261118`  

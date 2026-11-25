@@ -2,6 +2,19 @@
 
 **Formål:** holde dokumentasjonen synkron med faktisk kode og faktisk verifisert funksjonalitet frem mot innlevering.
 
+## Gjeldende sluttkontroll, 25.11.2026
+
+- [x] Tidligere PR #12–#17 er flettet til `main`. Personvernfeil («Begge»/«Ingen») og yrkesforslag er rettet.
+- [x] Siste app-commit før dokumentasjonsrevisjonen: `61d282dc`, [Quality Gate #45662862335](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = `success`; Render deploy = `live` 25.11.2026 kl. 17:16 UTC.
+- [x] Skolens rapportmal er utfylt i [solorapporten](REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md). Ikke erstatt med det konsentrerte utkastet.
+- [x] [Dokumentasjonsrevisjonen](DOKUMENTASJONSREVISJON-2026-11-25.md) kartlegger aktuelle og historiske kilder.
+- [ ] Bekreft faktisk Canvas-frist, filformat, ord-/vedleggskrav og eventuelt KI-erklæringskrav.
+- [ ] Studenten leser, retter egne vurderinger og godkjenner den endelige refleksjonsrapporten. Studentnummer skal ikke inn i offentlig repo.
+- [ ] Frys en endelig innleverings-SHA og kontroller `npm run audit:submission` og Quality Gate på den versjonen; ingen ny bred funksjonstesting er planlagt.
+- [ ] Dersom appen skal brukes utover studentprototypen: gjennomfør uavhengig faglig kildekontroll og produksjonssikkerhetsvurdering.
+
+> Resten av sjekklisten er et **datert arbeidsnotat fra 20.11**, ikke dagens beslutningsfasit. Gamle uavkryssede merge-oppgaver skal ikke åpnes på nytt.
+
 ## Oppdatert beslutningspunkt 20.11.2026
 
 - [x] 36 unike normative PRD-krav og 36 unike sensormatriserader er kontrollert med automatisk, offline `npm run audit:submission`.
