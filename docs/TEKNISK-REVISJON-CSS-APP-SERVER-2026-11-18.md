@@ -218,3 +218,14 @@ Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, 
 **Regresjon:** `tests/test-ai-provider-errors-http.cjs` har fått en kontroll som utfører faktisk logger-funksjon med et konstruert feilobjekt som inneholder navn, e-post og leverandørdetaljer. Testen krever at dette ikke logges, men at status/kode bevares. I tillegg kontrolleres den isolerte Express-testens stderr mot den simulerte leverandørens hemmelige feilmelding. Commit `77a0208f`. Ingen reelle brukerdata eller eksterne KI-kall benyttes.
 
 **Avgrensning:** Dette er en målrettet utbedring av **de sju KI-rutene**, ikke et bevis på at samtlige logger i server, database-SDK eller produksjonsinfrastruktur er fri for sensitive data. For eksempel skal benchmark- og autentiseringslogger vurderes separat. [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions) må fullføres på relevant commit før den kalles grønn.
+
+
+## Oppfølging 25.11.2026 – autentisering, admin og loggdataminimering
+
+**Funn:** Autentiseringsrutene og enkelte DB-/admin-feilstier logget hele Supabase-feilobjekter, eller `error.message`, som kan inneholde requestdetaljer, e-postadresser eller tokens. Endepunktet `POST /api/admin/pilot-regression/result` logget også `opening`, `issues`, `notes`, modellnavn og fritekstbasert kjøre-ID direkte fra forespørselsinnholdet. Det er ikke tilstrekkelig å påstå at dette alltid er testdata: serveren aksepterer faktisk innsendt tekst.
+
+**Gjort:** Commit `95114f66` innførte `logSafeOperationalError` for utvalgte innloggings-, invitasjons-, passordreset-, innholds-, historikk- og administrasjonsfeil. Loggeren skriver bare et fast område, normalisert status og en kort maskinkode; ingen rå `error` eller `error.message`. Admin-testresultatloggen skriver nå bare forhåndsdefinert testcase, modus, tema, teststatus og antall rapporterte avvik/notater. Commit `cf3433df` fjerner ubrukte variable for fritekstene som ikke lenger skal logges. Eksternt JSON-svar, autentiseringskrav og databaseoperasjoner er ikke tilsiktet endret.
+
+**Ny test:** `tests/test-server-privacy.cjs` utfører den faktiske operasjonelle loggerfunksjonen med et fiktivt feilobjekt som inneholder e-post, passord, token og navn. Den krever at alle disse utelates og at tekniske status-/kodefelt bevares. Den inspiserer også selve admin-resultatloggen og krever at fritekstfelt ikke serialiseres. Commits `72f033fa` og `29a9a9b5`. Ingen reelle identiteter eller nøkler brukes.
+
+**Teststatus:** Se [GitHub Actions på main](https://github.com/IBE160-2026/G46-nilsen/actions) for eksakt commit etter at jobbene er ferdige. Tidligere logging av fritt innhold i benchmark/testresultatene og øvrige SDK-feil skal fortsatt vurderes separat; denne rettelsen er **ikke en full loggrevisjon av hele løsningen**.
