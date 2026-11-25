@@ -1279,13 +1279,24 @@ function inferOccupationSuggestion(situation){
     for(const occupation of (sector.occupations||[])){
       const needle=String(occupation||'').toLocaleLowerCase('nb-NO').trim();
       if(!needle) continue;
-      // Match complete occupation words only: "kolleger" must not match "lege".
-      // Common forms such as "legen", "leger" and "sykepleieren" are allowed.
+      // Et yrkesord alene er ikke bevis på brukerens/medarbeiderens yrke.
+      // «Jeg har vært hos legen» skal ikke fylle ut «lege» i yrkesfeltet.
       const pattern=needle.replace(/[|\\{}()[\]^$+*?.]/g,'\\$&').replace(/\s+/g,'\\s+');
-      const present=new RegExp(
-        '(?<![\\p{L}\\p{N}])'+pattern+'(?:en|ene|er|et|a|s|n|ne|r)?(?![\\p{L}\\p{N}])','u'
-      ).test(text);
-      if(present){
+      const inflected=pattern+'(?:en|ene|er|et|a|s|n|ne|r)?';
+      const workRole=new RegExp(
+        '(?:^|[^\\p{L}])(?:medarbeider(?:en)?|kollega(?:en)?|den ansatte|en ansatt|jeg|vi)\\s+(?:er|jobber som|arbeider som|er ansatt som)\\s+(?:en\\s+)?'+inflected+'(?![\\p{L}\\p{N}])','u'
+      );
+      const explicitTitle=new RegExp(
+        '(?:^|[^\\p{L}])(?:yrket|stillingen|rollen)\\s+(?:er|som)\\s+'+inflected+'(?![\\p{L}\\p{N}])','u'
+      );
+      const occupationAtWork=new RegExp(
+        '(?<![\\p{L}\\p{N}])'+inflected+'\\s+(?:på|i|ved)\\s+(?:arbeidsplassen|avdelingen|teamet|virksomheten|jobben)(?![\\p{L}\\p{N}])','u'
+      );
+      const jobSubject=new RegExp(
+        '(?:^|[.!?]\\s+)(?:(?:en|ei|et|to|tre|flere)\\s+)?'+inflected+
+        '\\s+(?:kommer\\s+for\\s+sent|ønsker\\s+oppfølging|diskuterer|er\\s+på\\s+vakt|mangler\\s+verneutstyr|har\\s+brutt|jobber|arbeider)(?=\\s|[.!?,;:]|$)','u'
+      );
+      if(workRole.test(text) || explicitTitle.test(text) || occupationAtWork.test(text) || jobSubject.test(text)){
         const score=needle.length;
         if(!best || score>best.score) best={sectorId:sector.id,sectorLabel:sector.label,occupation,score};
       }
