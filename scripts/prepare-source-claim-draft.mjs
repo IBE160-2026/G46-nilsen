@@ -30,11 +30,11 @@ const candidates=[
   ["SRC-B-STAT-FRAVAER","first","arbeidsmiljøloven § 4-6 gir et rettslig utgangspunkt for arbeidsgivers vurdering av nødvendige tiltak så langt det er mulig.","AML_4_6_TILRETTELEGGING"],
   ["SRC-B-STAT-FRAVAER","followup","Dersom medarbeideren er sykmeldt, skal du normalt ta initiativ til oppfølgingsplan sammen med medarbeideren innen fire uker, med mindre det er åpenbart unødvendig.","NAV_SYKEFRAVAER_OPPFOLGING"],
   ["SRC-B-STAT-FRAVAER","followup","Ved helt sykefravær skal du normalt innkalle til dialogmøte 1 innen sju uker; ved delvis sykmelding vurderes behovet.","NAV_SYKEFRAVAER_OPPFOLGING"],
-  ["SRC-B-STAT-FRAVAER","followup","Du kan ikke kreve å få vite diagnosen.","NAV_SYKEFRAVAER_OPPFOLGING"],
+  ["SRC-B-STAT-FRAVAER","followup","Du kan ikke kreve å få vite diagnosen.","https://www.nav.no/sykmeldt"],
   ["SRC-B-STAT-FRAVAER","followup","Medarbeideren har en medvirkningsplikt og må bidra med arbeidsrelatert informasjon, men trenger ikke oppgi medisinske detaljer.","NAV_SYKEFRAVAER_OPPFOLGING"],
   ["SRC-D-BYGG-SHA","first","SHA-planen skal oppdateres fortløpende når det skjer endringer som har betydning for sikkerhet, helse og arbeidsmiljø","AT_BUILDING_SITE_COORDINATION"],
   ["SRC-D-BYGG-SHA","first","endringer skal gjøres kjent for berørte arbeidsgivere og arbeidstakere.","AT_BUILDING_SITE_COORDINATION"],
-  ["SRC-D-BYGG-SHA","first","Ved arbeid i høyden skal risiko vurderes før arbeidet starter, og nødvendige tiltak skal iverksettes på bakgrunn av vurderingen.","AT_RISIKOVURDERING"],
+  ["SRC-D-BYGG-SHA","first","Ved arbeid i høyden skal risiko vurderes før arbeidet starter, og nødvendige tiltak skal iverksettes på bakgrunn av vurderingen.","AT_WORK_EQUIPMENT_REGULATION"],
   ["SRC-D-BYGG-SHA","first","Arbeidsgiver skal også sørge for at arbeidstakerne medvirker i risikovurderingen.","AT_RISIKOVURDERING"],
   ["SRC-D-BYGG-SHA","followup","Byggherren har det overordnede ansvaret for at SHA-arbeidet og planen er ivaretatt, mens koordinatoren følger opp koordineringen i prosjektet.","AT_BUILDING_SITE_COORDINATION"],
   ["SRC-D-BYGG-SHA","followup","Arbeidsgiveren har samtidig ansvar for å risikovurdere og gjennomføre sitt arbeid på en sikker måte.","AT_BUILDING_SITE_COORDINATION"],
@@ -53,7 +53,7 @@ for(const [caseId,part,phrase,sourceId] of candidates){
       .map(key=>JSON.stringify(response?.[key]||"")).join(" ")
     : String(response?.reply||"");
   if(!visibleText.includes(phrase))fail("Sitert påstand finnes ikke eksakt i "+caseId+" / "+part+": "+phrase);
-  const selected=(response?.evidence_sources||[]).find(x=>x.id===sourceId && /^https?:\/\//.test(x.url||""));
+  const selected=(response?.evidence_sources||[]).find(x=>(x.id===sourceId || x.url===sourceId) && /^https?:\/\//.test(x.url||""));
   if(!selected)fail("Kilden ble ikke vist i SAMME svar: "+caseId+" / "+part+" / "+sourceId);
   form.claims.push({
     answerPart:part,claimText:phrase,sourceUrl:selected.url,
