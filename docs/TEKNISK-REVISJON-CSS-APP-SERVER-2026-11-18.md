@@ -196,3 +196,14 @@ Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, 
 **Kontroller:** `tests/test-source-retention.cjs` har fått en kjørbar, isolert kontroll av den faktiske hjelpefunksjonen mot `shouldRetainCuratedSources`, med både ordinær samtalesak og sikkerhetssak, historisk filtrering, felles tidspunkt og to kallesteder. `tests/test-source-provenance-http.cjs`, `tests/test-source-acceptance-routing.cjs` og øvrig Quality Gate fungerer som eksisterende integrasjons- og kontraktstester. Den første utgaven av tilleggstesten hadde en **egen ugyldig regex** og ble korrigert til eksplisitt strengbasert kontroll i commit `54187f3d`. Dette var en feil i testkoden, ikke et påvist avvik i kildelogikken. [Kjøring etter siste testrettelse](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45700707839) må være fullført før resultatet omtales som bestått.
 
 **Begrensning:** Automatisk kildeutvalg og proveniensregler er ikke det samme som uavhengig juridisk kontroll av et konkret KI-svar. Refaktoreringen har ingen tilsiktet brukergrensesnitt- eller produksjonsdeployeffekt.
+
+
+## Oppfølging 25.11.2026 – serverfeilhåndtering uten ubrukte feilsøkevariabler
+
+**Funn:** Analyseruten opprettet `code`, `type`, `rawMessage` og en `hint` for API-nøkkel-/modelfeil, men ingen av verdiene ble brukt i JSON-responsen, loggen eller annen flyt. Hovedveiledning og oppfølgingsdialog opprettet tilsvarende `code`/`rawMessage` uten å bruke dem.
+
+**Rettet:** Commit `7306fdd1` fjerner **14 linjer** ubrukte lokale variabler og ikke-eksponerte hint. De opprinnelige `console.error`-loggene, HTTP-statusberegningen, de offentlige feilkodene og de generiske klientmeldingene er uendret. Dette er ikke en endring av hvordan API-nøkkelfeil, ugyldig KI-JSON eller feil fra ekstern leverandør behandles.
+
+**Eksisterende regresjonsbevis:** `tests/test-ai-provider-errors-http.cjs` tester HTTP 429/503, ugyldige svar, frakobling og at interne leverandørmeldinger ikke lekker til klienten. [Quality Gate etter rettingen](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45701412775) er autoritativ for testresultat; ikke merk grønt før jobbene er avsluttet.
+
+**Begrensning:** Dette rydder bare bekreftet ubrukte variabler i tre feilstier, ikke alle gjentatte svarmønstre eller hele loggingen. En generell omlegging av statusnormalisering kan gjøres senere med eksplisitte negative API-tester for hver rute.
