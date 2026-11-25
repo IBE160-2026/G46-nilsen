@@ -53,6 +53,7 @@ try {
     @("Samtalestotte tests", "Branch: $branch", "Commit: $commit", "Ekte KI-kall: 0") |
         Out-File -FilePath $log -Encoding utf8
     $failed = @()
+    $failureDetails = @()
     $index = 0
     foreach ($test in $tests) {
         $index++
@@ -78,7 +79,18 @@ try {
             Write-Host "  BESTATT" -ForegroundColor Green
         } else {
             $failed += $test
-            Write-Host "  FEILET - se loggfilen" -ForegroundColor Red
+            # Ta bare feilspor fra denne testen. Hele loggen forblir pa PC-en.
+            $lines = @($output | ForEach-Object { [string]$_ })
+            $signals = @($lines | Where-Object {
+                $_ -match '(?i)AssertionError|ERR_[A-Z_]+|\\bError\\b|failed|feilet|EADDRINUSE|ECONNREFUSED|ETIMEDOUT|Timeout|not ready|exit code|Access is denied|EACCES|EPERM'
+            } | Select-Object -Last 12)
+            $tail = @($lines | Select-Object -Last 8)
+            $detail = (@($signals) + @($tail) | Select-Object -Unique) -join [Environment]::NewLine
+            if ($detail.Length -gt 2200) {
+                $detail = $detail.Substring($detail.Length - 2200)
+            }
+            $failureDetails += "=== $test ===" + [Environment]::NewLine + $detail
+            Write-Host "  FEILET - et kort feilutdrag kopieres automatisk" -ForegroundColor Red
         }
     }
 
@@ -96,6 +108,17 @@ try {
         "Ekte KI-kall: 0",
         "Loggfil pa PC: $log"
     ) -join [Environment]::NewLine
+
+    if ($failureDetails.Count -gt 0) {
+        $summary += [Environment]::NewLine + [Environment]::NewLine +
+            "FEILUTDRAG (full logg ligger bare lokalt):" + [Environment]::NewLine +
+            ($failureDetails -join ([Environment]::NewLine + [Environment]::NewLine))
+    }
+    # Ikke kopier eventuelle hemmeligheter fra en lokal logg til chatten.
+    $summary = $summary -replace '(?i)sk-[A-Za-z0-9_-]{16,}', '[SKJULT-NOKKEL]'
+    $summary = $summary -replace '(?i)(OPENAI_API_KEY|OPENROUTER_API_KEY|SUPABASE_SECRET_KEY)\s*[:=]\s*\S+', '$1=[SKJULT]'
+    if ($summary.Length -gt 9000) { $summary = $summary.Substring(0,9000) +
+        [Environment]::NewLine + "[Kortet ned. Fullstendig logg ligger lokalt.]" }
 
     Write-Host ""
     Write-Host $summary
