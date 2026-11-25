@@ -15,6 +15,14 @@ vm.runInContext(detector, sandbox);
 vm.runInContext(`const { findLikelyGivenName, findLikelyGivenNames } = SamtalestottePrivacyDetector;\n${source.slice(start, end)}\nthis.findLikelyGivenName = findLikelyGivenName; this.detectSensitiveInfo = detectSensitiveInfo; this.autoFixPrivacyText = autoFixPrivacyText;`, sandbox);
 
 const nameCases = [
+  ['Begge medarbeiderne ønsker et møte.', null],
+  ['Begge sier at samarbeidet er vanskelig.', null],
+  ['begge mener at arbeidsfordelingen er urettferdig.', null],
+  ['Jeg snakket med begge om situasjonen.', null],
+  ['Jeg har en konflikt mellom to ansatte. Begge ønsker hjelp.', null],
+  ['Ingen mener at dette er greit.', null],
+  ['Knut sier at begge ønsker et møte.', 'Knut'],
+  ['Begge mener at Lars kommer for sent.', 'Lars'],
   ['Personen er delvis tilbake i arbeid.', null],
   ['Samtalen er planlagt neste uke.', null],
   ['Situasjonen er krevende.', null],
