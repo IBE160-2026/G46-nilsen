@@ -32,6 +32,12 @@ async function jsonRequest(url, options) {
     }
     if (!ready) throw new Error(`Demo-server startet ikke. ${stderr}`);
 
+    const config = await jsonRequest("/api/public-config");
+    const expectedVersion = require("../package.json").version;
+    if (!config.response.ok || config.payload?.appVersion !== expectedVersion || config.payload?.demoMode !== true) {
+      throw new Error("Demoens publiserte versjon/mode samsvarer ikke med package.json og sensordemo");
+    }
+
     const home = await fetch(`http://127.0.0.1:${port}/`);
     if (!home.ok || !(await home.text()).includes("Samtalestøtte")) {
       throw new Error("Demo-forsiden feilet");
