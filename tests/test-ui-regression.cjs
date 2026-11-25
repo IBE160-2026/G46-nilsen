@@ -28,6 +28,34 @@ const css = [
 const app = fs.readFileSync('app.js', 'utf8');
 const server = fs.readFileSync('server.js', 'utf8');
 
+const topicSuggestionUi = app.slice(
+  app.indexOf('function renderSuggestion(query)'),
+  app.indexOf('function filterTopicCards(query)')
+);
+const subtopicSuggestionUi = app.slice(
+  app.indexOf('function renderSubtopicSuggestion(query)'),
+  app.indexOf('function filterSubtopicCards(query)')
+);
+assert(topicSuggestionUi.length > 100 && subtopicSuggestionUi.length > 100,
+  'Temaforslag og undertemaforslag maa finnes i app.js');
+for (const expected of [
+  'escapeHtml(topic.id)', 'escapeHtml(topic.title)',
+  'escapeHtml(item.topic.title)', 'escapeHtml(best.topic.title)',
+  'escapeHtml(subTitle)', 'escapeHtml(subHelp)',
+  'escapeHtml(best.topic.description)'
+]) {
+  assert(topicSuggestionUi.includes(expected), 'Dynamisk tekst i temaforslag maa HTML-escapes: ' + expected);
+}
+for (const expected of ['escapeHtml(title)', 'escapeHtml(help)']) {
+  assert(subtopicSuggestionUi.includes(expected), 'Dynamisk undertematekst maa HTML-escapes: ' + expected);
+}
+for (const direct of ['${topic.title}', '${item.topic.title}', '${best.topic.title}', '${subTitle}', '${subHelp}', '${best.topic.description}']) {
+  assert(!topicSuggestionUi.includes(direct), 'Raadtekst skal ikke interpoleres direkte i HTML: ' + direct);
+}
+for (const direct of ['${title}', '${help}']) {
+  assert(!subtopicSuggestionUi.includes(direct), 'Undertematekst skal ikke interpoleres direkte i HTML: ' + direct);
+}
+
 const overrides = fs.readFileSync('styles-overrides.css','utf8');
 assert(
   overrides.includes('.spoken-example {') &&
