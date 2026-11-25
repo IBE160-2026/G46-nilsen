@@ -138,6 +138,12 @@ Prosjektet har blant annet tester for:
 
 Den brede benchmarkbanken inneholder 114 saker synkronisert med de 48 gjeldende undertemaene. Golden/fasitbanken inneholder nå 66 caser: 26 tidligere generelle/pilotcaser + 40 strenge yrke/sektor/tariff/kilde-caser. De 40 nye består av 28 sektorcaser, 8 arbeidsgiver-/tariffcaser og 4 kildelekkasjecaser.
 
+## Kjent teknisk gjeld og bevisste avgrensninger
+
+Faglærers Product Brief-tilbakemelding 26.10 påpekte store hovedfiler i `app.js` og `server.js`. Prosjektet har siden skilt ut flere klient- og servermoduler og redusert CSS-overstyringer gjennom målrettede revisjoner. Noe teknisk gjeld gjenstår, særlig i større fellesfiler og historiske stilregler. En stor omskriving mot slutten av studentprosjektet er bevisst utsatt fordi regresjonsrisikoen kan bli større enn den dokumenterte gevinsten.
+
+Se [teknisk revisjon](docs/TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md), [CSS-revisjon](docs/CSS-REVISJON-2026-11-18.md) og [refleksjonsrapport etter skolens mal](docs/REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md). Grønne automatiske tester er ikke bevis for at all teknisk gjeld er fjernet.
+
 ## Videre arbeid
 
 Noen funksjoner er bevisst holdt utenfor dagens ferdige leveranse, blant annet:
