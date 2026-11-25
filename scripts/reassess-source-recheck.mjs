@@ -49,7 +49,7 @@ const decisions=run.cases.map(record=>{
   return {id:record.id,previous,issues};
 });
 const now=new Date().toISOString().replace(/[:.]/g,"-");
-const out=path.join(dir,"source-recheck-offline-"+now+".md");
+const out=path.join(path.dirname(input),"source-recheck-offline-"+now+".md");
 const lines=[
   "# Kostnadsfri reanalyse av lagret ekte KI-omtest",
   "",
