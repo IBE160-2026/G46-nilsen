@@ -69,3 +69,48 @@ men fortsatt trengs menneskelig gjennomlesning av alle tekstfelter.
 Omtesten oppretter IKKE et fem-case vurderingsskjema og erstatter aldri
 den opprinnelige kildeakseptansen. Hvis den nye KI-responsen fortsatt feiler,
 skal dette dokumenteres som nytt avvik og ikke omskrives til bestått.
+
+## Resultat fra målrettet KI-omtest 25.11.2026 kl. 14:32 UTC
+
+Den ekte to-case-rapporten `source-recheck-*.md` fra 25.11.2026T14:32:38.933Z
+ble manuelt gjennomlest, med alle synlige ledersvar, forberedelser, kilder og oppfølginger.
+Begge tilfellene brukte lokal, isolert testserver med ekte modell, ikke Render.
+
+- **SRC-C / M4: forbedringen ser ut til å virke.** Første åpning henvender
+  seg uttrykkelig til én veterinær: «Jeg vil gjerne snakke med deg ...».
+  Den omtaler «kritikken mellom dere», men kaller ikke inn begge.
+  Videre råd anbefaler separate samtaler og betinger et mulig felles møte
+  av at begge er hørt. Det gamle M4-avviket er dermed ikke observert i det
+  nye svarutdraget. Den gamle akseptanserapporten bevares som avvik.
+- **Feilaktig maskinelt SRC-C-varsel:** Den første evalueringsregelen
+  brukte `/\\bdere\\b|\\bvi er samlet\\b/` og tolket enhver omtale av
+  ordet «dere» som et felles møte. Denne ble trigget av «mellom dere».
+  Regelen er snevret inn til faktiske flertallshenvendelser som
+  «Takk for at dere møter», «Jeg vil snakke med dere» eller «Vi er samlet».
+  Negative og positive regresjoner bruker de faktiske modellformuleringene.
+- **SRC-E / M4: forbedringen ser ut til å virke.** Første råd sier eksplisitt
+  at beslutningsmyndighet må avklares. En ledereplikk sier
+  «Jeg skal være tydelig på hva jeg kan beslutte, og hva vi eventuelt må
+  avklare med nærmeste leder», og oppfølgingen handler om en avtalt
+  arbeidsdeling, ikke automatisk myndighet til å pålegge den.
+  Ingen nye maskinelle avvik ble rapportert.
+- **Kilder:** C brukte veterinærforeningens profesjonsetiske rammeverk
+  og relevant forskning, som ble presentert som etikk og ikke lov.
+  E brukte ingen rettslige kilder i en ordinær praktisk samtalesak.
+  `contentVerified:false` er fortsatt korrekt: modellen har ikke bevist
+  at hver kilde støtter alle utsagn.
+
+Ny kostnadsfri kontroll av den ALLEREDE LAGREDE to-case JSON-filen:
+
+    node scripts/reassess-source-recheck.mjs
+
+Den velger den siste `test-results/source-recheck-*.json`, beregner
+maskinelle signaler på nytt med oppdatert evaluator, skriver en ny separat
+`source-recheck-offline-*.md` og kopierer sammendraget med `Set-Clipboard`
+i Windows. Ingen ekte modellkall, ingen ny API-kostnad. Originalrapporten
+og de gamle `-aligned-findings.json`-avvikene forblir uendret.
+
+**Status:** Den nyere modellen ser ut til å ha rettet C/E-feilene, men
+verken denne prøven, fravær av maskinelle signaler eller en ny evaluering
+utgjør en endelig, kildevis og juridisk godkjenning av hele prosjektet.
+PR #15 forblir utkast til gjenværende faglig vurdering er dokumentert.
