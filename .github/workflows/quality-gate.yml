@@ -29,6 +29,9 @@ jobs:
       - name: Run deterministic test suite
         run: npm test
 
+      - name: Verify sensor documentation navigation links
+        run: node tests/test-document-navigation.cjs
+
       - name: Verify submission document/36-requirement consistency (report only)
         run: npm run audit:submission
         # Canvas requirements and human sign-off intentionally NOT inferred from a green CI.
