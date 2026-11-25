@@ -19,7 +19,12 @@ const cases=[
   ['Jeg jobber som sykepleier og ønsker hjelp.','sykepleier'],
   ['Kollegaen arbeider som tømrer.','tømrer'],
   ['Stillingen er lege.','lege'],
-  ['Sykepleieren på avdelingen trenger oppfølging.','sykepleier']
+  ['Sykepleieren på avdelingen trenger oppfølging.','sykepleier'],
+  ['En lege kommer for sent.','lege'],
+  ['Legen kommer for sent.','lege'],
+  ['To leger diskuterer.','lege'],
+  ['Legene ønsker oppfølging.','lege'],
+  ['Sykepleieren er på vakt.','sykepleier']
 ];
 for(const [input,expected] of cases){
  const actual=sandbox.suggest(input)?.occupation||null;
