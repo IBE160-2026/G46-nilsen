@@ -8,6 +8,18 @@ Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeiders
 
 Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy. KI-en skal støtte lederens vurdering, ikke erstatte lederens ansvar eller relevant fagkompetanse.
 
+## Start her – snarveier for sensor
+
+| Vil du ... | Gå til |
+| --- | --- |
+| Prøve appen uten nøkler | [Lokal sensordemo](#for-sensor-test-appen-uten-tilgangsnøkler) |
+| Finne riktig dokument | [Dokumentasjonsguide](docs/OVERSIKT.md) |
+| Se krav og arkitektur | [PRD](docs/bmad/PRD.md) · [Arkitektur](docs/bmad/ARCHITECTURE-BMAD.md) |
+| Kontrollere KI-bruk og tester | [KI-logg](docs/ai/AI-LOGG-SAMTALESTOTTE.md) · [Testbevis](docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md) |
+| Lese refleksjon og leveransestatus | [Refleksjonsrapport](docs/REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md) · [Prosjektstatus](docs/PROSJEKTSTATUS.md) |
+
+**Merk:** Den tekniske statusen nedenfor er et datert kontrollpunkt. Kontroller alltid siste `main`-commit og dens Quality Gate før endelig innlevering. GitHub-status er ikke bevis for Render-deploy.
+
 ## Sensorstatus – verifisert 25.11.2026
 
 - **Hvilken kode skal vurderes?** `main` i GitHub. Siste fullførte kontrollpunkt **før denne dokumentasjonsoppdateringen** er commit `9487d112` og [Quality Gate #45703259640](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45703259640), med alle tre jobber bestått. Ved endelig innlevering må siste commit og dens egne tester kontrolleres på nytt.
