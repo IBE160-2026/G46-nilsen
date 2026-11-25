@@ -1,5 +1,7 @@
 # Innleverings- og integrasjonsstatus – 25. november 2026
 
+> **STATUSKORREKSJON ETTER MERGE OG GRENOPPRYDDING (25.11.2026):** PR #15 er nå slått sammen med `main` som `d9046e3`; GitHub har bare **én aktiv branch – `main`**. De 24 gamle grenenes historikk er arkivert under taggen `archive/branches-before-single-main-2026-11-25`. Opplysningene nedenfor om åpen PR #15 er en *historisk beslutningsstatus før mergetidspunktet*. Se [PROSJEKTSTATUS](PROSJEKTSTATUS.md) for gjeldende status. Render-testtjenester er en separat sak.
+
 **Dette er gjeldende status for repoet etter de to sammenslåtte revisjonene, men før eventuell merge av PR #15. Ingen automatisk godkjenning av innlevering eller produksjon.**
 
 ## Bekreftet GitHub-status
