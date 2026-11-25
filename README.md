@@ -13,8 +13,8 @@ Denne korte oppskriften gjør det mulig å kjøre **den lokale, deterministiske 
 ```bash
 git clone https://github.com/IBE160-2026/G46-nilsen.git
 cd G46-nilsen
-# Kun for å undersøke revisjonskandidaten i draft-PR #12:
-git switch docs/ibe160-helhetlig-revisjon-20261118
+# Bruk den publiserte hovedgrenen (main):
+git switch main
 npm ci
 npm run demo
 ```
@@ -30,9 +30,15 @@ npm run audit:submission
 
 Den siste kommandoen er en **lokal sporbarhetskontroll**, ikke bekreftelse fra Canvas. Browser-/Supabase-integrasjonstestene i GitHub Actions har egne CI-forutsetninger; beskrivelsene og eksakte bevisene finnes i [innleveringskontrollen](docs/INNLEVERINGSKONTROLL-2026-11-20.md).
 
-**Viktig for faktisk vurdering:** Sensorveiledningen for del 1 sier at sensor henter gruppens repo og siste commit innen fristen, og følger README. Kommandoen `git switch` ovenfor er **kun for å inspisere revisjonskandidaten**, ikke et tegn på at denne grenen er godkjent som innlevering. `main` og PR #12 er fortsatt ulike; hvilken commit/gren som faktisk skal vurderes må avklares mot Canvas før levering. Koden med full integrasjon og egne nøkler er beskrevet lenger ned.
+**Viktig for faktisk vurdering:** Sensorveiledningen for del 1 beskriver at sensor henter gruppens repo og følger README. Kommandoen ovenfor starter dagens `main`, ikke utkastet i PR #15. Kildeendringene i PR #15 blir ikke med før en uttrykkelig godkjent merge. Endelig innleveringsgren og Canvas-krav må fortsatt verifiseres; kildeendringene er ikke automatisk godkjent for produksjon.
 
-## Prosjektstatus, testbevis og innleveringsgrense – 20.11.2026
+**Oppdatert repo- og innleveringsstatus per 25.11.2026:** PR #12 og PR #14 ble slått sammen til `main` 20.11.2026. PR #15 (kildeproveniens, kildekontroll, yrkeskilder og KI-akseptansetester) er fortsatt `draft` på `fix/evidence-sources-20261120`. Alle tre jobber i siste kontrollerte Quality Gate for PR #15 var bestått, men dette er **ikke** en faglig kilde- eller produksjonsgodkjenning. `main` inneholder ennå ikke PR #15. Se [oppdatert innleveringsstatus 25.11](docs/INNLEVERINGSSTATUS-2026-11-25.md). En merge kan utløse Render auto-deploy; dette er **ikke verifisert** og må avklares før sammenslåing.
+
+## Historisk prosjektstatus og testbevis – 20.11.2026
+
+**Dette er en bevart status fra 20. november, ikke dagens beslutning.** PR #12 ble slått sammen senere samme dag, og PR #14 ble også slått sammen. For gjeldende repo-status, se innleveringsstatus datert 25. november.
+
+### Prosjektstatus, testbevis og innleveringsgrense – 20.11.2026
 
 **Leveransestatus:** [Innleveringskontroll 20.11](docs/INNLEVERINGSKONTROLL-2026-11-20.md) er fasit for hva som kan dokumenteres. **PR #12 (125 endrede filer) er draft, og `main` inneholder ikke disse revisjonsendringene.** Leveransegren, Canvas-krav og studentens godkjenning er ikke avklart; ingen merge eller deploy er foretatt. Kjør `npm run audit:submission` for en lokal, offline sjekk. **Ikke oppgi at PR-CI er CI for `main`.**
 
