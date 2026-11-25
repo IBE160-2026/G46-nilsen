@@ -15,7 +15,7 @@
 
 - **Produksjon:** [Samtalestøtte](https://g46-nilsen-samtalestotte.onrender.com), Render-tjeneste `srv-dbfagf0473hc73ceh060`, deploy `dep-dc3hfi40916s738qaph0` med appkode `61d282dc` bekreftet `live` 25.11.2026 kl. 17:16:42 UTC.
 - **LIVE/tale:** Eksperimentell pilot, ikke del av den innleverte applikasjonens produksjonsfunksjonalitet. Pilotgren og Render-pilottjeneste må holdes atskilt.
-- **Kvalitetsgrense:** Grønn CI dokumenterer tekniske kontroller, ikke at alle KI-råd eller juridiske påstander er uavhengig faglig kvalitetssikret. Det finnes dokumenterte, uløste forbehold ved kildeakseptanse og fullskala drift.
+- **Kvalitetsgrense:** Grønn CI dokumenterer tekniske kontroller og samsvar med prosjektets testgrunnlag, ikke en ekstern faglig godkjenning av KI-råd. Slik godkjenning er ikke et leveransekrav i dette studentprosjektet. Eventuell ordinær drift og faglig kildeakseptanse må vurderes separat, ikke som et utestående innleveringspunkt.
 
 ## Dokumentasjon og arbeidsregler
 
