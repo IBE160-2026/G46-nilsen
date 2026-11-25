@@ -159,3 +159,18 @@ Arbeidet svarer konkret på forelesningenes fokus på **arkitektur før større 
 Samtidig gjenstår den sentrale innvendingen: `app.js` på **4 274 linjer** og `server.js` på **1 844 linjer** er fremdeles store. Dette er derfor **målbar framgang med gjenværende teknisk gjeld**, ikke ferdig profesjonell arkitektur. Neste beslutning bør bygge på faktisk browser-/runtime-evidens og isolere UI- og API-ansvar som det finnes gode tester for, ikke en ren linjetallmålsetting.
 
 **Nyeste bekreftede tekniske test:** [GitHub Actions #44402558539](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) på commit `70118fbc23fca83a84fb2c96523fabd55228cce8` er **SUCCESS** med 43 deterministiske deltester, 99 Chrome-scenarioer og dependency audit uten funn på valgt nivå. Dette er revisjonsgren-test, ikke produksjonssetting. Refleksjonens ordgrense og formkrav i Canvas er fortsatt ikke kontrollert.
+
+
+---
+
+## Oppfølgingskontroll 25.11.2026 – kildekode vurdert mot IBE160s kodekvalitetskriterium
+
+Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, ikke en full kode- eller sikkerhetsrevisjon. Det historiske arbeidet på revisjonsgren ovenfor er beholdt uendret. Sensorveiledningen vurderer forståelig arkitektur, duplisering, død kode, konsistent stil, konfigurering og sporbar håndtering av KI-genererte feil.
+
+- **Størrelse:** `app.js` har omtrent **4 598 linjer**, `server.js` omtrent **2 029**. Store filer er en vedlikeholdsrisiko, men linjetall alene er ikke et avvik. Deler er allerede trukket ut i egne moduler. Unngå omfattende ombygging uten målbare akseptansekriterier og tilhørende nettleser-/API-regresjon.
+- **Faktiske koblingspunkter:** De to API-rutene `/api/generate-guidance` (ca. linje 1605) og `/api/continue-conversation` (ca. linje 1796) gjentar flere steg ved kildekontekst, yrkes-/sektorruting og synlig kildevalg. Det er en **kandidat for senere kontrollert moduluttrekk**, ikke en bekreftet funksjonsfeil. Kildepolicy, proveniens og arbeidsrettslige avgrensninger gjør en rask sammenslåing risikabel.
+- **Kontrollert funn og rettelse:** `renderSuggestion` og `renderSubtopicSuggestion` i `app.js` satte tidligere enkelte tema-/undertemafelter direkte inn i `innerHTML`, i motsetning til andre visninger som brukte `escapeHtml`. Tekstene kan komme fra innholds-/temadata; sikkerhet og konsekvent rendering tilsier escaping før HTML-innsetting. Dette er nå rettet uten å endre temarankering. `tests/test-ui-regression.cjs` har fått en avgrenset **kildetekstbasert** regresjonskontroll som hindrer tilbakefall til direkte interpolering i disse to funksjonene. Testen bekrefter **ikke** en full dynamisk XSS-test i nettleser.
+- **CSS:** `styles-responsive.css` og `styles-overrides.css` inneholder fortsatt mange `!important`. Den eksisterende `npm run audit:css -- --enforce-budget` og Chrome-paritetskontrollen gir viktige bevis. Ingen ny stor CSS-sletting ble gjort her: et kortere stilark er ikke i seg selv bevis på samme visuelle resultat.
+- **Avgrensning:** Denne gjennomgangen har ikke kjørt sensordemo fra en ny lokal klon, ikke gjennomgått alle DOM-innsettingspunkter med nettleserfuzzing, og ikke verifisert produksjonstrafikk eller hele Git-historikken for lekkede hemmeligheter. Disse forholdene skal ikke omtales som bestått bare fordi CI er grønn.
+
+**Relevante bevis:** `app.js`, `server.js`, `tests/test-ui-regression.cjs`, `scripts/audit-css.cjs`, [Quality Gate på main](https://github.com/IBE160-2026/G46-nilsen/actions) og øvrige daterte testnotater. Endringen gjelder bare ett konkret UI-escapingavvik; ingen påstand om at all teknisk gjeld er eliminert.
