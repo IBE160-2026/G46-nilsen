@@ -1,5 +1,8 @@
 # Implementation Plan – Samtalestøtte
 
+> **Statuskontroll 25.11.2026:** Dette er en historisk implementeringsplan. Tidligere opplysning om mislykket `main`-CI er ikke siste status; PR #12–#17 er flettet, og `main` Quality Gate #45662862335 var grønn 25.11.2026. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Revidert Implementation Plan  
 **Rammeverk:** BMAD  
