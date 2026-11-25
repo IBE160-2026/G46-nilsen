@@ -45,3 +45,47 @@ Disse påstandskandidatene kan korrigeres i en **ny** lokal kopi ved hjelp av `s
 - Ny C/E- og B/D-modelltekst er gjennomlest, men ingen lov- eller fagansvarlig har signert alle `must/critical/claim`-punkter. Eventuelle feil med `han eller hun` og utydelig SHA-pliktsubjekt ble etterpå møtt med nye promptinstruksjoner; denne rettingen er foreløpig bare deterministisk testet.
 
 **Ingen vurdering her autoriserer å fjerne `draft` fra PR #15, slå sammen til `main`, slå på yrkesvalg i produksjon eller kalle kildeinnhold «automatisk verifisert».**
+
+## Status etter kontroll av korrigert lokal kildekladd (25.11.2026)
+
+Brukerens lokale utdata bekrefter at `scripts/refine-source-claim-draft.mjs`
+fullførte uten nye KI-kall og opprettet:
+
+`test-results/source-acceptance-manual-review-2026-11-25T13-47-13-669Z-aligned-findings-claim-draft-sources-refined.json`
+
+Dette er nå **den mest presise lokale arbeidskladden** for den historiske
+fem-case-testen; den er fortsatt ufullstendig og ikke signert. B4 peker til
+NAVs `/sykmeldt`-side synlig i gammel oppfølging, D3 til forskriften om
+utførelse av arbeid synlig i gammelt første råd. Tidligere kladder og
+observerte C/E-feil er bevart.
+
+### Faktisk kildeinnhold kontrollert i åpne myndighetssider
+
+- [NAV, arbeidsgivers oppfølging](https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte):
+  Plan senest fire uker etter oppstart av sykmelding med unntak når åpenbart
+  unødvendig; dialogmøte innen sju uker, og behovsvurdering ved delvis
+  sykmelding. Frister kan ikke anvendes på tidligere uspesifiserte perioder
+  uten dato/varighet.
+- [NAV, sykmeldt](https://www.nav.no/sykmeldt): arbeidsgiver kan ikke kreve
+  at arbeidstakeren oppgir diagnose, men kan spørre om hvilke arbeidsoppgaver
+  vedkommende kan utføre. Dette er **samme URL** som ble vist i det
+  historiske B-oppfølgingssvaret.
+- [Byggherreforskriften](https://www.arbeidstilsynet.no/regelverk/forskrifter/byggherreforskriften/):
+  § 7 gjelder byggherrens SHA-planansvar, § 18 arbeidsgiverens plikter
+  under utførelsen, § 19 informasjon til egne arbeidstakere og verneombud.
+  Formelle aktørroller må fremgå.
+- [Arbeidstilsynet, arbeidsmiljøloven](https://www.arbeidstilsynet.no/regelverk/lover/arbeidsmiljoloven--aml/):
+  Arbeidstakerens avbruddsplikt etter § 2-3 og verneombudets stansingsrett
+  etter § 6-3 har risikoterskler. Det er ikke en generell automatisk
+  lovregel om stans for enhver uavklart sikkerhetssituasjon.
+- [Arbeidstilsynets forskrift om organisering, ledelse og medvirkning](https://www.arbeidstilsynet.no/regelverk/forskrifter/forskrift-om-organisering-ledelse-og-medvirkning/):
+  kommentaren til arbeidstakers medvirkningsplikt skiller arbeidsevne og
+  tilretteleggingsopplysninger fra medisinsk diagnose.
+
+**Dette er konkret dokumentasjon av offentlig kildestøtte, ikke utfylling av
+`reviewer`, `claimInventoryComplete`, `sourceExcerpt`, `periodVerified`,
+`employerScopeVerified` eller `REVIEWED_OK` i det lokale skjemaet.**
+Gjenstår særlig: full dekning av øvrige juridiske utsagn (ikke bare de 14
+første kandidatene), kilde-/gyldighetsbevis per svar og manuell vurdering av
+alle fagkriterier, inkludert avvik som må stå som `not_met` i den gamle
+C/E-kjøringen. Rettede nye modellkjøringer har egen proveniens.
