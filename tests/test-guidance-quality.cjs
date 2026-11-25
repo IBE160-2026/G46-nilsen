@@ -41,6 +41,12 @@ assert(server.includes('Ved en kategorisk påstand om at arbeidsgiver IKKE kan k
 assert(server.includes('Ved arbeidsoperasjoner i høyden') &&
   server.includes('Ved arbeid i høyden må spesifikke sikkerhetspåstander'),
   'Første råd og oppfølging må velge kilder for spesifikke høydearbeidskrav');
+assert(server.includes('Hvis SHA-planen må oppdateres og brukerens myndighet er ukjent') &&
+  server.includes('Skriv tydelig HVEM som må oppdatere SHA-planen'),
+  'Begge svarløp må navngi den ansvarlige for SHA-planen, ikke overføre den til leder uten fullmakt');
+assert(server.includes('bruk kjønnsnøytralt «hen» og «hens»') &&
+  server.includes('Ikke skriv «han eller hun»'),
+  'Ukjent kjønn skal ikke gjøres om til han eller hun i KI-genererte reaksjoner');
 assert(server.includes('Ved SHA-arbeid: skill uttrykkelig byggherrens ansvar') &&
   server.includes('Skill byggherre/koordinator/arbeidsgiver'),
   'Feilplasserte SHA-plikter må motvirkes i begge KI-trinn');
