@@ -1,5 +1,8 @@
 # UX Design Specification – Samtalestøtte
 
+> **Statuskontroll 25.11.2026:** UX-spesifikasjonen bevares som designgrunnlag. Automatisk yrkesforslag krever nå tydelig arbeidskontekst og skal ikke feilaktig foreslå «lege» på grunn av privat omtale av en lege. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** UX Design Specification  
 **Rammeverk:** BMAD  
