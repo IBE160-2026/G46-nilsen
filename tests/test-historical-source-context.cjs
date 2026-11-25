@@ -1,6 +1,6 @@
 const assert=require("node:assert/strict");
 (async()=>{
-  const { detectHistoricalSourceQuestion, isHistoricalAgreementCandidate,
+  const { detectHistoricalSourceQuestion, resolveHistoricalSourceReview, isHistoricalAgreementCandidate,
     isSourceValidForQuestion, historicalSourceCaution }=await import("../src/server/historical-source-context.js");
   const { createRelevantSourceSelector }=await import("../src/server/source-ranking.js");
   const { mergeGuidanceSourceCandidates }=await import("../src/server/source-merge.js");
@@ -45,6 +45,51 @@ const assert=require("node:assert/strict");
   assert.deepEqual(multi?.years,[2023,2024]);
   assert.match(historicalSourceCaution(multi),/nevnte tidligere årene/);
   assert.equal(historicalSourceCaution(null),"");
+  // Funksjonell samtaletest: ikke mist opprinnelig tariffperiode
+  // nar brukeren stiller korte oppfolgingssporsmal.
+  const historicalSituation="Hvilken tariffavtale gjaldt for overtid i staten i 2024?";
+  const inherit=question=>resolveHistoricalSourceReview({
+    situation:historicalSituation,question,asOf
+  });
+  for(const question of [
+    "Hva med kravfristene?", "Hvilke regler gjaldt da?",
+    "Og etterbetalingen?", "Hva med den samme avtalen?",
+    "Hva med satsene?"
+  ]) {
+    assert.equal(inherit(question)?.year,2024,
+      "Oppfolging mistet original historisk periode: "+question);
+  }
+  assert.deepEqual(inherit("Hvilken tariffavtale gjaldt i 2023?"),
+    {year:2023,years:[2023]},
+    "Eksplisitt nytt historisk ar ma overstyre arvet 2024");
+  assert.deepEqual(inherit("Hva med kravfristene for 2023?"),
+    {year:2023,years:[2023]},
+    "Nytt ar i kort oppfolging ma overstyre selv uten gjaldt");
+  assert.deepEqual(inherit("Hvilke regler gjaldt i 2023 og 2024?"),
+    {year:null,years:[2023,2024]},
+    "Flere nye historiske ar ma kreve periodeavklaring");
+  for(const question of [
+    "Hva gjelder nå?", "Hva med dagens regler?", "Hva gjelder i 2026?",
+    "Hva med de nye reglene?", "Hvordan åpner jeg samtalen?"
+  ]) {
+    assert.equal(inherit(question),null,
+      "Eksplisitt nativ/natidig eller ny samtaleoppgave ma ikke arve 2024: "+question);
+  }
+  assert.deepEqual(inherit("Hva med reglene i 2024 og 2026?"),
+    {year:null,years:[2024,2026]},
+    "Blandede perioder ma ikke tilordnes en enkelt tariffavtale");
+  const currentSituation="En medarbeider ble ansatt i 2024. Hvordan holder vi en lonnssamtale i dag?";
+  assert.equal(resolveHistoricalSourceReview({
+    situation:currentSituation,question:"Hva med kravfristene?",asOf
+  }),null,"Ansettelsesaret alene ma ikke utlose historiske kildevalg");
+  assert.deepEqual(resolveHistoricalSourceReview({
+    situation:currentSituation,question:"Hvilken tariffavtale gjaldt da?",asOf
+  }),{year:null,years:[]},
+    "Udokumentert historisk periode ma kreve avklaring");
+  assert.deepEqual(resolveHistoricalSourceReview({
+    situation:currentSituation,question:"Hvilken tariffavtale gjaldt i 2023?",asOf
+  }),{year:2023,years:[2023]},
+    "Ny historisk foresporsel skal kunne starte fra en vanlig sak");
   const state=getAgreementMap().agreementAreas.find(x=>x.id==="state");
   const oldHA=state.curatedSources.find(x=>x.id==="STATE_HA_2023_2026");
   const laterHTA=state.curatedSources.find(x=>x.id==="STATE_HTA_2026_2028");
