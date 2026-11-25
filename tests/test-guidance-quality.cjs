@@ -35,6 +35,18 @@ assert(!schema.includes('"Avslutning av arbeidsforhold",'), 'Analyse-skjemaet in
 
 console.log('Veiledningskvalitet: menneskelig muntlig åpning, omsorg, variasjon og temasynk OK');
 
+assert(server.includes('Ved en kategorisk påstand om at arbeidsgiver IKKE kan kreve diagnose') &&
+  server.includes('Hvis du påstår at arbeidsgiver ikke kan kreve diagnose'),
+  'Både første råd og oppfølging må kreve direkte kilde ved absolutte diagnosepåstander');
+assert(server.includes('Ved arbeidsoperasjoner i høyden') &&
+  server.includes('Ved arbeid i høyden må spesifikke sikkerhetspåstander'),
+  'Første råd og oppfølging må velge kilder for spesifikke høydearbeidskrav');
+assert(server.includes('Ved SHA-arbeid: skill uttrykkelig byggherrens ansvar') &&
+  server.includes('Skill byggherre/koordinator/arbeidsgiver'),
+  'Feilplasserte SHA-plikter må motvirkes i begge KI-trinn');
+assert(server.includes('ikke fremstill enhver ukjent risiko som en ubetinget lovplikt') &&
+  server.includes('Skill praktisk forsiktighetsråd om å stoppe eller utsette arbeid'),
+  'Stans av risikofylt arbeid må ikke feilaktig presenteres som universell lovplikt');
 assert(server.includes('KILDEHIERARKI FOR RETTSLIGE/FORMELLE PÅSTANDER'), 'Mangler eksplisitt kildehierarki for rettslige råd');
 assert(server.includes('AKAN og IA er veiledning/arbeidslivsrammeverk, ikke lov'), 'Mangler vern mot å fremstille AKAN/IA som lov');
 assert(server.includes('Tariff/HTA/Hovedavtale gjelder bare når riktig avtaleområde faktisk er relevant'), 'Mangler tariffavgrensning');
