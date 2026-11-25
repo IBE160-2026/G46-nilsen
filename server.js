@@ -291,6 +291,16 @@ function logAiRouteError(route, error) {
   console.error('[ai-route]', { route, status, code });
 }
 
+// Supabase/Auth errors can contain identifying input, tokens and request metadata.
+// Log only bounded status and machine codes for operational diagnosis.
+function logSafeOperationalError(area, error) {
+  const rawStatus = Number(error?.status);
+  const status = Number.isInteger(rawStatus) && rawStatus >= 400 && rawStatus < 600 ? rawStatus : 500;
+  const rawCode = error?.code || error?.error?.code;
+  const code = typeof rawCode === 'string' && /^[a-z0-9_]{1,64}$/i.test(rawCode) ? rawCode : 'UNSPECIFIED';
+  console.error('[operation]', { area, status, code });
+}
+
 async function createTrackedResponse(params) {
   const requestedModel = String(params._modelOverride || '');
   const modelUsed = requestedModel && AI_MODELS[requestedModel] ? requestedModel : await getActiveModel();
@@ -546,9 +556,9 @@ async function resolveSession(req, res = null) {
       };
     }
 
-    console.warn("[auth] Session kunne ikke fornyes:", refreshError?.message || userError?.message || "ukjent feil");
+    logSafeOperationalError('auth-refresh', refreshError || userError);
   } catch (refreshException) {
-    console.warn("[auth] Refresh kastet feil:", refreshException?.message || refreshException);
+    logSafeOperationalError('auth-refresh-exception', refreshException);
   }
 
   if (res) clearSession(req, res);
@@ -579,7 +589,7 @@ async function requireUser(req, res, next) {
     req.supabase = resolved.userClient;
     next();
   } catch (error) {
-    console.error(`[auth] Feil ${req.method} ${req.path}:`, error);
+    logSafeOperationalError('auth-require-user', error);
     res.status(500).json({ error: "AUTH_ERROR", message: "Kunne ikke kontrollere innloggingen." });
   }
 }
@@ -597,7 +607,7 @@ app.get("/api/content", async (_req, res) => {
     .order("content_key", { ascending: true });
   if (error) {
     const missing = /content_overrides|relation .* does not exist/i.test(String(error.message || ""));
-    if (!missing) console.error("Kunne ikke hente redigerbart innhold:", error);
+    if (!missing) logSafeOperationalError('content-read', error);
     return res.json({ values: {}, setupRequired: missing });
   }
   const values = Object.fromEntries((data || []).map(row => [row.content_key, row.content_value]));
@@ -619,7 +629,7 @@ app.put("/api/admin/content", requireContentEditor, async (req, res) => {
   const { error } = await supabaseAdmin.from("content_overrides").upsert(entries, { onConflict: "content_key" });
   if (error) {
     const missing = /content_overrides|relation .* does not exist/i.test(String(error.message || ""));
-    console.error("Kunne ikke lagre redigerbart innhold:", error);
+    logSafeOperationalError('content-save', error);
     return res.status(missing ? 503 : 500).json({
       error: missing ? "CONTENT_TABLE_MISSING" : "CONTENT_SAVE_FAILED",
       message: missing ? "Kjør database/migrations/V20-SUPABASE-MIGRATION.sql i Supabase før innholdsredigering tas i bruk." : "Kunne ikke lagre innholdet."
@@ -797,20 +807,17 @@ app.post('/api/admin/pilot-regression/result', requireAdmin, async (req,res)=>{
     // Kun faste, personverntrygge testbankcaser logges. Ingen fri brukersamtale lagres.
     const marker = mode === 'full' ? '[production-regression-result]' : '[pilot-regression-result]';
     console.info(marker, JSON.stringify({
-      runId,
       mode,
       caseId:testCase.id,
       theme:testCase.theme,
       pilot:Boolean(testCase.pilot_regression),
-      model,
       ok,
-      issues,
-      notes,
-      opening
+      issueCount:issues.length,
+      noteCount:notes.length
     }));
     res.json({ok:true});
   } catch (error) {
-    console.error('[regression-result] logging failed:', error?.message || error);
+    logSafeOperationalError('regression-result', error);
     res.status(500).json({error:'REGRESSION_RESULT_LOG_FAILED',message:'Kunne ikke registrere testresultatet.'});
   }
 });
@@ -1045,7 +1052,7 @@ app.post("/api/auth/register", registerLimiter, async (req, res) => {
     .maybeSingle();
 
   if (inviteError) {
-    console.error("Invitasjonsfeil:", inviteError);
+    logSafeOperationalError('invite-lookup', inviteError);
     return res.status(500).json({ error: "INVITE_LOOKUP_FAILED", message: "Kunne ikke kontrollere invitasjonen." });
   }
   if (!invite) return res.status(403).json({ error: "INVALID_INVITE", message: "Invitasjonen er ugyldig eller allerede brukt." });
@@ -1064,7 +1071,7 @@ app.post("/api/auth/register", registerLimiter, async (req, res) => {
     if (msg.includes("already") || msg.includes("registered") || msg.includes("exists")) {
       return res.status(409).json({ error: "REGISTER_FAILED", message: "Kunne ikke opprette konto med disse opplysningene." });
     }
-    console.error("Opprett bruker-feil:", createError);
+    logSafeOperationalError('auth-register', createError);
     return res.status(500).json({ error: "REGISTER_FAILED", message: "Kunne ikke opprette konto." });
   }
 
@@ -1084,7 +1091,7 @@ app.post("/api/auth/register", registerLimiter, async (req, res) => {
   const signInClient = newUserClient();
   const { data: signedIn, error: signInError } = await signInClient.auth.signInWithPassword({ email, password });
   if (signInError || !signedIn.session) {
-    console.error("Innlogging etter registrering feilet:", signInError);
+    logSafeOperationalError('auth-register-login', signInError);
     return res.status(201).json({ user: publicUser(created.user), loginRequired: true });
   }
 
@@ -1157,7 +1164,7 @@ app.post("/api/auth/password-reset-request", resetLimiter, async (req, res) => {
   });
 
   if (error) {
-    console.error("Passordreset-feil:", error.message || error);
+    logSafeOperationalError('auth-password-reset', error);
     // Generisk svar for å unngå kontooppslag via endepunktet.
   }
   res.json({ ok: true });
@@ -1186,7 +1193,7 @@ app.post("/api/auth/password-reset-complete", resetLimiter, async (req, res) => 
 
   const { data: updated, error: updateError } = await authClient.auth.updateUser({ password });
   if (updateError || !updated?.user) {
-    console.error("Kunne ikke oppdatere passord:", updateError);
+    logSafeOperationalError('auth-password-update', updateError);
     return res.status(500).json({ error: "PASSWORD_UPDATE_FAILED", message: "Kunne ikke endre passordet. Prøv igjen." });
   }
 
@@ -1244,7 +1251,7 @@ app.post("/api/history", requireUser, async (req, res) => {
     return res.status(404).json({ error: "NOT_FOUND", message: "Samtalen ble ikke funnet." });
   }
   if (error || !data) {
-    console.error("Lagre historikk-feil:", error);
+    logSafeOperationalError('history-save', error);
     return res.status(500).json({ error: "HISTORY_SAVE_FAILED", message: "Kunne ikke lagre samtalen." });
   }
   res.json({ item: rowToHistory(data) });
