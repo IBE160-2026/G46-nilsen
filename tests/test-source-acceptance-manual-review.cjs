@@ -303,9 +303,11 @@ const assert=require("node:assert/strict");
   try{
     const scriptPath=path.join(root,"scripts/prepare-source-claim-draft.mjs");
     const sourceCode=fs.readFileSync(scriptPath,"utf8");
-    const match=sourceCode.match(/const candidates=\\[([\\s\\S]*?)\\];\\nfor\\(const record of run.cases\\)/);
-    assert(match,"Påstandskandidatene må være et statisk, inspiserbart oppsett");
-    const candidates=JSON.parse("["+match[1]+"]");
+    const start=sourceCode.indexOf("const candidates=[");
+    const end=sourceCode.indexOf("];\nfor(const record of run.cases)",start);
+    assert(start>=0 && end>start,"Påstandskandidatene må være et statisk, inspiserbart oppsett");
+    const raw=sourceCode.slice(start+"const candidates=[".length,end);
+    const candidates=JSON.parse("["+raw+"]");
     assert.equal(candidates.length,14,"Alle 14 identifiserte kandidatpåstander skal være med");
     const all=JSON.parse(fs.readFileSync(
       path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8"
