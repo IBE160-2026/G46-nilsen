@@ -18,6 +18,9 @@ assert.match(script,/test-results/u,"Must keep full output out of Git");
 assert.match(script,/Set-Clipboard -Value \$summary/u,"Short report must be copied to clipboard");
 assert.match(script,/\$summary \| clip\.exe/u,"Windows clipboard fallback must exist");
 assert.match(script,/\$output \| Out-File -FilePath \$log/u,"Detailed output must be logged locally");
+assert.match(script,/FEILUTDRAG/u,"Failed tests must include helpful diagnostics on clipboard");
+assert.match(script,/\$failureDetails/u,"Every failed test needs local error context");
+assert.match(script,/\[SKJULT\]/u,"Potential secret values must be redacted before copying");
 assert(!/OPENAI_API_KEY|OPENROUTER_API_KEY|\b--run-live\b/u.test(script),
   "Offline runner must never require or activate live KI provider credentials");
 console.log("POWERSHELL CLIPBOARD CONTRACT OK: "+tests.length+
