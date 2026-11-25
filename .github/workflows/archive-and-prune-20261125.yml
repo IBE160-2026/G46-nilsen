@@ -58,8 +58,8 @@ jobs:
             git cat-file -e "${sha}^{commit}"
             tag="archive/merged-pr-${pr}-head-20261125"
             if git show-ref --verify --quiet "refs/tags/$tag"; then
-              echo "::error::Archive tag $tag already exists; investigate before retry"
-              exit 1
+              old_sha="$(git rev-parse "$tag^{}")"
+              [[ "$old_sha" == "$sha" ]] || { echo "::error::Archive tag $tag points to unexpected commit"; exit 1; }
             fi
             branches+=("$branch")
             shas+=("$sha")
@@ -69,8 +69,18 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           for i in "${!tags[@]}"; do
-            git tag -a "${tags[$i]}" "${shas[$i]}" -m "Preserve exact merged PR head ${branches[$i]} before branch cleanup"
-            git push origin "refs/tags/${tags[$i]}"
+            if ! git show-ref --verify --quiet "refs/tags/${tags[$i]}"; then
+              git tag -a "${tags[$i]}" "${shas[$i]}" -m "Preserve exact merged PR head ${branches[$i]} before branch cleanup"
+            fi
+            if ! git ls-remote --exit-code origin "refs/tags/${tags[$i]}" >/dev/null; then
+              uploaded=false
+              for attempt in 1 2 3; do
+                if git push origin "refs/tags/${tags[$i]}"; then uploaded=true; break; fi
+                echo "Retrying transient GitHub tag push ${tags[$i]} (attempt ${attempt})"
+                sleep 3
+              done
+              [[ "$uploaded" == true ]] || { echo "::error::Could not archive ${tags[$i]}"; exit 1; }
+            fi
           done
 
           # Do not delete anything until every old branch tip is archived remotely.
