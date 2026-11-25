@@ -34,7 +34,7 @@ const provider=http.createServer(async(req,res)=>{
   providerCalls++;
   for await(const _ of req){}
   if(delayMs)await sleep(delayMs);
-  if(mode==="429")return send(res,429,{error:{type:"rate_limit_error",message:"Synthetic provider throttle",code:"TEST_429"}});
+  if(mode==="429")return send(res,429,{error:{type:"rate_limit_error",message:"PRIVATE_PROVIDER_MESSAGE kari@example.no token=SYNTHETIC_SECRET",code:"TEST_429"}});
   if(mode==="503")return send(res,503,{error:{type:"server_error",message:"Synthetic provider unavailable",code:"TEST_503"}});
   return send(res,200,{
     id:"resp_benchmark_fake",object:"response",model:"gpt-5.6-luna",
@@ -123,6 +123,11 @@ const ID1="f6e3eb7e-f630-43ed-941c-c664b6f2a010",ID2="ac2d24e1-899e-4516-a518-9d
     const failed=await call(e,ID2,0.1,0);
     assert.equal(failed.status,429,"Provider 429 should be propagated to admin test");
     assert.equal(failed.body.error,"BENCHMARK_FAILED");
+    assert.ok(!JSON.stringify(failed.body).includes("PRIVATE_PROVIDER_MESSAGE") &&
+      !JSON.stringify(failed.body).includes("kari@example.no"),
+      "Provider details must never be returned in the benchmark error JSON");
+    assert.ok(!stderr.includes("PRIVATE_PROVIDER_MESSAGE") && !stderr.includes("SYNTHETIC_SECRET"),
+      "Raw benchmark provider errors must not reach server stderr");
     const blocked=await call(f,ID2,0.1,0);
     assert.equal(blocked.body.error,"BUDGET_LIMIT","Provider errors must consume a reservation");
     assert.equal(providerCalls,4);
