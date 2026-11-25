@@ -75,6 +75,10 @@ To-brukertesten avdekket en annen feil: En bruker som forsøkte å oppdatere en 
 
 **Utfordring 3 – kompleks arkitektur.** Hver ny funksjon ga flere avhengigheter mellom frontend, server, database og stiler. Refaktorering måtte derfor være kontrollert og ledsaget av regresjonstester. KI kunne foreslå omfattende endringer, men jeg måtte vurdere om gevinsten faktisk forsvarte risikoen.
 
+**Utfordring 4 – å holde dokumentasjonen oppdatert.** Når jeg ser tilbake på hele prosjektet, er det faktisk dokumentasjonen jeg har opplevd som den mest krevende delen. Selve utviklingen av applikasjonen gikk relativt rett frem med KI som hjelpemiddel: Jeg kunne beskrive hva jeg ønsket, prøve løsningen og justere underveis. Det vanskelige var å sørge for at Product Brief, PRD, arkitektur, stories, testplan, KI-logg, README og refleksjonsrapport til enhver tid stemte med det vi faktisk hadde utviklet og testet. Når en funksjon ble endret, kunne flere dokumenter bli utdaterte samtidig. Det var særlig utfordrende å skille mellom opprinnelige planer, historiske testresultater og den nyeste versjonen av løsningen.
+
+Denne erfaringen har endret synet mitt på KI-assistert utvikling. KI gjør det mulig å produsere kode raskt, men det gjør ikke sporbarhet og dokumentasjon automatisk enklere. Tvert imot kan tempoet i utviklingen føre til at dokumentasjonen blir hengende etter. Jeg har derfor erfart at det å vedlikeholde en troverdig og konsistent prosjektbeskrivelse krever minst like mye oppmerksomhet som å få funksjonene til å virke. For meg er dette et av de viktigste læringspunktene fra prosjektet.
+
 
 ### 3.2 Samarbeidsutfordringer
 
