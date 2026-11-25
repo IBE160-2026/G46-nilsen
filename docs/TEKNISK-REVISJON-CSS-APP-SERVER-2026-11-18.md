@@ -185,3 +185,14 @@ Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, 
 **Utført:** De fire ubrukte funksjonene og tilhørende ubrukte tilstandsvariabel ble fjernet fra `app.js` i commit `a03fe415`. Netto reduksjon **65 linjer** (4 600 → 4 535). Ingen bevisst endring i aktiv visning, tema-/kilderuting, KI-oppsett eller CSS.
 
 **Verifikasjon:** [Quality Gate for kodeendringen](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45699153331). Ikke påstå grønn status før alle jobbene er avsluttet; statisk kallestedskontroll alene er ikke et fullt bevis på at ingen dynamiske avhengigheter finnes. Dette er et lite vedlikeholdstiltak, **ikke** en fullført monolittrefaktorering eller sikkerhetsrevisjon.
+
+
+## Oppfølging 25.11.2026 – felles kildekandidatpipeline i server
+
+**Problem:** `/api/generate-guidance` og `/api/continue-conversation` gjentok fire trinn for kildekandidater: generelt kildesøk, sammenslåing med yrkes-/tariffkontekst, beslutning om kuraterte kilder trengs, og filtrering mot historisk gyldighet. Dette økte risikoen for utilsiktet ulikhet ved senere endringer.
+
+**Gjennomført:** Commit `fa0d4fd4` samler **bare** disse trinnene i `scopedGuidanceSources` i `server.js`. Rutene beholder sine egne vurderinger av opprinnelig spørsmål versus ny oppfølging, historisk kildebehov, yrkeskontekst, lovkilder som automatisk foreslås, KI-instruksjoner, kildenes proveniens og juridisk påstandskontroll. Det er bevisst **ikke** gjort en bred sammenslåing av de to API-endepunktene.
+
+**Kontroller:** `tests/test-source-retention.cjs` har fått en kjørbar, isolert kontroll av den faktiske hjelpefunksjonen mot `shouldRetainCuratedSources`, med både ordinær samtalesak og sikkerhetssak, historisk filtrering, felles tidspunkt og to kallesteder. `tests/test-source-provenance-http.cjs`, `tests/test-source-acceptance-routing.cjs` og øvrig Quality Gate fungerer som eksisterende integrasjons- og kontraktstester. Den første utgaven av tilleggstesten hadde en **egen ugyldig regex** og ble korrigert til eksplisitt strengbasert kontroll i commit `54187f3d`. Dette var en feil i testkoden, ikke et påvist avvik i kildelogikken. [Kjøring etter siste testrettelse](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45700707839) må være fullført før resultatet omtales som bestått.
+
+**Begrensning:** Automatisk kildeutvalg og proveniensregler er ikke det samme som uavhengig juridisk kontroll av et konkret KI-svar. Refaktoreringen har ingen tilsiktet brukergrensesnitt- eller produksjonsdeployeffekt.
