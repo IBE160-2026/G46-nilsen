@@ -17,7 +17,7 @@ assert.ok([sortSourcesAlphabetically, compactSourceUsage, readableSourceTier, so
 
 const originals = [{title:"Økonomi"}, {title:"Arbeid"}, {title:"Åpenhet"}];
 const ordered = sortSourcesAlphabetically(originals);
-assert.deepEqual(Array.from(ordered, item => item.title), ["Arbeid", "Åpenhet", "Økonomi"]);
+assert.deepEqual(Array.from(ordered, item => item.title), ["Arbeid", "Økonomi", "Åpenhet"]);
 assert.equal(originals[0].title,"Økonomi","Sorting must not mutate source array");
 assert.equal(compactSourceUsage({useFor:["Lovtolkning", "", "Frister"]}),"Lovtolkning, Frister");
 assert.equal(compactSourceUsage({type:"myndighetsveiledning"}),"myndighetsveiledning og praktisk regelverksforståelse");
