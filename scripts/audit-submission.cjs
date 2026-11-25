@@ -51,7 +51,7 @@ else{
     "README documents both offline demo and automated tests");
   check(readme.includes("DOKUMENTASJON-SJEKKLISTE.md"),
     "README links to current documentation checklist");
-  check(readme.includes("REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md"),
+  check(readme.includes("REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md"),
     "README links to the school-template reflection report");
   check(readme.includes("SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md"),
     "README cites actual LOCAL Supabase evidence");
@@ -59,7 +59,7 @@ else{
     "README cites mobile/print evidence");
   check(report.includes("**Student:** [Fyll inn navn/studentnummer for endelig levering]"),
     "Public repository retains private student number as a placeholder");
-  check(report.includes("Ikke innlevert")&&report.includes("Arbeidsutkast"),
+  check(/arbeidsutkast/i.test(report)&&/(ikke innlevert|ingen påstand om innlevering)/i.test(report),
     "Reflection draft is not falsely labeled submitted");
   const words=report.trim().split(/\s+/).length;
   const gitSha=git("rev-parse","HEAD");
