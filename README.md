@@ -8,6 +8,13 @@ Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeiders
 
 Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy. KI-en skal støtte lederens vurdering, ikke erstatte lederens ansvar eller relevant fagkompetanse.
 
+## Sensorstatus – verifisert 25.11.2026
+
+- **Hvilken kode skal vurderes?** `main` i GitHub. Siste fullførte kontrollpunkt **før denne dokumentasjonsoppdateringen** er commit `9487d112` og [Quality Gate #45703259640](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45703259640), med alle tre jobber bestått. Ved endelig innlevering må siste commit og dens egne tester kontrolleres på nytt.
+- **Hva er faktisk publisert?** Render-produksjon er kontrollert separat 25.11: siste `live`-deploy er fremdeles `61d282dc` (`dep-dc3hfi40916s738qaph0`). Nyere GitHub-rettelser er **ikke** verifisert deployet på Render. Lokal sensordemo fra `main` er anbefalt for å se den nyeste frontendkoden uten nøkler.
+- **Hva er testet?** Faktisk Chrome-brukerreise, emulert mobil/touch og PDF, negative HTTP-tester av PII-/feillogging, lokal Supabase Auth/PostgREST/RLS og isolert PostgreSQL, samt automatiske kilde- og KI-kontrakter. Testsvar fra lokal KI-simulator er **ikke** uavhengig faglig evaluering av en ekte modell. [Testbevis og avgrensninger](docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md).
+- **Hva gjenstår før innlevering?** Bekreft Canvas-krav, studentens personlige godkjenning av refleksjonsutkastet og én endelig SHA med grønn Quality Gate. [Oppdatert sjekkliste](docs/DOKUMENTASJON-SJEKKLISTE.md). Dette er ikke godkjenning av publisering i produksjon.
+
 ## For sensor: test appen uten tilgangsnøkler
 
 **Forutsetninger:** Git, Node.js **22–26** (angitt i `package.json` som `>=22 <27`) og npm. Bruk en Node-versjon i dette intervallet og en vanlig nettleser. Sensordemoen krever ingen `.env`, API-nøkkel eller database. Installer avhengigheter med `npm ci` som vist under. Versjonsintervallet er prosjektets oppgitte kompatibilitetskrav, ikke et bevis for at hver enkelt Node-versjon er testet.
