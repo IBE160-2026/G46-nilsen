@@ -329,6 +329,28 @@ Kjør formell kontroll av den ferdig utfylte vurderingen med `npm run check-sour
 
 Se [protokollen for manuell kildeakseptanse](docs/KILDEAKSEPTANSE-MANUELL-KONTROLL-2026-11-21.md). **Ekte fem-case KI-test og faglig gjennomgang er fremdeles ikke utført som del av PR #15.**
 
+### Test de nye endringene fra Windows PowerShell (uten KI-nøkkel)
+
+Før du tester: hent utviklingsgrenen `fix/evidence-sources-20261120` (den er **ikke** slått sammen med `main`). Kontroller `git status` før du bytter gren, så du ikke overskriver eget arbeid.
+
+```powershell
+git fetch origin
+git switch fix/evidence-sources-20261120
+git pull --ff-only origin fix/evidence-sources-20261120
+npm ci
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1
+```
+
+Skriptet kjører 29 relevante, **kostnadsfrie** kilde-, historikk-, juridisk-varsel- og benchmark-/simulatortester automatisk. Det viser en kort resultatoversikt, lagrer hele utskriften under Git-ignorert `test-results/nye-tester-<tid>.log` og kopierer **kun oppsummeringen** til Windows-utklippstavlen. Deretter kan du lime inn det korte resultatet med Ctrl+V – ikke hundrevis av logglinjer. Dersom utklippstavlen er utilgjengelig vises oppsummeringen likevel på skjermen.
+
+For hele den eksisterende offline-testpakken:
+
+```powershell
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1 -Full
+```
+
+Dette bruker verken ekte KI eller API-nøkkel i Git. Det er en automatisk teknisk/regresjonskontroll, **ikke en faglig faktasjekk av ekte KI-råd**.
+
 ### Live KI-validering
 
 Live modelltesting er skilt fra vanlig CI og skal i dette prosjektet kjøres **lokalt** med API-nøkkel i en lokal `.env`-fil.
