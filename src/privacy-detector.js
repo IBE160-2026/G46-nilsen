@@ -13,7 +13,7 @@
   const GRAMMAR_NON_NAMES = toSet([
     "jeg","vi","du","dere","de","dem","oss","meg","deg","seg",
     "han","hun","hen","ham","henne","den","det","dette","disse",
-    "man","noen","noe","alle","andre","hverandre","en","et",
+    "man","noen","noe","alle","begge","ingen","andre","hverandre","en","et",
     "hva","hvem","hvilken","hvilke","hvordan","hvorfor","hvor","når","hvorvidt","varsler","varsleren",
     "vårt","våre","mitt","mine","ditt","dine","sitt","sine","deres",
 
