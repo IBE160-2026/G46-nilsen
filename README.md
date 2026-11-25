@@ -352,6 +352,15 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-featu
 
 Resultatet kopieres automatisk til utklippstavlen, også med korte feilutdrag dersom noe fortsatt feiler. Hele loggen forblir på PC-en. Ingen ekte KI-kall.
 
+**Målrettet funksjonstest for en historisk tarifsak med oppfølgingsspørsmål:** Kildeperioden fra opprinnelig situasjon skal følge med til korte spørsmål som «Hva med kravfristene?» og «Hvilken tariffavtale gjaldt da?». Hvis brukeren eksplisitt spør «Hva gjelder nå?», skal dagens kilder vurderes i stedet. Kjør alle tre relevante teststeg med én kommando; resultatet kopieres automatisk til utklippstavlen:
+
+```powershell
+git pull --ff-only origin fix/evidence-sources-20261120
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1 -ConversationOnly
+```
+
+Testene kjører med syntetisk KI på lokal Express-server, **uten ekte KI-kall, API-nøkler eller deploy**. De verifiserer samtaleflyt og kildekandidatvalg, ikke at en faktisk lovpåstand støttes av originalteksten.
+
 For hele den eksisterende offline-testpakken:
 
 ```powershell
