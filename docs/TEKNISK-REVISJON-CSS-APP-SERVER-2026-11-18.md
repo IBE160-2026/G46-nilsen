@@ -174,3 +174,14 @@ Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, 
 - **Avgrensning:** Denne gjennomgangen har ikke kjørt sensordemo fra en ny lokal klon, ikke gjennomgått alle DOM-innsettingspunkter med nettleserfuzzing, og ikke verifisert produksjonstrafikk eller hele Git-historikken for lekkede hemmeligheter. Disse forholdene skal ikke omtales som bestått bare fordi CI er grønn.
 
 **Relevante bevis:** `app.js`, `server.js`, `tests/test-ui-regression.cjs`, `scripts/audit-css.cjs`, [Quality Gate på main](https://github.com/IBE160-2026/G46-nilsen/actions) og øvrige daterte testnotater. Endringen gjelder bare ett konkret UI-escapingavvik; ingen påstand om at all teknisk gjeld er eliminert.
+
+
+## Oppfølgingskontroll 25.11.2026 – målrettet fjerning av ubrukt klientkode
+
+**Hypotese:** Eldre funksjoner fra ombyggingen av kilde- og temavisningen kan ligge igjen i den store `app.js` uten å være i bruk. Slike rester gir unødig navigasjon og vedlikeholdsrisiko, men skal ikke slettes uten kontroll av kallested og testavhengigheter.
+
+**Kontroll:** Telt navneforekomster i `app.js`; kontrollert de aktuelle navnene mot `index.html` og relevante UI-/kilde-/admin- og nettlesertester. Fant én forekomst (deklarasjonen) for `openGuidanceFromSuggestion`, `loadHelpSectorSummary`, `loadHelpSourceLibrary` og `allContentFields`. Eldre `helpSourceLibraryLoaded` ble bare brukt i den ubrukte lasteren. Den faktiske hjelpesiden kaller `loadCompleteSourceLibrary` fra `showView('help')`, og den ble beholdt. `filterTopicCards` og `filterSubtopicCards` ble også undersøkt, men ble **ikke fjernet**, ettersom eksisterende testkode bruker dem som avgrensningsmarkører; ikke kall alle sjeldne funksjoner «død kode» uten å undersøke bruken.
+
+**Utført:** De fire ubrukte funksjonene og tilhørende ubrukte tilstandsvariabel ble fjernet fra `app.js` i commit `a03fe415`. Netto reduksjon **65 linjer** (4 600 → 4 535). Ingen bevisst endring i aktiv visning, tema-/kilderuting, KI-oppsett eller CSS.
+
+**Verifikasjon:** [Quality Gate for kodeendringen](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45699153331). Ikke påstå grønn status før alle jobbene er avsluttet; statisk kallestedskontroll alene er ikke et fullt bevis på at ingen dynamiske avhengigheter finnes. Dette er et lite vedlikeholdstiltak, **ikke** en fullført monolittrefaktorering eller sikkerhetsrevisjon.
