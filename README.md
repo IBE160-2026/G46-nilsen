@@ -343,6 +343,15 @@ powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-featu
 
 Skriptet kjører 29 relevante, **kostnadsfrie** kilde-, historikk-, juridisk-varsel- og benchmark-/simulatortester automatisk. Det viser en kort resultatoversikt, lagrer hele utskriften under Git-ignorert `test-results/nye-tester-<tid>.log` og kopierer **kun oppsummeringen** til Windows-utklippstavlen. Deretter kan du lime inn det korte resultatet med Ctrl+V – ikke hundrevis av logglinjer. Dersom utklippstavlen er utilgjengelig vises oppsummeringen likevel på skjermen.
 
+**Ved tre lokale HTTP-testfeil på Windows (Node `ERR_UNSUPPORTED_ESM_URL_SCHEME`):** 25.11.2026 ble de tre simulatortestene rettet til å konvertere Windows-filstier til `file:///`-URL når Node starter `--import`. Hent oppdateringen og kjør **bare de tre feilede testene og én ny Windows-regresjon**:
+
+```powershell
+git pull --ff-only origin fix/evidence-sources-20261120
+powershell.exe -NoProfile -ExecutionPolicy Bypass -File .\scripts\test-new-features.ps1 -FailedOnly
+```
+
+Resultatet kopieres automatisk til utklippstavlen, også med korte feilutdrag dersom noe fortsatt feiler. Hele loggen forblir på PC-en. Ingen ekte KI-kall.
+
 For hele den eksisterende offline-testpakken:
 
 ```powershell
