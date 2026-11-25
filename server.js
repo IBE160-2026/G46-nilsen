@@ -1606,16 +1606,6 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
   } catch (error) {
     console.error("OpenAI analysis failed:", error);
     const status = Number(error?.status) || 500;
-    const code = error?.code || error?.error?.code || null;
-    const type = error?.type || error?.error?.type || null;
-    const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
-
-    let hint = "Se PowerShell-vinduet for detaljer.";
-    if (status === 401) hint = "API-nøkkelen ble avvist. Kontroller OPENAI_API_KEY i .env.";
-    else if (status === 403) hint = "API-nøkkelen mangler nødvendig tilgang til Responses API eller modellen.";
-    else if (status === 404) hint = `Modellen ${error.samtalestotteModel || defaultModel} er ikke tilgjengelig for dette prosjektet, eller modellnavnet er feil.`;
-    else if (status === 429) hint = "API-prosjektet har nådd en bruks-/betalingsgrense eller mangler tilgjengelig kreditt.";
-
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_ANALYSIS_FAILED",
       message: "KI-analysen feilet."
@@ -1772,8 +1762,6 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
   } catch (error) {
     console.error("OpenAI guidance failed:", error);
     const status = Number(error?.status) || 500;
-    const code = error?.code || error?.error?.code || null;
-    const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_GUIDANCE_FAILED", message: "KI-samtalestøtten feilet."
     });
@@ -1898,8 +1886,6 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   } catch (error) {
     console.error("OpenAI continuation failed:", error);
     const status = Number(error?.status) || 500;
-    const code = error?.code || error?.error?.code || null;
-    const rawMessage = error?.message || error?.error?.message || "Ukjent feil fra OpenAI API.";
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_CONTINUATION_FAILED", message: "KI-oppfølgingen feilet."
     });
