@@ -38,3 +38,13 @@ Kildedato: 25.11.2026. Datagrunnlag: faktisk lokal `source-acceptance-2026-11-25
 4. **Skjemaet kan ikke kontrollere sannhet automatisk:** `check-source-acceptance-review` kontrollerer struktur og innrapportert faglig vurdering, ikke om sitater og juss faktisk er korrekte. La PR #15 være draft, og ikke deploy til produksjon på grunnlag av denne foreløpige analysen.
 
 Dette notatet er avgrenset til fem syntetiske svarløp og kilder som faktisk var knyttet til svarene; øvrige yrker, tariffområder og praktiske brukertilfeller er ikke dermed godkjent.
+
+## Registrering av de to historiske avvikene (uten forhåndsgodkjenning)
+
+Kjør lokalt etter `git pull --ff-only`:
+
+```powershell
+node .\scripts\record-source-review-findings.mjs '.\test-results\source-acceptance-2026-11-25T13-47-13-669Z.json' '.\test-results\source-acceptance-manual-review-2026-11-25T13-47-13-669Z-aligned.json'
+```
+
+Verktøyet kontrollerer de eksakte formuleringene i originalkjøringen. Det oppretter en **ny** `-aligned-findings.json` med M4=`not_met` for C og E og begrunnelser, uten å endre original eller tilskrive vurderingen en kontrollør. Alle andre vurderinger og juridisk påstandskartlegging er fortsatt `pending`. Sammendrag kopieres med `Set-Clipboard` på Windows. Verktøyet nekter å overskrive en eksisterende utfil. Den gamle KI-kjøringen må **ikke** godkjennes mot de nye kriteriene.
