@@ -13,7 +13,7 @@ const required=[
   "README.md","package.json","docs/bmad/PRD.md",
   "docs/ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md",
   "docs/ai/TESTBEVIS-OG-DEKNING-2026-11-18.md",
-  "docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md",
+  "docs/REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md",
   "docs/ai/MOBIL-PRINT-REFLEKSJON-2026-11-20.md",
   "docs/ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md",
   "tests/test-sensor-journey-browser.cjs",
@@ -37,7 +37,7 @@ else{
   const matrix=read("docs/ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md");
   const readme=read("README.md");
   const pkg=JSON.parse(read("package.json"));
-  const report=read("docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md");
+  const report=read("docs/REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md");
   const ids=[...prd.matchAll(/^## ((?:FR|AI|NFR)-[A-Z0-9-]+)\s*[–-]/gm)].map(x=>x[1]);
   const matrixIds=[...matrix.matchAll(/^\| ((?:FR|AI|NFR)-[A-Z0-9-]+)\s*[–-]/gm)].map(x=>x[1]);
   check(ids.length===36&&new Set(ids).size===36,"PRD has exactly 36 unique requirement headings");
@@ -49,17 +49,17 @@ else{
     "The documented offline demo exists in package scripts");
   check(readme.includes("npm run demo")&&readme.includes("npm test"),
     "README documents both offline demo and automated tests");
-  check(readme.includes("INNLEVERINGSKONTROLL-2026-11-20.md"),
-    "README links to the current submission decision");
+  check(readme.includes("DOKUMENTASJON-SJEKKLISTE.md"),
+    "README links to current documentation checklist");
   check(readme.includes("REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md"),
-    "README links to reflection draft");
+    "README links to the school-template reflection report");
   check(readme.includes("SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md"),
     "README cites actual LOCAL Supabase evidence");
   check(readme.includes("MOBIL-PRINT-REFLEKSJON-2026-11-20.md"),
     "README cites mobile/print evidence");
-  check(report.includes("**Studentnummer:** [fyll inn før innlevering]"),
+  check(report.includes("**Student:** [Fyll inn navn/studentnummer for endelig levering]"),
     "Public repository retains private student number as a placeholder");
-  check(report.includes("**Ikke innlevert**")||report.includes("**Ikke ferdig innlevering:**"),
+  check(report.includes("Ikke innlevert")&&report.includes("Arbeidsutkast"),
     "Reflection draft is not falsely labeled submitted");
   const words=report.trim().split(/\s+/).length;
   const gitSha=git("rev-parse","HEAD");
