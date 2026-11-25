@@ -327,7 +327,7 @@ Den automatiske Quality Gate kontrollerer funksjon, kildekandidater, opphav og r
 
 Kjør formell kontroll av den ferdig utfylte vurderingen med `npm run check-source-acceptance-review -- <run.json> <manual-review.json>`. Et skjema som ikke er gjennomgått av en person får aldri godkjent resultat. Utfylling er heller ingen automatisk juridisk attest; en ansvarlig fagperson må vurdere om kontrollen er troverdig.
 
-Se [protokollen for manuell kildeakseptanse](docs/KILDEAKSEPTANSE-MANUELL-KONTROLL-2026-11-21.md). **Ekte fem-case KI-test og faglig gjennomgang er fremdeles ikke utført som del av PR #15.**
+Se [protokollen for manuell kildeakseptanse](docs/KILDEAKSEPTANSE-MANUELL-KONTROLL-2026-11-21.md). **Ekte fem-case KI-test og faglig gjennomgang er fremdeles ikke utført som del av PR #15.** På Windows kopierer den frivillige ekte KI-testen nå den lesbare Markdown-rapporten automatisk til utklippstavlen med `Set-Clipboard` når rapportene er skrevet; bruk Ctrl+V i chatten. Kopiering endrer ikke testresultat eller godkjenningsstatus.
 
 ### Test de nye endringene fra Windows PowerShell (uten KI-nøkkel)
 
