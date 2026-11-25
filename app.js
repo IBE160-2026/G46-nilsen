@@ -676,13 +676,6 @@ function openGuidance(title, help, initialSituation = '') {
   loadOccupationOptions();
 }
 
-function openGuidanceFromSuggestion(topic, subtopic, originalQuery = '') {
-  currentTopic = topic;
-  highlightTopicCard(topic.id);
-  openGuidance(subtopic[0], subtopic[1], originalQuery);
-}
-
-
 const privacyNameDetector = window.SamtalestottePrivacyDetector;
 if (!privacyNameDetector) throw new Error('Personvernmodulen for navnedeteksjon mangler.');
 const { findLikelyGivenName, findLikelyGivenNames } = privacyNameDetector;
@@ -1756,23 +1749,6 @@ function escapeHtml(value) {
     .replaceAll("'", '&#039;');
 }
 
-async function loadHelpSectorSummary(){
-  const host=document.querySelector('#help-sector-source-summary');
-  if(!host) return;
-  try{
-    const response=await fetch('/api/help-source-library',{credentials:'include',cache:'no-store'});
-    const payload=await response.json();
-    if(!response.ok) throw new Error(payload.message||'Kunne ikke hente sektorkilder.');
-    const groups=payload.categories?.occupations?.groups||[];
-    host.innerHTML=groups.map(group=>`<details class="help-mini-source-group">
-      <summary>${escapeHtml(group.label||group.id)} <small>${(group.sources||[]).length} kilder</small></summary>
-      <ul class="resource-links">${(group.sources||[]).slice(0,5).map(source=>`<li><a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.author||source.title||'Kilde')}</a></li>`).join('')}</ul>
-    </details>`).join('') || '<p class="muted-note">Ingen sektorkilder registrert.</p>';
-  }catch(error){
-    host.innerHTML=`<p class="muted-note">${escapeHtml(error.message)}</p>`;
-  }
-}
-
 function sortSourcesAlphabetically(items=[]){
   return [...items].sort((a,b)=>
     String(a?.title||a?.author||a?.id||'').localeCompare(
@@ -1962,46 +1938,6 @@ function renderHelpSourceGroup(group, occupation=false){
     <summary><span>${escapeHtml(group.label||group.id)}</span>${extra}</summary>
     <div class="source-group-body">${(group.sources||[]).map(renderHelpSourceItem).join('') || '<p class="muted-note">Ingen kilder registrert.</p>'}</div>
   </details>`;
-}
-
-let helpSourceLibraryLoaded=false;
-async function loadHelpSourceLibrary(){
-  const root=document.querySelector('#help-source-library');
-  const status=document.querySelector('#help-source-library-status');
-  if(!root || helpSourceLibraryLoaded) return;
-  root.innerHTML='<div class="settings-card">Henter kildegrunnlag …</div>';
-  try{
-    const response=await fetch('/api/help-source-library',{credentials:'include',cache:'no-store'});
-    const payload=await response.json();
-    if(!response.ok) throw new Error(payload.message||'Kunne ikke hente kildegrunnlaget.');
-    const categories=payload.categories||{};
-    const ordered=[
-      ['rules',categories.rules],
-      ['research',categories.research],
-      ['frameworks',categories.frameworks],
-      ['occupations',categories.occupations]
-    ].filter(([,cat])=>cat);
-    root.innerHTML=ordered.map(([id,cat])=>{
-      const groups=cat.groups||[];
-      const totalSources=groups.reduce((sum,group)=>sum+(group.sources||[]).length,0);
-      const occupation=id==='occupations';
-      const body=occupation
-        ? groups.map(group=>renderHelpSourceGroup(group,true)).join('')
-        : groups.flatMap(group=>group.sources||[]).map(renderHelpSourceItem).join('');
-      return `<details class="settings-card utility-accordion help-source-category">
-        <summary><span>${escapeHtml(cat.label)}</span><small>${occupation ? groups.length+' arbeidsområder' : totalSources+' kilder'}</small></summary>
-        <div class="utility-accordion-body help-source-category-body">
-          <p class="source-category-description">${escapeHtml(cat.description||'')}</p>
-          ${body || '<p class="muted-note">Ingen kilder registrert.</p>'}
-        </div>
-      </details>`;
-    }).join('');
-    helpSourceLibraryLoaded=true;
-    if(status) status.textContent='Kildene åpnes i ny fane. Sektorkilder er sortert etter arbeidsområde.';
-  }catch(error){
-    root.innerHTML=`<div class="settings-card"><strong>Kunne ikke hente kildegrunnlaget</strong><p class="muted-note">${escapeHtml(error.message)}</p></div>`;
-    if(status) status.textContent='Kildeoversikten er ikke tilgjengelig akkurat nå.';
-  }
 }
 
 function speechBubbleMarkup(side='left'){
@@ -3353,7 +3289,6 @@ function topicContentSections(){
   ]}));
 }
 function allContentSections(){return [...STATIC_CONTENT_SECTIONS,...topicContentSections()];}
-function allContentFields(){return allContentSections().flatMap(section=>section.fields);}
 function contentValue(key,fallback=''){return Object.prototype.hasOwnProperty.call(contentOverrides,key)?contentOverrides[key]:fallback;}
 function defaultContentValue(field){if('fallback' in field)return field.fallback;return document.querySelector(field.selector)?.textContent?.trim()||'';}
 function applyContentOverrides(){
