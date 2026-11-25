@@ -37,7 +37,7 @@
     "test-privacy-surfaces": "node tests/test-privacy-surfaces.cjs",
     "test-ai:pilot": "node tests/test-ai-golden.js --pilot",
     "test-pilot-regression": "node tests/test-pilot-regression.cjs",
-    "test-sourcebank": "node tests/test-sourcebank.cjs",
+    "test-sourcebank": "node tests/test-sourcebank.cjs && node tests/test-source-presentation.cjs",
     "test-pilot-ux": "node tests/test-pilot-ux.cjs",
     "test-pwa": "npm run generate-pwa-icons && node tests/test-pwa.cjs",
     "generate-pwa-icons": "node scripts/generate-pwa-icons.js",
