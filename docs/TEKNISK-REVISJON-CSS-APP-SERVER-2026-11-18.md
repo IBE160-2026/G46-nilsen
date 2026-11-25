@@ -269,3 +269,14 @@ Denne oversikten er en **faktisk filkartlegging**, ikke en påstand om at `app.j
 **Tester:** Den eksisterende statiske `tests/test-simulation.js` peker nå til riktig fil for stil-/personvernbegrensninger (commit `9b01e57c`). Ny `tests/test-simulation-contracts.cjs` tester direkte eksportert kode med ikke-array, maks 24 turns, maks 4000 tegn per turn, ukjente roller, tomme ytringer, faktabasert/fri modus, fallbacks og kontekstbegrensning (commit `79e391c3`). `npm run test-simulation` kjører begge testene, og inngår dermed i normal `npm test` og Quality Gate (commit `948537e3`).
 
 **Begrensning:** Dette er et konkret arkitekturskille og ny meningsfull testdekning, men store deler av `server.js` og `app.js` er fortsatt udelte. Testen verifiserer kontrakter og promptbygning, ikke kvaliteten på ikke-deterministiske, faktiske KI-rollespillsvar. Verifiser siste relevante Quality Gate før dette beskrives som bestått.
+
+
+## Oppfølging 25.11.2026 – ren klientmodul for kildevisning
+
+**Funn:** Fire rene hjelpefunksjoner inne i den store `app.js` håndterte alfabetisk kildesortering, korte bruksområder, kildeklassifisering og periodevarsel for avtaler. Disse reglene var blandet med DOM-operasjoner, selv om de ikke trengte DOM eller servertilgang.
+
+**Refaktorering:** `src/client/source-presentation.js` eksponerer nå `sortSourcesAlphabetically`, `compactSourceUsage`, `readableSourceTier` og `sourceDateNote` via en begrenset, uforanderlig klientmodul (`Object.freeze`). `app.js` bruker disse gjennom én eksplisitt binding; den opprinnelige implementasjonen ble fjernet, omtrent 52 linjer færre i hovedfilen. Ordlyd, kildeprioritering og datotolking er ikke bevisst endret. Den nye filen er eksplisitt lastet **før** `app.js` i `index.html`, og er tillatt i både produksjonsserverens offentlige filsett og lokal sensordemo. Kodesteg: `bf4ff0f5`, `d0f66ee5`, `0efd79b9`, `c16a4c6d`, `6af7d4e4`.
+
+**Regresjon:** Ny `tests/test-source-presentation.cjs` utfører de faktiske hjelpefunksjonene i isolert JS-miljø og kontrollerer norsk sortering (inkludert `Ø` før `Å`), manglende input, kildetypeetiketter, gyldig/utløpt/kommende avtaleperiode, urimelige datoperioder, uforandret inputliste og scriptrekkefølge. Testen er koblet til `npm run test-sourcebank` og dermed normal `npm test`. `tests/test-public-assets.cjs` krever at filen leveres gjennom Express. Nye tester bruker ingen ekstern KI.
+
+**Begrensning:** Dette er en modulær arkitekturrevisjon med avgrenset testdekning, ikke en fagsjekk av kildebanken eller en påstand om at `app.js` er ferdig refaktorert. Enkelte tidligere, mellomliggende commits kan være røde fordi `index.html` og servernes offentlige filsett ble oppdatert sekvensielt. **Sluttstatus må kontrolleres på seneste commit** i GitHub Actions, ikke tillegges en ufullstendig mellomversjon.
