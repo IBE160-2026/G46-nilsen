@@ -5,8 +5,8 @@
 **Gruppestørrelse:** Én student  
 **Student:** Cecilie C. Nilsen  
 **Studentnummer:** [fyll inn før innlevering]  
-**Dokumentstatus:** Konsentrert refleksjonsutkast revidert 20.11.2026 med de siste verifiserte testbevisene. **Ikke innlevert**; ordkrav, mal, frist og endelige vurderingskriterier må fortsatt kontrolleres mot Canvas.  
-**Produksjonsgrunnlag:** main, Samtalestøtte v20.11.5. Nyeste tekniske og dokumentære forbedringer ligger på egen revisjonsgren. LIVE/tale er kun separat pilot.
+**Dokumentstatus:** Konsentrert refleksjonsutkast revidert 20.11.2026; leveransestatus korrigert 25.11.2026 etter Git-opprydding og Render-deploy. **Ikke innlevert**; ordkrav, mal, frist og endelige vurderingskriterier må fortsatt kontrolleres mot Canvas.  
+**Produksjonsgrunnlag per 25.11.2026:** `main` commit `f591ad763990f74daca90b43f350cb672e66857b` (package-versjon 20.11.6), bekreftet live på Render. PR #12, #14 og #15 er innlemmet i `main`; det er nå eneste aktive Git-gren. LIVE/tale er bevart som historisk, ikke produksjonsklar pilot.
 
 > Denne teksten bygger på det opprinnelige, daterte refleksjonsutkastet, Git-historikk, kilde- og testdokumentasjon og revisjonen 18. november. Den erstatter ikke de historiske notatene. Den er laget for å framheve beslutninger, begrunnelser, egen rolle, feil og læring – ikke gjenta hele funksjonslisten.
 

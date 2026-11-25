@@ -3,9 +3,9 @@
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
-**Status:** Gjeldende kravoversikt revidert 18.11.2026; tidligere status/testbevis beholdt som historiske  
-**Versjon ved dokumentasjon:** `main` v20.11.5 (kontrollgrunnlag `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026); LIVE/tale kun separat pilot  
-**Leveransegrense 20.11.2026:** PRD-kravene har 36 unike ID-er med matchende sensormatrise, men tekniske forbedringer og utvidede testbevis fra PR #12 ligger **kun** på revisjonsgrenen, ikke på `main`. Hva Canvas aksepterer som leveransegren/format er uavklart. Se [gjeldende innleveringskontroll](../INNLEVERINGSKONTROLL-2026-11-20.md); denne setningen er en leveransepresisering, ikke en omskriving av historiske krav.
+**Status:** Kravoversikt revidert 18.11.2026; leveransestatus oppdatert 25.11.2026. Tidligere status/testbevis er bevart som historiske.  
+**Historisk versjon ved opprinnelig dokumentrevisjon:** `main` v20.11.5 (kontrollgrunnlag `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026). **Gjeldende publiserte versjon 25.11.2026:** `main` commit `f591ad763990f74daca90b43f350cb672e66857b` (package-versjon `20.11.6`), bekreftet live på Render. LIVE/tale kun arkivert eksperimentell pilot, ikke aktiv produksjonsfunksjon.  
+**Leveransestatus oppdatert 25.11.2026:** PRD har 36 unike krav-ID-er med matchende sensormatrise. PR #12, #14 og #15 er slått sammen med `main`; eldre omtale av disse som åpne utkast er **historisk status**, ikke dagens reposituasjon. Siste Quality Gate på `main` for commit `f591ad7` var 3/3 bestått. Hva Canvas krever for formell levering og refleksjonsrapportens endelige godkjenning er fortsatt uavklart. Se [gjeldende prosjektstatus](../PROSJEKTSTATUS.md) og [historisk innleveringskontroll](../INNLEVERINGSKONTROLL-2026-11-20.md).
 **Språk:** Norsk
 
 ---
@@ -178,7 +178,7 @@ Dette er gjort for å skille tydelig mellom faktisk leveranse og framtidig ambis
 
 **UJ-03 – Historikk og tilgang:** To separate fiktive brukere logger inn. Bruker A kan se/slette egen samtale, men ikke lese eller endre B sin historikk via direkte API-/databaseforespørsel. Kontrollpunkter: FR-07–11 og NFR-01/02. Krever faktisk rolle-/RLS-integrasjonstest.
 
-Pilotreise for tale er særskilt beskrevet i [LIVE-pilotspesifikasjonen (kun egen pilotgren)](https://github.com/IBE160-2026/G46-nilsen/blob/pilot-ux-v20.11/docs/pilot/LIVE-V1-PILOT-SPEC.md) på pilotgrenen. Den er ikke del av UJ-01–03 eller produksjonsgodkjenningen.
+Pilotreise for tale er særskilt beskrevet i [LIVE-pilotspesifikasjonen (kun egen pilotgren)](https://github.com/IBE160-2026/G46-nilsen/blob/9fe7aac7e4515f8a195e6a00833c8c7305a66785/docs/pilot/LIVE-V1-PILOT-SPEC.md) på pilotgrenen. Den er ikke del av UJ-01–03 eller produksjonsgodkjenningen.
 
 ## 7.2 Felles begreper
 
