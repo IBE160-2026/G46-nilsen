@@ -1365,6 +1365,28 @@ const selectRelevantSources = createRelevantSourceSelector({
   employerScopedPrimaryLawBonus
 });
 
+// Shared source candidate/retention policy for initial guidance and continuation.
+// The caller remains responsible for historical-question detection and for deciding
+// which legal sources to auto-add: those rules intentionally differ per endpoint.
+function scopedGuidanceSources({ analysis, situation, topicId, resolvedTopic, resolvedSubtopic,
+  occupation, sectorId, employerType, occupationContext, asOf, historicalReview }) {
+  const general = selectRelevantSources(analysis, situation, {
+    employerType, sectorId, occupation, topic: resolvedTopic,
+    subtopic: resolvedSubtopic, asOf, historicalReview
+  });
+  const merged = mergeGuidanceSourceCandidates(
+    general, occupationContext, employerType, asOf, historicalReview
+  );
+  const retainCuratedSources = shouldRetainCuratedSources({
+    requestedTopic: topicId, resolvedTopic, subtopic: resolvedSubtopic,
+    situation, employerType, occupationContext
+  });
+  const relevantSources = retainCuratedSources
+    ? merged.filter(source => isHistoricalAgreementCandidate(source, historicalReview))
+    : [];
+  return { retainCuratedSources, relevantSources };
+}
+
 function publicSources(ids = []) {
   const wanted = new Set(ids);
   return [...wanted].map(id => allCuratedSourceById.get(id)).filter(Boolean).map(source => ({
@@ -1642,18 +1664,11 @@ app.post("/api/generate-guidance", aiLimiter, requireUser, async (req, res) => {
         historicalReview
       })
     : { enabled:false, prompt:"", occupation:null, agreement:null };
-  const generalRelevantSources = selectRelevantSources(analysis, situation, { employerType, sectorId, occupation, topic:resolvedTopic, subtopic:resolvedSubtopic, asOf:sourceAsOf, historicalReview });
-  const mergedRelevantSources = mergeGuidanceSourceCandidates(generalRelevantSources, occupationContext, employerType, sourceAsOf, historicalReview);
-  const retainCuratedSources = shouldRetainCuratedSources({
-    requestedTopic: topicId,
-    resolvedTopic,
-    subtopic: resolvedSubtopic,
-    situation,
-    employerType,
-    occupationContext
+  const { retainCuratedSources, relevantSources } = scopedGuidanceSources({
+    analysis, situation, topicId, resolvedTopic, resolvedSubtopic,
+    occupation, sectorId, employerType, occupationContext,
+    asOf: sourceAsOf, historicalReview
   });
-  const relevantSources = retainCuratedSources
-    ? mergedRelevantSources.filter(source => isHistoricalAgreementCandidate(source, historicalReview)) : [];
   const occupationPrompt = occupationContext?.prompt ? "\n\n" + occupationContext.prompt + "\n" : "";
   const sourceSelectionHint = retainCuratedSources
     ? "Denne saken har et konkret faglig, rettslig, tariffmessig eller sikkerhetsmessig kildebehov. Prioriter den mest spesifikke relevante lov-, myndighets-, yrkes- eller avtale-kilden foran brede forsknings-/HR-kilder."
@@ -1810,18 +1825,12 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
   const continueOccupationContext = occupationContextEnabled
     ? buildOccupationGuidanceContext({ occupation, sectorId, employerType, employerContext, topic:continueTopic, subtopic:continueSubtopic, situation:continueSituation, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview })
     : { prompt:"", occupation:null, agreement:null };
-  const generalContinueSources = selectRelevantSources(analysis, continueSituation, { employerType, sectorId, occupation, topic:continueTopic, subtopic:continueSubtopic, asOf:continueSourceAsOf, historicalReview:continueHistoricalReview });
-  const mergedContinueSources = mergeGuidanceSourceCandidates(generalContinueSources, continueOccupationContext, employerType, continueSourceAsOf, continueHistoricalReview);
-  const retainContinueSources = shouldRetainCuratedSources({
-    requestedTopic: topicId,
-    resolvedTopic: continueTopic,
-    subtopic: continueSubtopic,
-    situation: continueSituation,
-    employerType,
-    occupationContext: continueOccupationContext
+  const { retainCuratedSources: retainContinueSources, relevantSources } = scopedGuidanceSources({
+    analysis, situation: continueSituation, topicId,
+    resolvedTopic: continueTopic, resolvedSubtopic: continueSubtopic,
+    occupation, sectorId, employerType, occupationContext: continueOccupationContext,
+    asOf: continueSourceAsOf, historicalReview: continueHistoricalReview
   });
-  const relevantSources = retainContinueSources
-    ? mergedContinueSources.filter(source => isHistoricalAgreementCandidate(source, continueHistoricalReview)) : [];
   const continueOccupationPrompt = continueOccupationContext?.prompt ? "\n\n" + continueOccupationContext.prompt + "\n" : "";
   const continueTask = `\n\n## Oppgave: svar på oppfølgingsspørsmål i samme sak\nSvar som en konkret samtalepartner. Bruk samme situasjon, analyse, avklaringssvar og tidligere KI-råd.\n- Svar direkte på det brukeren spør om.\n- Unngå generelle standardråd hvis du kan være mer konkret ut fra saken.\n- Ikke dikt opp fakta, motiv eller virksomhetsregler.\n- Ved juridisk sensitivitet: pek på relevant kontrollpunkt og anbefal relevant arbeidsrettslig/juridisk kvalitetssikring, uten å konkludere definitivt. Ved andre faglige spørsmål: pek på den typen kompetanse som faktisk passer saken, ikke HR som standardsvar.\n- Ikke be om diagnose eller unødvendige sensitive opplysninger.\n- Bruk fagbanken som førstevalg. Dersom spørsmålet krever oppdatert eller mer presis faglig dokumentasjon enn banken dekker, kan du bruke nettsøk. Prioriter myndigheter, anerkjente fagmiljøer og fagfellevurdert forskning.\n- Kildepresisjon: bruk bare kilder som faktisk støtter den konkrete påstanden. Ikke tilskriv en organisasjon et råd med mindre den aktuelle kilden faktisk støtter attribusjonen.
 - Hvis du påstår at arbeidsgiver ikke kan kreve diagnose, velg kilde som uttrykkelig dokumenterer dette (ikke bare kilde om hva dialogmøtet bør handle om).
