@@ -18,6 +18,22 @@ Loggen er rekonstruert fra tilgjengelig ChatGPT-historikk, prosjektfiler, versjo
 
 Der jeg ikke kan dokumentere nøyaktig ordlyd fra en tidligere KI-dialog, beskriver jeg derfor hensikten og resultatet i stedet for å konstruere en prompt i ettertid.
 
+
+## Leseguide for sensor: fra instruksjon til dokumentert endring
+
+Dette er et **utvalg etterprøvbare eksempler**, ikke en påstand om at samtlige historiske KI-prompts er lagret ordrett. «Menneskelig bestilling» nedenfor bygger på eksisterende KI-logg og prosjektspor; ordrett sitat brukes bare der ordlyden er dokumentert. Se den daterte loggoppføringen for kontekst og begrensninger. Historiske merknader om «ikke merget» gjelder tidspunktet for det enkelte arbeid; [prosjektstatus](../PROSJEKTSTATUS.md) viser senere innlemming i `main`.
+
+| Dato / loggpunkt | Menneskelig bestilling og kritisk valg | Faktisk kode-, PR- og testspor | Hva eksemplet viser |
+|---|---|---|---|
+| **26.10 – Node og sensor** | Etter faglærers kommentar ble for strengt Node-krav for lokal oppstart skilt fra valgt produksjonsruntime. | [Product Brief-tilbakemelding](../feedback/tilbakemelding-product-brief.md), [package.json](../../package.json), [README](../../README.md) | Å tilpasse krav til testbarhet uten å kalle lokal kjøring en produksjonstest |
+| **08.11 – kildepresisjon** | Brukeren etterspurte om kildene var riktige for *påstanden*, ikke bare relevante for temaet. Resultatet ble strengere kontroll av yrke, sektor og kildeautoritet fremfor flest mulig lenker. | [Kildekvalitetsrevisjon](../SOURCE-QUALITY-AUDIT-2026-11-08.md), [kildepolicytest](../../tests/test-source-policy.cjs), [SOURCEBANK](../../data/SOURCEBANK.json) | Krav ble skjerpet av kildekritikk; test og begrunnelse kan undersøkes |
+| **18.11 – feil KI-status** | Oppdraget var å kontrollere en faktisk feil, ikke nøye seg med KI-forklaring. Status med bare OpenRouter skulle gjenkjennes riktig. | [Feilrapport og kodeendring](REGRESJON-OPENROUTER-2026-11-18.md), [HTTP-test](../../tests/test-ai-provider-status-http.cjs), [rød CI](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339406194), [grønn CI](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44339569597) | Test først, deretter avgrenset rettelse og dokumentert rød/grønn kontroll |
+| **18.–20.11 – CSS og arkitektur** | Brukeren etterlyste opprydding, men ikke store endringer uten kontroll av visning og funksjon. KI-forslag ble kontrollert mot faktisk CSS-kaskade og senere Chrome. | [CSS-revisjon](../CSS-REVISJON-2026-11-18.md), [arkitekturrevisjon](../TEKNISK-REVISJON-CSS-APP-SERVER-2026-11-18.md), [innlemmet PR #12](https://github.com/IBE160-2026/G46-nilsen/pull/12), [Chrome-kontroll](https://github.com/IBE160-2026/G46-nilsen/actions/runs/44402558539) | Kritisk kontroll av KI-generert opprydding, inkludert begrensninger ved automatiske tester |
+| **25.11 – personvern og yrkesforslag** | Brukeren oppdaget at «Begge» ble lest som navn og at yrke ble foreslått på for svakt grunnlag. Første forsøk på yrkesretting møtte regresjonsfeil og ble korrigert. | [PR #16](https://github.com/IBE160-2026/G46-nilsen/pull/16) – [personverntest](../../tests/test-privacy.js); [PR #17](https://github.com/IBE160-2026/G46-nilsen/pull/17) – [yrkesforslagstest](../../tests/test-occupation-suggestion-ui.cjs); [grønn CI på `main`](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) | Brukerfunn → målrettet endring → regresjon → korrigering → innlemmet og verifisert kode |
+
+**Slik leses bevisene:** `docs/ai/AI-LOGG-SAMTALESTOTTE.md` gir bestilling, vurdering og refleksjon; lenkede kodefiler og PR-er viser den faktiske endringen; GitHub Actions viser om bestemte tekniske kontroller bestod. Ingen av disse bevisene alene dokumenterer ekstern faglig godkjenning av KI-genererte råd. Dette er heller ikke oppført som et ufullført studentkrav.
+
+
 ---
 
 # 2. Hvordan KI ble brukt
