@@ -240,3 +240,21 @@ Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, 
 **Test:** Commit `d5c84da2` utvider den isolerte faktiske Express + OpenAI SDK HTTP-testen `tests/test-benchmark-live-http.cjs`. En syntetisk 429-leverandørfeil bærer et fiktivt navn/e-post-/token-liknende signal; testen krever at markørene ikke vises i API-svaret eller serverens stderr. Testen fortsetter også å verifisere at leverandørfeil opptar budsjettreservasjon. [Quality Gate på main](https://github.com/IBE160-2026/G46-nilsen/actions) er fasit for faktisk bestått status; dette notatet innebærer ikke at testen er grønn før kjøringen er ferdig.
 
 **Avgrensning:** Den ordinære benchmark-resultatlagringen inneholder fortsatt modellens genererte tekst som testartefakt og er bare ment for autoriserte administratorer, syntetiske caser og den isolerte testmodusen. Dette er ingen påstand om at alle databaselagre eller telemetriflater er fullstendig undersøkt.
+
+
+## Sensorleserute 25.11.2026 – finn ansvaret bak de store inngangsfilene
+
+Denne oversikten er en **faktisk filkartlegging**, ikke en påstand om at `app.js` og `server.js` nå er små eller fri for teknisk gjeld. Den skal gjøre det mulig å stikkprøve funksjoner uten å lese filene lineært.
+
+| Ansvar | Inngang/orkestrering | Utskilt testbar logikk | Typisk kontroll |
+|---|---|---|---|
+| Brukerens valg av tema og analyserespons | `app.js` og `server.js` | `src/client/topic-search.js`, `src/client/situation-analysis.js`, `src/server/topic-contracts.js`, `src/server/ai-schemas.js` | `tests/test-topic-search.cjs`, `tests/test-situation-analysis.cjs`, `tests/test-golden-schema.cjs` |
+| Fagkilder, proveniens og juridiske signaler | KI-rutene i `server.js` | `src/server/source-ranking.js`, `source-merge.js`, `source-retention.js`, `source-normalization.js`, `source-validity.js`, `historical-source-context.js`, `legal-claim-review.js` | `tests/test-source-retention.cjs`, `tests/test-source-provenance-http.cjs`, `tests/test-legal-claim-review.cjs` |
+| Yrkes-/arbeidsgiverkontekst og tariff | `server.js` | `src/server/occupation-router.js`, `occupation-context.js`, `agreement-router.js`, `help-library.js` | `tests/test-occupation-router.cjs`, `tests/test-agreement-router.cjs`, `tests/test-help-library.cjs` |
+| Historikk, datakontrakter og innlogging | Express-endepunkter i `server.js` | `src/server/history-contracts.js` og database-/autentiseringsregler som testes separat | `tests/test-history-contracts.cjs`, `tests/test-supabase-local-auth-e2e.cjs` |
+| Administrasjon og kostnadssperrer | `app.js` / `server.js` | `src/client/admin-data.js`, `admin-content.js`, `benchmark-evaluation.js`, `src/server/benchmark-budget.js`, `benchmark-budget-rpc.js` | `tests/test-admin-client-runtime.cjs`, `tests/test-benchmark-live-http.cjs`, `tests/test-benchmark-rpc-http.cjs` |
+| UI-mobil/utskrift og faktisk brukerreise | `index.html`, `app.js`, navngitte `styles-core-*.css` | Komponentnære klientmoduler og CSS-deler med definert innlastingsrekkefølge | `tests/test-sensor-journey-browser.cjs`, `tests/test-mobile-print-browser.cjs`, `tests/test-css-browser-regression.cjs` |
+
+**Avveining for sensor:** `app.js` og `server.js` inneholder fremdeles mye orkestrering og noen store ruteseksjoner. Flere moduler ble skilt ut, men å splitte alt kort tid før levering ville øke faren for brudd på DOM-/API-kontrakter. Prosjektet valgte derfor avgrensede forbedringer med regresjonskontroll. Dette er en **begrunnet utestående svakhet**, ikke et argument for at mange linjer automatisk gir høy kodekvalitet. Ved en uavhengig vurdering bør sensor undersøke lesbarhet, grensesnitt og ansvarfordeling i tillegg til linjetall.
+
+**Praktisk rekkefølge:** Les [README](../README.md), [sensorbrukerreisen](ai/SENSOR-KJERNEFLYT-E2E-2026-11-20.md), dette filkartet og deretter 2–3 konkrete funksjonsstier (f.eks. analyse → kildeutvalg → kildeproveniens; historikk → RLS; benchmark → budsjettoppgjør) før en samlet kodekvalitetsvurdering.
