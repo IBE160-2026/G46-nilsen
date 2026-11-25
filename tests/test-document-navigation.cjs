@@ -13,10 +13,8 @@ const documents = [
 let checked = 0;
 for (const doc of documents) {
   const source = fs.readFileSync(path.join(root, doc), "utf8");
-  // README's full historical reference section is outside this navigation audit.
-  const text = doc === "README.md"
-    ? source.split("## Start her – snarveier for sensor")[1]?.split("## Sensorstatus")[0]
-    : source;
+  // Both files are short, canonical navigation documents; check all links.
+  const text = source;
   assert.ok(text, doc + ": navigasjonsseksjonen mangler");
   const regex = /\[[^\]\n]+\]\(([^)]+)\)/g;
   let match;

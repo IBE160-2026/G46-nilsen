@@ -6,7 +6,7 @@
 
 | Behov | Dokument / handling | Hva du finner |
 | --- | --- | --- |
-| Forstå produktet og kjøre uten nøkler | [README](../README.md#for-sensor-test-appen-uten-tilgangsnøkler) | Kort oppskrift for deterministisk sensordemo med fiktive svar |
+| Forstå produktet og kjøre uten nøkler | [README](../README.md#kjør-sensordemo-uten-nøkler) | Kort oppskrift for deterministisk sensordemo med fiktive svar |
 | Se gjeldende status | [Prosjektstatus](PROSJEKTSTATUS.md) | Kode, gren, CI, publisering og avgrensninger |
 | Problem og produktidé | [Product brief](../product-brief.md) | Målgruppe, verdi og prioriteringer |
 | Krav og akseptansekriterier | [PRD](bmad/PRD.md) | Funksjonelle og ikke-funksjonelle krav |
