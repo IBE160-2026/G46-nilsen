@@ -133,7 +133,10 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   console.log("Keyboard accessibility: Tab -> visible skip link -> Enter -> main content: PASS");
   // The visual selected sidebar destination must also be announced to screen readers.
   assert.equal(await js(cdp,"document.querySelector('.nav-item[data-view=\\\"home\\\"]')?.getAttribute('aria-current')"),"page");
-  assert.equal(await js(cdp,"document.querySelectorAll('.nav-item[aria-current=\\\"page\\\"]').length"),1);
+  // Desktop sidebar and mobile bottom navigation both contain Home.
+  // Each navigation landmark may mark its own current destination.
+  assert.equal(await js(cdp,"document.querySelectorAll('.sidebar .nav-item[aria-current=\\\"page\\\"]').length"),1);
+  assert.equal(await js(cdp,"document.querySelectorAll('.mobile-bottom-nav .nav-item[aria-current=\\\"page\\\"]').length"),1);
   assert.equal((await serverHistory()).length,0,"Demo must begin with an empty history");
   await keyboardActivate(cdp,'#topic-grid [data-topic-id="fravaer-oppfolging"]');
   await wait(cdp,"document.querySelector('#topic-view')?.classList.contains('active-view') && document.activeElement?.id==='topic-title'","keyboard topic navigation focuses heading");
