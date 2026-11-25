@@ -389,5 +389,79 @@ const assert=require("node:assert/strict");
     fs.rmSync(claimDir,{recursive:true,force:true});
   }
 
+
+  // Forbedre bare to KILDEKANDIDATER i den historiske lokale kladden,
+  // uten å endre allerede signerte vurderinger eller originalrapporten.
+  const repairDir=fs.mkdtempSync(path.join(os.tmpdir(),"samtalestotte-source-repair-"));
+  try {
+    const date="2026-11-25T13:47:13.670Z";
+    const defs=JSON.parse(fs.readFileSync(path.join(root,
+      "tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8")).cases;
+    const oldRun={createdAt:date,cases:defs.map(tc=>({
+      id:tc.id,
+      guidance:{evidence_sources:tc.id==="SRC-D-BYGG-SHA" ? [{
+        id:"AT_WORK_EQUIPMENT_REGULATION",evidenceRole:"model_selected",
+        url:"https://www.arbeidstilsynet.no/regelverk/forskrifter/forskrift-om-utforelse-av-arbeid"
+      }] : []},
+      followup:{evidence_sources:tc.id==="SRC-B-STAT-FRAVAER" ? [{
+        url:"https://www.nav.no/sykmeldt",evidenceRole:"provider_url"
+      }] : []}
+    }))};
+    const review={schemaVersion:1,sourceRunCreatedAt:date,caseCount:5,
+      cases:defs.map(tc=>createManualSourceReview(tc,
+        oldRun.cases.find(x=>x.id===tc.id)))};
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const item=review.cases.find(x=>x.caseId===id);
+      item.must[3].status="not_met";
+      item.must[3].reason="Gammel faktisk modelrespons var ikke tilstrekkelig.";
+    }
+    const empty={
+      sourceExcerpt:"",sourceCheckedAt:"",verdict:"",
+      periodVerified:false,employerScopeVerified:false,reason:""
+    };
+    review.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER").claims=[{
+      answerPart:"followup",claimText:"Du kan ikke kreve å få vite diagnosen.",
+      sourceUrl:"https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte",...empty
+    }];
+    review.cases.find(x=>x.caseId==="SRC-D-BYGG-SHA").claims=[{
+      answerPart:"first",
+      claimText:"Ved arbeid i høyden skal risiko vurderes før arbeidet starter, og nødvendige tiltak skal iverksettes på bakgrunn av vurderingen.",
+      sourceUrl:"https://www.arbeidstilsynet.no/hms/risikovurdering/",...empty
+    }];
+    const runPath=path.join(repairDir,"original.json"),
+      reviewPath=path.join(repairDir,"claim-draft.json");
+    const originalText=JSON.stringify(review);
+    fs.writeFileSync(runPath,JSON.stringify(oldRun),"utf8");
+    fs.writeFileSync(reviewPath,originalText,"utf8");
+    const command=()=>spawnSync(process.execPath,[
+      path.join(root,"scripts/refine-source-claim-draft.mjs"),runPath,reviewPath
+    ],{encoding:"utf8",env:{...process.env,SOURCE_REVIEW_SKIP_CLIPBOARD:"1"}});
+    let processResult=command();
+    assert.equal(processResult.status,0,
+      "Synkronisering av kildekandidater må virke: "+processResult.stderr);
+    assert.equal(fs.readFileSync(reviewPath,"utf8"),originalText,
+      "Opprinnelig kladd skal forbli uendret");
+    const output=JSON.parse(fs.readFileSync(
+      path.join(repairDir,"claim-draft-sources-refined.json"),"utf8"));
+    assert.equal(output.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER").claims[0].sourceUrl,
+      "https://www.nav.no/sykmeldt");
+    assert.equal(output.cases.find(x=>x.caseId==="SRC-D-BYGG-SHA").claims[0].sourceUrl,
+      "https://www.arbeidstilsynet.no/regelverk/forskrifter/forskrift-om-utforelse-av-arbeid");
+    assert.equal(output.cases.find(x=>x.caseId==="SRC-C-VETERINAER").must[3].status,
+      "not_met","Historisk M4-feil må forbli registrert");
+    assert.equal(output.cases[1].claimInventoryComplete,false,
+      "Kildesynlighet er aldri faglig godkjenning");
+    assert.notEqual(command().status,0,"Utfilen må ikke kunne overskrives");
+    const touched=structuredClone(review);
+    touched.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER").claims[0].sourceExcerpt=
+      "Kontrollør har allerede lagt til dokumentasjon og må bevares.";
+    fs.writeFileSync(reviewPath,JSON.stringify(touched),"utf8");
+    fs.rmSync(path.join(repairDir,"claim-draft-sources-refined.json"));
+    fs.rmSync(path.join(repairDir,"claim-draft-sources-refined.md"));
+    assert.notEqual(command().status,0,"Skal nekte å endre utfylt vurdering");
+  } finally {
+    fs.rmSync(repairDir,{recursive:true,force:true});
+  }
+
   console.log("MANUELL KILDEAKSEPTANSE OK: krav, belegg, periode, kilde per svar, kritiske feil, uavklart og falsk positiv – 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
