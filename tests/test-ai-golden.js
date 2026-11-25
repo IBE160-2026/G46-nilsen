@@ -266,10 +266,10 @@ try {
         employerContext:tc.employerContext || ""
       });
       const ev=evaluate(tc,analysis,guidance);
-      results.push({...tc,...ev,analysis,guidance});
+      results.push({...tc,...ev,manual_review_status:'NOT_PERFORMED',analysis,guidance});
       console.log(ev.status);
     }catch(error){
-      results.push({...tc,status:"TEKNISK FEIL",issues:[error.message],error:error.details||null});
+      results.push({...tc,status:"TEKNISK FEIL",manual_review_status:'NOT_PERFORMED',issues:[error.message],error:error.details||null});
       console.log("TEKNISK FEIL");
     }
     await delay(350);
@@ -289,11 +289,11 @@ const counts=results.reduce((a,r)=>{a[r.status]=(a[r.status]||0)+1;return a;},{}
 let md="# Fasitbasert KI-test – Samtalestøtte\n\n";
 md+=`Kjørt: ${new Date().toLocaleString("nb-NO")}  \nAntall caser: ${results.length}\n\n`;
 md+=`## Resultat\n\n- OK: ${counts.OK||0}\n- Bør sjekkes: ${counts["BØR SJEKKES"]||0}\n- Kritisk avvik: ${counts["KRITISK AVVIK"]||0}\n- Teknisk feil: ${counts["TEKNISK FEIL"]||0}\n\n`;
-md+="> Maskinell fasit fanger konkrete avvik. Den menneskelige fasiten under skal brukes til å kontrollere faglig kvalitet og nyanser som ikke bør avgjøres med nøkkelord alene.\n\n";
+md+="> **Avgrensning:** OK betyr bare at maskinelle kontroller ikke fant avvik. Dette skriptet utfører IKKE manuell faglig vurdering. MÅ/BØR/kritisk-feil-punktene under er en vurderingsrubrikk, ikke resultater fra menneskelig kontroll.\n\n";
 
 for(const r of results){
   md+=`---\n\n## ${r.id} – ${r.theme} – ${r.status}\n\n`;
-  md+=`**Kravspor:** ${(r.requirement_refs||[]).join(" · ")}  \n`;
+  md+=`**Kravspor:** ${(r.requirement_refs||[]).join(" · ")}  \n**Menneskelig vurdering:** IKKE UTFØRT av testskriptet  \n`;
   md+=`**Risiko:** ${r.risk}\n\n**Case:** ${r.input}\n\n`;
   if(r.issues?.length) md+=`**Maskinelle avvik/kontrollpunkter:**\n${r.issues.map(x=>`- ${x}`).join("\n")}\n\n`;
   if(r.passedChecks?.length) md+=`**Maskinelle fasitpunkter bestått:**\n${r.passedChecks.map(x=>`- ${x}`).join("\n")}\n\n`;
