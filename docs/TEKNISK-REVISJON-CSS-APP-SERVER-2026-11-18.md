@@ -229,3 +229,14 @@ Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, 
 **Ny test:** `tests/test-server-privacy.cjs` utfører den faktiske operasjonelle loggerfunksjonen med et fiktivt feilobjekt som inneholder e-post, passord, token og navn. Den krever at alle disse utelates og at tekniske status-/kodefelt bevares. Den inspiserer også selve admin-resultatloggen og krever at fritekstfelt ikke serialiseres. Commits `72f033fa` og `29a9a9b5`. Ingen reelle identiteter eller nøkler brukes.
 
 **Teststatus:** Se [GitHub Actions på main](https://github.com/IBE160-2026/G46-nilsen/actions) for eksakt commit etter at jobbene er ferdige. Tidligere logging av fritt innhold i benchmark/testresultatene og øvrige SDK-feil skal fortsatt vurderes separat; denne rettelsen er **ikke en full loggrevisjon av hele løsningen**.
+
+
+## Oppfølging 25.11.2026 – benchmark: leverandørfeil uten råtekst i logger og API
+
+**Funn:** `POST /api/admin/benchmark/live` logget tidligere `error?.message` og det underliggende `error?.error`-objektet fra KI-leverandøren. Det samme endepunktet kunne sende `error.message` tilbake til administrasjonsgrensesnittet ved feil. Selv med admin-tilgang er dette unødvendig eksponering av eksterne, ubetrodde feildetaljer; de kan inneholde opplysninger fra forespørselen.
+
+**Rettet:** Commit `2ef2471d` erstatter råloggingen med den allerede etablerte `logSafeOperationalError('benchmark-provider', error)`. Generiske leverandørfeil bruker nå en fast norsk melding. Den særskilte meldingen for ratebegrenset Gemma Free beholdes, det samme gjør status, `BENCHMARK_FAILED`, case-ID, modell og formatbegrenset maskinkode. Budsjettreservasjon og etterfølgende oppgjør er uendret.
+
+**Test:** Commit `d5c84da2` utvider den isolerte faktiske Express + OpenAI SDK HTTP-testen `tests/test-benchmark-live-http.cjs`. En syntetisk 429-leverandørfeil bærer et fiktivt navn/e-post-/token-liknende signal; testen krever at markørene ikke vises i API-svaret eller serverens stderr. Testen fortsetter også å verifisere at leverandørfeil opptar budsjettreservasjon. [Quality Gate på main](https://github.com/IBE160-2026/G46-nilsen/actions) er fasit for faktisk bestått status; dette notatet innebærer ikke at testen er grønn før kjøringen er ferdig.
+
+**Avgrensning:** Den ordinære benchmark-resultatlagringen inneholder fortsatt modellens genererte tekst som testartefakt og er bare ment for autoriserte administratorer, syntetiske caser og den isolerte testmodusen. Dette er ingen påstand om at alle databaselagre eller telemetriflater er fullstendig undersøkt.
