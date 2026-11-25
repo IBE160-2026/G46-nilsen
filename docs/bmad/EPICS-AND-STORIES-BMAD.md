@@ -1,5 +1,8 @@
 # Epics & User Stories – Samtalestøtte
 
+> **Statuskontroll 25.11.2026:** User stories fra tidligere datoer beholdes med opprinnelig status; PR #16 og #17 er feilrettinger, ikke ny epics-plan. «Implementert» er ikke det samme som uavhengig faglig kvalitetssikret. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Prosjekt:** Samtalestøtte  
 **Dokumenttype:** Epics & User Stories  
 **Rammeverk:** BMAD  
