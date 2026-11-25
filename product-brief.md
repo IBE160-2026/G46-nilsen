@@ -1,6 +1,6 @@
 # Product Brief: Samtalestøtte
 
-**Leveransestatus:** Produksjonsgrunnlag 20.11.5 · videre dokumentert arbeidsrunde og patcher gjennom 08.11.2026  
+**Dokumentstatus:** Product Brief revidert etter faglærers tilbakemelding 26.10.2026; teksten inneholder historiske statusoppføringer frem til 08.–09.11.2026. Gjeldende implementasjon, testresultater og publiseringsstatus dokumenteres i [prosjektstatus](docs/PROSJEKTSTATUS.md).  
 
 ## Executive Summary
 
