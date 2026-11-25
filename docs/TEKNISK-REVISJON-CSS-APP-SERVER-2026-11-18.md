@@ -207,3 +207,14 @@ Denne kontrollen er en **målrettet, statisk gjennomgang** av gjeldende `main`, 
 **Eksisterende regresjonsbevis:** `tests/test-ai-provider-errors-http.cjs` tester HTTP 429/503, ugyldige svar, frakobling og at interne leverandørmeldinger ikke lekker til klienten. [Quality Gate etter rettingen](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45701412775) er autoritativ for testresultat; ikke merk grønt før jobbene er avsluttet.
 
 **Begrensning:** Dette rydder bare bekreftet ubrukte variabler i tre feilstier, ikke alle gjentatte svarmønstre eller hele loggingen. En generell omlegging av statusnormalisering kan gjøres senere med eksplisitte negative API-tester for hver rute.
+
+
+## Oppfølging 25.11.2026 – personvern i KI-feillogging
+
+**Risiko funnet:** Sju brukervendte KI-ruter logget tidligere hele feilen fra SDK/provider, eksempelvis `console.error('OpenAI ... failed:', error)`. Eksterne feilobjekter kan inneholde HTTP-request-/response-data, rå fritekst, headers eller andre detaljer. Selv om JSON-feilsvaret til brukeren var nøytralt, var slik logging et unødvendig potensielt eksponeringspunkt.
+
+**Tiltak:** Commit `b6fc9461` erstatter loggingen i temaklassifisering, situasjonsanalyse, hovedveiledning, oppfølging og tre simulatorruter med `logAiRouteError`. Denne logger bare en fast ruteetikett, normalisert HTTP-status og en kort, formatbegrenset maskinkode. Den logger **ikke** `error.message`, `error.stack` eller hele `error`. Eksisterende HTTP-statusberegning og offentlige responskontrakter er beholdt.
+
+**Regresjon:** `tests/test-ai-provider-errors-http.cjs` har fått en kontroll som utfører faktisk logger-funksjon med et konstruert feilobjekt som inneholder navn, e-post og leverandørdetaljer. Testen krever at dette ikke logges, men at status/kode bevares. I tillegg kontrolleres den isolerte Express-testens stderr mot den simulerte leverandørens hemmelige feilmelding. Commit `77a0208f`. Ingen reelle brukerdata eller eksterne KI-kall benyttes.
+
+**Avgrensning:** Dette er en målrettet utbedring av **de sju KI-rutene**, ikke et bevis på at samtlige logger i server, database-SDK eller produksjonsinfrastruktur er fri for sensitive data. For eksempel skal benchmark- og autentiseringslogger vurderes separat. [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions) må fullføres på relevant commit før den kalles grønn.
