@@ -90,6 +90,68 @@ jobs:
           console.log({totalGolden:cases.length, strictOccupationGolden:strict.length, groups:counts});
           NODE
 
+  readme-clean-start:
+    name: README clean install and actual npm run demo startup (no credentials)
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up supported Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+          cache: npm
+
+      - name: Install exactly as README instructs
+        run: npm ci
+
+      - name: Start exactly as README instructs and verify running UI/API
+        shell: bash
+        env:
+          PORT: "32991"
+        run: |
+          set -euo pipefail
+          npm run demo > /tmp/samtalestotte-readme-demo.log 2>&1 &
+          DEMO_PID=$!
+          trap 'kill "$DEMO_PID" 2>/dev/null || true' EXIT
+          node --input-type=module <<'NODE'
+          import assert from "node:assert/strict";
+          const base = "http://127.0.0.1:32991";
+          let ready = false;
+          for (let n = 0; n < 60; n++) {
+            try {
+              const r = await fetch(base + "/api/public-config", {
+                signal: AbortSignal.timeout(1000)
+              });
+              if (r.ok) { ready = true; break; }
+            } catch {}
+            await new Promise(resolve => setTimeout(resolve, 200));
+          }
+          assert.ok(ready, "README demo did not start on the documented npm command");
+          const [config, page, user] = await Promise.all([
+            fetch(base + "/api/public-config").then(r => r.json()),
+            fetch(base).then(r => r.text()),
+            fetch(base + "/api/auth/me").then(r => r.json())
+          ]);
+          assert.equal(config.demoMode, true);
+          assert.equal(config.appVersion,
+            JSON.parse((await import("node:fs")).readFileSync("package.json", "utf8")).version);
+          assert.match(page, /Samtalestøtte/);
+          assert.equal(user.user.username, "Sensor demo");
+          const advice = await fetch(base + "/api/generate-guidance", {
+            method: "POST",
+            headers: { "content-type": "application/json" },
+            body: JSON.stringify({ situation: "Fiktiv uenighet om arbeidsfordeling" })
+          });
+          assert.equal(advice.status, 200);
+          const result = await advice.json();
+          assert.equal(result.ai, false, "README demo must not call real AI");
+          assert.ok(result.opening, "README demo must return usable mock guidance");
+          console.log("README fresh npm ci + actual npm run demo + UI/API mock flow: PASS");
+          NODE
+
   rls-postgres:
     name: Real PostgreSQL RLS policy regression (ephemeral database)
     runs-on: ubuntu-latest
