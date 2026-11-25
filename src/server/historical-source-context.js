@@ -59,10 +59,10 @@ export function detectHistoricalSourceQuestion(textValue, asOf = new Date()) {
  */
 export function resolveHistoricalSourceReview({ situation = "", question = "", asOf = new Date() } = {}) {
   const text = String(question || "").toLocaleLowerCase("nb-NO").trim();
-  const explicit = detectHistoricalSourceQuestion(text, asOf);
-  if (explicit) return explicit;
-
   const original = detectHistoricalSourceQuestion(situation, asOf);
+  const explicit = detectHistoricalSourceQuestion(text, asOf);
+  if (explicit?.year !== null && explicit) return explicit;
+  if (explicit && (explicit.years?.length || !original)) return explicit;
   if (!original || !text) return null;
 
   const currentYear = norwayYear(asOf);
@@ -78,7 +78,10 @@ export function resolveHistoricalSourceReview({ situation = "", question = "", a
   // "Kan jeg nå kreve etterbetaling for 2024?" is different: it still
   // concerns a prior earning period. Preserve it if the explicit detector fired.
   const presentRuleQuestion = /\b(?:hva\s+gjelder\s+(?:nå|i\s*dag)|dagens\s+(?:regler|tariff|avtale|lov|rettigheter)|gjeldende\s+(?:regler|tariff|avtale|lov)|nåværende\s+(?:regler|tariff|avtale|lov)|hva\s+med\s+(?:de\s+)?nye\s+(?:reglene|avtalen))\b/iu.test(text);
-  if (presentRuleQuestion && !pastYears.length) return null;
+  if (presentRuleQuestion) return null;
+  // "Hvilken tariffavtale gjaldt da?" has no year, but the existing
+  // case already states 2024: don't discard a known period.
+  if (explicit && !explicit.years?.length) return original;
 
   // A new explicit year overrides the period inherited from the situation.
   // If the new message spans past and current years, do not pick a single
