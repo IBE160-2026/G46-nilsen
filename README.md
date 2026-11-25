@@ -163,6 +163,8 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 
 - `docs/ai/AI-TESTPLAN.md` – teststrategi for KI og kvalitet
 - `docs/ai/AI-LOGG-SAMTALESTOTTE.md` – dokumentert KI-bruk i utviklingen
+- `docs/ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md` – faktisk isolert Auth-/RLS-test, ikke produksjonsgodkjenning
+- `docs/ai/MOBIL-PRINT-REFLEKSJON-2026-11-20.md` – dokumentert Chrome-mobiltest og PDF-kontroll
 - `docs/ai/TEST-FASIT-OG-SPORBARHET.md` – golden/fasit og kravspor
 - `docs/SOURCEBANK.md` – kuratert kilde- og faggrunnlag
 - `docs/OCCUPATION-SOURCE-AUDIT-2026-11-08.md` – gjennomgang av alle yrker/sektorer og særkilder
@@ -175,6 +177,7 @@ Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
 
 - `docs/REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md` – hovedutkast etter skolens mal
 - `docs/DOKUMENTASJONSREVISJON-2026-11-25.md` – fil-for-fil-revisjon
+- `docs/DOKUMENTASJON-SJEKKLISTE.md` – gjeldende dokumentasjons- og oppryddingsoversikt
 - `docs/REFLEKSJONSRAPPORT-UTKAST.md` – historisk, eldre utkast
 - `docs/REFLECTION-NOTES-v20.md`
 - `docs/REFLEKSJONSADDENDUM-2026-11-02.md`
