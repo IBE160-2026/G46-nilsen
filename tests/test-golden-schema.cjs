@@ -1,6 +1,17 @@
 const fs = require('fs');
 const assert = require('assert');
 
+// A machine-pass is not the same as a completed human review.
+// Verify the live golden runner marks every result and its report accordingly.
+const goldenRunner = fs.readFileSync('tests/test-ai-golden.js', 'utf8');
+assert(goldenRunner.includes("manual_review_status:'NOT_PERFORMED'"),
+  'Golden JSON results must explicitly identify missing manual review');
+assert(goldenRunner.includes('**Menneskelig vurdering:** IKKE UTFØRT av testskriptet'),
+  'Golden Markdown must disclose that human review has not been performed');
+assert(goldenRunner.includes('OK betyr bare at maskinelle kontroller ikke fant avvik'),
+  'Golden report must not imply that automatic OK equals professional approval');
+
+
 const data = JSON.parse(fs.readFileSync('tests/AI-GOLDEN-CASES.json', 'utf8'));
 const cases = data.cases || [];
 const occupationMap = JSON.parse(fs.readFileSync('data/OCCUPATION-SOURCE-MAP.json','utf8'));
