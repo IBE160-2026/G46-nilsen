@@ -151,7 +151,7 @@ Noen funksjoner er bevisst holdt utenfor dagens ferdige leveranse, blant annet:
 - full lukket/offline variant
 - lokal RAG og intern KI
 - tale/voice i Samtaleøvelse
-- videre utvidelse og ekspertvalidering av yrkes-/sektorkilder
+- videre vedlikehold og utvidelse av yrkes-/sektorkilder ved behov
 - fullskala representativ brukertesting
 
 Disse områdene er dokumentert som videre arbeid og skal ikke tolkes som ferdige funksjoner.
