@@ -120,7 +120,8 @@ opCtx.run("auth-register",{
   details:"Knut Hansen private details"
 });
 const logged=operationalLogs.join("\n");
-assert(/auth-register|401|PGRST301/.test(logged),'Operational log missing bounded metadata');
+assert(['auth-register','401','PGRST301'].every(part=>logged.includes(part)),
+  'Operational log missing bounded metadata');
 assert(!/kari@example.no|very-secret-token|TEST_PASSWORD_VALUE|Knut Hansen|private details/i.test(logged),
   'Operational log leaked untrusted error payload');
 
