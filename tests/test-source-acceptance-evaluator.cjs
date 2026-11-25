@@ -149,5 +149,53 @@ const assert=require("node:assert/strict");
   assert.deepEqual(judge({...neutralG,reactions:[{leader_response:"Jeg avklarer hvem som kan beslutte dette."}]},neutralF,office),[],
     "Clarifying authority must not count as assuming it");
 
+  // Kostnadsfri reanalyse av gammel to-case JSON (ikke ny modellkjøring).
+  // Denne testen bekrefter at en opprinnelig falsk alarm for veterinær
+  // forsvinner, mens originalfilen og manglende faglig signoff bevares.
+  const fs=require("node:fs");
+  const os=require("node:os");
+  const path=require("node:path");
+  const {spawnSync}=require("node:child_process");
+  const temp=fs.mkdtempSync(path.join(os.tmpdir(),"samtalestotte-offline-recheck-"));
+  try{
+    const file=path.join(temp,"source-recheck-2026-11-25T14-32-38-000Z.json");
+    const vetGuidance={...guidance,opening:actualVetOpening,reactions:[]};
+    const officeGuidance={...neutralG,opening:actualOfficeOpening,reactions:actualOfficeReactions};
+    const fileRun={
+      createdAt:"2026-11-25T14:32:38.933Z",targeted:true,
+      environment:"isolated-local-test",provider:"openai",
+      cases:[
+        {id:"SRC-C-VETERINAER",issues:["SRC-C: Åpningen forutsetter muligens felles møte"],
+          guidance:vetGuidance,followup},
+        {id:"SRC-E-ORDINAER",issues:[],
+          guidance:officeGuidance,followup:neutralF}
+      ]
+    };
+    const original=JSON.stringify(fileRun);
+    fs.writeFileSync(file,original,"utf8");
+    const result=spawnSync(process.execPath,[
+      path.join(__dirname,"..","scripts","reassess-source-recheck.mjs"),file
+    ],{encoding:"utf8",env:{...process.env,SOURCE_RECHECK_SKIP_CLIPBOARD:"1"}});
+    assert.equal(result.status,0,
+      "Kostnadsfri reanalyse må bestå uten provider: "+result.stderr+" "+result.stdout);
+    assert.match(result.stdout,/SRC-C-VETERINAER: før 1 varsel, nå 0 varsel/);
+    assert.match(result.stdout,/SRC-E-ORDINAER: før 0 varsel, nå 0 varsel/);
+    assert.equal(fs.readFileSync(file,"utf8"),original,
+      "Originalrapporten må bevares uendret");
+    const reports=fs.readdirSync(temp).filter(n=>n.startsWith("source-recheck-offline-"));
+    assert.equal(reports.length,1,"Reanalyse må opprette én separat kontrollrapport");
+    const report=fs.readFileSync(path.join(temp,reports[0]),"utf8");
+    assert.match(report,/verken juridisk faktasjekk eller formell faglig godkjenning/i);
+    assert.match(report,/2\/2 uten maskinelle signaler/);
+    const tampered={...fileRun,targeted:false};
+    fs.writeFileSync(file,JSON.stringify(tampered),"utf8");
+    const rejected=spawnSync(process.execPath,[
+      path.join(__dirname,"..","scripts","reassess-source-recheck.mjs"),file
+    ],{encoding:"utf8",env:{...process.env,SOURCE_RECHECK_SKIP_CLIPBOARD:"1"}});
+    assert.equal(rejected.status,2,"Verktøyet må avvise full fem-case eller annen feilrapport");
+  }finally{
+    fs.rmSync(temp,{recursive:true,force:true});
+  }
+
   console.log("KILDEAKSEPTANSE-EVALUATOR OK: 16 positive/negative kontrakter, proveniens, falsk verifikasjon og kildestøy; 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
