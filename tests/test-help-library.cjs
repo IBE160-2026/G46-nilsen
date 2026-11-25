@@ -80,10 +80,12 @@ const assert = require("node:assert/strict");
   // Test den faktiske Hjelp-funksjonen med syntetiske tidspunkter,
   // uten DOM, lagring, ekte AI eller eksterne HTTP-kall.
   const vm=require("node:vm");
-  const start=ui.indexOf("function sourceDateNote(");
-  const end=ui.indexOf("function compactSourceRow(",start);
-  assert(start>=0 && end>start,"Datomerking må finnes i kildebankens klientkode");
-  const dateNote=vm.runInNewContext("("+ui.slice(start,end).trim()+")",{Date,Intl,Object});
+  const sourcePresentation=require("node:fs").readFileSync("src/client/source-presentation.js","utf8");
+  const scope={window:{},Date,Intl,Object};
+  vm.runInNewContext(sourcePresentation,scope);
+  const dateNote=scope.window.SamtalestotteSourcePresentation?.sourceDateNote;
+  assert.equal(typeof dateNote,"function",
+    "Datomerking må finnes i kildebankens egen klientmodul");
   const old={validFrom:"2023-01-01",validTo:"2026-12-31"};
   assert.match(dateNote(old,new Date("2026-12-31T12:00:00Z")),/bekreft avtaledekning/,
     "På siste registrerte gyldighetsdag er perioden fortsatt innenfor datoene");
