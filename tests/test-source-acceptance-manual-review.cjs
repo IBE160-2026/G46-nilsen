@@ -190,5 +190,71 @@ const assert=require("node:assert/strict");
     fs.rmSync(temp,{recursive:true,force:true});
   }
 
+
+  // Historisk ekte KI-run ble laget FØR nye menneskelige kriterier for
+  // veterinær-/kontorcase. Migrasjon skal bevare gamle vurderinger,
+  // etterspørre nye vurderinger og aldri endre originalfilen.
+  const sourceCases=JSON.parse(fs.readFileSync(
+    path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8"
+  )).cases;
+  const tempSync=fs.mkdtempSync(path.join(os.tmpdir(),"source-review-sync-"));
+  try {
+    const runDate="2026-11-25T13:47:13.670Z";
+    const oldCases=sourceCases.map(tc=>({
+      ...tc,
+      manualMust:["SRC-C-VETERINAER","SRC-E-ORDINAER"].includes(tc.id)
+        ? tc.manualMust.slice(0,-1) : tc.manualMust
+    }));
+    const run={createdAt:runDate,cases:oldCases.map(tc=>({
+      id:tc.id,manualMust:tc.manualMust,manualCritical:tc.manualCritical,issues:[]
+    }))};
+    const originalReview={
+      schemaVersion:1,sourceRunCreatedAt:runDate,caseCount:sourceCases.length,
+      cases:oldCases.map(tc=>createManualSourceReview(tc,run.cases.find(item=>item.id===tc.id)))
+    };
+    originalReview.cases[0].must[0].status="met";
+    originalReview.cases[0].must[0].reason="Eksisterende vurdering skal ikke forsvinne ved synkronisering.";
+    const runFile=path.join(tempSync,"run.json");
+    const reviewFile=path.join(tempSync,"manual-review.json");
+    const preparedFile=path.join(tempSync,"manual-review-aligned.json");
+    fs.writeFileSync(runFile,JSON.stringify(run),"utf8");
+    const originalText=JSON.stringify(originalReview);
+    fs.writeFileSync(reviewFile,originalText,"utf8");
+    const prepare=()=>spawnSync(process.execPath,[
+      path.join(root,"scripts/prepare-source-review.mjs"),runFile,reviewFile
+    ],{encoding:"utf8"});
+    let prep=prepare();
+    assert.equal(prep.status,0,"Forberedelse av gammelt skjema feilet: "+prep.stderr);
+    assert(fs.existsSync(preparedFile),"Forberedt vurderingsskjema mangler");
+    assert.equal(fs.readFileSync(reviewFile,"utf8"),originalText,
+      "Original manuell vurdering maa vaere uendret");
+    const aligned=JSON.parse(fs.readFileSync(preparedFile,"utf8"));
+    for(const caseId of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const item=aligned.cases.find(c=>c.caseId===caseId);
+      assert.equal(item.must.length,4,"Nytt fagkriterium maa legges til "+caseId);
+      assert.equal(item.must[3].status,"pending","Nytt fagkriterium maa ikke forhåndsgodkjennes");
+      assert.equal(item.must[3].reason,"");
+    }
+    assert.equal(aligned.cases[0].must[0].status,"met",
+      "Eksisterende kontrollstatus maa bevares");
+    assert.equal(aligned.cases[0].must[0].reason,originalReview.cases[0].must[0].reason);
+    const pendingCheck=spawnSync(process.execPath,[
+      path.join(root,"tests/check-source-acceptance-review.mjs"),runFile,preparedFile
+    ],{encoding:"utf8"});
+    assert.equal(pendingCheck.status,1,"Synkronisert, uferdig fil maa fremdeles vaere PENDING");
+    assert.match(pendingCheck.stdout,/0\/5 faglig dokumenterte/);
+    prep=prepare();
+    assert.notEqual(prep.status,0,"Forberedelse maa ikke overskrive tidligere generert vurdering");
+    // Det historiske rapportkravet maa aldri kunne fjernes eller omrokkeres.
+    const invalid=structuredClone(run);
+    invalid.cases.find(c=>c.id==="SRC-C-VETERINAER").manualMust[0]="Ukjent nytt krav";
+    fs.writeFileSync(runFile,JSON.stringify(invalid),"utf8");
+    fs.rmSync(preparedFile);
+    prep=prepare();
+    assert.notEqual(prep.status,0,"Historisk rapport med endrede kriterier maa avvises");
+  } finally {
+    fs.rmSync(tempSync,{recursive:true,force:true});
+  }
+
   console.log("MANUELL KILDEAKSEPTANSE OK: krav, belegg, periode, kilde per svar, kritiske feil, uavklart og falsk positiv – 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
