@@ -154,6 +154,34 @@ function checkResult(result,label) {
       ...data,guidance,question:"Kan jeg gi en skriftlig advarsel med en gang?"
     });
     checkResult(continuation,"Oppfølging");
+    // Samme ekte Express/SDK-sti: brukerens faktiske avklaringssvar må
+    // beholdes i både første råd og videre samtale, ikke bare i browser-UI.
+    // All KI er lokal simulator; ingen betalte kall eller eksterne tjenester.
+    const clarified={
+      situation:"To medarbeidere er uenige om arbeidsdeling. Jeg leder samtalen, men har ikke personalansvar.",
+      analysis:{primary_topic:"Samarbeid og kommunikasjon",
+        needs_clarification:true,clarifications:[]},
+      followups:{meeting_format:"Separate samtaler",
+        leader_authority:"Ingen personalmyndighet"},
+      topicId:"Samarbeid og kommunikasjon",subtopic:"Arbeidsfordeling",
+      employerType:"private"
+    };
+    const beforeClarified=providerRequests.length;
+    const clarifiedGuidance=await call("/api/generate-guidance",clarified);
+    const firstInstruction=providerRequests.slice(beforeClarified)
+      .find(item=>item?.text?.format?.name==="samtalestotte_konkret_veiledning")?.instructions||"";
+    assert(firstInstruction.includes('Avklaringssvar: {"meeting_format":"Separate samtaler","leader_authority":"Ingen personalmyndighet"}'),
+      "Express må sende alle valgte avklaringssvar til modellens første råd");
+    const beforeFollowup=providerRequests.length;
+    await call("/api/continue-conversation",{
+      ...clarified,guidance:clarifiedGuidance,
+      question:"Hvordan avtaler vi arbeidsfordelingen uten at jeg overtar personalansvaret?"
+    });
+    const continueInstruction=providerRequests.slice(beforeFollowup)
+      .find(item=>item?.text?.format?.name==="samtalestotte_oppfolging")?.instructions||"";
+    assert(continueInstruction.includes('Avklaringssvar: {"meeting_format":"Separate samtaler","leader_authority":"Ingen personalmyndighet"}'),
+      "Express må bevare de samme avklaringssvarene i påfølgende KI-dialog");
+
     assert(!continuation.reply.includes("oppdiktet.example.test"),"Bogus inline source URL visible in follow-up");
     assert(!JSON.stringify(continuation.suggestions).includes("oppdiktet.example.test"),
       "Bogus URL visible in follow-up suggested questions");
