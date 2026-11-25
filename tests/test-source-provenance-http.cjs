@@ -235,7 +235,7 @@ function checkResult(result,label) {
       analysis:{primary_topic:"Lønn og utvikling"},followups:{},
       topicId:"Lønn og utvikling",subtopic:"Lønnsutvikling",employerType:"state"
     };
-    await call("/api/generate-guidance",historicalData);
+    const historicalGuidance=await call("/api/generate-guidance",historicalData);
     const historicalInstructions=providerRequests.at(-1).instructions;
     assert(historicalInstructions.includes("Historisk regelverk eller tariffperiode"),
       "Første råd om tidligere tariffperiode må kreve dokumentkontroll");
@@ -243,6 +243,35 @@ function checkResult(result,label) {
       "Historisk kildemodell må få riktig år å kontrollere");
     assert(!historicalInstructions.includes('"id":"STATE_HTA_2026_2028"'),
       "Hovedtariffavtale fra 2026 kan ikke tilbys som rettskilde for 2024");
+
+    // Funksjonell E2E: kort oppfolging ma beholde 2024 fra opprinnelig
+    // situasjon, selv om selve sporsmalet ikke gjentar ar eller tariff.
+    await call("/api/continue-conversation",{
+      ...historicalData,guidance:historicalGuidance,
+      question:"Hva med kravfristene?"
+    });
+    const inheritedInstructions=providerRequests.at(-1).instructions;
+    assert(inheritedInstructions.includes("Historisk regelverk eller tariffperiode") &&
+      inheritedInstructions.includes("Brukeren spør om hva som gjaldt i 2024."),
+      "Kort oppfolging ma arve riktig historisk ar og forsiktighetsinstruks");
+    assert(!inheritedInstructions.includes('"id":"STATE_HTA_2026_2028"'),
+      "Kort oppfolging om 2024 ma aldri vise hovedtariff fra 2026 som historisk kandidat");
+    await call("/api/continue-conversation",{
+      ...historicalData,guidance:historicalGuidance,
+      question:"Hvilken tariffavtale gjaldt da?"
+    });
+    const inheritedUndatedInstructions=providerRequests.at(-1).instructions;
+    assert(inheritedUndatedInstructions.includes("Brukeren spør om hva som gjaldt i 2024."),
+      "Oppfolging med 'da' skal bruke opprinnelig periodisering, ikke ukjent ar");
+    assert(!inheritedUndatedInstructions.includes('"id":"STATE_HTA_2026_2028"'),
+      "Udatert oppfolging i kjent historisk sak ma holde 2026-kilder ute");
+    await call("/api/continue-conversation",{
+      ...historicalData,guidance:historicalGuidance,
+      question:"Hva gjelder nå?"
+    });
+    const resetInstructions=providerRequests.at(-1).instructions;
+    assert(!resetInstructions.includes("Historisk regelverk eller tariffperiode"),
+      "Eksplisitt 'na' ma respektere at bruker byttet til dagens rettstilstand");
 
     const presentDayData={
       ...historicalData,
@@ -300,8 +329,8 @@ function checkResult(result,label) {
     assert.equal(claimFollow.legal_claim_review.needsManualReview,true,
       "Oppfølgingssvar med lovrettigheter må synliggjøre manuelt kildebehov");
     assert.equal(claimFollow.legal_claim_review.claimToSourceChecked,false);
-    assert.equal(providerRequests.length,14,
-      "Fjorten Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
+    assert.equal(providerRequests.length,17,
+      "Sytten Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
