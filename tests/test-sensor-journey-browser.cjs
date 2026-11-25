@@ -131,9 +131,14 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   await cdp.send("Input.dispatchKeyEvent",{type:"keyUp",key:"Enter",code:"Enter",windowsVirtualKeyCode:13});
   await wait(cdp,"document.activeElement?.id==='main-content'","Enter moves focus to main landmark");
   console.log("Keyboard accessibility: Tab -> visible skip link -> Enter -> main content: PASS");
+  // The visual selected sidebar destination must also be announced to screen readers.
+  assert.equal(await js(cdp,"document.querySelector('.nav-item[data-view=\\\"home\\\"]')?.getAttribute('aria-current')"),"page");
+  assert.equal(await js(cdp,"document.querySelectorAll('.nav-item[aria-current=\\\"page\\\"]').length"),1);
   assert.equal((await serverHistory()).length,0,"Demo must begin with an empty history");
   await keyboardActivate(cdp,'#topic-grid [data-topic-id="fravaer-oppfolging"]');
   await wait(cdp,"document.querySelector('#topic-view')?.classList.contains('active-view') && document.activeElement?.id==='topic-title'","keyboard topic navigation focuses heading");
+  assert.equal(await js(cdp,"document.querySelectorAll('.nav-item[aria-current=\\\"page\\\"]').length"),0,
+    "When the detail view has no sidebar destination, do not announce a stale current page");
   assert.equal(await js(cdp,"document.querySelector('#topic-title').getAttribute('tabindex')"),"-1");
   await keyboardActivate(cdp,"#subtopic-grid .subtopic-card");
   await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.activeElement?.id==='guidance-title'","keyboard subtopic navigation focuses guidance heading");
@@ -221,6 +226,7 @@ const followupQuestion="Hvordan følger jeg opp dersom medarbeideren er uenig?";
   await cdp.send("Page.navigate",{url:BASE+"?sensor-journey=reload"});
   await wait(cdp,"document.readyState==='complete' && document.querySelector('#profile-name')?.textContent?.includes('Sensor demo')","page reload with demo session");
   await keyboardActivate(cdp,'.nav-item[data-view="history"]');
+  await wait(cdp,"document.querySelector('.nav-item[data-view=\\\"history\\\"]')?.getAttribute('aria-current')===\'page\'","history sidebar aria-current");
   await wait(cdp,"document.querySelector('#history-view')?.classList.contains('active-view') && document.activeElement===document.querySelector('#history-view h1') && document.querySelectorAll('#history-list [data-open-history]').length===1","keyboard history navigation");
   await keyboardActivate(cdp,"#history-list [data-open-history]");
   await wait(cdp,"document.querySelector('#guidance-view')?.classList.contains('active-view') && document.querySelector('#situation')?.value.length>0 && document.activeElement?.id==='guidance-title'","keyboard open saved guidance focuses meaningful heading");
