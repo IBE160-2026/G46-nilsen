@@ -90,3 +90,15 @@ De 14 forhåndsregistrerte påstandene er **ikke bevist uttømmende**. Ved ny gj
 - **D, oppfølging:** Oppdateringsoppgaven skal avklares ut fra skriftlig delegasjon/rollebeskrivelser. For byggherreansvar og koordinatorens skriftlige avtale vises det til byggherreforskriften §§ 7 og 13. Ikke forveksle den formelle plikten med delegert praktisk utførelse.
 
 Disse fire punktene er tilleggs**kandidater**, ikke automatisk avkreftede eller godkjente rettspåstander. Det må fortsatt tas standpunkt til om de skal legges inn i det lokale manuelle skjemaet.
+
+## Sikker korrigering av eksisterende lokal kildekladd
+
+Fordi `-claim-draft.json` allerede var opprettet før korrigeringen av B4/D3, er det lagt inn et særskilt verktøy som **kun bytter disse to valgte kildekandidatene når den opprinnelige ekte KI-rapporten bekrefter at de bedre URL-ene var synlige i riktig svar**:
+
+```powershell
+node .\scripts\refine-source-claim-draft.mjs '.\test-results\source-acceptance-2026-11-25T13-47-13-669Z.json' '.\test-results\source-acceptance-manual-review-2026-11-25T13-47-13-669Z-aligned-findings-claim-draft.json'
+```
+
+Verktøyet lager et **nytt** `-claim-draft-sources-refined.json` med tilhørende lesbar Markdown, overskriver aldri den gamle kladden, bevarer C/E-sakenes `M4=not_met`, og nekter å endre kildekandidater der kontrollør allerede har begynt å fylle inn belegg eller vurdering. På Windows kopieres et kort sammendrag automatisk med `Set-Clipboard`. Ingen KI- eller nettverkskall.
+
+**Viktig:** Den nye filen er fremdeles bare en ufullstendig arbeidskladd. Eventuelle øvrige rettspåstander, faktisk originalkildesitat, rettsversjon, arbeidsgiverområde, kontrollør og formell beslutning må vurderes og dokumenteres separat; ingen `claimInventoryComplete` eller fagkriterier settes til godkjent.
