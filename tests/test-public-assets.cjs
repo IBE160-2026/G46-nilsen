@@ -71,6 +71,7 @@ async function waitForServer() {
       "/src/client/admin-data.js",
       "/src/client/topic-search.js",
       "/src/client/situation-analysis.js",
+      "/src/client/source-presentation.js",
       "/src/privacy-name-data.js",
       "/src/privacy-detector.js",
       "/assets/images/logo.png",
