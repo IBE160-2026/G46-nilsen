@@ -2,9 +2,9 @@
 
 > **STATUSKORREKSJON ETTER MERGE OG GRENOPPRYDDING (25.11.2026):** PR #15 er nå slått sammen med `main` som `d9046e3`; GitHub har bare **én aktiv branch – `main`**. De 24 gamle grenenes historikk er arkivert under taggen `archive/branches-before-single-main-2026-11-25`. Opplysningene nedenfor om åpen PR #15 er en *historisk beslutningsstatus før mergetidspunktet*. Se [PROSJEKTSTATUS](PROSJEKTSTATUS.md) for gjeldende status. Render-testtjenester er en separat sak.
 
-**Dette er gjeldende status for repoet etter de to sammenslåtte revisjonene, men før eventuell merge av PR #15. Ingen automatisk godkjenning av innlevering eller produksjon.**
+**HISTORISK ØYEBLIKKSBLIDE FØR PR #15-MERGE:** Tabellen og handlingspunktene under bevares som beslutningshistorikk og gjelder **ikke** den nåværende `main`-versjonen. Se [PROSJEKTSTATUS](PROSJEKTSTATUS.md) og [dokumentasjonsrevisjon](DOKUMENTASJONSREVISJON-2026-11-25.md). PR #12–#17 er flettet inn; `61d282dc` var live og Quality Gate grønn 25.11.2026. Canvas-formalia og personlig rapportgodkjenning gjenstår fortsatt.
 
-## Bekreftet GitHub-status
+## Historisk GitHub-status før PR #15-merge
 
 | Gren/PR | Status |
 |---|---|
@@ -20,7 +20,7 @@
 - Målrettet påstandsvis gjennomgang: 14 opprinnelige kandidater og minst åtte supplerende kontrollpunkter er dokumentert i `docs/KILDEKONTROLL-14-PASTANDER-2026-11-25.md` og `docs/FEM-CASES-FAGLIG-VURDERINGSMATRISE-2026-11-25.md`. Ingen skriftlig signert originalkildesjekk av samtlige påstander foreligger.
 - Lokal kildekladd med rettede B4/D3-kandidatlenker er lagret kun på studentens PC. Historiske funn og lokale testresultater skal ikke revideres eller påstås inngitt i repoet.
 
-## Kritiske valg før merge til main
+## Historiske vurderinger før PR #15-merge
 
 1. **Kontroller Render auto-deploy mot `main`.** Hvis `main` automatisk publiserer produksjon, kan merge ikke behandles som bare en innleveringshandling. Velg bevisst en plan for pilot/produksjon og eventuelt skru av automatisk produksjonsdeploy **før** merge. Ikke endre Render-konfigurasjon uten brukergodkjenning.
 2. **Få en eksplisitt beslutning om å merge PR #15**, med erkjennelse av at den påstandsvis juridiske akseptansen fortsatt er ufullstendig. Draft-status og åpen formell fagkontroll må ikke omtales som `REVIEWED_OK`.
