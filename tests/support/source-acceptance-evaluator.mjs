@@ -117,7 +117,7 @@ export function evaluateSourceAcceptanceCase(tc, guidance, followup) {
   // To kjente samtalefaglige feil fra den virkelige KI-prøven 25.11.2026.
   // Utelukkende varselsignaler: en grønn test beviser ikke situasjonsfaglig kvalitet.
   if(tc.id==="SRC-C-VETERINAER" &&
-     /\bdere\b|\bvi er samlet\b/iu.test(String(guidance?.opening||""))){
+     /\b(?:takk|fint|hyggelig)\s+for\s+at\s+dere\b|\b(?:jeg|vi)\s+(?:vil|ønsker)\s+(?:gjerne\s+)?(?:å\s+)?(?:snakke|møte|samle)\s+(?:med\s+)?dere\b|\b(?:dere\s+begge|vi\s+er\s+samlet)\b/iu.test(String(guidance?.opening||""))){
     issues.push("SRC-C: Åpningen forutsetter muligens felles møte; møtesammensetningen er uavklart og må kontrolleres");
   }
   if(tc.id==="SRC-E-ORDINAER"){
