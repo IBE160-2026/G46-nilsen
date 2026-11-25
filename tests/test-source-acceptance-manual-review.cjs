@@ -316,9 +316,11 @@ const assert=require("node:assert/strict");
       cases:all.map(tc=>{
         const first=candidates.filter(x=>x[0]===tc.id && x[1]==="first");
         const later=candidates.filter(x=>x[0]===tc.id && x[1]==="followup");
-        const mkSources=list=>[...new Set(list.map(x=>x[3]))].map(id=>({
-          id,url:"https://example.org/evidence/"+id
-        }));
+        const mkSources=list=>[...new Set(list.map(x=>x[3]))].map(id=>
+          id.startsWith("https://")
+            ? {url:id,evidenceRole:"provider_url"}
+            : {id,url:"https://example.org/evidence/"+id,evidenceRole:"model_selected"}
+        );
         return {id:tc.id,issues:[],
           guidance:{legal_hr_note:first.map(x=>x[2]).join(" "),evidence_sources:mkSources(first)},
           followup:{reply:later.map(x=>x[2]).join(" "),evidence_sources:mkSources(later)}
@@ -350,6 +352,15 @@ const assert=require("node:assert/strict");
     assert(fs.existsSync(markdownFile),"Lesbar kontrolliste må være skrevet");
     assert.equal(fs.readFileSync(findingsFile,"utf8"),reviewText,
       "Tidligere funnfil må forbli helt uendret");
+    const b4=draft.cases.find(x=>x.caseId==="SRC-B-STAT-FRAVAER")
+      .claims.find(x=>x.claimText==="Du kan ikke kreve å få vite diagnosen.");
+    assert.equal(b4.sourceUrl,"https://www.nav.no/sykmeldt",
+      "Eksakt NAV-provider-URL var faktisk synlig i opprinnelig B-oppfølging");
+    const d3=draft.cases.find(x=>x.caseId==="SRC-D-BYGG-SHA")
+      .claims.find(x=>x.claimText.startsWith("Ved arbeid i høyden skal risiko"));
+    assert.equal(d3.sourceUrl,
+      "https://example.org/evidence/AT_WORK_EQUIPMENT_REGULATION",
+      "D3-kandidat skal knyttes til spesifikk forskrift vist i første svar");
     assert.equal(draft.cases.reduce((n,x)=>n+x.claims.length,0),14);
     for(const form of draft.cases){
       assert.equal(form.claimInventoryComplete,false,"Ikke attestér full påstandskartlegging");
