@@ -159,14 +159,19 @@ const assert=require("node:assert/strict");
   const temp=fs.mkdtempSync(path.join(os.tmpdir(),"samtalestotte-offline-recheck-"));
   try{
     const file=path.join(temp,"source-recheck-2026-11-25T14-32-38-000Z.json");
-    const vetGuidance={...guidance,opening:actualVetOpening,reactions:[]};
+    const veterinarySource={...source,id:"DNV_VETERINARY_COLLEGIALITY",
+      title:"Veterinæren og kollegialitet",
+      url:"https://www.vetnett.no/5-3-veterinaeren-og-kollegialitet/category1568.html"};
+    const vetGuidance={...guidance,opening:actualVetOpening,reactions:[],
+      source_ids:["DNV_VETERINARY_COLLEGIALITY"],evidence_sources:[veterinarySource]};
+    const vetFollowup={...followup,evidence_sources:[veterinarySource]};
     const officeGuidance={...neutralG,opening:actualOfficeOpening,reactions:actualOfficeReactions};
     const fileRun={
       createdAt:"2026-11-25T14:32:38.933Z",targeted:true,
       environment:"isolated-local-test",provider:"openai",
       cases:[
         {id:"SRC-C-VETERINAER",issues:["SRC-C: Åpningen forutsetter muligens felles møte"],
-          guidance:vetGuidance,followup},
+          guidance:vetGuidance,followup:vetFollowup},
         {id:"SRC-E-ORDINAER",issues:[],
           guidance:officeGuidance,followup:neutralF}
       ]
