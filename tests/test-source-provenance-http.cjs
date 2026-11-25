@@ -357,8 +357,8 @@ function checkResult(result,label) {
     assert.equal(claimFollow.legal_claim_review.needsManualReview,true,
       "Oppfølgingssvar med lovrettigheter må synliggjøre manuelt kildebehov");
     assert.equal(claimFollow.legal_claim_review.claimToSourceChecked,false);
-    assert.equal(providerRequests.length,17,
-      "Sytten Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
+    assert.equal(providerRequests.length,19,
+      "Nitten Express-kall skal kun bruke lokal falsk provider, aldri betalt KI");
     for(const req of providerRequests) {
       assert(req.tools?.some(x=>x.type==="web_search"),"Expected web search tool");
       assert(req.include?.includes("web_search_call.action.sources"),
