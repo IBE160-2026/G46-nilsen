@@ -1,5 +1,7 @@
 # Samtalestøtte
 
+**Gjeldende status og veiledning for sensor: [PROSJEKTSTATUS](docs/PROSJEKTSTATUS.md).** PR #12, #14 og #15 er slått sammen til `main`. Tidligere tekst om utkast og egne revisjonsgrener er historiske opplysninger, ikke gjeldende kildestatus. LIVE/tale er fortsatt eksperimentell og ikke aktivert i produksjonskoden.
+
 Samtalestøtte er en KI-basert webapplikasjon utviklet i IBE160 Programmering med KI ved Høgskolen i Molde.
 
 Løsningen skal hjelpe ledere med å forberede og øve på krevende medarbeidersamtaler. Den støtter blant annet strukturering av situasjonen, forslag til åpning og spørsmål, oppfølging i samme kontekst, samtaleøvelse, refleksjon og personvernkontroll før KI-kall.
@@ -32,7 +34,7 @@ Den siste kommandoen er en **lokal sporbarhetskontroll**, ikke bekreftelse fra C
 
 **Viktig for faktisk vurdering:** Sensorveiledningen for del 1 beskriver at sensor henter gruppens repo og følger README. Kommandoen ovenfor starter dagens `main`, ikke utkastet i PR #15. Kildeendringene i PR #15 blir ikke med før en uttrykkelig godkjent merge. Endelig innleveringsgren og Canvas-krav må fortsatt verifiseres; kildeendringene er ikke automatisk godkjent for produksjon.
 
-**Oppdatert repo- og innleveringsstatus per 25.11.2026:** PR #12 og PR #14 ble slått sammen til `main` 20.11.2026. PR #15 (kildeproveniens, kildekontroll, yrkeskilder og KI-akseptansetester) er fortsatt `draft` på `fix/evidence-sources-20261120`. Alle tre jobber i siste kontrollerte Quality Gate for PR #15 var bestått, men dette er **ikke** en faglig kilde- eller produksjonsgodkjenning. `main` inneholder ennå ikke PR #15. Se [oppdatert innleveringsstatus 25.11](docs/INNLEVERINGSSTATUS-2026-11-25.md). En merge kan utløse Render auto-deploy; dette er **ikke verifisert** og må avklares før sammenslåing.
+**Oppdatert repo- og innleveringsstatus per 25.11.2026:** PR #12, #14 og #15 er alle slått sammen med `main`. Siste kontrollerte Quality Gate før PR #15-merge var 3/3 bestått; se også nyeste test på `main`. Ekte KI-omtester og historiske avvik er dokumentert, men dette er **ikke** en formell juridisk kilde- eller produksjonsgodkjenning. Se [gjeldende prosjektstatus](docs/PROSJEKTSTATUS.md). Render-produksjon følger `main`, men deploy må bekreftes via Render-historikken.
 
 ## Historisk prosjektstatus og testbevis – 20.11.2026
 
