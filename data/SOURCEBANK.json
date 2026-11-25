@@ -1690,6 +1690,58 @@
       "time_sensitive": false,
       "source_role": "international_framework",
       "binding_status": "non_binding_framework"
+    },
+    {
+      "id": "NAV_SYKMELDT_DIAGNOSE",
+      "type": "myndighet",
+      "title": "Sykmeldt – hva arbeidsgiver kan spørre om",
+      "author": "NAV",
+      "year": 2026,
+      "url": "https://www.nav.no/sykmeldt",
+      "topics": [
+        "Fravær og oppfølging"
+      ],
+      "principles": [
+        "Arbeidsgiver kan ikke kreve at en sykmeldt oppgir diagnosen, men kan spørre hvilke arbeidsoppgaver vedkommende kan utføre.",
+        "Dialog om tilrettelegging skal gjelde arbeidsevne og aktuelle oppgaver, ikke medisinske diagnoser."
+      ],
+      "use_when": [
+        "diagnose",
+        "diagnosen",
+        "medisinske detaljer",
+        "sykmelding",
+        "arbeidsevne ved sykefravær"
+      ],
+      "authority": "high",
+      "last_verified": "2026-11-25",
+      "time_sensitive": true
+    },
+    {
+      "id": "AT_ARBEID_I_HOYDEN",
+      "type": "myndighet",
+      "title": "Arbeid i høyden – risikovurdering og forebyggende tiltak",
+      "author": "Arbeidstilsynet",
+      "year": 2026,
+      "url": "https://www.arbeidstilsynet.no/risikofylt-arbeid/arbeid-i-hoyden/",
+      "topics": [
+        "Sikkerhet og ansvar"
+      ],
+      "principles": [
+        "Arbeid i høyden krever planlegging, risikovurdering og valg av egnede tiltak før arbeidet utføres.",
+        "Vurder fallrisiko og sikre at arbeidstakere får nødvendig opplæring og riktig arbeidsutstyr."
+      ],
+      "use_when": [
+        "arbeid i høyden",
+        "høydearbeid",
+        "fallsikring",
+        "fallfare",
+        "stillas",
+        "arbeid på tak",
+        "takarbeid"
+      ],
+      "authority": "high",
+      "last_verified": "2026-11-25",
+      "time_sensitive": true
     }
   ]
 }
