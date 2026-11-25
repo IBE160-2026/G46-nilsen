@@ -44,3 +44,24 @@ for (const doc of documents) {
 }
 assert.ok(checked >= 15, "Too few navigation links were checked: " + checked);
 console.log("Sensor navigation links: OK (" + checked + " local targets/anchors checked)");
+
+// README is the sensor quickstart, not a changelog or project status report.
+// This test deliberately checks layout/essential commands, not runtime behavior
+// (the separate clean-install/demo CI job executes the application).
+const readme = fs.readFileSync(path.join(root, "README.md"), "utf8");
+const readmeLines = readme.trimEnd().split(/\r?\n/);
+assert.ok(readmeLines.length <= 85,
+  "README should stay concise for the examiner (" + readmeLines.length + " lines; max 85)");
+for (const phrase of [
+  "git clone https://github.com/IBE160-2026/G46-nilsen.git",
+  "npm ci", "npm run demo", "http://localhost:3000",
+  "npm test", "npm run audit:submission",
+  "docs/OVERSIKT.md", "docs/PROSJEKTSTATUS.md",
+]) {
+  assert.ok(readme.includes(phrase), "README is missing sensor quickstart/reference: " + phrase);
+}
+assert.ok(/fiktiv/i.test(readme), "README must explain that demo responses are fictional");
+assert.ok(!/^## .*?(?:versjonshistorikk|changelog|sensorstatus|teknisk gjeld)/im.test(readme),
+  "README should link to specialist reports instead of duplicating them");
+console.log("README sensor quickstart contract: OK (" + readmeLines.length + " lines)");
+
