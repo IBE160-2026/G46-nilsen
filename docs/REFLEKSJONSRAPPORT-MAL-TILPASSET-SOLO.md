@@ -33,7 +33,7 @@ Prosjektet begynte utforskende. Jeg beskrev ønsket funksjon, KI foreslo kode, j
 
 Arbeidsmåten ble derfor gradvis mer kontrollert: Jeg presiserte mål og avgrensninger, fikk hjelp av KI til å forstå endringer og feil, brukte automatiserte tester som kontroll og lærte hvordan Git-commits kunne bevare fungerende tilstander. Jeg ser dette som forskjellen mellom enkel prompt engineering og det forelesningene omtaler som **context engineering**: KI må få riktig prosjektkontekst, tidligere beslutninger, akseptansekriterier og dokumenterte feil. Ellers kan den lage kode som ser riktig ut isolert, men er feil i systemet som helhet.
 
-Det var ingen oppgaver å fordele mellom studenter. Jeg opplevde likevel ChatGPT som en slags ekstra gruppedeltaker i det daglige, særlig fordi jeg kunne diskutere produktvalg og få teknisk hjelp når jeg sto fast. Forskjellen er at KI verken kan ta ansvar eller erstatte en medstudents kritiske vurdering. Git og GitHub ga meg etter hvert struktur for versjoner og endringer, mens dokumentasjon og tester hjalp meg å kontrollere resultatene.
+Det var ingen oppgaver å fordele mellom studenter. ChatGPT ble en slags ekstra gruppedeltaker jeg kunne diskutere produktvalg med. Men KI kan ikke ta ansvar eller erstatte en medstudents kritiske vurdering. Git, dokumentasjon og tester ga etter hvert struktur.
 
 
 ### 2.3 Teknologi og verktøy
@@ -47,7 +47,7 @@ Frontend er utviklet med HTML, CSS og JavaScript. Backend bruker Node.js og Expr
 
 BMAD ble ikke brukt som en ferdig oppskrift før første kode. Prototypen var allerede under utvikling da Product Brief, PRD, UX, arkitektur og Epics/Stories ble formalisert. Jeg mener det ville vært misvisende å påstå at hvert planleggingsdokument var godkjent før implementeringen startet. BMAD ga derimot et nyttig rammeverk for å få kontroll på det som allerede var bygget, og for videre endringer. I november ble kravene samlet i en kanonisk PRD, koblet til konkrete arkitekturkomponenter og stories, og supplert med et register som viser hvilket testbevis hvert krav faktisk har.
 
-**Fase 2 – utvikling, testing og revisjoner.** Jeg gikk over til mindre oppgaver og tydeligere avgrensninger. Jeg brukte KI til å kode, analysere feilsituasjoner, foreslå testtilfeller og dokumentere resultater, men prøvde å være den som bestemte om forslagene skulle aksepteres. Git-historikk og daterte testbeskrivelser dokumenterer konkrete iterasjoner. Et dokumentert eksempel på hvordan instruksjonene ble mer kritiske, er spørsmålet jeg stilte under kildearbeidet: «Er dette en god kilde til akkurat denne typen påstand, eller ligger den bare i banken fordi den virker relevant?» I stedet for bare å be om flere kilder måtte jeg kreve at hvert forslag ble vurdert opp mot yrke, sektor og konkret påstand. KI foreslo endringer i kildehierarki og tester, mens jeg bestemte at feil kildevalg skulle undersøkes og ikke bare skjules bak en grønn test. Hele arbeidsforløpet er dokumentert i KI-loggen.
+**Fase 2 – utvikling, testing og revisjoner.** Jeg gikk over til mindre oppgaver og tydeligere avgrensninger. Jeg brukte KI til å kode, analysere feilsituasjoner, foreslå testtilfeller og dokumentere resultater, men prøvde å være den som bestemte om forslagene skulle aksepteres. Git-historikk og daterte testbeskrivelser dokumenterer konkrete iterasjoner. KI-loggen dokumenterer et konkret skifte i kildearbeidet: «Er dette en god kilde til akkurat denne typen påstand, eller ligger den bare i banken fordi den er relevant til temaet?» Det var ikke nok å be om flere kilder. Jeg måtte vurdere kildeforslag opp mot yrke, sektor og konkret påstand, og kreve at feil ble undersøkt framfor å skjules bak en grønn test. Se KI-loggens oppføring 8. november.
 
 De første versjonene var mer skjemabaserte og stilte flere spørsmål før brukeren fikk hjelp. Jeg vurderte dette som lite naturlig. Brukerflyten ble derfor endret slik at fritekst og korte avklaringer fikk større plass. KI kan foreslå et tema, men skal ikke velge tema basert på ett tilfeldig nøkkelord eller erstatte brukerens egen situasjonsbeskrivelse med en standardmal.
 
@@ -152,7 +152,7 @@ Det bør være åpenhet om at Samtalestøtte er laget med omfattende KI-assistan
 
 Forelesningene ga meg et språk for erfaringer jeg allerede hadde gjort: context engineering forklarte hvorfor eksisterende krav og beslutninger må inn i KI-oppgaven; BMAD forklarte hvorfor Product Brief, PRD, UX og arkitektur må henge sammen; epics/stories og sprintplanlegging forklarte hvorfor mindre, verifiserbare arbeidsoppgaver reduserer risiko og kontekstpress. Jeg fikk også større forståelse for hvorfor arkitektur bør begrense utilsiktet kobling mellom funksjoner, og hvorfor tester og reviews bør følge implementeringen fortløpende.
 
-Min viktigste kompetanseutfordring har vært å forstå noe av det KI foreslår, selv om jeg ennå ikke behersker selve programmeringen. Jeg har lært hva Git, Node.js, API-er og tester brukes til, men det er stor forskjell på å forstå begrepene og å kunne skrive eller feilsøke kode uten hjelp. Hurtig kodegenerering gjør dette skillet ekstra viktig. Jeg ønsker derfor å fortsette med grunnleggende programmeringsøving parallelt med KI-assistert utvikling.
+Min viktigste utfordring har vært å forstå KI-forslag uten å beherske programmeringen selv. Jeg forstår nå hva Git, Node.js, API-er og tester brukes til, men kan fremdeles ikke skrive eller feilsøke kode uten hjelp. Derfor vil jeg fortsette å øve grunnleggende programmering.
 
 
 ### 5.4 Arbeidsmarkedet
@@ -202,7 +202,7 @@ Et siste eksempel på en beslutning jeg tok om å begrense omfanget, er LIVE/tal
 
 Den isolerte testen med ekte lokal Supabase Auth/PostgREST og to innloggede brukere er nå gjennomført. **Før ordinær bruk** ville jeg likevel prioritert kontroll av den faktiske skybaserte konfigurasjonen, bredere og uavhengig brukertesting, fysisk mobil- og utskriftstest, ytterligere faglig gjennomgang av KI-råd og kildegrunnlag og vurdering av intern KI for miljøer med strenge sikkerhetskrav. Jeg ville ikke utvidet med flere funksjoner før disse kontrollene var gjennomført.
 
-Jeg tror videre utvikling med KI vil øke behovet for gode modulgrenser, sporbare beslutninger og kontroll av dataflyten. Før jeg legger til ny funksjonalitet, vil jeg prioritere uavhengig kvalitetssikring av faglige råd, testing av faktisk driftskonfigurasjon og en enklere arkitektur. For bruk i miljøer med strenge sikkerhetskrav bør en framtidig lokal eller intern KI-løsning vurderes; den er ikke implementert som ferdig løsning i dette prosjektet.
+KI-utvikling gjør modulgrenser, sporbare beslutninger og kontroll av dataflyt viktigere. Før nye funksjoner ville jeg prioritert uavhengig kvalitetssikring og faktisk driftskontroll. En intern KI-løsning er ikke implementert.
 
 
 ## 7. Konklusjon og læring
@@ -246,4 +246,4 @@ Jeg er særlig opptatt av at teknologien skal gjøre vanskelige menneskelige sam
 
 **Før innlevering:** Kontroller at studentopplysninger, eget språk, kildehenvisninger, personlig vurdering og alle faktiske forhold stemmer. Valg av endelig Git-commit og Canvas-frist må bekreftes. Status for repo og tester er samlet i [prosjektstatus](PROSJEKTSTATUS.md); ingen ny utviklingsrunde er nødvendig bare for å fullføre rapporten.
 
-**Omtrentlig ordantall for dette utkastet:** ca. 5072 ord inkludert overskrifter, vedlegg, URL-tekst og metadata (whitespace-basert opptelling, ikke Canvas-telling). Skolens mal oppgir forventet 3000–5000 ord avhengig av gruppestørrelse og kompleksitet. For soloprosjektet bør faglig relevante deler dekkes uten å dikte opp gruppesamarbeid.
+**Omtrentlig ordantall for dette utkastet:** ca. 4958 ord inkludert overskrifter, vedlegg, URL-tekst og metadata (whitespace-basert opptelling, ikke Canvas-telling). Skolens mal oppgir forventet 3000–5000 ord avhengig av gruppestørrelse og kompleksitet. For soloprosjektet bør faglig relevante deler dekkes uten å dikte opp gruppesamarbeid.
