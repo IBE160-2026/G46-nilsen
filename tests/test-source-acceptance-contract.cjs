@@ -55,4 +55,15 @@ assert(liveRunner.includes('process.platform === "win32"') &&
   liveRunner.includes("Set-Clipboard") &&
   liveRunner.includes("SOURCE_ACCEPTANCE_CLIPBOARD_PATH: mdPath"),
   "Ekte KI-test må kopiere lesbar Markdown-fagrapport automatisk på Windows");
+assert(liveRunner.includes('const cases=selectedIds.length ? allCases.filter(tc=>selectedIds.includes(tc.id)) : allCases;'),
+  "Målrettet betalt omtest må bare kjøre eksplisitt valgte case-ID-er");
+assert(liveRunner.includes('new Set(selectedIds).size!==selectedIds.length') &&
+  liveRunner.includes('!knownIds.has(id)'),
+  "Ukjente eller dupliserte case-ID-er må stoppes før ekte KI-kall");
+assert(liveRunner.includes('const prefix=targeted ? "source-recheck-" : "source-acceptance-";') &&
+  liveRunner.includes('if(!targeted) fs.writeFileSync(reviewPath'),
+  "To-case omtest må bruke separat rapportnavn og ikke utgi seg for fem-case sign-off");
+assert(liveRunner.includes('process.env.SOURCE_ACCEPTANCE_LIVE === "I_ACCEPT_API_COSTS"') &&
+  liveRunner.includes('process.argv.includes("--run-live")'),
+  "Også selektiv betalt kjøring må kreve eksplisitt kostnadssamtykke");
 console.log("KILDE-AKSEPTANSE KONTRAKT OK: 5 syntetiske cases, kilderegister og manuell fasit; 0 ekte KI-kall");
