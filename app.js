@@ -1279,10 +1279,9 @@ function inferOccupationSuggestion(situation){
     for(const occupation of (sector.occupations||[])){
       const needle=String(occupation||'').toLocaleLowerCase('nb-NO').trim();
       if(!needle) continue;
-      // Whole occupation words only: "kolleger" must not match "lege".
-      // Common Norwegian inflections such as "legen", "leger", "sykepleieren" are allowed.
-      const pattern=needle.replace(/[|\\{}()[\]^$+*?.]/g,'\\      const needle=String(occupation||'').toLocaleLowerCase('nb-NO');
-      if(needle && text.includes(needle)){').replace(/\s+/g,'\\s+');
+      // Match complete occupation words only: "kolleger" must not match "lege".
+      // Common forms such as "legen", "leger" and "sykepleieren" are allowed.
+      const pattern=needle.replace(/[|\\{}()[\]^$+*?.]/g,'\\$&').replace(/\s+/g,'\\s+');
       const present=new RegExp(
         '(?<![\\p{L}\\p{N}])'+pattern+'(?:en|ene|er|et|a|s|n|ne|r)?(?![\\p{L}\\p{N}])','u'
       ).test(text);
@@ -1294,7 +1293,6 @@ function inferOccupationSuggestion(situation){
   }
   return best;
 }
-
 function renderOccupationSuggestion(situation){
   const panel=document.querySelector('#occupation-context-panel');
   const summary=document.querySelector('#occupation-context-summary');
