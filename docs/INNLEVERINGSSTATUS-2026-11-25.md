@@ -2,7 +2,7 @@
 
 > **STATUSKORREKSJON ETTER MERGE OG GRENOPPRYDDING (25.11.2026):** PR #15 er nå slått sammen med `main` som `d9046e3`; GitHub har bare **én aktiv branch – `main`**. De 24 gamle grenenes historikk er arkivert under taggen `archive/branches-before-single-main-2026-11-25`. Opplysningene nedenfor om åpen PR #15 er en *historisk beslutningsstatus før mergetidspunktet*. Se [PROSJEKTSTATUS](PROSJEKTSTATUS.md) for gjeldende status. Render-testtjenester er en separat sak.
 
-**HISTORISK ØYEBLIKKSBLIDE FØR PR #15-MERGE:** Tabellen og handlingspunktene under bevares som beslutningshistorikk og gjelder **ikke** den nåværende `main`-versjonen. Se [PROSJEKTSTATUS](PROSJEKTSTATUS.md) og [dokumentasjonsrevisjon](DOKUMENTASJONSREVISJON-2026-11-25.md). PR #12–#17 er flettet inn; `61d282dc` var live og Quality Gate grønn 25.11.2026. Canvas-formalia og personlig rapportgodkjenning gjenstår fortsatt.
+**HISTORISK ØYEBLIKSBILDE FØR PR #15-MERGE:** Tabellen og handlingspunktene under bevares som beslutningshistorikk og gjelder **ikke** den nåværende `main`-versjonen. Se [PROSJEKTSTATUS](PROSJEKTSTATUS.md) og [dokumentasjonsrevisjon](DOKUMENTASJONSREVISJON-2026-11-25.md). PR #12–#17 er flettet inn; `61d282dc` var live og Quality Gate grønn 25.11.2026. Canvas-formalia og personlig rapportgodkjenning gjenstår fortsatt.
 
 ## Historisk GitHub-status før PR #15-merge
 
