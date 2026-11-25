@@ -48,3 +48,24 @@ node .\scripts\record-source-review-findings.mjs '.\test-results\source-acceptan
 ```
 
 Verktøyet kontrollerer de eksakte formuleringene i originalkjøringen. Det oppretter en **ny** `-aligned-findings.json` med M4=`not_met` for C og E og begrunnelser, uten å endre original eller tilskrive vurderingen en kontrollør. Alle andre vurderinger og juridisk påstandskartlegging er fortsatt `pending`. Sammendrag kopieres med `Set-Clipboard` på Windows. Verktøyet nekter å overskrive en eksisterende utfil. Den gamle KI-kjøringen må **ikke** godkjennes mot de nye kriteriene.
+
+## Målrettet ny modellprøve – C og E
+
+Etter at de historiske avvikene er registrert, må KI-instruksjonene kontrolleres
+mot en NY modellrespons. Bruk eksplisitt betalt opt-in kun for disse to casene:
+
+    $env:SOURCE_ACCEPTANCE_LIVE = 'I_ACCEPT_API_COSTS'
+    npm run test-ai:source-acceptance -- --run-live --only=SRC-C-VETERINAER,SRC-E-ORDINAER
+
+Dette bruker nøyaktig to syntetiske scenarioer, med analyse, første råd og
+oppfølging per scenario (seks egentlige OpenAI-forespørsler som øvre antall
+i løkken; eventuell nettsøkaktivitet kan medføre ytterligere kostnad).
+Kjøringen foregår på lokal isolert testserver, ikke i Render.
+
+Resultatet lagres separat som source-recheck-<tid>.md/.json og Markdown
+kopieres automatisk til Windows-utklippstavlen med Set-Clipboard.
+Evaluatoren varsler om de to observerte feiltypene (møteform/lederfullmakt),
+men fortsatt trengs menneskelig gjennomlesning av alle tekstfelter.
+Omtesten oppretter IKKE et fem-case vurderingsskjema og erstatter aldri
+den opprinnelige kildeakseptansen. Hvis den nye KI-responsen fortsatt feiler,
+skal dette dokumenteres som nytt avvik og ikke omskrives til bestått.
