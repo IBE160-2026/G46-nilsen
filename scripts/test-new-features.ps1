@@ -1,6 +1,6 @@
 # Kjor de nye offline-testene, lagre full logg lokalt og kopier KUN sammendrag til utklippstavlen.
 # Ingen KI-nokler, ingen betalte API-kall, ingen deploy, ingen git push.
-param([switch]$Full)
+param([switch]$Full, [switch]$FailedOnly)
 
 $root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
@@ -45,7 +45,18 @@ try {
         "test-benchmark-rpc-http",
         "test-benchmark-privacy-signal"
     )
-    if ($Full) { $tests = @("test") }
+    if ($Full -and $FailedOnly) { throw "Velg enten -Full eller -FailedOnly, ikke begge." }
+    if ($Full) {
+        $tests = @("test")
+    } elseif ($FailedOnly) {
+        # Recheck only the three Windows failures from 25 Nov and their portable loader guard.
+        $tests = @(
+            "test-node-import-windows",
+            "test-source-provenance-http",
+            "test-benchmark-live-http",
+            "test-benchmark-rpc-http"
+        )
+    }
 
     $outDir = Join-Path $root "test-results"
     New-Item -ItemType Directory -Force -Path $outDir | Out-Null
