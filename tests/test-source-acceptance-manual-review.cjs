@@ -256,5 +256,46 @@ const assert=require("node:assert/strict");
     fs.rmSync(tempSync,{recursive:true,force:true});
   }
 
+  // Registrer dokumenterte feil fra 25.11.2026 som NOT_MET, men uten
+  // å røre originalen eller forhåndsgodkjenne kildekrav.
+  const findingsDir=fs.mkdtempSync(path.join(os.tmpdir(),"source-findings-"));
+  try{
+    const cases=JSON.parse(fs.readFileSync(path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8")).cases;
+    const date="2026-11-25T13:47:13.670Z";
+    const syntheticRun={createdAt:date,cases:cases.map(x=>({
+      id:x.id,guidance:{opening:x.id==="SRC-C-VETERINAER"?"Takk for at dere møter.":"",
+        reactions:x.id==="SRC-E-ORDINAER"?[{leader_response:"Før jeg bestemmer vil jeg høre dere."}]:[]},
+      followup:{reply:""},issues:[]
+    }))};
+    const aligned={
+      schemaVersion:1,sourceRunCreatedAt:date,caseCount:5,
+      cases:cases.map(tc=>createManualSourceReview(tc,syntheticRun.cases.find(x=>x.id===tc.id)))
+    };
+    const runFile=path.join(findingsDir,"run.json");
+    const reviewFile=path.join(findingsDir,"manual-review-aligned.json");
+    const outFile=path.join(findingsDir,"manual-review-aligned-findings.json");
+    fs.writeFileSync(runFile,JSON.stringify(syntheticRun));
+    const before=JSON.stringify(aligned,null,2);
+    fs.writeFileSync(reviewFile,before);
+    const tool=path.join(root,"scripts/record-source-review-findings.mjs");
+    const p=spawnSync(process.execPath,[tool,runFile,reviewFile],{encoding:"utf8"});
+    assert.equal(p.status,0,"Fagavvikskladd feilet: "+p.stderr);
+    assert.equal(fs.readFileSync(reviewFile,"utf8"),before,
+      "Opprinnelig aligned-skjema må ikke endres");
+    const after=JSON.parse(fs.readFileSync(outFile,"utf8"));
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const record=after.cases.find(x=>x.caseId===id);
+      assert.equal(record.must[3].status,"not_met","Faktisk observert feil må markeres");
+      assert(record.must[3].reason.length>=15);
+      assert.equal(record.claimInventoryComplete,false,"Kildekontroll må ikke auto-godkjennes");
+      assert.equal(record.reviewer,"","Kontrollør skal ikke forfalskes");
+    }
+    assert.equal(after.cases.find(x=>x.caseId==="SRC-A-UTESTENGING").must[0].status,"pending");
+    assert.equal(spawnSync(process.execPath,[tool,runFile,reviewFile],{encoding:"utf8"}).status===0,false,
+      "Fagavviksverktøy må nekte å overskrive ferdig utfil");
+  }finally{
+    fs.rmSync(findingsDir,{recursive:true,force:true});
+  }
+
   console.log("MANUELL KILDEAKSEPTANSE OK: krav, belegg, periode, kilde per svar, kritiske feil, uavklart og falsk positiv – 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
