@@ -89,3 +89,19 @@ Gjenstår særlig: full dekning av øvrige juridiske utsagn (ikke bare de 14
 første kandidatene), kilde-/gyldighetsbevis per svar og manuell vurdering av
 alle fagkriterier, inkludert avvik som må stå som `not_met` i den gamle
 C/E-kjøringen. Rettede nye modellkjøringer har egen proveniens.
+
+
+## Fullt case-for-case vurderingsgrunnlag
+
+Se [FEM-CASES-FAGLIG-VURDERINGSMATRISE-2026-11-25.md](FEM-CASES-FAGLIG-VURDERINGSMATRISE-2026-11-25.md).
+
+Dette er en samlet gjennomgang av **alle fem faktiske modellresponsene**
+med hvert `manualMust`- og `manualCritical`-kriterium, direkte belegg fra
+modellen og relevante originale myndighetskilder. Den peker også ut minst
+åtte **supplerende kontrollpunkter** som ikke dekkes uttømmende av
+14-påstands-kladden, inkludert uavklart instruksjonsmyndighet i A og
+stans-/ansvarsformuleringer i D.
+
+Vurderingene er eksplisitt merket *foreløpige*; ingen formelle statusfelt,
+signaturer eller tidligere testresultater er endret. Opprinnelige C/E-feil
+står fast. Dette er en dokumentert gjennomgang, ikke `REVIEWED_OK`.
