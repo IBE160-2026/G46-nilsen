@@ -10,6 +10,8 @@ Samtalestøtte er **ikke** et HR-system, journalsystem eller beslutningsverktøy
 
 ## For sensor: test appen uten tilgangsnøkler
 
+**Forutsetninger:** Git, Node.js **22–26** (angitt i `package.json` som `>=22 <27`) og npm. Bruk en Node-versjon i dette intervallet og en vanlig nettleser. Sensordemoen krever ingen `.env`, API-nøkkel eller database. Installer avhengigheter med `npm ci` som vist under. Versjonsintervallet er prosjektets oppgitte kompatibilitetskrav, ikke et bevis for at hver enkelt Node-versjon er testet.
+
 Denne korte oppskriften gjør det mulig å kjøre **den lokale, deterministiske sensordemoen** på en ren maskin uten innlogging, API-nøkler eller tilgang til produksjon. Demoen viser den faktiske frontend-arbeidsflyten med **fiktive svar**; den dokumenterer ikke kvaliteten på live KI-råd eller den eksterne innloggingen.
 
 ```bash
