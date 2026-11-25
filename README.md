@@ -1,6 +1,6 @@
 # Samtalestøtte
 
-**Gjeldende status og veiledning for sensor: [PROSJEKTSTATUS](docs/PROSJEKTSTATUS.md).** `main` inneholder PR #12, #14, #15, #16 (personvern) og #17 (yrkesforslag). Siste verifiserte applikasjonscommit før dokumentasjonsrevisjonen: `61d282dc` (Quality Gate [#45662862335](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) grønn, Render `live` 25.11.2026 kl. 17:16 UTC). Se [dokumentasjonsrevisjonen](docs/DOKUMENTASJONSREVISJON-2026-11-25.md). LIVE/tale er fortsatt eksperimentelt, og gamle PR-/testavsnitt nedenfor er tidsstemplede historiske øyeblikksbilder.
+**Gjeldende prosjektstatus:** [PROSJEKTSTATUS](docs/PROSJEKTSTATUS.md). **Refleksjonsrapport etter skolens mal:** [Les hovedutkastet](docs/REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md). [Dokumentasjonsrevisjonen](docs/DOKUMENTASJONSREVISJON-2026-11-25.md) viser hvilke notater som er historiske. LIVE/tale er fortsatt eksperimentelt og er ikke del av produksjonsfunksjonen.
 
 Samtalestøtte er en KI-basert webapplikasjon utviklet i IBE160 Programmering med KI ved Høgskolen i Molde.
 
@@ -30,55 +30,17 @@ npm test
 npm run audit:submission
 ```
 
-Den siste kommandoen er en **lokal sporbarhetskontroll**, ikke bekreftelse fra Canvas. Browser-/Supabase-integrasjonstestene i GitHub Actions har egne CI-forutsetninger; beskrivelsene og eksakte bevisene finnes i [innleveringskontrollen](docs/INNLEVERINGSKONTROLL-2026-11-20.md).
+Den siste kommandoen er en **lokal dokumentasjons- og sporbarhetskontroll**, ikke en bekreftelse fra Canvas. Se [gjeldende dokumentasjonssjekkliste](docs/DOKUMENTASJON-SJEKKLISTE.md) og dokumentert [lokal Supabase-test](docs/ai/SUPABASE-LOCAL-AUTH-E2E-2026-11-20.md) og [mobil-/utskriftstest](docs/ai/MOBIL-PRINT-REFLEKSJON-2026-11-20.md). [Innleveringskontrollen fra 20.11](docs/INNLEVERINGSKONTROLL-2026-11-20.md) er **historisk**.
 
-**Viktig for faktisk vurdering:** Sensor bruker `main` og README-oppskriften over. Tidligere PR #12–#17 er innlemmet i hovedgrenen; det er ikke nødvendig å hente en eldre PR-gren. Den siste testede og publiserte appversjonen før denne dokumentasjonsendringen var `61d282dc`. Endelig Canvas-frist, rapportformat og studentens personlige godkjenning må fremdeles kontrolleres. **En grønn Quality Gate dokumenterer teknisk teststatus, ikke full juridisk fagakseptanse av KI-råd.**
+**For vurdering:** Bruk `main`, ikke eldre PR-grener. Teknisk teststatus og siste publisering er dokumentert i [prosjektstatus](docs/PROSJEKTSTATUS.md). Grønn CI er ikke uavhengig faglig eller juridisk godkjenning av KI-råd.
 
-Historiske README-statusnotater er flyttet til [arkivet](docs/archive/README-STATUSNOTATER-2026-11.md). Gjeldende status finnes i [PROSJEKTSTATUS](docs/PROSJEKTSTATUS.md).
+Historiske README-statusnotater er bevart i [arkivet](docs/archive/README-STATUSNOTATER-2026-11.md).
 
-## Rask tilgang for vurdering
+## Publisert løsning og testbevis
 
-### Publisert løsning
-
-Produksjonsversjonen kan åpnes her:
-
-`https://g46-nilsen-samtalestotte.onrender.com`
-
-Tilgang til lukket testbruker gis separat ved behov.
-
-Render kan bruke litt tid på første oppstart etter inaktivitet.
-
-### Lokal demomodus uten nøkler
-
-Installer avhengigheter:
-
-```bash
-npm install
-```
-
-Start sensordemo:
-
-```bash
-npm run demo
-```
-
-Åpne:
-
-```text
-http://127.0.0.1:3000
-```
-
-Demomodus bruker samme frontend som prosjektet, men erstatter eksterne KI-kall og databaseavhengigheter med deterministiske mock-svar. Den krever ingen `.env`, API-nøkler eller ekstern database.
-
-### Kjør lokale tester
-
-```bash
-npm test
-```
-
-Den deterministiske testpakken gjør ingen eksterne KI-kall.
-
-Live KI-tester, som `npm run test-ai:golden`, krever gyldig API-konfigurasjon og er valgfrie ved vurdering.
+- **Publisert prototype:** [Åpne Samtalestøtte](https://g46-nilsen-samtalestotte.onrender.com). Tilgang til eventuell lukket testbruker gis separat.
+- **Lokal sensordemo:** Bruk én oppskrift under [For sensor: test appen uten tilgangsnøkler](#for-sensor-test-appen-uten-tilgangsnøkler). Den kjører med fiktive svar og uten eksterne tjenester.
+- **Automatiske kontroller:** `npm test` og `npm run audit:submission` er beskrevet i samme oppskrift. Live KI-tester som `npm run test-ai:golden` krever egen API-konfigurasjon og er ikke nødvendig for å kjøre demoen.
 
 ## Kjernefunksjoner
 
@@ -117,36 +79,11 @@ Prosjektets golden/fasit-bank er utviklet som prosjektets eget testgrunnlag og e
 - Git / GitHub
 - Render
 
-## Lokal kjøring med full funksjonalitet
+## Lokal kjøring med eksterne tjenester
 
-Klon repoet:
+Start med `git clone`, `git switch main` og `npm ci` fra [sensoroppskriften](#for-sensor-test-appen-uten-tilgangsnøkler), men kjør **ikke** `npm run demo`. Kopier `.env.example` til `.env`, legg inn nødvendige opplysninger for tjenestene og start med `npm start`. Åpne deretter `http://localhost:3000`.
 
-```bash
-git clone https://github.com/IBE160-2026/G46-nilsen.git
-cd G46-nilsen
-```
-
-Installer:
-
-```bash
-npm install
-```
-
-Kopier `.env.example` til `.env` og fyll inn nødvendig konfigurasjon.
-
-Start:
-
-```bash
-npm start
-```
-
-Åpne:
-
-```text
-http://localhost:3000
-```
-
-Appen skal kjøres via Node-serveren, ikke ved å åpne `index.html` direkte.
+Denne varianten krever gyldig konfigurasjon for tjenestene som brukes. Applikasjonen skal startes via Node-serveren, ikke ved å åpne `index.html` direkte. Demoen er den anbefalte metoden når sensor ikke har tilgangsnøkler.
 
 ## Viktig dokumentasjon
 
