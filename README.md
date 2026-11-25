@@ -1,6 +1,6 @@
 # Samtalestøtte
 
-**Gjeldende status og veiledning for sensor: [PROSJEKTSTATUS](docs/PROSJEKTSTATUS.md).** PR #12, #14 og #15 er slått sammen til `main`. Tidligere tekst om utkast og egne revisjonsgrener er historiske opplysninger, ikke gjeldende kildestatus. LIVE/tale er fortsatt eksperimentell og ikke aktivert i produksjonskoden.
+**Gjeldende status og veiledning for sensor: [PROSJEKTSTATUS](docs/PROSJEKTSTATUS.md).** `main` inneholder PR #12, #14, #15, #16 (personvern) og #17 (yrkesforslag). Siste verifiserte applikasjonscommit før dokumentasjonsrevisjonen: `61d282dc` (Quality Gate [#45662862335](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) grønn, Render `live` 25.11.2026 kl. 17:16 UTC). Se [dokumentasjonsrevisjonen](docs/DOKUMENTASJONSREVISJON-2026-11-25.md). LIVE/tale er fortsatt eksperimentelt, og gamle PR-/testavsnitt nedenfor er tidsstemplede historiske øyeblikksbilder.
 
 Samtalestøtte er en KI-basert webapplikasjon utviklet i IBE160 Programmering med KI ved Høgskolen i Molde.
 
@@ -32,9 +32,7 @@ npm run audit:submission
 
 Den siste kommandoen er en **lokal sporbarhetskontroll**, ikke bekreftelse fra Canvas. Browser-/Supabase-integrasjonstestene i GitHub Actions har egne CI-forutsetninger; beskrivelsene og eksakte bevisene finnes i [innleveringskontrollen](docs/INNLEVERINGSKONTROLL-2026-11-20.md).
 
-**Viktig for faktisk vurdering:** Sensorveiledningen for del 1 beskriver at sensor henter gruppens repo og følger README. Kommandoen ovenfor starter dagens `main`, ikke utkastet i PR #15. Kildeendringene i PR #15 blir ikke med før en uttrykkelig godkjent merge. Endelig innleveringsgren og Canvas-krav må fortsatt verifiseres; kildeendringene er ikke automatisk godkjent for produksjon.
-
-**Oppdatert repo- og innleveringsstatus per 25.11.2026:** PR #12, #14 og #15 er alle slått sammen med `main`. Siste kontrollerte Quality Gate før PR #15-merge var 3/3 bestått; se også nyeste test på `main`. Ekte KI-omtester og historiske avvik er dokumentert, men dette er **ikke** en formell juridisk kilde- eller produksjonsgodkjenning. Se [gjeldende prosjektstatus](docs/PROSJEKTSTATUS.md). Render-produksjon følger `main`, men deploy må bekreftes via Render-historikken.
+**Viktig for faktisk vurdering:** Sensor bruker `main` og README-oppskriften over. Tidligere PR #12–#17 er innlemmet i hovedgrenen; det er ikke nødvendig å hente en eldre PR-gren. Den siste testede og publiserte appversjonen før denne dokumentasjonsendringen var `61d282dc`. Endelig Canvas-frist, rapportformat og studentens personlige godkjenning må fremdeles kontrolleres. **En grønn Quality Gate dokumenterer teknisk teststatus, ikke full juridisk fagakseptanse av KI-råd.**
 
 ## Historisk prosjektstatus og testbevis – 20.11.2026
 
