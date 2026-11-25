@@ -2,6 +2,7 @@ import fs from "node:fs";
 
 const app = fs.readFileSync('app.js', "utf8");
 const server = fs.readFileSync('server.js', "utf8");
+const simulationContracts = fs.readFileSync("src/server/simulation-contracts.js", "utf8");
 const html = fs.readFileSync('index.html', "utf8");
 const css = [
   fs.readFileSync('styles.css', "utf8"),
@@ -32,8 +33,8 @@ const checks = [
   ["Server har simulation-turn", server.includes("app.post('/api/simulation-turn'")],
   ["Server har simulation-help", server.includes("app.post('/api/simulation-help'")],
   ["Server har simulation-feedback", server.includes("app.post('/api/simulation-feedback'")],
-  ["Simulator forbyr oppdiktet diagnose", server.includes("Ikke finn på diagnose")],
-  ["Simulator forbyr oppdiktet familie", server.includes("familieforhold")],
+  ["Simulator forbyr oppdiktet diagnose", simulationContracts.includes("Ikke finn på diagnose")],
+  ["Simulator forbyr oppdiktet familie", simulationContracts.includes("familieforhold")],
   ["Ingen poengsum i feedback", server.includes("Ingen poengsum")],
   ["Historikk inkluderer simulation", server.includes("src/server/history-contracts.js") && fs.readFileSync("src/server/history-contracts.js","utf8").includes("simulation: body.simulation")],
   ["Snakkeboble-stiler finnes", css.includes(".simulation-bubble")],
