@@ -1,5 +1,8 @@
 # Kildedekning, sporbarhet og kildevalg – revisjon 20.11.2026
 
+> **Statuskontroll 25.11.2026:** Rapporten ble skrevet før PR #15 ble flettet. Teknisk innlemmelse er gjennomført; kildepresisjon og juridisk fagakseptanse har fortsatt dokumenterte begrensninger. Se [gjeldende prosjektstatus](PROSJEKTSTATUS.md) og [dokumentasjonsrevisjon](DOKUMENTASJONSREVISJON-2026-11-25.md).
+
+
 **Status:** Arbeidsrapport for PR #15 (oppfølging til den sammenslåtte PR #14). Ikke en attest på at en språkmodell har lest og kontrollert hver lenket side.  
 **Avgrensning:** 14 navngitte fagsektorer og «Annet», overordnede arbeidsgiverkilder, praksis for utvalgte svar og sporbare webkilder.  
 **Kildebanker:** `data/SOURCEBANK.json` (59 generelle kilder), `data/OCCUPATION-LEGAL-SOURCES.json` (99 registeroppføringer, hvorav noen brukes i flere sektorer) og `data/AGREEMENT-SOURCE-MAP.json`. Antall er et øyeblikksbilde av arbeidsgrenen.
