@@ -3,6 +3,7 @@
 const assert=require("node:assert/strict");
 const http=require("node:http");
 const path=require("node:path");
+const {pathToFileURL}=require("node:url");
 const {spawn}=require("node:child_process");
 
 const root=path.resolve(__dirname,"..");
@@ -60,7 +61,7 @@ const ID1="f6e3eb7e-f630-43ed-941c-c664b6f2a010",ID2="ac2d24e1-899e-4516-a518-9d
   await Promise.all([new Promise(done=>auth.listen(authPort,"127.0.0.1",done)),
     new Promise(done=>provider.listen(providerPort,"127.0.0.1",done))]);
   const app=spawn(process.execPath,[
-    "--import",path.join(root,"tests/support/offline-openai-fetch.mjs"),
+    "--import",pathToFileURL(path.join(root,"tests/support/offline-openai-fetch.mjs")).href,
     path.join(root,"server.js")
   ],{cwd:root,env:{
     ...process.env,NODE_ENV:"test",PORT:String(appPort),APP_BASE_URL:base,
