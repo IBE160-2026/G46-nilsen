@@ -127,3 +127,24 @@ For å fylle dette gapet er den eksisterende lokale sensortesten nå utvidet:
 - Den isolerte Express/OpenAI-SDK-testen `tests/test-source-provenance-http.cjs` sender også syntetiske avklaringssvar (møteform og fravær av personalfullmakt) og inspiserer **de faktiske instruksjonene som sendes til lokal fake-provider**, både i første råd og oppfølgingsspørsmålet. Dermed testes ikke bare klientens JSON, men at serveren faktisk videreformidler konteksten til modellkallet.
 
 Dette er en **lokal nettleserintegrasjonstest med syntetisk analyse og råd**. Den beviser overføring av avklaringssvar i klient-/HTTP-flyten, men **ikke** at en ekte modell faktisk anvender dem klokt. Ingen betalte modellkall, ingen produksjonsdeploy. Se nyeste Quality Gate for faktisk bestått/feilet status; ikke anta suksess ut fra at koden er lagt inn.
+
+## Historisk vurderingsskjema fra lokal test 25.11.2026
+
+Etter den lokale KI-prøven ble ett nytt menneskelig fagkriterium lagt til
+både veterinærsaken (SRC-C) og kontorsaken (SRC-E). Den opprinnelige
+vurderingsfilen har bare tre fagkriterier i disse sakene, mens gjeldende
+testkontrakt forventer fire. Dette er skjemaversjonsdrift, ikke en ny KI-feil.
+
+Bruk den kostnadsfrie lokale kommandoen:
+
+    node .\scripts\prepare-source-review.mjs .\test-results\source-acceptance-2026-11-25T13-47-13-669Z.json .\test-results\source-acceptance-manual-review-2026-11-25T13-47-13-669Z.json
+
+Verktøyet sjekker at originalkriteriene er uendret, og legger bare til de
+nye kriteriene som PENDING. Det beholder allerede utfylte vurderinger,
+endrer ikke originalfilen, og nekter å overskrive en tidligere justert
+vurderingsfil. Utfilen ender med -aligned.json.
+
+Windows: kort status kopieres automatisk til utklippstavlen med Set-Clipboard.
+Verktøyet godkjenner ingenting automatisk. Kontroller deretter en faktisk
+manuelt gjennomgått -aligned.json sammen med den uendrede kjøringsrapporten.
+PENDING_REVIEW og exit-kode 1 er forventet så lenge manuell kontroll mangler.
