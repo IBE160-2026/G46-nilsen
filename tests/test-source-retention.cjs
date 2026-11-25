@@ -190,6 +190,47 @@ const assert = require("node:assert/strict");
   assert.equal(joinSourceContext("",newThreat),newThreat,"Tom opprinnelig situasjon må håndteres");
   assert.equal(joinSourceContext(originallyNegated,""),originallyNegated,"Tom oppfølging må håndteres");
   assert.equal(joinSourceContext(null,undefined),"","Mangler begge input skal ikke gi 'undefined'");
+  // Execute the extracted shared route helper using real source-retention policy,
+  // while substituting deterministic candidates. This checks that both endpoint
+  // call sites keep using one pipeline without relying on fake provider responses.
+  const fs = require("node:fs");
+  const vm = require("node:vm");
+  const serverSource = fs.readFileSync("server.js", "utf8");
+  const helperStart = serverSource.indexOf("function scopedGuidanceSources(");
+  const helperEnd = serverSource.indexOf("\nfunction publicSources(", helperStart);
+  assert(helperStart >= 0 && helperEnd > helperStart, "Shared source helper missing");
+  const helperCode = serverSource.slice(helperStart, helperEnd);
+  const sourceCalls = [];
+  const sandbox = {
+    selectRelevantSources: (analysis, situation, options) => {
+      sourceCalls.push({ situation, asOf: options.asOf, topic: options.topic });
+      return [{ id:"CURRENT" }, { id:"EXPIRED" }];
+    },
+    mergeGuidanceSourceCandidates: (general) => general,
+    shouldRetainCuratedSources,
+    isHistoricalAgreementCandidate: source => source.id !== "EXPIRED"
+  };
+  vm.runInNewContext(helperCode + "\nthis.run = scopedGuidanceSources;", sandbox);
+  const asOf = new Date("2026-11-25T12:00:00Z");
+  const params = {
+    analysis: {}, situation: "Vanlig samtale om arbeidsdeling.",
+    topicId: "Samarbeid og kommunikasjon",
+    resolvedTopic: "Samarbeid og kommunikasjon",
+    resolvedSubtopic: "Arbeidsdeling",
+    occupation: "", sectorId: "", employerType: "",
+    occupationContext: ordinaryContext, asOf, historicalReview: null
+  };
+  const ordinary = sandbox.run(params);
+  assert.equal(ordinary.retainCuratedSources, false, "Ordinary dialogue must not inflate sources");
+  assert.deepEqual(Array.from(ordinary.relevantSources), [], "No sources on ordinary dialogue");
+  const safety = sandbox.run({ ...params, situation: "Det har skjedd en sikkerhetshendelse med maskin." });
+  assert.equal(safety.retainCuratedSources, true, "Safety case must retain curated sources");
+  assert.deepEqual(Array.from(safety.relevantSources).map(x=>x.id), ["CURRENT"],
+    "Historical/validity filter must still apply after shared merge");
+  assert(sourceCalls.every(call=>call.asOf===asOf && call.topic===params.resolvedTopic),
+    "Both routes must pass the request's fixed source timestamp and topic");
+  assert.equal((serverSource.match(/scopedGuidanceSources\\(\\{/g)||[]).length, 2,
+    "Both guidance and continuation routes must use shared source selection");
   console.log("SOURCE RETENTION OK: live-avvik + juridisk kilderangering + positive kontroller");
 })().catch(error => {
   console.error(error);
