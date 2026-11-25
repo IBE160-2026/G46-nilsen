@@ -82,7 +82,7 @@ try {
             # Ta bare feilspor fra denne testen. Hele loggen forblir pa PC-en.
             $lines = @($output | ForEach-Object { [string]$_ })
             $signals = @($lines | Where-Object {
-                $_ -match '(?i)AssertionError|ERR_[A-Z_]+|\\bError\\b|failed|feilet|EADDRINUSE|ECONNREFUSED|ETIMEDOUT|Timeout|not ready|exit code|Access is denied|EACCES|EPERM'
+                $_ -match '(?i)AssertionError|ERR_[A-Z_]+|\bError\b|failed|feilet|EADDRINUSE|ECONNREFUSED|ETIMEDOUT|Timeout|not ready|exit code|Access is denied|EACCES|EPERM'
             } | Select-Object -Last 12)
             $tail = @($lines | Select-Object -Last 8)
             $detail = (@($signals) + @($tail) | Select-Object -Unique) -join [Environment]::NewLine
@@ -116,7 +116,7 @@ try {
     }
     # Ikke kopier eventuelle hemmeligheter fra en lokal logg til chatten.
     $summary = $summary -replace '(?i)sk-[A-Za-z0-9_-]{16,}', '[SKJULT-NOKKEL]'
-    $summary = $summary -replace '(?i)(OPENAI_API_KEY|OPENROUTER_API_KEY|SUPABASE_SECRET_KEY)\s*[:=]\s*\S+', '$1=[SKJULT]'
+    $summary = $summary -replace '(?i)([A-Z_]*(?:API_KEY|SECRET_KEY|ACCESS_TOKEN|AUTH_TOKEN))\s*[:=]\s*\S+', '$1=[SKJULT]'
     if ($summary.Length -gt 9000) { $summary = $summary.Substring(0,9000) +
         [Environment]::NewLine + "[Kortet ned. Fullstendig logg ligger lokalt.]" }
 
