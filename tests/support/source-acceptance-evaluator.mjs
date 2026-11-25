@@ -117,13 +117,13 @@ export function evaluateSourceAcceptanceCase(tc, guidance, followup) {
   // To kjente samtalefaglige feil fra den virkelige KI-prøven 25.11.2026.
   // Utelukkende varselsignaler: en grønn test beviser ikke situasjonsfaglig kvalitet.
   if(tc.id==="SRC-C-VETERINAER" &&
-     /\\bdere\\b|\\bvi er samlet\\b/iu.test(String(guidance?.opening||""))){
+     /\bdere\b|\bvi er samlet\b/iu.test(String(guidance?.opening||""))){
     issues.push("SRC-C: Åpningen forutsetter muligens felles møte; møtesammensetningen er uavklart og må kontrolleres");
   }
   if(tc.id==="SRC-E-ORDINAER"){
     const replies=(guidance?.reactions||[]).map(item=>String(item?.leader_response||""));
     const spoken=[String(guidance?.opening||""),...replies].join(" ");
-    if(/\\b(?:før|når|nå)\\s+(?:jeg|vi)\\s+bestemmer\\b|\\b(?:jeg|vi)\\s+(?:skal|vil)\\s+bestemme\\b/iu.test(spoken)){
+    if(/\b(?:før|når|nå)\s+(?:jeg|vi)\s+bestemmer\b|\b(?:jeg|vi)\s+(?:skal|vil)\s+bestemme\b/iu.test(spoken)){
       issues.push("SRC-E: Lederen ser ut til å forutsette beslutningsmyndighet som ikke er avklart i situasjonen");
     }
   }
