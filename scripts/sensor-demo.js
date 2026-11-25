@@ -8,6 +8,7 @@ import { fileURLToPath } from "node:url";
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const root = path.resolve(__dirname, "..");
+const packageVersion = JSON.parse(fs.readFileSync(path.join(root, "package.json"), "utf8")).version;
 const app = express();
 const port = Number(process.env.PORT || 3000);
 
@@ -159,7 +160,7 @@ app.get("/src/client/situation-analysis.js", (_req, res) =>
 app.use("/assets", express.static(path.join(root, "assets"), { index: false }));
 
 app.get("/api/public-config", (_req, res) => res.json({
-  appVersion: visualPreview ? "20.11.6 - VISUELL TEST (MOCK)" : "20.11.5",
+  appVersion: visualPreview ? `${packageVersion} - VISUELL TEST (MOCK)` : packageVersion,
   contactEmail: "",
   demoMode: true
 }));
