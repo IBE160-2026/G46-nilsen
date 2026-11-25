@@ -13,6 +13,13 @@ assert(server.includes('Åpningen skal ha menneskelig kontakt') && server.includ
 assert(server.includes('Ved negativt utfall') && server.includes('inviter til spørsmål'), 'Mangler tydelig standard for skuffende utfall');
 assert(server.includes('ett eller flere kriterier er ikke oppfylt'), 'Mangler vern mot mekanisk kriteriespråk');
 assert(server.includes('Ikke gjenta samme råd i flere seksjoner'), 'Mangler regel mot gjentakelser i veiledningen');
+assert(server.includes('Ikke anta at det er innkalt til felles møte') &&
+  server.includes('Ikke skriv «takk for at dere møter»'),
+  'Mangler vern mot å finne opp fellesmøte ved uavklart møtesammensetning');
+assert(server.includes('Ikke anta lederens fullmakter') &&
+  server.includes('Arbeidsleder, fagansvarlig eller møteleder har ikke nødvendigvis personalansvar'),
+  'Mangler vern mot å tillegge arbeidsleder personal-/beslutningsmyndighet');
+
 
 assert(/questions:\s*\{[\s\S]*?minItems:\s*2,\s*maxItems:\s*3[\s\S]*?\},\s*reactions:/.test(schema), 'Spørsmål er ikke begrenset til 2–3');
 assert(/reactions:[\s\S]*?minItems:\s*2,\s*maxItems:\s*3/.test(schema), 'Reaksjoner er ikke begrenset til 2–3');
