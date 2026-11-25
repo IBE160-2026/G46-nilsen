@@ -114,3 +114,15 @@ Den faktiske, anonymiserte JSON-rapporten fra den lokale kjøringen ble gjennomg
 **Utbedring på utviklingsgrenen:** `server.js` har fått særskilt promptvern mot ubegrunnet fellesmøte og ubegrunnet personal-/beslutningsfullmakt, og `test-guidance-quality` bekrefter at vernene fortsatt finnes i prompten. `tests/AI-SOURCE-ACCEPTANCE-CASES.json` har nye menneskelige vurderingskriterier for SRC-C og SRC-E. Disse automatiske kontrakttestene **beviser ikke** at neste ekte modellrespons følger instruksjonen. PR #15 skal fortsette som draft inntil reell modell-/menneskekontroll etter rettingene.
 
 Autoritative kilder som ble brukt til ekstern stikkprøve: [NAV: oppfølging av sykmeldte](https://www.nav.no/arbeidsgiver/oppfolging-sykmeldte), [NAV: sykmeldt](https://www.nav.no/sykmeldt), [Arbeidstilsynet: personalsaker](https://www.arbeidstilsynet.no/arbeidsmiljo/organisatorisk-arbeidsmiljo/personalsaker/), [Arbeidstilsynet: byggherreforskriften](https://www.arbeidstilsynet.no/regelverk/forskrifter/byggherreforskriften/), [DNV: veterinæren og kollegialitet](https://www.vetnett.no/5-3-veterinaeren-og-kollegialitet/category1568.html). Ingen kilde ble automatisk knyttet til hver setning med faktisk bekreftet utdrag; formell vurderingsprotokoll er fortsatt åpen.
+
+## Ny kostnadsfri Chrome-kontroll av avklaringer – 25.11.2026
+
+Den opprinnelige ekte modelltesten med fem saker gikk fra `/api/analyze-situation` til `/api/generate-guidance` med `followups: {}` selv når analysen anbefalte avklaringer. Det var derfor en test av **robusthet under usikkerhet**, ikke en full sluttbrukerflyt med besvarte avklaringer.
+
+For å fylle dette gapet er den eksisterende lokale sensortesten nå utvidet:
+- Isolert `SENSOR_DEMO_CLARIFICATIONS=1` aktiverer to syntetiske spørsmål i `scripts/sensor-demo.js`, med henholdsvis enkeltvalg og flervalg. Vanlig demo beholder opprinnelig direkteflyt.
+- Det lokale Express-endepunktet avviser manglende svar når testmodusen er aktiv, slik at en test ikke kan rapportere fullført veiledning ved tomme `followups`.
+- `tests/test-sensor-journey-browser.cjs` bruker **faktisk Chrome med tastaturaktivering**, verifiserer at ingen veiledningsrequest skjer før valg, velger ett enkeltvalg og to flervalg, og kontrollerer at nøyaktig de valgte verdiene sendes i `/api/generate-guidance`.
+- Den samme reisen fortsetter gjennom oppfølgingsdialog, utskrift, simulering, refleksjon, historikk og sletting.
+
+Dette er en **lokal nettleserintegrasjonstest med syntetisk analyse og råd**. Den beviser overføring av avklaringssvar i klient-/HTTP-flyten, men **ikke** at en ekte modell faktisk anvender dem klokt. Ingen betalte modellkall, ingen produksjonsdeploy. Se nyeste Quality Gate for faktisk bestått/feilet status; ikke anta suksess ut fra at koden er lagt inn.
