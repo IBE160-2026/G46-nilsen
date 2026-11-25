@@ -11,7 +11,7 @@
 - [ ] Bekreft faktisk Canvas-frist, filformat, ord-/vedleggskrav og eventuelt KI-erklæringskrav.
 - [ ] Studenten leser, retter egne vurderinger og godkjenner den endelige refleksjonsrapporten. Studentnummer skal ikke inn i offentlig repo.
 - [ ] Frys en endelig innleverings-SHA og kontroller `npm run audit:submission` og Quality Gate på den versjonen; ingen ny bred funksjonstesting er planlagt.
-- [ ] Dersom appen skal brukes utover studentprototypen: gjennomfør uavhengig faglig kildekontroll og produksjonssikkerhetsvurdering.
+- **Avgrensning, ikke utestående skoleoppgave:** Studentprosjektet omfatter ikke ekstern faglig godkjenning. Eventuell framtidig bruk utenfor studentprototypen krever en separat vurdering av faglig ansvar, kildegrunnlag og produksjonssikkerhet.
 
 > Resten av sjekklisten er et **datert arbeidsnotat fra 20.11**, ikke dagens beslutningsfasit. Gamle uavkryssede merge-oppgaver skal ikke åpnes på nytt.
 
