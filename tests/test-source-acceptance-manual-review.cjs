@@ -297,5 +297,84 @@ const assert=require("node:assert/strict");
     fs.rmSync(findingsDir,{recursive:true,force:true});
   }
 
+  // Påstandsvis arbeidskladd for den gamle kjøringen skal ha eksakt
+  // ordlyd og kilde fra samme svar, aldri automatisk kildegodkjenning.
+  const claimDir=fs.mkdtempSync(path.join(os.tmpdir(),"samtalestotte-claims-"));
+  try{
+    const scriptPath=path.join(root,"scripts/prepare-source-claim-draft.mjs");
+    const sourceCode=fs.readFileSync(scriptPath,"utf8");
+    const match=sourceCode.match(/const candidates=\\[([\\s\\S]*?)\\];\\nfor\\(const record of run.cases\\)/);
+    assert(match,"Påstandskandidatene må være et statisk, inspiserbart oppsett");
+    const candidates=JSON.parse("["+match[1]+"]");
+    assert.equal(candidates.length,14,"Alle 14 identifiserte kandidatpåstander skal være med");
+    const all=JSON.parse(fs.readFileSync(
+      path.join(root,"tests/AI-SOURCE-ACCEPTANCE-CASES.json"),"utf8"
+    )).cases;
+    const originalRun={createdAt:"2026-11-25T13:47:13.670Z",
+      cases:all.map(tc=>{
+        const first=candidates.filter(x=>x[0]===tc.id && x[1]==="first");
+        const later=candidates.filter(x=>x[0]===tc.id && x[1]==="followup");
+        const mkSources=list=>[...new Set(list.map(x=>x[3]))].map(id=>({
+          id,url:"https://example.org/evidence/"+id
+        }));
+        return {id:tc.id,issues:[],
+          guidance:{legal_hr_note:first.map(x=>x[2]).join(" "),evidence_sources:mkSources(first)},
+          followup:{reply:later.map(x=>x[2]).join(" "),evidence_sources:mkSources(later)}
+        };
+      })};
+    const originalReview={schemaVersion:1,sourceRunCreatedAt:originalRun.createdAt,
+      caseCount:5,cases:all.map(tc=>createManualSourceReview(
+        tc,originalRun.cases.find(r=>r.id===tc.id)
+      ))};
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const form=originalReview.cases.find(x=>x.caseId===id);
+      form.must[3].status="not_met";
+      form.must[3].reason="Dokumentert gammel KI-feil i møteform eller beslutningsmyndighet.";
+    }
+    const runFile=path.join(claimDir,"run.json");
+    const findingsFile=path.join(claimDir,"aligned-findings.json");
+    fs.writeFileSync(runFile,JSON.stringify(originalRun));
+    const reviewText=JSON.stringify(originalReview);
+    fs.writeFileSync(findingsFile,reviewText);
+    const execute=()=>spawnSync(process.execPath,[scriptPath,runFile,findingsFile],{
+      encoding:"utf8",env:{...process.env,SOURCE_CLAIM_DRAFT_SKIP_CLIPBOARD:"1"}
+    });
+    const processResult=execute();
+    assert.equal(processResult.status,0,
+      "Kildekladd skal bygges uten KI: "+processResult.stderr+" "+processResult.stdout);
+    const draftFile=path.join(claimDir,"aligned-findings-claim-draft.json");
+    const markdownFile=path.join(claimDir,"aligned-findings-claim-draft.md");
+    const draft=JSON.parse(fs.readFileSync(draftFile,"utf8"));
+    assert(fs.existsSync(markdownFile),"Lesbar kontrolliste må være skrevet");
+    assert.equal(fs.readFileSync(findingsFile,"utf8"),reviewText,
+      "Tidligere funnfil må forbli helt uendret");
+    assert.equal(draft.cases.reduce((n,x)=>n+x.claims.length,0),14);
+    for(const form of draft.cases){
+      assert.equal(form.claimInventoryComplete,false,"Ikke attestér full påstandskartlegging");
+      assert.equal(form.reviewer,"","Ingen automatisk faglig kontrollør");
+      for(const claim of form.claims){
+        assert.equal(claim.verdict,"","Kildestøtte må kontrolleres manuelt");
+        assert.equal(claim.sourceExcerpt,"","Ikke finn på utdrag fra kildene");
+        assert.equal(claim.periodVerified,false,"Ikke attestér lovperiode automatisk");
+        assert.equal(claim.employerScopeVerified,false,"Ikke attestér sektor/tariff automatisk");
+      }
+    }
+    for(const id of ["SRC-C-VETERINAER","SRC-E-ORDINAER"]){
+      const form=draft.cases.find(x=>x.caseId===id);
+      assert.equal(form.must[3].status,"not_met","Historiske avvik skal bestå");
+    }
+    assert.notEqual(execute().status,0,
+      "Ikke overskriv eksisterende arbeidskladd");
+    const broken=structuredClone(originalRun);
+    broken.cases.find(x=>x.id==="SRC-D-BYGG-SHA").guidance.evidence_sources=[];
+    fs.writeFileSync(runFile,JSON.stringify(broken));
+    fs.rmSync(draftFile);
+    fs.rmSync(markdownFile);
+    assert.notEqual(execute().status,0,
+      "Kilde som ikke finnes i samme svar må avvises");
+  }finally{
+    fs.rmSync(claimDir,{recursive:true,force:true});
+  }
+
   console.log("MANUELL KILDEAKSEPTANSE OK: krav, belegg, periode, kilde per svar, kritiske feil, uavklart og falsk positiv – 0 KI-kall");
 })().catch(e=>{console.error(e.stack||e);process.exitCode=1;});
