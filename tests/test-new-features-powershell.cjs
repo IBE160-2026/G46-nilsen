@@ -12,7 +12,12 @@ const tests=[...testList.matchAll(/"([^"]+)"/g)].map(match=>match[1]);
 assert(tests.length>=20,"New-features test runner must cover the expanded QA suite");
 assert.equal(new Set(tests).size,tests.length,"Do not run same test twice");
 for(const name of tests)assert(scripts[name],"Unknown npm test script: "+name);
-assert.match(script,/param\(\[switch\]\$Full\)/u,"Must offer optional full regression suite");
+assert.match(script,/param\\(\\[switch\\]\\$Full,\\s*\\[switch\\]\\$FailedOnly\\)/u,
+  "Must support full suite and targeted rerun of previous Windows failures");
+assert.match(script,/test-node-import-windows/u,
+  "PowerShell targeted rerun must check ESM loader portability");
+assert.match(script,/if \\(\\$Full -and \\$FailedOnly\\)/u,
+  "Full and targeted test modes are mutually exclusive");
 assert.match(script,/fix\/evidence-sources-20261120/u,"Must guard against testing stale main");
 assert.match(script,/test-results/u,"Must keep full output out of Git");
 assert.match(script,/Set-Clipboard -Value \$summary/u,"Short report must be copied to clipboard");
