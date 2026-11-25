@@ -2,6 +2,17 @@
 
 **Formål:** holde dokumentasjonen synkron med faktisk kode og faktisk verifisert funksjonalitet frem mot innlevering.
 
+## Tillegg 25.11.2026 – kontroll etter siste kode- og sikkerhetsrunder
+
+- [x] Kode, personvern- og dokumentasjonsoppdatering til og med commit `9487d112` kontrollert med [Quality Gate #45703259640](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45703259640): **completed/success**, alle tre jobber. Dette er siste verifiserte kontrollpunkt **før dette dokumentasjonstillegget**, ikke automatisk den siste commit ved innlevering.
+- [x] KI-rutene er regresjonstestet for serverbasert PII-blokkering før leverandørkall; KI-, autentiserings-, admin- og benchmark-feillogging er redusert til begrenset teknisk metadata i de gjennomgåtte rutene. Negativ HTTP-test kontrollerer at konstruert leverandørfeil ikke lekker til API eller stderr.
+- [x] Golden-testens `OK` er merket som **maskinelt resultat**; menneskelig vurdering er **ikke** utført av testskriptet.
+- [x] Prosjekteiers omfattende manuelle mobiltesting er registrert som egen vurdering, uten å utgi den for ny instrumentert testprotokoll. De automatiske Chrome-/touch-/PDF-testene er dokumentert separat.
+- [ ] Før endelig levering: velg innleverings-SHA, kontroller siste Quality Gate og `npm run audit:submission` på **samme commit**, og gjennomfør studentens egen sluttkontroll av refleksjon og Canvas-formalia.
+- **Viktig:** Render er sist dokumentert som publisert på `61d282dc`, mens de nyeste endringene er verifisert på GitHub `main`. Ikke kall dem publisert før en egen Render-kontroll har bekreftet det. Se [prosjektstatus](PROSJEKTSTATUS.md).
+
+---
+
 ## Gjeldende sluttkontroll, 25.11.2026
 
 - [x] Tidligere PR #12–#17 er flettet til `main`. Personvernfeil («Begge»/«Ingen») og yrkesforslag er rettet.
