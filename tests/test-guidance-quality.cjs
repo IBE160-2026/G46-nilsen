@@ -19,6 +19,10 @@ assert(server.includes('Ikke anta at det er innkalt til felles møte') &&
 assert(server.includes('Ikke anta lederens fullmakter') &&
   server.includes('Arbeidsleder, fagansvarlig eller møteleder har ikke nødvendigvis personalansvar'),
   'Mangler vern mot å tillegge arbeidsleder personal-/beslutningsmyndighet');
+assert(server.includes('Ved uenighet mellom flere medarbeidere er møtesammensetning') &&
+  server.includes('Hvis fullmakt til å fordele arbeid, instruere eller fatte personalbeslutninger er ukjent'),
+  'Analysesteget må avklare møteform og delegert fullmakt når det påvirker rådet');
+
 
 
 assert(/questions:\s*\{[\s\S]*?minItems:\s*2,\s*maxItems:\s*3[\s\S]*?\},\s*reactions:/.test(schema), 'Spørsmål er ikke begrenset til 2–3');
