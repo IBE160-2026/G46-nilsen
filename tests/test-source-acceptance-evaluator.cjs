@@ -124,6 +124,13 @@ const assert=require("node:assert/strict");
   const joint={...guidance,opening:"Takk for at dere møter. Jeg vil høre begge to."};
   needs(judge(joint,followup,vet),"SRC-C: Åpningen",
     "Unconfirmed joint meeting must be manually reviewed");
+  const actualVetOpening="Jeg vil gjerne snakke med deg om uenigheten rundt den behandlingsfaglige vurderingen, og om hvordan kritikken mellom dere har kommet fram foran klienter. Det er viktig for meg å forstå hva som faktisk skjedde, hvordan du vurderte situasjonen, og hva du mener skal til for at vi kan håndtere faglig uenighet på en trygg og profesjonell måte. Jeg vil også høre hvordan du selv ser på det som ble sagt foran klientene.";
+  assert.deepEqual(judge({...guidance,opening:actualVetOpening},followup,vet),[],
+    "Ekte KI-åpning adresserer én veterinær selv om den nevner kritikken mellom dere");
+  needs(judge({...guidance,opening:"Jeg vil gjerne snakke med dere begge om saken."},followup,vet),
+    "SRC-C: Åpningen","Plural invitation must still trigger the meeting-format warning");
+  needs(judge({...guidance,opening:"Vi er samlet for å diskutere konflikten."},followup,vet),
+    "SRC-C: Åpningen","Assuming everyone is gathered must still trigger warning");
   assert.deepEqual(judge({...guidance,opening:"Takk for at du kom. Jeg vil høre din versjon."},followup,vet),[],
     "Single-person opening must not trigger the joint-meeting alert");
 
@@ -131,6 +138,14 @@ const assert=require("node:assert/strict");
   const unauthorized={...neutralG,reactions:[{leader_response:"Før jeg bestemmer, må vi lytte til dere."}]};
   needs(judge(unauthorized,neutralF,office),"SRC-E: Lederen",
     "Manager cannot assume formal decision authority");
+  const actualOfficeOpening="Takk for at du kom. Jeg vil gjerne rydde opp i hvem som gjør hva når det gjelder møtereferat og møteinnkallinger. Målet er ikke å plassere skyld, men å få en tydelig og praktisk ordning som fungerer for alle. Jeg vil først høre hvordan du opplever dagens fordeling, hva som har vært uklart, og hva du mener kan være en god løsning. Så ser vi på hva vi kan avklare videre.";
+  const actualOfficeReactions=[
+    {leader_response:"Jeg hører at du opplever fordelingen slik. La oss gå gjennom hvilke oppgaver det gjelder, og hva som faktisk har vært avtalt eller praktisert."},
+    {leader_response:"Jeg skal være tydelig på hva jeg kan beslutte, og hva vi eventuelt må avklare med nærmeste leder. Først vil jeg forstå situasjonen ordentlig."},
+    {leader_response:"Jeg noterer meg det du sier, men la oss holde oss til hvilke oppgaver som skal gjøres, hvem som gjør dem, og hvordan vi unngår uklarhet framover."}
+  ];
+  assert.deepEqual(judge({...neutralG,opening:actualOfficeOpening,reactions:actualOfficeReactions},neutralF,office),[],
+    "Ekte KI-åpning og reaksjoner avklarer lederfullmakt uten å forutsette den");
   assert.deepEqual(judge({...neutralG,reactions:[{leader_response:"Jeg avklarer hvem som kan beslutte dette."}]},neutralF,office),[],
     "Clarifying authority must not count as assuming it");
 
