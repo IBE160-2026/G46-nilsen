@@ -281,6 +281,16 @@ async function logAiUsage({ functionName='unknown', modelUsed, response, isTest=
   }
 }
 
+// Provider error objects may contain SDK request details and raw payloads.
+// Log bounded technical metadata only; never stringify the full error object.
+function logAiRouteError(route, error) {
+  const rawStatus = Number(error?.status);
+  const status = Number.isInteger(rawStatus) && rawStatus >= 400 && rawStatus < 600 ? rawStatus : 500;
+  const rawCode = error?.code || error?.error?.code;
+  const code = typeof rawCode === 'string' && /^[A-Z0-9_]{1,64}$/i.test(rawCode) ? rawCode : 'UNSPECIFIED';
+  console.error('[ai-route]', { route, status, code });
+}
+
 async function createTrackedResponse(params) {
   const requestedModel = String(params._modelOverride || '');
   const modelUsed = requestedModel && AI_MODELS[requestedModel] ? requestedModel : await getActiveModel();
@@ -1537,7 +1547,7 @@ Allerede valgt tema-id: ${selectedTopicId || "ingen"}`;
 
     return res.json({ ...parsed, ai: true, model: responseModel(response) });
   } catch (error) {
-    console.error("OpenAI topic classification failed:", error);
+    logAiRouteError('classify-topic', error);
     const status = Number(error?.status) || 500;
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_TOPIC_CLASSIFICATION_FAILED",
@@ -1604,7 +1614,7 @@ app.post("/api/analyze-situation", aiLimiter, requireUser, async (req, res) => {
     const parsed = JSON.parse(raw);
     return res.json({ ...parsed, ai: true, model: responseModel(response) });
   } catch (error) {
-    console.error("OpenAI analysis failed:", error);
+    logAiRouteError('analyze-situation', error);
     const status = Number(error?.status) || 500;
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_ANALYSIS_FAILED",
@@ -1760,7 +1770,7 @@ Samarbeid/konflikt: «Jeg vil gjerne snakke om hvordan samarbeidet fungerer akku
     const cleanedLegalNote = stripInlineSourceLinks(parsed.legal_hr_note);
     return res.json({ ...stripGuidanceInlineLinks(parsed), legal_hr_note: cleanedLegalNote, evidence_sources: evidenceSources, legal_claim_review: legalClaimReview, source_provenance: evidenceProvenance(response, selection.visibleModelSelectedIds, evidenceSources), occupation_context: occupationContextEnabled ? { enabled: occupationContext.enabled, sectorId: occupationContext.occupation?.sectorId || null, occupationRelevant: occupationContext.occupation?.occupationRelevant || false, needsEmployerType: occupationContext.agreement?.needsEmployerType || false } : undefined, ai: true, model: responseModel(response) });
   } catch (error) {
-    console.error("OpenAI guidance failed:", error);
+    logAiRouteError('generate-guidance', error);
     const status = Number(error?.status) || 500;
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_GUIDANCE_FAILED", message: "KI-samtalestøtten feilet."
@@ -1884,7 +1894,7 @@ app.post("/api/continue-conversation", aiLimiter, requireUser, async (req, res) 
       model: responseModel(response)
     });
   } catch (error) {
-    console.error("OpenAI continuation failed:", error);
+    logAiRouteError('continue-conversation', error);
     const status = Number(error?.status) || 500;
     return res.status(status >= 400 && status < 600 ? status : 500).json({
       error: "AI_CONTINUATION_FAILED", message: "KI-oppfølgingen feilet."
@@ -1947,7 +1957,7 @@ app.post('/api/simulation-turn', aiLimiter, requireUser, async (req, res) => {
     });
     res.json({ reply: String(response.output_text || '').trim(), ai: true, model: responseModel(response) });
   } catch (error) {
-    console.error('Simulation turn failed:', error);
+    logAiRouteError('simulation-turn', error);
     const status = Number(error?.status) || 500;
     res.status(status >= 400 && status < 600 ? status : 500).json({ error: 'SIMULATION_FAILED', message: 'Samtalesimuleringen feilet.' });
   }
@@ -1971,7 +1981,7 @@ app.post('/api/simulation-help', aiLimiter, requireUser, async (req, res) => {
       _functionName:'simulator-hjelp', _userId:req.user.id, _topicId:body.topicId || null, _subtopic:body.subtopic || null, _privacyTexts:[body.situation, ...flattenTextValues(body.followups), ...leaderTurnTexts(turns)], instructions: systemPrompt, input: [{ role: 'user', content: [{ type: 'input_text', text: prompt }] }] });
     res.json({ help: String(response.output_text || '').trim(), ai: true, model: responseModel(response) });
   } catch (error) {
-    console.error('Simulation help failed:', error);
+    logAiRouteError('simulation-help', error);
     const status = Number(error?.status) || 500;
     res.status(status >= 400 && status < 600 ? status : 500).json({ error: 'SIMULATION_HELP_FAILED', message: 'KI-støtten feilet.' });
   }
@@ -2004,7 +2014,7 @@ app.post('/api/simulation-feedback', aiLimiter, requireUser, async (req, res) =>
     });
     res.json({ ...JSON.parse(response.output_text), ai: true, model: responseModel(response) });
   } catch (error) {
-    console.error('Simulation feedback failed:', error);
+    logAiRouteError('simulation-feedback', error);
     const status = Number(error?.status) || 500;
     res.status(status >= 400 && status < 600 ? status : 500).json({ error: 'SIMULATION_FEEDBACK_FAILED', message: 'Tilbakemeldingen feilet.' });
   }
