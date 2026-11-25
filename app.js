@@ -2388,7 +2388,7 @@ function renderSuggestion(query) {
   }
 
   if (!best || best.score <= 0) {
-    const fallback = topics.slice(0, 3).map(topic => `<button class="ghost-button" type="button" data-topic-id="${topic.id}">${topic.title}</button>`).join('');
+    const fallback = topics.slice(0, 3).map(topic => `<button class="ghost-button" type="button" data-topic-id="${escapeHtml(topic.id)}">${escapeHtml(topic.title)}</button>`).join('');
     box.innerHTML = `
       <strong>Jeg er usikker på hva som passer best.</strong>
       <p>Prøv å beskrive situasjonen litt mer konkret, eller velg ett av temaene under.</p>
@@ -2400,14 +2400,14 @@ function renderSuggestion(query) {
       .sort((a, b) => b.score - a.score);
     const bestSubtopic = rankedSubtopics[0];
     const alternatives = results.slice(1, 3).filter(item => item.score > 0)
-      .map(item => `<span class="mini-chip">Alternativt hovedtema: ${item.topic.title}</span>`).join('');
+      .map(item => `<span class="mini-chip">Alternativt hovedtema: ${escapeHtml(item.topic.title)}</span>`).join('');
 
     if (bestSubtopic && bestSubtopic.score > 0) {
       const [subTitle, subHelp] = bestSubtopic.subtopic;
       box.innerHTML = `
         <span class="suggestion-kicker">Foreslått vei</span>
-        <strong>${best.topic.title} <span aria-hidden="true">→</span> ${subTitle}</strong>
-        <p>${subHelp}</p>
+        <strong>${escapeHtml(best.topic.title)} <span aria-hidden="true">→</span> ${escapeHtml(subTitle)}</strong>
+        <p>${escapeHtml(subHelp)}</p>
         <div class="suggestion-actions">
           <button class="primary-button" type="button" id="open-suggested-guidance">Få råd</button>
           <button class="ghost-button" type="button" id="review-suggested-topic">Se andre undertemaer</button>
@@ -2418,8 +2418,8 @@ function renderSuggestion(query) {
       box.querySelector('#review-suggested-topic').addEventListener('click', () => openTopic(best.topic));
     } else {
       box.innerHTML = `
-        <strong>Foreslått hovedtema: ${best.topic.title}</strong>
-        <p>${best.topic.description}</p>
+        <strong>Foreslått hovedtema: ${escapeHtml(best.topic.title)}</strong>
+        <p>${escapeHtml(best.topic.description)}</p>
         <div class="suggestion-actions">
           <button class="primary-button" type="button" id="open-suggested-topic">Se undertemaer</button>
           ${alternatives}
@@ -2477,8 +2477,8 @@ function renderSubtopicSuggestion(query) {
 
   const [title, help] = best.subtopic;
   box.innerHTML = `
-    <strong>Foreslått undertema: ${title}</strong>
-    <p>${help}</p>
+    <strong>Foreslått undertema: ${escapeHtml(title)}</strong>
+    <p>${escapeHtml(help)}</p>
     <div class="suggestion-actions">
       <button class="primary-button" type="button" id="open-suggested-subtopic">Få råd</button>
     </div>
