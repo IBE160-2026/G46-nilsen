@@ -60,3 +60,12 @@ Målrettet `source-recheck`-rapport hadde tidligere en hardkodet innledning som 
 - Ingen produksjonsdeploy, ingen automatisk manuelt godkjenning. PR #15 forblir utkast til faglig akseptanse er avklart.
 
 Kildedato: 25.11.2026. Dette dokumentet er en kildekontrollert faglig **arbeidsvurdering**, ikke en erstatning for formell jurist-, HMS- eller virksomhetsgodkjenning.
+
+## Kvalitetsjusteringer etter faglig gjennomlesning
+
+To konkrete, avgrensede endringer i `server.js` er lagt på utviklingsgrenen, ikke produksjon:
+
+1. **SHA-plikt må gis til riktig aktør.** Begge KI-svarløp er nå instruert til å unngå den uavklarte direkte kommandoen «oppdater SHA-planen» til en arbeidsleder uten dokumentert fullmakt. Oppdateringsplikten påligger byggherren etter byggherreforskriften § 7. Arbeidsgiverens plikter til å varsle byggherren og informere egne ansatte knyttes til §§ 18 og 19.
+2. **Kjønnsnøytral språkføring.** Når kjønn ikke fremgår av sakens opplysninger, skal KI bruke «hen»/«hens» i beskrivelser av medarbeideres mulige reaksjoner, ikke «han eller hun». Dette retter en mindre språkfeil i ekte D-svar.
+
+Enhetstestene kontrollerer at instruksjonene finnes og er aktive i både første veiledning og oppfølging. De **beviser ikke** at fremtidig ekte KI følger dem hver gang. Den reelle B/D-rapporten fra 15:04 ble ikke redigert eller omstemplet; eventuell ny modellprøve ville kreve separate, eksplisitt godkjente betalte API-kall. Gjenstående påstandsvis og menneskelig akseptanse er fortsatt åpen.
