@@ -1,6 +1,6 @@
 # Kjor de nye offline-testene, lagre full logg lokalt og kopier KUN sammendrag til utklippstavlen.
 # Ingen KI-nokler, ingen betalte API-kall, ingen deploy, ingen git push.
-param([switch]$Full, [switch]$FailedOnly)
+param([switch]$Full, [switch]$FailedOnly, [switch]$ConversationOnly)
 
 $root = Split-Path -Parent $PSScriptRoot
 Push-Location $root
@@ -45,7 +45,9 @@ try {
         "test-benchmark-rpc-http",
         "test-benchmark-privacy-signal"
     )
-    if ($Full -and $FailedOnly) { throw "Velg enten -Full eller -FailedOnly, ikke begge." }
+    if (([int][bool]$Full + [int][bool]$FailedOnly + [int][bool]$ConversationOnly) -gt 1) {
+        throw "Velg bare en av -Full, -FailedOnly eller -ConversationOnly."
+    }
     if ($Full) {
         $tests = @("test")
     } elseif ($FailedOnly) {
@@ -55,6 +57,14 @@ try {
             "test-source-provenance-http",
             "test-benchmark-live-http",
             "test-benchmark-rpc-http"
+        )
+    } elseif ($ConversationOnly) {
+        # Functional follow-up tests: historical period, tariff, correct sources,
+        # real Express request/response with FAKE local provider. Zero API costs.
+        $tests = @(
+            "test-historical-source-context",
+            "test-source-acceptance-routing",
+            "test-source-provenance-http"
         )
     }
 
