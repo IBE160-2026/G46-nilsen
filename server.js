@@ -791,9 +791,6 @@ app.post('/api/admin/pilot-regression/result', requireAdmin, async (req,res)=>{
     const testCase = (bank.cases || []).find(item => item.id === caseId && (mode === 'full' || item.pilot_regression));
     if (!testCase) return res.status(400).json({error:'INVALID_REGRESSION_CASE',message:'Ukjent testcase.'});
 
-    const opening = String(req.body?.opening || '').trim().slice(0,700);
-    const model = String(req.body?.model || '').trim().slice(0,120);
-    const runId = String(req.body?.runId || '').trim().slice(0,100);
     const ok = req.body?.ok === true;
     const issues = (Array.isArray(req.body?.issues) ? req.body.issues : [])
       .map(value => String(value || '').trim().slice(0,220))
@@ -804,7 +801,7 @@ app.post('/api/admin/pilot-regression/result', requireAdmin, async (req,res)=>{
       .filter(Boolean)
       .slice(0,8);
 
-    // Kun faste, personverntrygge testbankcaser logges. Ingen fri brukersamtale lagres.
+    // Logg kun forhåndsdefinert testcase og aggregert status, aldri innsendte fritekstfelt.
     const marker = mode === 'full' ? '[production-regression-result]' : '[pilot-regression-result]';
     console.info(marker, JSON.stringify({
       mode,
