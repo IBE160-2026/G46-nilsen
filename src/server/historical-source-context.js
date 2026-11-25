@@ -49,6 +49,60 @@ export function detectHistoricalSourceQuestion(textValue, asOf = new Date()) {
   return { year: years.length === 1 ? years[0] : null, years };
 }
 
+/**
+ * Preserve a historical rights question through short follow-up messages.
+ * Only a clear change in the user's question may change the historical period:
+ * explicit new year, explicit present-day question, or clearly different
+ * conversational topic. Never infer historical rights from a hiring year.
+ *
+ * This returns an instruction/period FILTER, never a verified legal answer.
+ */
+export function resolveHistoricalSourceReview({ situation = "", question = "", asOf = new Date() } = {}) {
+  const text = String(question || "").toLocaleLowerCase("nb-NO").trim();
+  const explicit = detectHistoricalSourceQuestion(text, asOf);
+  if (explicit) return explicit;
+
+  const original = detectHistoricalSourceQuestion(situation, asOf);
+  if (!original || !text) return null;
+
+  const currentYear = norwayYear(asOf);
+  if (!currentYear) return null;
+  const mentionedYears = [...new Set(
+    [...text.matchAll(/\b(?:19\d{2}|20\d{2})\b/gu)]
+      .map(match => Number(match[0]))
+  )].sort((a,b)=>a-b);
+  const pastYears = mentionedYears.filter(year => year < currentYear);
+  const hasCurrentYear = mentionedYears.some(year => year >= currentYear);
+
+  // "Hva gjelder nå?" is about today's rules despite an old tariff situation.
+  // "Kan jeg nå kreve etterbetaling for 2024?" is different: it still
+  // concerns a prior earning period. Preserve it if the explicit detector fired.
+  const presentRuleQuestion = /\b(?:hva\s+gjelder\s+(?:nå|i\s*dag)|dagens\s+(?:regler|tariff|avtale|lov|rettigheter)|gjeldende\s+(?:regler|tariff|avtale|lov)|nåværende\s+(?:regler|tariff|avtale|lov)|hva\s+med\s+(?:de\s+)?nye\s+(?:reglene|avtalen))\b/iu.test(text);
+  if (presentRuleQuestion && !pastYears.length) return null;
+
+  // A new explicit year overrides the period inherited from the situation.
+  // If the new message spans past and current years, do not pick a single
+  // archival agreement: the question is ambiguous, and needs clarification.
+  if (mentionedYears.length) {
+    if (hasCurrentYear && !pastYears.length) return null;
+    if (hasCurrentYear) return { year:null, years:mentionedYears };
+    if (pastYears.length > 1) return { year:null, years:pastYears };
+    if (pastYears.length === 1 &&
+        (/\b(?:tariff\w*|avtal\w*|krav\w*|frist\w*|lønn\w*|lonn\w*|overtid\w*|tillegg\w*|rett\w*|lov\w*|regel\w*|betaling\w*)\b/iu.test(text) ||
+          /\b(?:hva|hvordan|da|den\s+gangen)\b/iu.test(text))) {
+      return { year:pastYears[0], years:pastYears };
+    }
+    return null; // an unrelated reference to a year is not a tariff claim
+  }
+
+  // Don't keep historical tariff constraints for a clear switch to an
+  // ordinary conversation coaching topic.
+  const pureConversation = /\b(?:hvordan\s+(?:starter|åpner|innleder)|hvordan\s+(?:formulerer|ordlegger)|samtaleteknikk|hvilke\s+åpne\s+spørsmål)\b/iu.test(text);
+  const rightsInQuestion = /\b(?:tariff\w*|avtal\w*|krav\w*|frist\w*|lønn\w*|lonn\w*|overtid\w*|tillegg\w*|rett\w*|lov\w*|regel\w*|betaling\w*)\b/iu.test(text);
+  if (pureConversation && !rightsInQuestion) return null;
+  return original;
+}
+
 /** Ingen KI-kilde kan bevitne avtalevilkår før dens første gyldighetsår. */
 export function isHistoricalAgreementCandidate(source, review) {
   if (!review) return true;
