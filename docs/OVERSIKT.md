@@ -18,6 +18,8 @@
 | Lese studentens refleksjon | [Solo-refleksjonsrapport](REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md) | Hovedutkast etter skolens mal |
 | Kontrollere innleveringen | [Dokumentasjonssjekkliste](DOKUMENTASJON-SJEKKLISTE.md) | Utestående formaliteter og endelig SHA-kontroll |
 
+For å skille hoveddokumenter fra tidligere utkast og daterte revisjoner, se [dokumentkartet](DOKUMENTKART.md).
+
 ## 2. Hvor ligger hva?
 
 - **Kjørbar app:** `index.html`, `app.js`, `server.js`, `src/client/` og `src/server/`.
