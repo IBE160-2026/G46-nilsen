@@ -8,6 +8,7 @@ const path = require("node:path");
 const root = path.resolve(__dirname, "..");
 const documents = [
   "docs/OVERSIKT.md",
+  "docs/DOKUMENTASJON-SJEKKLISTE.md",
   "README.md",
 ];
 let checked = 0;
