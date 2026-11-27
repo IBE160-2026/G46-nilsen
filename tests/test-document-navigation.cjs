@@ -1,7 +1,8 @@
 #!/usr/bin/env node
 "use strict";
-// Offline integrity check for the sensor navigation. This is intentionally
-// scoped to the navigation files, not a claim that all historical links work.
+// Offline integrity check for canonical sensor/navigation documentation.
+// Historical reports, external links and the full documentation corpus are
+// intentionally out of scope; this is not a full link or content review.
 const assert = require("node:assert/strict");
 const fs = require("node:fs");
 const path = require("node:path");
@@ -12,6 +13,10 @@ const documents = [
   "docs/PROSJEKTSTATUS.md",
   "docs/DOKUMENTKART.md",
   "docs/TESTBEVIS-OVERSIKT.md",
+  "docs/bmad/PRD.md",
+  "docs/bmad/ARCHITECTURE-BMAD.md",
+  "docs/bmad/IMPLEMENTATION-PLAN-BMAD.md",
+  "docs/REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md",
   "README.md",
 ];
 let checked = 0;
