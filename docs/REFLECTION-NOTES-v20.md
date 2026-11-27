@@ -1,5 +1,7 @@
 # Refleksjonsnotater – v20.0
 
+> **HISTORISK ARBEIDSDOKUMENT – IKKE HOVEDRAPPORT FOR INNLEVERING.** Dette dokumentet er bevart som spor etter utviklingen og kan inneholde datert eller senere utdatert status. Gjeldende hovedutkast er [refleksjonsrapporten etter skolens mal](REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md). Se [prosjektstatus](PROSJEKTSTATUS.md) for siste dokumenterte tekniske status. Resten av teksten under er ikke revidert i denne oppryddingen.
+
 Dette dokumentet samler bevisste valg som kan brukes i refleksjonsnotatet senere.
 
 ## Admin og roller

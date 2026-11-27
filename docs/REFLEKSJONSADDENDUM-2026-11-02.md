@@ -1,5 +1,7 @@
 # Refleksjonsaddendum – sluttfase 01.–02.11.2026
 
+> **HISTORISK ARBEIDSDOKUMENT – IKKE HOVEDRAPPORT FOR INNLEVERING.** Dette dokumentet er bevart som spor etter utviklingen og kan inneholde datert eller senere utdatert status. Gjeldende hovedutkast er [refleksjonsrapporten etter skolens mal](REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md). Se [prosjektstatus](PROSJEKTSTATUS.md) for siste dokumenterte tekniske status. Resten av teksten under er ikke revidert i denne oppryddingen.
+
 Dette dokumentet samler refleksjonspunkter fra sluttfasen som skal innarbeides i den endelige refleksjonsrapporten. Det er opprettet fordi prosjektet fortsatt endres raskt, og fordi erfaringer ellers lett blir glemt mellom kode-, test- og dokumentasjonsrunder.
 
 ## 1. Taksonomi: fra 56 til 48 undertemaer

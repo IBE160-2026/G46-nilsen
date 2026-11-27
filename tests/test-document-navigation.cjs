@@ -68,3 +68,17 @@ assert.ok(!/^## .*?(?:versjonshistorikk|changelog|sensorstatus|teknisk gjeld)/im
   "README should link to specialist reports instead of duplicating them");
 console.log("README sensor quickstart contract: OK (" + readmeLines.length + " lines)");
 
+
+const historicalReflectionFiles = [
+  "docs/REFLEKSJONSRAPPORT-UTKAST.md",
+  "docs/REFLEKSJONSRAPPORT-KONSENTRERT-UTKAST.md",
+  "docs/REFLECTION-NOTES-v20.md",
+  "docs/REFLEKSJONSADDENDUM-2026-11-02.md",
+];
+for (const doc of historicalReflectionFiles) {
+  const head = fs.readFileSync(path.join(root, doc), "utf8").split(/\r?\n/).slice(0, 6).join("\n");
+  assert.ok(head.includes("HISTORISK ARBEIDSDOKUMENT"), doc + ": historical status marker missing");
+  assert.ok(head.includes("REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md"),
+    doc + ": missing canonical reflection reference");
+}
+console.log("Historical reflection draft markers: OK");

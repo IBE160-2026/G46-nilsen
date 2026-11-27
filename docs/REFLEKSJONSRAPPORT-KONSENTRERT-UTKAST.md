@@ -1,5 +1,7 @@
 # Refleksjonsrapport – Samtalestøtte (konsentrert arbeidsutkast)
 
+> **HISTORISK ARBEIDSDOKUMENT – IKKE HOVEDRAPPORT FOR INNLEVERING.** Dette dokumentet er bevart som spor etter utviklingen og kan inneholde datert eller senere utdatert status. Gjeldende hovedutkast er [refleksjonsrapporten etter skolens mal](REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md). Se [prosjektstatus](PROSJEKTSTATUS.md) for siste dokumenterte tekniske status. Resten av teksten under er ikke revidert i denne oppryddingen.
+
 **Emne:** IBE160 Programmering med KI  
 **Prosjekt:** Samtalestøtte, gruppe G46  
 **Gruppestørrelse:** Én student  
