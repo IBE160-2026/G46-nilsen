@@ -11,6 +11,7 @@ const documents = [
   "docs/DOKUMENTASJON-SJEKKLISTE.md",
   "docs/PROSJEKTSTATUS.md",
   "docs/DOKUMENTKART.md",
+  "docs/TESTBEVIS-OVERSIKT.md",
   "README.md",
 ];
 let checked = 0;
