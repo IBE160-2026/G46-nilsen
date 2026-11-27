@@ -1,6 +1,6 @@
 # Product Requirements Document – Samtalestøtte
 
-> **Statuskontroll 25.11.2026:** Produktkravene er fortsatt 36 identifiserte krav, ikke automatisk 36 fullt aksepterte funksjoner. PR #16/#17 er smale feilrettinger; ingen nye normative PRD-krav er vedtatt. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+> **Dokumentrolle:** Kravgrunnlag med 36 identifiserte krav; dette er ikke en attest på at alle 36 er fullt akseptert. Daterte status- og versjonsopplysninger nedenfor er historiske. For siste verifiserte commit og publisering, se [prosjektstatus](../PROSJEKTSTATUS.md). For testgrunnlag og begrensninger, se [testbevisoversikten](../TESTBEVIS-OVERSIKT.md).
 
 
 **Prosjekt:** Samtalestøtte  
