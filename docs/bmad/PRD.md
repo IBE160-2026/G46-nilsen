@@ -7,8 +7,8 @@
 **Dokumenttype:** Product Requirements Document  
 **Rammeverk:** BMAD  
 **Status:** Kravoversikt revidert 18.11.2026; leveransestatus oppdatert 25.11.2026. Tidligere status/testbevis er bevart som historiske.  
-**Historisk versjon ved opprinnelig dokumentrevisjon:** `main` v20.11.5 (kontrollgrunnlag `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026). **Gjeldende publiserte versjon 25.11.2026:** `main` commit `f591ad763990f74daca90b43f350cb672e66857b` (package-versjon `20.11.6`), bekreftet live på Render. LIVE/tale kun arkivert eksperimentell pilot, ikke aktiv produksjonsfunksjon.  
-**Leveransestatus oppdatert 25.11.2026:** PRD har 36 unike krav-ID-er med matchende sensormatrise. PR #12, #14 og #15 er slått sammen med `main`; eldre omtale av disse som åpne utkast er **historisk status**, ikke dagens reposituasjon. Siste Quality Gate på `main` for commit `f591ad7` var 3/3 bestått. Hva Canvas krever for formell levering og refleksjonsrapportens endelige godkjenning er fortsatt uavklart. Se [gjeldende prosjektstatus](../PROSJEKTSTATUS.md) og [historisk innleveringskontroll](../INNLEVERINGSKONTROLL-2026-11-20.md).
+**Historisk versjon ved opprinnelig dokumentrevisjon:** `main` v20.11.5 (kontrollgrunnlag `2ae505adc22a9ea86ef89e5cf045f4ec5f68d0cf`, 12.11.2026). **Historisk publiseringskontroll 25.11.2026:** `main` commit `f591ad763990f74daca90b43f350cb672e66857b` (package-versjon `20.11.6`), bekreftet live på Render. LIVE/tale kun arkivert eksperimentell pilot, ikke aktiv produksjonsfunksjon.  
+**Historisk leveransekontroll 25.11.2026:** PRD har 36 unike krav-ID-er med matchende sensormatrise. PR #12, #14 og #15 er slått sammen med `main`; eldre omtale av disse som åpne utkast er **historisk status**, ikke dagens reposituasjon. Siste Quality Gate på `main` for commit `f591ad7` var 3/3 bestått. Hva Canvas krever for formell levering og refleksjonsrapportens endelige godkjenning er fortsatt uavklart. Se [gjeldende prosjektstatus](../PROSJEKTSTATUS.md) og [historisk innleveringskontroll](../INNLEVERINGSKONTROLL-2026-11-20.md).
 **Språk:** Norsk
 
 ---
