@@ -94,7 +94,7 @@ async function waitForServer() {
     if (!pageResponse.ok) throw new Error("Frontend entrypoint is unavailable");
     const markup = await pageResponse.text();
     const linkedAssets = new Set();
-    const tagRe = /<(script|link|img)\\b[^>]*>/gi;
+    const tagRe = /<(script|link|img)\b[^>]*>/gi;
     for (const [tag, kind] of markup.matchAll(tagRe)) {
       const attr = kind.toLowerCase() === "link" ? "href" : "src";
       const match = tag.match(new RegExp(`\\b${attr}\\s*=\\s*["']([^"']+)["']`, "i"));
