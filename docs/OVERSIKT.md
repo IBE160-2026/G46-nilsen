@@ -13,7 +13,7 @@
 | Se teknisk oppbygning | [Arkitektur](bmad/ARCHITECTURE-BMAD.md) | Moduler, dataflyt, komponenter og valg |
 | Se plan og utviklingsprosess | [Epics og stories](bmad/EPICS-AND-STORIES-BMAD.md) og [implementeringsplan](bmad/IMPLEMENTATION-PLAN-BMAD.md) | Krav til oppgaver og gjennomføring |
 | Kontrollere KI-bruk | [KI-logg](ai/AI-LOGG-SAMTALESTOTTE.md) | KI-bidrag, feil, læring og menneskelig kontroll |
-| Kontrollere testmetode og testbevis | [KI-testplan](ai/AI-TESTPLAN.md), [testbevis](ai/TESTBEVIS-OG-DEKNING-2026-11-18.md) | Testtyper, resultatgrunnlag og begrensninger |
+| Kontrollere testmetode og testbevis | [Testbevis – kort oversikt](TESTBEVIS-OVERSIKT.md), [KI-testplan](ai/AI-TESTPLAN.md), [detaljregister](ai/TESTBEVIS-OG-DEKNING-2026-11-18.md) | Testtyper, resultatgrunnlag og begrensninger |
 | Vurdere kilder | [Kildebank](SOURCEBANK.md), [kildedekning](KILDEDEKNING-OG-SPORBARHET-2026-11-20.md) | Kildehierarki og sporbarhet, ikke ekstern juridisk godkjenning |
 | Lese studentens refleksjon | [Solo-refleksjonsrapport](REFLEKSJONSRAPPORT-MAL-TILPASSET-SOLO.md) | Hovedutkast etter skolens mal |
 | Kontrollere innleveringen | [Dokumentasjonssjekkliste](DOKUMENTASJON-SJEKKLISTE.md) | Utestående formaliteter og endelig SHA-kontroll |
