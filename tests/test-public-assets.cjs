@@ -87,6 +87,33 @@ async function waitForServer() {
       if (!(length > 0 || body.length > 0)) throw new Error(`${asset} ga tom respons`);
     }
 
+    // Validate what the actual index.html references, not just the
+    // separately maintained explicit allowlist above. Querystrings are
+    // preserved to exercise the same cache-busted URL used by the browser.
+    const pageResponse = await fetch(`http://127.0.0.1:${port}/`);
+    if (!pageResponse.ok) throw new Error("Frontend entrypoint is unavailable");
+    const markup = await pageResponse.text();
+    const linkedAssets = new Set();
+    const tagRe = /<(script|link|img)\\b[^>]*>/gi;
+    for (const [tag, kind] of markup.matchAll(tagRe)) {
+      const attr = kind.toLowerCase() === "link" ? "href" : "src";
+      const match = tag.match(new RegExp(`\\b${attr}\\s*=\\s*["']([^"']+)["']`, "i"));
+      if (!match) continue;
+      const href = match[1];
+      if (/^(?:https?:|data:|\/\/|#)/i.test(href)) continue;
+      const url = new URL(href, `http://127.0.0.1:${port}/`);
+      if (url.origin !== `http://127.0.0.1:${port}`) continue;
+      linkedAssets.add(url.pathname + url.search);
+    }
+    if (linkedAssets.size < 10) throw new Error("Too few HTML assets detected");
+    for (const asset of linkedAssets) {
+      const response = await fetch(`http://127.0.0.1:${port}${asset}`);
+      if (!response.ok) throw new Error(`HTML-linked asset ${asset} gave HTTP ${response.status}`);
+      if ((await response.arrayBuffer()).byteLength === 0) {
+        throw new Error(`HTML-linked asset ${asset} returned empty content`);
+      }
+    }
+
     const secret = await fetch(`http://127.0.0.1:${port}/.env`);
     if (secret.status !== 404) throw new Error(".env skal ikke kunne serveres");
 
