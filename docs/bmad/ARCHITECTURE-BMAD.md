@@ -1,6 +1,6 @@
 # Architecture – Samtalestøtte
 
-> **Statuskontroll 25.11.2026:** Arkitekturen beskriver studentprototypen. Delt personverndetektor i `src/privacy-detector.js` og yrkesforslag i `app.js` er justert etter dokumentasjonens opprinnelige kontrollpunkt. Tale/LIVE er ikke produksjonsfunksjon. Gjeldende kode/Render: `61d282dc`, [Quality Gate](https://github.com/IBE160-2026/G46-nilsen/actions/runs/45662862335) = grønn, Render = `live` før denne dokumentasjonsrevisjonen. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [revisjonsrapport](../DOKUMENTASJONSREVISJON-2026-11-25.md).
+> **Dokumentrolle:** Arkitekturvalg og utviklingshistorikk, ikke sanntidsstatus for publisering. Daterte revisjoner og versjonsopplysninger nedenfor gjelder opprinnelige kontrolltidspunkt. LIVE/tale er separat pilot, ikke bekreftet produksjonsfunksjon. Se [prosjektstatus](../PROSJEKTSTATUS.md) og [testbevisoversikten](../TESTBEVIS-OVERSIKT.md).
 
 
 **Prosjekt:** Samtalestøtte  
